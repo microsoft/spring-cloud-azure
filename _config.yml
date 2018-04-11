@@ -26,7 +26,7 @@ name: Spring Framework
 project: spring-cloud-azure
 
 # Project github URL
-github_repo_url: http://github.com/spring-cloud/spring-cloud-azure
+github_repo_url: https://github.com/Microsoft/azure-spring-boot/
 
 # Project forum URL
 forum: http://forum.spring.io/forum/spring-projects/container
