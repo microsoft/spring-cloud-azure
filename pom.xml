@@ -16,38 +16,42 @@
     <name>Spring Cloud Azure</name>
     <description>Spring Cloud Azure</description>
 
-    <scm>
-        <url>https://github.com/spring-cloud/spring-cloud-azure</url>
-        <connection>scm:git:git://github.com/spring-cloud/spring-cloud-azure.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/spring-cloud/spring-cloud-azure.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
-
     <modules>
+        <module>spring-cloud-azure-context</module>
+        <module>spring-cloud-azure-autoconfigure</module>
+        <module>spring-cloud-azure-eventhub</module>
+        <module>spring-cloud-azure-eventhub-stream-binder</module>
     </modules>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <spring-cloud-release.version>Finchley.M9</spring-cloud-release.version>
+        <spring-cloud-release.version>2.0.0.RELEASE</spring-cloud-release.version>
         <spring-boot-release.version>2.0.1.RELEASE</spring-boot-release.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot-release.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
+                <artifactId>spring-cloud-stream</artifactId>
                 <version>${spring-cloud-release.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
 
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot-release.version}</version>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-stream-binder-test</artifactId>
+                <version>${spring-cloud-release.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
