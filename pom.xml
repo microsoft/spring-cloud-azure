@@ -9,6 +9,7 @@
         <version>2.0.0.RELEASE</version>
     </parent>
 
+    <groupId>com.microsoft.azure</groupId>
     <artifactId>spring-cloud-azure</artifactId>
     <version>1.0.0.BUILD-SNAPSHOT</version>
     <packaging>pom</packaging>
