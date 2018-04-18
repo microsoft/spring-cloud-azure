@@ -39,13 +39,6 @@
         <module name="NeedBraces"/>
         <module name="AvoidNestedBlocks"/>
 
-        <!-- tabs instead of spaces -->
-        <module name="RegexpSinglelineJava">
-            <property name="format" value="^\t* "/>
-            <property name="message" value="Indent must use tab characters"/>
-            <property name="ignoreComments" value="true"/>
-        </module>
-
         <!-- Class Design -->
         <module name="FinalClass"/>
         <module name="InterfaceIsType"/>
@@ -132,19 +125,6 @@
 
         <!-- Modifiers -->
         <module name="RedundantModifier"/>
-
-        <!-- Regexp -->
-        <module name="RegexpSinglelineJava">
-            <property name="format" value="^\t* +\t*\S"/>
-            <property name="message"
-                      value="Line has leading space characters; indentation should be performed with tabs only."/>
-            <property name="ignoreComments" value="true"/>
-        </module>
-        <module name="Regexp">
-            <property name="format" value="[ \t]+$"/>
-            <property name="illegalPattern" value="true"/>
-            <property name="message" value="Trailing whitespace"/>
-        </module>
 
         <!-- Whitespace -->
         <module name="GenericWhitespace"/>
