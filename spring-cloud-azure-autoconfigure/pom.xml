@@ -3,13 +3,15 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>spring-cloud-azure</artifactId>
         <groupId>com.microsoft.azure</groupId>
+        <artifactId>spring-cloud-azure</artifactId>
         <version>1.0.0.BUILD-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>spring-cloud-azure-autoconfigure</artifactId>
+    <name>Spring Cloud Azure Autoconfigure</name>
 
     <dependencies>
         <dependency>
@@ -17,9 +19,9 @@
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>com.microsoft.azure</groupId>
             <artifactId>spring-cloud-azure-context</artifactId>
-            <version>1.0.0.BUILD-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
