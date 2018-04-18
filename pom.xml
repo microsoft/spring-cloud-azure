@@ -138,8 +138,8 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>2.17</version>
                 <configuration>
-                    <configLocation>src/checkstyle/checkstyle.xml</configLocation>
-                    <headerLocation>src/checkstyle/checkstyle-header.txt</headerLocation>
+                    <configLocation>codestyle/checkstyle/checkstyle.xml</configLocation>
+                    <headerLocation>codestyle/checkstyle/checkstyle-header.txt</headerLocation>
                     <encoding>UTF-8</encoding>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
