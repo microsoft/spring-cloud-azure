@@ -49,7 +49,7 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
                 this.credentials = ApplicationTokenCredentials.fromFile(credentialFile);
             }
             catch (IOException e) {
-                LOGGER.error("Credential file path not found.");
+                LOGGER.error("Credential file path not found.", e);
             }
         }
         else {
