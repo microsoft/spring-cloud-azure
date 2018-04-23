@@ -43,7 +43,7 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 @AutoConfigureBefore(RedisAutoConfiguration.class)
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
-@ConditionalOnProperty("spring.cloud.azure.cache.name")
+@ConditionalOnProperty("spring.cloud.azure.redis.name")
 @EnableConfigurationProperties(AzureCacheProperties.class)
 public class AzureCacheAutoConfiguration {
 
