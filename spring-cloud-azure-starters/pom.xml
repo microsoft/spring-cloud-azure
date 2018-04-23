@@ -18,6 +18,7 @@
 
     <modules>
         <module>spring-cloud-azure-starter-cache</module>
+        <module>spring-cloud-azure-starter-storage</module>
     </modules>
 
 </project>
