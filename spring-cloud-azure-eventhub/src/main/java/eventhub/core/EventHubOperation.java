@@ -27,8 +27,8 @@ import com.microsoft.azure.eventhubs.EventData;
  */
 public interface EventHubOperation {
 
-    void sendSync(EventData eventData, PartitionSupplier partitionSupplier);
+    void send(String eventHubName, EventData eventData, PartitionSupplier partitionSupplier);
 
-    CompletableFuture send(EventData eventData, PartitionSupplier partitionSupplier);
+    CompletableFuture sendAsync(String eventHubName, EventData eventData, PartitionSupplier partitionSupplier);
 
 }
