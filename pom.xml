@@ -21,6 +21,8 @@
         <module>spring-cloud-azure-autoconfigure</module>
         <module>spring-cloud-azure-eventhub</module>
         <module>spring-cloud-azure-eventhub-stream-binder</module>
+        <module>spring-cloud-azure-samples</module>
+        <module>spring-cloud-azure-starters</module>
     </modules>
 
     <properties>
