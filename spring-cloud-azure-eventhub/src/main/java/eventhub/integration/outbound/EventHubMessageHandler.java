@@ -25,7 +25,11 @@ import eventhub.core.EventHubTemplate;
 import eventhub.core.PartitionSupplier;
 import eventhub.integration.EventHubHeaders;
 
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.Expression;
+import org.springframework.expression.common.LiteralExpression;
 import org.springframework.integration.codec.CodecMessageConverter;
+import org.springframework.integration.expression.ExpressionUtils;
 import org.springframework.integration.handler.AbstractMessageHandler;
 import org.springframework.messaging.Message;
 import org.springframework.util.concurrent.ListenableFutureCallback;
@@ -44,14 +48,19 @@ public class EventHubMessageHandler extends AbstractMessageHandler {
 
     private final EventHubTemplate eventHubTemplate;
 
+    private final Expression nameExpression;
+
     private boolean sync;
 
     private CodecMessageConverter messageConverter;
 
     private ListenableFutureCallback<Void> sendCallback;
 
-    public EventHubMessageHandler(EventHubTemplate eventHubTemplate) {
+    private EvaluationContext evaluationContext;
+
+    public EventHubMessageHandler(EventHubTemplate eventHubTemplate, String eventHubName) {
         this.eventHubTemplate = eventHubTemplate;
+        this.nameExpression = new LiteralExpression(eventHubName);
     }
 
     @Override
@@ -59,7 +68,7 @@ public class EventHubMessageHandler extends AbstractMessageHandler {
 
         PartitionSupplier partitionSupplier = toPartitionSupplier(message);
 
-        String eventHubName = message.getHeaders().get(EventHubHeaders.NAME, String.class);
+        String eventHubName = getEventHubName(message);
 
         EventData eventData = toEventData(message);
 
@@ -77,6 +86,12 @@ public class EventHubMessageHandler extends AbstractMessageHandler {
                 }
             });
         }
+    }
+
+    @Override
+    protected void onInit() throws Exception {
+        super.onInit();
+        this.evaluationContext = ExpressionUtils.createStandardEvaluationContext(getBeanFactory());
     }
 
     public boolean isSync() {
@@ -125,5 +140,13 @@ public class EventHubMessageHandler extends AbstractMessageHandler {
         partitionSupplier
                 .setPartitionId(message.getHeaders().get(EventHubHeaders.PARTITION_ID, Integer.class).toString());
         return partitionSupplier;
+    }
+
+    private String getEventHubName(Message<?> message) {
+        if (message.getHeaders().containsKey(EventHubHeaders.NAME)) {
+            return message.getHeaders().get(EventHubHeaders.NAME, String.class);
+        }
+
+        return this.nameExpression.getValue(this.evaluationContext, message, String.class);
     }
 }
