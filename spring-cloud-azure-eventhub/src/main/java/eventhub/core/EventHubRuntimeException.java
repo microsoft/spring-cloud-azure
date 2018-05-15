@@ -23,13 +23,13 @@ import org.springframework.core.NestedRuntimeException;
  *
  * @author Warren Zhu
  */
-public class EventHubException extends NestedRuntimeException {
+public class EventHubRuntimeException extends NestedRuntimeException {
 
-    public EventHubException(String msg) {
+    public EventHubRuntimeException(String msg) {
         super(msg);
     }
 
-    public EventHubException(String msg, Throwable cause) {
+    public EventHubRuntimeException(String msg, Throwable cause) {
         super(msg, cause);
     }
 }
