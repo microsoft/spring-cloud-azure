@@ -28,4 +28,6 @@ public class EventHubHeaders {
     public static final String PARTITION_ID = PREFIX + "partition_id";
 
     public static final String PARTITION_KEY = PREFIX + "partition_key";
+
+    public static final String NAME = PREFIX + "name";
 }
