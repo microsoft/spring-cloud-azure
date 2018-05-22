@@ -1,34 +1,23 @@
 /*
- *  Copyright 2017 original author or authors.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License. See LICENSE in the project root for
+ * license information.
  */
 
 package eventhub.integration.outbound;
-
-import java.nio.charset.Charset;
-import java.util.concurrent.CompletableFuture;
 
 import com.microsoft.azure.eventhubs.EventData;
 import eventhub.core.EventHubOperation;
 import eventhub.core.EventHubTemplate;
 import eventhub.core.PartitionSupplier;
 import eventhub.integration.EventHubHeaders;
-
 import org.springframework.integration.codec.CodecMessageConverter;
 import org.springframework.integration.handler.AbstractMessageHandler;
 import org.springframework.messaging.Message;
 import org.springframework.util.concurrent.ListenableFutureCallback;
+
+import java.nio.charset.Charset;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Outbound channel adapter to publish messages to Azure Event Hub.
@@ -65,14 +54,12 @@ public class EventHubMessageHandler extends AbstractMessageHandler {
 
         if (this.sync) {
             this.eventHubTemplate.send(eventHubName, eventData, partitionSupplier);
-        }
-        else {
+        } else {
             CompletableFuture future = this.eventHubTemplate.sendAsync(eventHubName, eventData, partitionSupplier);
             future.whenComplete((t, ex) -> {
                 if (ex != null) {
                     this.sendCallback.onFailure((Throwable) ex);
-                }
-                else {
+                } else {
                     this.sendCallback.onSuccess((Void) t);
                 }
             });
@@ -88,6 +75,7 @@ public class EventHubMessageHandler extends AbstractMessageHandler {
      *
      * <p>
      * send is asynchronous be default.
+     *
      * @param sync true for synchronous, false for asynchronous
      */
     public void setSync(boolean sync) {
