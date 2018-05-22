@@ -1,30 +1,19 @@
 /*
- *  Copyright 2018 original author or authors.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License. See LICENSE in the project root for
+ * license information.
  */
 
 package com.microsoft.azure.spring.cloud.context.core;
-
-import java.io.File;
-import java.io.IOException;
 
 import com.google.common.base.Strings;
 import com.microsoft.azure.credentials.ApplicationTokenCredentials;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.core.io.ClassPathResource;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * A {@link CredentialsProvider} implementation that provides credentials based on
@@ -47,12 +36,10 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
             try {
                 File credentialFile = new ClassPathResource(supplier.getCredentialFilePath()).getFile();
                 this.credentials = ApplicationTokenCredentials.fromFile(credentialFile);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 LOGGER.error("Credential file path not found.", e);
             }
-        }
-        else {
+        } else {
             throw new RuntimeException("No credentials provided.");
         }
     }
