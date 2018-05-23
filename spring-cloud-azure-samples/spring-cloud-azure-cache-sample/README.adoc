@@ -1,0 +1,58 @@
+= Azure redis cache spring cloud starter
+
+Maven coordinates, using Spring Cloud Azure BOM:
+
+[source,xml]
+----
+<dependency>
+    <groupId>com.microsoft.azure</groupId>
+    <artifactId>spring-cloud-azure-starter-cache</artifactId>
+</dependency>
+----
+
+Gradle coordinates:
+
+[source]
+----
+dependencies {
+    compile group: 'com.microsoft.azure', name: 'spring-cloud-azure-starter-cache'
+}
+----
+
+This starter based on spring-boot-starter-data-redis, just do kind of auto config of redis
+related properties by call Azure Redis Cache Management SDK to fetch these properties automatically
+
+=== How to run
+
+1.  Create azure auth file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how to create auth file]
++
+....
+$  az az account set --subscription <name or id>
+$  az ad sp create-for-rbac --sdk-auth > my.azureauth
+....
+2.  Put auth file under `src/main/resources/`
+3.  Create Azure redis cache through portal or CLI
+4.  Update `src/main/resources/application.properties` to specify resource group, cache name and auth file path:
++
+....
+spring.cloud.azure.credentialFilePath=[credential-file-path]
+spring.cloud.azure.resourceGroup=[resource-group]
+
+spring.cloud.azure.redis.name=[azure-redis-name]
+....
+
+5.  Run the application using the `$ mvn spring-boot:run` command.
+6.  Send a GET request to check, where name is parameter:
++
+....
+$ curl -XGET http://localhost:8080/{name}
+....
+7.  Confirm from Azure redis portal console the value is there
++
+....
+$ keys *
+....
+
+=== Examples
+link:../../spring-cloud-azure-samples/spring-cloud-azure-cache-sample[Here]
+is a sample application that uses this starter.
