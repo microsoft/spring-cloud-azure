@@ -7,8 +7,14 @@
 package eventhub.core;
 
 import com.microsoft.azure.eventhubs.EventHubClient;
+import com.microsoft.azure.eventhubs.PartitionSender;
 
+/**
+ * @author Warren Zhu
+ */
 public interface EventHubClientFactory {
 
-    EventHubClient createEventHubClient(String eventHubName);
+    EventHubClient getOrCreateEventHubClient(String eventHubName);
+
+    PartitionSender getOrCreatePartitionSender(String eventHubName, String partitionId);
 }
