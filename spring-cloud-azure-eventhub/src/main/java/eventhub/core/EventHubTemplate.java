@@ -9,12 +9,10 @@ package eventhub.core;
 import com.google.common.base.Strings;
 import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.eventhubs.EventHubClient;
-import com.microsoft.azure.eventhubs.EventHubException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Default implementation of {@link EventHubOperation}.
@@ -35,40 +33,27 @@ public class EventHubTemplate implements EventHubOperation {
     }
 
     @Override
-    public void send(String eventHubName, EventData eventData, PartitionSupplier partitionSupplier) {
-        try {
-            sendAsync(eventHubName, eventData, partitionSupplier).get();
-        } catch (InterruptedException e) {
-            LOGGER.warn("Thread interrupted", e);
-            throw new EventHubRuntimeException("Thread interrupted", e);
-        } catch (ExecutionException e) {
-            LOGGER.warn("Failed to send event hub data to " + eventHubName, e);
-            throw new EventHubRuntimeException("Failed to send event hub data to " + eventHubName, e);
-        }
-    }
-
-    @Override
     public CompletableFuture<Void> sendAsync(String eventHubName, EventData eventData,
                                              PartitionSupplier partitionSupplier) {
-        EventHubClient client = this.clientFactory.createEventHubClient(eventHubName);
-
-        if (client == null) {
-            throw new EventHubRuntimeException("EventHub client should not be null");
-        }
-
         try {
+            EventHubClient client = this.clientFactory.getOrCreateEventHubClient(eventHubName);
+
             if (partitionSupplier == null) {
                 return client.send(eventData);
             } else if (!Strings.isNullOrEmpty(partitionSupplier.getPartitionId())) {
-                return client.createPartitionSender(partitionSupplier.getPartitionId())
-                        .thenAcceptAsync(s -> s.send(eventData));
+                return this.clientFactory.getOrCreatePartitionSender(eventHubName, partitionSupplier.getPartitionId())
+                        .send(eventData);
             } else if (!Strings.isNullOrEmpty(partitionSupplier.getPartitionKey())) {
                 return client.send(eventData, partitionSupplier.getPartitionKey());
             } else {
                 return client.send(eventData);
             }
-        } catch (EventHubException e) {
-            throw new EventHubRuntimeException("Failed to send event hub data to " + eventHubName, e);
+        } catch (EventHubRuntimeException e){
+            LOGGER.error(String.format("Failed to send to '%s' ", eventHubName), e);
+            CompletableFuture<Void> future = new CompletableFuture<>();
+            future.completeExceptionally(e);
+            return future;
         }
     }
+
 }

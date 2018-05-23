@@ -33,7 +33,7 @@ public class EventHubMessageHandler extends AbstractMessageHandler {
 
     private final EventHubTemplate eventHubTemplate;
 
-    private boolean sync;
+    private boolean sync = false;
 
     private CodecMessageConverter messageConverter;
 
@@ -52,10 +52,11 @@ public class EventHubMessageHandler extends AbstractMessageHandler {
 
         EventData eventData = toEventData(message);
 
+        CompletableFuture future = this.eventHubTemplate.sendAsync(eventHubName, eventData, partitionSupplier);
+
         if (this.sync) {
-            this.eventHubTemplate.send(eventHubName, eventData, partitionSupplier);
-        } else {
-            CompletableFuture future = this.eventHubTemplate.sendAsync(eventHubName, eventData, partitionSupplier);
+            future.get();
+        } else if (sendCallback != null) {
             future.whenComplete((t, ex) -> {
                 if (ex != null) {
                     this.sendCallback.onFailure((Throwable) ex);

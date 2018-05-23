@@ -11,14 +11,11 @@ import com.microsoft.azure.eventhubs.EventData;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Azure event hub operation to support send data synchronously or asynchronously
+ * Azure event hub operation to support send data asynchronously
  *
  * @author Warren Zhu
  */
 public interface EventHubOperation {
 
-    void send(String eventHubName, EventData eventData, PartitionSupplier partitionSupplier);
-
     CompletableFuture sendAsync(String eventHubName, EventData eventData, PartitionSupplier partitionSupplier);
-
 }
