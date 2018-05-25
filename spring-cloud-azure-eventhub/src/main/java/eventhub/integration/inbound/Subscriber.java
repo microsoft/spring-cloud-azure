@@ -13,16 +13,15 @@ import java.util.function.Consumer;
  * {@link Checkpointer} callback to checkpoint the messages successfully processed
  *
  * @param <T> message type parameter
- * @param <I> {@link Iterable} of message type parameter
  *
  * @author Warren Zhu
  */
-public interface Subscriber<T, I extends Iterable<T>> {
+public interface Subscriber<T> {
 
     /**
      * Start receiving message, then process using provided {@link Consumer}
      */
-    void subscribe(Consumer<I> consumer);
+    void subscribe(Consumer<Iterable<T>> consumer);
 
     /**
      * Stop receiving message
