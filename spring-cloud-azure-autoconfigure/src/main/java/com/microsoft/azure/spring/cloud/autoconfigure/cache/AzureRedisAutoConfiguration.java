@@ -32,15 +32,15 @@ import java.io.IOException;
 @AutoConfigureBefore(RedisAutoConfiguration.class)
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnProperty("spring.cloud.azure.redis.name")
-@EnableConfigurationProperties(AzureCacheProperties.class)
-public class AzureCacheAutoConfiguration {
+@EnableConfigurationProperties(AzureRedisProperties.class)
+public class AzureRedisAutoConfiguration {
 
     @ConditionalOnMissingBean
     @Primary
     @Bean
     public RedisProperties redisProperties(Azure.Authenticated authenticated, AzureProperties azureProperties,
-                                           AzureCacheProperties cacheProperties) throws IOException {
-        String cacheName = cacheProperties.getName();
+                                           AzureRedisProperties azureRedisProperties) throws IOException {
+        String cacheName = azureRedisProperties.getName();
 
         RedisCache redisCache = authenticated.withDefaultSubscription().redisCaches()
                 .getByResourceGroup(azureProperties.getResourceGroup(), cacheName);

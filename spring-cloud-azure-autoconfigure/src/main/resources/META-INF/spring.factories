@@ -1,6 +1,6 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration,\
-com.microsoft.azure.spring.cloud.autoconfigure.cache.AzureCacheAutoConfiguration,\
+com.microsoft.azure.spring.cloud.autoconfigure.cache.AzureRedisAutoConfiguration,\
 com.microsoft.azure.spring.cloud.autoconfigure.storage.AzureStorageAutoConfiguration
 
 

@@ -11,8 +11,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * @author Warren Zhu
  */
-@ConfigurationProperties("spring.cloud.azure.cache")
-public class AzureCacheProperties {
+@ConfigurationProperties("spring.cloud.azure.redis")
+public class AzureRedisProperties {
     private String name;
 
     public String getName() {
