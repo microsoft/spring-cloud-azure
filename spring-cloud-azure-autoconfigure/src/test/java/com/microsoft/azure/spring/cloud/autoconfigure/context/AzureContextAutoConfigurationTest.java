@@ -36,8 +36,7 @@ public class AzureContextAutoConfigurationTest {
     public void testWithoutAzureProperties() {
         this.contextRunner
                 .run(context -> {
-                    assertThat(context).hasSingleBean(AzureProperties.class);
-                    assertThat(context.getBean(AzureProperties.class).getCredentialFilePath()).isNull();
+                    assertThat(context).doesNotHaveBean(AzureProperties.class);
                 });
     }
 
