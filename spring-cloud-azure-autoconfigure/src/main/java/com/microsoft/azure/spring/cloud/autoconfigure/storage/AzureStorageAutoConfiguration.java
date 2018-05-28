@@ -45,11 +45,11 @@ public class AzureStorageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public CloudStorageAccount storage(Azure.Authenticated authenticated, AzureProperties azureProperties,
+    public CloudStorageAccount storage(Azure azure, AzureProperties azureProperties,
                                        AzureStorageProperties azureStorageProperties) throws IOException {
         String accountName = azureStorageProperties.getAccount();
 
-        StorageAccount storageAccount = authenticated.withDefaultSubscription().storageAccounts()
+        StorageAccount storageAccount = azure.storageAccounts()
                 .getByResourceGroup(azureProperties.getResourceGroup(), accountName);
         Optional<StorageAccountKey> key = storageAccount.getKeys().stream().findAny();
 

@@ -49,8 +49,8 @@ public class AzureContextAutoConfigurationTest {
         }
 
         @Bean
-        Azure.Authenticated authenticated() {
-            return mock(Azure.Authenticated.class);
+        Azure azure() {
+            return mock(Azure.class);
         }
     }
 }

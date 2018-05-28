@@ -16,6 +16,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.IOException;
+
 /**
  * Auto-config to provide default {@link CredentialsProvider} for all Azure services
  *
@@ -41,7 +43,7 @@ public class AzureContextAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public Azure.Authenticated authenticated() {
-        return Azure.authenticate(credentialsProvider().getCredentials());
+    public Azure azure() throws IOException {
+        return Azure.authenticate(credentialsProvider().getCredentials()).withDefaultSubscription();
     }
 }
