@@ -12,7 +12,6 @@ package eventhub.integration;
  * @author Warren Zhu
  */
 public class EventHubHeaders {
-
     private static final String PREFIX = "azure_event_hub_";
 
     public static final String PARTITION_ID = PREFIX + "partition_id";
@@ -20,4 +19,10 @@ public class EventHubHeaders {
     public static final String PARTITION_KEY = PREFIX + "partition_key";
 
     public static final String NAME = PREFIX + "name";
+
+    /**
+     * The {@value CHECKPOINTER} header for checkpoint the specific message.
+     */
+    public static final String CHECKPOINTER = PREFIX + "checkpointer";
+
 }
