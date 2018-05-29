@@ -10,33 +10,52 @@ import com.microsoft.azure.eventhubs.ConnectionStringBuilder;
 import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.eventhubs.EventHubException;
 import com.microsoft.azure.eventhubs.PartitionSender;
+import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
+import com.microsoft.azure.spring.cloud.autoconfigure.eventhub.AzureEventHubProperties;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
+import java.util.stream.Stream;
 
 /**
  * Default implementation of {@link EventHubClientFactory}.
  *
  * @author Warren Zhu
  */
-public class DefaultEventHubClientFactory implements EventHubClientFactory {
-    private final ConcurrentHashMap<String, EventHubClient> clients = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<PartitionSenderKey, PartitionSender> partitionSenders = new ConcurrentHashMap<>();
+@Component
+public class DefaultEventHubClientFactory implements EventHubClientFactory, DisposableBean {
+    private static final Log LOGGER = LogFactory.getLog(DefaultEventHubClientFactory.class);
+    // eventHubName -> eventHubClient
+    private final ConcurrentHashMap<String, EventHubClient> clientMap = new ConcurrentHashMap<>();
+
+    // eventHubName -> connectionString
+    private final ConcurrentHashMap<String, String> connectionStringMap = new ConcurrentHashMap<>();
+
+    // (eventHubName, partitionId) -> partitionSender
+    private final ConcurrentHashMap<Tuple<String, String>, PartitionSender> partitionSenderMap =
+            new ConcurrentHashMap<>();
+
+    // (eventHubName, consumerGroup) -> eventProcessorHost
+    private final ConcurrentHashMap<Tuple<String, String>, EventProcessorHost> processorHostMap =
+            new ConcurrentHashMap<>();
+
+    @Autowired
+    private AzureEventHubProperties eventHubProperties;
 
     @Override
     public EventHubClient getOrCreateEventHubClient(String eventHubName) {
-        return this.clients.computeIfAbsent(eventHubName, key -> {
-            //TODO: figure out where to get properties to build connection string
-            ConnectionStringBuilder builder = new ConnectionStringBuilder()
-                    .setNamespaceName("----ServiceBusNamespaceName-----")
-                    .setEventHubName(eventHubName)
-                    .setSasKeyName("-----SharedAccessSignatureKeyName-----")
-                    .setSasKey("---SharedAccessSignatureKey----");
+        return this.clientMap.computeIfAbsent(eventHubName, key -> {
 
             try {
-                return EventHubClient.createSync(builder.toString(), Executors.newSingleThreadExecutor());
+                return EventHubClient
+                        .createSync(getOrCreateConnectionString(eventHubName), Executors.newSingleThreadExecutor());
             } catch (EventHubException | IOException e) {
                 throw new EventHubRuntimeException("Error when creating event hub client", e);
             }
@@ -45,7 +64,7 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory {
 
     @Override
     public PartitionSender getOrCreatePartitionSender(String eventHubName, String partitionId) {
-        return this.partitionSenders.computeIfAbsent(new PartitionSenderKey(eventHubName, partitionId), key -> {
+        return this.partitionSenderMap.computeIfAbsent(new Tuple(eventHubName, partitionId), key -> {
 
             try {
                 return getOrCreateEventHubClient(eventHubName).createPartitionSenderSync(partitionId);
@@ -55,34 +74,35 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory {
         });
     }
 
-    //TODO: clean up all clients and partition sender when close this
+    @Override
+    public EventProcessorHost getOrCreateEventProcessorHost(String eventHubName, String consumerGroup) {
+        return this.processorHostMap.computeIfAbsent(new Tuple(eventHubName, consumerGroup),
+                key -> new EventProcessorHost(EventProcessorHost.createHostName("hostNamePrefix"), eventHubName,
+                        consumerGroup, getOrCreateConnectionString(eventHubName), "storageConnectionString",
+                        "storageContainerName"));
+    }
 
-    static class PartitionSenderKey {
-        private final String eventHubName;
-        private final String partition;
+    private String getOrCreateConnectionString(String eventHubName) {
+        return this.connectionStringMap.computeIfAbsent(eventHubName, key -> {
+            //TODO: get all properties from management api, pending on no way to get access way
+            return new ConnectionStringBuilder().setNamespaceName(eventHubProperties.getNamespace())
+                                                .setEventHubName(eventHubName)
+                                                .setSasKeyName("-----SharedAccessSignatureKeyName-----")
+                                                .setSasKey("---SharedAccessSignatureKey----").toString();
+        });
+    }
 
-        PartitionSenderKey(String eventHubName, String partition) {
-            this.eventHubName = eventHubName;
-            this.partition = partition;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            PartitionSenderKey that = (PartitionSenderKey) o;
-            return Objects.equals(eventHubName, that.eventHubName) &&
-                    Objects.equals(partition, that.partition);
-        }
-
-        @Override
-        public int hashCode() {
-
-            return Objects.hash(eventHubName, partition);
-        }
+    @Override
+    public void destroy() throws Exception {
+        Stream<CompletableFuture<Void>> closeClientFutures = clientMap.values().stream().map(EventHubClient::close);
+        Stream<CompletableFuture<Void>> closeSenderFutures =
+                partitionSenderMap.values().stream().map(PartitionSender::close);
+        Stream<CompletableFuture<Void>> closeProcessorFutures =
+                processorHostMap.values().stream().map(EventProcessorHost::unregisterEventProcessor);
+        CompletableFuture.allOf(Stream.of(closeClientFutures, closeSenderFutures, closeProcessorFutures)
+                                      .toArray(CompletableFuture[]::new)).exceptionally((ex) -> {
+            LOGGER.warn("Failed to clean event hub client factory", ex);
+            return null;
+        });
     }
 }

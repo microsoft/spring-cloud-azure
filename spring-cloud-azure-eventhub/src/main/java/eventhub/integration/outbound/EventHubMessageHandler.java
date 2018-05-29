@@ -8,12 +8,11 @@ package eventhub.integration.outbound;
 
 import com.microsoft.azure.eventhubs.EventData;
 import eventhub.core.EventHubOperation;
-import eventhub.core.EventHubTemplate;
-import eventhub.core.PartitionSupplier;
 import eventhub.integration.EventHubHeaders;
 import org.springframework.integration.codec.CodecMessageConverter;
 import org.springframework.integration.handler.AbstractMessageHandler;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.nio.charset.Charset;
@@ -30,16 +29,14 @@ import java.util.concurrent.CompletableFuture;
  * @author Warren Zhu
  */
 public class EventHubMessageHandler extends AbstractMessageHandler {
-
-    private final EventHubTemplate eventHubTemplate;
-
+    private final String eventHubName;
+    private final EventHubOperation eventHubTemplate;
     private boolean sync = false;
-
-    private CodecMessageConverter messageConverter;
-
+    private MessageConverter messageConverter;
     private ListenableFutureCallback<Void> sendCallback;
 
-    public EventHubMessageHandler(EventHubTemplate eventHubTemplate) {
+    public EventHubMessageHandler(String eventHubName, EventHubOperation eventHubTemplate) {
+        this.eventHubName = eventHubName;
         this.eventHubTemplate = eventHubTemplate;
     }
 
@@ -48,7 +45,7 @@ public class EventHubMessageHandler extends AbstractMessageHandler {
 
         PartitionSupplier partitionSupplier = toPartitionSupplier(message);
 
-        String eventHubName = message.getHeaders().get(EventHubHeaders.NAME, String.class);
+        String eventHubName = toEventHubName(message);
 
         EventData eventData = toEventData(message);
 
@@ -106,6 +103,14 @@ public class EventHubMessageHandler extends AbstractMessageHandler {
         }
 
         return EventData.create((byte[]) this.messageConverter.fromMessage(message, byte[].class));
+    }
+
+    private String toEventHubName(Message<?> message) {
+        if (message.getHeaders().containsKey(EventHubHeaders.NAME)) {
+            return message.getHeaders().get(EventHubHeaders.NAME, String.class);
+        }
+
+        return this.eventHubName;
     }
 
     private PartitionSupplier toPartitionSupplier(Message<?> message) {

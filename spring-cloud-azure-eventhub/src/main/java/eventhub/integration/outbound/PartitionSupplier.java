@@ -4,7 +4,7 @@
  * license information.
  */
 
-package eventhub.core;
+package eventhub.integration.outbound;
 
 /**
  * Provide partition id or key
