@@ -14,6 +14,16 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("spring.cloud.azure.event.hub")
 public class AzureEventHubProperties {
     private String namespace;
+    private String checkpointStorageAccount;
+    private String checkpointStorageAccountContainer;
+
+    public String getCheckpointStorageAccountContainer() {
+        return checkpointStorageAccountContainer;
+    }
+
+    public void setCheckpointStorageAccountContainer(String checkpointStorageAccountContainer) {
+        this.checkpointStorageAccountContainer = checkpointStorageAccountContainer;
+    }
 
     public String getNamespace() {
         return namespace;
@@ -21,5 +31,13 @@ public class AzureEventHubProperties {
 
     public void setNamespace(String namespace) {
         this.namespace = namespace;
+    }
+
+    public String getCheckpointStorageAccount() {
+        return checkpointStorageAccount;
+    }
+
+    public void setCheckpointStorageAccount(String checkpointStorageAccount) {
+        this.checkpointStorageAccount = checkpointStorageAccount;
     }
 }
