@@ -6,15 +6,12 @@
 
 package eventhub.integration.inbound;
 
-import com.microsoft.azure.eventhubs.EventData;
-
 import java.util.concurrent.CompletableFuture;
 
 /**
  * A callback to perform checkpoint.
  *
  * @param <T> message type parameter
- *
  * @author Warren Zhu
  */
 public interface Checkpointer<T> {

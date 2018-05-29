@@ -31,7 +31,7 @@ public class EventHubInboundChannelAdapter extends MessageProducerSupport {
     private Map<String, Object> commonHeaders = new HashMap<>();
 
     public EventHubInboundChannelAdapter(String eventHubName, EventHubOperation eventHubOperation,
-                                         String consumerGroup) {
+            String consumerGroup) {
         this.eventHubName = eventHubName;
         this.eventHubOperation = eventHubOperation;
         this.consumerGroup = consumerGroup;

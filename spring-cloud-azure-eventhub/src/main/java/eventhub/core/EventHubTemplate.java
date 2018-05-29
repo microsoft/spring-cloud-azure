@@ -38,7 +38,7 @@ public class EventHubTemplate implements EventHubOperation {
 
     @Override
     public CompletableFuture<Void> sendAsync(String eventHubName, EventData eventData,
-                                             PartitionSupplier partitionSupplier) {
+            PartitionSupplier partitionSupplier) {
         try {
             EventHubClient client = this.clientFactory.getOrCreateEventHubClient(eventHubName);
 
@@ -46,7 +46,7 @@ public class EventHubTemplate implements EventHubOperation {
                 return client.send(eventData);
             } else if (!Strings.isNullOrEmpty(partitionSupplier.getPartitionId())) {
                 return this.clientFactory.getOrCreatePartitionSender(eventHubName, partitionSupplier.getPartitionId())
-                        .send(eventData);
+                                         .send(eventData);
             } else if (!Strings.isNullOrEmpty(partitionSupplier.getPartitionKey())) {
                 return client.send(eventData, partitionSupplier.getPartitionKey());
             } else {
