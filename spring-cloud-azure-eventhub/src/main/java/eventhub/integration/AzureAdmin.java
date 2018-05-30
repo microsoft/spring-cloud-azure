@@ -21,7 +21,7 @@ public class AzureAdmin {
         this.azure = azure;
         this.resourceGroup = resourceGroup;
         this.region = region;
-        if(!this.azure.resourceGroups().contain(resourceGroup)){
+        if (!this.azure.resourceGroups().contain(resourceGroup)) {
             this.azure.resourceGroups().define(resourceGroup).withRegion(region).create();
         }
     }
@@ -42,16 +42,15 @@ public class AzureAdmin {
     public EventHub createEventHub(String namespace, String name) {
         EventHubNamespace eventHubNamespace = getOrCreateEventHubNamespace(namespace);
 
-        return azure.eventHubs().define(name)
-                    .withExistingNamespace(eventHubNamespace).create();
+        return azure.eventHubs().define(name).withExistingNamespace(eventHubNamespace).create();
     }
 
-    public EventHubNamespace getOrCreateEventHubNamespace(String namespace){
+    public EventHubNamespace getOrCreateEventHubNamespace(String namespace) {
         EventHubNamespace eventHubNamespace = azure.eventHubNamespaces().getByResourceGroup(resourceGroup, namespace);
 
-        if(eventHubNamespace == null){
-            return azure.eventHubNamespaces().define(namespace).withRegion(region).withExistingResourceGroup(resourceGroup)
-                 .create();
+        if (eventHubNamespace == null) {
+            return azure.eventHubNamespaces().define(namespace).withRegion(region)
+                        .withExistingResourceGroup(resourceGroup).create();
         }
 
         return eventHubNamespace;
@@ -71,7 +70,7 @@ public class AzureAdmin {
     }
 
     public StorageAccount createStorageAccount(String name) {
-        return azure.storageAccounts().define(name).withRegion(region)
-                    .withExistingResourceGroup(resourceGroup).create();
+        return azure.storageAccounts().define(name).withRegion(region).withExistingResourceGroup(resourceGroup)
+                    .create();
     }
 }
