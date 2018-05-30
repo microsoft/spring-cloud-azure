@@ -6,20 +6,18 @@
 
 package eventhub.core;
 
+import com.microsoft.azure.eventhubs.ConnectionStringBuilder;
 import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.eventhubs.EventHubException;
 import com.microsoft.azure.eventhubs.PartitionSender;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.management.eventhub.AuthorizationRule;
 import com.microsoft.azure.management.eventhub.EventHubAuthorizationKey;
-import com.microsoft.azure.spring.cloud.autoconfigure.eventhub.AzureEventHubProperties;
 import com.microsoft.azure.spring.cloud.context.core.AzureUtil;
 import eventhub.integration.AzureAdmin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
@@ -32,7 +30,6 @@ import java.util.stream.Stream;
  *
  * @author Warren Zhu
  */
-@Component
 public class DefaultEventHubClientFactory implements EventHubClientFactory, DisposableBean {
     private static final Log LOGGER = LogFactory.getLog(DefaultEventHubClientFactory.class);
     // eventHubName -> eventHubClient
@@ -49,11 +46,24 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
     private final ConcurrentHashMap<Tuple<String, String>, EventProcessorHost> processorHostMap =
             new ConcurrentHashMap<>();
 
-    @Autowired
-    private AzureAdmin azureAdmin;
+    private final AzureAdmin azureAdmin;
+    private final String namespace;
+    private String checkpointStorageAccountContainer;
+    private String checkpointStorageConnectionString;
 
-    @Autowired
-    private AzureEventHubProperties eventHubProperties;
+    public DefaultEventHubClientFactory(AzureAdmin azureAdmin, String namespace) {
+        this.azureAdmin = azureAdmin;
+        this.namespace = namespace;
+    }
+
+    public void initCheckpointConnectionString(String checkpointStorageAccount) {
+        this.checkpointStorageConnectionString =
+                AzureUtil.getConnectionString(azureAdmin.getOrCreateStorageAccount(checkpointStorageAccount));
+    }
+
+    public void setCheckpointStorageAccountContainer(String checkpointStorageAccountContainer) {
+        this.checkpointStorageAccountContainer = checkpointStorageAccountContainer;
+    }
 
     @Override
     public EventHubClient getOrCreateEventHubClient(String eventHubName) {
@@ -84,20 +94,20 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
     public EventProcessorHost getOrCreateEventProcessorHost(String eventHubName, String consumerGroup) {
         return this.processorHostMap.computeIfAbsent(new Tuple(eventHubName, consumerGroup),
                 key -> new EventProcessorHost(EventProcessorHost.createHostName("hostNamePrefix"), eventHubName,
-                        consumerGroup, getOrCreateConnectionString(eventHubName), AzureUtil.getConnectionString(
-                        azureAdmin.getOrCreateStorageAccount(eventHubProperties.getCheckpointStorageAccount())),
-                        eventHubProperties.getCheckpointStorageAccountContainer()));
+                        consumerGroup, getOrCreateConnectionString(eventHubName), checkpointStorageConnectionString,
+                        checkpointStorageAccountContainer));
     }
 
     private String getOrCreateConnectionString(String eventHubName) {
 
         return this.connectionStringMap.computeIfAbsent(eventHubName,
-                name -> azureAdmin.getEventHub(name).listAuthorizationRules().stream().findFirst()
+                name -> azureAdmin.getOrCreateEventHubNamespace(namespace).listAuthorizationRules().stream().findFirst()
                                   .map(AuthorizationRule::getKeys)
-                                  .map(EventHubAuthorizationKey::primaryConnectionString).orElseThrow(
-                                () -> new EventHubRuntimeException(
-                                        String.format("Failed to fetch connection string of '%s'", eventHubName),
-                                        null)));
+                                  .map(EventHubAuthorizationKey::primaryConnectionString)
+                                  .map(s -> new ConnectionStringBuilder(s).setEventHubName(name).toString())
+                                  .orElseThrow(() -> new EventHubRuntimeException(
+                                          String.format("Failed to fetch connection string of '%s'", eventHubName),
+                                          null)));
     }
 
     @Override

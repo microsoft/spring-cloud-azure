@@ -8,40 +8,53 @@ package eventhub.integration;
 
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.eventhub.EventHub;
+import com.microsoft.azure.management.eventhub.EventHubNamespace;
 import com.microsoft.azure.management.storage.StorageAccount;
-import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureProperties;
-import com.microsoft.azure.spring.cloud.autoconfigure.eventhub.AzureEventHubProperties;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class AzureAdmin {
 
-    @Autowired
-    private Azure azure;
+    private final Azure azure;
+    private final String resourceGroup;
+    private final String region;
 
-    @Autowired
-    private AzureProperties azureProperties;
+    public AzureAdmin(Azure azure, String resourceGroup, String region) {
+        this.azure = azure;
+        this.resourceGroup = resourceGroup;
+        this.region = region;
+        if(!this.azure.resourceGroups().contain(resourceGroup)){
+            this.azure.resourceGroups().define(resourceGroup).withRegion(region).create();
+        }
+    }
 
-    @Autowired
-    private AzureEventHubProperties eventHubProperties;
-
-    public EventHub getOrCreateEventHub(String name) {
-        EventHub eventHub = getEventHub(name);
+    public EventHub getOrCreateEventHub(String namespace, String name) {
+        EventHub eventHub = getEventHub(namespace, name);
         if (eventHub == null) {
-            return createEventHub(name);
+            return createEventHub(namespace, name);
         }
 
         return eventHub;
     }
 
-    public EventHub getEventHub(String name) {
-        return azure.eventHubs().getByName(azureProperties.getResourceGroup(), eventHubProperties.getNamespace(), name);
+    public EventHub getEventHub(String namespace, String name) {
+        return azure.eventHubs().getByName(resourceGroup, namespace, name);
     }
 
-    public EventHub createEventHub(String name) {
-        return azure.eventHubs().define(name).withExistingNamespace(azure.eventHubNamespaces().getByResourceGroup(
-                azureProperties.getResourceGroup(), eventHubProperties.getNamespace())).create();
+    public EventHub createEventHub(String namespace, String name) {
+        EventHubNamespace eventHubNamespace = getOrCreateEventHubNamespace(namespace);
+
+        return azure.eventHubs().define(name)
+                    .withExistingNamespace(eventHubNamespace).create();
+    }
+
+    public EventHubNamespace getOrCreateEventHubNamespace(String namespace){
+        EventHubNamespace eventHubNamespace = azure.eventHubNamespaces().getByResourceGroup(resourceGroup, namespace);
+
+        if(eventHubNamespace == null){
+            return azure.eventHubNamespaces().define(namespace).withRegion(region).withExistingResourceGroup(resourceGroup)
+                 .create();
+        }
+
+        return eventHubNamespace;
     }
 
     public StorageAccount getOrCreateStorageAccount(String name) {
@@ -54,11 +67,11 @@ public class AzureAdmin {
     }
 
     public StorageAccount getStorageAccount(String name) {
-        return azure.storageAccounts().getByResourceGroup(azureProperties.getResourceGroup(), name);
+        return azure.storageAccounts().getByResourceGroup(resourceGroup, name);
     }
 
     public StorageAccount createStorageAccount(String name) {
-        return azure.storageAccounts().define(name).withRegion(azureProperties.getRegion())
-                    .withExistingResourceGroup(azureProperties.getResourceGroup()).create();
+        return azure.storageAccounts().define(name).withRegion(region)
+                    .withExistingResourceGroup(resourceGroup).create();
     }
 }

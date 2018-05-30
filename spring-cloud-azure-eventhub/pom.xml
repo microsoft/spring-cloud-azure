@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-cloud-azure-autoconfigure</artifactId>
+            <artifactId>spring-cloud-azure-context</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
