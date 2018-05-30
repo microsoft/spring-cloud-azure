@@ -6,12 +6,16 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.eventhub;
 
+import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.eventhub.EventHub;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
+import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureProperties;
+import eventhub.integration.AzureAdmin;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -23,7 +27,10 @@ import org.springframework.context.annotation.Configuration;
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnClass(EventHub.class)
 @EnableConfigurationProperties(AzureEventHubProperties.class)
-@ConditionalOnProperty("spring.cloud.azure.event.hub.namespace")
 public class AzureEventHubAutoConfiguration {
 
+    @Bean
+    public AzureAdmin azureAdmin(Azure azure, AzureProperties azureProperties){
+        return new AzureAdmin(azure, azureProperties.getResourceGroup(), azureProperties.getRegion());
+    }
 }
