@@ -46,14 +46,14 @@ public class AzureAdmin {
     }
 
     public EventHubNamespace getOrCreateEventHubNamespace(String namespace) {
-        EventHubNamespace eventHubNamespace = azure.eventHubNamespaces().getByResourceGroup(resourceGroup, namespace);
-
-        if (eventHubNamespace == null) {
+        try {
+            return azure.eventHubNamespaces().getByResourceGroup(resourceGroup, namespace);
+        } catch (NullPointerException e) {
+            // azure management api has no way to determine whether an eventhub namespace exists
+            // Workaround for this is by catching NPE
             return azure.eventHubNamespaces().define(namespace).withRegion(region)
                         .withExistingResourceGroup(resourceGroup).create();
         }
-
-        return eventHubNamespace;
     }
 
     public StorageAccount getOrCreateStorageAccount(String name) {
