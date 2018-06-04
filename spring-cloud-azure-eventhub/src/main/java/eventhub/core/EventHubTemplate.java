@@ -15,8 +15,6 @@ import eventhub.integration.inbound.Subscriber;
 import eventhub.integration.outbound.PartitionSupplier;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -28,13 +26,15 @@ import java.util.concurrent.CompletableFuture;
  *
  * @author Warren Zhu
  */
-@Component
 public class EventHubTemplate implements EventHubOperation {
 
     private static final Log LOGGER = LogFactory.getLog(EventHubTemplate.class);
 
-    @Autowired
-    private EventHubClientFactory clientFactory;
+    private final EventHubClientFactory clientFactory;
+
+    public EventHubTemplate(EventHubClientFactory clientFactory) {
+        this.clientFactory = clientFactory;
+    }
 
     @Override
     public CompletableFuture<Void> sendAsync(String eventHubName, EventData eventData,

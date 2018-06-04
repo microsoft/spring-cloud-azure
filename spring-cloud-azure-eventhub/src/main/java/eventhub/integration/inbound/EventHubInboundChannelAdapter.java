@@ -24,8 +24,8 @@ public class EventHubInboundChannelAdapter extends MessageProducerSupport {
     private final String eventHubName;
     private final EventHubOperation eventHubOperation;
     private final String consumerGroup;
-    private CheckpointMode checkpointMode = CheckpointMode.BATCH;
-    private ListenerMode listenerMode = ListenerMode.BATCH;
+    private CheckpointMode checkpointMode = CheckpointMode.RECORD;
+    private ListenerMode listenerMode = ListenerMode.RECORD;
     private Subscriber<EventData> subscriber;
     private MessageConverter messageConverter;
     private Map<String, Object> commonHeaders = new HashMap<>();
@@ -56,7 +56,7 @@ public class EventHubInboundChannelAdapter extends MessageProducerSupport {
             sendMessage(toMessage(events));
         } else /* ListenerMode.RECORD */ {
             StreamSupport.stream(events.spliterator(), false).forEach((e) -> {
-                sendMessage(toMessage(e));
+                sendMessage(toMessage(e.getBytes()));
                 if (this.checkpointMode == checkpointMode.RECORD) {
                     this.subscriber.getCheckpointer().checkpoint(e);
                 }
@@ -83,6 +83,22 @@ public class EventHubInboundChannelAdapter extends MessageProducerSupport {
         }
 
         super.doStop();
+    }
+
+    public CheckpointMode getCheckpointMode() {
+        return checkpointMode;
+    }
+
+    public void setCheckpointMode(CheckpointMode checkpointMode) {
+        this.checkpointMode = checkpointMode;
+    }
+
+    public ListenerMode getListenerMode() {
+        return listenerMode;
+    }
+
+    public void setListenerMode(ListenerMode listenerMode) {
+        this.listenerMode = listenerMode;
     }
 
     public MessageConverter getMessageConverter() {
