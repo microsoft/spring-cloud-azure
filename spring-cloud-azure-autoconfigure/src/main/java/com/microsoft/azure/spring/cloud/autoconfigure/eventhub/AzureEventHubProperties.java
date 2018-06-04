@@ -13,13 +13,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConfigurationProperties("spring.cloud.azure.event.hub")
 public class AzureEventHubProperties {
-    private String namespace;
 
-    public String getNamespace() {
-        return namespace;
-    }
-
-    public void setNamespace(String namespace) {
-        this.namespace = namespace;
-    }
 }

@@ -8,9 +8,9 @@ package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.storage.StorageAccount;
-import com.microsoft.azure.management.storage.StorageAccountKey;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureProperties;
+import com.microsoft.azure.spring.cloud.context.core.AzureUtil;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,13 +22,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * An auto-configuration for Azure Storage Account
@@ -45,49 +40,20 @@ public class AzureStorageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public CloudStorageAccount storage(Azure.Authenticated authenticated, AzureProperties azureProperties,
-                                       AzureStorageProperties azureStorageProperties) throws IOException {
+    public CloudStorageAccount storage(Azure azure, AzureProperties azureProperties,
+                                       AzureStorageProperties azureStorageProperties) {
         String accountName = azureStorageProperties.getAccount();
 
-        StorageAccount storageAccount = authenticated.withDefaultSubscription().storageAccounts()
-                .getByResourceGroup(azureProperties.getResourceGroup(), accountName);
-        Optional<StorageAccountKey> key = storageAccount.getKeys().stream().findAny();
+        StorageAccount storageAccount =
+                azure.storageAccounts().getByResourceGroup(azureProperties.getResourceGroup(), accountName);
 
-        String connectionString = ConnectionStringBuilder.build(accountName, key.get().value());
-        if (key.isPresent()) {
-            try {
-                return CloudStorageAccount.parse(connectionString);
-            } catch (URISyntaxException | InvalidKeyException e) {
-                LOGGER.error("Failed to parse connection string" + connectionString, e);
-            }
-        }
+        String connectionString = AzureUtil.getConnectionString(storageAccount);
 
-        throw new RuntimeException("Storage account key is empty.");
-    }
-
-    static class ConnectionStringBuilder {
-        private static final String DEFAULT_PROTOCOL = "DefaultEndpointsProtocol";
-
-        private static final String ACCOUNT_NAME = "AccountName";
-
-        private static final String ACCOUNT_KEY = "AccountKey";
-
-        private static final String ENDPOINT_SUFFIX = "EndpointSuffix";
-
-        private static final String HTTP_PROTOCOL = "http";
-
-        private static final String DEFAULT_ENDPOINT_SUFFIX = "core.windows.net";
-
-        private static final String SEPARATOR = ";";
-
-        static String build(String accountName, String accountKey) {
-            Map<String, String> map = new HashMap<>();
-            map.put(DEFAULT_PROTOCOL, HTTP_PROTOCOL);
-            map.put(ACCOUNT_NAME, accountName);
-            map.put(ACCOUNT_KEY, accountKey);
-            map.put(ENDPOINT_SUFFIX, DEFAULT_ENDPOINT_SUFFIX);
-
-            return map.entrySet().stream().map(Object::toString).collect(Collectors.joining(SEPARATOR));
+        try {
+            return CloudStorageAccount.parse(connectionString);
+        } catch (URISyntaxException | InvalidKeyException e) {
+            LOGGER.error("Failed to parse connection string" + connectionString, e);
+            throw new RuntimeException("Failed to parse connection string" + connectionString, e);
         }
     }
 }

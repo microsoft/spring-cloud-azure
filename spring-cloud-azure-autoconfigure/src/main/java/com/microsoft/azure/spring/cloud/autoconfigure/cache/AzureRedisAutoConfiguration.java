@@ -38,11 +38,11 @@ public class AzureRedisAutoConfiguration {
     @ConditionalOnMissingBean
     @Primary
     @Bean
-    public RedisProperties redisProperties(Azure.Authenticated authenticated, AzureProperties azureProperties,
+    public RedisProperties redisProperties(Azure azure, AzureProperties azureProperties,
                                            AzureRedisProperties azureRedisProperties) throws IOException {
         String cacheName = azureRedisProperties.getName();
 
-        RedisCache redisCache = authenticated.withDefaultSubscription().redisCaches()
+        RedisCache redisCache = azure.redisCaches()
                 .getByResourceGroup(azureProperties.getResourceGroup(), cacheName);
 
         RedisProperties redisProperties = new RedisProperties();

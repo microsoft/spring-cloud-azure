@@ -13,7 +13,6 @@ import java.util.function.Consumer;
  * {@link Checkpointer} callback to checkpoint the messages successfully processed
  *
  * @param <T> message type parameter
- *
  * @author Warren Zhu
  */
 public interface Subscriber<T> {

@@ -13,8 +13,16 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class AzureProperties implements CredentialSupplier {
 
     private String credentialFilePath;
-
     private String resourceGroup;
+    private String region;
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
 
     public String getCredentialFilePath() {
         return this.credentialFilePath;
