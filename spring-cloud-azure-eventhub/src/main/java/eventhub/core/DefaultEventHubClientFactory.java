@@ -18,6 +18,7 @@ import eventhub.integration.AzureAdmin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
@@ -52,16 +53,20 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
     private String checkpointStorageConnectionString;
 
     public DefaultEventHubClientFactory(AzureAdmin azureAdmin, String namespace) {
+        Assert.notNull(azureAdmin, "azureAdmin can't be null.");
+        Assert.hasText(namespace, "namespace can't be null or empty");
         this.azureAdmin = azureAdmin;
         this.namespace = namespace;
     }
 
     public void initCheckpointConnectionString(String checkpointStorageAccount) {
+        Assert.hasText(checkpointStorageAccount, "checkpointStorageAccount can't be null or empty");
         this.checkpointStorageConnectionString =
                 AzureUtil.getConnectionString(azureAdmin.getOrCreateStorageAccount(checkpointStorageAccount));
     }
 
     public void setCheckpointStorageAccountContainer(String checkpointStorageAccountContainer) {
+        Assert.hasText(checkpointStorageAccountContainer, "checkpointStorageAccount can't be null or empty");
         this.checkpointStorageAccountContainer = checkpointStorageAccountContainer;
     }
 

@@ -14,6 +14,7 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.converter.MessageConverter;
+import org.springframework.util.Assert;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +33,9 @@ public class EventHubInboundChannelAdapter extends MessageProducerSupport {
 
     public EventHubInboundChannelAdapter(String eventHubName, EventHubOperation eventHubOperation,
             String consumerGroup) {
+        Assert.hasText(eventHubName, "eventHubName can't be null or empty");
+        Assert.hasText(consumerGroup, "consumerGroup can't be null or empty");
+        Assert.notNull(eventHubOperation, "EventHubOperation can't be null");
         this.eventHubName = eventHubName;
         this.eventHubOperation = eventHubOperation;
         this.consumerGroup = consumerGroup;

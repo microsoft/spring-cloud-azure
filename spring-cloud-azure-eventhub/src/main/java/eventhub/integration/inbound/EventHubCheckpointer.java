@@ -8,6 +8,7 @@ package eventhub.integration.inbound;
 
 import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.eventprocessorhost.PartitionContext;
+import org.springframework.util.Assert;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -15,6 +16,7 @@ public class EventHubCheckpointer implements Checkpointer<EventData> {
     private final PartitionContext partitionContext;
 
     public EventHubCheckpointer(PartitionContext partitionContext) {
+        Assert.notNull(partitionContext, "partitionContext can't be null");
         this.partitionContext = partitionContext;
     }
 
