@@ -44,11 +44,8 @@ public class EventHubMessageHandler extends AbstractMessageHandler {
     protected void handleMessageInternal(Message<?> message) throws Exception {
 
         PartitionSupplier partitionSupplier = toPartitionSupplier(message);
-
         String eventHubName = toEventHubName(message);
-
         EventData eventData = toEventData(message);
-
         CompletableFuture future = this.eventHubTemplate.sendAsync(eventHubName, eventData, partitionSupplier);
 
         if (this.sync) {
@@ -115,9 +112,14 @@ public class EventHubMessageHandler extends AbstractMessageHandler {
 
     private PartitionSupplier toPartitionSupplier(Message<?> message) {
         PartitionSupplier partitionSupplier = new PartitionSupplier();
-        partitionSupplier.setPartitionKey(message.getHeaders().get(EventHubHeaders.PARTITION_KEY, String.class));
-        partitionSupplier
-                .setPartitionId(message.getHeaders().get(EventHubHeaders.PARTITION_ID, Integer.class).toString());
+        if (message.getHeaders().containsKey(EventHubHeaders.PARTITION_KEY)) {
+            partitionSupplier.setPartitionKey(message.getHeaders().get(EventHubHeaders.PARTITION_KEY, String.class));
+        }
+
+        if (message.getHeaders().containsKey(EventHubHeaders.PARTITION_ID)) {
+            partitionSupplier
+                    .setPartitionId(message.getHeaders().get(EventHubHeaders.PARTITION_ID, Integer.class).toString());
+        }
         return partitionSupplier;
     }
 }
