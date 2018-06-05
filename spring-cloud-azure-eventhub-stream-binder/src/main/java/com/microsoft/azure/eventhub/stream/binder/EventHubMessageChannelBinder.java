@@ -48,7 +48,11 @@ public class EventHubMessageChannelBinder extends
     protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
             ExtendedProducerProperties<EventHubProducerProperties> producerProperties,
             MessageChannel errorChannel) {
-        return new EventHubMessageHandler(destination.getName(), this.eventHubOperation);
+        EventHubMessageHandler messageHandler = new EventHubMessageHandler(destination.getName(), this
+                .eventHubOperation);
+        messageHandler.setSync(producerProperties.getExtension().isSync());
+        messageHandler.setSendTimeout(producerProperties.getExtension().getSendTimeout());
+        return messageHandler;
     }
 
     @Override
