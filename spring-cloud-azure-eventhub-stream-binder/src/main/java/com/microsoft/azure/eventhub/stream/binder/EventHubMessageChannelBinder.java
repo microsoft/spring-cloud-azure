@@ -23,7 +23,6 @@ import org.springframework.integration.expression.FunctionExpression;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
-import org.springframework.util.Assert;
 
 /**
  * @author Warren Zhu

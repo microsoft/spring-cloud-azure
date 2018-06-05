@@ -25,6 +25,7 @@ public class AzureAdmin {
         this.azure = azure;
         this.resourceGroup = resourceGroup;
         this.region = region;
+        createResourceGroupIfNotExisted();
     }
 
     public EventHub getOrCreateEventHub(String namespace, String name) {
@@ -76,8 +77,20 @@ public class AzureAdmin {
     }
 
     private void createResourceGroupIfNotExisted() {
-        if (!this.azure.resourceGroups().contain(resourceGroup)) {
-            this.azure.resourceGroups().define(resourceGroup).withRegion(region).create();
+        if (!azure.resourceGroups().contain(resourceGroup)) {
+            azure.resourceGroups().define(resourceGroup).withRegion(region).create();
         }
+    }
+
+    public void createEventHubConsumerGroupIfNotExisted(String namespace, String name, String group) {
+        if (!eventHubConsumerGroupExists(namespace, name, group)) {
+            azure.eventHubs().consumerGroups().define(group).withExistingEventHub(resourceGroup, namespace, name)
+                 .create();
+        }
+    }
+
+    public boolean eventHubConsumerGroupExists(String namespace, String name, String group) {
+        return azure.eventHubs().getByName(resourceGroup, namespace, name).listConsumerGroups().stream()
+                    .anyMatch(c -> c.equals(group));
     }
 }

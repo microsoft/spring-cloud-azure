@@ -45,7 +45,12 @@ public class EventHubChannelProvisioner implements
     @Override
     public ConsumerDestination provisionConsumerDestination(String name, String group,
             ExtendedConsumerProperties<EventHubConsumerProperties> properties) throws ProvisioningException {
-        //TODO: create consumer group if not existed
+        if (this.azureAdmin.getEventHub(namespace, name) == null) {
+            throw new ProvisioningException(
+                    String.format("Event hub with name '%s' in namespace '%s' not existed", name, namespace));
+        }
+
+        this.azureAdmin.createEventHubConsumerGroupIfNotExisted(namespace, name, group);
         return new EventHubConsumerDestination(name);
     }
 }
