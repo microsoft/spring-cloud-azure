@@ -15,13 +15,12 @@ import eventhub.integration.inbound.CheckpointMode;
 import eventhub.integration.inbound.EventHubInboundChannelAdapter;
 import eventhub.integration.inbound.ListenerMode;
 import eventhub.integration.outbound.EventHubMessageHandler;
-import org.springframework.cloud.stream.binder.AbstractMessageChannelBinder;
-import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
-import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
-import org.springframework.cloud.stream.binder.ExtendedPropertiesBinder;
+import org.springframework.cloud.stream.binder.*;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.integration.core.MessageProducer;
+import org.springframework.integration.expression.FunctionExpression;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.util.Assert;
@@ -48,11 +47,18 @@ public class EventHubMessageChannelBinder extends
     protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
             ExtendedProducerProperties<EventHubProducerProperties> producerProperties,
             MessageChannel errorChannel) {
-        EventHubMessageHandler messageHandler = new EventHubMessageHandler(destination.getName(), this
-                .eventHubOperation);
-        messageHandler.setSync(producerProperties.getExtension().isSync());
-        messageHandler.setSendTimeout(producerProperties.getExtension().getSendTimeout());
-        return messageHandler;
+        EventHubMessageHandler handler = new EventHubMessageHandler(destination.getName(), this.eventHubOperation);
+        handler.setSync(producerProperties.getExtension().isSync());
+        handler.setSendTimeout(producerProperties.getExtension().getSendTimeout());
+        if (producerProperties.isPartitioned()) {
+            handler.setPartitionKeyExpressionString(
+                    "'partitionKey-' + headers['" + BinderHeaders.PARTITION_HEADER + "']");
+        } else {
+            handler
+                    .setPartitionKeyExpression(new FunctionExpression<Message<?>>(m -> m.getPayload().hashCode()));
+        }
+
+        return handler;
     }
 
     @Override
