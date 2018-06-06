@@ -19,6 +19,9 @@ public class UserMessage {
 
     private LocalDateTime createdAt;
 
+    public UserMessage() {
+    }
+
     public UserMessage(String body, String username, LocalDateTime createdAt) {
         this.body = body;
         this.username = username;
