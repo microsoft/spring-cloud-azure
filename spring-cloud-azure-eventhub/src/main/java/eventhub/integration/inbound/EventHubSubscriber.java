@@ -13,6 +13,7 @@ import com.microsoft.azure.eventprocessorhost.IEventProcessor;
 import com.microsoft.azure.eventprocessorhost.PartitionContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.Assert;
 
 import java.util.function.Consumer;
 
@@ -22,6 +23,7 @@ public class EventHubSubscriber implements Subscriber<EventData> {
     private Checkpointer<EventData> checkpointer;
 
     public EventHubSubscriber(EventProcessorHost host) {
+        Assert.notNull(host, "EventProcessorHost can't be null");
         this.host = host;
     }
 

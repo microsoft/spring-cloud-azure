@@ -14,27 +14,33 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.converter.MessageConverter;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.StreamSupport;
 
 public class EventHubInboundChannelAdapter extends MessageProducerSupport {
-
+    private static final String DEFAULT_CONSUMER_GROUP = "$Default";
     private final String eventHubName;
     private final EventHubOperation eventHubOperation;
-    private final String consumerGroup;
     private CheckpointMode checkpointMode = CheckpointMode.RECORD;
     private ListenerMode listenerMode = ListenerMode.RECORD;
     private Subscriber<EventData> subscriber;
     private MessageConverter messageConverter;
     private Map<String, Object> commonHeaders = new HashMap<>();
+    private String consumerGroup = DEFAULT_CONSUMER_GROUP;
 
     public EventHubInboundChannelAdapter(String eventHubName, EventHubOperation eventHubOperation,
             String consumerGroup) {
+        Assert.hasText(eventHubName, "eventHubName can't be null or empty");
+        Assert.notNull(eventHubOperation, "EventHubOperation can't be null");
         this.eventHubName = eventHubName;
         this.eventHubOperation = eventHubOperation;
-        this.consumerGroup = consumerGroup;
+        if (StringUtils.hasText(consumerGroup)) {
+            this.consumerGroup = consumerGroup;
+        }
     }
 
     @Override

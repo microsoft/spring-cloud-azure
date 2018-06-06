@@ -9,14 +9,22 @@ package eventhub.integration.outbound;
 import com.microsoft.azure.eventhubs.EventData;
 import eventhub.core.EventHubOperation;
 import eventhub.integration.EventHubHeaders;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.Expression;
+import org.springframework.expression.common.LiteralExpression;
 import org.springframework.integration.codec.CodecMessageConverter;
+import org.springframework.integration.expression.ExpressionUtils;
+import org.springframework.integration.expression.ValueExpression;
 import org.springframework.integration.handler.AbstractMessageHandler;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.converter.MessageConverter;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.nio.charset.Charset;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Outbound channel adapter to publish messages to Azure Event Hub.
@@ -29,15 +37,28 @@ import java.util.concurrent.CompletableFuture;
  * @author Warren Zhu
  */
 public class EventHubMessageHandler extends AbstractMessageHandler {
+    private static final long DEFAULT_SEND_TIMEOUT = 10000;
+
     private final String eventHubName;
-    private final EventHubOperation eventHubTemplate;
+    private final EventHubOperation eventHubOperation;
     private boolean sync = false;
     private MessageConverter messageConverter;
     private ListenableFutureCallback<Void> sendCallback;
+    private EvaluationContext evaluationContext;
+    private Expression sendTimeoutExpression = new ValueExpression<>(DEFAULT_SEND_TIMEOUT);
+    private Expression partitionKeyExpression;
 
-    public EventHubMessageHandler(String eventHubName, EventHubOperation eventHubTemplate) {
+    public EventHubMessageHandler(String eventHubName, EventHubOperation eventHubOperation) {
+        Assert.hasText(eventHubName, "eventHubName can't be null or empty");
+        Assert.notNull(eventHubOperation, "eventHubOperation can't be null");
         this.eventHubName = eventHubName;
-        this.eventHubTemplate = eventHubTemplate;
+        this.eventHubOperation = eventHubOperation;
+    }
+
+    @Override
+    protected void onInit() throws Exception {
+        super.onInit();
+        this.evaluationContext = ExpressionUtils.createStandardEvaluationContext(getBeanFactory());
     }
 
     @Override
@@ -46,10 +67,15 @@ public class EventHubMessageHandler extends AbstractMessageHandler {
         PartitionSupplier partitionSupplier = toPartitionSupplier(message);
         String eventHubName = toEventHubName(message);
         EventData eventData = toEventData(message);
-        CompletableFuture future = this.eventHubTemplate.sendAsync(eventHubName, eventData, partitionSupplier);
+        CompletableFuture future = this.eventHubOperation.sendAsync(eventHubName, eventData, partitionSupplier);
 
         if (this.sync) {
-            future.get();
+            Long sendTimeout = this.sendTimeoutExpression.getValue(this.evaluationContext, message, Long.class);
+            if (sendTimeout == null || sendTimeout < 0) {
+                future.get();
+            } else {
+                future.get(sendTimeout, TimeUnit.MILLISECONDS);
+            }
         } else if (sendCallback != null) {
             future.whenComplete((t, ex) -> {
                 if (ex != null) {
@@ -59,6 +85,31 @@ public class EventHubMessageHandler extends AbstractMessageHandler {
                 }
             });
         }
+    }
+
+    public void setSendTimeout(long sendTimeout) {
+        setSendTimeoutExpression(new ValueExpression<>(sendTimeout));
+    }
+
+    public void setSendTimeoutExpressionString(String sendTimeoutExpression) {
+        setSendTimeoutExpression(EXPRESSION_PARSER.parseExpression(sendTimeoutExpression));
+    }
+
+    public void setSendTimeoutExpression(Expression sendTimeoutExpression) {
+        Assert.notNull(sendTimeoutExpression, "'sendTimeoutExpression' must not be null");
+        this.sendTimeoutExpression = sendTimeoutExpression;
+    }
+
+    public void setPartitionKey(String partitionKey) {
+        setPartitionKeyExpression(new LiteralExpression(partitionKey));
+    }
+
+    public void setPartitionKeyExpressionString(String partitionKeyExpression) {
+        setPartitionKeyExpression(EXPRESSION_PARSER.parseExpression(partitionKeyExpression));
+    }
+
+    public void setPartitionKeyExpression(Expression partitionKeyExpression) {
+        this.partitionKeyExpression = partitionKeyExpression;
     }
 
     public boolean isSync() {
@@ -112,8 +163,13 @@ public class EventHubMessageHandler extends AbstractMessageHandler {
 
     private PartitionSupplier toPartitionSupplier(Message<?> message) {
         PartitionSupplier partitionSupplier = new PartitionSupplier();
-        if (message.getHeaders().containsKey(EventHubHeaders.PARTITION_KEY)) {
-            partitionSupplier.setPartitionKey(message.getHeaders().get(EventHubHeaders.PARTITION_KEY, String.class));
+        String partitionKey = message.getHeaders().get(EventHubHeaders.PARTITION_KEY, String.class);
+        if (!StringUtils.hasText(partitionKey) && this.partitionKeyExpression != null) {
+            partitionKey = this.partitionKeyExpression.getValue(this.evaluationContext, message, String.class);
+        }
+
+        if (StringUtils.hasText(partitionKey)) {
+            partitionSupplier.setPartitionKey(partitionKey);
         }
 
         if (message.getHeaders().containsKey(EventHubHeaders.PARTITION_ID)) {

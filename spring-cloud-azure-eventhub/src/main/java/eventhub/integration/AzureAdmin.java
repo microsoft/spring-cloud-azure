@@ -10,6 +10,7 @@ import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.eventhub.EventHub;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
 import com.microsoft.azure.management.storage.StorageAccount;
+import org.springframework.util.Assert;
 
 public class AzureAdmin {
 
@@ -18,12 +19,13 @@ public class AzureAdmin {
     private final String region;
 
     public AzureAdmin(Azure azure, String resourceGroup, String region) {
+        Assert.notNull(azure, "azure can't be null");
+        Assert.hasText(resourceGroup, "resourceGroup can't be null or empty");
+        Assert.hasText(region, "region can't be null or empty");
         this.azure = azure;
         this.resourceGroup = resourceGroup;
         this.region = region;
-        if (!this.azure.resourceGroups().contain(resourceGroup)) {
-            this.azure.resourceGroups().define(resourceGroup).withRegion(region).create();
-        }
+        createResourceGroupIfNotExisted();
     }
 
     public EventHub getOrCreateEventHub(String namespace, String name) {
@@ -72,5 +74,23 @@ public class AzureAdmin {
     public StorageAccount createStorageAccount(String name) {
         return azure.storageAccounts().define(name).withRegion(region).withExistingResourceGroup(resourceGroup)
                     .create();
+    }
+
+    private void createResourceGroupIfNotExisted() {
+        if (!azure.resourceGroups().contain(resourceGroup)) {
+            azure.resourceGroups().define(resourceGroup).withRegion(region).create();
+        }
+    }
+
+    public void createEventHubConsumerGroupIfNotExisted(String namespace, String name, String group) {
+        if (!eventHubConsumerGroupExists(namespace, name, group)) {
+            azure.eventHubs().consumerGroups().define(group).withExistingEventHub(resourceGroup, namespace, name)
+                 .create();
+        }
+    }
+
+    public boolean eventHubConsumerGroupExists(String namespace, String name, String group) {
+        return azure.eventHubs().getByName(resourceGroup, namespace, name).listConsumerGroups().stream()
+                    .anyMatch(c -> c.equals(group));
     }
 }

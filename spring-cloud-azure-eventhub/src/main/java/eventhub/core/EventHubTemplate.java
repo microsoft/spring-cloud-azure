@@ -15,6 +15,7 @@ import eventhub.integration.inbound.Subscriber;
 import eventhub.integration.outbound.PartitionSupplier;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.Assert;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -39,6 +40,8 @@ public class EventHubTemplate implements EventHubOperation {
     @Override
     public CompletableFuture<Void> sendAsync(String eventHubName, EventData eventData,
             PartitionSupplier partitionSupplier) {
+        Assert.hasText(eventHubName, "eventHubName can't be null or empty");
+        Assert.notNull(eventData, "eventData can't be null");
         try {
             EventHubClient client = this.clientFactory.getOrCreateEventHubClient(eventHubName);
 
@@ -63,7 +66,8 @@ public class EventHubTemplate implements EventHubOperation {
     @Override
     public Subscriber<EventData> subscribe(String eventHubName, String consumerGroup) {
         EventProcessorHost host = this.clientFactory.getOrCreateEventProcessorHost(eventHubName, consumerGroup);
-
+        Assert.hasText(eventHubName, "eventHubName can't be null or empty");
+        Assert.hasText(consumerGroup, "consumerGroup can't be null or empty");
         return new EventHubSubscriber(host);
     }
 

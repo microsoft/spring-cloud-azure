@@ -1,0 +1,44 @@
+= Spring Cloud Azure Stream Binder for Event Hub Code Sample
+
+This code sample demonstrates how to use the Spring Cloud Stream binder for Azure Event Hub.
+The sample app prompts a user for a message and their user name.
+That data is added to a `UserMessage` object, together with the time of message creation, and is sent through Azure
+Event Hub to a `sink` which simply logs the message.
+
+== Running the code sample
+
+1.  Create Azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how
+to create credential file]
++
+....
+$  az az account set --subscription <name or id>
+$  az ad sp create-for-rbac --sdk-auth > my.azureauth
+....
+
+2. Update link:src/main/resources/application.properties[application.properties] file
++
+....
+spring.cloud.azure.credentialFilePath=[credential-file-path]
+spring.cloud.azure.resourceGroup=[resource-group]
+spring.cloud.azure.region=[region]
+
+spring.cloud.stream.eventhub.namespace=[eventhub-namespace]
+spring.cloud.stream.eventhub.checkpointStorageAccount=[checkpoint-storage-account]
+spring.cloud.stream.eventhub.checkpointStorageAccountContainer=[checkpoint-storage-account-container]
+
+spring.cloud.stream.bindings.input.destination=[eventhub-name]
+spring.cloud.stream.bindings.input.group=[consumer-group]
+spring.cloud.stream.bindings.output.destination=[eventhub-name]
+....
++
+All azure resources will be created if missing. Alternatively, you can manually create these Azure resources from
+the
+https://portal.azure.com/[Azure Portal].
+
+4. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
+
+5. Browse `localhost:8080`, type in a message and a user name and press the `Post it!` button.
+
+6. Verify in your app's logs that a similar message was posted:
++
+`New message received from [USERNAME] at [TIME_MESSAGE_SENT]: [MESSAGE]`
