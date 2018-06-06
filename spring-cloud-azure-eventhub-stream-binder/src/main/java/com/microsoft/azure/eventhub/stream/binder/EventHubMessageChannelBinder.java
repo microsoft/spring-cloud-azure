@@ -47,6 +47,7 @@ public class EventHubMessageChannelBinder extends
             ExtendedProducerProperties<EventHubProducerProperties> producerProperties,
             MessageChannel errorChannel) {
         EventHubMessageHandler handler = new EventHubMessageHandler(destination.getName(), this.eventHubOperation);
+        handler.setBeanFactory(getBeanFactory());
         handler.setSync(producerProperties.getExtension().isSync());
         handler.setSendTimeout(producerProperties.getExtension().getSendTimeout());
         if (producerProperties.isPartitioned()) {
@@ -65,10 +66,10 @@ public class EventHubMessageChannelBinder extends
             ExtendedConsumerProperties<EventHubConsumerProperties> properties) {
         EventHubInboundChannelAdapter inboundAdapter =
                 new EventHubInboundChannelAdapter(destination.getName(), this.eventHubOperation, group);
+        inboundAdapter.setBeanFactory(getBeanFactory());
         // Spring cloud stream only support record mode now
         inboundAdapter.setListenerMode(ListenerMode.RECORD);
         inboundAdapter.setCheckpointMode(CheckpointMode.RECORD);
-
         return inboundAdapter;
     }
 
