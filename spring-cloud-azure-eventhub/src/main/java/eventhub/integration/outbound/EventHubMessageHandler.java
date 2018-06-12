@@ -100,6 +100,10 @@ public class EventHubMessageHandler extends AbstractMessageHandler {
         this.sendTimeoutExpression = sendTimeoutExpression;
     }
 
+    public Expression getSendTimeoutExpression() {
+        return sendTimeoutExpression;
+    }
+
     public void setPartitionKey(String partitionKey) {
         setPartitionKeyExpression(new LiteralExpression(partitionKey));
     }
