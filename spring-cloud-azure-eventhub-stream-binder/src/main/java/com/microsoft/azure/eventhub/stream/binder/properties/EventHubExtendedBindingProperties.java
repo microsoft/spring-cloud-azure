@@ -9,7 +9,6 @@ package com.microsoft.azure.eventhub.stream.binder.properties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.stream.binder.ExtendedBindingProperties;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

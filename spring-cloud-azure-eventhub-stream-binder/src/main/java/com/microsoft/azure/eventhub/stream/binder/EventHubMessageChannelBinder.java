@@ -23,6 +23,9 @@ import org.springframework.integration.expression.FunctionExpression;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
+import org.springframework.util.StringUtils;
+
+import java.util.UUID;
 
 /**
  * @author Warren Zhu
@@ -44,8 +47,7 @@ public class EventHubMessageChannelBinder extends
 
     @Override
     protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
-            ExtendedProducerProperties<EventHubProducerProperties> producerProperties,
-            MessageChannel errorChannel) {
+            ExtendedProducerProperties<EventHubProducerProperties> producerProperties, MessageChannel errorChannel) {
         EventHubMessageHandler handler = new EventHubMessageHandler(destination.getName(), this.eventHubOperation);
         handler.setBeanFactory(getBeanFactory());
         handler.setSync(producerProperties.getExtension().isSync());
@@ -54,8 +56,7 @@ public class EventHubMessageChannelBinder extends
             handler.setPartitionKeyExpressionString(
                     "'partitionKey-' + headers['" + BinderHeaders.PARTITION_HEADER + "']");
         } else {
-            handler
-                    .setPartitionKeyExpression(new FunctionExpression<Message<?>>(m -> m.getPayload().hashCode()));
+            handler.setPartitionKeyExpression(new FunctionExpression<Message<?>>(m -> m.getPayload().hashCode()));
         }
 
         return handler;
@@ -64,12 +65,16 @@ public class EventHubMessageChannelBinder extends
     @Override
     protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group,
             ExtendedConsumerProperties<EventHubConsumerProperties> properties) {
+        boolean anonymous = !StringUtils.hasText(group);
+        if (anonymous) {
+            group = "anonymous." + UUID.randomUUID().toString();
+        }
         EventHubInboundChannelAdapter inboundAdapter =
                 new EventHubInboundChannelAdapter(destination.getName(), this.eventHubOperation, group);
         inboundAdapter.setBeanFactory(getBeanFactory());
         // Spring cloud stream only support record mode now
         inboundAdapter.setListenerMode(ListenerMode.RECORD);
-        inboundAdapter.setCheckpointMode(CheckpointMode.RECORD);
+        inboundAdapter.setCheckpointMode(CheckpointMode.BATCH);
         return inboundAdapter;
     }
 
