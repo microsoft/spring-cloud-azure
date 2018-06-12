@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 public class EventHubSubscriber implements Subscriber<EventData> {
     private static final Log LOGGER = LogFactory.getLog(EventHubSubscriber.class);
     private final EventProcessorHost host;
-    private Checkpointer<EventData> checkpointer;
+    private EventHubCheckpointer checkpointer = new EventHubCheckpointer();
 
     public EventHubSubscriber(EventProcessorHost host) {
         Assert.notNull(host, "EventProcessorHost can't be null");
@@ -35,13 +35,13 @@ public class EventHubSubscriber implements Subscriber<EventData> {
             @Override
             public void onOpen(PartitionContext context) throws Exception {
                 LOGGER.info(String.format("Partition %s is opening", context.getPartitionId()));
-                checkpointer = new EventHubCheckpointer(context);
+                checkpointer.addPartitionContext(context);
             }
 
             @Override
             public void onClose(PartitionContext context, CloseReason reason) throws Exception {
                 LOGGER.info(String.format("Partition %s is closing for reason %s", context.getPartitionId(), reason));
-                checkpointer = null;
+                checkpointer.removePartitionContext(context);
             }
 
             @Override

@@ -8,25 +8,31 @@ package eventhub.integration.inbound;
 
 import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.eventprocessorhost.PartitionContext;
-import org.springframework.util.Assert;
 
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EventHubCheckpointer implements Checkpointer<EventData> {
-    private final PartitionContext partitionContext;
-
-    public EventHubCheckpointer(PartitionContext partitionContext) {
-        Assert.notNull(partitionContext, "partitionContext can't be null");
-        this.partitionContext = partitionContext;
-    }
+    private final Map<String, PartitionContext> partitionContextMap = new ConcurrentHashMap<>();
 
     @Override
     public CompletableFuture<Void> checkpoint() {
-        return partitionContext.checkpoint();
+        return CompletableFuture.allOf(partitionContextMap.values().stream().map(PartitionContext::checkpoint)
+                                                          .toArray(CompletableFuture[]::new));
     }
 
     @Override
     public CompletableFuture<Void> checkpoint(EventData eventData) {
-        return partitionContext.checkpoint(eventData);
+        // event hub event processor host unsupported
+        return null;
+    }
+
+    public void addPartitionContext(PartitionContext partitionContext) {
+        partitionContextMap.putIfAbsent(partitionContext.getPartitionId(), partitionContext);
+    }
+
+    public void removePartitionContext(PartitionContext partitionContext) {
+        partitionContextMap.remove(partitionContext.getPartitionId());
     }
 }
