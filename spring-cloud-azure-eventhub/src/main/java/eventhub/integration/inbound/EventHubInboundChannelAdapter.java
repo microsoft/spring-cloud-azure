@@ -56,7 +56,7 @@ public class EventHubInboundChannelAdapter extends MessageProducerSupport {
         }
     }
 
-    private void receiveMessage(Iterable<EventData> events) {
+    public void receiveMessage(Iterable<EventData> events) {
 
         if (this.listenerMode == ListenerMode.BATCH) {
             sendMessage(toMessage(events));
