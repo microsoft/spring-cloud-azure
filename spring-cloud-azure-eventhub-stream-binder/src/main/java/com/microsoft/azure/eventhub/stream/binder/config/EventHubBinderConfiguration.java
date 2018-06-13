@@ -13,7 +13,7 @@ import eventhub.core.DefaultEventHubClientFactory;
 import eventhub.core.EventHubClientFactory;
 import eventhub.core.EventHubOperation;
 import eventhub.core.EventHubTemplate;
-import eventhub.integration.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.stream.binder.Binder;
