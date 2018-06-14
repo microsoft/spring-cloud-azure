@@ -20,6 +20,8 @@
     <modules>
         <module>spring-cloud-azure-cache-sample</module>
         <module>spring-cloud-azure-storage-sample</module>
+        <module>spring-cloud-azure-eventhub-binder-sample</module>
+        <module>spring-cloud-stream-eventhub-kafka-sample</module>
     </modules>
 
     <build>
