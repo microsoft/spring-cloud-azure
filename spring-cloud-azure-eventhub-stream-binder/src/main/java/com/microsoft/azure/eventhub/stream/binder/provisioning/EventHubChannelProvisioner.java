@@ -8,7 +8,7 @@ package com.microsoft.azure.eventhub.stream.binder.provisioning;
 
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubConsumerProperties;
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubProducerProperties;
-import eventhub.integration.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;

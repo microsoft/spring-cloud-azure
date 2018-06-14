@@ -14,7 +14,7 @@ import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.management.eventhub.AuthorizationRule;
 import com.microsoft.azure.management.eventhub.EventHubAuthorizationKey;
 import com.microsoft.azure.spring.cloud.context.core.AzureUtil;
-import eventhub.integration.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.DisposableBean;

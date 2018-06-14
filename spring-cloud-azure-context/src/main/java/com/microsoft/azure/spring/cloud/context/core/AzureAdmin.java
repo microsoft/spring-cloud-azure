@@ -4,7 +4,7 @@
  * license information.
  */
 
-package eventhub.integration;
+package com.microsoft.azure.spring.cloud.context.core;
 
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.eventhub.EventHub;
