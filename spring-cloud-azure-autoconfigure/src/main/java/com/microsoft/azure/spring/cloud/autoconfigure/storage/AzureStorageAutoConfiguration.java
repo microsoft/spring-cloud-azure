@@ -10,7 +10,9 @@ import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.storage.StorageAccount;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureProperties;
+import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.cloud.context.core.AzureUtil;
+import com.microsoft.azure.spring.cloud.storage.AzureStorageProtocolResolver;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,6 +23,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
@@ -35,17 +38,17 @@ import java.security.InvalidKeyException;
 @ConditionalOnClass(CloudStorageAccount.class)
 @ConditionalOnProperty(name = "spring.cloud.azure.storage.account")
 @EnableConfigurationProperties(AzureStorageProperties.class)
+@Import(AzureStorageProtocolResolver.class)
 public class AzureStorageAutoConfiguration {
     private static final Log LOGGER = LogFactory.getLog(AzureStorageAutoConfiguration.class);
 
     @Bean
     @ConditionalOnMissingBean
-    public CloudStorageAccount storage(Azure azure, AzureProperties azureProperties,
+    public CloudStorageAccount storage(AzureAdmin azureAdmin, AzureProperties azureProperties,
                                        AzureStorageProperties azureStorageProperties) {
         String accountName = azureStorageProperties.getAccount();
 
-        StorageAccount storageAccount =
-                azure.storageAccounts().getByResourceGroup(azureProperties.getResourceGroup(), accountName);
+        StorageAccount storageAccount = azureAdmin.getOrCreateStorageAccount(accountName);
 
         String connectionString = AzureUtil.getConnectionString(storageAccount);
 
