@@ -7,6 +7,7 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.context;
 
 import com.microsoft.azure.management.Azure;
+import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.cloud.context.core.CredentialsProvider;
 import com.microsoft.azure.spring.cloud.context.core.DefaultCredentialsProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -39,6 +40,12 @@ public class AzureContextAutoConfiguration {
     @ConditionalOnMissingBean
     public CredentialsProvider credentialsProvider() {
         return new DefaultCredentialsProvider(this.azureProperties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public AzureAdmin azureAdmin(Azure azure, AzureProperties azureProperties) {
+        return new AzureAdmin(azure, azureProperties.getResourceGroup(), azureProperties.getRegion());
     }
 
     @Bean

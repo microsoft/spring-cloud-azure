@@ -30,6 +30,12 @@
             <artifactId>spring-cloud-azure-eventhub</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.microsoft.azure</groupId>
+            <artifactId>spring-cloud-azure-storage</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

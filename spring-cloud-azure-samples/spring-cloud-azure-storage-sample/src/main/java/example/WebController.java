@@ -6,19 +6,18 @@
 
 package example;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
-import com.microsoft.azure.storage.CloudStorageAccount;
-import com.microsoft.azure.storage.StorageException;
-import com.microsoft.azure.storage.blob.CloudBlobClient;
-import com.microsoft.azure.storage.blob.CloudBlobContainer;
-import com.microsoft.azure.storage.blob.CloudBlockBlob;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.WritableResource;
+import org.springframework.util.StreamUtils;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 /**
  * @author Warren Zhu
@@ -26,16 +25,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class WebController {
 
-    @Autowired
-    private CloudStorageAccount storageAccount;
+    @Value("blob://{containerName}/{blobName}")
+    private Resource blobFile;
 
-    @GetMapping("/{container}/{blob}")
-    public String getValue(@PathVariable String container, @PathVariable String blob)
-            throws IOException, StorageException, URISyntaxException {
-        CloudBlobClient blobClient = this.storageAccount.createCloudBlobClient();
-        CloudBlobContainer blobContainer = blobClient.getContainerReference(container);
-        CloudBlockBlob blockBlob = blobContainer.getBlockBlobReference(blob);
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String readBlobFile() throws IOException {
+        return StreamUtils.copyToString(
+                this.blobFile.getInputStream(),
+                Charset.defaultCharset()) + "\n";
+    }
 
-        return blockBlob.downloadText();
+    @RequestMapping(value = "/", method = RequestMethod.POST)
+    public String writeBlobFile(@RequestBody String data) throws IOException {
+        try (OutputStream os = ((WritableResource) this.blobFile).getOutputStream()) {
+            os.write(data.getBytes());
+        }
+        return "file was updated\n";
     }
 }

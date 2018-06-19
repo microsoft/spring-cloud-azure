@@ -31,8 +31,7 @@ $  az az account set --subscription <name or id>
 $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 ....
 2.  Put auth file under `src/main/resources/`
-3.  Create Azure redis cache instance through Azure Portal or CLI. Please see https://azure.microsoft
-.com/en-us/services/cache/[How to create Azure redis cache]
+3.  Create Azure redis cache instance through Azure Portal or CLI. Please see https://azure.microsoft.com/en-us/services/cache/[How to create Azure redis cache]
 4.  Update `src/main/resources/application.properties` to specify resource group, cache instance name and credential file path:
 +
 ....

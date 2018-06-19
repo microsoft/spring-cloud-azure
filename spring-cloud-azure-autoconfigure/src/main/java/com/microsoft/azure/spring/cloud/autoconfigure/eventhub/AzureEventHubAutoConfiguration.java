@@ -50,11 +50,6 @@ public class AzureEventHubAutoConfiguration {
     private static final String SASL_MECHANISM_PLAIN = "PLAIN";
     private static final int PORT = 9093;
 
-    @Bean
-    public AzureAdmin azureAdmin(Azure azure, AzureProperties azureProperties) {
-        return new AzureAdmin(azure, azureProperties.getResourceGroup(), azureProperties.getRegion());
-    }
-
     @ConditionalOnMissingBean
     @Primary
     @Bean
