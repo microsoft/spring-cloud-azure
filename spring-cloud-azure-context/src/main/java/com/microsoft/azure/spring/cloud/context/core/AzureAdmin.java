@@ -102,8 +102,8 @@ public class AzureAdmin {
         }
     }
 
-    public void createSqlServer(String sqlServerName, String username, String password) {
-        azure.sqlServers().define(sqlServerName).withRegion(region).withExistingResourceGroup(resourceGroup)
+    public SqlServer createSqlServer(String sqlServerName, String username, String password) {
+        return azure.sqlServers().define(sqlServerName).withRegion(region).withExistingResourceGroup(resourceGroup)
              .withAdministratorLogin(username).withAdministratorPassword(password).create();
     }
 
@@ -114,8 +114,7 @@ public class AzureAdmin {
             return sqlServer;
         }
 
-        return azure.sqlServers().define(sqlServerName).withRegion(region).withExistingResourceGroup(resourceGroup)
-                    .withAdministratorLogin(username).withAdministratorPassword(password).create();
+        return createSqlServer(sqlServerName, username, password);
     }
 
     public SqlServer getSqlServer(String sqlServerName) {
@@ -123,10 +122,10 @@ public class AzureAdmin {
     }
 
     public boolean sqlDatabaseExists(String sqlServerName, String databaseName) {
-        return azure.sqlServers().databases().getBySqlServer(resourceGroup, sqlServerName, databaseName) == null;
+        return azure.sqlServers().databases().getBySqlServer(resourceGroup, sqlServerName, databaseName) != null;
     }
 
     public boolean sqlServerExists(String sqlServerName) {
-        return azure.sqlServers().getByResourceGroup(resourceGroup, sqlServerName) == null;
+        return azure.sqlServers().getByResourceGroup(resourceGroup, sqlServerName) != null;
     }
 }
