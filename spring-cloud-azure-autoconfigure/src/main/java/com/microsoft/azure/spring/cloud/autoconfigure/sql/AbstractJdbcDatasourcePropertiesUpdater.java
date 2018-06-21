@@ -19,7 +19,7 @@ import org.springframework.util.StringUtils;
  * @author Warren Zhu
  */
 public abstract class AbstractJdbcDatasourcePropertiesUpdater implements JdbcDataSourcePropertiesUpdater {
-    protected static final Log LOGGER = LogFactory.getLog(SqlServerJdbcDataSourcePropertiesUpdater.class);
+    protected static final Log LOGGER = LogFactory.getLog(AbstractJdbcDatasourcePropertiesUpdater.class);
 
     protected final DatabaseType databaseType;
     protected final AzureSqlProperties azureSqlProperties;
@@ -36,7 +36,7 @@ public abstract class AbstractJdbcDatasourcePropertiesUpdater implements JdbcDat
 
     @Override
     public void updateDataSourceProperties(DataSourceProperties dataSourceProperties) {
-        Assert.hasText(dataSourceProperties.getPassword(), "spring.datasource.username must not be empty");
+        Assert.hasText(dataSourceProperties.getPassword(), "spring.datasource.password must not be empty");
 
         if (StringUtils.isEmpty(dataSourceProperties.getUsername())) {
             dataSourceProperties.setUsername(getUserName());
@@ -46,6 +46,8 @@ public abstract class AbstractJdbcDatasourcePropertiesUpdater implements JdbcDat
 
         if (StringUtils.isEmpty(dataSourceProperties.getDriverClassName())) {
             dataSourceProperties.setDriverClassName(getDriverClass());
+            LOGGER.info(String.format("spring.datasource.driverClassName is auto config into '%s'",
+                    getDriverClass()));
         } else {
             LOGGER.warn("spring.datasource.driver-class-name is specified. " +
                     "Not using generated Cloud SQL configuration");
