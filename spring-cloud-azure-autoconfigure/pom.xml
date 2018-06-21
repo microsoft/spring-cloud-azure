@@ -25,17 +25,54 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- Event Hub -->
         <dependency>
             <groupId>com.microsoft.azure</groupId>
             <artifactId>spring-cloud-azure-eventhub</artifactId>
             <version>${project.version}</version>
         </dependency>
 
+        <!-- Storage -->
         <dependency>
             <groupId>com.microsoft.azure</groupId>
             <artifactId>spring-cloud-azure-storage</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <!-- Cloud SQL -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- PostgreSQL -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- MySQL -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- SQL Server -->
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 
 </project>
