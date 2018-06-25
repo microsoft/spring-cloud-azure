@@ -1,4 +1,7 @@
-= Spring Cloud Azure Sql Database starter
+= Spring Cloud Azure Sql Database Starter Sample
+
+This starter is based on `spring-boot-starter-jdbc`. It fetches and auto configures data source properties via Azure Sql
+ Management SDK.
 
 Maven coordinates:
 
@@ -19,9 +22,6 @@ dependencies {
 }
 ----
 
-This starter is based on `spring-boot-starter-jdbc`. It fetches and auto configures data source properties via Azure Sql
- Management SDK.
-
 === How to run
 
 1.  Create azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how to create credential file]
@@ -32,7 +32,7 @@ $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 ....
 2.  Put auth file under `src/main/resources/`
 3.  [Optional] Create Azure sql database instance through Azure Portal or CLI. Please see https://docs.microsoft.com/en-us/azure/sql-database/[How to create Azure Sql database]
-4.  Update link:src/main/resources/application.properties[application.properties] to specify resource group, cache instance name and credential file path:
+4.  Update link:src/main/resources/application.properties[application.properties]
 +
 ....
 spring.cloud.azure.credentialFilePath=[credential-file]
