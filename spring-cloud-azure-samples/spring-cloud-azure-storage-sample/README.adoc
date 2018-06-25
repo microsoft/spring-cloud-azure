@@ -34,8 +34,7 @@ $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 2.  Put auth file under `src/main/resources/`
 3.  [Optional] Create Azure storage account through Azure Portal or CLI. Please see https://docs.microsoft.com/en-us/azure/storage/[How to create Azure storage]
 
-4. Edit the `src/main/java/com/example/WebController.java` file, replace {containerName} and {blobName} into correct value
-.
+4. Edit the `src/main/java/com/example/WebController.java` file, replace `{containerName}` and `{blobName}` into correct value
 5. Update link:src/main/resources/application.properties[application.properties]
 +
 ....
@@ -53,12 +52,15 @@ spring.cloud.azure.storage.account=[account-name]
 $ mvn spring-boot:run
 ```
 
-8. To update the file contents, send a POST request to the same endpoint using `curl`:
+7. Send a POST request to update file contents:
 +
 ```
 $ curl -d 'new message' -H 'Content-Type: text/plain' localhost:8080
 ```
 +
-You should see a confirmation that the contents of the file were updated.
+Verify by sending a GET request
 +
-However, let's verify by going to http://localhost:8080/.
+```
+$ curl -XGET http://localhost:8080/
+```
+
