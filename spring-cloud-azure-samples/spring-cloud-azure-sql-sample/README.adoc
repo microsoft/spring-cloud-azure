@@ -1,0 +1,68 @@
+= Spring Cloud Azure Sql Database starter
+
+Maven coordinates:
+
+[source,xml]
+----
+<dependency>
+    <groupId>com.microsoft.azure</groupId>
+    <artifactId>spring-cloud-azure-starter-sql-sqlserver</artifactId>
+</dependency>
+----
+
+Gradle coordinates:
+
+[source]
+----
+dependencies {
+    compile group: 'com.microsoft.azure', name: 'spring-cloud-azure-starter-sql-sqlserver'
+}
+----
+
+This starter is based on `spring-boot-starter-jdbc`. It fetches and auto configures data source properties via Azure Sql
+ Management SDK.
+
+=== How to run
+
+1.  Create azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how to create credential file]
++
+....
+$  az az account set --subscription <name or id>
+$  az ad sp create-for-rbac --sdk-auth > my.azureauth
+....
+2.  Put auth file under `src/main/resources/`
+3.  [Optional] Create Azure sql database instance through Azure Portal or CLI. Please see https://docs.microsoft.com/en-us/azure/sql-database/[How to create Azure Sql database]
+4.  Update link:src/main/resources/application.properties[application.properties] to specify resource group, cache instance name and credential file path:
++
+....
+spring.cloud.azure.credentialFilePath=[credential-file]
+spring.cloud.azure.resourceGroup=[resource-group]
+spring.cloud.azure.region=[region]
+
+spring.cloud.azure.sql.enabled=true
+
+# Auto create server and database if not existed
+spring.cloud.azure.sql.database-name=[database-name]
+spring.cloud.azure.sql.server-name=[server-name]
+
+# Leave username empty if database server already created
+spring.datasource.username=[username]
+spring.datasource.password=[password]
+
+# So app starts despite "table already exists" errors.
+spring.datasource.continue-on-error=true
+# Enforces database initialization
+spring.datasource.initialization-mode=always
+....
+
+5.  Run the application using the `$ mvn spring-boot:run` command. The database will be populated based on the link:src/main/resources/schema.sql[schema.sql] and link:src/main/resources/data.sql[data.sql] files.
+6.  Send a GET request to check:
++
+....
+$ curl -XGET http://localhost:8080/users
+....
+
+
+=== Examples
+link:../../spring-cloud-azure-samples/spring-cloud-azure-sql-sample[Here]
+is a sample application that uses this starter.
