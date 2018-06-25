@@ -1,0 +1,64 @@
+= Spring Cloud Azure Storage Starter Sample
+
+This code sample demonstrates how to read and write files with the Spring Resource abstraction for Azure Storage using
+the
+link:../../spring-cloud-azure-starters/spring-cloud-azure-starter-storage[Spring Cloud Azure Storage Starter].
+
+Maven coordinates:
+
+[source,xml]
+----
+<dependency>
+    <groupId>com.microsoft.azure</groupId>
+    <artifactId>spring-cloud-azure-starter-storage</artifactId>
+</dependency>
+----
+
+Gradle coordinates:
+
+[source]
+----
+dependencies {
+    compile group: 'com.microsoft.azure', name: 'spring-cloud-azure-starter-storage'
+}
+----
+
+= Running the example
+
+1.  Create azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how to create credential file]
++
+....
+$  az az account set --subscription <name or id>
+$  az ad sp create-for-rbac --sdk-auth > my.azureauth
+....
+2.  Put auth file under `src/main/resources/`
+3.  [Optional] Create Azure storage account through Azure Portal or CLI. Please see https://docs.microsoft.com/en-us/azure/storage/[How to create Azure storage]
+
+4. Edit the `src/main/java/com/example/WebController.java` file, replace {containerName} and {blobName} into correct value
+.
+5. Update link:src/main/resources/application.properties[application.properties]
++
+....
+spring.cloud.azure.credentialFilePath=[credential-file-path]
+spring.cloud.azure.resourceGroup=[resource-group]
+spring.cloud.azure.region=[region]
+
+# Auto create storage account if not existed
+spring.cloud.azure.storage.account=[account-name]
+....
+
+6. Start the `StorageApplication` Spring Boot app.
++
+```
+$ mvn spring-boot:run
+```
+
+8. To update the file contents, send a POST request to the same endpoint using `curl`:
++
+```
+$ curl -d 'new message' -H 'Content-Type: text/plain' localhost:8080
+```
++
+You should see a confirmation that the contents of the file were updated.
++
+However, let's verify by going to http://localhost:8080/.
