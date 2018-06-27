@@ -55,7 +55,7 @@ public class EventHubTemplate implements EventHubOperation {
     public CompletableFuture<Void> sendAsync(String eventHubName, EventData message,
             PartitionSupplier partitionSupplier) {
         Assert.hasText(eventHubName, "eventHubName can't be null or empty");
-        Assert.notNull(message, "eventData can't be null");
+        Assert.notNull(message, "message can't be null");
         try {
             EventHubClient client = this.clientFactory.getOrCreateEventHubClient(eventHubName);
 

@@ -13,7 +13,7 @@ import java.util.function.Consumer;
  *
  * @author Warren Zhu
  */
-public interface SubscribingByGroupOperation<D> {
+public interface SubscribeByGroupOperation<D> {
 
     /**
      * Register a message consumer to a given destination with a given consumer group.
