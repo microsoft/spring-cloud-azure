@@ -9,9 +9,8 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>spring-cloud-azure-eventhub</artifactId>
-    <name>Spring Cloud Azure Event hub</name>
-    <description>Spring Cloud Azure Event hub Module</description>
+    <artifactId>spring-integration-azure</artifactId>
+    <name>Spring Integration Azure</name>
 
     <dependencies>
         <dependency>

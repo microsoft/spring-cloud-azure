@@ -83,7 +83,8 @@ public class EventHubTemplate implements EventHubOperation {
     }
 
     @Override
-    public synchronized boolean subscribe(String destination, Consumer<Iterable<EventData>> consumer, String consumerGroup) {
+    public synchronized boolean subscribe(String destination, Consumer<Iterable<EventData>> consumer,
+            String consumerGroup) {
         Tuple<String, String> nameAndConsumerGroup = new Tuple<>(destination, consumerGroup);
         consumersByNameAndConsumerGroup.putIfAbsent(nameAndConsumerGroup, new CopyOnWriteArraySet<>());
         boolean added = consumersByNameAndConsumerGroup.get(nameAndConsumerGroup).add(consumer);
@@ -129,7 +130,8 @@ public class EventHubTemplate implements EventHubOperation {
     }
 
     @Override
-    public synchronized boolean unsubscribe(String destination, Consumer<Iterable<EventData>> consumer, String consumerGroup) {
+    public synchronized boolean unsubscribe(String destination, Consumer<Iterable<EventData>> consumer,
+            String consumerGroup) {
         Tuple<String, String> nameAndConsumerGroup = new Tuple<>(destination, consumerGroup);
         boolean existed = consumersByNameAndConsumerGroup.get(nameAndConsumerGroup).remove(consumer);
         if (consumersByNameAndConsumerGroup.get(nameAndConsumerGroup).isEmpty()) {
