@@ -25,7 +25,7 @@
 
         <dependency>
             <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-cloud-azure-eventhub</artifactId>
+            <artifactId>spring-integration-azure</artifactId>
             <version>${project.version}</version>
         </dependency>
 

@@ -7,7 +7,7 @@
 package com.microsoft.azure.eventhub.stream.binder;
 
 import com.microsoft.azure.eventhubs.EventData;
-import eventhub.integration.inbound.Checkpointer;
+import com.microsoft.azure.spring.integration.core.Checkpointer;
 
 import java.util.concurrent.CompletableFuture;
 

@@ -19,7 +19,7 @@
     <modules>
         <module>spring-cloud-azure-context</module>
         <module>spring-cloud-azure-autoconfigure</module>
-        <module>spring-cloud-azure-eventhub</module>
+        <module>spring-integration-azure</module>
         <module>spring-cloud-azure-storage</module>
         <module>spring-cloud-azure-eventhub-stream-binder</module>
         <module>spring-cloud-azure-samples</module>

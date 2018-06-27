@@ -10,11 +10,11 @@ import com.microsoft.azure.eventhub.stream.binder.properties.EventHubConsumerPro
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubExtendedBindingProperties;
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubProducerProperties;
 import com.microsoft.azure.eventhub.stream.binder.provisioning.EventHubChannelProvisioner;
-import eventhub.core.EventHubOperation;
-import eventhub.integration.inbound.CheckpointMode;
-import eventhub.integration.inbound.EventHubInboundChannelAdapter;
-import eventhub.integration.inbound.ListenerMode;
-import eventhub.integration.outbound.EventHubMessageHandler;
+import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
+import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
+import com.microsoft.azure.spring.integration.eventhub.inbound.EventHubInboundChannelAdapter;
+import com.microsoft.azure.spring.integration.eventhub.inbound.ListenerMode;
+import com.microsoft.azure.spring.integration.eventhub.outbound.EventHubMessageHandler;
 import org.springframework.cloud.stream.binder.*;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
