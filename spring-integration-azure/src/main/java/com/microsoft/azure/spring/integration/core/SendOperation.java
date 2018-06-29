@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
  * @param <D> the type of message
  * @author Warren Zhu
  */
-public interface SendingOperation<D> {
+public interface SendOperation<D> {
     /**
      * Send a message to the given destination with a given partition supplier.
      */

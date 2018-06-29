@@ -25,10 +25,9 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- Event Hub -->
         <dependency>
             <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-cloud-azure-eventhub</artifactId>
+            <artifactId>spring-integration-azure</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -70,6 +69,12 @@
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
             <optional>true</optional>
         </dependency>
 
