@@ -13,6 +13,10 @@
     <artifactId>spring-cloud-azure-autoconfigure</artifactId>
     <name>Spring Cloud Azure Autoconfigure</name>
 
+    <properties>
+        <azure.applicationinsights.version>2.0.1</azure.applicationinsights.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -73,6 +77,34 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- Application Insights -->
+        <dependency>
+            <groupId>com.microsoft.azure</groupId>
+            <artifactId>applicationinsights-core</artifactId>
+            <version>${azure.applicationinsights.version}</version>
+        </dependency>
+
     </dependencies>
+
+    <build>
+        <resources>
+            <!-- Filtering Resource -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>META-INF/project.properties</include>
+                </includes>
+            </resource>
+            <!-- Raw Resource -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>META-INF/spring.factories</include>
+                    <include>ApplicationInsights.xml</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
 
 </project>
