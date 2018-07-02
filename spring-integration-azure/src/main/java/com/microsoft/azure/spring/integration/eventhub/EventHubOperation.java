@@ -7,13 +7,13 @@
 package com.microsoft.azure.spring.integration.eventhub;
 
 import com.microsoft.azure.eventhubs.EventData;
-import com.microsoft.azure.spring.integration.core.SendingOperation;
-import com.microsoft.azure.spring.integration.core.SubscribingByGroupOperation;
+import com.microsoft.azure.spring.integration.core.SendOperation;
+import com.microsoft.azure.spring.integration.core.SubscribeByGroupOperation;
 
 /**
  * Azure event hub operation to support send data asynchronously and subscribe
  *
  * @author Warren Zhu
  */
-public interface EventHubOperation extends SendingOperation<EventData>, SubscribingByGroupOperation<EventData> {
+public interface EventHubOperation extends SendOperation<EventData>, SubscribeByGroupOperation<EventData> {
 }

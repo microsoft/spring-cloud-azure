@@ -13,7 +13,7 @@ import java.util.function.Consumer;
  *
  * @author Warren Zhu
  */
-public interface SubscribingOperation<D> {
+public interface SubscribeOperation<D> {
 
     /**
      * Register a message consumer to a given destination.
@@ -29,7 +29,7 @@ public interface SubscribingOperation<D> {
      * @return {@code true} if the consumer was un-registered, or {@code false}
      * if was not registered.
      */
-    void unsubscribe(String destination, Consumer<Iterable<D>> consumer);
+    boolean unsubscribe(String destination, Consumer<Iterable<D>> consumer);
 
     /**
      * Get checkpointer for a given destination

@@ -29,10 +29,9 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- Event Hub -->
         <dependency>
             <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-cloud-azure-eventhub</artifactId>
+            <artifactId>spring-integration-azure</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -82,6 +81,12 @@
             <groupId>com.microsoft.azure</groupId>
             <artifactId>applicationinsights-core</artifactId>
             <version>${azure.applicationinsights.version}</version>
+        </dependency>
+      
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <optional>true</optional>
         </dependency>
 
     </dependencies>
