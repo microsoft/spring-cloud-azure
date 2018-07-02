@@ -7,8 +7,8 @@
 package com.microsoft.azure.spring.integration.eventhub.inbound;
 
 import com.microsoft.azure.eventhubs.EventData;
-import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
 import com.microsoft.azure.spring.integration.core.Checkpointer;
+import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

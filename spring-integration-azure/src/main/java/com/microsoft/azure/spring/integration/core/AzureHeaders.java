@@ -4,15 +4,15 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.integration.eventhub;
+package com.microsoft.azure.spring.integration.core;
 
 /**
- * Azure event hub internal headers for Spring Messaging messages.
+ * Azure internal headers for Spring Messaging messages.
  *
  * @author Warren Zhu
  */
-public class EventHubHeaders {
-    private static final String PREFIX = "azure_event_hub_";
+public class AzureHeaders {
+    private static final String PREFIX = "azure_";
 
     public static final String PARTITION_ID = PREFIX + "partition_id";
 

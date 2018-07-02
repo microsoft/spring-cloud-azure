@@ -7,141 +7,25 @@
 package com.microsoft.azure.spring.integration.eventhub.outbound;
 
 import com.microsoft.azure.eventhubs.EventData;
-import com.microsoft.azure.spring.integration.core.PartitionSupplier;
-import com.microsoft.azure.spring.integration.eventhub.EventHubHeaders;
-import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
-import org.springframework.expression.EvaluationContext;
-import org.springframework.expression.Expression;
-import org.springframework.expression.common.LiteralExpression;
-import org.springframework.integration.codec.CodecMessageConverter;
-import org.springframework.integration.expression.ExpressionUtils;
-import org.springframework.integration.expression.ValueExpression;
-import org.springframework.integration.handler.AbstractMessageHandler;
+import com.microsoft.azure.spring.integration.core.AbstractAzureMessageHandler;
+import com.microsoft.azure.spring.integration.core.SendOperation;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.converter.MessageConverter;
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.nio.charset.Charset;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Outbound channel adapter to publish messages to Azure Event Hub.
  *
- * <p>
- * It delegates real operation to {@link EventHubOperation}. It also
- * converts the {@link Message} payload into a {@link EventData} accepted by
- * the Event Hub Client Library. It supports synchronous and asynchronous * sending.
- *
  * @author Warren Zhu
  */
-public class EventHubMessageHandler extends AbstractMessageHandler {
-    private static final long DEFAULT_SEND_TIMEOUT = 10000;
+public class EventHubMessageHandler extends AbstractAzureMessageHandler<EventData> {
 
-    private final String eventHubName;
-    private final EventHubOperation eventHubOperation;
-    private boolean sync = false;
-    private MessageConverter messageConverter;
-    private ListenableFutureCallback<Void> sendCallback;
-    private EvaluationContext evaluationContext;
-    private Expression sendTimeoutExpression = new ValueExpression<>(DEFAULT_SEND_TIMEOUT);
-    private Expression partitionKeyExpression;
-
-    public EventHubMessageHandler(String eventHubName, EventHubOperation eventHubOperation) {
-        Assert.hasText(eventHubName, "eventHubName can't be null or empty");
-        Assert.notNull(eventHubOperation, "eventHubOperation can't be null");
-        this.eventHubName = eventHubName;
-        this.eventHubOperation = eventHubOperation;
+    public EventHubMessageHandler(String destination, SendOperation<EventData> sendOperation) {
+        super(destination, sendOperation);
     }
 
     @Override
-    protected void onInit() throws Exception {
-        super.onInit();
-        this.evaluationContext = ExpressionUtils.createStandardEvaluationContext(getBeanFactory());
-    }
-
-    @Override
-    protected void handleMessageInternal(Message<?> message) throws Exception {
-
-        PartitionSupplier partitionSupplier = toPartitionSupplier(message);
-        String eventHubName = toEventHubName(message);
-        EventData eventData = toEventData(message);
-        CompletableFuture future = this.eventHubOperation.sendAsync(eventHubName, eventData, partitionSupplier);
-
-        if (this.sync) {
-            Long sendTimeout = this.sendTimeoutExpression.getValue(this.evaluationContext, message, Long.class);
-            if (sendTimeout == null || sendTimeout < 0) {
-                future.get();
-            } else {
-                future.get(sendTimeout, TimeUnit.MILLISECONDS);
-            }
-        } else if (sendCallback != null) {
-            future.whenComplete((t, ex) -> {
-                if (ex != null) {
-                    this.sendCallback.onFailure((Throwable) ex);
-                } else {
-                    this.sendCallback.onSuccess((Void) t);
-                }
-            });
-        }
-    }
-
-    public void setSendTimeout(long sendTimeout) {
-        setSendTimeoutExpression(new ValueExpression<>(sendTimeout));
-    }
-
-    public void setSendTimeoutExpressionString(String sendTimeoutExpression) {
-        setSendTimeoutExpression(EXPRESSION_PARSER.parseExpression(sendTimeoutExpression));
-    }
-
-    public Expression getSendTimeoutExpression() {
-        return sendTimeoutExpression;
-    }
-
-    public void setSendTimeoutExpression(Expression sendTimeoutExpression) {
-        Assert.notNull(sendTimeoutExpression, "'sendTimeoutExpression' must not be null");
-        this.sendTimeoutExpression = sendTimeoutExpression;
-    }
-
-    public void setPartitionKey(String partitionKey) {
-        setPartitionKeyExpression(new LiteralExpression(partitionKey));
-    }
-
-    public void setPartitionKeyExpressionString(String partitionKeyExpression) {
-        setPartitionKeyExpression(EXPRESSION_PARSER.parseExpression(partitionKeyExpression));
-    }
-
-    public void setPartitionKeyExpression(Expression partitionKeyExpression) {
-        this.partitionKeyExpression = partitionKeyExpression;
-    }
-
-    public boolean isSync() {
-        return this.sync;
-    }
-
-    /**
-     * Set send method to be synchronous or asynchronous.
-     *
-     * <p>
-     * send is asynchronous be default.
-     *
-     * @param sync true for synchronous, false for asynchronous
-     */
-    public void setSync(boolean sync) {
-        this.sync = sync;
-    }
-
-    public void setMessageConverter(CodecMessageConverter messageConverter) {
-        this.messageConverter = messageConverter;
-    }
-
-    public void setSendCallback(ListenableFutureCallback<Void> sendCallback) {
-        this.sendCallback = sendCallback;
-    }
-
-    private EventData toEventData(Message<?> message) {
+    public EventData toAzureMessage(Message<?> message) {
         Object payload = message.getPayload();
         if (payload instanceof EventData) {
             return (EventData) payload;
@@ -158,29 +42,4 @@ public class EventHubMessageHandler extends AbstractMessageHandler {
         return EventData.create((byte[]) this.messageConverter.fromMessage(message, byte[].class));
     }
 
-    private String toEventHubName(Message<?> message) {
-        if (message.getHeaders().containsKey(EventHubHeaders.NAME)) {
-            return message.getHeaders().get(EventHubHeaders.NAME, String.class);
-        }
-
-        return this.eventHubName;
-    }
-
-    private PartitionSupplier toPartitionSupplier(Message<?> message) {
-        PartitionSupplier partitionSupplier = new PartitionSupplier();
-        String partitionKey = message.getHeaders().get(EventHubHeaders.PARTITION_KEY, String.class);
-        if (!StringUtils.hasText(partitionKey) && this.partitionKeyExpression != null) {
-            partitionKey = this.partitionKeyExpression.getValue(this.evaluationContext, message, String.class);
-        }
-
-        if (StringUtils.hasText(partitionKey)) {
-            partitionSupplier.setPartitionKey(partitionKey);
-        }
-
-        if (message.getHeaders().containsKey(EventHubHeaders.PARTITION_ID)) {
-            partitionSupplier
-                    .setPartitionId(message.getHeaders().get(EventHubHeaders.PARTITION_ID, Integer.class).toString());
-        }
-        return partitionSupplier;
-    }
 }
