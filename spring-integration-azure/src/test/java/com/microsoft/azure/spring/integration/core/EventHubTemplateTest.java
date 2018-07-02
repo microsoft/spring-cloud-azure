@@ -58,17 +58,15 @@ public class EventHubTemplateTest {
     public void setUp() {
         this.eventHubTemplate = new EventHubTemplate(this.mockClientFactory);
 
-        when(this.mockClientFactory.getOrCreateEventHubClient(eventHubName)).thenReturn(this.mockClient);
+        when(this.mockClientFactory.getEventHubClientCreator()).thenReturn(s -> this.mockClient);
         when(this.mockClient.send(isA(EventData.class))).thenReturn(this.future);
         when(this.mockClient.send(isA(EventData.class), eq(partitionKey))).thenReturn(this.future);
 
-        when(this.mockClientFactory.getOrCreatePartitionSender(eq(eventHubName), isA(String.class)))
-                .thenReturn(this.mockSender);
+        when(this.mockClientFactory.getPartitionSenderCreator()).thenReturn(t -> this.mockSender);
         when(this.mockSender.send(isA(EventData.class))).thenReturn(this.future);
-        when(this.mockClientFactory.getOrCreateEventProcessorHost(eq(eventHubName), eq(consumerGroup))).thenReturn
-                (this.host);
-        when(this.host.registerEventProcessorFactory(isA(IEventProcessorFactory.class
-        ))).thenReturn(new CompletableFuture<>());
+        when(this.mockClientFactory.getProcessorHostCreator()).thenReturn(t -> this.host);
+        when(this.host.registerEventProcessorFactory(isA(IEventProcessorFactory.class)))
+                .thenReturn(new CompletableFuture<>());
     }
 
     @Test
@@ -99,7 +97,7 @@ public class EventHubTemplateTest {
 
         assertEquals(null, future.get());
         verify(this.mockSender, times(1)).send(isA(EventData.class));
-        verify(this.mockClientFactory, times(1)).getOrCreatePartitionSender(eq(eventHubName), eq(partitionId));
+        verify(this.mockClientFactory, times(1)).getPartitionSenderCreator();
     }
 
     @Test
@@ -111,13 +109,14 @@ public class EventHubTemplateTest {
 
         assertEquals(null, future.get());
         verify(this.mockClient, times(1)).send(isA(EventData.class), eq(partitionKey));
-        verify(this.mockClientFactory, times(1)).getOrCreateEventHubClient(eq(eventHubName));
+        verify(this.mockClientFactory, times(1)).getEventHubClientCreator();
     }
 
     @Test(expected = EventHubRuntimeException.class)
     public void testSendCreateSenderFailure() throws Throwable {
-        when(this.mockClientFactory.getOrCreateEventHubClient(eventHubName))
-                .thenThrow(new EventHubRuntimeException("couldn't create the event hub client."));
+        when(this.mockClientFactory.getEventHubClientCreator()).thenReturn((s) -> {
+            throw new EventHubRuntimeException("couldn't create the event hub client.");
+        });
 
         try {
             this.eventHubTemplate.sendAsync(eventHubName, this.message, null).get();
@@ -145,8 +144,9 @@ public class EventHubTemplateTest {
     public void testSubscribe() {
         this.eventHubTemplate.subscribe(eventHubName, this::handleMessage, consumerGroup);
 
-        verify(this.mockClientFactory, times(1)).getOrCreateEventProcessorHost(eq(eventHubName), eq(consumerGroup));
+        verify(this.mockClientFactory, times(1)).getProcessorHostCreator();
     }
 
-    private void handleMessage(Iterable<EventData> events){}
+    private void handleMessage(Iterable<EventData> events) {
+    }
 }
