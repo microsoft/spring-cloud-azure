@@ -7,36 +7,20 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.context;
 
 import com.microsoft.azure.spring.cloud.context.core.CredentialSupplier;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+@Getter
+@Setter
 @ConfigurationProperties("spring.cloud.azure")
 public class AzureProperties implements CredentialSupplier {
 
     private String credentialFilePath;
+
     private String resourceGroup;
+
     private String region;
 
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
-    }
-
-    public String getCredentialFilePath() {
-        return this.credentialFilePath;
-    }
-
-    public void setCredentialFilePath(String credentialFilePath) {
-        this.credentialFilePath = credentialFilePath;
-    }
-
-    public String getResourceGroup() {
-        return this.resourceGroup;
-    }
-
-    public void setResourceGroup(String resourceGroup) {
-        this.resourceGroup = resourceGroup;
-    }
+    private boolean telemetryAllowed = true;
 }

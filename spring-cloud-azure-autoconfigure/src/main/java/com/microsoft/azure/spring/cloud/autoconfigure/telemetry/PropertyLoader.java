@@ -19,25 +19,9 @@ import java.util.Properties;
 public class PropertyLoader {
 
     private static final String PROJECT_PROPERTY_FILE = "/META-INF/project.properties";
-    private static final String APPLICATION_PROPERTY_FILE = "/application.properties";
-    private static final String APPLICATION_YML_FILE = "/application.yml";
 
     public static String getProjectVersion() {
         return getPropertyByName("project.version", PROJECT_PROPERTY_FILE);
-    }
-
-    public static boolean isApplicationTelemetryAllowed() {
-        String telemetryAllowed = getPropertyByName("spring.cloud.azure.telemetryAllowed", APPLICATION_PROPERTY_FILE);
-
-        if (telemetryAllowed == null) {
-            telemetryAllowed = getPropertyByName("telemetryAllowed", APPLICATION_YML_FILE);
-        }
-
-        if (telemetryAllowed == null) {
-            return true;
-        } else {
-            return telemetryAllowed.equalsIgnoreCase("false") ? false : true;
-        }
     }
 
     private static String getPropertyByName(@NonNull String name, @NonNull String filename) {
