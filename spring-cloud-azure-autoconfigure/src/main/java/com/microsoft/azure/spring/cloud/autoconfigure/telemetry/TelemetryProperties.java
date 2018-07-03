@@ -13,6 +13,8 @@ public class TelemetryProperties {
 
     public static final String PROPERTY_VERSION = "version";
 
+    public static final String PROPERTY_INSTALLATION_ID = "installationId";
+
     public static final String PROPERTY_SUBSCRIPTION_ID = "subscriptionId";
 
     public static final String PROPERTY_RESOURCE_GROUP = "resourceGroup";
