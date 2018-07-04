@@ -18,22 +18,17 @@ import static com.microsoft.applicationinsights.core.dependencies.apachecommons.
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TelemetryUtils {
 
-    private static final String UNKNOWN_MAC = "unknown-Mac-Address";
+    private static final String UNKNOWN_MAC = "Unknown-Mac-Address";
 
     private static String getMacAddress() {
-        final InetAddress ip;
-        final NetworkInterface network;
-        final byte[] macBytes;
-
         try {
-            ip = InetAddress.getLocalHost();
-            network = NetworkInterface.getByInetAddress(ip);
-            macBytes = network.getHardwareAddress();
-        } catch (UnknownHostException | SocketException e) { // Omit
+            final InetAddress host = InetAddress.getLocalHost();
+            final byte[] macBytes = NetworkInterface.getByInetAddress(host).getHardwareAddress();
+
+            return new String(macBytes);
+        } catch (UnknownHostException | SocketException e) { // Ignore
             return UNKNOWN_MAC;
         }
-
-        return new String(macBytes);
     }
 
     public static String getHashMac() {

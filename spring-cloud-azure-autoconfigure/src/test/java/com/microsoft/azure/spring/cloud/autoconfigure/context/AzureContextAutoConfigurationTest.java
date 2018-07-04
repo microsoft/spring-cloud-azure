@@ -29,6 +29,7 @@ public class AzureContextAutoConfigurationTest {
                 .withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
                 .withPropertyValues("spring.cloud.azure.resourceGroup=group1")
                 .withPropertyValues("spring.cloud.azure.region=westUS")
+                .withPropertyValues("spring.cloud.azure.telemetryAllowed=false")
                 .run(context -> {
                     assertThat(context).hasSingleBean(AzureProperties.class);
                     assertThat(context.getBean(AzureProperties.class).getCredentialFilePath()).isEqualTo("credential");

@@ -12,36 +12,41 @@ import org.springframework.lang.NonNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryProperties.*;
-
 public class TelemetryTracker {
 
     private static final String PROJECT_VERSION = TelemetryTracker.class.getPackage().getImplementationVersion();
 
     private static final String PROJECT_INFO = "spring-cloud-azure" + "/" + PROJECT_VERSION;
 
-    private TelemetryClient client;
+    private static final String PROPERTY_VERSION = "version";
 
-    private Azure azure;
+    private static final String PROPERTY_INSTALLATION_ID = "installationId";
+
+    private static final String PROPERTY_SUBSCRIPTION_ID = "subscriptionId";
+
+    private static final String PROPERTY_RESOURCE_GROUP = "resourceGroup";
+
+    private static final String PROPERTY_SERVICE_NAME = "serviceName";
+
+    private final TelemetryClient client;
+
+    private final Map<String, String> defaultProperties;
 
     public TelemetryTracker(Azure azure) {
         this.client = new TelemetryClient();
-        this.azure = azure;
+        this.defaultProperties =  new HashMap<>();
+
+        this.defaultProperties.put(PROPERTY_SUBSCRIPTION_ID, azure.getCurrentSubscription().subscriptionId());
+        this.defaultProperties.put(PROPERTY_RESOURCE_GROUP, azure.resourceGroups().toString());
+        this.defaultProperties.put(PROPERTY_VERSION, PROJECT_INFO);
+        this.defaultProperties.put(PROPERTY_INSTALLATION_ID, TelemetryUtils.getHashMac());
     }
 
-    public void trackEvent(@NonNull String name, Map<String, String> customProperties) {
-        final Map<String, String> properties;
-        final Map<String, String> defaultProperties = this.getDefaultProperties();
+    private void trackEvent(@NonNull String name, @NonNull Map<String, String> customProperties) {
+        this.defaultProperties.forEach(customProperties::putIfAbsent);
 
-        if (customProperties == null) {
-            properties = defaultProperties;
-        } else {
-            defaultProperties.forEach(customProperties::putIfAbsent);
-            properties = customProperties;
-        }
-
-        client.trackEvent(name, properties, null);
-        client.flush();
+        this.client.trackEvent(name, customProperties, null);
+        this.client.flush();
     }
 
     public void trackEventWithServiceName(@NonNull String eventName, @NonNull String serviceName) {
@@ -50,16 +55,5 @@ public class TelemetryTracker {
         properties.put(PROPERTY_SERVICE_NAME, serviceName);
 
         this.trackEvent(eventName, properties);
-    }
-
-    private Map<String, String> getDefaultProperties() {
-        final Map<String, String> properties = new HashMap<>();
-
-        properties.put(PROPERTY_SUBSCRIPTION_ID, this.azure.getCurrentSubscription().subscriptionId());
-        properties.put(PROPERTY_RESOURCE_GROUP, this.azure.resourceGroups().toString());
-        properties.put(PROPERTY_VERSION, PROJECT_INFO);
-        properties.put(PROPERTY_INSTALLATION_ID, TelemetryUtils.getHashMac());
-
-        return properties;
     }
 }
