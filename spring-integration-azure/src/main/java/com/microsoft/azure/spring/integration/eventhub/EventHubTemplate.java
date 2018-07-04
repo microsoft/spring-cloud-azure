@@ -15,7 +15,7 @@ import com.microsoft.azure.eventprocessorhost.IEventProcessor;
 import com.microsoft.azure.eventprocessorhost.PartitionContext;
 import com.microsoft.azure.spring.integration.core.Checkpointer;
 import com.microsoft.azure.spring.integration.core.PartitionSupplier;
-import com.microsoft.azure.spring.integration.core.Tuple;
+import com.microsoft.azure.spring.cloud.context.core.Tuple;
 import com.microsoft.azure.spring.integration.eventhub.inbound.EventHubCheckpointer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

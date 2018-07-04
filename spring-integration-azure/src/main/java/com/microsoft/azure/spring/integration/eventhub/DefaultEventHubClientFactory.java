@@ -16,8 +16,8 @@ import com.microsoft.azure.management.eventhub.EventHubAuthorizationKey;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.cloud.context.core.AzureUtil;
+import com.microsoft.azure.spring.cloud.context.core.Tuple;
 import com.microsoft.azure.spring.integration.core.Memoizer;
-import com.microsoft.azure.spring.integration.core.Tuple;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -68,8 +68,6 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
         Assert.hasText(checkpointStorageAccountContainer, "checkpointStorageAccount can't be null or empty");
         this.checkpointStorageAccountContainer = checkpointStorageAccountContainer;
     }
-
-
 
     @Override
     public Function<String, EventHubClient> getEventHubClientCreator() {
