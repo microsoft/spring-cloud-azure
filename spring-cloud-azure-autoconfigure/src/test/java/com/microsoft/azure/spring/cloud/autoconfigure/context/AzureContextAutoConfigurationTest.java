@@ -12,7 +12,6 @@ import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.cloud.context.core.CredentialsProvider;
 import org.junit.Test;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
@@ -38,8 +37,15 @@ public class AzureContextAutoConfigurationTest {
                     assertThat(context.getBean(AzureProperties.class).getCredentialFilePath()).isEqualTo("credential");
                     assertThat(context.getBean(AzureProperties.class).getResourceGroup()).isEqualTo("group1");
                     assertThat(context.getBean(AzureProperties.class).getRegion()).isEqualTo("westUS");
-                    assertThat(context.getBean(TelemetryTracker.class)).isNotNull();
                 });
+    }
+
+    @Test
+    public void testAzurePropertiesTelemetryMissing() {
+        this.contextRunner
+                .withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
+                .withPropertyValues("spring.cloud.azure.resourceGroup=group1")
+                .run(context -> assertThat(context.getBean(TelemetryTracker.class)).isNotNull());
     }
 
     @Test
@@ -47,19 +53,17 @@ public class AzureContextAutoConfigurationTest {
         this.contextRunner
                 .withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
                 .withPropertyValues("spring.cloud.azure.resourceGroup=group1")
-                .withPropertyValues("spring.cloud.azure.region=westUS")
                 .withPropertyValues("spring.cloud.azure.telemetryAllowed=true")
                 .run(context -> assertThat(context.getBean(TelemetryTracker.class)).isNotNull());
     }
 
-    @Test(expected = NoSuchBeanDefinitionException.class)
+    @Test
     public void testAzurePropertiesTelemetryConfiguredException() {
         this.contextRunner
                 .withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
                 .withPropertyValues("spring.cloud.azure.resourceGroup=group1")
-                .withPropertyValues("spring.cloud.azure.region=westUS")
                 .withPropertyValues("spring.cloud.azure.telemetryAllowed=false")
-                .run(context -> context.getBean(TelemetryTracker.class));
+                .run(context -> assertThat(context).doesNotHaveBean(TelemetryTracker.class));
     }
 
     @Test

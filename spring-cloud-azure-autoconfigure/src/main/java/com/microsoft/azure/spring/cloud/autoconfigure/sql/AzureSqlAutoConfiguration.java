@@ -47,7 +47,7 @@ import javax.sql.DataSource;
 public class AzureSqlAutoConfiguration {
 
     @Autowired(required = false)
-    private static TelemetryTracker telemetryTracker;
+    private TelemetryTracker telemetryTracker;
 
     @PostConstruct
     public void triggerTelemetry() {
