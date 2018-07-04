@@ -8,9 +8,9 @@ package com.microsoft.azure.spring.integration.eventhub.outbound;
 
 import com.google.common.collect.ImmutableMap;
 import com.microsoft.azure.eventhubs.EventData;
-import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
-import com.microsoft.azure.spring.integration.eventhub.EventHubHeaders;
+import com.microsoft.azure.spring.integration.core.AzureHeaders;
 import com.microsoft.azure.spring.integration.core.PartitionSupplier;
+import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,7 +60,7 @@ public class EventHubMessageHandlerTest {
     public void testSendDynamicTopic() {
         String dynamicEventHubName = "dynamicName";
         Message<?> dynamicMessage =
-                new GenericMessage<>(payload, ImmutableMap.of(EventHubHeaders.NAME, dynamicEventHubName));
+                new GenericMessage<>(payload, ImmutableMap.of(AzureHeaders.NAME, dynamicEventHubName));
         this.handler.handleMessage(dynamicMessage);
         verify(this.eventHubOperation, times(1))
                 .sendAsync(eq(dynamicEventHubName), isA(EventData.class), isA(PartitionSupplier.class));

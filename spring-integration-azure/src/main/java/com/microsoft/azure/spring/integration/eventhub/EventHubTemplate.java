@@ -31,7 +31,7 @@ import java.util.function.Consumer;
  * Default implementation of {@link EventHubOperation}.
  *
  * <p>
- * The main eventhub component for sending to and consuming from event hub
+ * The main event hub component for sending to and consuming from event hub
  *
  * @author Warren Zhu
  */
@@ -57,12 +57,13 @@ public class EventHubTemplate implements EventHubOperation {
         Assert.hasText(eventHubName, "eventHubName can't be null or empty");
         Assert.notNull(message, "message can't be null");
         try {
-            EventHubClient client = this.clientFactory.getOrCreateEventHubClient(eventHubName);
+            EventHubClient client = this.clientFactory.getEventHubClientCreator().apply(eventHubName);
 
             if (partitionSupplier == null) {
                 return client.send(message);
             } else if (!Strings.isNullOrEmpty(partitionSupplier.getPartitionId())) {
-                return this.clientFactory.getOrCreatePartitionSender(eventHubName, partitionSupplier.getPartitionId())
+                return this.clientFactory.getPartitionSenderCreator().apply(Tuple.of(client, partitionSupplier
+                        .getPartitionId()))
                                          .send(message);
             } else if (!Strings.isNullOrEmpty(partitionSupplier.getPartitionKey())) {
                 return client.send(message, partitionSupplier.getPartitionKey());
@@ -79,13 +80,13 @@ public class EventHubTemplate implements EventHubOperation {
 
     @Override
     public Checkpointer<EventData> getCheckpointer(String destination, String consumerGroup) {
-        return checkpointersByNameAndConsumerGroup.get(new Tuple<>(destination, consumerGroup));
+        return checkpointersByNameAndConsumerGroup.get(Tuple.of(destination, consumerGroup));
     }
 
     @Override
     public synchronized boolean subscribe(String destination, Consumer<Iterable<EventData>> consumer,
             String consumerGroup) {
-        Tuple<String, String> nameAndConsumerGroup = new Tuple<>(destination, consumerGroup);
+        Tuple<String, String> nameAndConsumerGroup = Tuple.of(destination, consumerGroup);
         consumersByNameAndConsumerGroup.putIfAbsent(nameAndConsumerGroup, new CopyOnWriteArraySet<>());
         boolean added = consumersByNameAndConsumerGroup.get(nameAndConsumerGroup).add(consumer);
 
@@ -94,14 +95,15 @@ public class EventHubTemplate implements EventHubOperation {
         }
 
         processorHostsByNameAndConsumerGroup.computeIfAbsent(nameAndConsumerGroup, key -> {
-            EventProcessorHost host = this.clientFactory.getOrCreateEventProcessorHost(destination, consumerGroup);
+            EventProcessorHost host = this.clientFactory.getProcessorHostCreator().apply(Tuple.of(destination,
+                    consumerGroup));
             host.registerEventProcessorFactory(context -> new IEventProcessor() {
 
                 @Override
                 public void onOpen(PartitionContext context) throws Exception {
                     LOGGER.info(String.format("Partition %s is opening", context.getPartitionId()));
                     checkpointersByNameAndConsumerGroup.putIfAbsent(nameAndConsumerGroup, new EventHubCheckpointer());
-                    checkpointersByNameAndConsumerGroup.get(new Tuple<>(destination, consumerGroup))
+                    checkpointersByNameAndConsumerGroup.get(Tuple.of(destination, consumerGroup))
                                                        .addPartitionContext(context);
                 }
 
@@ -109,7 +111,7 @@ public class EventHubTemplate implements EventHubOperation {
                 public void onClose(PartitionContext context, CloseReason reason) throws Exception {
                     LOGGER.info(
                             String.format("Partition %s is closing for reason %s", context.getPartitionId(), reason));
-                    checkpointersByNameAndConsumerGroup.get(new Tuple<>(destination, consumerGroup))
+                    checkpointersByNameAndConsumerGroup.get(Tuple.of(destination, consumerGroup))
                                                        .removePartitionContext(context);
                 }
 
@@ -132,7 +134,7 @@ public class EventHubTemplate implements EventHubOperation {
     @Override
     public synchronized boolean unsubscribe(String destination, Consumer<Iterable<EventData>> consumer,
             String consumerGroup) {
-        Tuple<String, String> nameAndConsumerGroup = new Tuple<>(destination, consumerGroup);
+        Tuple<String, String> nameAndConsumerGroup = Tuple.of(destination, consumerGroup);
         boolean existed = consumersByNameAndConsumerGroup.get(nameAndConsumerGroup).remove(consumer);
         if (consumersByNameAndConsumerGroup.get(nameAndConsumerGroup).isEmpty()) {
             processorHostsByNameAndConsumerGroup.remove(nameAndConsumerGroup).unregisterEventProcessor();

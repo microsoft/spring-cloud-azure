@@ -13,8 +13,10 @@ import com.microsoft.azure.eventhubs.PartitionSender;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.management.eventhub.AuthorizationRule;
 import com.microsoft.azure.management.eventhub.EventHubAuthorizationKey;
+import com.microsoft.azure.management.eventhub.EventHubNamespace;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.cloud.context.core.AzureUtil;
+import com.microsoft.azure.spring.integration.core.Memoizer;
 import com.microsoft.azure.spring.integration.core.Tuple;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,10 +24,11 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
-import java.util.stream.Stream;
+import java.util.function.Function;
 
 /**
  * Default implementation of {@link EventHubClientFactory}.
@@ -34,22 +37,17 @@ import java.util.stream.Stream;
  */
 public class DefaultEventHubClientFactory implements EventHubClientFactory, DisposableBean {
     private static final Log LOGGER = LogFactory.getLog(DefaultEventHubClientFactory.class);
-    // eventHubName -> eventHubClient
-    private final ConcurrentHashMap<String, EventHubClient> clientMap = new ConcurrentHashMap<>();
 
-    // eventHubName -> connectionString
-    private final ConcurrentHashMap<String, String> connectionStringMap = new ConcurrentHashMap<>();
+    private final Map<String, EventHubClient> clientsByName = new ConcurrentHashMap<>();
 
-    // (eventHubName, partitionId) -> partitionSender
-    private final ConcurrentHashMap<Tuple<String, String>, PartitionSender> partitionSenderMap =
-            new ConcurrentHashMap<>();
+    // (eventHubClient, partitionId) -> partitionSender
+    private final Map<Tuple<EventHubClient, String>, PartitionSender> partitionSenderMap = new ConcurrentHashMap<>();
 
     // (eventHubName, consumerGroup) -> eventProcessorHost
-    private final ConcurrentHashMap<Tuple<String, String>, EventProcessorHost> processorHostMap =
-            new ConcurrentHashMap<>();
+    private final Map<Tuple<String, String>, EventProcessorHost> processorHostMap = new ConcurrentHashMap<>();
 
     private final AzureAdmin azureAdmin;
-    private final String namespace;
+    private final EventHubNamespace namespace;
     private String checkpointStorageAccountContainer;
     private String checkpointStorageConnectionString;
 
@@ -57,7 +55,7 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
         Assert.notNull(azureAdmin, "azureAdmin can't be null.");
         Assert.hasText(namespace, "namespace can't be null or empty");
         this.azureAdmin = azureAdmin;
-        this.namespace = namespace;
+        this.namespace = azureAdmin.getOrCreateEventHubNamespace(namespace);
     }
 
     public void initCheckpointConnectionString(String checkpointStorageAccount) {
@@ -71,62 +69,72 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
         this.checkpointStorageAccountContainer = checkpointStorageAccountContainer;
     }
 
-    @Override
-    public EventHubClient getOrCreateEventHubClient(String eventHubName) {
-        return this.clientMap.computeIfAbsent(eventHubName, key -> {
 
-            try {
-                return EventHubClient
-                        .createSync(getOrCreateConnectionString(eventHubName), Executors.newSingleThreadExecutor());
-            } catch (EventHubException | IOException e) {
-                throw new EventHubRuntimeException("Error when creating event hub client", e);
-            }
-        });
+
+    @Override
+    public Function<String, EventHubClient> getEventHubClientCreator() {
+        return Memoizer.memoize(clientsByName, this::createEventHubClient);
     }
 
     @Override
-    public PartitionSender getOrCreatePartitionSender(String eventHubName, String partitionId) {
-        return this.partitionSenderMap.computeIfAbsent(new Tuple(eventHubName, partitionId), key -> {
-
-            try {
-                return getOrCreateEventHubClient(eventHubName).createPartitionSenderSync(partitionId);
-            } catch (EventHubException e) {
-                throw new EventHubRuntimeException("Error when creating event hub partition sender", e);
-            }
-        });
+    public Function<Tuple<EventHubClient, String>, PartitionSender> getPartitionSenderCreator() {
+        return Memoizer.memoize(partitionSenderMap, this::createPartitionSender);
     }
 
     @Override
-    public EventProcessorHost getOrCreateEventProcessorHost(String eventHubName, String consumerGroup) {
-        return this.processorHostMap.computeIfAbsent(new Tuple(eventHubName, consumerGroup),
-                key -> new EventProcessorHost(EventProcessorHost.createHostName("hostNamePrefix"), eventHubName,
-                        consumerGroup, getOrCreateConnectionString(eventHubName), checkpointStorageConnectionString,
-                        checkpointStorageAccountContainer));
+    public Function<Tuple<String, String>, EventProcessorHost> getProcessorHostCreator() {
+        return Memoizer.memoize(processorHostMap, this::createEventProcessorHost);
     }
 
-    private String getOrCreateConnectionString(String eventHubName) {
+    private EventHubClient createEventHubClient(String eventHubName) {
+        try {
+            return EventHubClient
+                    .createSync(connectionStringCreator().apply(eventHubName), Executors.newSingleThreadExecutor());
+        } catch (EventHubException | IOException e) {
+            throw new EventHubRuntimeException("Error when creating event hub client", e);
+        }
+    }
 
-        return this.connectionStringMap.computeIfAbsent(eventHubName,
-                name -> azureAdmin.getOrCreateEventHubNamespace(namespace).listAuthorizationRules().stream().findFirst()
-                                  .map(AuthorizationRule::getKeys)
-                                  .map(EventHubAuthorizationKey::primaryConnectionString)
-                                  .map(s -> new ConnectionStringBuilder(s).setEventHubName(name).toString())
-                                  .orElseThrow(() -> new EventHubRuntimeException(
-                                          String.format("Failed to fetch connection string of '%s'", eventHubName),
-                                          null)));
+    private PartitionSender createPartitionSender(Tuple<EventHubClient, String> clientAndPartitionId) {
+        try {
+            return clientAndPartitionId.getFirst().createPartitionSenderSync(clientAndPartitionId.getSecond());
+        } catch (EventHubException e) {
+            throw new EventHubRuntimeException("Error when creating event hub partition sender", e);
+        }
+    }
+
+    private EventProcessorHost createEventProcessorHost(Tuple<String, String> nameAndConsumerGroup) {
+        return new EventProcessorHost(EventProcessorHost.createHostName("hostNamePrefix"),
+                nameAndConsumerGroup.getFirst(), nameAndConsumerGroup.getSecond(),
+                connectionStringCreator().apply(nameAndConsumerGroup.getFirst()), checkpointStorageConnectionString,
+                checkpointStorageAccountContainer);
+    }
+
+    private Function<String, String> connectionStringCreator() {
+        return Memoizer.memoize(this::getConnectionString);
+    }
+
+    private String getConnectionString(String eventHubName) {
+        return namespace.listAuthorizationRules().stream().findFirst().map(AuthorizationRule::getKeys)
+                        .map(EventHubAuthorizationKey::primaryConnectionString)
+                        .map(s -> new ConnectionStringBuilder(s).setEventHubName(eventHubName).toString()).orElseThrow(
+                        () -> new RuntimeException(
+                                String.format("Failed to fetch connection string of '%s'", eventHubName), null));
+    }
+
+    private <K, V> void close(Map<K, V> map, Function<V, CompletableFuture<Void>> close) {
+        CompletableFuture.allOf(map.values().stream().map(close).toArray(CompletableFuture[]::new))
+                         .exceptionally((ex) -> {
+                             LOGGER.warn("Failed to clean event hub client factory", ex);
+                             return null;
+                         });
     }
 
     @Override
     public void destroy() throws Exception {
-        Stream<CompletableFuture<Void>> closeClientFutures = clientMap.values().stream().map(EventHubClient::close);
-        Stream<CompletableFuture<Void>> closeSenderFutures =
-                partitionSenderMap.values().stream().map(PartitionSender::close);
-        Stream<CompletableFuture<Void>> closeProcessorFutures =
-                processorHostMap.values().stream().map(EventProcessorHost::unregisterEventProcessor);
-        CompletableFuture.allOf(Stream.of(closeClientFutures, closeSenderFutures, closeProcessorFutures)
-                                      .toArray(CompletableFuture[]::new)).exceptionally((ex) -> {
-            LOGGER.warn("Failed to clean event hub client factory", ex);
-            return null;
-        });
+        close(clientsByName, EventHubClient::close);
+        close(partitionSenderMap, PartitionSender::close);
+        close(processorHostMap, EventProcessorHost::unregisterEventProcessor);
     }
+
 }

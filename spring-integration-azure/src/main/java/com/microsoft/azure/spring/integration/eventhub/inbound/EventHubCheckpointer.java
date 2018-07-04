@@ -25,8 +25,8 @@ public class EventHubCheckpointer implements Checkpointer<EventData> {
 
     @Override
     public CompletableFuture<Void> checkpoint(EventData eventData) {
-        // event hub event processor host unsupported
-        return null;
+        // Event hub event processor host unsupported
+        throw new UnsupportedOperationException();
     }
 
     public void addPartitionContext(PartitionContext partitionContext) {
