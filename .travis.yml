@@ -3,5 +3,7 @@ jdk:
   - oraclejdk8
 
 script:
-  - mvn clean install
+  - mvn clean test
 
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
