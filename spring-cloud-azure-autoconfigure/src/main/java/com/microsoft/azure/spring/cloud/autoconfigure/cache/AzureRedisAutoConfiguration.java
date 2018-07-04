@@ -10,6 +10,9 @@ import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.redis.RedisCache;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureProperties;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -21,6 +24,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 
 /**
@@ -34,6 +38,14 @@ import java.io.IOException;
 @ConditionalOnProperty("spring.cloud.azure.redis.name")
 @EnableConfigurationProperties(AzureRedisProperties.class)
 public class AzureRedisAutoConfiguration {
+
+    @Autowired(required = false)
+    private TelemetryTracker telemetryTracker;
+
+    @PostConstruct
+    public void triggerTelemetry() {
+        TelemetryUtils.telemetryTriggerEvent(telemetryTracker, getClass().getSimpleName());
+    }
 
     @ConditionalOnMissingBean
     @Primary

@@ -7,7 +7,10 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.sql;
 
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryUtils;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -25,6 +28,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 /**
@@ -42,6 +46,14 @@ import javax.sql.DataSource;
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 public class AzureSqlAutoConfiguration {
 
+    @Autowired(required = false)
+    private static TelemetryTracker telemetryTracker;
+
+    @PostConstruct
+    public void triggerTelemetry() {
+        TelemetryUtils.telemetryTriggerEvent(telemetryTracker, getClass().getSimpleName());
+    }
+
     /**
      * The Sql Server Configuration for the {@link SqlServerJdbcDataSourcePropertiesUpdater}
      * based on the {@link DatabaseType#SQLSERVER}.
@@ -53,6 +65,7 @@ public class AzureSqlAutoConfiguration {
         @Bean
         public JdbcDataSourcePropertiesUpdater defaultSqlServerJdbcInfoProvider(AzureSqlProperties
                 azureSqlProperties, AzureAdmin azureAdmin) {
+
             return new SqlServerJdbcDataSourcePropertiesUpdater(azureSqlProperties, azureAdmin);
         }
     }

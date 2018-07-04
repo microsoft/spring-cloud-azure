@@ -12,6 +12,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
 import static com.microsoft.applicationinsights.core.dependencies.apachecommons.codec.digest.DigestUtils.sha256Hex;
 
@@ -19,6 +20,8 @@ import static com.microsoft.applicationinsights.core.dependencies.apachecommons.
 public class TelemetryUtils {
 
     private static final String UNKNOWN_MAC = "Unknown-Mac-Address";
+
+    private static final String EVENT_NAME = "spring-cloud-azure";
 
     private static String getMacAddress() {
         try {
@@ -39,5 +42,11 @@ public class TelemetryUtils {
         }
 
         return sha256Hex(mac);
+    }
+
+    public static void telemetryTriggerEvent(TelemetryTracker tracker, String serviceName) {
+        if (tracker != null) {
+            tracker.trackEventWithServiceName(EVENT_NAME, serviceName);
+        }
     }
 }
