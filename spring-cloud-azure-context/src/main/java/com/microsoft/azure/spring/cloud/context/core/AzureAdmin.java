@@ -9,6 +9,10 @@ package com.microsoft.azure.spring.cloud.context.core;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.eventhub.EventHub;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
+import com.microsoft.azure.management.servicebus.Queue;
+import com.microsoft.azure.management.servicebus.ServiceBusNamespace;
+import com.microsoft.azure.management.servicebus.ServiceBusSubscription;
+import com.microsoft.azure.management.servicebus.Topic;
 import com.microsoft.azure.management.sql.SqlServer;
 import com.microsoft.azure.management.storage.StorageAccount;
 import org.springframework.util.Assert;
@@ -104,7 +108,7 @@ public class AzureAdmin {
 
     public SqlServer createSqlServer(String sqlServerName, String username, String password) {
         return azure.sqlServers().define(sqlServerName).withRegion(region).withExistingResourceGroup(resourceGroup)
-             .withAdministratorLogin(username).withAdministratorPassword(password).create();
+                    .withAdministratorLogin(username).withAdministratorPassword(password).create();
     }
 
     public SqlServer getOrCreateSqlServer(String sqlServerName, String username, String password) {
@@ -128,4 +132,78 @@ public class AzureAdmin {
     public boolean sqlServerExists(String sqlServerName) {
         return azure.sqlServers().getByResourceGroup(resourceGroup, sqlServerName) != null;
     }
+
+    public ServiceBusNamespace getOrCreateServiceBusNamespace(String namespace) {
+        ServiceBusNamespace serviceBusNamespace = getServiceBusNamespace(namespace);
+
+        if (serviceBusNamespace != null) {
+            return serviceBusNamespace;
+        }
+
+        return createServiceBusNamespace(namespace);
+    }
+
+    public ServiceBusNamespace getServiceBusNamespace(String namespace) {
+        return azure.serviceBusNamespaces().getByResourceGroup(resourceGroup, namespace);
+    }
+
+    public ServiceBusNamespace createServiceBusNamespace(String namespace) {
+        return azure.serviceBusNamespaces().define(namespace).withRegion(region)
+                    .withExistingResourceGroup(resourceGroup).create();
+    }
+
+    public Topic getOrCreateServiceBusTopic(ServiceBusNamespace namespace, String name) {
+        Topic topic = getServiceBusTopic(namespace, name);
+
+        if (topic != null) {
+            return topic;
+        }
+
+        return createServiceBusTopic(namespace, name);
+    }
+
+    public Queue getOrCreateServiceBusQueue(ServiceBusNamespace namespace, String name) {
+        Queue queue = getServiceBusQueue(namespace, name);
+
+        if (queue != null) {
+            return queue;
+        }
+
+        return createServiceBusQueue(namespace, name);
+    }
+
+    public Topic getServiceBusTopic(ServiceBusNamespace namespace, String name) {
+        return namespace.topics().getByName(name);
+    }
+
+    public Queue getServiceBusQueue(ServiceBusNamespace namespace, String name) {
+        return namespace.queues().getByName(name);
+    }
+
+    public Topic createServiceBusTopic(ServiceBusNamespace namespace, String name) {
+        return namespace.topics().define(name).create();
+    }
+
+    public Queue createServiceBusQueue(ServiceBusNamespace namespace, String name) {
+        return namespace.queues().define(name).create();
+    }
+
+    public ServiceBusSubscription getOrCreateServiceBusTopicSubscription(Topic topic, String name) {
+        ServiceBusSubscription subscription = getServiceBusTopicSubscription(topic, name);
+
+        if (subscription != null) {
+            return subscription;
+        }
+
+        return createServiceBusTopicSubscription(topic, name);
+    }
+
+    public ServiceBusSubscription getServiceBusTopicSubscription(Topic topic, String name) {
+        return topic.subscriptions().getByName(name);
+    }
+
+    public ServiceBusSubscription createServiceBusTopicSubscription(Topic topic, String name) {
+        return topic.subscriptions().define(name).create();
+    }
+
 }
