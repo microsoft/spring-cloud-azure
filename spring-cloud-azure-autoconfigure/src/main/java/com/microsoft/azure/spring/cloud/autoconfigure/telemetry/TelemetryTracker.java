@@ -32,12 +32,12 @@ public class TelemetryTracker {
 
     private final Map<String, String> defaultProperties;
 
-    public TelemetryTracker(Azure azure) {
+    public TelemetryTracker(Azure azure, String resourceGroup) {
         this.client = new TelemetryClient();
         this.defaultProperties =  new HashMap<>();
 
         this.defaultProperties.put(PROPERTY_SUBSCRIPTION_ID, azure.getCurrentSubscription().subscriptionId());
-        this.defaultProperties.put(PROPERTY_RESOURCE_GROUP, azure.resourceGroups().toString());
+        this.defaultProperties.put(PROPERTY_RESOURCE_GROUP, resourceGroup);
         this.defaultProperties.put(PROPERTY_VERSION, PROJECT_INFO);
         this.defaultProperties.put(PROPERTY_INSTALLATION_ID, TelemetryUtils.getHashMac());
     }

@@ -57,7 +57,7 @@ public class AzureContextAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "spring.cloud.azure.telemetryAllowed", havingValue = "true", matchIfMissing = true)
-    public TelemetryTracker telemetryTracker(Azure azure) {
-        return new TelemetryTracker(azure);
+    public TelemetryTracker telemetryTracker(Azure azure, AzureProperties azureProperties) {
+        return new TelemetryTracker(azure, azureProperties.getResourceGroup());
     }
 }

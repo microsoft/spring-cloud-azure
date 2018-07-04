@@ -7,6 +7,7 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.context;
 
 import com.microsoft.azure.management.Azure;
+import com.microsoft.azure.management.resources.Subscription;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.cloud.context.core.CredentialsProvider;
 import org.junit.Test;
@@ -17,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 public class AzureContextAutoConfigurationTest {
     private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
@@ -29,7 +31,6 @@ public class AzureContextAutoConfigurationTest {
                 .withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
                 .withPropertyValues("spring.cloud.azure.resourceGroup=group1")
                 .withPropertyValues("spring.cloud.azure.region=westUS")
-                .withPropertyValues("spring.cloud.azure.telemetryAllowed=false")
                 .run(context -> {
                     assertThat(context).hasSingleBean(AzureProperties.class);
                     assertThat(context.getBean(AzureProperties.class).getCredentialFilePath()).isEqualTo("credential");
@@ -56,7 +57,13 @@ public class AzureContextAutoConfigurationTest {
 
         @Bean
         Azure azure() {
-            return mock(Azure.class);
+            final Azure azure = mock(Azure.class);
+            final Subscription subscription = mock(Subscription.class);
+
+            when(azure.getCurrentSubscription()).thenReturn(subscription);
+            when(subscription.subscriptionId()).thenReturn("Fake-Id");
+
+            return azure;
         }
 
         @Bean
