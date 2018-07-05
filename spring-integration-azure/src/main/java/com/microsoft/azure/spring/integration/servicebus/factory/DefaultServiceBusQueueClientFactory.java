@@ -26,13 +26,15 @@ import java.util.function.Function;
 public class DefaultServiceBusQueueClientFactory extends AbstractServiceBusSenderFactory
         implements ServiceBusQueueClientFactory {
 
+    private final Function<String, IQueueClient> queueClientCreator = Memoizer.memoize(this::createQueueClient);
+
     public DefaultServiceBusQueueClientFactory(AzureAdmin azureAdmin, String namespace) {
         super(azureAdmin, namespace);
     }
 
     @Override
     public Function<String, IQueueClient> getQueueClientCreator() {
-        return Memoizer.memoize(this::createQueueClient);
+        return queueClientCreator;
     }
 
     @Override

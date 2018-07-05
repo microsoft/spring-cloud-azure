@@ -26,6 +26,9 @@ import java.util.function.Function;
  */
 public class DefaultServiceBusTopicClientFactory extends AbstractServiceBusSenderFactory
         implements ServiceBusTopicClientFactory {
+    private final Function<Tuple<String, String>, ISubscriptionClient> subscriptionClientCreator = Memoizer.memoize(this::createSubscriptionClient);
+
+    private final Function<String, ? extends IMessageSender> sendCreator = Memoizer.memoize(this::createTopicClient);
 
     public DefaultServiceBusTopicClientFactory(AzureAdmin azureAdmin, String namespace) {
         super(azureAdmin, namespace);
@@ -33,12 +36,12 @@ public class DefaultServiceBusTopicClientFactory extends AbstractServiceBusSende
 
     @Override
     public Function<Tuple<String, String>, ISubscriptionClient> getSubscriptionClientCreator() {
-        return Memoizer.memoize(this::createSubscriptionClient);
+        return subscriptionClientCreator;
     }
 
     @Override
     public Function<String, ? extends IMessageSender> getSenderCreator() {
-        return Memoizer.memoize(this::createTopicClient);
+        return sendCreator;
     }
 
     private ISubscriptionClient createSubscriptionClient(Tuple<String, String> nameAndSubscription) {
