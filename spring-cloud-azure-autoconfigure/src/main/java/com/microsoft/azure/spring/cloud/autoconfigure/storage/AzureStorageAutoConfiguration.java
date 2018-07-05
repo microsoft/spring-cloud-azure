@@ -6,16 +6,18 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 
-import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.storage.StorageAccount;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureProperties;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryUtils;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.cloud.context.core.AzureUtil;
 import com.microsoft.azure.spring.cloud.storage.AzureStorageProtocolResolver;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -25,6 +27,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import javax.annotation.PostConstruct;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 
@@ -41,6 +44,14 @@ import java.security.InvalidKeyException;
 @Import(AzureStorageProtocolResolver.class)
 public class AzureStorageAutoConfiguration {
     private static final Log LOGGER = LogFactory.getLog(AzureStorageAutoConfiguration.class);
+
+    @Autowired(required = false)
+    private TelemetryTracker telemetryTracker;
+
+    @PostConstruct
+    public void triggerTelemetry() {
+        TelemetryUtils.telemetryTriggerEvent(telemetryTracker, getClass().getSimpleName());
+    }
 
     @Bean
     @ConditionalOnMissingBean

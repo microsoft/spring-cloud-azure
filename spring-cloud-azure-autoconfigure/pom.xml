@@ -82,7 +82,7 @@
             <artifactId>applicationinsights-core</artifactId>
             <version>${azure.applicationinsights.version}</version>
         </dependency>
-      
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
@@ -92,15 +92,22 @@
     </dependencies>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
         <resources>
-            <!-- Filtering Resource -->
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>META-INF/project.properties</include>
-                </includes>
-            </resource>
             <!-- Raw Resource -->
             <resource>
                 <directory>src/main/resources</directory>
