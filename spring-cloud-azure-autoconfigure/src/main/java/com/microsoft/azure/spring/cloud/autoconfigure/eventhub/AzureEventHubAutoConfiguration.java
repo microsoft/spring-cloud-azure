@@ -6,14 +6,15 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.eventhub;
 
-import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.eventhub.AuthorizationRule;
 import com.microsoft.azure.management.eventhub.EventHub;
 import com.microsoft.azure.management.eventhub.EventHubAuthorizationKey;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
-import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureProperties;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryUtils;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -26,6 +27,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+import javax.annotation.PostConstruct;
 import java.util.Arrays;
 
 /**
@@ -49,6 +51,14 @@ public class AzureEventHubAutoConfiguration {
     private static final String SASL_MECHANISM = "sasl.mechanism";
     private static final String SASL_MECHANISM_PLAIN = "PLAIN";
     private static final int PORT = 9093;
+
+    @Autowired(required = false)
+    private TelemetryTracker telemetryTracker;
+
+    @PostConstruct
+    public void triggerTelemetry() {
+        TelemetryUtils.telemetryTriggerEvent(telemetryTracker, getClass().getSimpleName());
+    }
 
     @ConditionalOnMissingBean
     @Primary

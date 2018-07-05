@@ -7,6 +7,7 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.context;
 
 import com.microsoft.azure.management.Azure;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.cloud.context.core.CredentialsProvider;
 import com.microsoft.azure.spring.cloud.context.core.DefaultCredentialsProvider;
@@ -52,5 +53,11 @@ public class AzureContextAutoConfiguration {
     @ConditionalOnMissingBean
     public Azure azure() throws IOException {
         return Azure.authenticate(credentialsProvider().getCredentials()).withDefaultSubscription();
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "spring.cloud.azure.telemetryAllowed", havingValue = "true", matchIfMissing = true)
+    public TelemetryTracker telemetryTracker(Azure azure, AzureProperties azureProperties) {
+        return new TelemetryTracker(azure, azureProperties.getResourceGroup());
     }
 }
