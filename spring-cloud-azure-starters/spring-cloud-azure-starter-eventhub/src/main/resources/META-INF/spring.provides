@@ -1,1 +1,1 @@
-provides: spring-cloud-azure-eventhub, spring-cloud-azure-autoconfigure
+provides: spring-integration-azure, spring-cloud-azure-autoconfigure
