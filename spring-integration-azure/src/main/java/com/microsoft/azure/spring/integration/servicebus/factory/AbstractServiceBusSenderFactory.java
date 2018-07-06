@@ -12,6 +12,7 @@ import com.microsoft.azure.management.servicebus.ServiceBusNamespace;
 import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.integration.core.Memoizer;
+import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
@@ -40,7 +41,7 @@ public abstract class AbstractServiceBusSenderFactory implements ServiceBusSende
         return namespace.authorizationRules().list().stream().findFirst().map(AuthorizationRule::getKeys)
                         .map(AuthorizationKeys::primaryConnectionString)
                         .map(s -> new ConnectionStringBuilder(s, name).toString()).orElseThrow(
-                        () -> new RuntimeException(String.format("Service bus namespace '%s' key is empty", name),
-                                null));
+                        () -> new ServiceBusRuntimeException(
+                                String.format("Service bus namespace '%s' key is empty", name), null));
     }
 }
