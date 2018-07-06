@@ -26,7 +26,8 @@ import java.util.function.Function;
  */
 public class DefaultServiceBusTopicClientFactory extends AbstractServiceBusSenderFactory
         implements ServiceBusTopicClientFactory {
-    private final Function<Tuple<String, String>, ISubscriptionClient> subscriptionClientCreator = Memoizer.memoize(this::createSubscriptionClient);
+    private final Function<Tuple<String, String>, ISubscriptionClient> subscriptionClientCreator =
+            Memoizer.memoize(this::createSubscriptionClient);
 
     private final Function<String, ? extends IMessageSender> sendCreator = Memoizer.memoize(this::createTopicClient);
 
