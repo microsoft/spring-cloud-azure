@@ -3,6 +3,8 @@ com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfigura
 com.microsoft.azure.spring.cloud.autoconfigure.cache.AzureRedisAutoConfiguration,\
 com.microsoft.azure.spring.cloud.autoconfigure.storage.AzureStorageAutoConfiguration,\
 com.microsoft.azure.spring.cloud.autoconfigure.eventhub.AzureEventHubAutoConfiguration,\
-com.microsoft.azure.spring.cloud.autoconfigure.sql.AzureSqlAutoConfiguration
+com.microsoft.azure.spring.cloud.autoconfigure.sql.AzureSqlAutoConfiguration,\
+com.microsoft.azure.spring.cloud.autoconfigure.servicebus.AzureServiceBusQueueAutoConfiguration,\
+com.microsoft.azure.spring.cloud.autoconfigure.servicebus.AzureServiceBusTopicAutoConfiguration
 
 
