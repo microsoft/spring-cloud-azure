@@ -6,13 +6,13 @@
 
 package com.microsoft.azure.spring.integration.servicebus;
 
-import com.google.common.base.Strings;
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.spring.integration.core.PartitionSupplier;
 import com.microsoft.azure.spring.integration.core.SendOperation;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusSenderFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -33,9 +33,11 @@ public class ServiceBusSendTemplate<T extends ServiceBusSenderFactory> implement
             PartitionSupplier partitionSupplier) {
         Assert.hasText(destination, "destination can't be null or empty");
         String partitionKey = getPartitionKey(partitionSupplier);
-        if (Strings.isNullOrEmpty(partitionKey)) {
+
+        if (StringUtils.hasText(partitionKey)) {
             message.setPartitionKey(partitionKey);
         }
+
         return this.senderFactory.getSenderCreator().apply(destination).sendAsync(message);
     }
 
@@ -44,11 +46,11 @@ public class ServiceBusSendTemplate<T extends ServiceBusSenderFactory> implement
             return "";
         }
 
-        if (!Strings.isNullOrEmpty(partitionSupplier.getPartitionKey())) {
+        if (StringUtils.hasText(partitionSupplier.getPartitionKey())) {
             return partitionSupplier.getPartitionKey();
         }
 
-        if (!Strings.isNullOrEmpty(partitionSupplier.getPartitionId())) {
+        if (StringUtils.hasText(partitionSupplier.getPartitionId())) {
             return partitionSupplier.getPartitionId();
         }
 
