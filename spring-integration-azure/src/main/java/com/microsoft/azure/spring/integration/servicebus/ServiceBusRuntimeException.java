@@ -9,7 +9,7 @@ package com.microsoft.azure.spring.integration.servicebus;
 import org.springframework.core.NestedRuntimeException;
 
 /**
- * The Azure Event Hub specific {@link NestedRuntimeException}.
+ * The Azure Service Bus specific {@link NestedRuntimeException}.
  *
  * @author Warren Zhu
  */
