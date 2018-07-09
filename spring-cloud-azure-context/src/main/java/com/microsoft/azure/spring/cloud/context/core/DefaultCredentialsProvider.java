@@ -8,8 +8,8 @@ package com.microsoft.azure.spring.cloud.context.core;
 
 import com.google.common.base.Strings;
 import com.microsoft.azure.credentials.ApplicationTokenCredentials;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
@@ -23,7 +23,7 @@ import java.io.IOException;
  */
 public class DefaultCredentialsProvider implements CredentialsProvider {
 
-    private static final Log LOGGER = LogFactory.getLog(DefaultCredentialsProvider.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultCredentialsProvider.class);
 
     private ApplicationTokenCredentials credentials;
 

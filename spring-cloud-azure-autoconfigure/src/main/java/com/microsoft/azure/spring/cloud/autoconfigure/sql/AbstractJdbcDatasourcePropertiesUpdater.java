@@ -7,8 +7,8 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.sql;
 
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -19,7 +19,7 @@ import org.springframework.util.StringUtils;
  * @author Warren Zhu
  */
 public abstract class AbstractJdbcDatasourcePropertiesUpdater implements JdbcDataSourcePropertiesUpdater {
-    protected static final Log LOGGER = LogFactory.getLog(AbstractJdbcDatasourcePropertiesUpdater.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractJdbcDatasourcePropertiesUpdater.class);
 
     protected final DatabaseType databaseType;
     protected final AzureSqlProperties azureSqlProperties;
