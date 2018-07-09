@@ -9,8 +9,8 @@ package com.microsoft.azure.spring.integration.servicebus;
 import com.microsoft.azure.servicebus.ExceptionPhase;
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.IMessageHandler;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 
 import java.util.Collections;
@@ -24,7 +24,7 @@ import java.util.function.Consumer;
  * @author Warren Zhu
  */
 public class ServiceBusMessageHandler implements IMessageHandler {
-    private static final Log LOGGER = LogFactory.getLog(ServiceBusMessageHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceBusMessageHandler.class);
     private final Set<Consumer<Iterable<IMessage>>> consumers;
 
     public ServiceBusMessageHandler(@NonNull Set<Consumer<Iterable<IMessage>>> consumers) {

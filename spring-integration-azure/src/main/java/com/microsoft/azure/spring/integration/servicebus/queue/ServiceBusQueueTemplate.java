@@ -14,8 +14,8 @@ import com.microsoft.azure.spring.integration.servicebus.ServiceBusMessageHandle
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusSendTemplate;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusQueueClientFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
@@ -33,7 +33,7 @@ import java.util.function.Function;
  */
 public class ServiceBusQueueTemplate extends ServiceBusSendTemplate<ServiceBusQueueClientFactory>
         implements ServiceBusQueueOperation {
-    private static final Log LOGGER = LogFactory.getLog(ServiceBusQueueTemplate.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceBusQueueTemplate.class);
 
     private final Map<String, Set<Consumer<Iterable<IMessage>>>> consumersByName = new ConcurrentHashMap<>();
     private final Function<String, Checkpointer<IMessage>> checkpointGetter =

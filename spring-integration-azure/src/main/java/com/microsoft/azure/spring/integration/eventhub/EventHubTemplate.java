@@ -17,8 +17,8 @@ import com.microsoft.azure.spring.integration.core.Checkpointer;
 import com.microsoft.azure.spring.integration.core.PartitionSupplier;
 import com.microsoft.azure.spring.cloud.context.core.Tuple;
 import com.microsoft.azure.spring.integration.eventhub.inbound.EventHubCheckpointer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import java.util.Set;
@@ -37,7 +37,7 @@ import java.util.function.Consumer;
  */
 public class EventHubTemplate implements EventHubOperation {
 
-    private static final Log LOGGER = LogFactory.getLog(EventHubTemplate.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventHubTemplate.class);
     private final ConcurrentHashMap<Tuple<String, String>, Set<Consumer<Iterable<EventData>>>>
             consumersByNameAndConsumerGroup = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Tuple<String, String>, EventHubCheckpointer> checkpointersByNameAndConsumerGroup =
