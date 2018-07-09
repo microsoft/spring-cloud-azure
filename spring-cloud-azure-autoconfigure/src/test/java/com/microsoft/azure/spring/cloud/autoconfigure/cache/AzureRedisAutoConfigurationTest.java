@@ -25,6 +25,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class AzureRedisAutoConfigurationTest {
+    private static final String KEY = "KEY";
+    private static final String HOST = "localhost";
+    private static final int PORT = 6379;
+    private static final boolean IS_SSL = true;
     private ApplicationContextRunner contextRunner = new ApplicationContextRunner().withConfiguration(
             AutoConfigurations.of(AzureContextAutoConfiguration.class, AzureRedisAutoConfiguration.class))
                                                                                    .withUserConfiguration(
@@ -41,10 +45,10 @@ public class AzureRedisAutoConfigurationTest {
             assertThat(context).hasSingleBean(AzureRedisProperties.class);
             assertThat(context.getBean(AzureRedisProperties.class).getName()).isEqualTo("redis");
             assertThat(context).hasSingleBean(RedisProperties.class);
-            assertThat(context.getBean(RedisProperties.class).getPassword()).isEqualTo("key");
-            assertThat(context.getBean(RedisProperties.class).getHost()).isEqualTo("localhost");
-            assertThat(context.getBean(RedisProperties.class).getPort()).isEqualTo(6379);
-            assertThat(context.getBean(RedisProperties.class).isSsl()).isTrue();
+            assertThat(context.getBean(RedisProperties.class).getPassword()).isEqualTo(KEY);
+            assertThat(context.getBean(RedisProperties.class).getHost()).isEqualTo(HOST);
+            assertThat(context.getBean(RedisProperties.class).getPort()).isEqualTo(PORT);
+            assertThat(context.getBean(RedisProperties.class).isSsl()).isEqualTo(IS_SSL);
         });
     }
 
@@ -67,10 +71,10 @@ public class AzureRedisAutoConfigurationTest {
             AzureAdmin azureAdmin = mock(AzureAdmin.class);
             RedisCache redisCache = mock(RedisCache.class);
             RedisAccessKeys accessKeys = mock(RedisAccessKeys.class);
-            when(accessKeys.primaryKey()).thenReturn("key");
-            when(redisCache.hostName()).thenReturn("localhost");
-            when(redisCache.nonSslPort()).thenReturn(false);
-            when(redisCache.sslPort()).thenReturn(6379);
+            when(accessKeys.primaryKey()).thenReturn(KEY);
+            when(redisCache.hostName()).thenReturn(HOST);
+            when(redisCache.nonSslPort()).thenReturn(!IS_SSL);
+            when(redisCache.sslPort()).thenReturn(PORT);
             when(redisCache.shardCount()).thenReturn(0);
             when(redisCache.getKeys()).thenReturn(accessKeys);
             when(azureAdmin.getOrCreateRedisCache(isA(String.class))).thenReturn(redisCache);
