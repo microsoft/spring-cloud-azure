@@ -10,8 +10,8 @@ import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.blob.CloudBlobClient;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
@@ -28,7 +28,7 @@ import java.net.URL;
  * @author Warren Zhu
  */
 public class BlobStorageResource extends AbstractResource implements WritableResource {
-    private static final Log LOGGER = LogFactory.getLog(BlobStorageResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BlobStorageResource.class);
 
     private final CloudBlobClient blobClient;
     private final String location;

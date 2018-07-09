@@ -18,8 +18,8 @@ import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.cloud.context.core.AzureUtil;
 import com.microsoft.azure.spring.cloud.context.core.Tuple;
 import com.microsoft.azure.spring.integration.core.Memoizer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.util.Assert;
 
@@ -36,7 +36,7 @@ import java.util.function.Function;
  * @author Warren Zhu
  */
 public class DefaultEventHubClientFactory implements EventHubClientFactory, DisposableBean {
-    private static final Log LOGGER = LogFactory.getLog(DefaultEventHubClientFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultEventHubClientFactory.class);
 
     private final Map<String, EventHubClient> clientsByName = new ConcurrentHashMap<>();
 

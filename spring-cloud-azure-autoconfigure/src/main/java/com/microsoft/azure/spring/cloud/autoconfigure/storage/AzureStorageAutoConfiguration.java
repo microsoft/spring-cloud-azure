@@ -15,8 +15,8 @@ import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.cloud.context.core.AzureUtil;
 import com.microsoft.azure.spring.cloud.storage.AzureStorageProtocolResolver;
 import com.microsoft.azure.storage.CloudStorageAccount;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -43,7 +43,7 @@ import java.security.InvalidKeyException;
 @EnableConfigurationProperties(AzureStorageProperties.class)
 @Import(AzureStorageProtocolResolver.class)
 public class AzureStorageAutoConfiguration {
-    private static final Log LOGGER = LogFactory.getLog(AzureStorageAutoConfiguration.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AzureStorageAutoConfiguration.class);
 
     @Autowired(required = false)
     private TelemetryTracker telemetryTracker;
