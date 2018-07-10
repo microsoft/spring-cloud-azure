@@ -11,6 +11,7 @@ import com.microsoft.azure.management.resources.Subscription;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryProperties;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.CredentialsProvider;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -30,29 +31,34 @@ public class AzureContextAutoConfigurationTest {
     public void testAzurePropertiesConfigured() {
         this.contextRunner.withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
                           .withPropertyValues("spring.cloud.azure.resourceGroup=group1")
-                          .withPropertyValues("spring.cloud.azure.region=westUS").run(context -> {
-            assertThat(context).hasSingleBean(AzureProperties.class);
-            assertThat(context.getBean(AzureProperties.class).getCredentialFilePath()).isEqualTo("credential");
-            assertThat(context.getBean(AzureProperties.class).getResourceGroup()).isEqualTo("group1");
-            assertThat(context.getBean(AzureProperties.class).getRegion()).isEqualTo("westUS");
-        });
+                          .withPropertyValues("spring.cloud.azure.region=westUS").
+                                  withPropertyValues(
+                                          "telemetry" + ".instrumentationKey=012345678901234567890123456789012345")
+                          .run(context -> {
+                              assertThat(context).hasSingleBean(AzureProperties.class);
+                              assertThat(context.getBean(AzureProperties.class).getCredentialFilePath())
+                                      .isEqualTo("credential");
+                              assertThat(context.getBean(AzureProperties.class).getResourceGroup()).isEqualTo("group1");
+                              assertThat(context.getBean(AzureProperties.class).getRegion()).isEqualTo("westUS");
+                          });
     }
 
     @Test
     public void testTelemetryPropertiesConfigured() {
-        this.contextRunner
-                .withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
-                .withPropertyValues("telemetry.instrumentationKey=abc-123")
-                .run(context -> {
-                    assertThat(context).hasSingleBean(TelemetryProperties.class);
-                    assertThat(context.getBean(TelemetryProperties.class).getInstrumentationKey()).isEqualTo("abc-123");
-                });
+        this.contextRunner.withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
+                          .withPropertyValues("telemetry.instrumentationKey=012345678901234567890123456789012345")
+                          .run(context -> {
+                              assertThat(context).hasSingleBean(TelemetryProperties.class);
+                              assertThat(context.getBean(TelemetryProperties.class).getInstrumentationKey())
+                                      .isEqualTo("012345678901234567890123456789012345");
+                          });
     }
 
     @Test
     public void testAzurePropertiesTelemetryMissing() {
         this.contextRunner.withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
                           .withPropertyValues("spring.cloud.azure.resourceGroup=group1")
+                          .withPropertyValues("telemetry.instrumentationKey=012345678901234567890123456789012345")
                           .run(context -> assertThat(context.getBean(TelemetryTracker.class)).isNotNull());
     }
 
@@ -61,6 +67,8 @@ public class AzureContextAutoConfigurationTest {
         this.contextRunner.withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
                           .withPropertyValues("spring.cloud.azure.resourceGroup=group1")
                           .withPropertyValues("spring.cloud.azure.telemetryAllowed=true")
+                          .withPropertyValues("telemetry.instrumentationKey=012345678901234567890123456789012345")
+
                           .run(context -> assertThat(context.getBean(TelemetryTracker.class)).isNotNull());
     }
 
@@ -89,6 +97,11 @@ public class AzureContextAutoConfigurationTest {
             when(subscription.subscriptionId()).thenReturn("Fake-Id");
 
             return azure;
+        }
+
+        @Bean
+        CredentialsProvider credentialsProvider() {
+            return mock(CredentialsProvider.class);
         }
 
         @Bean
