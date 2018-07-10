@@ -8,6 +8,7 @@ package com.microsoft.azure.spring.cloud.autoconfigure.context;
 
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.resources.Subscription;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryProperties;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import org.junit.Test;
@@ -35,6 +36,17 @@ public class AzureContextAutoConfigurationTest {
             assertThat(context.getBean(AzureProperties.class).getResourceGroup()).isEqualTo("group1");
             assertThat(context.getBean(AzureProperties.class).getRegion()).isEqualTo("westUS");
         });
+    }
+
+    @Test
+    public void testTelemetryPropertiesConfigured() {
+        this.contextRunner
+                .withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
+                .withPropertyValues("telemetry.instrumentationKey=abc-123")
+                .run(context -> {
+                    assertThat(context).hasSingleBean(TelemetryProperties.class);
+                    assertThat(context.getBean(TelemetryProperties.class).getInstrumentationKey()).isEqualTo("abc-123");
+                });
     }
 
     @Test

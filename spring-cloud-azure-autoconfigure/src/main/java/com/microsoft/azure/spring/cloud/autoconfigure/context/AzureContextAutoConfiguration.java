@@ -7,6 +7,7 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.context;
 
 import com.microsoft.azure.management.Azure;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryProperties;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.cloud.context.core.CredentialsProvider;
@@ -16,6 +17,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
@@ -26,7 +28,7 @@ import java.io.IOException;
  * @author Warren Zhu
  */
 @Configuration
-@EnableConfigurationProperties(AzureProperties.class)
+@EnableConfigurationProperties({AzureProperties.class, TelemetryProperties.class})
 @ConditionalOnClass(name = "com.microsoft.azure.management.Azure")
 @ConditionalOnProperty("spring.cloud.azure.credentialFilePath")
 public class AzureContextAutoConfiguration {
@@ -57,8 +59,9 @@ public class AzureContextAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "spring.cloud.azure.telemetryAllowed", havingValue = "true", matchIfMissing = true)
-    public TelemetryTracker telemetryTracker(Azure azure, AzureProperties azureProperties) {
-        return new TelemetryTracker(azure.getCurrentSubscription().subscriptionId(),
-                azureProperties.getResourceGroup());
+    public TelemetryTracker telemetryTracker(Azure azure, AzureProperties azureProperties,
+            TelemetryProperties telemetryProperties) {
+        return new TelemetryTracker(azure.getCurrentSubscription().subscriptionId(), azureProperties.getResourceGroup(),
+                    telemetryProperties.getInstrumentationKey());
     }
 }
