@@ -20,6 +20,7 @@ import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -46,6 +47,7 @@ public class AzureRedisAutoConfiguration {
     }
 
     @ConditionalOnMissingBean
+    @Primary
     @Bean
     public RedisProperties redisProperties(AzureAdmin azureAdmin, AzureRedisProperties azureRedisProperties)
             throws IOException {

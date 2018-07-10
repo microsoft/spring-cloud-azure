@@ -23,6 +23,7 @@ import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
@@ -58,6 +59,7 @@ public class AzureEventHubAutoConfiguration {
     }
 
     @ConditionalOnMissingBean
+    @Primary
     @Bean
     public KafkaProperties kafkaProperties(AzureAdmin azureAdmin, AzureEventHubProperties eventHubProperties) {
         KafkaProperties kafkaProperties = new KafkaProperties();
