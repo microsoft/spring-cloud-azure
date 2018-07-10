@@ -119,7 +119,7 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>application.properties</include>
+                    <include>telemetry.config</include>
                 </includes>
             </resource>
         </resources>
