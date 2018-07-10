@@ -12,7 +12,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties("ai")
+@ConfigurationProperties("telemetry")
 public class TelemetryProperties {
 
     private String instrumentationKey;

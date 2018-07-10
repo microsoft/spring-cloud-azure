@@ -33,11 +33,9 @@ public class TelemetryTracker {
 
     private final Map<String, String> defaultProperties;
 
-    private TelemetryProperties telemetryProperties;
-
     public TelemetryTracker(Azure azure, String resourceGroup, TelemetryProperties telemetryProperties) {
-        this.client = new TelemetryClient();
-        this.telemetryProperties = telemetryProperties;
+        this.client = this.getTelemetryClient(telemetryProperties);
+
         this.defaultProperties =  new HashMap<>();
 
         this.defaultProperties.put(PROPERTY_SUBSCRIPTION_ID, azure.getCurrentSubscription().subscriptionId());
@@ -46,13 +44,24 @@ public class TelemetryTracker {
         this.defaultProperties.put(PROPERTY_INSTALLATION_ID, TelemetryUtils.getHashMac());
     }
 
-    private void trackEvent(@NonNull String name, @NonNull Map<String, String> customProperties) {
-        final String instrumentationKey = this.telemetryProperties.getInstrumentationKey();
+    private TelemetryClient getTelemetryClient(TelemetryProperties telemetryProperties) {
+        final String instrumentationKey = telemetryProperties.getInstrumentationKey();
 
         if (StringUtils.hasText(instrumentationKey)) {
+            final TelemetryClient client = new TelemetryClient();
+
+            client.getContext().setInstrumentationKey(instrumentationKey);
+
+            return client;
+        }
+
+        return null;
+    }
+
+    private void trackEvent(@NonNull String name, @NonNull Map<String, String> customProperties) {
+        if (this.client != null) {
             this.defaultProperties.forEach(customProperties::putIfAbsent);
 
-            this.client.getContext().setInstrumentationKey(instrumentationKey);
             this.client.trackEvent(name, customProperties, null);
             this.client.flush();
         }

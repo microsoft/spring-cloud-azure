@@ -15,8 +15,6 @@
 
     <properties>
         <azure.applicationinsights.version>2.0.1</azure.applicationinsights.version>
-        <!-- Instrumentation Key will be filled by maven args -Dai.instrumentationKey=xxxx for release -->
-        <ai.instrumentationKey>${place-holder}</ai.instrumentationKey>
     </properties>
 
     <dependencies>

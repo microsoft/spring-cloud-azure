@@ -45,7 +45,7 @@ public class AzureContextAutoConfigurationTest {
     public void testTelemetryPropertiesConfigured() {
         this.contextRunner
                 .withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
-                .withPropertyValues("ai.instrumentationKey=abc-123")
+                .withPropertyValues("telemetry.instrumentationKey=abc-123")
                 .run(context -> {
                     assertThat(context).hasSingleBean(TelemetryProperties.class);
                     assertThat(context.getBean(TelemetryProperties.class).getInstrumentationKey()).isEqualTo("abc-123");
