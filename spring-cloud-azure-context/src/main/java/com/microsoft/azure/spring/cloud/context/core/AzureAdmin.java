@@ -14,6 +14,7 @@ import com.microsoft.azure.management.servicebus.Queue;
 import com.microsoft.azure.management.servicebus.ServiceBusNamespace;
 import com.microsoft.azure.management.servicebus.ServiceBusSubscription;
 import com.microsoft.azure.management.servicebus.Topic;
+import com.microsoft.azure.management.sql.SqlDatabase;
 import com.microsoft.azure.management.sql.SqlServer;
 import com.microsoft.azure.management.storage.StorageAccount;
 import org.springframework.util.Assert;
@@ -102,11 +103,14 @@ public class AzureAdmin {
                     .anyMatch(c -> c.equals(group));
     }
 
-    public void createSqlDatabaseIfNotExists(String sqlServerName, String databaseName) {
-        if (!sqlDatabaseExists(sqlServerName, databaseName)) {
-            azure.sqlServers().databases().define(databaseName)
-                 .withExistingSqlServer(resourceGroup, sqlServerName, region).create();
+    public SqlDatabase getOrCreateSqlDatabase(String sqlServerName, String databaseName) {
+        SqlDatabase sqlDatabase = getSqlDatabase(sqlServerName, databaseName);
+        if (sqlDatabase != null){
+            return sqlDatabase;
         }
+
+        return azure.sqlServers().databases().define(databaseName)
+                 .withExistingSqlServer(resourceGroup, sqlServerName, region).create();
     }
 
     public SqlServer createSqlServer(String sqlServerName, String username, String password) {
@@ -128,8 +132,8 @@ public class AzureAdmin {
         return azure.sqlServers().getByResourceGroup(resourceGroup, sqlServerName);
     }
 
-    public boolean sqlDatabaseExists(String sqlServerName, String databaseName) {
-        return azure.sqlServers().databases().getBySqlServer(resourceGroup, sqlServerName, databaseName) != null;
+    public SqlDatabase getSqlDatabase(String sqlServerName, String databaseName) {
+        return azure.sqlServers().databases().getBySqlServer(resourceGroup, sqlServerName, databaseName);
     }
 
     public boolean sqlServerExists(String sqlServerName) {

@@ -9,7 +9,6 @@ package com.microsoft.azure.spring.cloud.autoconfigure.servicebus;
 import com.microsoft.azure.servicebus.QueueClient;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryUtils;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.integration.servicebus.factory.DefaultServiceBusQueueClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusQueueClientFactory;
@@ -43,19 +42,19 @@ public class AzureServiceBusQueueAutoConfiguration {
 
     @PostConstruct
     public void triggerTelemetry() {
-        TelemetryUtils.telemetryTriggerEvent(telemetryTracker, getClass().getSimpleName());
+        TelemetryTracker.triggerEvent(telemetryTracker, getClass().getSimpleName());
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ServiceBusQueueClientFactory clientFactory(AzureAdmin azureAdmin, AzureServiceBusProperties
-            serviceBusProperties) {
+    public ServiceBusQueueClientFactory queueClientFactory(AzureAdmin azureAdmin,
+            AzureServiceBusProperties serviceBusProperties) {
         return new DefaultServiceBusQueueClientFactory(azureAdmin, serviceBusProperties.getNamespace());
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ServiceBusQueueOperation operation(ServiceBusQueueClientFactory factory){
+    public ServiceBusQueueOperation queueOperation(ServiceBusQueueClientFactory factory) {
         return new ServiceBusQueueTemplate(factory);
     }
 }

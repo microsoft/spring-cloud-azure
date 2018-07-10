@@ -40,14 +40,12 @@ public abstract class AbstractJdbcDatasourcePropertiesUpdater implements JdbcDat
 
         if (StringUtils.isEmpty(dataSourceProperties.getUsername())) {
             dataSourceProperties.setUsername(getUserName());
-            LOGGER.info(String.format("spring.datasource.username is auto config into '%s'",
-                    getUserName()));
+            LOGGER.info("spring.datasource.username is auto config into '{}'", getUserName());
         }
 
         if (StringUtils.isEmpty(dataSourceProperties.getDriverClassName())) {
             dataSourceProperties.setDriverClassName(getDriverClass());
-            LOGGER.info(String.format("spring.datasource.driverClassName is auto config into '%s'",
-                    getDriverClass()));
+            LOGGER.info("spring.datasource.driverClassName is auto config into '{}'", getDriverClass());
         } else {
             LOGGER.warn("spring.datasource.driver-class-name is specified. " +
                     "Not using generated Cloud SQL configuration");
@@ -60,10 +58,11 @@ public abstract class AbstractJdbcDatasourcePropertiesUpdater implements JdbcDat
         }
     }
 
-    String getDriverClass(){
+    String getDriverClass() {
         return databaseType.getJdbcDriverName();
     }
 
     abstract String getUserName();
+
     abstract String getUrl(DataSourceProperties dataSourceProperties);
 }

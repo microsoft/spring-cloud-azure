@@ -6,12 +6,9 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.cache;
 
-import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.redis.RedisCache;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
-import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureProperties;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryUtils;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -23,7 +20,6 @@ import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -46,13 +42,13 @@ public class AzureRedisAutoConfiguration {
 
     @PostConstruct
     public void triggerTelemetry() {
-        TelemetryUtils.telemetryTriggerEvent(telemetryTracker, getClass().getSimpleName());
+        TelemetryTracker.triggerEvent(telemetryTracker, getClass().getSimpleName());
     }
 
     @ConditionalOnMissingBean
     @Bean
-    public RedisProperties redisProperties(AzureAdmin azureAdmin,
-            AzureRedisProperties azureRedisProperties) throws IOException {
+    public RedisProperties redisProperties(AzureAdmin azureAdmin, AzureRedisProperties azureRedisProperties)
+            throws IOException {
         String cacheName = azureRedisProperties.getName();
 
         RedisCache redisCache = azureAdmin.getOrCreateRedisCache(cacheName);

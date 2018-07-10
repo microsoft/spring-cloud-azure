@@ -29,20 +29,4 @@ public class AzureSqlProperties {
      * Name of the database server in the Azure SQL instance.
      */
     private String serverName;
-
-    public String getServerName() {
-        return serverName;
-    }
-
-    public void setServerName(String serverName) {
-        this.serverName = serverName;
-    }
-
-    public String getDatabaseName() {
-        return this.databaseName;
-    }
-
-    public void setDatabaseName(String databaseName) {
-        this.databaseName = databaseName;
-    }
 }

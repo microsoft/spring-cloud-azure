@@ -7,12 +7,10 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.eventhub;
 
 import com.microsoft.azure.management.eventhub.AuthorizationRule;
-import com.microsoft.azure.management.eventhub.EventHub;
 import com.microsoft.azure.management.eventhub.EventHubAuthorizationKey;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryUtils;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -25,7 +23,6 @@ import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
@@ -38,7 +35,7 @@ import java.util.Arrays;
 @Configuration
 @AutoConfigureBefore(KafkaAutoConfiguration.class)
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
-@ConditionalOnClass(EventHub.class)
+@ConditionalOnClass(EventHubNamespace.class)
 @ConditionalOnProperty("spring.cloud.azure.eventhub.namespace")
 @EnableConfigurationProperties(AzureEventHubProperties.class)
 public class AzureEventHubAutoConfiguration {
@@ -57,11 +54,10 @@ public class AzureEventHubAutoConfiguration {
 
     @PostConstruct
     public void triggerTelemetry() {
-        TelemetryUtils.telemetryTriggerEvent(telemetryTracker, getClass().getSimpleName());
+        TelemetryTracker.triggerEvent(telemetryTracker, getClass().getSimpleName());
     }
 
     @ConditionalOnMissingBean
-    @Primary
     @Bean
     public KafkaProperties kafkaProperties(AzureAdmin azureAdmin, AzureEventHubProperties eventHubProperties) {
         KafkaProperties kafkaProperties = new KafkaProperties();

@@ -6,9 +6,9 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.telemetry;
 
 import com.microsoft.applicationinsights.TelemetryClient;
-import com.microsoft.azure.management.Azure;
 import org.springframework.lang.NonNull;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,18 +28,29 @@ public class TelemetryTracker {
 
     private static final String PROPERTY_SERVICE_NAME = "serviceName";
 
-    private final TelemetryClient client;
+    private static final String SPRING_CLOUD_AZURE_EVENT = "spring-cloud-azure";
+
+    private final TelemetryClient client = new TelemetryClient();
 
     private final Map<String, String> defaultProperties;
 
-    public TelemetryTracker(Azure azure, String resourceGroup) {
-        this.client = new TelemetryClient();
-        this.defaultProperties =  new HashMap<>();
+    public TelemetryTracker(@NonNull String subscriptionId, @NonNull String resourceGroup) {
+        this.defaultProperties = buildDefaultProperties(subscriptionId, resourceGroup);
+    }
 
-        this.defaultProperties.put(PROPERTY_SUBSCRIPTION_ID, azure.getCurrentSubscription().subscriptionId());
-        this.defaultProperties.put(PROPERTY_RESOURCE_GROUP, resourceGroup);
-        this.defaultProperties.put(PROPERTY_VERSION, PROJECT_INFO);
-        this.defaultProperties.put(PROPERTY_INSTALLATION_ID, TelemetryUtils.getHashMac());
+    public static void triggerEvent(TelemetryTracker tracker, String serviceName) {
+        if (tracker != null) {
+            tracker.trackEventWithServiceName(SPRING_CLOUD_AZURE_EVENT, serviceName);
+        }
+    }
+
+    private Map<String, String> buildDefaultProperties(String subscriptionId, String resourceGroup) {
+        Map<String, String> properties = new HashMap<>();
+        properties.put(PROPERTY_SUBSCRIPTION_ID, subscriptionId);
+        properties.put(PROPERTY_RESOURCE_GROUP, resourceGroup);
+        properties.put(PROPERTY_VERSION, PROJECT_INFO);
+        properties.put(PROPERTY_INSTALLATION_ID, MacAddressHelper.getHashedMacAddress());
+        return Collections.unmodifiableMap(properties);
     }
 
     private void trackEvent(@NonNull String name, @NonNull Map<String, String> customProperties) {
