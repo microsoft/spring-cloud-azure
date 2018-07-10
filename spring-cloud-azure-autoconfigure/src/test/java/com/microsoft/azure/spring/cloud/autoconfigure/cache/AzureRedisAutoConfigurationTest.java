@@ -6,12 +6,10 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.cache;
 
-import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.redis.RedisAccessKeys;
 import com.microsoft.azure.management.redis.RedisCache;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
-import com.microsoft.azure.spring.cloud.context.core.CredentialsProvider;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
@@ -54,16 +52,6 @@ public class AzureRedisAutoConfigurationTest {
 
     @Configuration
     static class TestConfiguration {
-
-        @Bean
-        public CredentialsProvider credentialsProvider() {
-            return mock(CredentialsProvider.class);
-        }
-
-        @Bean
-        Azure azure() {
-            return mock(Azure.class);
-        }
 
         @Bean
         AzureAdmin azureAdmin() {
