@@ -8,6 +8,7 @@ package com.microsoft.azure.spring.cloud.autoconfigure.telemetry;
 import com.microsoft.applicationinsights.TelemetryClient;
 import com.microsoft.azure.management.Azure;
 import org.springframework.lang.NonNull;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,8 +33,11 @@ public class TelemetryTracker {
 
     private final Map<String, String> defaultProperties;
 
-    public TelemetryTracker(Azure azure, String resourceGroup) {
+    private TelemetryProperties telemetryProperties;
+
+    public TelemetryTracker(Azure azure, String resourceGroup, TelemetryProperties telemetryProperties) {
         this.client = new TelemetryClient();
+        this.telemetryProperties = telemetryProperties;
         this.defaultProperties =  new HashMap<>();
 
         this.defaultProperties.put(PROPERTY_SUBSCRIPTION_ID, azure.getCurrentSubscription().subscriptionId());
@@ -43,10 +47,15 @@ public class TelemetryTracker {
     }
 
     private void trackEvent(@NonNull String name, @NonNull Map<String, String> customProperties) {
-        this.defaultProperties.forEach(customProperties::putIfAbsent);
+        final String instrumentationKey = this.telemetryProperties.getInstrumentationKey();
 
-        this.client.trackEvent(name, customProperties, null);
-        this.client.flush();
+        if (StringUtils.hasText(instrumentationKey)) {
+            this.defaultProperties.forEach(customProperties::putIfAbsent);
+
+            this.client.getContext().setInstrumentationKey(instrumentationKey);
+            this.client.trackEvent(name, customProperties, null);
+            this.client.flush();
+        }
     }
 
     public void trackEventWithServiceName(@NonNull String eventName, @NonNull String serviceName) {
