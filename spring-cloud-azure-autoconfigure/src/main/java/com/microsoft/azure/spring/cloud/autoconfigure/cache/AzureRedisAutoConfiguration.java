@@ -12,6 +12,7 @@ import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoCo
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureProperties;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryUtils;
+import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -26,6 +27,7 @@ import org.springframework.context.annotation.Primary;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * An auto-configuration for Spring cache using Azure redis cache
@@ -48,25 +50,31 @@ public class AzureRedisAutoConfiguration {
     }
 
     @ConditionalOnMissingBean
-    @Primary
     @Bean
-    public RedisProperties redisProperties(Azure azure, AzureProperties azureProperties,
-                                           AzureRedisProperties azureRedisProperties) throws IOException {
+    public RedisProperties redisProperties(AzureAdmin azureAdmin,
+            AzureRedisProperties azureRedisProperties) throws IOException {
         String cacheName = azureRedisProperties.getName();
 
-        RedisCache redisCache = azure.redisCaches()
-                .getByResourceGroup(azureProperties.getResourceGroup(), cacheName);
+        RedisCache redisCache = azureAdmin.getOrCreateRedisCache(cacheName);
 
         RedisProperties redisProperties = new RedisProperties();
-        redisProperties.setHost(redisCache.hostName());
-        redisProperties.setPassword(redisCache.getKeys().primaryKey());
 
         boolean useSsl = !redisCache.nonSslPort();
+        int port = useSsl ? redisCache.sslPort() : redisCache.port();
 
-        redisProperties.setPort(useSsl ? redisCache.sslPort() : redisCache.port());
+        boolean isCluster = redisCache.shardCount() > 0;
+
+        if (isCluster) {
+            RedisProperties.Cluster cluster = new RedisProperties.Cluster();
+            cluster.setNodes(Arrays.asList(redisCache.hostName() + ":" + port));
+            redisProperties.setCluster(cluster);
+        } else {
+            redisProperties.setHost(redisCache.hostName());
+            redisProperties.setPort(port);
+        }
+
+        redisProperties.setPassword(redisCache.getKeys().primaryKey());
         redisProperties.setSsl(useSsl);
-
-        // TODO: handle cluster related config, Azure redis management api unsupported
 
         return redisProperties;
     }

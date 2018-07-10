@@ -9,6 +9,7 @@ package com.microsoft.azure.spring.cloud.context.core;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.eventhub.EventHub;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
+import com.microsoft.azure.management.redis.RedisCache;
 import com.microsoft.azure.management.servicebus.Queue;
 import com.microsoft.azure.management.servicebus.ServiceBusNamespace;
 import com.microsoft.azure.management.servicebus.ServiceBusSubscription;
@@ -16,6 +17,8 @@ import com.microsoft.azure.management.servicebus.Topic;
 import com.microsoft.azure.management.sql.SqlServer;
 import com.microsoft.azure.management.storage.StorageAccount;
 import org.springframework.util.Assert;
+
+import java.util.function.Function;
 
 public class AzureAdmin {
 
@@ -144,7 +147,13 @@ public class AzureAdmin {
     }
 
     public ServiceBusNamespace getServiceBusNamespace(String namespace) {
-        return azure.serviceBusNamespaces().getByResourceGroup(resourceGroup, namespace);
+        try {
+            return azure.serviceBusNamespaces().getByResourceGroup(resourceGroup, namespace);
+        } catch (NullPointerException ignore) {
+            // azure management api has no way to determine whether an service bus namespace exists
+            // Workaround for this is by catching NPE
+            return null;
+        }
     }
 
     public ServiceBusNamespace createServiceBusNamespace(String namespace) {
@@ -204,6 +213,30 @@ public class AzureAdmin {
 
     public ServiceBusSubscription createServiceBusTopicSubscription(Topic topic, String name) {
         return topic.subscriptions().define(name).create();
+    }
+
+    public RedisCache getRedisCache(String name) {
+        return azure.redisCaches().getByResourceGroup(resourceGroup, name);
+    }
+
+    public RedisCache createRedisCache(String name) {
+        return azure.redisCaches().define(name).withRegion(region).withExistingResourceGroup(resourceGroup)
+                    .withBasicSku().create();
+    }
+
+    public RedisCache getOrCreateRedisCache(String name) {
+        return getOrCreate(this::getRedisCache, this::createRedisCache).apply(name);
+    }
+
+    private <T, R> Function<T, R> getOrCreate(Function<T, R> getter, Function<T, R> creator) {
+        return t -> {
+            R result = getter.apply(t);
+            if (result != null) {
+                return result;
+            }
+
+            return creator.apply(t);
+        };
     }
 
 }

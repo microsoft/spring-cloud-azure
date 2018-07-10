@@ -6,20 +6,16 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.cache;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author Warren Zhu
  */
+@Getter
+@Setter
 @ConfigurationProperties("spring.cloud.azure.redis")
 public class AzureRedisProperties {
     private String name;
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

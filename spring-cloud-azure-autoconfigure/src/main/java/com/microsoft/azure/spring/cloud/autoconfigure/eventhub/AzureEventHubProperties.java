@@ -6,20 +6,16 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.eventhub;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author Warren Zhu
  */
+@Getter
+@Setter
 @ConfigurationProperties("spring.cloud.azure.eventhub")
 public class AzureEventHubProperties {
     private String namespace;
-
-    public String getNamespace() {
-        return namespace;
-    }
-
-    public void setNamespace(String namespace) {
-        this.namespace = namespace;
-    }
 }
