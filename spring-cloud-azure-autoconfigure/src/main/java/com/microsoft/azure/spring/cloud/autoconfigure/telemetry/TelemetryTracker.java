@@ -7,6 +7,8 @@ package com.microsoft.azure.spring.cloud.autoconfigure.telemetry;
 
 import com.microsoft.applicationinsights.TelemetryClient;
 import com.microsoft.azure.management.Azure;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 
@@ -29,6 +31,12 @@ public class TelemetryTracker {
 
     private static final String PROPERTY_SERVICE_NAME = "serviceName";
 
+    private static final String TELEMETRY_INVALID_KEY = "invalid-instrumentationKey";
+
+    private static final int INSTRUMENTATION_KEY_LENGTH = 36;
+
+    private static final Logger LOG = LoggerFactory.getLogger(TelemetryTracker.class);
+
     private final TelemetryClient client;
 
     private final Map<String, String> defaultProperties;
@@ -45,21 +53,21 @@ public class TelemetryTracker {
     }
 
     private TelemetryClient getTelemetryClient(TelemetryProperties telemetryProperties) {
+        final TelemetryClient client = new TelemetryClient();
         final String instrumentationKey = telemetryProperties.getInstrumentationKey();
 
-        if (StringUtils.hasText(instrumentationKey)) {
-            final TelemetryClient client = new TelemetryClient();
-
+        if (StringUtils.hasText(instrumentationKey) && instrumentationKey.length() == INSTRUMENTATION_KEY_LENGTH) {
             client.getContext().setInstrumentationKey(instrumentationKey);
-
-            return client;
+        } else {
+            client.getContext().setInstrumentationKey(TELEMETRY_INVALID_KEY);
+            LOG.warn("Telemetry instrumentationKey {} is invalid", instrumentationKey);
         }
 
-        return null;
+        return client;
     }
 
     private void trackEvent(@NonNull String name, @NonNull Map<String, String> customProperties) {
-        if (this.client != null) {
+        if (!this.client.getContext().getInstrumentationKey().equals(TELEMETRY_INVALID_KEY)) {
             this.defaultProperties.forEach(customProperties::putIfAbsent);
 
             this.client.trackEvent(name, customProperties, null);
