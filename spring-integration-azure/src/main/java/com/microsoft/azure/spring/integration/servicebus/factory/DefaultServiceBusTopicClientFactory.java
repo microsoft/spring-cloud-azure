@@ -46,7 +46,7 @@ public class DefaultServiceBusTopicClientFactory extends AbstractServiceBusSende
     }
 
     private ISubscriptionClient createSubscriptionClient(Tuple<String, String> nameAndSubscription) {
-        Topic topic = azureAdmin.getServiceBusTopic(namespace, nameAndSubscription.getFirst());
+        Topic topic = azureAdmin.getServiceBusTopic(Tuple.of(namespace, nameAndSubscription.getFirst()));
         Assert.notNull(topic,
                 () -> String.format("Service bus topic '%s' not existed", nameAndSubscription.getFirst()));
 

@@ -9,6 +9,7 @@ package com.microsoft.azure.eventhub.stream.binder.provisioning;
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubConsumerProperties;
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubProducerProperties;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.Tuple;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
@@ -28,7 +29,6 @@ public class EventHubChannelProvisioner implements
     private final String namespace;
 
     public EventHubChannelProvisioner(AzureAdmin azureAdmin, String namespace) {
-        //Assert.notNull(azureAdmin, "The azureAdmin can't be null.");
         Assert.hasText(namespace, "The namespace can't be null or empty");
         this.azureAdmin = azureAdmin;
         this.namespace = namespace;
@@ -45,12 +45,12 @@ public class EventHubChannelProvisioner implements
     @Override
     public ConsumerDestination provisionConsumerDestination(String name, String group,
             ExtendedConsumerProperties<EventHubConsumerProperties> properties) throws ProvisioningException {
-        if (this.azureAdmin.getEventHub(namespace, name) == null) {
+        if (this.azureAdmin.getEventHub(Tuple.of(namespace, name)) == null) {
             throw new ProvisioningException(
                     String.format("Event hub with name '%s' in namespace '%s' not existed", name, namespace));
         }
 
-        this.azureAdmin.createEventHubConsumerGroupIfNotExisted(namespace, name, group);
+        this.azureAdmin.getOrCreateEventHubConsumerGroup(namespace, name, group);
         return new EventHubConsumerDestination(name);
     }
 }
