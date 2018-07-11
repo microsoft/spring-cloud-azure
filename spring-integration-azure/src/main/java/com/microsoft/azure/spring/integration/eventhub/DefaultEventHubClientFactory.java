@@ -64,11 +64,6 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
                 AzureUtil.getConnectionString(azureAdmin.getOrCreateStorageAccount(checkpointStorageAccount));
     }
 
-    public void setCheckpointStorageAccountContainer(String checkpointStorageAccountContainer) {
-        Assert.hasText(checkpointStorageAccountContainer, "checkpointStorageAccount can't be null or empty");
-        this.checkpointStorageAccountContainer = checkpointStorageAccountContainer;
-    }
-
     @Override
     public Function<String, EventHubClient> getEventHubClientCreator() {
         return Memoizer.memoize(clientsByName, this::createEventHubClient);
@@ -102,10 +97,10 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
     }
 
     private EventProcessorHost createEventProcessorHost(Tuple<String, String> nameAndConsumerGroup) {
-        return new EventProcessorHost(EventProcessorHost.createHostName("hostNamePrefix"),
-                nameAndConsumerGroup.getFirst(), nameAndConsumerGroup.getSecond(),
-                connectionStringCreator().apply(nameAndConsumerGroup.getFirst()), checkpointStorageConnectionString,
-                checkpointStorageAccountContainer);
+        String eventHubName = nameAndConsumerGroup.getFirst();
+        return new EventProcessorHost(EventProcessorHost.createHostName("hostNamePrefix"), eventHubName,
+                nameAndConsumerGroup.getSecond(), connectionStringCreator().apply(eventHubName),
+                checkpointStorageConnectionString, eventHubName);
     }
 
     private Function<String, String> connectionStringCreator() {
