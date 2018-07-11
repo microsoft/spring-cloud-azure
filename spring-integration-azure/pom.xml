@@ -16,18 +16,15 @@
         <dependency>
             <groupId>com.microsoft.azure</groupId>
             <artifactId>spring-cloud-azure-context</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.microsoft.azure</groupId>
             <artifactId>azure-eventhubs-eph</artifactId>
-            <version>1.0.0</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.microsoft.azure</groupId>
             <artifactId>azure-servicebus</artifactId>
-            <version>1.2.5</version>
             <optional>true</optional>
         </dependency>
         <dependency>
