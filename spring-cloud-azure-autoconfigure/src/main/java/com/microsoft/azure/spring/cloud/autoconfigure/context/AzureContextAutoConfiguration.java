@@ -12,12 +12,13 @@ import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.cloud.context.core.CredentialsProvider;
 import com.microsoft.azure.spring.cloud.context.core.DefaultCredentialsProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
@@ -34,7 +35,7 @@ import java.io.IOException;
 @ConditionalOnClass(name = "com.microsoft.azure.management.Azure")
 @ConditionalOnProperty("spring.cloud.azure.credentialFilePath")
 public class AzureContextAutoConfiguration {
-
+    private static final Logger LOG = LoggerFactory.getLogger(AzureContextAutoConfiguration.class);
     private final AzureProperties azureProperties;
 
     public AzureContextAutoConfiguration(AzureProperties azureProperties) {
@@ -63,7 +64,12 @@ public class AzureContextAutoConfiguration {
     @ConditionalOnProperty(name = "spring.cloud.azure.telemetryAllowed", havingValue = "true", matchIfMissing = true)
     public TelemetryTracker telemetryTracker(Azure azure, AzureProperties azureProperties,
             TelemetryProperties telemetryProperties) {
-        return new TelemetryTracker(azure.getCurrentSubscription().subscriptionId(), azureProperties.getResourceGroup(),
-                    telemetryProperties.getInstrumentationKey());
+        try {
+            return new TelemetryTracker(azure.getCurrentSubscription().subscriptionId(),
+                    azureProperties.getResourceGroup(), telemetryProperties.getInstrumentationKey());
+        } catch (IllegalArgumentException e) {
+            LOG.warn("Invalid argument to build telemetry tracker");
+            return null;
+        }
     }
 }

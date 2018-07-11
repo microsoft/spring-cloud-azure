@@ -25,6 +25,11 @@
             <artifactId>spring-integration-azure</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.microsoft.azure</groupId>
+            <artifactId>azure-eventhubs-eph</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
     </dependencies>
 

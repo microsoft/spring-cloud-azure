@@ -69,7 +69,7 @@ public class TelemetryTracker {
 
         if (!isValid(instrumentationKey)) {
             LOG.warn("Telemetry instrumentationKey {} is invalid", instrumentationKey);
-            throw new RuntimeException("Telemetry instrumentationKey is invalid");
+            throw new IllegalArgumentException("Telemetry instrumentationKey is invalid");
         }
 
         client.getContext().setInstrumentationKey(instrumentationKey);
