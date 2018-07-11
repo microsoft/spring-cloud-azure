@@ -10,7 +10,7 @@ import com.google.common.base.Strings;
 import com.microsoft.azure.credentials.ApplicationTokenCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.DefaultResourceLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +34,8 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
     private void initCredentials(CredentialSupplier supplier) {
         if (!Strings.isNullOrEmpty(supplier.getCredentialFilePath())) {
             try {
-                File credentialFile = new ClassPathResource(supplier.getCredentialFilePath()).getFile();
+                DefaultResourceLoader resourceLoader = new DefaultResourceLoader();
+                File credentialFile = resourceLoader.getResource(supplier.getCredentialFilePath()).getFile();
                 this.credentials = ApplicationTokenCredentials.fromFile(credentialFile);
             } catch (IOException e) {
                 LOGGER.error("Credential file path not found.", e);

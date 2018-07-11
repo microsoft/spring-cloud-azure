@@ -19,6 +19,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 import java.io.IOException;
 
@@ -29,6 +30,7 @@ import java.io.IOException;
  */
 @Configuration
 @EnableConfigurationProperties({AzureProperties.class, TelemetryProperties.class})
+@PropertySource(value = "classpath:telemetry.config")
 @ConditionalOnClass(name = "com.microsoft.azure.management.Azure")
 @ConditionalOnProperty("spring.cloud.azure.credentialFilePath")
 public class AzureContextAutoConfiguration {
