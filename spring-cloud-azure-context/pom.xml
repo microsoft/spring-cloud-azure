@@ -26,8 +26,7 @@
 
         <dependency>
             <groupId>com.microsoft.azure</groupId>
-            <artifactId>azure</artifactId>
-            <version>1.8.0</version>
+            <artifactId>azure</artifactId> <!-- We may not need include all azure management sdks in a batch -->
         </dependency>
     </dependencies>
 </project>

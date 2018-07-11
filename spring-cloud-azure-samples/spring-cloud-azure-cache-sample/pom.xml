@@ -20,7 +20,6 @@
         <dependency>
             <groupId>com.microsoft.azure</groupId>
             <artifactId>spring-cloud-azure-starter-cache</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

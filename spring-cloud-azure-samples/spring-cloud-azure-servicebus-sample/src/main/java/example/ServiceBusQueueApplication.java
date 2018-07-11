@@ -73,7 +73,8 @@ public class ServiceBusQueueApplication {
     @Bean
     public ServiceBusQueueInboundChannelAdapter messageChannelAdapter(
             @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel, ServiceBusQueueOperation queueOperation) {
-        ServiceBusQueueInboundChannelAdapter adapter = new ServiceBusQueueInboundChannelAdapter(SERVICE_BUS_QUEUE_NAME, queueOperation);
+        ServiceBusQueueInboundChannelAdapter adapter = new ServiceBusQueueInboundChannelAdapter(SERVICE_BUS_QUEUE_NAME,
+                queueOperation);
         adapter.setOutputChannel(inputChannel);
         adapter.setCheckpointMode(CheckpointMode.MANUAL);
         return adapter;

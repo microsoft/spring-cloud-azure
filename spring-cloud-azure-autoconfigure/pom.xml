@@ -13,10 +13,6 @@
     <artifactId>spring-cloud-azure-autoconfigure</artifactId>
     <name>Spring Cloud Azure Autoconfigure</name>
 
-    <properties>
-        <azure.applicationinsights.version>2.0.1</azure.applicationinsights.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -26,26 +22,37 @@
         <dependency>
             <groupId>com.microsoft.azure</groupId>
             <artifactId>spring-cloud-azure-context</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.microsoft.azure</groupId>
             <artifactId>spring-integration-azure</artifactId>
-            <version>${project.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <!-- Storage -->
         <dependency>
             <groupId>com.microsoft.azure</groupId>
             <artifactId>spring-cloud-azure-storage</artifactId>
-            <version>${project.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <!-- Cloud SQL -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.microsoft.azure</groupId>
+            <artifactId>azure-eventhubs-eph</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.microsoft.azure</groupId>
+            <artifactId>azure-servicebus</artifactId>
             <optional>true</optional>
         </dependency>
 
@@ -96,7 +103,6 @@
         <dependency>
             <groupId>com.microsoft.azure</groupId>
             <artifactId>applicationinsights-core</artifactId>
-            <version>${azure.applicationinsights.version}</version>
         </dependency>
 
         <dependency>
