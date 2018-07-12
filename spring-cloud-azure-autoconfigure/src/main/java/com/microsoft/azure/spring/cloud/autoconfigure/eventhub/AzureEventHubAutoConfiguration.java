@@ -28,6 +28,8 @@ import org.springframework.context.annotation.Primary;
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
 
+import static com.microsoft.azure.spring.cloud.autoconfigure.common.AutoConfigureUtils.getServiceName;
+
 /**
  * An auto-configuration for Event Hub, which provides {@link KafkaProperties}
  *
@@ -55,7 +57,7 @@ public class AzureEventHubAutoConfiguration {
 
     @PostConstruct
     public void triggerTelemetry() {
-        TelemetryTracker.triggerEvent(telemetryTracker, getClass().getSimpleName());
+        TelemetryTracker.triggerEvent(telemetryTracker, getServiceName(AzureEventHubAutoConfiguration.class));
     }
 
     @ConditionalOnMissingBean

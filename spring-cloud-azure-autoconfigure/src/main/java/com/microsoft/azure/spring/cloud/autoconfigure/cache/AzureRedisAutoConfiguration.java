@@ -7,7 +7,9 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.cache;
 
 import com.microsoft.azure.management.redis.RedisCache;
+import com.microsoft.azure.spring.cloud.autoconfigure.common.AutoConfigureUtils;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
+import com.microsoft.azure.spring.cloud.autoconfigure.storage.AzureStorageAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,8 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.Arrays;
 
+import static com.microsoft.azure.spring.cloud.autoconfigure.common.AutoConfigureUtils.getServiceName;
+
 /**
  * An auto-configuration for Spring cache using Azure redis cache
  *
@@ -43,7 +47,7 @@ public class AzureRedisAutoConfiguration {
 
     @PostConstruct
     public void triggerTelemetry() {
-        TelemetryTracker.triggerEvent(telemetryTracker, getClass().getSimpleName());
+        TelemetryTracker.triggerEvent(telemetryTracker, getServiceName(AzureRedisAutoConfiguration.class));
     }
 
     @ConditionalOnMissingBean

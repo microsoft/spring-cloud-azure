@@ -29,6 +29,8 @@ import javax.annotation.PostConstruct;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 
+import static com.microsoft.azure.spring.cloud.autoconfigure.common.AutoConfigureUtils.getServiceName;
+
 /**
  * An auto-configuration for Azure Storage Account
  *
@@ -48,7 +50,7 @@ public class AzureStorageAutoConfiguration {
 
     @PostConstruct
     public void triggerTelemetry() {
-        TelemetryTracker.triggerEvent(telemetryTracker, getClass().getSimpleName());
+        TelemetryTracker.triggerEvent(telemetryTracker, getServiceName(AzureStorageAutoConfiguration.class));
     }
 
     @Bean
