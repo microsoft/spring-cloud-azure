@@ -7,9 +7,6 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.context;
 
 import com.microsoft.azure.management.Azure;
-import com.microsoft.azure.management.resources.Subscription;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryProperties;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.cloud.context.core.CredentialsProvider;
 import org.junit.Test;
@@ -20,7 +17,6 @@ import org.springframework.context.annotation.Configuration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.powermock.api.mockito.PowerMockito.when;
 
 public class AzureContextAutoConfigurationTest {
     private ApplicationContextRunner contextRunner =
@@ -44,43 +40,6 @@ public class AzureContextAutoConfigurationTest {
     }
 
     @Test
-    public void testTelemetryPropertiesConfigured() {
-        this.contextRunner.withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
-                          .withPropertyValues("telemetry.instrumentationKey=012345678901234567890123456789012345")
-                          .run(context -> {
-                              assertThat(context).hasSingleBean(TelemetryProperties.class);
-                              assertThat(context.getBean(TelemetryProperties.class).getInstrumentationKey())
-                                      .isEqualTo("012345678901234567890123456789012345");
-                          });
-    }
-
-    @Test
-    public void testAzurePropertiesTelemetryMissing() {
-        this.contextRunner.withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
-                          .withPropertyValues("spring.cloud.azure.resourceGroup=group1")
-                          .withPropertyValues("telemetry.instrumentationKey=012345678901234567890123456789012345")
-                          .run(context -> assertThat(context.getBean(TelemetryTracker.class)).isNotNull());
-    }
-
-    @Test
-    public void testAzurePropertiesTelemetryConfigured() {
-        this.contextRunner.withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
-                          .withPropertyValues("spring.cloud.azure.resourceGroup=group1")
-                          .withPropertyValues("spring.cloud.azure.telemetryAllowed=true")
-                          .withPropertyValues("telemetry.instrumentationKey=012345678901234567890123456789012345")
-
-                          .run(context -> assertThat(context.getBean(TelemetryTracker.class)).isNotNull());
-    }
-
-    @Test
-    public void testAzurePropertiesTelemetryConfiguredException() {
-        this.contextRunner.withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
-                          .withPropertyValues("spring.cloud.azure.resourceGroup=group1")
-                          .withPropertyValues("spring.cloud.azure.telemetryAllowed=false")
-                          .run(context -> assertThat(context).doesNotHaveBean(TelemetryTracker.class));
-    }
-
-    @Test
     public void testWithoutAzureProperties() {
         this.contextRunner.run(context -> assertThat(context).doesNotHaveBean(AzureProperties.class));
     }
@@ -90,13 +49,7 @@ public class AzureContextAutoConfigurationTest {
 
         @Bean
         Azure azure() {
-            final Azure azure = mock(Azure.class);
-            final Subscription subscription = mock(Subscription.class);
-
-            when(azure.getCurrentSubscription()).thenReturn(subscription);
-            when(subscription.subscriptionId()).thenReturn("Fake-Id");
-
-            return azure;
+            return mock(Azure.class);
         }
 
         @Bean

@@ -5,6 +5,7 @@ com.microsoft.azure.spring.cloud.autoconfigure.storage.AzureStorageAutoConfigura
 com.microsoft.azure.spring.cloud.autoconfigure.eventhub.AzureEventHubAutoConfiguration,\
 com.microsoft.azure.spring.cloud.autoconfigure.sql.AzureSqlAutoConfiguration,\
 com.microsoft.azure.spring.cloud.autoconfigure.servicebus.AzureServiceBusQueueAutoConfiguration,\
-com.microsoft.azure.spring.cloud.autoconfigure.servicebus.AzureServiceBusTopicAutoConfiguration
+com.microsoft.azure.spring.cloud.autoconfigure.servicebus.AzureServiceBusTopicAutoConfiguration,\
+com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration
 
 

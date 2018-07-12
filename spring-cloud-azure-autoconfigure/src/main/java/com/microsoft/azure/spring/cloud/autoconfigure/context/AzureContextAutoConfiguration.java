@@ -31,11 +31,10 @@ import java.io.IOException;
  */
 @Configuration
 @EnableConfigurationProperties({AzureProperties.class, TelemetryProperties.class})
-@PropertySource(value = "classpath:telemetry.config")
 @ConditionalOnClass(name = "com.microsoft.azure.management.Azure")
 @ConditionalOnProperty("spring.cloud.azure.credentialFilePath")
 public class AzureContextAutoConfiguration {
-    private static final Logger LOG = LoggerFactory.getLogger(AzureContextAutoConfiguration.class);
+
     private final AzureProperties azureProperties;
 
     public AzureContextAutoConfiguration(AzureProperties azureProperties) {
@@ -58,18 +57,5 @@ public class AzureContextAutoConfiguration {
     @ConditionalOnMissingBean
     public Azure azure() throws IOException {
         return Azure.authenticate(credentialsProvider().getCredentials()).withDefaultSubscription();
-    }
-
-    @Bean
-    @ConditionalOnProperty(name = "spring.cloud.azure.telemetryAllowed", havingValue = "true", matchIfMissing = true)
-    public TelemetryTracker telemetryTracker(Azure azure, AzureProperties azureProperties,
-            TelemetryProperties telemetryProperties) {
-        try {
-            return new TelemetryTracker(azure.getCurrentSubscription().subscriptionId(),
-                    azureProperties.getResourceGroup(), telemetryProperties.getInstrumentationKey());
-        } catch (IllegalArgumentException e) {
-            LOG.warn("Invalid argument to build telemetry tracker");
-            return null;
-        }
     }
 }
