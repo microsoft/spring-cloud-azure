@@ -34,7 +34,6 @@ public class EventHubBinderConfiguration {
         DefaultEventHubClientFactory clientFactory =
                 new DefaultEventHubClientFactory(azureAdmin, bindingProperties.getNamespace());
         clientFactory.initCheckpointConnectionString(bindingProperties.getCheckpointStorageAccount());
-        clientFactory.setCheckpointStorageAccountContainer(bindingProperties.getCheckpointStorageAccountContainer());
         return clientFactory;
     }
 

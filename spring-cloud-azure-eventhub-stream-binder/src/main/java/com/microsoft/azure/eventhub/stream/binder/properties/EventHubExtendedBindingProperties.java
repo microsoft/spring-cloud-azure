@@ -22,7 +22,6 @@ public class EventHubExtendedBindingProperties
     private Map<String, EventHubBindingProperties> bindings = new ConcurrentHashMap<>();
     private String namespace;
     private String checkpointStorageAccount;
-    private String checkpointStorageAccountContainer;
 
     public String getCheckpointStorageAccount() {
         return checkpointStorageAccount;
@@ -30,14 +29,6 @@ public class EventHubExtendedBindingProperties
 
     public void setCheckpointStorageAccount(String checkpointStorageAccount) {
         this.checkpointStorageAccount = checkpointStorageAccount;
-    }
-
-    public String getCheckpointStorageAccountContainer() {
-        return checkpointStorageAccountContainer;
-    }
-
-    public void setCheckpointStorageAccountContainer(String checkpointStorageAccountContainer) {
-        this.checkpointStorageAccountContainer = checkpointStorageAccountContainer;
     }
 
     public String getNamespace() {

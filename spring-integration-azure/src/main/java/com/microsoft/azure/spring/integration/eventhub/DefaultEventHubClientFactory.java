@@ -48,7 +48,6 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
 
     private final AzureAdmin azureAdmin;
     private final EventHubNamespace namespace;
-    private String checkpointStorageAccountContainer;
     private String checkpointStorageConnectionString;
 
     public DefaultEventHubClientFactory(AzureAdmin azureAdmin, String namespace) {
@@ -62,11 +61,6 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
         Assert.hasText(checkpointStorageAccount, "checkpointStorageAccount can't be null or empty");
         this.checkpointStorageConnectionString =
                 AzureUtil.getConnectionString(azureAdmin.getOrCreateStorageAccount(checkpointStorageAccount));
-    }
-
-    public void setCheckpointStorageAccountContainer(String checkpointStorageAccountContainer) {
-        Assert.hasText(checkpointStorageAccountContainer, "checkpointStorageAccount can't be null or empty");
-        this.checkpointStorageAccountContainer = checkpointStorageAccountContainer;
     }
 
     @Override
@@ -102,10 +96,10 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
     }
 
     private EventProcessorHost createEventProcessorHost(Tuple<String, String> nameAndConsumerGroup) {
-        return new EventProcessorHost(EventProcessorHost.createHostName(HostnameHelper.getHostname()),
-                nameAndConsumerGroup.getFirst(), nameAndConsumerGroup.getSecond(),
-                connectionStringCreator().apply(nameAndConsumerGroup.getFirst()), checkpointStorageConnectionString,
-                checkpointStorageAccountContainer);
+        String eventHubName = nameAndConsumerGroup.getFirst();
+        return new EventProcessorHost(EventProcessorHost.createHostName("hostNamePrefix"), eventHubName,
+                nameAndConsumerGroup.getSecond(), connectionStringCreator().apply(eventHubName),
+                checkpointStorageConnectionString, eventHubName);
     }
 
     private Function<String, String> connectionStringCreator() {
