@@ -48,7 +48,6 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
 
     private final AzureAdmin azureAdmin;
     private final EventHubNamespace namespace;
-    private String checkpointStorageAccountContainer;
     private String checkpointStorageConnectionString;
 
     public DefaultEventHubClientFactory(AzureAdmin azureAdmin, String namespace) {
