@@ -27,12 +27,6 @@
             <groupId>com.microsoft.azure</groupId>
             <artifactId>azure-eventhubs-eph</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>azure-eventhubs-eph</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
     </dependencies>
 
 </project>
