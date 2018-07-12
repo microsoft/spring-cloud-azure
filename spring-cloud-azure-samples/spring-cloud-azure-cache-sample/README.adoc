@@ -27,12 +27,15 @@ This starter is based on spring-boot-starter-data-redis. It fetches and auto con
 1.  Create azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how to create credential file]
 +
 ....
-$  az az account set --subscription <name or id>
+$  az account set --subscription <name or id>
 $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 ....
++
+Make sure `my.azureauth` is encoding with UTF-8.
+
 2.  Put auth file under `src/main/resources/`
-3.  Create Azure redis cache instance through Azure Portal or CLI. Please see https://azure.microsoft.com/en-us/services/cache/[How to create Azure redis cache]
-4.  Update `src/main/resources/application.properties` to specify resource group, cache instance name and credential file path:
+
+3.  Update `src/main/resources/application.properties` to specify resource group, cache instance name and credential file path:
 +
 ....
 spring.cloud.azure.credentialFilePath=[credential-file-path]
@@ -41,14 +44,18 @@ spring.cloud.azure.region=[region]
 
 spring.cloud.azure.redis.name=[azure-redis-instance-name]
 ....
++
+All azure resources will be created if missing. Alternatively, you can manually create these Azure resources from
+the
+https://portal.azure.com/[Azure Portal].
 
-5.  Run the application using the `$ mvn spring-boot:run` command.
-6.  Send a GET request to check, where `name` could be any string:
+4.  Run the application using the `$ mvn spring-boot:run` command.
+5.  Send a GET request to check, where `name` could be any string:
 +
 ....
 $ curl -XGET http://localhost:8080/{name}
 ....
-7.  Confirm from Azure Redis Cache console in Azure Portal
+6.  Confirm from Azure Redis Cache console in Azure Portal
 +
 ....
 $ keys *

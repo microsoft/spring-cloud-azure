@@ -11,11 +11,15 @@ Event Hub to a `sink` which simply logs the message.
 to create credential file]
 +
 ....
-$  az az account set --subscription <name or id>
+$  az account set --subscription <name or id>
 $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 ....
++
+Make sure `my.azureauth` is encoding with UTF-8.
 
-2. Update link:src/main/resources/application.properties[application.properties] file
+2. Put auth file under `src/main/resources/`.
+
+3. Update link:src/main/resources/application.properties[application.properties] file
 +
 ....
 spring.cloud.azure.credentialFilePath=[credential-file-path]

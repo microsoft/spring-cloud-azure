@@ -27,10 +27,13 @@ dependencies {
 1.  Create azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how to create credential file]
 +
 ....
-$  az az account set --subscription <name or id>
+$  az account set --subscription <name or id>
 $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 ....
-2.  Put auth file under `src/main/resources/`
++
+Make sure `my.azureauth` is encoding with UTF-8.
+
+2.  Put auth file under `src/main/resources/`.
 3.  [Optional] Create Azure sql database instance through Azure Portal or CLI. Please see https://docs.microsoft.com/en-us/azure/sql-database/[How to create Azure Sql database]
 4.  Update link:src/main/resources/application.properties[application.properties]
 +
@@ -54,6 +57,10 @@ spring.datasource.continue-on-error=true
 # Enforces database initialization
 spring.datasource.initialization-mode=always
 ....
++
+All azure resources will be created if missing. Alternatively, you can manually create these Azure resources from
+the
+https://portal.azure.com/[Azure Portal].
 
 5.  Run the application using the `$ mvn spring-boot:run` command. The database will be populated based on the link:src/main/resources/schema.sql[schema.sql] and link:src/main/resources/data.sql[data.sql] files.
 6.  Send a GET request to check:

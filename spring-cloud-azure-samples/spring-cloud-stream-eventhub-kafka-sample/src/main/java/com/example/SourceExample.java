@@ -26,11 +26,9 @@ public class SourceExample {
     @Autowired
     private Source source;
 
-    @PostMapping("/newMessage")
-    public UserMessage sendMessage(@RequestParam("messageBody") String messageBody,
-            @RequestParam("username") String username) {
-        UserMessage userMessage = new UserMessage(messageBody, username, LocalDateTime.now());
-        this.source.output().send(new GenericMessage<>(userMessage));
-        return userMessage;
+    @PostMapping("/message")
+    public String sendMessage(String message) {
+        this.source.output().send(new GenericMessage<>(message));
+        return message;
     }
 }

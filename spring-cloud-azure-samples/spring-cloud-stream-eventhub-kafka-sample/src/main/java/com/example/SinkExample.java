@@ -21,7 +21,7 @@ public class SinkExample {
     private static final Logger LOGGER = LoggerFactory.getLogger(SinkExample.class);
 
     @StreamListener(Sink.INPUT)
-    public void handleMessage(UserMessage userMessage) {
-            LOGGER.info("New message received: " + userMessage);
+    public void handleMessage(String message) {
+            LOGGER.info("New message received: " + message);
     }
 }
