@@ -20,12 +20,10 @@
         <dependency>
             <groupId>com.microsoft.azure</groupId>
             <artifactId>spring-cloud-azure-eventhub-stream-binder</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.microsoft.azure</groupId>
             <artifactId>spring-cloud-azure-starter-eventhub</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
