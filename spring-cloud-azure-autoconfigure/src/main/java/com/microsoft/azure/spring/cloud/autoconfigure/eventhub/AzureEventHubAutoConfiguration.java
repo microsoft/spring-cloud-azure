@@ -49,13 +49,14 @@ public class AzureEventHubAutoConfiguration {
     private static final String SASL_MECHANISM = "sasl.mechanism";
     private static final String SASL_MECHANISM_PLAIN = "PLAIN";
     private static final int PORT = 9093;
+    private static final String EVENT_HUB_KAFKA = "EventHubKafka";
 
     @Autowired(required = false)
     private TelemetryTracker telemetryTracker;
 
     @PostConstruct
     public void triggerTelemetry() {
-        TelemetryTracker.triggerEvent(telemetryTracker, getClass().getSimpleName());
+        TelemetryTracker.triggerEvent(telemetryTracker, EVENT_HUB_KAFKA);
     }
 
     @ConditionalOnMissingBean

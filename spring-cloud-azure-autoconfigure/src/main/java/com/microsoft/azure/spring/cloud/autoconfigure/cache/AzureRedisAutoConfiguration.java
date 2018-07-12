@@ -37,13 +37,14 @@ import java.util.Arrays;
 @ConditionalOnProperty("spring.cloud.azure.redis.name")
 @EnableConfigurationProperties(AzureRedisProperties.class)
 public class AzureRedisAutoConfiguration {
+    private static final String REDIS = "Redis";
 
     @Autowired(required = false)
     private TelemetryTracker telemetryTracker;
 
     @PostConstruct
     public void triggerTelemetry() {
-        TelemetryTracker.triggerEvent(telemetryTracker, getClass().getSimpleName());
+        TelemetryTracker.triggerEvent(telemetryTracker, REDIS);
     }
 
     @ConditionalOnMissingBean

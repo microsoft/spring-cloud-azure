@@ -44,14 +44,10 @@ import javax.sql.DataSource;
         XADataSourceAutoConfiguration.class})
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 public class AzureSqlAutoConfiguration {
+    private static final String SQL_SERVER = "SqlServer";
 
     @Autowired(required = false)
     private TelemetryTracker telemetryTracker;
-
-    @PostConstruct
-    public void triggerTelemetry() {
-        TelemetryTracker.triggerEvent(telemetryTracker, getClass().getSimpleName());
-    }
 
     /**
      * The Sql Server Configuration for the {@link SqlServerJdbcDataSourcePropertiesUpdater}
@@ -75,7 +71,7 @@ public class AzureSqlAutoConfiguration {
      */
     @Configuration
     @Import({SqlServerJdbcInfoProviderConfiguration.class})
-    static class CloudSqlDataSourcePropertiesConfiguration {
+    class CloudSqlDataSourcePropertiesConfiguration {
 
         @Bean
         @Primary
@@ -83,6 +79,7 @@ public class AzureSqlAutoConfiguration {
         public DataSourceProperties cloudSqlDataSourceProperties(DataSourceProperties dataSourceProperties,
                 JdbcDataSourcePropertiesUpdater dataSourcePropertiesProvider) {
 
+            TelemetryTracker.triggerEvent(telemetryTracker, SQL_SERVER);
             dataSourcePropertiesProvider.updateDataSourceProperties(dataSourceProperties);
 
             return dataSourceProperties;

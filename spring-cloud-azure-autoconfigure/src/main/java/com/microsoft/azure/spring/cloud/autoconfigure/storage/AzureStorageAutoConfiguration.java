@@ -43,17 +43,15 @@ import java.security.InvalidKeyException;
 public class AzureStorageAutoConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureStorageAutoConfiguration.class);
 
+    private static final String STORAGE_BLOB = "StorageBlob";
+
     @Autowired(required = false)
     private TelemetryTracker telemetryTracker;
-
-    @PostConstruct
-    public void triggerTelemetry() {
-        TelemetryTracker.triggerEvent(telemetryTracker, getClass().getSimpleName());
-    }
 
     @Bean
     @ConditionalOnMissingBean
     public CloudStorageAccount storage(AzureAdmin azureAdmin, AzureStorageProperties azureStorageProperties) {
+        TelemetryTracker.triggerEvent(telemetryTracker, STORAGE_BLOB);
         String accountName = azureStorageProperties.getAccount();
 
         StorageAccount storageAccount = azureAdmin.getOrCreateStorageAccount(accountName);

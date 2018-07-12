@@ -36,13 +36,14 @@ import javax.annotation.PostConstruct;
 @ConditionalOnProperty("spring.cloud.azure.servicebus.namespace")
 @EnableConfigurationProperties(AzureServiceBusProperties.class)
 public class AzureServiceBusQueueAutoConfiguration {
+    private static final String SERVICE_BUS_QUEUE = "ServiceBusQueue";
 
     @Autowired(required = false)
     private TelemetryTracker telemetryTracker;
 
     @PostConstruct
     public void triggerTelemetry() {
-        TelemetryTracker.triggerEvent(telemetryTracker, getClass().getSimpleName());
+        TelemetryTracker.triggerEvent(telemetryTracker, SERVICE_BUS_QUEUE);
     }
 
     @Bean
