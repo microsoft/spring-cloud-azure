@@ -29,6 +29,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
+import static com.microsoft.azure.spring.cloud.autoconfigure.common.AutoConfigureUtils.getServiceName;
+
 /**
  * Provides Azure SQL instance connectivity through Spring JDBC by providing
  * database server name and database name.
@@ -49,7 +51,7 @@ public class AzureSqlAutoConfiguration {
 
     @PostConstruct
     public void triggerTelemetry() {
-        TelemetryTracker.triggerEvent(telemetryTracker, getClass().getSimpleName());
+        TelemetryTracker.triggerEvent(telemetryTracker, getServiceName(AzureSqlAutoConfiguration.class));
     }
 
     /**

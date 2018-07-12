@@ -25,6 +25,8 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 
+import static com.microsoft.azure.spring.cloud.autoconfigure.common.AutoConfigureUtils.getServiceName;
+
 /**
  * An auto-configuration for Service Bus topic
  *
@@ -42,7 +44,7 @@ public class AzureServiceBusTopicAutoConfiguration {
 
     @PostConstruct
     public void triggerTelemetry() {
-        TelemetryTracker.triggerEvent(telemetryTracker, getClass().getSimpleName());
+        TelemetryTracker.triggerEvent(telemetryTracker, getServiceName(AzureServiceBusTopicAutoConfiguration.class));
     }
 
     @Bean

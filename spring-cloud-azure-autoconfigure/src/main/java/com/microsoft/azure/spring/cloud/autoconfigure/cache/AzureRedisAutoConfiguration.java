@@ -26,6 +26,8 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.Arrays;
 
+import static com.microsoft.azure.spring.cloud.autoconfigure.common.AutoConfigureUtils.getServiceName;
+
 /**
  * An auto-configuration for Spring cache using Azure redis cache
  *
@@ -43,7 +45,7 @@ public class AzureRedisAutoConfiguration {
 
     @PostConstruct
     public void triggerTelemetry() {
-        TelemetryTracker.triggerEvent(telemetryTracker, getClass().getSimpleName());
+        TelemetryTracker.triggerEvent(telemetryTracker, getServiceName(AzureRedisAutoConfiguration.class));
     }
 
     @ConditionalOnMissingBean
