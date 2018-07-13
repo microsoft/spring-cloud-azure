@@ -35,9 +35,8 @@ spring.cloud.stream.bindings.input.group=[consumer-group]
 spring.cloud.stream.bindings.output.destination=[eventhub-name]
 ....
 +
-All azure resources will be created if missing. Alternatively, you can manually create these Azure resources from
-the
-https://portal.azure.com/[Azure Portal].
+All azure resources will be created if missing. Alternatively, you can manually create
+https://azure.microsoft.com/en-us/services/event-hubs/[Azure Event Hubs].
 
 4. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
 

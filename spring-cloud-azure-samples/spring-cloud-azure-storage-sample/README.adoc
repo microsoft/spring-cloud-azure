@@ -25,7 +25,7 @@ dependencies {
 
 = Running the example
 
-1.  Create azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how to create credential file]
+1.  Create azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how to create credential file].
 +
 ....
 $  az account set --subscription <name or id>
@@ -35,10 +35,9 @@ $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 Make sure `my.azureauth` is encoding with UTF-8.
 
 2.  Put auth file under `src/main/resources/`.
-3.  [Optional] Create Azure storage account through Azure Portal or CLI. Please see https://docs.microsoft.com/en-us/azure/storage/[How to create Azure storage]
 
-4. Edit the `src/main/java/com/example/WebController.java` file, replace `{containerName}` and `{blobName}` into correct value
-5. Update link:src/main/resources/application.properties[application.properties]
+3. Edit the `src/main/java/com/example/WebController.java` file, replace `{containerName}` and `{blobName}` into correct value
+4. Update link:src/main/resources/application.properties[application.properties]
 +
 ....
 spring.cloud.azure.credentialFilePath=[credential-file-path]
@@ -50,17 +49,16 @@ spring.cloud.azure.storage.account=[account-name]
 ....
 
 +
-All azure resources will be created if missing. Alternatively, you can manually create these Azure resources from
-the
-https://portal.azure.com/[Azure Portal].
+All azure resources will be created if missing. Alternatively, you can manually create
+https://azure.microsoft.com/en-us/services/storage/[Azure Storage].
 
-6. Start the `StorageApplication` Spring Boot app.
+5. Start the `StorageApplication` Spring Boot app.
 +
 ```
 $ mvn spring-boot:run
 ```
 
-7. Send a POST request to update file contents:
+6. Send a POST request to update file contents:
 +
 ```
 $ curl -d 'new message' -H 'Content-Type: text/plain' localhost:8080
