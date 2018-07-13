@@ -26,6 +26,8 @@ spring.cloud.azure.credentialFilePath=[credential-file-path]
 spring.cloud.azure.resourceGroup=[resource-group]
 spring.cloud.azure.region=[region]
 
+spring.cloud.azure.eventhub.enabled=true
+
 spring.cloud.stream.eventhub.namespace=[eventhub-namespace]
 spring.cloud.stream.eventhub.checkpointStorageAccount=[checkpoint-storage-account]
 spring.cloud.stream.eventhub.checkpointStorageAccountContainer=[checkpoint-storage-account-container]
