@@ -21,6 +21,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -34,13 +35,20 @@ import java.util.Arrays;
 @Configuration
 @AutoConfigureBefore(RedisAutoConfiguration.class)
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
-@ConditionalOnProperty("spring.cloud.azure.redis.name")
+@ConditionalOnProperty("spring.cloud.azure.redis.enabled")
 @EnableConfigurationProperties(AzureRedisProperties.class)
 public class AzureRedisAutoConfiguration {
     private static final String REDIS = "Redis";
 
+    private final AzureRedisProperties redisProperties;
+
     @Autowired(required = false)
     private TelemetryTracker telemetryTracker;
+
+    public AzureRedisAutoConfiguration(AzureRedisProperties redisProperties) {
+        Assert.hasText(redisProperties.getName(), "spring.cloud.azure.redis.name must be provided.");
+        this.redisProperties = redisProperties;
+    }
 
     @PostConstruct
     public void triggerTelemetry() {
@@ -50,9 +58,8 @@ public class AzureRedisAutoConfiguration {
     @ConditionalOnMissingBean
     @Primary
     @Bean
-    public RedisProperties redisProperties(AzureAdmin azureAdmin, AzureRedisProperties azureRedisProperties)
-            throws IOException {
-        String cacheName = azureRedisProperties.getName();
+    public RedisProperties redisProperties(AzureAdmin azureAdmin) throws IOException {
+        String cacheName = redisProperties.getName();
 
         RedisCache redisCache = azureAdmin.getOrCreateRedisCache(cacheName);
 

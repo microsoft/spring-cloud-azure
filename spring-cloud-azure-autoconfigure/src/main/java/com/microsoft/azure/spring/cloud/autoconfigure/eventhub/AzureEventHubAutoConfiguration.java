@@ -24,6 +24,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
@@ -37,7 +38,7 @@ import java.util.Arrays;
 @AutoConfigureBefore(KafkaAutoConfiguration.class)
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnClass(EventHubNamespace.class)
-@ConditionalOnProperty("spring.cloud.azure.eventhub.namespace")
+@ConditionalOnProperty("spring.cloud.azure.eventhub.enabled")
 @EnableConfigurationProperties(AzureEventHubProperties.class)
 public class AzureEventHubAutoConfiguration {
     private static final String SECURITY_PROTOCOL = "security.protocol";
@@ -51,8 +52,15 @@ public class AzureEventHubAutoConfiguration {
     private static final int PORT = 9093;
     private static final String EVENT_HUB_KAFKA = "EventHubKafka";
 
+    private final AzureEventHubProperties eventHubProperties;
+
     @Autowired(required = false)
     private TelemetryTracker telemetryTracker;
+
+    public AzureEventHubAutoConfiguration(AzureEventHubProperties eventHubProperties) {
+        Assert.hasText(eventHubProperties.getNamespace(), "spring.cloud.azure.eventhub.namespace must be provided");
+        this.eventHubProperties = eventHubProperties;
+    }
 
     @PostConstruct
     public void triggerTelemetry() {
@@ -62,7 +70,7 @@ public class AzureEventHubAutoConfiguration {
     @ConditionalOnMissingBean
     @Primary
     @Bean
-    public KafkaProperties kafkaProperties(AzureAdmin azureAdmin, AzureEventHubProperties eventHubProperties) {
+    public KafkaProperties kafkaProperties(AzureAdmin azureAdmin) {
         KafkaProperties kafkaProperties = new KafkaProperties();
         EventHubNamespace namespace = azureAdmin.getOrCreateEventHubNamespace(eventHubProperties.getNamespace());
         String connectionString =

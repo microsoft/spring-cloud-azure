@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
+
 public class TelemetryAutoConfigurationTest {
     private ApplicationContextRunner contextRunner =
             new ApplicationContextRunner().withConfiguration(AutoConfigurations.of(TelemetryAutoConfiguration.class))
@@ -28,8 +29,7 @@ public class TelemetryAutoConfigurationTest {
 
     @Test
     public void testTelemetryPropertiesConfigured() {
-        this.contextRunner
-                .withPropertyValues("telemetry.instrumentationKey=012345678901234567890123456789012345")
+        this.contextRunner.withPropertyValues("telemetry.instrumentationKey=012345678901234567890123456789012345")
                           .run(context -> {
                               assertThat(context).hasSingleBean(TelemetryProperties.class);
                               assertThat(context.getBean(TelemetryProperties.class).getInstrumentationKey())
@@ -83,7 +83,12 @@ public class TelemetryAutoConfigurationTest {
 
         @Bean
         AzureProperties azureProperties() {
-            return mock(AzureProperties.class);
+            AzureProperties properties = mock(AzureProperties.class);
+            when(properties.getCredentialFilePath()).thenReturn("credential");
+            when(properties.getResourceGroup()).thenReturn("resourceGroup");
+            when(properties.getRegion()).thenReturn("region");
+
+            return properties;
         }
     }
 }

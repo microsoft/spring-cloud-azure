@@ -24,8 +24,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.util.Assert;
 
-import javax.annotation.PostConstruct;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 
@@ -37,7 +37,7 @@ import java.security.InvalidKeyException;
 @Configuration
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnClass(CloudStorageAccount.class)
-@ConditionalOnProperty(name = "spring.cloud.azure.storage.account")
+@ConditionalOnProperty(name = "spring.cloud.azure.storage.enabled")
 @EnableConfigurationProperties(AzureStorageProperties.class)
 @Import(AzureStorageProtocolResolver.class)
 public class AzureStorageAutoConfiguration {
@@ -45,14 +45,21 @@ public class AzureStorageAutoConfiguration {
 
     private static final String STORAGE_BLOB = "StorageBlob";
 
+    private final AzureStorageProperties storageProperties;
+
     @Autowired(required = false)
     private TelemetryTracker telemetryTracker;
 
+    public AzureStorageAutoConfiguration(AzureStorageProperties storageProperties) {
+        Assert.hasText(storageProperties.getAccount(), "spring.cloud.azure.storage.account must be provided");
+        this.storageProperties = storageProperties;
+    }
+
     @Bean
     @ConditionalOnMissingBean
-    public CloudStorageAccount storage(AzureAdmin azureAdmin, AzureStorageProperties azureStorageProperties) {
+    public CloudStorageAccount storage(AzureAdmin azureAdmin) {
         TelemetryTracker.triggerEvent(telemetryTracker, STORAGE_BLOB);
-        String accountName = azureStorageProperties.getAccount();
+        String accountName = storageProperties.getAccount();
 
         StorageAccount storageAccount = azureAdmin.getOrCreateStorageAccount(accountName);
 

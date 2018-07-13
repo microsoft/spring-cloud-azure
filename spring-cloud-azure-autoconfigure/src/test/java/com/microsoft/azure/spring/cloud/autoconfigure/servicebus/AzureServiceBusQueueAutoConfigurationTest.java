@@ -32,7 +32,8 @@ public class AzureServiceBusQueueAutoConfigurationTest {
 
     @Test
     public void testAzureServiceBusPropertiesConfigured() {
-        this.contextRunner.withPropertyValues("spring.cloud.azure.servicebus.namespace=ns1").run(context -> {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.servicebus.enabled=true")
+                          .withPropertyValues("spring.cloud.azure.servicebus.namespace=ns1").run(context -> {
             assertThat(context).hasSingleBean(AzureServiceBusProperties.class);
             assertThat(context.getBean(AzureServiceBusProperties.class).getNamespace()).isEqualTo("ns1");
             assertThat(context).hasSingleBean(ServiceBusQueueClientFactory.class);

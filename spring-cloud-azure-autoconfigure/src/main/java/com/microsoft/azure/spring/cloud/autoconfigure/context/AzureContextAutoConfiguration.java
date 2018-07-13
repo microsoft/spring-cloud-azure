@@ -7,20 +7,16 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.context;
 
 import com.microsoft.azure.management.Azure;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryProperties;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.cloud.context.core.CredentialsProvider;
 import com.microsoft.azure.spring.cloud.context.core.DefaultCredentialsProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.util.Assert;
 
 import java.io.IOException;
 
@@ -30,14 +26,18 @@ import java.io.IOException;
  * @author Warren Zhu
  */
 @Configuration
-@EnableConfigurationProperties({AzureProperties.class, TelemetryProperties.class})
-@ConditionalOnClass(name = "com.microsoft.azure.management.Azure")
-@ConditionalOnProperty("spring.cloud.azure.credentialFilePath")
+@EnableConfigurationProperties(AzureProperties.class)
+@ConditionalOnClass(Azure.class)
+@ConditionalOnProperty("spring.cloud.azure.enabled")
 public class AzureContextAutoConfiguration {
 
     private final AzureProperties azureProperties;
 
     public AzureContextAutoConfiguration(AzureProperties azureProperties) {
+        Assert.hasText(azureProperties.getCredentialFilePath(),
+                "spring.cloud.azure.credentialFilePath must be provided");
+        Assert.hasText(azureProperties.getResourceGroup(), "spring.cloud.azure.resourceGroup must be provided");
+        Assert.hasText(azureProperties.getRegion(), "spring.cloud.azure.region must be provided");
         this.azureProperties = azureProperties;
     }
 
@@ -49,7 +49,7 @@ public class AzureContextAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public AzureAdmin azureAdmin(Azure azure, AzureProperties azureProperties) {
+    public AzureAdmin azureAdmin(Azure azure) {
         return new AzureAdmin(azure, azureProperties.getResourceGroup(), azureProperties.getRegion());
     }
 

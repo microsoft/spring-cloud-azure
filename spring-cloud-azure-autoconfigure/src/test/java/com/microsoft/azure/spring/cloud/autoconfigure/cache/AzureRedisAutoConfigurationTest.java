@@ -8,7 +8,6 @@ package com.microsoft.azure.spring.cloud.autoconfigure.cache;
 
 import com.microsoft.azure.management.redis.RedisAccessKeys;
 import com.microsoft.azure.management.redis.RedisCache;
-import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -27,10 +26,9 @@ public class AzureRedisAutoConfigurationTest {
     private static final String HOST = "localhost";
     private static final int PORT = 6379;
     private static final boolean IS_SSL = true;
-    private ApplicationContextRunner contextRunner = new ApplicationContextRunner().withConfiguration(
-            AutoConfigurations.of(AzureContextAutoConfiguration.class, AzureRedisAutoConfiguration.class))
-                                                                                   .withUserConfiguration(
-                                                                                           TestConfiguration.class);
+    private ApplicationContextRunner contextRunner =
+            new ApplicationContextRunner().withConfiguration(AutoConfigurations.of(AzureRedisAutoConfiguration.class))
+                                          .withUserConfiguration(TestConfiguration.class);
 
     @Test
     public void testWithoutAzureRedisProperties() {
@@ -38,8 +36,15 @@ public class AzureRedisAutoConfigurationTest {
     }
 
     @Test
+    public void testAzureRedisDisabled() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.redis.enabled=false")
+                          .run(context -> assertThat(context).doesNotHaveBean(AzureRedisProperties.class));
+    }
+
+    @Test
     public void testAzureRedisPropertiesConfigured() {
-        this.contextRunner.withPropertyValues("spring.cloud.azure.redis.name=redis").run(context -> {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.redis.enabled=true").
+                withPropertyValues("spring.cloud.azure.redis.name=redis").run(context -> {
             assertThat(context).hasSingleBean(AzureRedisProperties.class);
             assertThat(context.getBean(AzureRedisProperties.class).getName()).isEqualTo("redis");
             assertThat(context).hasSingleBean(RedisProperties.class);

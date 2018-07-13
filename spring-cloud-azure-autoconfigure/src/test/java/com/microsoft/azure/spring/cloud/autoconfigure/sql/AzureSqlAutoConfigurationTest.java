@@ -51,8 +51,7 @@ public class AzureSqlAutoConfigurationTest {
 
     @Test
     public void testNoJdbc() {
-        this.contextRunner.withPropertyValues("spring.cloud.azure.sql.enabled=true")
-                          .withClassLoader(new FilteredClassLoader(EmbeddedDatabaseType.class, DataSource.class))
+        this.contextRunner.withClassLoader(new FilteredClassLoader(EmbeddedDatabaseType.class, DataSource.class))
                           .run(context -> {
                               assertThat(context).doesNotHaveBean(DataSource.class);
                               assertThat(context).doesNotHaveBean(DataSourceProperties.class);

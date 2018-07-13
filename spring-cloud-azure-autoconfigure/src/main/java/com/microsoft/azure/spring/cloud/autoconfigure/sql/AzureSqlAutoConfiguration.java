@@ -26,8 +26,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.util.Assert;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 /**
@@ -46,8 +46,16 @@ import javax.sql.DataSource;
 public class AzureSqlAutoConfiguration {
     private static final String SQL_SERVER = "SqlServer";
 
+    private final AzureSqlProperties sqlProperties;
+
     @Autowired(required = false)
     private TelemetryTracker telemetryTracker;
+
+    public AzureSqlAutoConfiguration(AzureSqlProperties sqlProperties) {
+        Assert.hasText(sqlProperties.getServerName(), "spring.cloud.azure.sql.serverName must be provided");
+        Assert.hasText(sqlProperties.getDatabaseName(), "spring.cloud.azure.sql.databaseName must be provided");
+        this.sqlProperties = sqlProperties;
+    }
 
     /**
      * The Sql Server Configuration for the {@link SqlServerJdbcDataSourcePropertiesUpdater}
@@ -55,13 +63,12 @@ public class AzureSqlAutoConfiguration {
      */
     @ConditionalOnClass(com.microsoft.sqlserver.jdbc.SQLServerDriver.class)
     @ConditionalOnMissingBean(JdbcDataSourcePropertiesUpdater.class)
-    static class SqlServerJdbcInfoProviderConfiguration {
+    class SqlServerJdbcInfoProviderConfiguration {
 
         @Bean
-        public JdbcDataSourcePropertiesUpdater defaultSqlServerJdbcInfoProvider(AzureSqlProperties azureSqlProperties,
-                AzureAdmin azureAdmin) {
+        public JdbcDataSourcePropertiesUpdater defaultSqlServerJdbcInfoProvider(AzureAdmin azureAdmin) {
 
-            return new SqlServerJdbcDataSourcePropertiesUpdater(azureSqlProperties, azureAdmin);
+            return new SqlServerJdbcDataSourcePropertiesUpdater(sqlProperties, azureAdmin);
         }
     }
 
