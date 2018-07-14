@@ -22,7 +22,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
 
@@ -34,20 +33,13 @@ import javax.annotation.PostConstruct;
 @Configuration
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnClass(QueueClient.class)
-@ConditionalOnProperty("spring.cloud.azure.servicebus.enabled")
+@ConditionalOnProperty(value = "spring.cloud.azure.servicebus.queue.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(AzureServiceBusProperties.class)
 public class AzureServiceBusQueueAutoConfiguration {
     private static final String SERVICE_BUS_QUEUE = "ServiceBusQueue";
 
-    private final AzureServiceBusProperties serviceBusProperties;
-
     @Autowired(required = false)
     private TelemetryTracker telemetryTracker;
-
-    public AzureServiceBusQueueAutoConfiguration(AzureServiceBusProperties serviceBusProperties) {
-        Assert.hasText(serviceBusProperties.getNamespace(), "spring.cloud.azure.servicebus.namespace must be provided");
-        this.serviceBusProperties = serviceBusProperties;
-    }
 
     @PostConstruct
     public void triggerTelemetry() {
@@ -56,7 +48,8 @@ public class AzureServiceBusQueueAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ServiceBusQueueClientFactory queueClientFactory(AzureAdmin azureAdmin) {
+    public ServiceBusQueueClientFactory queueClientFactory(AzureAdmin azureAdmin,
+            AzureServiceBusProperties serviceBusProperties) {
         return new DefaultServiceBusQueueClientFactory(azureAdmin, serviceBusProperties.getNamespace());
     }
 

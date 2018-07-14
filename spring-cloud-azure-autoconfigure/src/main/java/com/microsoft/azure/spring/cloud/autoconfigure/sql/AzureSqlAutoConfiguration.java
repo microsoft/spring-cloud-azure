@@ -26,7 +26,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import org.springframework.util.Assert;
 
 import javax.sql.DataSource;
 
@@ -38,7 +37,7 @@ import javax.sql.DataSource;
  */
 @Configuration
 @ConditionalOnClass({DataSource.class, EmbeddedDatabaseType.class})
-@ConditionalOnProperty(name = "spring.cloud.azure.sql.enabled")
+@ConditionalOnProperty(name = "spring.cloud.azure.sql.enabled", matchIfMissing = true)
 @EnableConfigurationProperties({AzureSqlProperties.class, DataSourceProperties.class})
 @AutoConfigureBefore({DataSourceAutoConfiguration.class, JndiDataSourceAutoConfiguration.class,
         XADataSourceAutoConfiguration.class})
@@ -46,16 +45,8 @@ import javax.sql.DataSource;
 public class AzureSqlAutoConfiguration {
     private static final String SQL_SERVER = "SqlServer";
 
-    private final AzureSqlProperties sqlProperties;
-
     @Autowired(required = false)
     private TelemetryTracker telemetryTracker;
-
-    public AzureSqlAutoConfiguration(AzureSqlProperties sqlProperties) {
-        Assert.hasText(sqlProperties.getServerName(), "spring.cloud.azure.sql.serverName must be provided");
-        Assert.hasText(sqlProperties.getDatabaseName(), "spring.cloud.azure.sql.databaseName must be provided");
-        this.sqlProperties = sqlProperties;
-    }
 
     /**
      * The Sql Server Configuration for the {@link SqlServerJdbcDataSourcePropertiesUpdater}
@@ -66,7 +57,8 @@ public class AzureSqlAutoConfiguration {
     class SqlServerJdbcInfoProviderConfiguration {
 
         @Bean
-        public JdbcDataSourcePropertiesUpdater defaultSqlServerJdbcInfoProvider(AzureAdmin azureAdmin) {
+        public JdbcDataSourcePropertiesUpdater defaultSqlServerJdbcInfoProvider(AzureAdmin azureAdmin,
+                AzureSqlProperties sqlProperties) {
 
             return new SqlServerJdbcDataSourcePropertiesUpdater(sqlProperties, azureAdmin);
         }

@@ -11,16 +11,17 @@ import com.microsoft.azure.PagedList;
 import com.microsoft.azure.management.eventhub.EventHubAuthorizationKey;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
 import com.microsoft.azure.management.eventhub.EventHubNamespaceAuthorizationRule;
-import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.rest.RestException;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
+import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import java.io.IOException;
 
@@ -28,15 +29,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class AzureEventHubAutoConfigurationTest {
-    private ApplicationContextRunner contextRunner = new ApplicationContextRunner().withConfiguration(
-            AutoConfigurations.of(AzureContextAutoConfiguration.class, AzureEventHubAutoConfiguration.class))
-                                                                                   .withUserConfiguration(
-                                                                                           TestConfiguration.class);
+public class AzureEventHubKafkaAutoConfigurationTest {
+    private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(AzureEventHubKafkaAutoConfiguration.class))
+            .withUserConfiguration(TestConfiguration.class);
 
     @Test
-    public void testWithoutAzureEventHubProperties() {
-        this.contextRunner.run(context -> assertThat(context).doesNotHaveBean(AzureEventHubProperties.class));
+    public void testAzureEventHubDisabled() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.eventhub.enabled=false")
+                          .run(context -> assertThat(context).doesNotHaveBean(AzureEventHubProperties.class));
+    }
+
+    @Test
+    public void testWithoutKafkaTemplate() {
+        this.contextRunner.withClassLoader(new FilteredClassLoader(KafkaTemplate.class))
+                          .run(context -> assertThat(context).doesNotHaveBean(AzureEventHubProperties.class));
     }
 
     @Ignore("org.apache.kafka.common.serialization.StringSerializer required on classpath")

@@ -13,6 +13,7 @@ import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.cloud.context.core.AzureUtil;
 import com.microsoft.azure.spring.cloud.storage.AzureStorageProtocolResolver;
 import com.microsoft.azure.storage.CloudStorageAccount;
+import com.microsoft.azure.storage.blob.CloudBlobClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.util.Assert;
 
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
@@ -36,8 +36,8 @@ import java.security.InvalidKeyException;
  */
 @Configuration
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
-@ConditionalOnClass(CloudStorageAccount.class)
-@ConditionalOnProperty(name = "spring.cloud.azure.storage.enabled")
+@ConditionalOnClass({CloudBlobClient.class, AzureStorageProtocolResolver.class})
+@ConditionalOnProperty(name = "spring.cloud.azure.storage.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(AzureStorageProperties.class)
 @Import(AzureStorageProtocolResolver.class)
 public class AzureStorageAutoConfiguration {
@@ -45,19 +45,12 @@ public class AzureStorageAutoConfiguration {
 
     private static final String STORAGE_BLOB = "StorageBlob";
 
-    private final AzureStorageProperties storageProperties;
-
     @Autowired(required = false)
     private TelemetryTracker telemetryTracker;
 
-    public AzureStorageAutoConfiguration(AzureStorageProperties storageProperties) {
-        Assert.hasText(storageProperties.getAccount(), "spring.cloud.azure.storage.account must be provided");
-        this.storageProperties = storageProperties;
-    }
-
     @Bean
     @ConditionalOnMissingBean
-    public CloudStorageAccount storage(AzureAdmin azureAdmin) {
+    public CloudStorageAccount storage(AzureAdmin azureAdmin, AzureStorageProperties storageProperties) {
         TelemetryTracker.triggerEvent(telemetryTracker, STORAGE_BLOB);
         String accountName = storageProperties.getAccount();
 

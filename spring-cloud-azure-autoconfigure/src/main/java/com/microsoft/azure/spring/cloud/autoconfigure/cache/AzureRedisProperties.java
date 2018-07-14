@@ -9,6 +9,9 @@ package com.microsoft.azure.spring.cloud.autoconfigure.cache;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.util.Assert;
+
+import javax.annotation.PostConstruct;
 
 /**
  * @author Warren Zhu
@@ -18,4 +21,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("spring.cloud.azure.redis")
 public class AzureRedisProperties {
     private String name;
+
+    @PostConstruct
+    public void validate() {
+        Assert.hasText(name, "spring.cloud.azure.redis.name must be provided.");
+    }
 }

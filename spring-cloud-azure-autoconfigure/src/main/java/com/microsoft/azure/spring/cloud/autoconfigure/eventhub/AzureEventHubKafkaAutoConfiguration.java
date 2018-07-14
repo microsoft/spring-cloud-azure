@@ -6,6 +6,7 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.eventhub;
 
+import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.management.eventhub.AuthorizationRule;
 import com.microsoft.azure.management.eventhub.EventHubAuthorizationKey;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
@@ -24,7 +25,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.util.Assert;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
@@ -37,10 +38,10 @@ import java.util.Arrays;
 @Configuration
 @AutoConfigureBefore(KafkaAutoConfiguration.class)
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
-@ConditionalOnClass(EventHubNamespace.class)
-@ConditionalOnProperty("spring.cloud.azure.eventhub.enabled")
+@ConditionalOnClass({EventHubClient.class, KafkaTemplate.class})
+@ConditionalOnProperty(value = "spring.cloud.azure.eventhub.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(AzureEventHubProperties.class)
-public class AzureEventHubAutoConfiguration {
+public class AzureEventHubKafkaAutoConfiguration {
     private static final String SECURITY_PROTOCOL = "security.protocol";
     private static final String SASL_SSL = "SASL_SSL";
     private static final String SASL_JAAS_CONFIG = "sasl.jaas.config";
@@ -52,15 +53,8 @@ public class AzureEventHubAutoConfiguration {
     private static final int PORT = 9093;
     private static final String EVENT_HUB_KAFKA = "EventHubKafka";
 
-    private final AzureEventHubProperties eventHubProperties;
-
     @Autowired(required = false)
     private TelemetryTracker telemetryTracker;
-
-    public AzureEventHubAutoConfiguration(AzureEventHubProperties eventHubProperties) {
-        Assert.hasText(eventHubProperties.getNamespace(), "spring.cloud.azure.eventhub.namespace must be provided");
-        this.eventHubProperties = eventHubProperties;
-    }
 
     @PostConstruct
     public void triggerTelemetry() {
@@ -70,7 +64,7 @@ public class AzureEventHubAutoConfiguration {
     @ConditionalOnMissingBean
     @Primary
     @Bean
-    public KafkaProperties kafkaProperties(AzureAdmin azureAdmin) {
+    public KafkaProperties kafkaProperties(AzureAdmin azureAdmin, AzureEventHubProperties eventHubProperties) {
         KafkaProperties kafkaProperties = new KafkaProperties();
         EventHubNamespace namespace = azureAdmin.getOrCreateEventHubNamespace(eventHubProperties.getNamespace());
         String connectionString =

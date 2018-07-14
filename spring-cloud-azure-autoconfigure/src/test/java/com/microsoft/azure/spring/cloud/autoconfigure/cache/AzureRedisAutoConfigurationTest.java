@@ -12,9 +12,11 @@ import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
+import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisOperations;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
@@ -31,20 +33,20 @@ public class AzureRedisAutoConfigurationTest {
                                           .withUserConfiguration(TestConfiguration.class);
 
     @Test
-    public void testWithoutAzureRedisProperties() {
-        this.contextRunner.run(context -> assertThat(context).doesNotHaveBean(AzureRedisProperties.class));
-    }
-
-    @Test
     public void testAzureRedisDisabled() {
         this.contextRunner.withPropertyValues("spring.cloud.azure.redis.enabled=false")
                           .run(context -> assertThat(context).doesNotHaveBean(AzureRedisProperties.class));
     }
 
     @Test
+    public void testWithoutRedisOperationsClass() {
+        this.contextRunner.withClassLoader(new FilteredClassLoader(RedisOperations.class))
+                          .run(context -> assertThat(context).doesNotHaveBean(AzureRedisProperties.class));
+    }
+
+    @Test
     public void testAzureRedisPropertiesConfigured() {
-        this.contextRunner.withPropertyValues("spring.cloud.azure.redis.enabled=true").
-                withPropertyValues("spring.cloud.azure.redis.name=redis").run(context -> {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.redis.name=redis").run(context -> {
             assertThat(context).hasSingleBean(AzureRedisProperties.class);
             assertThat(context.getBean(AzureRedisProperties.class).getName()).isEqualTo("redis");
             assertThat(context).hasSingleBean(RedisProperties.class);

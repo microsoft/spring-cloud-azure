@@ -10,6 +10,9 @@ import com.microsoft.azure.spring.cloud.context.core.CredentialSupplier;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.util.Assert;
+
+import javax.annotation.PostConstruct;
 
 @Getter
 @Setter
@@ -22,5 +25,10 @@ public class AzureProperties implements CredentialSupplier {
 
     private String region;
 
-    private boolean telemetryAllowed = true;
+    @PostConstruct
+    public void validate() {
+        Assert.hasText(credentialFilePath, "spring.cloud.azure.credentialFilePath must be provided");
+        Assert.hasText(resourceGroup, "spring.cloud.azure.resourceGroup must be provided");
+        Assert.hasText(region, "spring.cloud.azure.region must be provided");
+    }
 }

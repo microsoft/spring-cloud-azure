@@ -8,7 +8,6 @@ package com.microsoft.azure.spring.cloud.autoconfigure.sql;
 
 import com.microsoft.azure.management.sql.SqlDatabase;
 import com.microsoft.azure.management.sql.SqlServer;
-import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -27,21 +26,20 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class AzureSqlAutoConfigurationTest {
-    private ApplicationContextRunner contextRunner = new ApplicationContextRunner().withConfiguration(
-            AutoConfigurations.of(AzureContextAutoConfiguration.class, AzureSqlAutoConfiguration.class))
-                                                                                   .withUserConfiguration(
-                                                                                           TestConfiguration.class);
+    private ApplicationContextRunner contextRunner =
+            new ApplicationContextRunner().withConfiguration(AutoConfigurations.of(AzureSqlAutoConfiguration.class))
+                                          .withUserConfiguration(TestConfiguration.class);
 
     @Test
-    public void testWithoutAzureSqlProperties() {
-        this.contextRunner.run(context -> assertThat(context).doesNotHaveBean(AzureSqlProperties.class));
+    public void testAzureSqlDisabled() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.sql.enabled=false")
+                          .run(context -> assertThat(context).doesNotHaveBean(AzureSqlProperties.class));
     }
 
     @Test
     public void testAzureSqlPropertiesConfigured() {
-        this.contextRunner.withPropertyValues("spring.cloud.azure.sql.databaseName=db1").
-                withPropertyValues("spring.cloud.azure.sql.enabled=true").
-                                  withPropertyValues("spring.cloud.azure.sql.serverName=server1").
+        this.contextRunner.withPropertyValues("spring.cloud.azure.sql.databaseName=db1")
+                          .withPropertyValues("spring.cloud.azure.sql.serverName=server1").
                                   withPropertyValues("spring.datasource.password=ps1").run(context -> {
             assertThat(context).hasSingleBean(AzureSqlProperties.class);
             assertThat(context.getBean(AzureSqlProperties.class).getDatabaseName()).isEqualTo("db1");
