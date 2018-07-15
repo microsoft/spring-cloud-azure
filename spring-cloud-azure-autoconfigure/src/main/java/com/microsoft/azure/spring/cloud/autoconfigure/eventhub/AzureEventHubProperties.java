@@ -9,6 +9,9 @@ package com.microsoft.azure.spring.cloud.autoconfigure.eventhub;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.util.Assert;
+
+import javax.annotation.PostConstruct;
 
 /**
  * @author Warren Zhu
@@ -18,4 +21,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("spring.cloud.azure.eventhub")
 public class AzureEventHubProperties {
     private String namespace;
+
+    @PostConstruct
+    public void validate() {
+        Assert.hasText(namespace, "spring.cloud.azure.eventhub.namespace must be provided");
+    }
 }

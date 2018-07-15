@@ -11,6 +11,7 @@ import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.cloud.context.core.CredentialsProvider;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,23 +26,27 @@ public class AzureContextAutoConfigurationTest {
 
     @Test
     public void testAzurePropertiesConfigured() {
-        this.contextRunner.withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
+        this.contextRunner.
+                                  withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
                           .withPropertyValues("spring.cloud.azure.resourceGroup=group1")
-                          .withPropertyValues("spring.cloud.azure.region=westUS").
-                                  withPropertyValues(
-                                          "telemetry" + ".instrumentationKey=012345678901234567890123456789012345")
-                          .run(context -> {
-                              assertThat(context).hasSingleBean(AzureProperties.class);
-                              assertThat(context.getBean(AzureProperties.class).getCredentialFilePath())
-                                      .isEqualTo("credential");
-                              assertThat(context.getBean(AzureProperties.class).getResourceGroup()).isEqualTo("group1");
-                              assertThat(context.getBean(AzureProperties.class).getRegion()).isEqualTo("westUS");
-                          });
+                          .withPropertyValues("spring.cloud.azure.region=westUS").run(context -> {
+            assertThat(context).hasSingleBean(AzureProperties.class);
+            assertThat(context.getBean(AzureProperties.class).getCredentialFilePath()).isEqualTo("credential");
+            assertThat(context.getBean(AzureProperties.class).getResourceGroup()).isEqualTo("group1");
+            assertThat(context.getBean(AzureProperties.class).getRegion()).isEqualTo("westUS");
+        });
     }
 
     @Test
-    public void testWithoutAzureProperties() {
-        this.contextRunner.run(context -> assertThat(context).doesNotHaveBean(AzureProperties.class));
+    public void testAzureDisabled() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.enabled=false")
+                          .run(context -> assertThat(context).doesNotHaveBean(AzureProperties.class));
+    }
+
+    @Test
+    public void testWithoutAzureClass() {
+        this.contextRunner.withClassLoader(new FilteredClassLoader(Azure.class))
+                          .run(context -> assertThat(context).doesNotHaveBean(AzureProperties.class));
     }
 
     @Configuration

@@ -8,14 +8,15 @@ package com.microsoft.azure.spring.cloud.autoconfigure.cache;
 
 import com.microsoft.azure.management.redis.RedisAccessKeys;
 import com.microsoft.azure.management.redis.RedisCache;
-import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
+import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisOperations;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
@@ -27,14 +28,20 @@ public class AzureRedisAutoConfigurationTest {
     private static final String HOST = "localhost";
     private static final int PORT = 6379;
     private static final boolean IS_SSL = true;
-    private ApplicationContextRunner contextRunner = new ApplicationContextRunner().withConfiguration(
-            AutoConfigurations.of(AzureContextAutoConfiguration.class, AzureRedisAutoConfiguration.class))
-                                                                                   .withUserConfiguration(
-                                                                                           TestConfiguration.class);
+    private ApplicationContextRunner contextRunner =
+            new ApplicationContextRunner().withConfiguration(AutoConfigurations.of(AzureRedisAutoConfiguration.class))
+                                          .withUserConfiguration(TestConfiguration.class);
 
     @Test
-    public void testWithoutAzureRedisProperties() {
-        this.contextRunner.run(context -> assertThat(context).doesNotHaveBean(AzureRedisProperties.class));
+    public void testAzureRedisDisabled() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.redis.enabled=false")
+                          .run(context -> assertThat(context).doesNotHaveBean(AzureRedisProperties.class));
+    }
+
+    @Test
+    public void testWithoutRedisOperationsClass() {
+        this.contextRunner.withClassLoader(new FilteredClassLoader(RedisOperations.class))
+                          .run(context -> assertThat(context).doesNotHaveBean(AzureRedisProperties.class));
     }
 
     @Test
