@@ -11,11 +11,15 @@ Event Hub to a `sink` which simply logs the message.
 to create credential file]
 +
 ....
-$  az az account set --subscription <name or id>
+$  az account set --subscription <name or id>
 $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 ....
++
+Make sure `my.azureauth` is encoding with UTF-8.
 
-2. Update link:src/main/resources/application.properties[application.properties] file
+2. Put auth file under `src/main/resources/`.
+
+3. Update link:src/main/resources/application.properties[application.properties] file
 +
 ....
 spring.cloud.azure.credentialFilePath=[credential-file-path]
@@ -31,9 +35,8 @@ spring.cloud.stream.bindings.input.group=[consumer-group]
 spring.cloud.stream.bindings.output.destination=[eventhub-name]
 ....
 +
-All azure resources will be created if missing. Alternatively, you can manually create these Azure resources from
-the
-https://portal.azure.com/[Azure Portal].
+All azure resources will be created if missing. Alternatively, you can manually create
+https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create[Azure Event Hubs].
 
 4. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
 
