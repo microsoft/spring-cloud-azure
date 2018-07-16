@@ -6,6 +6,7 @@
 
 package com.microsoft.azure.spring.cloud.context.core;
 
+import com.microsoft.azure.CloudException;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.eventhub.EventHub;
 import com.microsoft.azure.management.eventhub.EventHubConsumerGroup;
@@ -58,8 +59,7 @@ public class AzureAdmin {
     }
 
     public EventHub getOrCreateEventHub(String namespace, String name) {
-        return getOrCreate(this::getEventHub, logCreator(this::createEventHub, EventHub.class))
-                .apply(Tuple.of(namespace, name));
+        return getOrCreate(this::getEventHub, this::createEventHub, EventHub.class).apply(Tuple.of(namespace, name));
     }
 
     public EventHub getEventHub(Tuple<String, String> namespaceAndName) {
@@ -74,7 +74,7 @@ public class AzureAdmin {
 
     public EventHubNamespace getOrCreateEventHubNamespace(String namespace) {
         return getOrCreate(this::getEventHubNamespace,
-                logCreator(this::createEventHubNamespace, EventHubNamespace.class)).apply(namespace);
+                this::createEventHubNamespace, EventHubNamespace.class).apply(namespace);
     }
 
     private EventHubNamespace getEventHubNamespace(String namespace) {
@@ -93,7 +93,7 @@ public class AzureAdmin {
     }
 
     public StorageAccount getOrCreateStorageAccount(String name) {
-        return getOrCreate(this::getStorageAccount, logCreator(this::createStorageAccount, StorageAccount.class))
+        return getOrCreate(this::getStorageAccount, this::createStorageAccount, StorageAccount.class)
                 .apply(name);
     }
 
@@ -107,8 +107,7 @@ public class AzureAdmin {
     }
 
     private ResourceGroup getOrCreateResourceGroup(String resourceGroup) {
-        return getOrCreate(this::getResourceGroup, logCreator(this::createResourceGroup, ResourceGroup.class))
-                .apply(resourceGroup);
+        return getOrCreate(this::getResourceGroup, this::createResourceGroup, ResourceGroup.class).apply(resourceGroup);
     }
 
     private ResourceGroup getResourceGroup(String resourceGroup) {
@@ -174,7 +173,7 @@ public class AzureAdmin {
 
     public ServiceBusNamespace getOrCreateServiceBusNamespace(String namespace) {
         return getOrCreate(this::getServiceBusNamespace,
-                logCreator(this::createServiceBusNamespace, ServiceBusNamespace.class)).apply(namespace);
+                this::createServiceBusNamespace, ServiceBusNamespace.class).apply(namespace);
     }
 
     private ServiceBusNamespace getServiceBusNamespace(String namespace) {
@@ -193,12 +192,12 @@ public class AzureAdmin {
     }
 
     public Topic getOrCreateServiceBusTopic(ServiceBusNamespace namespace, String name) {
-        return getOrCreate(this::getServiceBusTopic, logCreator(this::createServiceBusTopic, Topic.class))
+        return getOrCreate(this::getServiceBusTopic, this::createServiceBusTopic, Topic.class)
                 .apply(Tuple.of(namespace, name));
     }
 
     public Queue getOrCreateServiceBusQueue(ServiceBusNamespace namespace, String name) {
-        return getOrCreate(this::getServiceBusQueue, logCreator(this::createServiceBusQueue, Queue.class))
+        return getOrCreate(this::getServiceBusQueue, this::createServiceBusQueue, Queue.class)
                 .apply(Tuple.of(namespace, name));
     }
 
@@ -220,7 +219,7 @@ public class AzureAdmin {
 
     public ServiceBusSubscription getOrCreateServiceBusTopicSubscription(Topic topic, String name) {
         return getOrCreate(this::getServiceBusTopicSubscription,
-                logCreator(this::createServiceBusTopicSubscription, ServiceBusSubscription.class))
+                this::createServiceBusTopicSubscription, ServiceBusSubscription.class)
                 .apply(Tuple.of(topic, name));
     }
 
@@ -243,17 +242,17 @@ public class AzureAdmin {
     }
 
     public RedisCache getOrCreateRedisCache(String name) {
-        return getOrCreate(this::getRedisCache, logCreator(this::createRedisCache, RedisCache.class)).apply(name);
+        return getOrCreate(this::getRedisCache, this::createRedisCache, RedisCache.class).apply(name);
     }
 
-    private <T, R> Function<T, R> getOrCreate(Function<T, R> getter, Function<T, R> creator) {
+    private <T, R> Function<T, R> getOrCreate(Function<T, R> getter, Function<T, R> creator, Class<R> resourceType) {
         return t -> {
             R result = getter.apply(t);
             if (result != null) {
                 return result;
             }
 
-            return creator.apply(t);
+            return logCreator(creator, resourceType).apply(t);
         };
     }
 
@@ -264,7 +263,16 @@ public class AzureAdmin {
             String type = resourceType.getSimpleName();
             LOG.info("Creating {} with name '{}' ...", type, name);
             stopWatch.start();
-            R result = creator.apply(t);
+            R result;
+
+            try {
+                result = creator.apply(t);
+            } catch (CloudException e){
+                LOG.error("Failed to create {} with name '{}' due to: {}", type, name, e.getMessage());
+                throw new RuntimeException(String.format("Failed to create %s with name %s due to: %s", type, name, e
+                        .getMessage()));
+            }
+
             stopWatch.stop();
             LOG.info("{} with name '{} 'created in {} seconds", type, name, stopWatch.getTotalTimeSeconds());
             return result;
