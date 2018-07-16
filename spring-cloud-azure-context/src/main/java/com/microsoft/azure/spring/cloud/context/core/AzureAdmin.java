@@ -43,7 +43,7 @@ public class AzureAdmin {
         this.getOrCreateResourceGroup(resourceGroup);
     }
 
-    private static String getResourceKey(Object o) {
+    private static String getResourceName(Object o) {
         if (o instanceof String) {
             return (String) o;
         }
@@ -260,13 +260,13 @@ public class AzureAdmin {
     private <T, R> Function<T, R> logCreator(Function<T, R> creator, Class<R> resourceType) {
         return t -> {
             StopWatch stopWatch = new StopWatch();
-            String key = getResourceKey(t);
+            String name = getResourceName(t);
             String type = resourceType.getSimpleName();
-            LOG.info("Creating {} with name '{}' ...", type, key);
+            LOG.info("Creating {} with name '{}' ...", type, name);
             stopWatch.start();
             R result = creator.apply(t);
             stopWatch.stop();
-            LOG.info("{} with name '{} 'created in {} seconds", type, key, stopWatch.getTotalTimeSeconds());
+            LOG.info("{} with name '{} 'created in {} seconds", type, name, stopWatch.getTotalTimeSeconds());
             return result;
         };
     }
