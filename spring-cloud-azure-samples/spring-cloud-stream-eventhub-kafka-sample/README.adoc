@@ -1,6 +1,6 @@
-= Spring Cloud Azure Stream Binder for Event Hub Code Sample
+= Spring Cloud Azure Stream Kafka Binder for Event Hub Code Sample
 
-This code sample demonstrates how to use the Spring Cloud Stream binder for Azure Event Hub.
+This code sample demonstrates how to use the Spring Cloud Stream Kafka binder for Azure Event Hub.
 The sample app exposes a rest api to receive string message. Then message is sent through Azure
 Event Hub to a `sink` which simply logs the message.
 
@@ -26,8 +26,6 @@ spring.cloud.azure.resourceGroup=[resource-group]
 spring.cloud.azure.region=[region]
 
 spring.cloud.azure.eventhub.namespace=[eventhub-namespace]
-
-spring.cloud.stream.eventhub.checkpointStorageAccount=[checkpoint-storage-account]
 
 spring.cloud.stream.bindings.input.destination=[eventhub-name]
 spring.cloud.stream.bindings.input.group=[consumer-group]
