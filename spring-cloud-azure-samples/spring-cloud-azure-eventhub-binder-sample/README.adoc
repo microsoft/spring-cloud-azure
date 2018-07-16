@@ -42,7 +42,7 @@ https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create[Azure Event 
 5.  Send a POST request
 +
 ....
-$ curl -X POST -H "Content-Type: text/plain" --data "hello" http://localhost:8080/messages
+$ curl -X POST -H "Content-Type: text/plain" -d "hello" http://localhost:8080/messages
 ....
 
 6. Verify in your app's logs that a similar message was posted:
