@@ -9,6 +9,9 @@ package com.microsoft.azure.spring.cloud.autoconfigure.sql;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.util.Assert;
+
+import javax.annotation.PostConstruct;
 
 /**
  * Azure SQL properties.
@@ -29,4 +32,10 @@ public class AzureSqlProperties {
      * Name of the database server in the Azure SQL instance.
      */
     private String serverName;
+
+    @PostConstruct
+    public void validate() {
+        Assert.hasText(serverName, "spring.cloud.azure.sql.serverName must be provided");
+        Assert.hasText(databaseName, "spring.cloud.azure.sql.databaseName must be provided");
+    }
 }

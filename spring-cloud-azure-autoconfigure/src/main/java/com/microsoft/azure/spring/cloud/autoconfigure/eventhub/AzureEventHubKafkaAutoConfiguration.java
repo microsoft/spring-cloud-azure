@@ -6,6 +6,7 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.eventhub;
 
+import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.management.eventhub.AuthorizationRule;
 import com.microsoft.azure.management.eventhub.EventHubAuthorizationKey;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
@@ -24,6 +25,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
@@ -36,10 +38,10 @@ import java.util.Arrays;
 @Configuration
 @AutoConfigureBefore(KafkaAutoConfiguration.class)
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
-@ConditionalOnClass(EventHubNamespace.class)
-@ConditionalOnProperty("spring.cloud.azure.eventhub.namespace")
+@ConditionalOnClass({EventHubClient.class, KafkaTemplate.class})
+@ConditionalOnProperty(value = "spring.cloud.azure.eventhub.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(AzureEventHubProperties.class)
-public class AzureEventHubAutoConfiguration {
+public class AzureEventHubKafkaAutoConfiguration {
     private static final String SECURITY_PROTOCOL = "security.protocol";
     private static final String SASL_SSL = "SASL_SSL";
     private static final String SASL_JAAS_CONFIG = "sasl.jaas.config";
@@ -49,13 +51,14 @@ public class AzureEventHubAutoConfiguration {
     private static final String SASL_MECHANISM = "sasl.mechanism";
     private static final String SASL_MECHANISM_PLAIN = "PLAIN";
     private static final int PORT = 9093;
+    private static final String EVENT_HUB_KAFKA = "EventHubKafka";
 
     @Autowired(required = false)
     private TelemetryTracker telemetryTracker;
 
     @PostConstruct
     public void triggerTelemetry() {
-        TelemetryTracker.triggerEvent(telemetryTracker, getClass().getSimpleName());
+        TelemetryTracker.triggerEvent(telemetryTracker, EVENT_HUB_KAFKA);
     }
 
     @ConditionalOnMissingBean

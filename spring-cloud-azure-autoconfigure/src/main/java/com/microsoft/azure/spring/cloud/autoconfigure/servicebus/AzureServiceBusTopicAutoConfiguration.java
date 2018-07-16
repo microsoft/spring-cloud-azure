@@ -33,16 +33,17 @@ import javax.annotation.PostConstruct;
 @Configuration
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnClass(TopicClient.class)
-@ConditionalOnProperty("spring.cloud.azure.servicebus.namespace")
+@ConditionalOnProperty(value = "spring.cloud.azure.servicebus.topic.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(AzureServiceBusProperties.class)
 public class AzureServiceBusTopicAutoConfiguration {
+    private static final String SERVICE_BUS_TOPIC = "ServiceBusTopic";
 
     @Autowired(required = false)
     private TelemetryTracker telemetryTracker;
 
     @PostConstruct
     public void triggerTelemetry() {
-        TelemetryTracker.triggerEvent(telemetryTracker, getClass().getSimpleName());
+        TelemetryTracker.triggerEvent(telemetryTracker, SERVICE_BUS_TOPIC);
     }
 
     @Bean
