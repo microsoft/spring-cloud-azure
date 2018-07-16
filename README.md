@@ -6,8 +6,8 @@ The project provides Spring Cloud integration with Azure services. Developers ca
 
 Currently, Spring Cloud Azure offers the following features with samples.  
 
-- [Spring Resource Abstraction for Azure Storage](spring-cloud-azure-samples/spring-cloud-azure-storage-sample/README.adoc) 
-- [Spring Cloud Stream Binder for Azure Event Hub](pring-cloud-azure-samples/spring-cloud-azure-eventhub-binder-sample/README.adoc)
+- [Spring Resource Abstraction for Azure Storage](spring-cloud-azure-storage/) 
+- [Spring Cloud Stream Binder for Azure Event Hub](spring-cloud-azure-eventhub-stream-binder/)
 - [Spring Cloud Stream with Azure Event Hub Kafka API](spring-cloud-azure-samples/spring-cloud-stream-eventhub-kafka-sample/)
 - [Auto-configuration for Azure services with Spring Boot Starters](spring-cloud-azure-starters/)
 
@@ -19,6 +19,10 @@ Starter Name | Version
 [spring-cloud-azure-starter-eventhub](spring-cloud-azure-starters/spring-cloud-azure-starter-eventhub/) | 
 [spring-cloud-azure-starter-sql-sqlserver](spring-cloud-azure-starters/spring-cloud-azure-starter-sql-sqlserver/) | 
 [spring-cloud-azure-starter-storage](spring-cloud-azure-starters/spring-cloud-azure-starter-storage/) | 
+
+## Samples 
+
+Please use the [samples](spring-cloud-azure-samples/) as a reference for how to use Spring Cloud Azure in your projects. 
 
 ## Contributing
 
