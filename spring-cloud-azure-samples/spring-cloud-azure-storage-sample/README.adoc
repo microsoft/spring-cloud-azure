@@ -25,7 +25,7 @@ dependencies {
 
 = Running the example
 
-1.  Create azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how to create credential file].
+1. Create azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how to create credential file].
 +
 ....
 $  az account set --subscription <name or id>
@@ -34,7 +34,7 @@ $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 +
 Make sure `my.azureauth` is encoding with UTF-8.
 
-2.  Put auth file under `src/main/resources/`.
+2. Put auth file under `src/main/resources/`.
 
 3. Edit the `src/main/java/com/example/WebController.java` file, replace `{containerName}` and `{blobName}` into correct value
 4. Update link:src/main/resources/application.properties[application.properties]
@@ -44,15 +44,13 @@ spring.cloud.azure.credentialFilePath=[credential-file-path]
 spring.cloud.azure.resourceGroup=[resource-group]
 spring.cloud.azure.region=[region]
 
-spring.cloud.azure.storage.enabled=true
-
 # Auto create storage account if not existed
 spring.cloud.azure.storage.account=[account-name]
 ....
 
 +
 All azure resources will be created if missing. Alternatively, you can manually create
-https://azure.microsoft.com/en-us/services/storage/[Azure Storage].
+https://docs.microsoft.com/en-us/azure/storage/[Azure Storage].
 
 5. Start the `StorageApplication` Spring Boot app.
 +

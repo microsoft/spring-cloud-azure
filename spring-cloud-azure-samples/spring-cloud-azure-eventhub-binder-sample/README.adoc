@@ -26,8 +26,6 @@ spring.cloud.azure.credentialFilePath=[credential-file-path]
 spring.cloud.azure.resourceGroup=[resource-group]
 spring.cloud.azure.region=[region]
 
-spring.cloud.azure.eventhub.enabled=true
-
 spring.cloud.stream.eventhub.namespace=[eventhub-namespace]
 spring.cloud.stream.eventhub.checkpointStorageAccount=[checkpoint-storage-account]
 spring.cloud.stream.eventhub.checkpointStorageAccountContainer=[checkpoint-storage-account-container]
@@ -38,7 +36,7 @@ spring.cloud.stream.bindings.output.destination=[eventhub-name]
 ....
 +
 All azure resources will be created if missing. Alternatively, you can manually create
-https://azure.microsoft.com/en-us/services/event-hubs/[Azure Event Hubs].
+https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create[Azure Event Hubs].
 
 4. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
 

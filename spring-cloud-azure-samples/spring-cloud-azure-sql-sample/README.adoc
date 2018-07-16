@@ -34,15 +34,12 @@ $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 Make sure `my.azureauth` is encoding with UTF-8.
 
 2.  Put auth file under `src/main/resources/`.
-3.  [Optional] Create Azure sql database instance through Azure Portal or CLI. Please see https://docs.microsoft.com/en-us/azure/sql-database/[How to create Azure Sql database]
-4.  Update link:src/main/resources/application.properties[application.properties]
+3.  Update link:src/main/resources/application.properties[application.properties]
 +
 ....
 spring.cloud.azure.credentialFilePath=[credential-file]
 spring.cloud.azure.resourceGroup=[resource-group]
 spring.cloud.azure.region=[region]
-
-spring.cloud.azure.sql.enabled=true
 
 # Auto create server and database if not existed
 spring.cloud.azure.sql.database-name=[database-name]
@@ -59,10 +56,10 @@ spring.datasource.initialization-mode=always
 ....
 +
 All azure resources will be created if missing. Alternatively, you can manually create
-https://azure.microsoft.com/en-us/services/sql-database/[Azure Sql Database].
+https://docs.microsoft.com/en-us/azure/sql-database/[Azure Sql Database].
 
-5.  Run the application using the `$ mvn spring-boot:run` command. The database will be populated based on the link:src/main/resources/schema.sql[schema.sql] and link:src/main/resources/data.sql[data.sql] files.
-6.  Send a GET request to check:
+4.  Run the application using the `$ mvn spring-boot:run` command. The database will be populated based on the link:src/main/resources/schema.sql[schema.sql] and link:src/main/resources/data.sql[data.sql] files.
+5.  Send a GET request to check:
 +
 ....
 $ curl -XGET http://localhost:8080/users
