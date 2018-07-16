@@ -23,10 +23,15 @@
             <artifactId>spring-context-support</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.microsoft.azure</groupId>
             <artifactId>azure</artifactId> <!-- We may not need include all azure management sdks in a batch -->
         </dependency>
+
     </dependencies>
 </project>

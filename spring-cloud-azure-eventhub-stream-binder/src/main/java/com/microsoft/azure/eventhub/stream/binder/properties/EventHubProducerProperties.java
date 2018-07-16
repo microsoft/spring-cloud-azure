@@ -6,27 +6,16 @@
 
 package com.microsoft.azure.eventhub.stream.binder.properties;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author Warren Zhu
  */
+@Getter
+@Setter
 public class EventHubProducerProperties {
     private boolean sync;
 
     private long sendTimeout = 10000;
-
-    public boolean isSync() {
-        return this.sync;
-    }
-
-    public void setSync(boolean sync) {
-        this.sync = sync;
-    }
-
-    public long getSendTimeout() {
-        return sendTimeout;
-    }
-
-    public void setSendTimeout(long sendTimeout) {
-        this.sendTimeout = sendTimeout;
-    }
 }

@@ -24,9 +24,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 /**
@@ -37,20 +37,16 @@ import javax.sql.DataSource;
  */
 @Configuration
 @ConditionalOnClass({DataSource.class, EmbeddedDatabaseType.class})
-@ConditionalOnProperty(name = "spring.cloud.azure.sql.enabled")
+@ConditionalOnProperty(name = "spring.cloud.azure.sql.enabled", matchIfMissing = true)
 @EnableConfigurationProperties({AzureSqlProperties.class, DataSourceProperties.class})
 @AutoConfigureBefore({DataSourceAutoConfiguration.class, JndiDataSourceAutoConfiguration.class,
         XADataSourceAutoConfiguration.class})
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 public class AzureSqlAutoConfiguration {
+    private static final String SQL_SERVER = "SqlServer";
 
     @Autowired(required = false)
     private TelemetryTracker telemetryTracker;
-
-    @PostConstruct
-    public void triggerTelemetry() {
-        TelemetryTracker.triggerEvent(telemetryTracker, getClass().getSimpleName());
-    }
 
     /**
      * The Sql Server Configuration for the {@link SqlServerJdbcDataSourcePropertiesUpdater}
@@ -58,13 +54,13 @@ public class AzureSqlAutoConfiguration {
      */
     @ConditionalOnClass(com.microsoft.sqlserver.jdbc.SQLServerDriver.class)
     @ConditionalOnMissingBean(JdbcDataSourcePropertiesUpdater.class)
-    static class SqlServerJdbcInfoProviderConfiguration {
+    class SqlServerJdbcInfoProviderConfiguration {
 
         @Bean
-        public JdbcDataSourcePropertiesUpdater defaultSqlServerJdbcInfoProvider(AzureSqlProperties azureSqlProperties,
-                AzureAdmin azureAdmin) {
+        public JdbcDataSourcePropertiesUpdater defaultSqlServerJdbcInfoProvider(AzureAdmin azureAdmin,
+                AzureSqlProperties sqlProperties) {
 
-            return new SqlServerJdbcDataSourcePropertiesUpdater(azureSqlProperties, azureAdmin);
+            return new SqlServerJdbcDataSourcePropertiesUpdater(sqlProperties, azureAdmin);
         }
     }
 
@@ -74,13 +70,15 @@ public class AzureSqlAutoConfiguration {
      */
     @Configuration
     @Import({SqlServerJdbcInfoProviderConfiguration.class})
-    static class CloudSqlDataSourcePropertiesConfiguration {
+    class CloudSqlDataSourcePropertiesConfiguration {
 
         @Bean
+        @Primary
         @ConditionalOnBean(JdbcDataSourcePropertiesUpdater.class)
         public DataSourceProperties cloudSqlDataSourceProperties(DataSourceProperties dataSourceProperties,
                 JdbcDataSourcePropertiesUpdater dataSourcePropertiesProvider) {
 
+            TelemetryTracker.triggerEvent(telemetryTracker, SQL_SERVER);
             dataSourcePropertiesProvider.updateDataSourceProperties(dataSourceProperties);
 
             return dataSourceProperties;
