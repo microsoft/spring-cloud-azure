@@ -135,6 +135,7 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>META-INF/spring.factories</include>
+                    <include>ApplicationInsights.xml</include>
                 </includes>
             </resource>
             <resource>
