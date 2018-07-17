@@ -24,6 +24,7 @@
         <module>spring-cloud-stream-eventhub-kafka-sample</module>
         <module>spring-cloud-azure-servicebus-sample</module>
         <module>spring-cloud-azure-sql-sample</module>
+        <module>spring-cloud-azure-cosmosdb-sample</module>
     </modules>
 
     <build>

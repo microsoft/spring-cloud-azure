@@ -8,6 +8,8 @@ package com.microsoft.azure.spring.cloud.context.core;
 
 import com.microsoft.azure.CloudException;
 import com.microsoft.azure.management.Azure;
+import com.microsoft.azure.management.cosmosdb.CosmosDBAccount;
+import com.microsoft.azure.management.cosmosdb.DatabaseAccountKind;
 import com.microsoft.azure.management.eventhub.EventHub;
 import com.microsoft.azure.management.eventhub.EventHubConsumerGroup;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
@@ -244,6 +246,20 @@ public class AzureAdmin {
     public RedisCache getOrCreateRedisCache(String name) {
         return getOrCreate(this::getRedisCache, this::createRedisCache, RedisCache.class).apply(name);
     }
+
+    public CosmosDBAccount getOrCreateCosmosDBAccount(String name,String kind){
+        return getOrCreate(this::getCosmosDBAccount,this::createCosmosDBAccount,CosmosDBAccount.class).apply(Tuple.of(name, kind));
+    }
+
+    private CosmosDBAccount getCosmosDBAccount(Tuple<String, String> nameAndKind){
+        return azure.cosmosDBAccounts().getByResourceGroup(resourceGroup,nameAndKind.getFirst());
+    }
+
+    private CosmosDBAccount createCosmosDBAccount(Tuple<String, String> nameAndKind){
+        return azure.cosmosDBAccounts().define(nameAndKind.getFirst()).withRegion(region).withExistingResourceGroup(resourceGroup)
+                .withKind(new DatabaseAccountKind(nameAndKind.getSecond())).withStrongConsistency().create();
+    }
+
 
     private <T, R> Function<T, R> getOrCreate(Function<T, R> getter, Function<T, R> creator, Class<R> resourceType) {
         return t -> {
