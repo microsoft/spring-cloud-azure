@@ -97,7 +97,7 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
 
     private EventProcessorHost createEventProcessorHost(Tuple<String, String> nameAndConsumerGroup) {
         String eventHubName = nameAndConsumerGroup.getFirst();
-        return new EventProcessorHost(EventProcessorHost.createHostName("hostNamePrefix"), eventHubName,
+        return new EventProcessorHost(EventProcessorHost.createHostName(HostnameHelper.getHostname()), eventHubName,
                 nameAndConsumerGroup.getSecond(), connectionStringCreator().apply(eventHubName),
                 checkpointStorageConnectionString, eventHubName);
     }
