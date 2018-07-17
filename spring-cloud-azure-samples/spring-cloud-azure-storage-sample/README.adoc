@@ -23,7 +23,7 @@ dependencies {
 }
 ----
 
-= Running the example
+== How to run
 
 1. Create azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how to create credential file].
 +
@@ -32,7 +32,7 @@ $  az account set --subscription <name or id>
 $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 ....
 +
-Make sure `my.azureauth` is encoding with UTF-8.
+Make sure `my.azureauth` is encoded with UTF-8.
 
 2. Put auth file under `src/main/resources/`.
 
