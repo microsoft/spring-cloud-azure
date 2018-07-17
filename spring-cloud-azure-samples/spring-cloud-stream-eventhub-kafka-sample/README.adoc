@@ -32,17 +32,17 @@ spring.cloud.stream.bindings.input.group=[consumer-group]
 spring.cloud.stream.bindings.output.destination=[eventhub-name]
 ....
 +
-All azure resources will be created if missing. Alternatively, you can manually create
-https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create[Azure Event Hubs].
 
-4. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
+4. Create Kafka enabled event hub. Please follow https://github.com/MicrosoftDocs/azure-docs/blob/master/articles/event-hubs/event-hubs-create-kafka-enabled.md[How to create Kafka enabled Event Hubs]
 
-5.  Send a POST request
+5. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
+
+6.  Send a POST request
 +
 ....
 $ curl -X POST -H "Content-Type: text/plain" -d "hello" http://localhost:8080/messages
 ....
 
-6. Verify in your app's logs that a similar message was posted:
+7. Verify in your app's logs that a similar message was posted:
 +
 `New message received: hello`
