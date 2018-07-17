@@ -1,17 +1,28 @@
-# spring-cloud-azure
+# Spring Cloud Azure
 
-This project pulls together the efforts being worked on in conjunction with Microsoft
-to integrate Spring applications with Azure Cloud Services.  It hosts the gh-pages branch
-that provides the content for https://cloud.spring.io/spring-cloud-azure/.
+The project provides Spring Cloud integration with Azure services. Developers can use Spring programming model to unlock the power of Azure. It takes care of configurations and offers key features to interact with Azure services, such as Azure Storage and Azure Event Hub. 
 
-This project will not host source code directly, but provides a convenient jumping off
-point into the Microsoft repositories that provide code that support Spring applications:
+## Feature List 
 
-- https://github.com/Microsoft/azure-spring-boot
-  Starters/Autoconfiguration for active directory, document db, keyvault, media services, service bus, storage.
+Currently, Spring Cloud Azure offers the following features with samples.  
 
-- https://github.com/Microsoft/spring-data-documentdb
-  Spring Data DocumentDB support.
+- [Spring Resource Abstraction for Azure Storage](spring-cloud-azure-storage/) 
+- [Spring Cloud Stream Binder for Azure Event Hub](spring-cloud-azure-eventhub-stream-binder/)
+- [Spring Cloud Stream with Azure Event Hub Kafka API](spring-cloud-azure-samples/spring-cloud-stream-eventhub-kafka-sample/)
+- [Auto-configuration for Azure services with Spring Boot Starters](spring-cloud-azure-starters/)
+
+The following Spring Boot Starters are available in Maven Central Repository. 
+
+Starter Name | Version
+---|---
+[spring-cloud-azure-starter-cache](spring-cloud-azure-starters/spring-cloud-azure-starter-cache/) | 
+[spring-cloud-azure-starter-eventhub](spring-cloud-azure-starters/spring-cloud-azure-starter-eventhub/) | 
+[spring-cloud-azure-starter-sql-sqlserver](spring-cloud-azure-starters/spring-cloud-azure-starter-sql-sqlserver/) | 
+[spring-cloud-azure-starter-storage](spring-cloud-azure-starters/spring-cloud-azure-starter-storage/) | 
+
+## Samples 
+
+Please use the [samples](spring-cloud-azure-samples/) as a reference for how to use Spring Cloud Azure in your projects. 
 
 ## Contributing
 
