@@ -55,8 +55,10 @@ spring.datasource.continue-on-error=true
 spring.datasource.initialization-mode=always
 ....
 +
-All azure resources will be created if missing. Alternatively, you can manually create
-https://docs.microsoft.com/en-us/azure/sql-database/[Azure Sql Database].
+All azure resources will be created if missing. But you need to add client ip to firewall after resource creation.
+Please follow https://docs.microsoft.com/en-us/azure/sql-database/sql-database-get-started-portal#create-a-server-level-firewall-rule[How to add firewall rule]
++
+Alternatively, you can manually create https://docs.microsoft.com/en-us/azure/sql-database/[Azure Sql Database].
 
 4.  Run the application using the `$ mvn spring-boot:run` command. The database will be populated based on the link:src/main/resources/schema.sql[schema.sql] and link:src/main/resources/data.sql[data.sql] files.
 5.  Send a GET request to check:

@@ -28,8 +28,6 @@ public class TelemetryTracker {
 
     private static final String PROPERTY_SUBSCRIPTION_ID = "subscriptionId";
 
-    private static final String PROPERTY_RESOURCE_GROUP = "resourceGroup";
-
     private static final String PROPERTY_SERVICE_NAME = "serviceName";
 
     private static final String SPRING_CLOUD_AZURE_EVENT = "spring-cloud-azure";
@@ -42,8 +40,8 @@ public class TelemetryTracker {
 
     private final Map<String, String> defaultProperties;
 
-    public TelemetryTracker(@NonNull String subscriptionId, @NonNull String resourceGroup, String instrumentationKey) {
-        this.defaultProperties = buildDefaultProperties(subscriptionId, resourceGroup);
+    public TelemetryTracker(@NonNull String subscriptionId, String instrumentationKey) {
+        this.defaultProperties = buildDefaultProperties(subscriptionId);
         this.client = buildTelemetryClient(instrumentationKey);
     }
 
@@ -53,11 +51,10 @@ public class TelemetryTracker {
         }
     }
 
-    private Map<String, String> buildDefaultProperties(String subscriptionId, String resourceGroup) {
+    private Map<String, String> buildDefaultProperties(String subscriptionId) {
         Map<String, String> properties = new HashMap<>();
 
         properties.put(PROPERTY_SUBSCRIPTION_ID, subscriptionId);
-        properties.put(PROPERTY_RESOURCE_GROUP, resourceGroup);
         properties.put(PROPERTY_VERSION, PROJECT_INFO);
         properties.put(PROPERTY_INSTALLATION_ID, MacAddressHelper.getHashedMacAddress());
 
