@@ -252,11 +252,11 @@ public class AzureAdmin {
                 return result;
             }
 
-            return logCreator(creator, resourceType).apply(t);
+            return withLog(creator, resourceType).apply(t);
         };
     }
 
-    private <T, R> Function<T, R> logCreator(Function<T, R> creator, Class<R> resourceType) {
+    private <T, R> Function<T, R> withLog(Function<T, R> creator, Class<R> resourceType) {
         return t -> {
             StopWatch stopWatch = new StopWatch();
             String name = getResourceName(t);
