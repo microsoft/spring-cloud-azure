@@ -22,7 +22,7 @@ public class WebController {
     private UserRepository repository;
 
     @GetMapping("/users")
-    public List getUsers() {
+    public List<User> getUsers() {
         List<User> foundUser = new ArrayList<>();
 
         this.repository.findAll().forEach(foundUser::add);

@@ -6,16 +6,9 @@
 
 package com.example;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import javax.persistence.*;
 
-@Getter
-@Setter
 @Entity
-@NoArgsConstructor
 @Table(name = "users")
 public class User {
 
@@ -25,7 +18,22 @@ public class User {
 
     private String name;
 
-    public User(String name) {
+    public User() {
+    }
+
+    public long getId() {
+        return this.id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
         this.name = name;
     }
 }
