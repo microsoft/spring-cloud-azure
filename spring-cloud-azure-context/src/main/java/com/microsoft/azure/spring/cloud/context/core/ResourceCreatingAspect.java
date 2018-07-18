@@ -52,9 +52,11 @@ public class ResourceCreatingAspect {
         try {
             return joinPoint.proceed();
         } catch (CloudException e) {
-            LOG.error("{} with name '{}' failed due to: {}", methodName, name, e.getMessage());
-            throw new RuntimeException(
-                    String.format("%s with name '%s' failed due to: %s", methodName, name, e.getMessage()));
+            String errorMessage = String.join(", ", e.getMessage(), e.body().code(), e.body().message());
+            String message = String.format("%s with name '%s' failed due to: %s", methodName, name, errorMessage);
+
+            LOG.error(message);
+            throw new RuntimeException(message);
         } finally {
             stopWatch.stop();
             LOG.info("{} with name '{}' finished in {} seconds", methodName, name, stopWatch.getTotalTimeSeconds());
