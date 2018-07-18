@@ -127,19 +127,19 @@ public class AzureAdmin {
                     .withExistingSqlServer(resourceGroup, sqlServerName, region).create();
     }
 
-    private SqlServer createSqlServer(String sqlServerName, String username, String password) {
+    private SqlServer createSqlServer(String username, String password, String sqlServerName) {
         return azure.sqlServers().define(sqlServerName).withRegion(region).withExistingResourceGroup(resourceGroup)
                     .withAdministratorLogin(username).withAdministratorPassword(password).create();
     }
 
-    public SqlServer getOrCreateSqlServer(String sqlServerName, String username, String password) {
+    public SqlServer getOrCreateSqlServer(String username, String password, String sqlServerName) {
         SqlServer sqlServer = getSqlServer(sqlServerName);
 
         if (sqlServer != null) {
             return sqlServer;
         }
 
-        return createSqlServer(sqlServerName, username, password);
+        return createSqlServer(username, password, sqlServerName);
     }
 
     public SqlServer getSqlServer(String sqlServerName) {
