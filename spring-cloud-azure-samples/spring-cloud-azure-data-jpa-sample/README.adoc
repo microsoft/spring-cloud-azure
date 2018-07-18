@@ -1,0 +1,72 @@
+= Spring Cloud Azure Sql Database Starter Sample
+
+This starter is based on `spring-boot-starter-jpa`. It fetches and auto configures data source properties via Azure Sql
+ Management SDK.
+
+Maven coordinates:
+
+[source,xml]
+----
+<dependency>
+    <groupId>com.microsoft.azure</groupId>
+    <artifactId>spring-cloud-azure-starter-sql-sqlserver</artifactId>
+</dependency>
+----
+
+Gradle coordinates:
+
+[source]
+----
+dependencies {
+    compile group: 'com.microsoft.azure', name: 'spring-cloud-azure-starter-sql-sqlserver'
+}
+----
+
+== How to run
+
+1.  Create azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how to create credential file]
++
+....
+$  az account set --subscription <name or id>
+$  az ad sp create-for-rbac --sdk-auth > my.azureauth
+....
++
+Make sure `my.azureauth` is encoded with UTF-8.
+
+2.  Put auth file under `src/main/resources/`.
+3.  Update link:src/main/resources/application.properties[application.properties]
++
+....
+spring.cloud.azure.credentialFilePath=[credential-file]
+spring.cloud.azure.resourceGroup=[resource-group]
+spring.cloud.azure.region=[region]
+
+# Auto create server and database if not existed
+spring.cloud.azure.sql.database-name=[database-name]
+spring.cloud.azure.sql.server-name=[server-name]
+
+# Leave username empty if database server already created
+spring.datasource.username=[username]
+spring.datasource.password=[password]
+
+# It will create database table if no exist, or update the table.
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.database-platform=org.hibernate.dialect.SQLServer2012Dialect
+....
++
+All azure resources will be created if missing. But you need to add client ip to firewall after resource creation.
+Please follow https://docs.microsoft.com/en-us/azure/sql-database/sql-database-get-started-portal#create-a-server-level-firewall-rule[How to add firewall rule]
++
+Alternatively, you can manually create https://docs.microsoft.com/en-us/azure/sql-database/[Azure Sql Database].
+
+4.  Run the application using the `$ mvn spring-boot:run` command. The database will be populated based on the link:src/main/resources/schema.sql[schema.sql] and link:src/main/resources/data.sql[data.sql] files.
+5.  Send a GET request to check:
++
+....
+$ curl -X POST -H "Content-Type: application/json" -d '{"name":"fake-name"}' http://localhost:8080/user
+$ curl http://localhost:8080/user
+....
+
+== Examples
+link:../../spring-cloud-azure-samples/spring-cloud-azure-data-jpa-sample[Here]
+is a sample application that uses this starter.
