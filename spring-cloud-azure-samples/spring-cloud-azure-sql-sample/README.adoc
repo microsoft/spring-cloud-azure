@@ -47,6 +47,7 @@ spring.cloud.azure.sql.server-name=[server-name]
 
 # Leave username empty if database server already created
 spring.datasource.username=[username]
+
 spring.datasource.password=[password]
 
 # So app starts despite "table already exists" errors.
