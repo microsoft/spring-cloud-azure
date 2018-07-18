@@ -53,9 +53,10 @@ public class ResourceCreatingAspect {
             return joinPoint.proceed();
         } catch (CloudException e) {
             String errorMessage = String.join(", ", e.getMessage(), e.body().code(), e.body().message());
-            LOG.error("{} with name '{}' failed due to: {}", methodName, name, errorMessage);
-            throw new RuntimeException(
-                    String.format("%s with name '%s' failed due to: %s", methodName, name, errorMessage));
+            String message = String.format("%s with name '%s' failed due to: %s", methodName, name, errorMessage);
+
+            LOG.error(message);
+            throw new RuntimeException(message);
         } finally {
             stopWatch.stop();
             LOG.info("{} with name '{}' finished in {} seconds", methodName, name, stopWatch.getTotalTimeSeconds());
