@@ -13,9 +13,9 @@ import com.microsoft.azure.eventprocessorhost.CloseReason;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.eventprocessorhost.IEventProcessor;
 import com.microsoft.azure.eventprocessorhost.PartitionContext;
+import com.microsoft.azure.spring.cloud.context.core.Tuple;
 import com.microsoft.azure.spring.integration.core.Checkpointer;
 import com.microsoft.azure.spring.integration.core.PartitionSupplier;
-import com.microsoft.azure.spring.cloud.context.core.Tuple;
 import com.microsoft.azure.spring.integration.eventhub.inbound.EventHubCheckpointer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,9 +62,8 @@ public class EventHubTemplate implements EventHubOperation {
             if (partitionSupplier == null) {
                 return client.send(message);
             } else if (!Strings.isNullOrEmpty(partitionSupplier.getPartitionId())) {
-                return this.clientFactory.getPartitionSenderCreator().apply(Tuple.of(client, partitionSupplier
-                        .getPartitionId()))
-                                         .send(message);
+                return this.clientFactory.getPartitionSenderCreator()
+                                         .apply(Tuple.of(client, partitionSupplier.getPartitionId())).send(message);
             } else if (!Strings.isNullOrEmpty(partitionSupplier.getPartitionKey())) {
                 return client.send(message, partitionSupplier.getPartitionKey());
             } else {
@@ -95,8 +94,8 @@ public class EventHubTemplate implements EventHubOperation {
         }
 
         processorHostsByNameAndConsumerGroup.computeIfAbsent(nameAndConsumerGroup, key -> {
-            EventProcessorHost host = this.clientFactory.getProcessorHostCreator().apply(Tuple.of(destination,
-                    consumerGroup));
+            EventProcessorHost host =
+                    this.clientFactory.getProcessorHostCreator().apply(Tuple.of(destination, consumerGroup));
             host.registerEventProcessorFactory(context -> new IEventProcessor() {
 
                 @Override
@@ -135,6 +134,11 @@ public class EventHubTemplate implements EventHubOperation {
     public synchronized boolean unsubscribe(String destination, Consumer<Iterable<EventData>> consumer,
             String consumerGroup) {
         Tuple<String, String> nameAndConsumerGroup = Tuple.of(destination, consumerGroup);
+
+        if (!consumersByNameAndConsumerGroup.containsKey(nameAndConsumerGroup)) {
+            return false;
+        }
+
         boolean existed = consumersByNameAndConsumerGroup.get(nameAndConsumerGroup).remove(consumer);
         if (consumersByNameAndConsumerGroup.get(nameAndConsumerGroup).isEmpty()) {
             processorHostsByNameAndConsumerGroup.remove(nameAndConsumerGroup).unregisterEventProcessor();
