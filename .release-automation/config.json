@@ -1,12 +1,14 @@
 {
   "releaseVersion": "1.0.0.M1",
   "moduleNames": [
+    "spring-cloud-azure",
     "spring-cloud-azure-autoconfigure",
     "spring-cloud-azure-context",
     "spring-cloud-azure-dependencies",
     "spring-cloud-azure-eventhub-stream-binder",
     "spring-cloud-azure-storage",
     "spring-integration-azure",
+    "spring-cloud-azure-starters",
     "spring-cloud-azure-starter-cache",
     "spring-cloud-azure-starter-eventhub",
     "spring-cloud-azure-starter-servicebus",
