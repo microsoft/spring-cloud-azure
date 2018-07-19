@@ -12,9 +12,6 @@ import com.microsoft.azure.eventhubs.PartitionSender;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.eventprocessorhost.IEventProcessorFactory;
 import com.microsoft.azure.spring.integration.core.PartitionSupplier;
-import com.microsoft.azure.spring.integration.eventhub.EventHubClientFactory;
-import com.microsoft.azure.spring.integration.eventhub.EventHubRuntimeException;
-import com.microsoft.azure.spring.integration.eventhub.EventHubTemplate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,9 +20,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
@@ -47,6 +44,7 @@ public class EventHubTemplateTest {
 
     private String eventHubName = "event-hub";
     private String consumerGroup = "consumer-group";
+    private String anotherConsumerGroup = "consumer-group2";
     private EventHubTemplate eventHubTemplate;
     private String payload = "payload";
     private EventData message = EventData.create(payload.getBytes());
@@ -54,6 +52,7 @@ public class EventHubTemplateTest {
     private String partitionId = "1";
 
     private CompletableFuture<Void> future = new CompletableFuture<>();
+    private Consumer<Iterable<EventData>> consumer = this::handleMessage;
 
     @Before
     public void setUp() {
@@ -75,7 +74,7 @@ public class EventHubTemplateTest {
         this.future.complete(null);
         CompletableFuture<Void> future = this.eventHubTemplate.sendAsync(eventHubName, message, null);
 
-        assertEquals(null, future.get());
+        assertNull(future.get());
         verify(this.mockClient, times(1)).send(isA(EventData.class));
     }
 
@@ -85,7 +84,7 @@ public class EventHubTemplateTest {
         CompletableFuture<Void> future =
                 this.eventHubTemplate.sendAsync(eventHubName, message, new PartitionSupplier());
 
-        assertEquals(null, future.get());
+        assertNull(future.get());
         verify(this.mockClient, times(1)).send(isA(EventData.class));
     }
 
@@ -96,7 +95,7 @@ public class EventHubTemplateTest {
         partitionSupplier.setPartitionId(partitionId);
         CompletableFuture<Void> future = this.eventHubTemplate.sendAsync(eventHubName, message, partitionSupplier);
 
-        assertEquals(null, future.get());
+        assertNull(future.get());
         verify(this.mockSender, times(1)).send(isA(EventData.class));
         verify(this.mockClientFactory, times(1)).getPartitionSenderCreator();
     }
@@ -108,7 +107,7 @@ public class EventHubTemplateTest {
         partitionSupplier.setPartitionKey(partitionKey);
         CompletableFuture<Void> future = this.eventHubTemplate.sendAsync(eventHubName, message, partitionSupplier);
 
-        assertEquals(null, future.get());
+        assertNull(future.get());
         verify(this.mockClient, times(1)).send(isA(EventData.class), eq(partitionKey));
         verify(this.mockClientFactory, times(1)).getEventHubClientCreator();
     }
@@ -142,12 +141,56 @@ public class EventHubTemplateTest {
     }
 
     @Test
-    public void testSubscribe() {
-        this.eventHubTemplate.subscribe(eventHubName, this::handleMessage, consumerGroup);
+    public void testSubscribeAndUnsubscribe() {
+        boolean succeed = this.eventHubTemplate.subscribe(eventHubName, this::handleMessage, consumerGroup);
+
+        assertTrue(succeed);
+
+        verify(this.mockClientFactory, times(1)).getProcessorHostCreator();
+
+        boolean unsubscribed = this.eventHubTemplate.subscribe(eventHubName, this::handleMessage, consumerGroup);
+
+        assertTrue(unsubscribed);
+    }
+
+    @Test
+    public void testSubscribeTwice() {
+        boolean onceSucceed = this.eventHubTemplate.subscribe(eventHubName, consumer, consumerGroup);
+
+        assertTrue(onceSucceed);
+
+        boolean twiceSucceed = this.eventHubTemplate.subscribe(eventHubName, consumer, consumerGroup);
+
+        assertFalse(twiceSucceed);
 
         verify(this.mockClientFactory, times(1)).getProcessorHostCreator();
     }
 
+    @Test
+    public void testSubscribeWithAnotherGroup() {
+        boolean onceSucceed = this.eventHubTemplate.subscribe(eventHubName, this::handleMessage, consumerGroup);
+
+        assertTrue(onceSucceed);
+
+        boolean twiceSucceed = this.eventHubTemplate.subscribe(eventHubName, this::handleMessage, anotherConsumerGroup);
+
+        assertTrue(twiceSucceed);
+
+        verify(this.mockClientFactory, times(2)).getProcessorHostCreator();
+    }
+
+    @Test
+    public void testUnsubscribeNotSubscribed() {
+        boolean unsubscribed = this.eventHubTemplate.unsubscribe(eventHubName, this::handleMessageAnother,
+                consumerGroup);
+
+        assertFalse(unsubscribed);
+
+        verify(this.mockClientFactory, times(0)).getProcessorHostCreator();
+    }
+
     private void handleMessage(Iterable<EventData> events) {
     }
+
+    private void handleMessageAnother(Iterable<EventData> events){}
 }
