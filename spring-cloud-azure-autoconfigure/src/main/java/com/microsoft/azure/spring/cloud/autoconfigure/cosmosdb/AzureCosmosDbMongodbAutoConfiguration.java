@@ -6,6 +6,7 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.cosmosdb;
 
 import com.microsoft.azure.management.cosmosdb.CosmosDBAccount;
+import com.microsoft.azure.management.cosmosdb.DatabaseAccountKind;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -20,13 +21,13 @@ import org.springframework.context.annotation.Configuration;
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnClass
 @ConditionalOnProperty(name = "spring.cloud.azure.cosmosdb.enabled", matchIfMissing = true)
-@EnableConfigurationProperties(AzureCosmosDbProperties.class)
-public class AzureCosmosDbAutoConfiguration {
+@EnableConfigurationProperties(AzureCosmosDbMongodbProperties.class)
+public class AzureCosmosDbMongodbAutoConfiguration {
     @ConditionalOnMissingBean
     @Bean
-    CosmosDBAccount cosmosDBAccount(AzureAdmin azureAdmin, AzureCosmosDbProperties azureCosmosDbProperties) {
-        String accountName = azureCosmosDbProperties.getAccountName();
-        CosmosDBAccount cosmosDBAccount = azureAdmin.getOrCreateCosmosDBAccount(accountName);
+    CosmosDBAccount cosmosDBAccount(AzureAdmin azureAdmin, AzureCosmosDbMongodbProperties azureCosmosDbMongodbProperties) {
+        String accountName = azureCosmosDbMongodbProperties.getAccountName();
+        CosmosDBAccount cosmosDBAccount = azureAdmin.getOrCreateCosmosDBAccount(accountName,DatabaseAccountKind.MONGO_DB);
         return cosmosDBAccount;
     }
 }

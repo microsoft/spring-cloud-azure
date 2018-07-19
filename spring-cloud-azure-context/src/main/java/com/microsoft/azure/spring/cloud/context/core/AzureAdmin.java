@@ -248,19 +248,19 @@ public class AzureAdmin {
         return getOrCreate(this::getRedisCache, this::createRedisCache, RedisCache.class).apply(name);
     }
 
-    private CosmosDBAccount getCosmosDBAccount(String name){
-        return azure.cosmosDBAccounts().getByResourceGroup(resourceGroup, name);
+    private CosmosDBAccount getCosmosDBAccount(Tuple nameAndKind){
+        return azure.cosmosDBAccounts().getByResourceGroup(resourceGroup, (String)nameAndKind.getFirst());
     }
 
-    private CosmosDBAccount createCosmosDBAccount(String name){
-        return azure.cosmosDBAccounts().define(name).withRegion(region)
-                .withExistingResourceGroup(resourceGroup).withKind(DatabaseAccountKind.MONGO_DB)
+    private CosmosDBAccount createCosmosDBAccount(Tuple nameAndKind){
+        return azure.cosmosDBAccounts().define((String) nameAndKind.getFirst()).withRegion(region)
+                .withExistingResourceGroup(resourceGroup).withKind((DatabaseAccountKind) nameAndKind.getSecond())
                 .withStrongConsistency().withReadReplication(Region.US_EAST).create();
     }
 
-    public CosmosDBAccount getOrCreateCosmosDBAccount(String name){
+    public CosmosDBAccount getOrCreateCosmosDBAccount(String name, DatabaseAccountKind databaseAccountKind){
         return getOrCreate(this::getCosmosDBAccount, this::createCosmosDBAccount, CosmosDBAccount.class)
-                .apply(name);
+                .apply(Tuple.of(name, databaseAccountKind));
     }
 
     private <T, R> Function<T, R> getOrCreate(Function<T, R> getter, Function<T, R> creator, Class<R> resourceType) {

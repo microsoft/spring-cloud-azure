@@ -17,16 +17,16 @@ import org.springframework.context.annotation.Configuration;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-public class AzureCosmosDbAutoConfigurationTest {
+public class AzureCosmosDbMongodbAutoConfigurationTest {
     private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations.of(AzureCosmosDbAutoConfiguration.class))
+            .withConfiguration(AutoConfigurations.of(AzureCosmosDbMongodbAutoConfiguration.class))
             .withUserConfiguration(TestConfiguration.class);
 
     @Test
     public void testAzureCosmosDbPropertiesConfigured() {
         this.contextRunner.withPropertyValues("spring" + ".cloud.azure.cosmosdb.account-name=abcd").run(context -> {
-            assertThat(context).hasSingleBean(AzureCosmosDbProperties.class);
-            assertThat(context.getBean(AzureCosmosDbProperties.class).getAccountName()).isEqualTo("abcd");
+            assertThat(context).hasSingleBean(AzureCosmosDbMongodbProperties.class);
+            assertThat(context.getBean(AzureCosmosDbMongodbProperties.class).getAccountName()).isEqualTo("abcd");
         });
     }
 
