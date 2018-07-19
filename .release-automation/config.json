@@ -1,0 +1,41 @@
+{
+  "releaseVersion": "1.0.0.M1",
+  "moduleNames": [
+    "spring-cloud-azure-autoconfigure",
+    "spring-cloud-azure-context",
+    "spring-cloud-azure-dependencies",
+    "spring-cloud-azure-eventhub-stream-binder",
+    "spring-cloud-azure-storage",
+    "spring-integration-azure",
+    "spring-cloud-azure-starter-cache",
+    "spring-cloud-azure-starter-eventhub",
+    "spring-cloud-azure-starter-servicebus",
+    "spring-cloud-azure-starter-sql-sqlserver",
+    "spring-cloud-azure-starter-storage"
+  ],
+  "groupId": "com.microsoft.azure",
+  "targetFolder": "C:/Signed",
+  "toSignFolder": "//ADXInfra1/ToSign/",
+  "signedFilder": "//ADXInfra1/Signed",
+  "jenkins": {
+    "url": "http://azuresdkci.cloudapp.net/",
+    "username": "ZhijunZhao",
+    "signJar": {
+      "Description": "Spring Cloud Azure",
+      "Keywords": "azure,Spring Cloud"
+    }
+  },
+  "nexus": {
+    "username": "zhijzhao",
+    "stagingRepoDescription": "<promoteRequest><data><description>Spring Cloud Azure</description></data></promoteRequest>",
+    "createRepoURL": "https://oss.sonatype.org/service/local/staging/profiles/534d15ee3800f4/start",
+    "closeRepoURL": "https://oss.sonatype.org/service/local/staging/profiles/534d15ee3800f4/finish",
+    "deployRepoURL": "https://oss.sonatype.org/service/local/staging/deployByRepositoryId",
+    "repoBaseURL": "https://oss.sonatype.org/service/local/staging/repository"
+  },
+  "passwords": {
+    "jenkins": "",
+    "gpg": "",
+    "nexus": ""
+  }
+}
