@@ -24,7 +24,7 @@ public class AzureCosmosDbMongodbAutoConfigurationTest {
 
     @Test
     public void testAzureCosmosDbPropertiesConfigured() {
-        this.contextRunner.withPropertyValues("spring" + ".cloud.azure.cosmosdb.account-name=abcd").run(context -> {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.cosmosdb.mongodb.account-name=abcd").run(context -> {
             assertThat(context).hasSingleBean(AzureCosmosDbMongodbProperties.class);
             assertThat(context.getBean(AzureCosmosDbMongodbProperties.class).getAccountName()).isEqualTo("abcd");
         });

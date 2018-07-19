@@ -25,9 +25,11 @@ import org.springframework.context.annotation.Configuration;
 public class AzureCosmosDbMongodbAutoConfiguration {
     @ConditionalOnMissingBean
     @Bean
-    CosmosDBAccount cosmosDBAccount(AzureAdmin azureAdmin, AzureCosmosDbMongodbProperties azureCosmosDbMongodbProperties) {
+    CosmosDBAccount cosmosDBAccount(AzureAdmin azureAdmin,
+                                    AzureCosmosDbMongodbProperties azureCosmosDbMongodbProperties) {
         String accountName = azureCosmosDbMongodbProperties.getAccountName();
-        CosmosDBAccount cosmosDBAccount = azureAdmin.getOrCreateCosmosDBAccount(accountName,DatabaseAccountKind.MONGO_DB);
+        CosmosDBAccount cosmosDBAccount = azureAdmin
+                .getOrCreateCosmosDBAccount(accountName, DatabaseAccountKind.MONGO_DB);
         return cosmosDBAccount;
     }
 }

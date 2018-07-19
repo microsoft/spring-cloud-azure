@@ -249,7 +249,7 @@ public class AzureAdmin {
     }
 
     private CosmosDBAccount getCosmosDBAccount(Tuple nameAndKind){
-        return azure.cosmosDBAccounts().getByResourceGroup(resourceGroup, (String)nameAndKind.getFirst());
+        return azure.cosmosDBAccounts().getByResourceGroup(resourceGroup, (String) nameAndKind.getFirst());
     }
 
     private CosmosDBAccount createCosmosDBAccount(Tuple nameAndKind){
