@@ -4,13 +4,14 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.integration.core;
+package com.microsoft.azure.spring.integration.eventhub;
 
 import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.eventhubs.PartitionSender;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.eventprocessorhost.IEventProcessorFactory;
+import com.microsoft.azure.spring.integration.core.PartitionSupplier;
 import com.microsoft.azure.spring.integration.eventhub.EventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.EventHubRuntimeException;
 import com.microsoft.azure.spring.integration.eventhub.EventHubTemplate;
