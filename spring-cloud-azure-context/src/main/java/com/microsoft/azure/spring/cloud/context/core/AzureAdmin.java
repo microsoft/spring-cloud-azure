@@ -15,6 +15,7 @@ import com.microsoft.azure.management.eventhub.EventHubConsumerGroup;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
 import com.microsoft.azure.management.redis.RedisCache;
 import com.microsoft.azure.management.resources.ResourceGroup;
+import com.microsoft.azure.management.resources.fluentcore.arm.Region;
 import com.microsoft.azure.management.servicebus.Queue;
 import com.microsoft.azure.management.servicebus.ServiceBusNamespace;
 import com.microsoft.azure.management.servicebus.ServiceBusSubscription;
@@ -247,19 +248,20 @@ public class AzureAdmin {
         return getOrCreate(this::getRedisCache, this::createRedisCache, RedisCache.class).apply(name);
     }
 
-    public CosmosDBAccount getOrCreateCosmosDBAccount(String name,String kind){
-        return getOrCreate(this::getCosmosDBAccount,this::createCosmosDBAccount,CosmosDBAccount.class).apply(Tuple.of(name, kind));
+    private CosmosDBAccount getCosmosDBAccount(String name){
+        return azure.cosmosDBAccounts().getByResourceGroup(resourceGroup, name);
     }
 
-    private CosmosDBAccount getCosmosDBAccount(Tuple<String, String> nameAndKind){
-        return azure.cosmosDBAccounts().getByResourceGroup(resourceGroup,nameAndKind.getFirst());
+    private CosmosDBAccount createCosmosDBAccount(String name){
+        return azure.cosmosDBAccounts().define(name).withRegion(region)
+                .withExistingResourceGroup(resourceGroup).withKind(DatabaseAccountKind.MONGO_DB)
+                .withStrongConsistency().withReadReplication(Region.US_EAST).create();
     }
 
-    private CosmosDBAccount createCosmosDBAccount(Tuple<String, String> nameAndKind){
-        return azure.cosmosDBAccounts().define(nameAndKind.getFirst()).withRegion(region).withExistingResourceGroup(resourceGroup)
-                .withKind(new DatabaseAccountKind(nameAndKind.getSecond())).withStrongConsistency().create();
+    public CosmosDBAccount getOrCreateCosmosDBAccount(String name){
+        return getOrCreate(this::getCosmosDBAccount, this::createCosmosDBAccount, CosmosDBAccount.class)
+                .apply(name);
     }
-
 
     private <T, R> Function<T, R> getOrCreate(Function<T, R> getter, Function<T, R> creator, Class<R> resourceType) {
         return t -> {
