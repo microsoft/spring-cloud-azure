@@ -38,7 +38,8 @@ def sign_jars(configs):
     """
     print("Using Jenkins job to sign uploaded Jars...")
     jenkins = Jenkins(configs["jenkins"]["url"],
-                      configs["jenkins"]["username"], configs["passwords"]["jenkins"])
+                      configs["jenkins"]["username"], configs["passwords"]["jenkins"],
+                      None, False, True, 600)
     sign_jar_job = jenkins["sign-jar"]
     queue = sign_jar_job.invoke(block=True, build_params=configs["jenkins"]["signJar"])
 
