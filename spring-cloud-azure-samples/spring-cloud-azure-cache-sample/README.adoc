@@ -27,6 +27,7 @@ dependencies {
 1.  Create azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how to create credential file]
 +
 ....
+$  az login
 $  az account set --subscription <name or id>
 $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 ....
@@ -35,19 +36,21 @@ Make sure `my.azureauth` is encoded with UTF-8.
 
 2.  Put auth file under `src/main/resources/`
 
-3.  Update `src/main/resources/application.properties` to specify resource group, cache instance name and credential file path:
+3.  Create an Azure Redis cache instance. Please follow
+https://docs.microsoft.com/en-us/azure/redis-cache/[Azure redis cache].
+
+4.  Update `src/main/resources/application.properties` to specify resource group, cache instance name and credential file path:
 +
 ....
+# Put 'my.azureauth' here if following step 1 and 2
 spring.cloud.azure.credentialFilePath=[credential-file-path]
+
 spring.cloud.azure.resourceGroup=[resource-group]
 spring.cloud.azure.region=[region]
 
 spring.cloud.azure.redis.name=[azure-redis-instance-name]
 ....
 +
-
-4.  Create Azure Redis cache instance. Please follow
-https://docs.microsoft.com/en-us/azure/redis-cache/[Azure redis cache].
 
 5.  Run the application using the `$ mvn spring-boot:run` command.
 6.  Send a GET request to check, where `name` could be any string:
