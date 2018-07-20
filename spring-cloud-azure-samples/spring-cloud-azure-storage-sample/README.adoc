@@ -28,6 +28,7 @@ dependencies {
 1. Create azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how to create credential file].
 +
 ....
+$  az login
 $  az account set --subscription <name or id>
 $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 ....
@@ -40,7 +41,10 @@ Make sure `my.azureauth` is encoded with UTF-8.
 4. Update link:src/main/resources/application.properties[application.properties]
 +
 ....
+
+# Put 'my.azureauth' here if following step 1 and 2
 spring.cloud.azure.credentialFilePath=[credential-file-path]
+
 spring.cloud.azure.resourceGroup=[resource-group]
 spring.cloud.azure.region=[region]
 
