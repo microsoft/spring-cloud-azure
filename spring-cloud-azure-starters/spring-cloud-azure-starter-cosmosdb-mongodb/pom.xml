@@ -19,6 +19,9 @@
             <groupId>com.microsoft.azure</groupId>
             <artifactId>spring-cloud-azure-autoconfigure</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
     </dependencies>
 </project>
