@@ -17,6 +17,7 @@ import javax.annotation.PostConstruct;
 @ConfigurationProperties("spring.cloud.azure.cosmosdb.mongodb")
 public class AzureCosmosDbMongodbProperties {
     private String accountName;
+    private String database;
 
     @PostConstruct
     public void validate() {
