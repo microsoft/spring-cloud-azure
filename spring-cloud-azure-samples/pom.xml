@@ -25,6 +25,7 @@
         <module>spring-cloud-azure-servicebus-sample</module>
         <module>spring-cloud-azure-sql-sample</module>
         <module>spring-cloud-azure-data-jpa-sample</module>
+        <module>spring-cloud-azure-eventhub-sample</module>
     </modules>
 
     <build>
