@@ -25,20 +25,19 @@ import org.springframework.data.mongodb.core.MongoOperations;
 @ConditionalOnClass(MongoOperations.class)
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnProperty(name = "spring.cloud.azure.cosmosdb.mongodb.enabled", matchIfMissing = true)
-@EnableConfigurationProperties(AzureCosmosDbMongodbProperties.class)
+@EnableConfigurationProperties(AzureCosmosDbProperties.class)
 public class AzureCosmosDbMongodbAutoConfiguration {
     @ConditionalOnMissingBean
     @Primary
     @Bean
-    MongoProperties mongoProperties(AzureAdmin azureAdmin,
-                                    AzureCosmosDbMongodbProperties azureCosmosDbMongodbProperties){
-        String accountName = azureCosmosDbMongodbProperties.getAccountName();
+    MongoProperties mongoProperties(AzureAdmin azureAdmin, AzureCosmosDbProperties azureCosmosDbProperties){
+        String accountName = azureCosmosDbProperties.getAccountName();
         CosmosDBAccount cosmosDBAccount = azureAdmin
                 .getOrCreateCosmosDBAccount(accountName, DatabaseAccountKind.MONGO_DB);
         MongoProperties mongoProperties = new MongoProperties();
         DatabaseAccountListConnectionStringsResult connectionStrings = cosmosDBAccount.listConnectionStrings();
         mongoProperties.setUri(connectionStrings.connectionStrings().get(0).connectionString());
-        mongoProperties.setDatabase(azureCosmosDbMongodbProperties.getDatabase());
+        mongoProperties.setDatabase(azureCosmosDbProperties.getDatabase());
         return mongoProperties;
     }
 }

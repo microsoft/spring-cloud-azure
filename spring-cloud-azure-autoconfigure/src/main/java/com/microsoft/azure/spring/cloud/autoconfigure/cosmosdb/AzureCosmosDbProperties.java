@@ -14,13 +14,14 @@ import javax.annotation.PostConstruct;
 
 @Getter
 @Setter
-@ConfigurationProperties("spring.cloud.azure.cosmosdb.mongodb")
-public class AzureCosmosDbMongodbProperties {
+@ConfigurationProperties("spring.cloud.azure.cosmosdb")
+public class AzureCosmosDbProperties {
     private String accountName;
     private String database;
 
     @PostConstruct
     public void validate() {
-        Assert.hasText(accountName, "spring.cloud.azure.cosmosdb.mongodb.account-name must be provided");
+        Assert.hasText(accountName, "spring.cloud.azure.cosmosdb.account-name must be provided");
+        Assert.hasText(database, "spring.cloud.azure.cosmosdb.database must be provided");
     }
 }

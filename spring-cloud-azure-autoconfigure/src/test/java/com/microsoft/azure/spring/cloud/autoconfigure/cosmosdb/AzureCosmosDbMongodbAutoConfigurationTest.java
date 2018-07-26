@@ -37,13 +37,13 @@ public class AzureCosmosDbMongodbAutoConfigurationTest {
     @Test
     public void testAzureCosmosDbMongodbDisabled() {
         this.contextRunner.withPropertyValues("spring.cloud.azure.cosmosdb.mongodb.enabled=false")
-                .run(context -> assertThat(context).doesNotHaveBean(AzureCosmosDbMongodbProperties.class));
+                .run(context -> assertThat(context).doesNotHaveBean(AzureCosmosDbProperties.class));
     }
 
     @Test
     public void testWithoutCosmosDbMongodbOperationsClass() {
         this.contextRunner.withClassLoader(new FilteredClassLoader(MongoOperations.class))
-                .run(context -> assertThat(context).doesNotHaveBean(AzureCosmosDbMongodbProperties.class));
+                .run(context -> assertThat(context).doesNotHaveBean(AzureCosmosDbProperties.class));
     }
 
     @Test
@@ -51,9 +51,9 @@ public class AzureCosmosDbMongodbAutoConfigurationTest {
         this.contextRunner.withPropertyValues("spring.cloud.azure.cosmosdb.mongodb.account-name=abcd")
                 .withPropertyValues("spring.cloud.azure.cosmosdb.mongodb.database=dbname")
                 .run(context -> {
-            assertThat(context).hasSingleBean(AzureCosmosDbMongodbProperties.class);
-            assertThat(context.getBean(AzureCosmosDbMongodbProperties.class).getAccountName()).isEqualTo("abcd");
-            assertThat(context.getBean(AzureCosmosDbMongodbProperties.class).getDatabase()).isEqualTo("dbname");
+            assertThat(context).hasSingleBean(AzureCosmosDbProperties.class);
+            assertThat(context.getBean(AzureCosmosDbProperties.class).getAccountName()).isEqualTo("abcd");
+            assertThat(context.getBean(AzureCosmosDbProperties.class).getDatabase()).isEqualTo("dbname");
             assertThat(context).hasSingleBean(MongoProperties.class);
             assertThat(context.getBean(MongoProperties.class).getUri()).isEqualTo(URI);
             assertThat(context.getBean(MongoProperties.class).getDatabase()).isEqualTo("dbname");

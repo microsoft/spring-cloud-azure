@@ -1,7 +1,5 @@
 package com.example;
 
-import org.springframework.boot.autoconfigure.mongo.MongoClientFactory;
-import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
