@@ -48,23 +48,9 @@ public class EventHubBinderConfiguration {
     }
 
     @Bean
-    public EventHubClientFactory clientFactory(AzureAdmin azureAdmin, AzureEventHubProperties eventHubProperties,
-            EventHubExtendedBindingProperties bindingProperties) {
-        DefaultEventHubClientFactory clientFactory =
-                new DefaultEventHubClientFactory(azureAdmin, eventHubProperties.getNamespace());
-        clientFactory.initCheckpointConnectionString(bindingProperties.getCheckpointStorageAccount());
-        return clientFactory;
-    }
-
-    @Bean
     public EventHubChannelProvisioner eventHubChannelProvisioner(AzureAdmin azureAdmin,
             AzureEventHubProperties eventHubProperties) {
         return new EventHubChannelProvisioner(azureAdmin, eventHubProperties.getNamespace());
-    }
-
-    @Bean
-    public EventHubOperation eventHubOperation(EventHubClientFactory clientFactory) {
-        return new EventHubTemplate(clientFactory);
     }
 
     @Bean
