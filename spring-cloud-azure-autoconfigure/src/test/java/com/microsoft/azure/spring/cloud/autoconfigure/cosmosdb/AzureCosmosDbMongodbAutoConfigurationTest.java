@@ -48,8 +48,9 @@ public class AzureCosmosDbMongodbAutoConfigurationTest {
 
     @Test
     public void testAzureCosmosDbMongodbPropertiesConfigured() {
-        this.contextRunner.withPropertyValues("spring.cloud.azure.cosmosdb.mongodb.account-name=abcd")
-                .withPropertyValues("spring.cloud.azure.cosmosdb.mongodb.database=dbname")
+        this.contextRunner.withPropertyValues("spring.cloud.azure.cosmosdb.account-name=abcd")
+                .withPropertyValues("spring.cloud.azure.cosmosdb.database=dbname")
+                .withPropertyValues("spring.cloud.azure.cosmosdb.read-replication=eastus")
                 .run(context -> {
             assertThat(context).hasSingleBean(AzureCosmosDbProperties.class);
             assertThat(context.getBean(AzureCosmosDbProperties.class).getAccountName()).isEqualTo("abcd");
@@ -70,10 +71,11 @@ public class AzureCosmosDbMongodbAutoConfigurationTest {
             DatabaseAccountListConnectionStringsResult connectionStrings
                     = mock(DatabaseAccountListConnectionStringsResult.class);
             DatabaseAccountConnectionString connectionString = mock(DatabaseAccountConnectionString.class);
-            List<DatabaseAccountConnectionString> connectionStringList = new ArrayList();
+            List<DatabaseAccountConnectionString> connectionStringList = new ArrayList<>();
             connectionStringList.add(connectionString);
             when(cosmosDBAccount.kind()).thenReturn(DatabaseAccountKind.MONGO_DB);
-            when(azureAdmin.getOrCreateCosmosDBAccount(isA(String.class),isA(DatabaseAccountKind.class)))
+            when(azureAdmin.getOrCreateCosmosDBAccount(isA(String.class),
+                    isA(DatabaseAccountKind.class), isA(String.class)))
                     .thenReturn(cosmosDBAccount);
             when(cosmosDBAccount.listConnectionStrings()).thenReturn((connectionStrings));
             when(connectionStrings.connectionStrings()).thenReturn(connectionStringList);

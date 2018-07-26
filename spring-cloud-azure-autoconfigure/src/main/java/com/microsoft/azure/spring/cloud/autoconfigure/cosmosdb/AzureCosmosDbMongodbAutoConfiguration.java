@@ -32,8 +32,9 @@ public class AzureCosmosDbMongodbAutoConfiguration {
     @Bean
     MongoProperties mongoProperties(AzureAdmin azureAdmin, AzureCosmosDbProperties azureCosmosDbProperties){
         String accountName = azureCosmosDbProperties.getAccountName();
+        String readReplication = azureCosmosDbProperties.getReadReplication();
         CosmosDBAccount cosmosDBAccount = azureAdmin
-                .getOrCreateCosmosDBAccount(accountName, DatabaseAccountKind.MONGO_DB);
+                .getOrCreateCosmosDBAccount(accountName, DatabaseAccountKind.MONGO_DB, readReplication);
         MongoProperties mongoProperties = new MongoProperties();
         DatabaseAccountListConnectionStringsResult connectionStrings = cosmosDBAccount.listConnectionStrings();
         mongoProperties.setUri(connectionStrings.connectionStrings().get(0).connectionString());

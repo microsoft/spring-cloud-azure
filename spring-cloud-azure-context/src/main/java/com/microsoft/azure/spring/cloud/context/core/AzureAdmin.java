@@ -252,19 +252,20 @@ public class AzureAdmin {
         return azure.cosmosDBAccounts().getByResourceGroup(resourceGroup, name);
     }
 
-    private CosmosDBAccount createCosmosDBAccount(Tuple<DatabaseAccountKind, String> kindAndName){
-        return azure.cosmosDBAccounts().define(kindAndName.getSecond()).withRegion(region)
+    private CosmosDBAccount createCosmosDBAccount(String name, DatabaseAccountKind kind, String readReplication){
+        return azure.cosmosDBAccounts().define(name).withRegion(region)
                 .withExistingResourceGroup(resourceGroup)
-                .withKind(kindAndName.getFirst())
-                .withStrongConsistency().withReadReplication(Region.US_EAST).create();
+                .withKind(kind)
+                .withStrongConsistency()
+                .withReadReplication(Region.create(readReplication,readReplication)).create();
     }
 
-    public CosmosDBAccount getOrCreateCosmosDBAccount(String name, DatabaseAccountKind kind){
+    public CosmosDBAccount getOrCreateCosmosDBAccount(String name, DatabaseAccountKind kind, String readReplication){
         CosmosDBAccount cosmosDBAccount = getCosmosDBAccount(name);
         if(cosmosDBAccount != null){
             return cosmosDBAccount;
         }
-        return createCosmosDBAccount(Tuple.of(kind, name));
+        return createCosmosDBAccount(name, kind, readReplication);
     }
 
     private <T, R> Function<T, R> getOrCreate(Function<T, R> getter, Function<T, R> creator, Class<R> resourceType) {

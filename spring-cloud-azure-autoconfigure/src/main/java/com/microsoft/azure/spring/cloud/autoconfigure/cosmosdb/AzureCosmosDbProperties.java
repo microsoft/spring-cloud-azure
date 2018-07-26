@@ -18,6 +18,7 @@ import javax.annotation.PostConstruct;
 public class AzureCosmosDbProperties {
     private String accountName;
     private String database;
+    private String readReplication;
 
     @PostConstruct
     public void validate() {
