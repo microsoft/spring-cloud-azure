@@ -36,7 +36,7 @@ public class AzureCosmosDbMongoDbAutoConfigurationTest {
 
     @Test
     public void testAzureCosmosDbMongodbDisabled() {
-        this.contextRunner.withPropertyValues("spring.cloud.azure.cosmosdb.mongodb.enabled=false")
+        this.contextRunner.withPropertyValues("spring.cloud.azure.cosmosdb.enabled=false")
                 .run(context -> assertThat(context).doesNotHaveBean(AzureCosmosDbProperties.class));
     }
 
