@@ -7,11 +7,14 @@
 package com.microsoft.azure.spring.cloud.context.core;
 
 import com.microsoft.azure.management.Azure;
+import com.microsoft.azure.management.cosmosdb.CosmosDBAccount;
+import com.microsoft.azure.management.cosmosdb.DatabaseAccountKind;
 import com.microsoft.azure.management.eventhub.EventHub;
 import com.microsoft.azure.management.eventhub.EventHubConsumerGroup;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
 import com.microsoft.azure.management.redis.RedisCache;
 import com.microsoft.azure.management.resources.ResourceGroup;
+import com.microsoft.azure.management.resources.fluentcore.arm.Region;
 import com.microsoft.azure.management.servicebus.Queue;
 import com.microsoft.azure.management.servicebus.ServiceBusNamespace;
 import com.microsoft.azure.management.servicebus.ServiceBusSubscription;
@@ -220,7 +223,30 @@ public class AzureAdmin {
         return getOrCreate(this::getRedisCache, this::createRedisCache).apply(name);
     }
 
+
+    private CosmosDBAccount getCosmosDBAccount(String name){
+        return azure.cosmosDBAccounts().getByResourceGroup(resourceGroup, name);
+    }
+
+    private CosmosDBAccount createCosmosDBAccount(String name, DatabaseAccountKind kind, String readReplication){
+        return azure.cosmosDBAccounts().define(name).withRegion(region)
+                .withExistingResourceGroup(resourceGroup)
+                .withKind(kind)
+                .withStrongConsistency()
+                .withReadReplication(Region.create(readReplication,readReplication)).create();
+    }
+
+    public CosmosDBAccount getOrCreateCosmosDBAccount(String name, DatabaseAccountKind kind, String readReplication){
+        CosmosDBAccount cosmosDBAccount = getCosmosDBAccount(name);
+        if(cosmosDBAccount != null){
+            return cosmosDBAccount;
+        }
+        return createCosmosDBAccount(name, kind, readReplication);
+    }
+
+
     private <T, R> Function<T, R> getOrCreate(Function<T, R> getter, Function<T, R> creator) {
+
         return t -> {
             R result = getter.apply(t);
             if (result != null) {
