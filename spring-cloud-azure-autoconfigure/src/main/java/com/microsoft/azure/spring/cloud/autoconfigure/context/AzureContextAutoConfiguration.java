@@ -8,6 +8,7 @@ package com.microsoft.azure.spring.cloud.autoconfigure.context;
 
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.AzureAopConfig;
 import com.microsoft.azure.spring.cloud.context.core.CredentialsProvider;
 import com.microsoft.azure.spring.cloud.context.core.DefaultCredentialsProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -16,6 +17,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import java.io.IOException;
 
@@ -28,6 +30,7 @@ import java.io.IOException;
 @EnableConfigurationProperties(AzureProperties.class)
 @ConditionalOnClass(Azure.class)
 @ConditionalOnProperty(value = "spring.cloud.azure.enabled", matchIfMissing = true)
+@Import(AzureAopConfig.class)
 public class AzureContextAutoConfiguration {
 
     @Bean

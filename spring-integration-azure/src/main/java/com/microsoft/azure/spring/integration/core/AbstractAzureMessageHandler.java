@@ -6,6 +6,8 @@
 
 package com.microsoft.azure.spring.integration.core;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.common.LiteralExpression;
@@ -32,6 +34,8 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Warren Zhu
  */
+@Getter
+@Setter
 public abstract class AbstractAzureMessageHandler<D> extends AbstractMessageHandler {
     private static final long DEFAULT_SEND_TIMEOUT = 10000;
     private final String destination;
@@ -90,10 +94,6 @@ public abstract class AbstractAzureMessageHandler<D> extends AbstractMessageHand
         setSendTimeoutExpression(EXPRESSION_PARSER.parseExpression(sendTimeoutExpression));
     }
 
-    public Expression getSendTimeoutExpression() {
-        return sendTimeoutExpression;
-    }
-
     public void setSendTimeoutExpression(Expression sendTimeoutExpression) {
         Assert.notNull(sendTimeoutExpression, "'sendTimeoutExpression' must not be null");
         this.sendTimeoutExpression = sendTimeoutExpression;
@@ -109,30 +109,6 @@ public abstract class AbstractAzureMessageHandler<D> extends AbstractMessageHand
 
     public void setPartitionKeyExpression(Expression partitionKeyExpression) {
         this.partitionKeyExpression = partitionKeyExpression;
-    }
-
-    public boolean isSync() {
-        return this.sync;
-    }
-
-    /**
-     * Set send method to be synchronous or asynchronous.
-     *
-     * <p>
-     * send is asynchronous be default.
-     *
-     * @param sync true for synchronous, false for asynchronous
-     */
-    public void setSync(boolean sync) {
-        this.sync = sync;
-    }
-
-    public void setMessageConverter(CodecMessageConverter messageConverter) {
-        this.messageConverter = messageConverter;
-    }
-
-    public void setSendCallback(ListenableFutureCallback<Void> sendCallback) {
-        this.sendCallback = sendCallback;
     }
 
     public abstract D toAzureMessage(Message<?> message);
