@@ -50,17 +50,17 @@ public class EventHubInboundChannelAdapterTest {
 
     @Test
     public void testCheckpointBatchMode() throws InterruptedException {
-        sendAndRecieve(CheckpointMode.BATCH);
+        sendAndReceive(CheckpointMode.BATCH);
         verify(this.checkpointer, times(1)).checkpoint();
     }
 
     @Test
     public void testCheckpointRecordMode() throws InterruptedException {
-        sendAndRecieve(CheckpointMode.RECORD);
+        sendAndReceive(CheckpointMode.RECORD);
         verify(this.checkpointer, times(eventData.size())).checkpoint(isA(EventData.class));
     }
 
-    private void sendAndRecieve(CheckpointMode checkpointMode) throws InterruptedException {
+    private void sendAndReceive(CheckpointMode checkpointMode) throws InterruptedException {
         DirectChannel channel = new DirectChannel();
         channel.setBeanName("output");
         this.adapter.setCheckpointMode(checkpointMode);

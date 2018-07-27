@@ -1,5 +1,8 @@
 = Azure redis cache spring cloud starter
 
+This starter is based on spring-boot-starter-data-redis. It fetches and auto configures redis properties via Azure Redis
+ Cache Management SDK.
++
 Maven coordinates, using Spring Cloud Azure BOM:
 
 [source,xml]
@@ -18,9 +21,6 @@ dependencies {
     compile group: 'com.microsoft.azure', name: 'spring-cloud-azure-starter-cache'
 }
 ----
-
-This starter is based on spring-boot-starter-data-redis. It fetches and auto configures redis properties via Azure Redis
- Cache Management SDK.
 
 == How to run
 
@@ -45,16 +45,17 @@ spring.cloud.azure.region=[region]
 spring.cloud.azure.redis.name=[azure-redis-instance-name]
 ....
 +
-All azure resources will be created if missing. Alternatively, you can manually create
+
+4.  Create Azure Redis cache instance. Please follow
 https://docs.microsoft.com/en-us/azure/redis-cache/[Azure redis cache].
 
-4.  Run the application using the `$ mvn spring-boot:run` command.
-5.  Send a GET request to check, where `name` could be any string:
+5.  Run the application using the `$ mvn spring-boot:run` command.
+6.  Send a GET request to check, where `name` could be any string:
 +
 ....
 $ curl -XGET http://localhost:8080/{name}
 ....
-6.  Confirm from Azure Redis Cache console in Azure Portal
+7.  Confirm from Azure Redis Cache console in Azure Portal
 +
 ....
 $ keys *

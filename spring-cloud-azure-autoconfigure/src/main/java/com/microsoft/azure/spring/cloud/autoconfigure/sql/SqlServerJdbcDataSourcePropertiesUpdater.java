@@ -34,8 +34,8 @@ public class SqlServerJdbcDataSourcePropertiesUpdater extends AbstractJdbcDataso
     @Override
     String getUrl(DataSourceProperties dataSourceProperties) {
         SqlServer sqlServer = azureAdmin
-                .getOrCreateSqlServer(azureSqlProperties.getServerName(), dataSourceProperties.getUsername(),
-                        dataSourceProperties.getPassword());
+                .getOrCreateSqlServer(dataSourceProperties.getUsername(), dataSourceProperties.getPassword(),
+                        azureSqlProperties.getServerName());
         azureAdmin.getOrCreateSqlDatabase(azureSqlProperties.getServerName(), azureSqlProperties.getDatabaseName());
         return String.format(databaseType.getJdbcUrlTemplate(), sqlServer.fullyQualifiedDomainName(),
                 azureSqlProperties.getDatabaseName());

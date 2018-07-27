@@ -8,6 +8,8 @@ package com.microsoft.azure.spring.integration.core;
 
 import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
 import com.microsoft.azure.spring.integration.eventhub.inbound.ListenerMode;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.integration.endpoint.MessageProducerSupport;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.converter.MessageConverter;
@@ -18,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.StreamSupport;
 
+@Getter
+@Setter
 public abstract class AbstractInboundChannelAdapter<D> extends MessageProducerSupport {
     private static final String DEFAULT_CONSUMER_GROUP = "$Default";
     private final String destination;
@@ -81,36 +85,5 @@ public abstract class AbstractInboundChannelAdapter<D> extends MessageProducerSu
         this.subscribeByGroupOperation.unsubscribe(destination, this::receiveMessage, this.consumerGroup);
 
         super.doStop();
-    }
-
-    public CheckpointMode getCheckpointMode() {
-        return checkpointMode;
-    }
-
-    public void setCheckpointMode(CheckpointMode checkpointMode) {
-        this.checkpointMode = checkpointMode;
-    }
-
-    public ListenerMode getListenerMode() {
-        return listenerMode;
-    }
-
-    public void setListenerMode(ListenerMode listenerMode) {
-        this.listenerMode = listenerMode;
-    }
-
-    public MessageConverter getMessageConverter() {
-        return this.messageConverter;
-    }
-
-    /**
-     * Sets the {@link MessageConverter} to convert the payload of the incoming message from Event hub.
-     * If {@code messageConverter} is null, payload is {@code EventData} or
-     * {@code Iterable<EventData>} and returned in that form.
-     *
-     * @param messageConverter converts the payload of the incoming message
-     */
-    public void setMessageConverter(MessageConverter messageConverter) {
-        this.messageConverter = messageConverter;
     }
 }
