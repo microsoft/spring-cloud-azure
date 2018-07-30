@@ -51,3 +51,5 @@ $ curl -X POST -H "Content-Type: text/plain" -d "hello" http://localhost:8080/me
 6. Verify in your app's logs that a similar message was posted:
 +
 `New message received: hello`
+
+7. Clean up the resources on http://ms.portal.azure.com/[Azure Portal]. Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].

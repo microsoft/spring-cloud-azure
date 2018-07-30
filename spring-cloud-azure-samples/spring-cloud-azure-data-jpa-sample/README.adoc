@@ -50,3 +50,5 @@ $ curl http://localhost:8080/users
 == Examples
 link:../../spring-cloud-azure-samples/spring-cloud-azure-data-jpa-sample[Here]
 is a sample application that uses this starter.
+
+6. Clean up the resources on http://ms.portal.azure.com/[Azure Portal]. Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
