@@ -1,6 +1,6 @@
-# Spring Cloud Azure Storage 
+# Spring Cloud Azure Storage Starter
 
-The project implements Spring Resource abstraction for Azure Storage service which allows you to interact with [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction) using Spring programming model.
+The project provides a Spring Boot Starter `spring-cloud-azure-starter-storage` to auto-configure [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction) in your Spring projects. It implements Spring Resource abstraction for Azure Storage service which allows you to interact with Azure Blob storage using Spring programming model.
 
 ## Samples 
 
@@ -9,23 +9,22 @@ Please use this [sample](../../spring-cloud-azure-samples/spring-cloud-azure-sto
 ## Feature List 
 
 - [Auto-configuration for Azure Blob storage](#auto-configuration-for-azure-blob-storage)
-- [Map with a resource](#map-with-a-resource)
+- [Autowire a resource](#autowire-a-resource)
 - [Read and write to a resource](#read-and-write-to-a-resource)
 - [Other operations](#other-operations) 
 
 ### Auto-configuration for Azure Blob storage
 
-We provide a Spring Boot Starter [`spring-cloud-azure-starter-storage`](spring-cloud-azure-starters/spring-cloud-azure-starter-storage/) to auto-configure Azure Storge in your project. 
+Please use [`spring-cloud-azure-starter-storage`](spring-cloud-azure-starters/spring-cloud-azure-starter-storage/) to auto-configure Azure Storge in your project. 
 
-If you are using Maven, add the following dependency to your project . 
-
+**Maven Coordinates** 
 ```
 <dependency>
     <groupId>com.microsoft.azure</groupId>
     <artifactId>spring-cloud-azure-starter-storage</artifactId>
 </dependency>
 ```
-If you are using Gradle, add the following dependency to your project. 
+**Gradle Coordinates** 
 ```
 dependencies {
     compile group: 'com.microsoft.azure', name: 'spring-cloud-azure-starter-storage'
@@ -40,9 +39,10 @@ Name | Description | Required | Default
  spring.cloud.azure.resourceGroup | Name of Azure resource group | Yes | 
  spring.cloud.azure.region | Region name of the Azure resource group, e.g. westus | Yes | 
  spring.cloud.azure.storage.account | Name of the Azure Storage Account. Will create a new one if not existing | Yes |
+ spring.cloud.azure.storage.enabled | Turn on or off functionalities of Spring Cloud Azure Storage | No | true
 
-### Map with a resource 
-You can use the annotation of `@Value("blob://{containerName}/{blobName}")` to map a `Resource` with that in [Azure Blob Storage](https://azure.microsoft.com/en-us/services/storage/blobs/).
+### Autowire a resource 
+You can use the annotation of `@Value("blob://{containerName}/{blobName}")` to autowire a `Resource` with that in [Azure Blob storage](https://azure.microsoft.com/en-us/services/storage/blobs/).
 
 ```
 @Value("blob://{containerName}/{blobName}")
@@ -62,6 +62,6 @@ You can write to a resource in Azure Blob storage by casting the Spring `Resourc
 ```
 
 ### Other operations 
-The Spring Resource abstraction for Azure Storage also supports [other operations](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#resources) defined in Spring's `Resource` interface. 
+The Spring Resource abstraction for Azure Storage also supports [other operations](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#resources) defined in Spring's `Resource` and `WritableResource` interface. 
 
 
