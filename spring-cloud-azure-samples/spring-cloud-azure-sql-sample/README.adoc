@@ -1,7 +1,8 @@
 = Spring Cloud Azure Sql Database Starter Sample
 
-This starter is based on `spring-boot-starter-jdbc`. It fetches and auto configures data source properties via Azure Sql
- Management SDK.Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
+This starter is based on `spring-boot-starter-jdbc`. It fetches and auto configures data source properties via Azure Sql Management SDK.
+ 
+Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
 
 Maven coordinates:
 
@@ -38,7 +39,7 @@ Make sure `my.azureauth` is encoded with UTF-8.
 3.  Update link:src/main/resources/application.properties[application.properties]
 +
 ....
-# Put 'my.azureauth' here if following step 1 and 2
+# Enter 'my.azureauth' here if following step 1 and 2
 spring.cloud.azure.credentialFilePath=[credential-file]
 
 spring.cloud.azure.resourceGroup=[resource-group]
@@ -71,7 +72,7 @@ Alternatively, you can manually create https://docs.microsoft.com/en-us/azure/sq
 $ curl -XGET http://localhost:8080/users
 ....
 
-6. Clean up the resources on http://ms.portal.azure.com/[Azure Portal]. 
+6. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
 
 == Examples
 link:../../spring-cloud-azure-samples/spring-cloud-azure-sql-sample[Here]

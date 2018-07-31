@@ -4,6 +4,8 @@ This code sample demonstrates how to read and write files with the Spring Resour
 the
 link:../../spring-cloud-azure-starters/spring-cloud-azure-starter-storage[Spring Cloud Azure Storage Starter].Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
 
+Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
+
 Maven coordinates:
 
 [source,xml]
@@ -42,7 +44,7 @@ Make sure `my.azureauth` is encoded with UTF-8.
 +
 ....
 
-# Put 'my.azureauth' here if following step 1 and 2
+# Enter 'my.azureauth' here if following step 1 and 2
 spring.cloud.azure.credentialFilePath=[credential-file-path]
 
 spring.cloud.azure.resourceGroup=[resource-group]
@@ -74,4 +76,4 @@ Verify by sending a GET request
 $ curl -XGET http://localhost:8080/
 ```
 
-7. Clean up the resources on http://ms.portal.azure.com/[Azure Portal]. 
+7. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
