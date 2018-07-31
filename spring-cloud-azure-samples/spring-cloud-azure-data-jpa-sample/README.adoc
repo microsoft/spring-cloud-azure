@@ -1,6 +1,6 @@
 = Spring Cloud Azure Sql Database JPA Sample
 
-This sample application demonstrates how to use Spring Data JPA with Spring Cloud Azure SQL Server Starter.
+This sample application demonstrates how to use Spring Data JPA with Spring Cloud Azure SQL Server Starter. Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
 
 == How to run
 
@@ -47,7 +47,7 @@ $ curl -X POST -H "Content-Type: application/json" -d '{"name":"fake-name"}' htt
 $ curl http://localhost:8080/users
 ....
 
-6. Clean up the resources on http://ms.portal.azure.com/[Azure Portal]. Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
+6. Clean up the resources on http://ms.portal.azure.com/[Azure Portal]. 
 
 == Examples
 link:../../spring-cloud-azure-samples/spring-cloud-azure-data-jpa-sample[Here]

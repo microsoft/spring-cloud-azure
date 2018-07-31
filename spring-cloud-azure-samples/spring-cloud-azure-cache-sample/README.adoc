@@ -1,7 +1,7 @@
 = Azure redis cache spring cloud starter
 
 This starter is based on spring-boot-starter-data-redis. It fetches and auto configures redis properties via Azure Redis
- Cache Management SDK.
+ Cache Management SDK. Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
 +
 Maven coordinates, using Spring Cloud Azure BOM:
 
@@ -63,6 +63,8 @@ $ curl -XGET http://localhost:8080/{name}
 ....
 $ keys *
 ....
+
+8. Clean up the resources on http://ms.portal.azure.com/[Azure Portal]. 
 
 == Examples
 link:../../spring-cloud-azure-samples/spring-cloud-azure-cache-sample[Here]
