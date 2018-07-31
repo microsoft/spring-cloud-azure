@@ -1,12 +1,15 @@
 = Spring Cloud Azure Sql Database JPA Sample
 
-This sample application demonstrates how to use Spring Data JPA with Spring Cloud Azure SQL Server Starter.
+This sample application demonstrates how to use Spring Data JPA with Spring Cloud Azure SQL Server Starter. 
+
+Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
 
 == How to run
 
 1. Create azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how to create credential file]
 +
 ....
+$  az login
 $  az account set --subscription <name or id>
 $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 ....
@@ -17,6 +20,7 @@ Make sure `my.azureauth` is encoded with UTF-8.
 3. Update link:src/main/resources/application.properties[application.properties]
 +
 ....
+# Enter 'my.azureauth' here if following step 1 and 2
 spring.cloud.azure.credentialFilePath=[credential-file]
 spring.cloud.azure.resourceGroup=[resource-group]
 spring.cloud.azure.region=[region]
@@ -25,8 +29,9 @@ spring.cloud.azure.region=[region]
 spring.cloud.azure.sql.database-name=[database-name]
 spring.cloud.azure.sql.server-name=[server-name]
 
-# Leave username empty if database server already created
+# Delete the following line if database server is already created
 spring.datasource.username=[username]
+
 spring.datasource.password=[password]
 
 # It will create database table if no exist, or update the table.
@@ -46,6 +51,8 @@ Alternatively, you can manually create https://docs.microsoft.com/en-us/azure/sq
 $ curl -X POST -H "Content-Type: application/json" -d '{"name":"fake-name"}' http://localhost:8080/user
 $ curl http://localhost:8080/users
 ....
+
+6. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
 
 == Examples
 link:../../spring-cloud-azure-samples/spring-cloud-azure-data-jpa-sample[Here]

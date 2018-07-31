@@ -2,7 +2,9 @@
 
 This code sample demonstrates how to use the Spring Cloud Stream Kafka binder for Azure Event Hub.
 The sample app exposes a rest api to receive string message. Then message is sent through Azure
-Event Hub to a `sink` which simply logs the message.
+Event Hub to a `sink` which simply logs the message. 
+
+Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
 
 == How to run
 
@@ -10,6 +12,7 @@ Event Hub to a `sink` which simply logs the message.
 to create credential file]
 +
 ....
+$  az login
 $  az account set --subscription <name or id>
 $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 ....
@@ -18,10 +21,14 @@ Make sure `my.azureauth` is encoded with UTF-8.
 
 2. Put auth file under `src/main/resources/`.
 
-3. Update link:src/main/resources/application.properties[application.properties] file
+3. Create Kafka enabled event hub. Please follow https://github.com/MicrosoftDocs/azure-docs/blob/master/articles/event-hubs/event-hubs-create-kafka-enabled.md[How to create Kafka enabled Event Hubs]
+
+4. Update link:src/main/resources/application.properties[application.properties] file
 +
 ....
+# Enter 'my.azureauth' here if following step 1 and 2
 spring.cloud.azure.credentialFilePath=[credential-file-path]
+
 spring.cloud.azure.resourceGroup=[resource-group]
 spring.cloud.azure.region=[region]
 
@@ -32,8 +39,6 @@ spring.cloud.stream.bindings.input.group=[consumer-group]
 spring.cloud.stream.bindings.output.destination=[eventhub-name]
 ....
 +
-
-4. Create Kafka enabled event hub. Please follow https://github.com/MicrosoftDocs/azure-docs/blob/master/articles/event-hubs/event-hubs-create-kafka-enabled.md[How to create Kafka enabled Event Hubs]
 
 5. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
 
@@ -46,3 +51,5 @@ $ curl -X POST -H "Content-Type: text/plain" -d "hello" http://localhost:8080/me
 7. Verify in your app's logs that a similar message was posted:
 +
 `New message received: hello`
+
+8. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.

@@ -4,12 +4,15 @@ This code sample demonstrates how to use the Spring Cloud Stream binder for Azur
 The sample app exposes a rest api to receive string message. Then message is sent through Azure
 Event Hub to a `sink` which simply logs the message.
 
+Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
+
 == How to run
 
 1.  Create Azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how
 to create credential file]
 +
 ....
+$  az login
 $  az account set --subscription <name or id>
 $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 ....
@@ -21,7 +24,9 @@ Make sure `my.azureauth` is encoded with UTF-8.
 3. Update link:src/main/resources/application.properties[application.properties] file
 +
 ....
+# Enter 'my.azureauth' here if following step 1 and 2
 spring.cloud.azure.credentialFilePath=[credential-file-path]
+
 spring.cloud.azure.resourceGroup=[resource-group]
 spring.cloud.azure.region=[region]
 
@@ -48,3 +53,5 @@ $ curl -X POST -H "Content-Type: text/plain" -d "hello" http://localhost:8080/me
 6. Verify in your app's logs that a similar message was posted:
 +
 `New message received: hello`
+
+7. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
