@@ -21,6 +21,7 @@ import javax.annotation.PostConstruct;
 @ConfigurationProperties("spring.cloud.azure.eventhub")
 public class AzureEventHubProperties {
     private String namespace;
+    private String checkpointStorageAccount;
 
     @PostConstruct
     public void validate() {
