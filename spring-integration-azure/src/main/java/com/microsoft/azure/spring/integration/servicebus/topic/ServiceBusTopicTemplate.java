@@ -54,6 +54,10 @@ public class ServiceBusTopicTemplate extends ServiceBusSendTemplate<ServiceBusTo
         consumersByNameAndConsumerGroup.putIfAbsent(nameAndConsumerGroup, new CopyOnWriteArraySet<>());
         boolean added = consumersByNameAndConsumerGroup.get(nameAndConsumerGroup).add(consumer);
 
+        if (!added) {
+            return false;
+        }
+
         try {
             this.senderFactory.getSubscriptionClientCreator().apply(Tuple.of(destination, consumerGroup))
                               .registerMessageHandler(new ServiceBusMessageHandler(
@@ -69,11 +73,15 @@ public class ServiceBusTopicTemplate extends ServiceBusSendTemplate<ServiceBusTo
     @Override
     public synchronized boolean unsubscribe(String destination, Consumer<Iterable<IMessage>> consumer,
             String consumerGroup) {
-        boolean existed = consumersByNameAndConsumerGroup.get(Tuple.of(destination, consumerGroup)).remove(consumer);
+        Tuple<String, String> nameAndConsumerGroup = Tuple.of(destination, consumerGroup);
+
+        if (!consumersByNameAndConsumerGroup.containsKey(nameAndConsumerGroup)) {
+            return false;
+        }
 
         //TODO: unregister message handler but service bus sdk unsupported
 
-        return existed;
+        return consumersByNameAndConsumerGroup.get(nameAndConsumerGroup).remove(consumer);
     }
 
     @Override
