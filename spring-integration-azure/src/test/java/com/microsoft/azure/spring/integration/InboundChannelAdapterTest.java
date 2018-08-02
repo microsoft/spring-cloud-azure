@@ -9,10 +9,7 @@ package com.microsoft.azure.spring.integration;
 import com.microsoft.azure.spring.integration.core.AbstractInboundChannelAdapter;
 import com.microsoft.azure.spring.integration.core.Checkpointer;
 import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.util.Assert;
 
