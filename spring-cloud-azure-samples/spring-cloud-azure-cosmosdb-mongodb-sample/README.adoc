@@ -1,0 +1,67 @@
+= Spring Cloud Azure CosmosDB using MongoDB API Sample
+
+This starter is based on `spring-boot-starter-data-mongodb`. It fetches and auto configures data source properties via Azure CosmosDB Management SDK.
+
+Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
+
+Maven coordinates:
+
+[source,xml]
+----
+<dependency>
+    <groupId>com.microsoft.azure</groupId>
+    <artifactId>spring-cloud-azure-starter-cosmosdb-mongodb</artifactId>
+</dependency>
+----
+
+Gradle coordinates:
+
+[source]
+----
+dependencies {
+    compile group: 'com.microsoft.azure', name: 'spring-cloud-azure-starter-cosmosdb-mongodb'
+}
+----
+
+== How to run
+
+1.  Create azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how to create credential file]
++
+....
+$  az login
+$  az account set --subscription <name or id>
+$  az ad sp create-for-rbac --sdk-auth > my.azureauth
+....
++
+Make sure `my.azureauth` is encoded with UTF-8.
+
+2.  Put auth file under `src/main/resources/`.
+3.  Update link:src/main/resources/application.properties[application.properties]
++
+....
+spring.cloud.azure.credentialFilePath=[credential-file]
+spring.cloud.azure.resourceGroup=[resource-group]
+spring.cloud.azure.region=[region]
+
+# Auto create cosmosdb account and database if not existed
+spring.cloud.azure.cosmosdb.account-name=[database-account-name]
+spring.cloud.azure.cosmosdb.database=[database-name]
+spring.cloud.azure.cosmosdb.read-replication=[read-replication-region]
+....
++
+All azure resources will be created if missing.
+Alternatively, you can manually create https://docs.microsoft.com/en-us/azure/cosmos-db/[Azure Cosmos DB].
+
+4.  Run the application using the `$ mvn spring-boot:run` command.
+5.  Send a POST request to check, where `name` could be any string:
++
+....
+$ curl -XPOST http://localhost:8080/insertUser/{name}
+....
+6.  Send a GET request to check:
++
+....
+$ curl -XGET http://localhost:8080/users
+....
+
+7. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
