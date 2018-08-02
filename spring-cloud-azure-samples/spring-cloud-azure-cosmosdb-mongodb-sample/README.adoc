@@ -2,6 +2,8 @@
 
 This starter is based on `spring-boot-starter-data-mongodb`. It fetches and auto configures data source properties via Azure CosmosDB Management SDK.
 
+Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
+
 Maven coordinates:
 
 [source,xml]
@@ -26,6 +28,7 @@ dependencies {
 1.  Create azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how to create credential file]
 +
 ....
+$  az login
 $  az account set --subscription <name or id>
 $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 ....
@@ -60,3 +63,5 @@ $ curl -XPOST http://localhost:8080/insertUser/{name}
 ....
 $ curl -XGET http://localhost:8080/users
 ....
+
+7. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
