@@ -9,6 +9,7 @@ package com.microsoft.azure.spring.integration.core;
 import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
 import com.microsoft.azure.spring.integration.eventhub.inbound.ListenerMode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import org.springframework.integration.endpoint.MessageProducerSupport;
 import org.springframework.messaging.Message;
@@ -33,10 +34,9 @@ public abstract class AbstractInboundChannelAdapter<D> extends MessageProducerSu
 
     private String consumerGroup = DEFAULT_CONSUMER_GROUP;
 
-    public AbstractInboundChannelAdapter(String destination, SubscribeByGroupOperation<D> subscribeByGroupOperation,
-            String consumerGroup) {
+    public AbstractInboundChannelAdapter(String destination,
+            @NonNull SubscribeByGroupOperation<D> subscribeByGroupOperation, String consumerGroup) {
         Assert.hasText(destination, "destination can't be null or empty");
-        Assert.notNull(subscribeByGroupOperation, "subscribeByGroupOperation can't be null");
         this.destination = destination;
         this.subscribeByGroupOperation = subscribeByGroupOperation;
         if (StringUtils.hasText(consumerGroup)) {
