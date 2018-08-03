@@ -8,7 +8,6 @@ package com.microsoft.azure.spring.integration;
 
 import com.microsoft.azure.spring.integration.core.PartitionSupplier;
 import com.microsoft.azure.spring.integration.core.SendOperation;
-import com.microsoft.azure.spring.integration.eventhub.EventHubRuntimeException;
 import org.junit.Test;
 import org.springframework.core.NestedRuntimeException;
 

@@ -8,72 +8,35 @@ package com.microsoft.azure.spring.integration.servicebus.topic;
 
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.IMessageSender;
+import com.microsoft.azure.servicebus.ITopicClient;
 import com.microsoft.azure.servicebus.Message;
-import com.microsoft.azure.servicebus.TopicClient;
-import com.microsoft.azure.servicebus.primitives.ServiceBusException;
-import com.microsoft.azure.spring.integration.SendOperationTest;
-import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
+import com.microsoft.azure.spring.integration.servicebus.ServiceBusTemplateSendTest;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.function.Function;
 
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TopicTemplateSendTest extends SendOperationTest<IMessage, ServiceBusTopicOperation> {
-
-    @Mock
-    private ServiceBusTopicClientFactory mockClientFactory;
-
-    @Mock
-    private TopicClient mockClient;
+public class TopicTemplateSendTest extends ServiceBusTemplateSendTest<ServiceBusTopicClientFactory> {
 
     @Before
-    public void setUp() throws ServiceBusException, InterruptedException {
+    @Override
+    public void setUp() {
+        this.mockClientFactory = mock(ServiceBusTopicClientFactory.class);
+        this.mockClient = mock(ITopicClient.class);
         Mockito.<Function<String, ? extends IMessageSender>>when(this.mockClientFactory.getSenderCreator())
                 .thenReturn(s -> this.mockClient);
         when(this.mockClient.sendAsync(isA(IMessage.class))).thenReturn(future);
 
         this.sendOperation = new ServiceBusTopicTemplate(mockClientFactory);
         this.message = new Message(payload);
-    }
-
-    @Override
-    protected void verifySendCalled(int times) {
-        verify(this.mockClient, times(times)).sendAsync(isA(IMessage.class));
-    }
-
-    @Override
-    protected void verifyPartitionSenderCalled(int times) {
-        verifySendCalled(times);
-    }
-
-    @Override
-    protected void whenSendWithException() {
-        when(this.mockClientFactory.getSenderCreator()).thenReturn((s) -> {
-            throw new ServiceBusRuntimeException("couldn't create the service bus topic client.");
-        });
-    }
-
-    @Override
-    protected void verifyGetClientCreator(int times) {
-        verify(this.mockClientFactory, times(times)).getSenderCreator();
-    }
-
-    @Override
-    protected void verifySendWithPartitionKey(int times) {
-        verifySendCalled(times);
-    }
-
-    @Override
-    protected void verifySendWithPartitionId(int times) {
-        verifySendCalled(times);
     }
 
 }
