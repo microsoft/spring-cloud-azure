@@ -4,7 +4,7 @@ The project provides **Spring Cloud Stream Binder for Azure Event Hub** which al
 
 ## Samples 
 
-Please use this [sample](../spring-cloud-azure-eventhub-binder-sample/) as a reference for how to use Spring Cloud Stream Binder for Azure Event Hub in your projects. 
+Please use this [sample](../spring-cloud-azure-samples/spring-cloud-azure-eventhub-binder-sample/) as a reference for how to use Spring Cloud Stream Binder for Azure Event Hub in your projects. 
 
 ## Feature List 
 
