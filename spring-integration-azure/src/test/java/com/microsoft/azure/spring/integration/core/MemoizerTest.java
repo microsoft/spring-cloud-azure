@@ -41,7 +41,7 @@ public class MemoizerTest {
         Assert.assertTrue(map.size() == 1);
     }
 
-    interface ExpensiveOperation{
+    interface ExpensiveOperation {
         String compute(String input);
     }
 }
