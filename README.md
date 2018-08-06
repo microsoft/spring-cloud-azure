@@ -13,12 +13,12 @@ Currently, Spring Cloud Azure offers the following features with samples.
 
 The following Spring Boot Starters are available in Maven Central Repository. 
 
-Starter Name | Version
----|---
-[spring-cloud-azure-starter-cache](spring-cloud-azure-starters/spring-cloud-azure-starter-cache/) | 
-[spring-cloud-azure-starter-eventhub](spring-cloud-azure-starters/spring-cloud-azure-starter-eventhub/) | 
-[spring-cloud-azure-starter-sql-sqlserver](spring-cloud-azure-starters/spring-cloud-azure-starter-sql-sqlserver/) | 
-[spring-cloud-azure-starter-storage](spring-cloud-azure-starters/spring-cloud-azure-starter-storage/) | 
+Starter Name | Version | Sample
+---|---|---
+[spring-cloud-azure-starter-storage](spring-cloud-azure-starters/spring-cloud-azure-starter-storage/) | | [Sample](spring-cloud-azure-samples/spring-cloud-azure-storage-sample)
+[spring-cloud-azure-starter-cache](spring-cloud-azure-starters/spring-cloud-azure-starter-cache/) | | [Sample](spring-cloud-azure-samples/spring-cloud-azure-cache-sample)
+[spring-cloud-azure-starter-eventhub](spring-cloud-azure-starters/spring-cloud-azure-starter-eventhub/) | | [Sample](spring-cloud-azure-samples/spring-cloud-azure-eventhub-binder-sample)
+[spring-cloud-azure-starter-sql-sqlserver](spring-cloud-azure-starters/spring-cloud-azure-starter-sql-sqlserver/) | | [Sample](spring-cloud-azure-samples/spring-cloud-azure-sql-sample)
 
 ## Samples 
 
