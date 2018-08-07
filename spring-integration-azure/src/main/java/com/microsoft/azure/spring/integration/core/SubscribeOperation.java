@@ -13,7 +13,7 @@ import java.util.function.Consumer;
  *
  * @author Warren Zhu
  */
-public interface SubscribeOperation<D> {
+public interface SubscribeOperation<D, K> {
 
     /**
      * Register a message consumer to a given destination.
@@ -34,5 +34,5 @@ public interface SubscribeOperation<D> {
     /**
      * Get checkpointer for a given destination
      */
-    Checkpointer<D> getCheckpointer(String destination);
+    Checkpointer<K> getCheckpointer(String destination);
 }

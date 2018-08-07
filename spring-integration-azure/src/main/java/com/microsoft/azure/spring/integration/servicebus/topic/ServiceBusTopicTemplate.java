@@ -22,6 +22,7 @@ import org.springframework.util.Assert;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Consumer;
@@ -38,7 +39,7 @@ public class ServiceBusTopicTemplate extends ServiceBusSendTemplate<ServiceBusTo
 
     private final Map<Tuple<String, String>, Set<Consumer<Iterable<IMessage>>>> consumersByNameAndConsumerGroup =
             new ConcurrentHashMap<>();
-    private final Function<Tuple<String, String>, Checkpointer<IMessage>> checkpointGetter =
+    private final Function<Tuple<String, String>, Checkpointer<UUID>> checkpointGetter =
             Memoizer.memoize(this::createCheckpointer);
 
     public ServiceBusTopicTemplate(ServiceBusTopicClientFactory clientFactory) {
@@ -85,11 +86,11 @@ public class ServiceBusTopicTemplate extends ServiceBusSendTemplate<ServiceBusTo
     }
 
     @Override
-    public Checkpointer<IMessage> getCheckpointer(String destination, String consumerGroup) {
+    public Checkpointer<UUID> getCheckpointer(String destination, String consumerGroup) {
         return this.checkpointGetter.apply(Tuple.of(destination, consumerGroup));
     }
 
-    private Checkpointer<IMessage> createCheckpointer(Tuple<String, String> nameAndSubscription) {
+    private Checkpointer<UUID> createCheckpointer(Tuple<String, String> nameAndSubscription) {
         return new ServiceBusTopicCheckpointer(this.senderFactory.getSubscriptionClientCreator().apply(Tuple
                 .of(nameAndSubscription.getFirst(), nameAndSubscription.getSecond())));
     }

@@ -9,30 +9,25 @@ package com.microsoft.azure.spring.integration.eventhub.inbound;
 import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.spring.integration.core.AbstractInboundChannelAdapter;
 import com.microsoft.azure.spring.integration.core.SubscribeByGroupOperation;
-import org.springframework.integration.support.MessageBuilder;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHeaders;
+import org.springframework.util.Assert;
 
-public class EventHubInboundChannelAdapter extends AbstractInboundChannelAdapter<EventData> {
+public class EventHubInboundChannelAdapter extends AbstractInboundChannelAdapter<EventData, EventData> {
 
     public EventHubInboundChannelAdapter(String destination,
-            SubscribeByGroupOperation<EventData> subscribeByGroupOperation, String consumerGroup) {
-        super(destination, subscribeByGroupOperation, consumerGroup);
+            SubscribeByGroupOperation<EventData, EventData> subscribeByGroupOperation, String consumerGroup) {
+        super(destination);
+        Assert.hasText(consumerGroup, "consumerGroup can't be null or empty");
+        this.subscribeByGroupOperation = subscribeByGroupOperation;
+        this.consumerGroup = consumerGroup;
     }
 
     @Override
-    public Message<?> toMessage(EventData eventData) {
-        Object payload = eventData.getBytes();
-        if (this.messageConverter == null) {
-            return MessageBuilder.withPayload(payload).copyHeaders(commonHeaders).build();
-        }
-        return this.messageConverter.toMessage(payload, new MessageHeaders(commonHeaders));
+    protected Object getPayload(EventData data) {
+        return data.getBytes();
     }
 
     @Override
-    protected Message<?> toMessage(Iterable<EventData> data) {
-        throw new UnsupportedOperationException();
+    protected EventData getCheckpointKey(EventData data) {
+        return data;
     }
-
-
 }

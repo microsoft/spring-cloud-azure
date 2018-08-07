@@ -16,7 +16,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EventHubMessageHandlerTest extends MessageHandlerTest<EventData, EventHubOperation> {

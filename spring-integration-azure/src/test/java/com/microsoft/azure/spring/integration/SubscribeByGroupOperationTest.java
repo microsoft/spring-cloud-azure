@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public abstract class SubscribeByGroupOperationTest<D, O extends SubscribeByGroupOperation<D>> {
+public abstract class SubscribeByGroupOperationTest<D, K, O extends SubscribeByGroupOperation<D, K>> {
     protected O subscribeByGroupOperation;
     protected String consumerGroup = "consumer-group";
     protected String anotherConsumerGroup = "consumer-group2";
@@ -29,8 +29,7 @@ public abstract class SubscribeByGroupOperationTest<D, O extends SubscribeByGrou
 
         verifySubscriberCreatorCalled(1);
 
-        boolean unsubscribed =
-                this.subscribeByGroupOperation.subscribe(destination, this::handleMessage, consumerGroup);
+        boolean unsubscribed = this.subscribeByGroupOperation.subscribe(destination, this::handleMessage, consumerGroup);
 
         assertTrue(unsubscribed);
     }

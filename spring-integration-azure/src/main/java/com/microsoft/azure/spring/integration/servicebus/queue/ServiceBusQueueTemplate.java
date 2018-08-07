@@ -21,6 +21,7 @@ import org.springframework.util.Assert;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Consumer;
@@ -36,8 +37,7 @@ public class ServiceBusQueueTemplate extends ServiceBusSendTemplate<ServiceBusQu
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceBusQueueTemplate.class);
 
     private final Map<String, Set<Consumer<Iterable<IMessage>>>> consumersByName = new ConcurrentHashMap<>();
-    private final Function<String, Checkpointer<IMessage>> checkpointGetter =
-            Memoizer.memoize(this::createCheckpointer);
+    private final Function<String, Checkpointer<UUID>> checkpointGetter = Memoizer.memoize(this::createCheckpointer);
 
     public ServiceBusQueueTemplate(ServiceBusQueueClientFactory clientFactory) {
         super(clientFactory);
@@ -70,11 +70,11 @@ public class ServiceBusQueueTemplate extends ServiceBusSendTemplate<ServiceBusQu
     }
 
     @Override
-    public Checkpointer<IMessage> getCheckpointer(String destination) {
+    public Checkpointer<UUID> getCheckpointer(String destination) {
         return checkpointGetter.apply(destination);
     }
 
-    private Checkpointer<IMessage> createCheckpointer(String destination) {
+    private Checkpointer<UUID> createCheckpointer(String destination) {
         return new ServiceBusQueueCheckpointer(this.senderFactory.getQueueClientCreator().apply(destination));
     }
 }
