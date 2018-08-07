@@ -4,7 +4,6 @@
  * license information.
  */
 
-
 package com.microsoft.azure.spring.integration.storage.queue.outbound;
 
 import com.microsoft.azure.spring.integration.core.AbstractAzureMessageHandler;

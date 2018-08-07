@@ -4,9 +4,7 @@
  * license information.
  */
 
-
 package com.microsoft.azure.spring.integration.storage.queue;
-
 
 import com.microsoft.azure.spring.integration.core.QueueOperation;
 import com.microsoft.azure.storage.queue.CloudQueueMessage;

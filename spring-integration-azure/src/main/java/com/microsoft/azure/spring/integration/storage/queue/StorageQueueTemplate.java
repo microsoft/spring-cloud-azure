@@ -4,7 +4,6 @@
  * license information.
  */
 
-
 package com.microsoft.azure.spring.integration.storage.queue;
 
 import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueFactory;
@@ -17,7 +16,7 @@ import org.springframework.util.Assert;
 public class StorageQueueTemplate implements StorageQueueOperation {
     private final StorageQueueFactory storageQueueFactory;
 
-    StorageQueueTemplate(StorageQueueFactory storageQueueFactory) {
+    public StorageQueueTemplate(StorageQueueFactory storageQueueFactory) {
         this.storageQueueFactory = storageQueueFactory;
     }
 

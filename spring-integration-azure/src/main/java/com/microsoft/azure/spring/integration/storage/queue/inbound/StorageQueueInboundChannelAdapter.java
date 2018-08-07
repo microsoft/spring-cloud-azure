@@ -9,17 +9,14 @@ package com.microsoft.azure.spring.integration.storage.queue.inbound;
 
 
 import com.microsoft.azure.spring.integration.core.QueueOperation;
-import com.microsoft.azure.spring.integration.core.SubscribeOperation;
 import com.microsoft.azure.storage.queue.CloudQueueMessage;
 import org.springframework.integration.endpoint.MessageProducerSupport;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.converter.MessageConverter;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -44,7 +41,7 @@ public class StorageQueueInboundChannelAdapter extends MessageProducerSupport {
     }
 
     private void receiveMessage() {
-        CloudQueueMessage cloudQueueMessage = queueOperation.retrieve();
+        CloudQueueMessage cloudQueueMessage = queueOperation.retrieve(destination);
         sendMessage(toMessage(cloudQueueMessage));
     }
 

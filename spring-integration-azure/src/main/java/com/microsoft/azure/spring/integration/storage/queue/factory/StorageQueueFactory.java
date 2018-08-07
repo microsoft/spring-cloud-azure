@@ -4,12 +4,9 @@
  * license information.
  */
 
-
 package com.microsoft.azure.spring.integration.storage.queue.factory;
 
 import com.microsoft.azure.storage.queue.CloudQueue;
-
-
 import java.util.function.Function;
 
 /**

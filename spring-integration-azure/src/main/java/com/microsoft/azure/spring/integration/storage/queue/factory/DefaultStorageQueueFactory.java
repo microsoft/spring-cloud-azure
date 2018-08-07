@@ -25,13 +25,13 @@ public class DefaultStorageQueueFactory implements StorageQueueFactory {
 
     private final AzureAdmin azureAdmin;
     private final StorageAccount storageAccount;
+    private final Function<String, CloudQueue> queueCreater = Memoizer.memoize(this::createStorageQueue);
 
     public DefaultStorageQueueFactory(AzureAdmin azureAdmin, String storageAccountName) {
         this.azureAdmin = azureAdmin;
         this.storageAccount = azureAdmin.getOrCreateStorageAccount(storageAccountName);
     }
-
-    private final Function<String, CloudQueue> queueCreater = Memoizer.memoize(this::createStorageQueue);
+    
     @Override
     public Function<String, CloudQueue> getQueueCreator() {
         return queueCreater;
