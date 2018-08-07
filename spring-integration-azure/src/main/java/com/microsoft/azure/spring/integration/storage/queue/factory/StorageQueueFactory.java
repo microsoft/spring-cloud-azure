@@ -12,6 +12,9 @@ import com.microsoft.azure.storage.queue.CloudQueue;
 
 import java.util.function.Function;
 
+/**
+ * @author Miao Cao
+ */
 public interface StorageQueueFactory {
     /**
      * Return a function which accepts storage queue name, then returns {@link CloudQueue}

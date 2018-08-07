@@ -11,5 +11,10 @@ package com.microsoft.azure.spring.integration.storage.queue;
 import com.microsoft.azure.spring.integration.core.QueueOperation;
 import com.microsoft.azure.storage.queue.CloudQueueMessage;
 
+/**
+ * Operations for Azure storage queue service.
+ *
+ * @author Miao Cao
+ */
 public interface StorageQueueOperation extends QueueOperation<CloudQueueMessage> {
 }
