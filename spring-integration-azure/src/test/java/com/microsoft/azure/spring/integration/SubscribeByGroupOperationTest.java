@@ -29,7 +29,8 @@ public abstract class SubscribeByGroupOperationTest<D, K, O extends SubscribeByG
 
         verifySubscriberCreatorCalled(1);
 
-        boolean unsubscribed = this.subscribeByGroupOperation.subscribe(destination, this::handleMessage, consumerGroup);
+        boolean unsubscribed =
+                this.subscribeByGroupOperation.subscribe(destination, this::handleMessage, consumerGroup);
 
         assertTrue(unsubscribed);
     }
