@@ -8,11 +8,11 @@ package com.microsoft.azure.spring.integration.core;
 
 public interface QueueOperation<T> {
 
-    boolean add(T t);
+    boolean add(String destination, T t);
 
-    T peek();
+    T peek(String destination);
 
-    T retrieve();
+    T retrieve(String destination);
 
-    boolean delete(T t);
+    boolean delete(String destination, T t);
 }

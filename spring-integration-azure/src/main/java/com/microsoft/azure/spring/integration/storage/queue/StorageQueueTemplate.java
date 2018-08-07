@@ -16,16 +16,19 @@ import org.springframework.util.Assert;
 
 public class StorageQueueTemplate implements StorageQueueOperation {
     private final StorageQueueFactory storageQueueFactory;
-    private final CloudQueue cloudQueue;
 
-    StorageQueueTemplate(StorageQueueFactory storageQueueFactory, String queueName) {
-        Assert.hasText(queueName, "queueName can't be null or empty");
+    StorageQueueTemplate(StorageQueueFactory storageQueueFactory) {
         this.storageQueueFactory = storageQueueFactory;
-        this.cloudQueue = storageQueueFactory.getQueueCreator().apply(queueName);
+    }
+
+    private CloudQueue getOrCreateQueue(String destination) {
+        Assert.hasText(destination, "destination can't be null or empty");
+        return storageQueueFactory.getQueueCreator().apply(destination);
     }
 
     @Override
-    public boolean add(CloudQueueMessage cloudQueueMessage) {
+    public boolean add(String destination, CloudQueueMessage cloudQueueMessage) {
+        CloudQueue cloudQueue = getOrCreateQueue(destination);
         try {
             cloudQueue.addMessage(cloudQueueMessage);
         } catch (StorageException e) {
@@ -35,7 +38,8 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     }
 
     @Override
-    public CloudQueueMessage peek() {
+    public CloudQueueMessage peek(String destination) {
+        CloudQueue cloudQueue = getOrCreateQueue(destination);
         try {
             return cloudQueue.peekMessage();
         } catch (StorageException e) {
@@ -44,7 +48,8 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     }
 
     @Override
-    public CloudQueueMessage retrieve() {
+    public CloudQueueMessage retrieve(String destination) {
+        CloudQueue cloudQueue = getOrCreateQueue(destination);
         try {
             return cloudQueue.retrieveMessage();
         } catch (StorageException e) {
@@ -53,7 +58,8 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     }
 
     @Override
-    public boolean delete(CloudQueueMessage cloudQueueMessage) {
+    public boolean delete(String destination, CloudQueueMessage cloudQueueMessage) {
+        CloudQueue cloudQueue = getOrCreateQueue(destination);
         try {
             cloudQueue.deleteMessage(cloudQueueMessage);
         } catch (StorageException e) {
