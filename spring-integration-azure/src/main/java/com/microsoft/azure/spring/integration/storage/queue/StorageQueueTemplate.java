@@ -28,11 +28,10 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     public boolean add(CloudQueueMessage cloudQueueMessage) {
         try {
             cloudQueue.addMessage(cloudQueueMessage);
-            return true;
         } catch (StorageException e) {
-            e.printStackTrace();
-            return false;
+            throw new StorageQueueRuntimeException("Failed to add message to cloud queue", e);
         }
+        return true;
     }
 
     @Override
@@ -40,7 +39,7 @@ public class StorageQueueTemplate implements StorageQueueOperation {
         try {
             return cloudQueue.peekMessage();
         } catch (StorageException e) {
-            throw new StorageQueueRuntimeException("Failed to peek message from cloud queue.");
+            throw new StorageQueueRuntimeException("Failed to peek message from cloud queue", e);
         }
     }
 
@@ -49,7 +48,7 @@ public class StorageQueueTemplate implements StorageQueueOperation {
         try {
             return cloudQueue.retrieveMessage();
         } catch (StorageException e) {
-            throw new StorageQueueRuntimeException("Failed to retrieve message from cloud queue.");
+            throw new StorageQueueRuntimeException("Failed to retrieve message from cloud queue", e);
         }
     }
 
@@ -57,10 +56,10 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     public boolean delete(CloudQueueMessage cloudQueueMessage) {
         try {
             cloudQueue.deleteMessage(cloudQueueMessage);
-            return true;
         } catch (StorageException e) {
-            return false;
+            throw new StorageQueueRuntimeException("Failed to delete message from cloud queue", e);
         }
+        return true;
     }
 
 }
