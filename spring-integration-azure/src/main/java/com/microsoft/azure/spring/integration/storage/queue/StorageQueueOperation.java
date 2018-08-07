@@ -5,7 +5,7 @@
  */
 
 
-package com.microsoft.azure.spring.integration.storagequeue;
+package com.microsoft.azure.spring.integration.storage.queue;
 
 
 import com.microsoft.azure.spring.integration.core.QueueOperation;

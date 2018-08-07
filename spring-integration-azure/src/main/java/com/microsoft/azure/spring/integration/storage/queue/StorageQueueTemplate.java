@@ -5,9 +5,9 @@
  */
 
 
-package com.microsoft.azure.spring.integration.storagequeue;
+package com.microsoft.azure.spring.integration.storage.queue;
 
-import com.microsoft.azure.spring.integration.storagequeue.factory.StorageQueueFactory;
+import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueFactory;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.queue.CloudQueue;
 import com.microsoft.azure.storage.queue.CloudQueueMessage;
