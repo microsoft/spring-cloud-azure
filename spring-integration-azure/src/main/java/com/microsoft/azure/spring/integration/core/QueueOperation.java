@@ -6,9 +6,12 @@
 
 package com.microsoft.azure.spring.integration.core;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
- * Operations for queue service.
+ * Operations for adding or receiving message on destination queue.
  *
+ * @param <T> the type of message
  * @author Miao Cao
  */
 public interface QueueOperation<T> {
@@ -16,26 +19,22 @@ public interface QueueOperation<T> {
     /**
      * Adds a message to the back of destination queue.
      *
-     * @return {@code true} if this queue changed as a result of the call
+     * @param destination the destination queue name
+     * @param t the message to add
      */
-    boolean add(String destination, T t);
+    CompletableFuture<Void> addAsync(String destination, T t);
 
     /**
      * Peeks a message from the front of destination queue.
      *
+     * @param destination the destination queue name
      */
-    T peek(String destination);
+    CompletableFuture<T> peekAsync(String destination);
 
     /**
-     * Retrieves a message from the front of destination queue.
-     *
+     * Get checkpointer for a given destination.
+     * @param destination the destination queue name
      */
-    T retrieve(String destination);
+    Checkpointer<T> getCheckpointer(String destination);
 
-    /**
-     * Deletes the specified message from destination queue.
-     *
-     * @return {@code true} if this queue changed as a result of the call
-     */
-    boolean delete(String destination, T t);
 }

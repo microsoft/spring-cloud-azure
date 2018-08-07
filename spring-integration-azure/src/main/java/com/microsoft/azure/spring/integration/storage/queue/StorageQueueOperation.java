@@ -10,7 +10,7 @@ import com.microsoft.azure.spring.integration.core.QueueOperation;
 import com.microsoft.azure.storage.queue.CloudQueueMessage;
 
 /**
- * Operations for Azure storage queue service.
+ * Operations for adding or receiving message on destination Azure storage queue.
  *
  * @author Miao Cao
  */

@@ -6,15 +6,20 @@
 
 package com.microsoft.azure.spring.integration.storage.queue;
 
+import com.microsoft.azure.spring.integration.core.Checkpointer;
+import com.microsoft.azure.spring.integration.core.Memoizer;
 import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueFactory;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.queue.CloudQueue;
 import com.microsoft.azure.storage.queue.CloudQueueMessage;
 import org.springframework.util.Assert;
-
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 public class StorageQueueTemplate implements StorageQueueOperation {
     private final StorageQueueFactory storageQueueFactory;
+    private final Function<String, Checkpointer<CloudQueueMessage>> checkpointGetter =
+            Memoizer.memoize(this::createCheckpointer);
 
     public StorageQueueTemplate(StorageQueueFactory storageQueueFactory) {
         this.storageQueueFactory = storageQueueFactory;
@@ -26,45 +31,37 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     }
 
     @Override
-    public boolean add(String destination, CloudQueueMessage cloudQueueMessage) {
-        CloudQueue cloudQueue = getOrCreateQueue(destination);
-        try {
-            cloudQueue.addMessage(cloudQueueMessage);
-        } catch (StorageException e) {
-            throw new StorageQueueRuntimeException("Failed to add message to cloud queue", e);
-        }
-        return true;
+    public CompletableFuture<Void> addAsync(String destination, CloudQueueMessage cloudQueueMessage) {
+        CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(() -> {
+            CloudQueue cloudQueue = getOrCreateQueue(destination);
+            try {
+                cloudQueue.addMessage(cloudQueueMessage);
+            } catch (StorageException e) {
+                throw new StorageQueueRuntimeException("Failed to add message to cloud queue", e);
+            }
+        });
+        return completableFuture;
     }
 
     @Override
-    public CloudQueueMessage peek(String destination) {
-        CloudQueue cloudQueue = getOrCreateQueue(destination);
-        try {
-            return cloudQueue.peekMessage();
-        } catch (StorageException e) {
-            throw new StorageQueueRuntimeException("Failed to peek message from cloud queue", e);
-        }
+    public CompletableFuture<CloudQueueMessage> peekAsync(String destination) {
+        CompletableFuture<CloudQueueMessage> completableFuture = CompletableFuture.supplyAsync(() -> {
+            CloudQueue cloudQueue = getOrCreateQueue(destination);
+            try {
+                return cloudQueue.peekMessage();
+            } catch (StorageException e) {
+                throw new StorageQueueRuntimeException("Failed to peek message from cloud queue", e);
+            }
+        });
+        return completableFuture;
     }
 
     @Override
-    public CloudQueueMessage retrieve(String destination) {
-        CloudQueue cloudQueue = getOrCreateQueue(destination);
-        try {
-            return cloudQueue.retrieveMessage();
-        } catch (StorageException e) {
-            throw new StorageQueueRuntimeException("Failed to retrieve message from cloud queue", e);
-        }
+    public Checkpointer<CloudQueueMessage> getCheckpointer(String destination) {
+        return checkpointGetter.apply(destination);
     }
 
-    @Override
-    public boolean delete(String destination, CloudQueueMessage cloudQueueMessage) {
-        CloudQueue cloudQueue = getOrCreateQueue(destination);
-        try {
-            cloudQueue.deleteMessage(cloudQueueMessage);
-        } catch (StorageException e) {
-            throw new StorageQueueRuntimeException("Failed to delete message from cloud queue", e);
-        }
-        return true;
+    private Checkpointer<CloudQueueMessage> createCheckpointer(String destination) {
+        return new StorageQueueCheckpointer(this.storageQueueFactory.getQueueCreator().apply(destination));
     }
-
 }

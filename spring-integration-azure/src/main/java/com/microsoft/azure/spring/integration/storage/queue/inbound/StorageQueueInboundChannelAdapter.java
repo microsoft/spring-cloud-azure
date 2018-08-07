@@ -32,19 +32,6 @@ public class StorageQueueInboundChannelAdapter extends MessageProducerSupport {
         this.queueOperation = queueOperation;
     }
 
-    @Override
-    protected void doStart(){
-        super.doStart();
-        ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
-        scheduledThreadPoolExecutor.scheduleAtFixedRate(
-                this::receiveMessage, 10, 10, TimeUnit.SECONDS);
-    }
-
-    private void receiveMessage() {
-        CloudQueueMessage cloudQueueMessage = queueOperation.retrieve(destination);
-        sendMessage(toMessage(cloudQueueMessage));
-    }
-
     private Message<?> toMessage(Object payload) {
         if (this.messageConverter == null) {
             return MessageBuilder.withPayload(payload).copyHeaders(commonHeaders).build();

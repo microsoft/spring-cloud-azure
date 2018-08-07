@@ -7,6 +7,7 @@
 package com.microsoft.azure.spring.integration.storage.queue;
 
 import com.microsoft.azure.spring.integration.core.Checkpointer;
+import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.queue.CloudQueue;
 import com.microsoft.azure.storage.queue.CloudQueueMessage;
 import java.util.concurrent.CompletableFuture;
@@ -26,7 +27,13 @@ public class StorageQueueCheckpointer implements Checkpointer<CloudQueueMessage>
 
     @Override
     public CompletableFuture<Void> checkpoint(CloudQueueMessage cloudQueueMessage) {
-        // Storage queue unsupported
-        throw new UnsupportedOperationException();
+        CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(() -> {
+            try {
+                cloudQueue.deleteMessage(cloudQueueMessage);
+            } catch (StorageException e) {
+                throw new StorageQueueRuntimeException("Failed to delete message from cloud queue", e);
+            }
+        });
+        return completableFuture;
     }
 }
