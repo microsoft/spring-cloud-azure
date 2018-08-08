@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EventHubInboundChannelAdapterTest
-        extends InboundChannelAdapterTest<EventData, EventHubInboundChannelAdapter> {
+        extends InboundChannelAdapterTest<EventData, EventData, EventHubInboundChannelAdapter> {
 
     @Mock
     private EventHubOperation eventHubOperation;

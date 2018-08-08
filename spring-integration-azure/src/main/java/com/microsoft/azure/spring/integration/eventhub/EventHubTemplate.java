@@ -16,7 +16,10 @@ import com.microsoft.azure.eventprocessorhost.PartitionContext;
 import com.microsoft.azure.spring.cloud.context.core.Tuple;
 import com.microsoft.azure.spring.integration.core.Checkpointer;
 import com.microsoft.azure.spring.integration.core.PartitionSupplier;
+import com.microsoft.azure.spring.integration.core.StartPosition;
 import com.microsoft.azure.spring.integration.eventhub.inbound.EventHubCheckpointer;
+import lombok.NonNull;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -47,15 +50,17 @@ public class EventHubTemplate implements EventHubOperation {
 
     private final EventHubClientFactory clientFactory;
 
+    @Setter
+    private StartPosition startPosition = StartPosition.LATEST;
+
     public EventHubTemplate(EventHubClientFactory clientFactory) {
         this.clientFactory = clientFactory;
     }
 
     @Override
-    public CompletableFuture<Void> sendAsync(String eventHubName, EventData message,
+    public CompletableFuture<Void> sendAsync(String eventHubName, @NonNull EventData message,
             PartitionSupplier partitionSupplier) {
         Assert.hasText(eventHubName, "eventHubName can't be null or empty");
-        Assert.notNull(message, "message can't be null");
         try {
             EventHubClient client = this.clientFactory.getEventHubClientCreator().apply(eventHubName);
 
@@ -94,39 +99,10 @@ public class EventHubTemplate implements EventHubOperation {
         }
 
         processorHostsByNameAndConsumerGroup.computeIfAbsent(nameAndConsumerGroup, key -> {
-            EventProcessorHost host =
-                    this.clientFactory.getProcessorHostCreator().apply(Tuple.of(destination, consumerGroup));
-            host.registerEventProcessorFactory(context -> new IEventProcessor() {
-
-                @Override
-                public void onOpen(PartitionContext context) throws Exception {
-                    LOGGER.info(String.format("Partition %s is opening", context.getPartitionId()));
-                    checkpointersByNameAndConsumerGroup.putIfAbsent(nameAndConsumerGroup, new EventHubCheckpointer());
-                    checkpointersByNameAndConsumerGroup.get(Tuple.of(destination, consumerGroup))
-                                                       .addPartitionContext(context);
-                }
-
-                @Override
-                public void onClose(PartitionContext context, CloseReason reason) throws Exception {
-                    LOGGER.info(
-                            String.format("Partition %s is closing for reason %s", context.getPartitionId(), reason));
-                    checkpointersByNameAndConsumerGroup.get(Tuple.of(destination, consumerGroup))
-                                                       .removePartitionContext(context);
-                }
-
-                @Override
-                public void onEvents(PartitionContext context, Iterable<EventData> events) throws Exception {
-                    consumersByNameAndConsumerGroup.get(nameAndConsumerGroup).forEach(c -> c.accept(events));
-                }
-
-                @Override
-                public void onError(PartitionContext context, Throwable error) {
-                    LOGGER.error(String.format("Partition %s onError", context.getPartitionId()), error);
-                }
-            });
+            EventProcessorHost host = this.clientFactory.getProcessorHostCreator().apply(nameAndConsumerGroup);
+            host.registerEventProcessorFactory(context -> new EventHubProcessor(nameAndConsumerGroup));
             return host;
         });
-
         return true;
     }
 
@@ -146,4 +122,37 @@ public class EventHubTemplate implements EventHubOperation {
 
         return existed;
     }
+
+    private class EventHubProcessor implements IEventProcessor {
+
+        private final Tuple<String, String> nameAndConsumerGroup;
+
+        EventHubProcessor(Tuple<String, String> nameAndConsumerGroup) {
+            this.nameAndConsumerGroup = nameAndConsumerGroup;
+        }
+
+        @Override
+        public void onOpen(PartitionContext context) throws Exception {
+            LOGGER.info("Partition {} is opening", context.getPartitionId());
+            checkpointersByNameAndConsumerGroup.putIfAbsent(nameAndConsumerGroup, new EventHubCheckpointer());
+            checkpointersByNameAndConsumerGroup.get(nameAndConsumerGroup).addPartitionContext(context);
+        }
+
+        @Override
+        public void onClose(PartitionContext context, CloseReason reason) throws Exception {
+            LOGGER.info("Partition {} is closing for reason {}", context.getPartitionId(), reason);
+            checkpointersByNameAndConsumerGroup.get(nameAndConsumerGroup).removePartitionContext(context);
+        }
+
+        @Override
+        public void onEvents(PartitionContext context, Iterable<EventData> events) throws Exception {
+            consumersByNameAndConsumerGroup.get(nameAndConsumerGroup).forEach(c -> c.accept(events));
+        }
+
+        @Override
+        public void onError(PartitionContext context, Throwable error) {
+            LOGGER.error("Partition {} onError", context.getPartitionId(), error);
+        }
+    }
+
 }

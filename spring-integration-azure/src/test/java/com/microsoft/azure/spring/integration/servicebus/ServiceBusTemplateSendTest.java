@@ -16,8 +16,8 @@ import org.junit.Before;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 
-public abstract class ServiceBusTemplateSendTest<T extends ServiceBusSenderFactory> extends SendOperationTest<IMessage,
-        SendOperation<IMessage>> {
+public abstract class ServiceBusTemplateSendTest<T extends ServiceBusSenderFactory>
+        extends SendOperationTest<IMessage, SendOperation<IMessage>> {
 
     protected T mockClientFactory;
 

@@ -9,28 +9,28 @@ package com.microsoft.azure.spring.integration.servicebus.inbound;
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.spring.integration.core.AbstractInboundChannelAdapter;
 import com.microsoft.azure.spring.integration.core.SubscribeByGroupOperation;
-import org.springframework.integration.support.MessageBuilder;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHeaders;
+import org.springframework.lang.NonNull;
+import org.springframework.util.Assert;
 
-public class ServiceBusTopicInboundChannelAdapter extends AbstractInboundChannelAdapter<IMessage> {
+import java.util.UUID;
+
+public class ServiceBusTopicInboundChannelAdapter extends AbstractInboundChannelAdapter<IMessage, UUID> {
 
     public ServiceBusTopicInboundChannelAdapter(String destination,
-            SubscribeByGroupOperation<IMessage> subscribeByGroupOperation, String consumerGroup) {
-        super(destination, subscribeByGroupOperation, consumerGroup);
+            @NonNull SubscribeByGroupOperation<IMessage, UUID> subscribeByGroupOperation, String consumerGroup) {
+        super(destination);
+        Assert.hasText(consumerGroup, "consumerGroup cannot be null or empty");
+        this.subscribeByGroupOperation = subscribeByGroupOperation;
+        this.consumerGroup = consumerGroup;
     }
 
     @Override
-    public Message<?> toMessage(IMessage message) {
-        Object payload = message.getBody();
-        if (this.messageConverter == null) {
-            return MessageBuilder.withPayload(payload).copyHeaders(commonHeaders).build();
-        }
-        return this.messageConverter.toMessage(payload, new MessageHeaders(commonHeaders));
+    protected Object getPayload(IMessage data) {
+        return data.getBody();
     }
 
     @Override
-    protected Message<?> toMessage(Iterable<IMessage> data) {
-        throw new UnsupportedOperationException();
+    protected UUID getCheckpointKey(IMessage data) {
+        return data.getLockToken();
     }
 }

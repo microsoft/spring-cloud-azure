@@ -18,6 +18,7 @@ import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.cloud.context.core.AzureUtil;
 import com.microsoft.azure.spring.cloud.context.core.Tuple;
 import com.microsoft.azure.spring.integration.core.Memoizer;
+import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -50,8 +51,7 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
     private final EventHubNamespace namespace;
     private String checkpointStorageConnectionString;
 
-    public DefaultEventHubClientFactory(AzureAdmin azureAdmin, String namespace) {
-        Assert.notNull(azureAdmin, "azureAdmin can't be null.");
+    public DefaultEventHubClientFactory(@NonNull AzureAdmin azureAdmin, String namespace) {
         Assert.hasText(namespace, "namespace can't be null or empty");
         this.azureAdmin = azureAdmin;
         this.namespace = azureAdmin.getOrCreateEventHubNamespace(namespace);

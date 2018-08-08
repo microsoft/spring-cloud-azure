@@ -21,7 +21,8 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EventHubTemplateSubscribeTest extends SubscribeByGroupOperationTest<EventData, EventHubOperation> {
+public class EventHubTemplateSubscribeTest
+        extends SubscribeByGroupOperationTest<EventData, EventData, EventHubOperation> {
 
     @Mock
     private EventHubClientFactory mockClientFactory;

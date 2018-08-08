@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * A callback to perform checkpoint.
  *
- * @param <T> message type parameter
+ * @param <T> checkpoint key type parameter
  * @author Warren Zhu
  */
 public interface Checkpointer<T> {
@@ -22,7 +22,7 @@ public interface Checkpointer<T> {
     CompletableFuture<Void> checkpoint();
 
     /**
-     * Checkpoint to provided generic record. Please check result to detect failure
+     * Checkpoint based on provided message key. Please check result to detect failure
      */
     CompletableFuture<Void> checkpoint(T t);
 }

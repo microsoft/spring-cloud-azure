@@ -4,13 +4,13 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.integration.servicebus.topic.inbound;
+package com.microsoft.azure.spring.integration.servicebus.queue.inbound;
 
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.spring.integration.InboundChannelAdapterTest;
 import com.microsoft.azure.spring.integration.core.Checkpointer;
-import com.microsoft.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter;
-import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
+import com.microsoft.azure.spring.integration.servicebus.inbound.ServiceBusQueueInboundChannelAdapter;
+import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueOperation;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -25,19 +25,19 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ServiceBusTopicInboundChannelAdapterTest
-        extends InboundChannelAdapterTest<IMessage, UUID, ServiceBusTopicInboundChannelAdapter> {
+public class ServiceBusQueueInboundChannelAdapterTest
+        extends InboundChannelAdapterTest<IMessage, UUID, ServiceBusQueueInboundChannelAdapter> {
 
     @Mock
-    private ServiceBusTopicOperation topicOperation;
+    private ServiceBusQueueOperation queueOperation;
 
     @Before
     public void setUp() {
         this.clazz = UUID.class;
         this.checkpointer = (Checkpointer<UUID>) mock(Checkpointer.class);
-        this.adapter = new ServiceBusTopicInboundChannelAdapter(destination, topicOperation, consumerGroup);
+        this.adapter = new ServiceBusQueueInboundChannelAdapter(destination, queueOperation);
         this.messages = Arrays.stream(payloads).map(this::toMessage).collect(Collectors.toList());
-        when(this.topicOperation.getCheckpointer(eq(destination), eq(consumerGroup))).thenReturn(this.checkpointer);
+        when(this.queueOperation.getCheckpointer(eq(destination))).thenReturn(this.checkpointer);
     }
 
     private IMessage toMessage(String payload) {

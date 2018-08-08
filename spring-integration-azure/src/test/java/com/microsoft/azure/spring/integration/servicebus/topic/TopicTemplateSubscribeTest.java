@@ -18,12 +18,15 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.UUID;
+
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TopicTemplateSubscribeTest extends SubscribeByGroupOperationTest<IMessage, ServiceBusTopicOperation> {
+public class TopicTemplateSubscribeTest
+        extends SubscribeByGroupOperationTest<IMessage, UUID, ServiceBusTopicOperation> {
 
     @Mock
     private ServiceBusTopicClientFactory mockClientFactory;

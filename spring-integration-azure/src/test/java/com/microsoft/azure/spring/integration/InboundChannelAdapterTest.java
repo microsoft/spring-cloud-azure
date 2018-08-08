@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.util.Assert;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
@@ -21,16 +22,16 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-public abstract class InboundChannelAdapterTest<D, A extends AbstractInboundChannelAdapter<D>> {
+public abstract class InboundChannelAdapterTest<D, K, A extends AbstractInboundChannelAdapter<D, K>> {
 
     protected final String[] payloads = {"payload1", "payload2"};
     protected final String destination = "ServiceBusQueue";
     protected final String consumerGroup = "group";
-    protected Class<D> clazz;
+    protected Class<K> clazz;
 
-    protected Checkpointer<D> checkpointer;
+    protected Checkpointer<K> checkpointer;
 
-    protected List<D> messages;
+    protected List<D> messages = new LinkedList<>();
 
     protected A adapter;
 

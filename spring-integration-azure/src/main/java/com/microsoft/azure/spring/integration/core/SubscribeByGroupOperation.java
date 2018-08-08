@@ -13,7 +13,7 @@ import java.util.function.Consumer;
  *
  * @author Warren Zhu
  */
-public interface SubscribeByGroupOperation<D> {
+public interface SubscribeByGroupOperation<D, K> {
 
     /**
      * Register a message consumer to a given destination with a given consumer group.
@@ -34,5 +34,5 @@ public interface SubscribeByGroupOperation<D> {
     /**
      * Get checkpointer for a given destination and consumer group
      */
-    Checkpointer<D> getCheckpointer(String destination, String consumerGroup);
+    Checkpointer<K> getCheckpointer(String destination, String consumerGroup);
 }
