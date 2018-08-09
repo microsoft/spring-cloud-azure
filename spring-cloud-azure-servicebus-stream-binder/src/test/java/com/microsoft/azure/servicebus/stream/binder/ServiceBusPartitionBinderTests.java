@@ -138,8 +138,8 @@ public class ServiceBusPartitionBinderTests extends
             } finally {
                 latch.countDown();
             }
-
         });
+
         moduleOutputChannel.send(message);
         Assert.isTrue(latch.await(5L, TimeUnit.SECONDS), "Failed to receive message");
         Assertions.assertThat(inboundMessageRef.get()).isNotNull();

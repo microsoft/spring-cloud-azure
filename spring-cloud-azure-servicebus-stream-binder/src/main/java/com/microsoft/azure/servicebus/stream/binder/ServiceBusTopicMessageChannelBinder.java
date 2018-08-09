@@ -20,6 +20,7 @@ import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.integration.core.MessageProducer;
 import org.springframework.integration.expression.FunctionExpression;
+import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
@@ -36,12 +37,13 @@ public class ServiceBusTopicMessageChannelBinder extends
         implements
         ExtendedPropertiesBinder<MessageChannel, ServiceBusConsumerProperties, ServiceBusProducerProperties> {
 
-    private ServiceBusTopicOperation serviceBusTopicOperation;
+    private final ServiceBusTopicOperation serviceBusTopicOperation;
 
     private ServiceBusExtendedBindingProperties bindingProperties = new ServiceBusExtendedBindingProperties();
 
     public ServiceBusTopicMessageChannelBinder(String[] headersToEmbed,
-            ServiceBusTopicChannelProvisioner provisioningProvider, ServiceBusTopicOperation serviceBusTopicOperation) {
+            @NonNull ServiceBusTopicChannelProvisioner provisioningProvider, @NonNull ServiceBusTopicOperation
+            serviceBusTopicOperation) {
         super(headersToEmbed, provisioningProvider);
         this.serviceBusTopicOperation = serviceBusTopicOperation;
     }

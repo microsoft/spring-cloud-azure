@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ServiceBusExtendedBindingProperties
         implements ExtendedBindingProperties<ServiceBusConsumerProperties, ServiceBusProducerProperties> {
 
-    private Map<String, ServiceBusBindingProperties> bindings = new ConcurrentHashMap<>();
+    private final Map<String, ServiceBusBindingProperties> bindings = new ConcurrentHashMap<>();
 
     @Override
     public ServiceBusConsumerProperties getExtendedConsumerProperties(String channelName) {
