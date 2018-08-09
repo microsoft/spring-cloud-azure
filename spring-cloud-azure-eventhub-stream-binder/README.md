@@ -27,7 +27,7 @@ from most heavy-loaded consumer to achieve workload balancing.
 ### Checkpoint Mode
 
 Currently, event hub binder considers one message as successfully processed once received and sent to downstream
- channel. In the future, we might support manual checkpoint mode.
+ channel.
 
 ## Samples 
 
@@ -78,8 +78,7 @@ Name | Description | Required | Default
 
  #### Event Hub Producer Properties ####
 
- It supports the following configurations with the format of "spring.cloud.stream.eventhub.bindings.<channelName>
- .producer".
+ It supports the following configurations with the format of `spring.cloud.stream.eventhub.bindings.<channelName>.producer`.
  
  **_sync_**
  
