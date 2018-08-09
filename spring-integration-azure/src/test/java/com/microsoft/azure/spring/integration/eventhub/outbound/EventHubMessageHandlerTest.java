@@ -31,7 +31,6 @@ public class EventHubMessageHandlerTest extends MessageHandlerTest<EventData, Ev
         when(this.sendOperation.sendAsync(eq(this.destination), isA(EventData.class), isA(PartitionSupplier.class)))
                 .thenReturn(future);
         this.handler = new EventHubMessageHandler(this.destination, this.sendOperation);
-
     }
 
 }
