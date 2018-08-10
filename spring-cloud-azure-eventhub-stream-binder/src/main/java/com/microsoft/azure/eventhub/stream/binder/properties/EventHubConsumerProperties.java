@@ -6,9 +6,15 @@
 
 package com.microsoft.azure.eventhub.stream.binder.properties;
 
+import com.microsoft.azure.spring.integration.core.StartPosition;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author Warren Zhu
  */
+@Getter
+@Setter
 public class EventHubConsumerProperties {
-
+    private StartPosition startPosition = StartPosition.LATEST;
 }
