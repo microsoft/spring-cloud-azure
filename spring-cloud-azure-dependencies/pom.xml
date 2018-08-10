@@ -31,6 +31,7 @@
         <azure.keyvault.version>1.0.0</azure.keyvault.version>
         <azure.client.version>1.6.0</azure.client.version>
         <azure.servicebus.version>1.2.5</azure.servicebus.version>
+        <azure.storage.version>5.5.0</azure.storage.version>
     </properties>
 
     <dependencyManagement>
@@ -114,6 +115,11 @@
                 <artifactId>azure-keyvault</artifactId>
                 <version>${azure.keyvault.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>azure-storage</artifactId>
+                <version>${azure.storage.version}</version>
+            </dependency>
 
             <!--Spring Cloud Azure Starters-->
             <dependency>
@@ -149,6 +155,11 @@
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-azure-starter-keyvault</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>spring-cloud-azure-starter-storage-queue</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
