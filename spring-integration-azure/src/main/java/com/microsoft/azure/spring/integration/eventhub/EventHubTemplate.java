@@ -9,10 +9,8 @@ package com.microsoft.azure.spring.integration.eventhub;
 import com.google.common.base.Strings;
 import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.eventhubs.EventHubClient;
-import com.microsoft.azure.eventprocessorhost.CloseReason;
-import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
-import com.microsoft.azure.eventprocessorhost.IEventProcessor;
-import com.microsoft.azure.eventprocessorhost.PartitionContext;
+import com.microsoft.azure.eventhubs.EventPosition;
+import com.microsoft.azure.eventprocessorhost.*;
 import com.microsoft.azure.spring.cloud.context.core.Tuple;
 import com.microsoft.azure.spring.integration.core.Checkpointer;
 import com.microsoft.azure.spring.integration.core.PartitionSupplier;
@@ -55,6 +53,18 @@ public class EventHubTemplate implements EventHubOperation {
 
     public EventHubTemplate(EventHubClientFactory clientFactory) {
         this.clientFactory = clientFactory;
+    }
+
+    private static EventProcessorOptions buildEventProcessorOptions(StartPosition startPosition) {
+        EventProcessorOptions options = EventProcessorOptions.getDefaultOptions();
+
+        if (startPosition == StartPosition.EARLISET) {
+            options.setInitialPositionProvider((s) -> EventPosition.fromStartOfStream());
+        } else /* StartPosition.LATEST */ {
+            options.setInitialPositionProvider((s) -> EventPosition.fromEndOfStream());
+        }
+
+        return options;
     }
 
     @Override
@@ -154,5 +164,4 @@ public class EventHubTemplate implements EventHubOperation {
             LOGGER.error("Partition {} onError", context.getPartitionId(), error);
         }
     }
-
 }

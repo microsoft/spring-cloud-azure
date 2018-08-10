@@ -8,6 +8,7 @@ package com.microsoft.azure.eventhub.stream.binder;
 
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubConsumerProperties;
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubProducerProperties;
+import com.microsoft.azure.spring.integration.core.StartPosition;
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.springframework.cloud.stream.binder.*;
@@ -64,6 +65,7 @@ public class EventHubPartitionBinderTests extends
         ExtendedConsumerProperties<EventHubConsumerProperties> properties =
                 new ExtendedConsumerProperties<>(new EventHubConsumerProperties());
         properties.setHeaderMode(HeaderMode.embeddedHeaders);
+        properties.getExtension().setStartPosition(StartPosition.EARLISET);
         return properties;
     }
 
@@ -83,16 +85,6 @@ public class EventHubPartitionBinderTests extends
     @Override
     public void testClean() throws Exception {
         // No-op
-    }
-
-    @Override
-    public void testOneRequiredGroup() {
-        // Required group test rely on unimplemented start position of consumer properties
-    }
-
-    @Override
-    public void testTwoRequiredGroups() {
-        // Required group test rely on unimplemented start position of consumer properties
     }
 
     @Override
@@ -128,7 +120,7 @@ public class EventHubPartitionBinderTests extends
                 MessageBuilder.withPayload("foo").setHeader("contentType", MimeTypeUtils.TEXT_PLAIN).build();
         // Comment line below since event hub operation is event driven mode
         // but subscriber is not ready in the downstream
-        //moduleOutputChannel.send(message);
+        // moduleOutputChannel.send(message);
 
         final CountDownLatch latch = new CountDownLatch(1);
         final AtomicReference<Message<byte[]>> inboundMessageRef = new AtomicReference();
