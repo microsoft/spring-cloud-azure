@@ -29,6 +29,7 @@
         <azure.sdk.version>1.8.0</azure.sdk.version>
         <azure.eventhubs.eph.version>1.0.0</azure.eventhubs.eph.version>
         <azure.servicebus.version>1.2.5</azure.servicebus.version>
+        <azure.storage.version>5.5.0</azure.storage.version>
     </properties>
 
     <dependencyManagement>
@@ -97,6 +98,11 @@
                 <artifactId>azure-servicebus</artifactId>
                 <version>${azure.servicebus.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>azure-storage</artifactId>
+                <version>${azure.storage.version}</version>
+            </dependency>
 
             <!--Spring Cloud Azure Starters-->
             <dependency>
@@ -127,6 +133,11 @@
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-azure-starter-cosmosdb-mongodb</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>spring-cloud-azure-starter-storage-queue</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
