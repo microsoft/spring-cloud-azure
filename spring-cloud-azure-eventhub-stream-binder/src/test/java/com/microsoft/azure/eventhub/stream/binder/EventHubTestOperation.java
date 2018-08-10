@@ -9,7 +9,9 @@ package com.microsoft.azure.eventhub.stream.binder;
 import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.spring.integration.core.Checkpointer;
 import com.microsoft.azure.spring.integration.core.PartitionSupplier;
+import com.microsoft.azure.spring.integration.core.StartPosition;
 import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
+import lombok.Setter;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -23,23 +25,32 @@ public class EventHubTestOperation implements EventHubOperation {
     private final Map<String, Map<String, Consumer<Iterable<EventData>>>> consumerMap = new ConcurrentHashMap<>();
     private final Map<String, List<EventData>> eventHubsByName = new ConcurrentHashMap<>();
 
+    @Setter
+    private StartPosition startPosition = StartPosition.LATEST;
+
     @Override
     public CompletableFuture<Void> sendAsync(String eventHubName, EventData message,
             PartitionSupplier partitionSupplier) {
         CompletableFuture<Void> future = new CompletableFuture<>();
+
         eventHubsByName.putIfAbsent(eventHubName, new LinkedList<>());
         eventHubsByName.get(eventHubName).add(message);
         consumerMap.putIfAbsent(eventHubName, new ConcurrentHashMap<>());
         consumerMap.get(eventHubName).values().forEach(c -> c.accept(Collections.singleton(message)));
+
         future.complete(null);
         return future;
     }
 
     @Override
-    public boolean subscribe(String destination, Consumer<Iterable<EventData>> consumer, String consumerGroup) {
-        consumerMap.putIfAbsent(destination, new ConcurrentHashMap<>());
-        consumerMap.get(destination).put(consumerGroup, consumer);
-        eventHubsByName.putIfAbsent(destination, new LinkedList<>());
+    public boolean subscribe(String eventHubName, Consumer<Iterable<EventData>> consumer, String consumerGroup) {
+        consumerMap.putIfAbsent(eventHubName, new ConcurrentHashMap<>());
+        consumerMap.get(eventHubName).put(consumerGroup, consumer);
+        eventHubsByName.putIfAbsent(eventHubName, new LinkedList<>());
+
+        if (this.startPosition == StartPosition.EARLISET) {
+            consumer.accept(Collections.unmodifiableList(eventHubsByName.get(eventHubName)));
+        }
 
         return true;
     }

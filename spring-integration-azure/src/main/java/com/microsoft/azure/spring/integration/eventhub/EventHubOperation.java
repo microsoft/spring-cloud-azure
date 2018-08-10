@@ -8,6 +8,7 @@ package com.microsoft.azure.spring.integration.eventhub;
 
 import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.spring.integration.core.SendOperation;
+import com.microsoft.azure.spring.integration.core.StartPosition;
 import com.microsoft.azure.spring.integration.core.SubscribeByGroupOperation;
 
 /**
@@ -16,4 +17,6 @@ import com.microsoft.azure.spring.integration.core.SubscribeByGroupOperation;
  * @author Warren Zhu
  */
 public interface EventHubOperation extends SendOperation<EventData>, SubscribeByGroupOperation<EventData, EventData> {
+
+    void setStartPosition(StartPosition startPosition);
 }
