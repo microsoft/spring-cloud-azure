@@ -7,10 +7,12 @@
 package com.microsoft.azure.spring.integration.core;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.common.LiteralExpression;
+import org.springframework.integration.MessageTimeoutException;
 import org.springframework.integration.expression.ExpressionUtils;
 import org.springframework.integration.expression.ValueExpression;
 import org.springframework.integration.handler.AbstractMessageHandler;
@@ -21,7 +23,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Base class of outbound adapter to publish to azure backed messaging service
@@ -46,9 +50,8 @@ public abstract class AbstractAzureMessageHandler<D> extends AbstractMessageHand
     private Expression sendTimeoutExpression = new ValueExpression<>(DEFAULT_SEND_TIMEOUT);
     private Expression partitionKeyExpression;
 
-    public AbstractAzureMessageHandler(String destination, SendOperation<D> sendOperation) {
+    public AbstractAzureMessageHandler(String destination, @NonNull SendOperation<D> sendOperation) {
         Assert.hasText(destination, "destination can't be null or empty");
-        Assert.notNull(sendOperation, "sendOperation can't be null");
         this.destination = destination;
         this.sendOperation = sendOperation;
     }
@@ -68,12 +71,7 @@ public abstract class AbstractAzureMessageHandler<D> extends AbstractMessageHand
         CompletableFuture future = this.sendOperation.sendAsync(destination, azureMessage, partitionSupplier);
 
         if (this.sync) {
-            Long sendTimeout = this.sendTimeoutExpression.getValue(this.evaluationContext, message, Long.class);
-            if (sendTimeout == null || sendTimeout < 0) {
-                future.get();
-            } else {
-                future.get(sendTimeout, TimeUnit.MILLISECONDS);
-            }
+            waitingSendResponse(future, message);
         } else if (sendCallback != null) {
             future.whenComplete((t, ex) -> {
                 if (ex != null) {
@@ -85,12 +83,22 @@ public abstract class AbstractAzureMessageHandler<D> extends AbstractMessageHand
         }
     }
 
-    public void setSendTimeout(long sendTimeout) {
-        setSendTimeoutExpression(new ValueExpression<>(sendTimeout));
+    private void waitingSendResponse(CompletableFuture future, Message<?> message)
+            throws InterruptedException, ExecutionException {
+        Long sendTimeout = this.sendTimeoutExpression.getValue(this.evaluationContext, message, Long.class);
+        if (sendTimeout < 0) {
+            future.get();
+        } else {
+            try {
+                future.get(sendTimeout, TimeUnit.MILLISECONDS);
+            } catch (TimeoutException te) {
+                throw new MessageTimeoutException(message, "Timeout waiting for response from Event Hub send", te);
+            }
+        }
     }
 
-    public void setSendTimeoutExpressionString(String sendTimeoutExpression) {
-        setSendTimeoutExpression(EXPRESSION_PARSER.parseExpression(sendTimeoutExpression));
+    public void setSendTimeout(long sendTimeout) {
+        setSendTimeoutExpression(new ValueExpression<>(sendTimeout));
     }
 
     public void setSendTimeoutExpression(Expression sendTimeoutExpression) {
@@ -104,10 +112,6 @@ public abstract class AbstractAzureMessageHandler<D> extends AbstractMessageHand
 
     public void setPartitionKeyExpressionString(String partitionKeyExpression) {
         setPartitionKeyExpression(EXPRESSION_PARSER.parseExpression(partitionKeyExpression));
-    }
-
-    public void setPartitionKeyExpression(Expression partitionKeyExpression) {
-        this.partitionKeyExpression = partitionKeyExpression;
     }
 
     public abstract D toAzureMessage(Message<?> message);
