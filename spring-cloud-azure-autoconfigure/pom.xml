@@ -91,6 +91,13 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- Storage Queue -->
+        <dependency>
+            <groupId>com.microsoft.azure</groupId>
+            <artifactId>azure-storage</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- Application Insights -->
         <dependency>
             <groupId>com.microsoft.azure</groupId>
