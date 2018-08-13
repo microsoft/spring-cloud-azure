@@ -60,6 +60,8 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
         Assert.hasText(namespace, "namespace can't be null or empty");
         this.azureAdmin = azureAdmin;
         this.namespace = azureAdmin.getOrCreateEventHubNamespace(namespace);
+
+        EventHubClientImpl.USER_AGENT = USER_AGENT + "/" + EventHubClientImpl.USER_AGENT;
     }
 
     public void initCheckpointConnectionString(String checkpointStorageAccount) {
@@ -85,8 +87,6 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
 
     private EventHubClient createEventHubClient(String eventHubName) {
         try {
-            EventHubClientImpl.USER_AGENT = USER_AGENT + "/" + EventHubClientImpl.USER_AGENT;
-
             return EventHubClient
                     .createSync(connectionStringCreator().apply(eventHubName), Executors.newSingleThreadExecutor());
         } catch (EventHubException | IOException e) {
