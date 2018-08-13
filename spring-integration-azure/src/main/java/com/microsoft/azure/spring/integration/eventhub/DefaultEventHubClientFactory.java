@@ -10,6 +10,7 @@ import com.microsoft.azure.eventhubs.ConnectionStringBuilder;
 import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.eventhubs.EventHubException;
 import com.microsoft.azure.eventhubs.PartitionSender;
+import com.microsoft.azure.eventhubs.impl.EventHubClientImpl;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.management.eventhub.AuthorizationRule;
 import com.microsoft.azure.management.eventhub.EventHubAuthorizationKey;
@@ -51,10 +52,16 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
     private final EventHubNamespace namespace;
     private String checkpointStorageConnectionString;
 
+    private static final String PROJECT_VERSION = DefaultEventHubClientFactory.class.getPackage()
+            .getImplementationVersion();
+    private static final String USER_AGENT = "spring-cloud-azure" + "/" + PROJECT_VERSION;
+
     public DefaultEventHubClientFactory(@NonNull AzureAdmin azureAdmin, String namespace) {
         Assert.hasText(namespace, "namespace can't be null or empty");
         this.azureAdmin = azureAdmin;
         this.namespace = azureAdmin.getOrCreateEventHubNamespace(namespace);
+
+        EventHubClientImpl.USER_AGENT = USER_AGENT + "/" + EventHubClientImpl.USER_AGENT;
     }
 
     public void initCheckpointConnectionString(String checkpointStorageAccount) {
