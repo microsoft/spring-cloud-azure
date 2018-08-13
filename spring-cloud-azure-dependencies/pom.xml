@@ -26,7 +26,7 @@
         <commons.io.version>2.6</commons.io.version>
         <google.guava.version>20.0</google.guava.version>
         <azure.applicationinsights.version>2.0.1</azure.applicationinsights.version>
-        <azure.sdk.version>1.8.0</azure.sdk.version>
+        <azure.sdk.version>1.14.0</azure.sdk.version>
         <azure.eventhubs.eph.version>1.0.0</azure.eventhubs.eph.version>
         <azure.servicebus.version>1.2.5</azure.servicebus.version>
     </properties>
