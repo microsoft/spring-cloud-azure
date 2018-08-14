@@ -13,19 +13,22 @@ import com.microsoft.azure.spring.integration.storage.queue.StorageQueueOperatio
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueTemplate;
 import com.microsoft.azure.spring.integration.storage.queue.factory.DefaultStorageQueueFactory;
 import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueFactory;
+import com.microsoft.azure.storage.queue.CloudQueueClient;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
+@ConditionalOnClass(CloudQueueClient.class)
 @ConditionalOnProperty(name = "spring.cloud.azure.storage.queue.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(AzureStorageProperties.class)
 public class AzureStorageQueueAutoConfiguration {
+
     @Bean
     @ConditionalOnMissingBean
     StorageQueueFactory storageQueueFactory(AzureAdmin azureAdmin, AzureStorageProperties azureStorageProperties) {
