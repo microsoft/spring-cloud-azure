@@ -13,6 +13,7 @@ import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueue
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.queue.CloudQueue;
 import com.microsoft.azure.storage.queue.CloudQueueMessage;
+import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -21,10 +22,13 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     private final StorageQueueFactory storageQueueFactory;
     private final Function<String, Checkpointer<CloudQueueMessage>> checkpointGetter =
             Memoizer.memoize(this::createCheckpointer);
-    private int visibilityTimeoutInSeconds = 30;
+    private static final int DEFAULT_VISIBILITY_TIMEOUT_IN_SECONDS = 30;
+    private int visibilityTimeoutInSeconds;
 
-    public StorageQueueTemplate(StorageQueueFactory storageQueueFactory) {
+
+    public StorageQueueTemplate(@NonNull StorageQueueFactory storageQueueFactory) {
         this.storageQueueFactory = storageQueueFactory;
+        visibilityTimeoutInSeconds = DEFAULT_VISIBILITY_TIMEOUT_IN_SECONDS;
     }
 
     private CloudQueue getOrCreateQueue(String destination) {
@@ -74,7 +78,7 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     }
 
     @Override
-    public void setDefaultVisibilityTimeoutInSeconds(int visibilityTimeoutInSeconds) {
+    public void setVisibilityTimeoutInSeconds(int visibilityTimeoutInSeconds) {
         this.visibilityTimeoutInSeconds = visibilityTimeoutInSeconds;
     }
 

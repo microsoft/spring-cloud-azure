@@ -6,6 +6,7 @@
 
 package example;
 
+import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueOperation;
 import com.microsoft.azure.spring.integration.storage.queue.inbound.StorageQueueMessageSource;
 import com.microsoft.azure.spring.integration.storage.queue.outbound.StorageQueueMessageHandler;
@@ -18,14 +19,14 @@ import org.springframework.integration.annotation.InboundChannelAdapter;
 import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.Poller;
 import org.springframework.integration.annotation.ServiceActivator;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandler;
 
 
 @SpringBootApplication
 public class StorageQueueApplication {
 
-    private static final String DESTINATION = "exampleQueue";
+    /*destination can only be made up of lowercase letters, the numbers and the hyphen(-).*/
+    private static final String DESTINATION = "example-queue2";
     private static final String OUTPUT_CHANNEL = "outputChannel";
     private static final String INPUT_CHANNEL = "inputChannel";
     private static final Log LOGGER = LogFactory.getLog(StorageQueueApplication.class);
@@ -48,8 +49,8 @@ public class StorageQueueApplication {
     @Bean
     @InboundChannelAdapter(channel = INPUT_CHANNEL, poller = @Poller(fixedDelay = "5000"))
     public StorageQueueMessageSource StorageQueueMessageSource(StorageQueueOperation storageQueueOperation) {
+        storageQueueOperation.setVisibilityTimeoutInSeconds(10);
         StorageQueueMessageSource messageSource = new StorageQueueMessageSource(DESTINATION, storageQueueOperation);
-        messageSource.setVisibilityTimeoutInSeconds(10);
         return messageSource;
     }
 
@@ -57,6 +58,4 @@ public class StorageQueueApplication {
     public void messageReceiver(byte[] payload) {
         LOGGER.info("message received: " + new String(payload));
     }
-
-
 }

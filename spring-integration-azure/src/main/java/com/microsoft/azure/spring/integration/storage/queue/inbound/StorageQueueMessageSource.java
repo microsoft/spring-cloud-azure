@@ -18,73 +18,72 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.converter.MessageConverter;
+import org.springframework.util.Assert;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * Inbound Message Source to receive messages from Azure Storage Queue.
+ *
+ * @author Miao Cao
+ */
 public class StorageQueueMessageSource extends AbstractMessageSource<CloudQueueMessage> {
 
     private StorageQueueOperation storageQueueOperation;
     private String destination;
     private CheckpointMode checkpointMode = CheckpointMode.RECORD;
     private Checkpointer<CloudQueueMessage> checkpointer;
-    private int visibilityTimeoutInSeconds;
     private MessageConverter messageConverter;
     private Map<String, Object> commonHeaders = new HashMap<>();
 
     public StorageQueueMessageSource(String destination, StorageQueueOperation storageQueueOperation) {
+        Assert.hasText(destination, "destination can't be null or empty");
         this.storageQueueOperation = storageQueueOperation;
         this.destination = destination;
-        checkpointer = storageQueueOperation.getCheckpointer(destination);
-        visibilityTimeoutInSeconds = storageQueueOperation.getVisibilityTimeoutInSeconds();
+        this.checkpointer = storageQueueOperation.getCheckpointer(destination);
     }
 
     @Override
     protected Object doReceive() {
         CloudQueueMessage cloudQueueMessage;
         try {
-            cloudQueueMessage = storageQueueOperation.receiveAsync(destination, visibilityTimeoutInSeconds).get();
+            cloudQueueMessage = storageQueueOperation.receiveAsync(destination).get();
         } catch (InterruptedException | ExecutionException e) {
             throw new StorageQueueRuntimeException("Failed to receive message.", e);
         }
         if (cloudQueueMessage == null) {
             return null;
-        } else {
-            try {
-                byte[] payload = cloudQueueMessage.getMessageContentAsByte();
-                if (checkpointMode.equals(CheckpointMode.RECORD)) {
-                    this.checkpointer.checkpoint(cloudQueueMessage);
-                } else if (checkpointMode.equals(CheckpointMode.MANUAL)) {
-                    this.commonHeaders.put(AzureHeaders.CHECKPOINTER, this.checkpointer);
-                }
-                return toMessage(payload);
-            } catch (StorageException e) {
-                throw new StorageQueueRuntimeException("Failed to get message content.", e);
-            }
         }
+        byte[] payload;
+        try {
+            payload = cloudQueueMessage.getMessageContentAsByte();
+        } catch (StorageException e) {
+            throw new StorageQueueRuntimeException("Failed to get message content.", e);
+        }
+        if (checkpointMode.equals(CheckpointMode.RECORD)) {
+                checkpointer.checkpoint(cloudQueueMessage);
+        }
+        return toMessage(payload);
     }
 
     private Message<?> toMessage(Object payload) {
-        if (this.messageConverter == null) {
+        if (messageConverter == null) {
             return MessageBuilder.withPayload(payload).copyHeaders(commonHeaders).build();
         }
-        return this.messageConverter.toMessage(payload, new MessageHeaders(commonHeaders));
+        return messageConverter.toMessage(payload, new MessageHeaders(commonHeaders));
     }
 
     public void setCheckpointMode(CheckpointMode checkpointMode) {
         this.checkpointMode = checkpointMode;
-    }
-
-    public void setVisibilityTimeoutInSeconds(int visibilityTimeoutInSeconds) {
-        this.visibilityTimeoutInSeconds = visibilityTimeoutInSeconds;
-        storageQueueOperation.setDefaultVisibilityTimeoutInSeconds(visibilityTimeoutInSeconds);
+        if (checkpointMode.equals(CheckpointMode.MANUAL) && commonHeaders.size() == 0) {
+            commonHeaders.put(AzureHeaders.CHECKPOINTER, checkpointer);
+        }
     }
 
     @Override
     public String getComponentType() {
         return "storage-queue:message-source";
     }
-
-
-
 }

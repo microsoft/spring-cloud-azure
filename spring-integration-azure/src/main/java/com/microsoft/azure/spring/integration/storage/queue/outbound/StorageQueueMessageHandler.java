@@ -22,12 +22,14 @@ public class StorageQueueMessageHandler extends AbstractAzureMessageHandler<Clou
         Object payload  = message.getPayload();
         if (payload instanceof CloudQueueMessage) {
             return (CloudQueueMessage) payload;
-        } else if (payload instanceof String) {
-            return new CloudQueueMessage((String) payload);
-        } else if (payload instanceof byte[]) {
-            return new CloudQueueMessage((byte[]) payload);
-        } else {
-            return new CloudQueueMessage(String.valueOf(payload));
         }
+        if (payload instanceof String) {
+            return new CloudQueueMessage((String) payload);
+        }
+        if (payload instanceof byte[]) {
+            return new CloudQueueMessage((byte[]) payload);
+        }
+
+        return new CloudQueueMessage((byte[]) this.messageConverter.fromMessage(message, byte[].class));
     }
 }
