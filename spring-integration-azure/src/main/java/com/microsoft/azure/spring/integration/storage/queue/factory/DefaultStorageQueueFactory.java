@@ -43,7 +43,7 @@ public class DefaultStorageQueueFactory implements StorageQueueFactory {
         CloudStorageAccount account;
         try {
             account = CloudStorageAccount.parse(connectionString);
-        }catch (URISyntaxException | InvalidKeyException e) {
+        } catch (URISyntaxException | InvalidKeyException e) {
             throw new StorageQueueRuntimeException("Failed to parse connection string.", e);
         }
         return account.createCloudQueueClient();
@@ -51,7 +51,7 @@ public class DefaultStorageQueueFactory implements StorageQueueFactory {
 
     private CloudQueue createStorageQueue(String queueName) {
         Assert.hasText(queueName, "queueName can't be null or empty");
-        if(this.cloudQueueClient == null) {
+        if (this.cloudQueueClient == null) {
             this.cloudQueueClient = createStorageQueueClient();
         }
         try {
