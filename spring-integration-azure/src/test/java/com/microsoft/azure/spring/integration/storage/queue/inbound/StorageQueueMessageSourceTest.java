@@ -48,7 +48,7 @@ public class StorageQueueMessageSourceTest {
     @Test
     public void testDoReceiveWhenHaveNotMessage() {
         future.complete(null);
-        when(this.storageQueueOperation.receiveAsync(eq(destination), anyInt()))
+        when(this.storageQueueOperation.receiveAsync(eq(destination)))
                 .thenReturn(future);
         assertNull(messageSource.doReceive());
     }
@@ -56,7 +56,7 @@ public class StorageQueueMessageSourceTest {
     @Test
     public void testDoReceiveWithRecordCheckpointerMode() throws StorageException {
         future.complete(this.cloudQueueMessage);
-        when(this.storageQueueOperation.receiveAsync(eq(destination), anyInt()))
+        when(this.storageQueueOperation.receiveAsync(eq(destination)))
                 .thenReturn(future);
         Message<byte[]> message = (Message<byte[]>) messageSource.doReceive();
         verify(checkpointer, times(1)).checkpoint(this.cloudQueueMessage);
@@ -66,7 +66,7 @@ public class StorageQueueMessageSourceTest {
     @Test
     public void testDoReceiveWithManualCheckpointerMode() throws StorageException {
         future.complete(this.cloudQueueMessage);
-        when(this.storageQueueOperation.receiveAsync(eq(destination), anyInt()))
+        when(this.storageQueueOperation.receiveAsync(eq(destination)))
                 .thenReturn(future);
         this.messageSource.setCheckpointMode(CheckpointMode.MANUAL);
         Message<byte[]> message = (Message<byte[]>) messageSource.doReceive();
