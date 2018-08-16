@@ -20,7 +20,8 @@ public interface StorageQueueOperation extends SendOperation<CloudQueueMessage> 
 
     /**
      * Receives a message from the front of destination queue.
-     * This operation marks the retrieved message as invisible in the queue for the default visibility timeout period.
+     * This operation marks the retrieved message as invisible in the queue for a visibility timeout period.
+     * The default visibility timeout is 30 seconds.
      * You should check point if message has been processed successfully, otherwise the message will be visible
      * in the queue again.
      *
@@ -30,7 +31,8 @@ public interface StorageQueueOperation extends SendOperation<CloudQueueMessage> 
 
     /**
      * Receives a message from the front of destination queue.
-     * This operation marks the retrieved message as invisible in the queue for timeout period.
+     * This operation marks the retrieved message as invisible in the queue for a visibility timeout period.
+     * The default visibility timeout is 30 seconds.
      * You should check point if message has been processed successfully, otherwise the message will be visible
      * in the queue again.
      *
@@ -46,10 +48,10 @@ public interface StorageQueueOperation extends SendOperation<CloudQueueMessage> 
     Checkpointer<CloudQueueMessage> getCheckpointer(String destination);
 
     /**
-     * Set default visibility timeout.
+     * Set visibility timeout.
      * @param visibilityTimeoutInSeconds Specifies the visibility timeout for the message, in seconds
      */
-    void setDefaultVisibilityTimeoutInSeconds(int visibilityTimeoutInSeconds);
+    void setVisibilityTimeoutInSeconds(int visibilityTimeoutInSeconds);
 
     int getVisibilityTimeoutInSeconds();
 }
