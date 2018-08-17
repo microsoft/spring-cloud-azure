@@ -11,7 +11,8 @@ import com.microsoft.azure.management.eventhub.AuthorizationRule;
 import com.microsoft.azure.management.eventhub.EventHubAuthorizationKey;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -36,7 +37,7 @@ import java.util.Arrays;
  * @author Warren Zhu
  */
 @Configuration
-@AutoConfigureBefore(KafkaAutoConfiguration.class)
+@AutoConfigureBefore({KafkaAutoConfiguration.class, TelemetryAutoConfiguration.class})
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnClass({EventHubClient.class, KafkaTemplate.class})
 @ConditionalOnProperty(value = "spring.cloud.azure.eventhub.enabled", matchIfMissing = true)
@@ -53,12 +54,9 @@ public class AzureEventHubKafkaAutoConfiguration {
     private static final int PORT = 9093;
     private static final String EVENT_HUB_KAFKA = "EventHubKafka";
 
-    @Autowired(required = false)
-    private TelemetryTracker telemetryTracker;
-
     @PostConstruct
-    public void triggerTelemetry() {
-        TelemetryTracker.triggerEvent(telemetryTracker, EVENT_HUB_KAFKA);
+    public void collectTelemetry() {
+        TelemetryCollector.getInstance().addService(EVENT_HUB_KAFKA);
     }
 
     @ConditionalOnMissingBean

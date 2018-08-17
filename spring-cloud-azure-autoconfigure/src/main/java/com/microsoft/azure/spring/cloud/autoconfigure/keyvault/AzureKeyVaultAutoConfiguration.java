@@ -8,21 +8,21 @@ package com.microsoft.azure.spring.cloud.autoconfigure.keyvault;
 
 import com.microsoft.azure.keyvault.KeyVaultClient;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.keyvault.KeyVaultOperation;
 import com.microsoft.azure.spring.cloud.keyvault.KeyVaultTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.ConfigurableEnvironment;
 
 import javax.annotation.PostConstruct;
-import java.util.Collection;
 
 /**
  * An auto-configuration for Azure Key Vault.
@@ -32,6 +32,7 @@ import java.util.Collection;
  * @author Warren Zhu
  */
 @Configuration
+@AutoConfigureBefore(TelemetryAutoConfiguration.class)
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnProperty(value = "spring.cloud.azure.keyvault.enabled", matchIfMissing = true)
 @ConditionalOnClass(KeyVaultClient.class)
@@ -39,17 +40,14 @@ import java.util.Collection;
 public class AzureKeyVaultAutoConfiguration {
     private static final String KEY_VAULT = "KeyVault";
 
-    @Autowired(required = false)
-    private TelemetryTracker telemetryTracker;
-
     @PostConstruct
-    public void triggerTelemetry() {
-        TelemetryTracker.triggerEvent(telemetryTracker, KEY_VAULT);
+    public void collectTelemetry() {
+        TelemetryCollector.getInstance().addService(KEY_VAULT);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    KeyVaultOperation keyVaultOperation(AzureKeyVaultProperties keyVaultProperties){
+    KeyVaultOperation keyVaultOperation(AzureKeyVaultProperties keyVaultProperties) {
         return new KeyVaultTemplate(keyVaultProperties.getClientId(), keyVaultProperties.getClientSecret());
     }
 
