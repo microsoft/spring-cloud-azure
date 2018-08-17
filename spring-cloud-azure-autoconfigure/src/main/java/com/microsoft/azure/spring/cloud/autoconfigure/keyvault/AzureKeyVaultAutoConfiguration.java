@@ -9,15 +9,20 @@ package com.microsoft.azure.spring.cloud.autoconfigure.keyvault;
 import com.microsoft.azure.keyvault.KeyVaultClient;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
+import com.microsoft.azure.spring.cloud.keyvault.KeyVaultOperation;
+import com.microsoft.azure.spring.cloud.keyvault.KeyVaultTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import javax.annotation.PostConstruct;
+import java.util.Collection;
 
 /**
  * An auto-configuration for Azure Key Vault.
@@ -28,7 +33,7 @@ import javax.annotation.PostConstruct;
  */
 @Configuration
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
-@ConditionalOnProperty(value = "spring.cloud.azure.keyVault.enabled", matchIfMissing = true)
+@ConditionalOnProperty(value = "spring.cloud.azure.keyvault.enabled", matchIfMissing = true)
 @ConditionalOnClass(KeyVaultClient.class)
 @EnableConfigurationProperties(AzureKeyVaultProperties.class)
 public class AzureKeyVaultAutoConfiguration {
@@ -40,6 +45,12 @@ public class AzureKeyVaultAutoConfiguration {
     @PostConstruct
     public void triggerTelemetry() {
         TelemetryTracker.triggerEvent(telemetryTracker, KEY_VAULT);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    KeyVaultOperation keyVaultOperation(AzureKeyVaultProperties keyVaultProperties){
+        return new KeyVaultTemplate(keyVaultProperties.getClientId(), keyVaultProperties.getClientSecret());
     }
 
 }
