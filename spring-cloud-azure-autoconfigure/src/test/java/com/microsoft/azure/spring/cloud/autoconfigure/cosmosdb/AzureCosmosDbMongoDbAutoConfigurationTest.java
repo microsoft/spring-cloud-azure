@@ -9,7 +9,7 @@ package com.microsoft.azure.spring.cloud.autoconfigure.cosmosdb;
 import com.microsoft.azure.management.cosmosdb.CosmosDBAccount;
 import com.microsoft.azure.management.cosmosdb.DatabaseAccountConnectionString;
 import com.microsoft.azure.management.cosmosdb.DatabaseAccountKind;
-import com.microsoft.azure.management.cosmosdb.implementation.DatabaseAccountListConnectionStringsResult;
+import com.microsoft.azure.management.cosmosdb.DatabaseAccountListConnectionStringsResult;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
