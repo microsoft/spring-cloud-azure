@@ -26,18 +26,18 @@ import java.util.Set;
 public class KeyVaultEnvironmentPostProcessor implements EnvironmentPostProcessor {
     private static final String AZURE_KEY_VAULT_ENABLED = "spring.cloud.azure.keyvault.enabled";
     private static final String AZURE_CLIENT_ID = "spring.cloud.azure.keyvault.client-id";
-    private static final String AZURE_CLIENT_KEY = "spring.cloud.azure.keyvault.client-key";
+    private static final String AZURE_CLIENT_SECRET = "spring.cloud.azure.keyvault.client-secret";
     private static final String AZURE_KEY_VAULT_NAME = "spring.cloud.azure.keyvault.name";
 
     private static final Set<String> AZURE_KEY_VAULT_PROPERTIES = Collections.unmodifiableSet(new HashSet<>(
-            Arrays.asList(AZURE_CLIENT_ID, AZURE_CLIENT_KEY, AZURE_KEY_VAULT_NAME)));
+            Arrays.asList(AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_KEY_VAULT_NAME)));
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
 
         if (shouldAddKeyVaultPropertySource(environment)) {
             KeyVaultTemplate operation = new KeyVaultTemplate(environment.getProperty(AZURE_CLIENT_ID),
-                    environment.getProperty(AZURE_CLIENT_KEY));
+                    environment.getProperty(AZURE_CLIENT_SECRET));
             environment.getPropertySources()
                        .addLast(new KeyVaultPropertySource(operation, environment.getProperty(AZURE_KEY_VAULT_NAME)));
         }

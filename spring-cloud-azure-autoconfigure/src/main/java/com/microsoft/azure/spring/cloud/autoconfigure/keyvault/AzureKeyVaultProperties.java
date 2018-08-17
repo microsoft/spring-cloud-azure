@@ -22,12 +22,12 @@ import javax.annotation.PostConstruct;
 public class AzureKeyVaultProperties {
     private String name;
     private String clientId;
-    private String clientKey;
+    private String clientSecret;
 
     @PostConstruct
     public void validate() {
         Assert.hasText(name, "spring.cloud.azure.keyvault.name must be provided.");
         Assert.hasText(clientId, "spring.cloud.azure.keyvault.client-id must be provided.");
-        Assert.hasText(clientId, "spring.cloud.azure.keyvault.client-key must be provided.");
+        Assert.hasText(clientSecret, "spring.cloud.azure.keyvault.client-secret must be provided.");
     }
 }

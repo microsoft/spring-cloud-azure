@@ -37,8 +37,8 @@ public class KeyVaultTemplate implements KeyVaultOperation {
 
     private Function<String, KeyVaultClient> keyVaultClientCreator = keyVaultClientCreator();
 
-    public KeyVaultTemplate(String clientId, String clientKey) {
-        this.credential = new AzureKeyVaultCredential(clientId, clientKey);
+    public KeyVaultTemplate(String clientId, String clientSecret) {
+        this.credential = new AzureKeyVaultCredential(clientId, clientSecret);
     }
 
     private static String buildKeyVaultUrl(String keyVaultName) {

@@ -21,7 +21,7 @@ import java.util.concurrent.Future;
 
 /**
  * Credential used for Key Vault call. This class just fetch token by provided
- * {@code clientId} and {@code clientKey}. This should be provided by Azure SDK
+ * {@code clientId} and {@code clientSecret}. This should be provided by Azure SDK
  *
  * @author Warren Zhu
  */
@@ -29,7 +29,7 @@ import java.util.concurrent.Future;
 public class AzureKeyVaultCredential extends KeyVaultCredentials {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureKeyVaultCredential.class);
     private final String clientId;
-    private final String clientKey;
+    private final String clientSecret;
 
     @Override
     public String doAuthenticate(String authorization, String resource, String scope) {
@@ -38,7 +38,7 @@ public class AzureKeyVaultCredential extends KeyVaultCredentials {
                     new AuthenticationContext(authorization, false, Executors.newSingleThreadExecutor());
 
             Future<AuthenticationResult> future =
-                    context.acquireToken(resource, new ClientCredential(this.clientId, this.clientKey), null);
+                    context.acquireToken(resource, new ClientCredential(this.clientId, this.clientSecret), null);
             return future.get().getAccessToken();
         } catch (MalformedURLException | InterruptedException | ExecutionException e) {
             LOGGER.error("Failed to do Azure Key Vault authentication.", e);
