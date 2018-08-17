@@ -36,7 +36,7 @@ import java.io.IOException;
 @Configuration
 @EnableConfigurationProperties(AzureProperties.class)
 @ConditionalOnClass(Azure.class)
-@ConditionalOnProperty(value = "spring.cloud.azure.enabled", matchIfMissing = true)
+@ConditionalOnProperty(value = "spring.cloud.azure.credentialFilePath")
 @Import(AzureAopConfig.class)
 public class AzureContextAutoConfiguration {
     private static final String PROJECT_VERSION =
