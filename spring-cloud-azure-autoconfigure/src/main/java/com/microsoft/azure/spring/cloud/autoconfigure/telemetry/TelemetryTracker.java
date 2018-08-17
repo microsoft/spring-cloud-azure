@@ -40,7 +40,11 @@ public class TelemetryTracker {
 
     private final Map<String, String> defaultProperties;
 
-    public TelemetryTracker(@NonNull String subscriptionId, String instrumentationKey) {
+    public TelemetryTracker(String instrumentationKey) {
+        this(instrumentationKey, null);
+    }
+
+    public TelemetryTracker(String instrumentationKey, String subscriptionId) {
         this.defaultProperties = buildDefaultProperties(subscriptionId);
         this.client = buildTelemetryClient(instrumentationKey);
     }
@@ -54,7 +58,9 @@ public class TelemetryTracker {
     private Map<String, String> buildDefaultProperties(String subscriptionId) {
         Map<String, String> properties = new HashMap<>();
 
-        properties.put(PROPERTY_SUBSCRIPTION_ID, subscriptionId);
+        if (StringUtils.hasText(subscriptionId)) {
+            properties.put(PROPERTY_SUBSCRIPTION_ID, subscriptionId);
+        }
         properties.put(PROPERTY_VERSION, PROJECT_INFO);
         properties.put(PROPERTY_INSTALLATION_ID, MacAddressHelper.getHashedMacAddress());
 
