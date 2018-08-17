@@ -28,6 +28,7 @@
         <module>spring-cloud-azure-sql-sample</module>
         <module>spring-cloud-azure-cosmosdb-mongodb-sample</module>
         <module>spring-cloud-azure-data-jpa-sample</module>
+        <module>spring-cloud-azure-keyvault-sample</module>
     </modules>
 
     <build>
