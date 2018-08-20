@@ -9,25 +9,34 @@ package com.microsoft.azure.servicebus.stream.binder;
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.spring.integration.core.Checkpointer;
 import com.microsoft.azure.spring.integration.core.PartitionSupplier;
+import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
+import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicTemplate;
+import org.springframework.messaging.Message;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-public class ServiceBusTopicTestOperation implements ServiceBusTopicOperation {
+public class ServiceBusTopicTestOperation extends ServiceBusTopicTemplate implements ServiceBusTopicOperation {
     private final Map<String, Map<String, Consumer<Iterable<IMessage>>>> consumerMap = new ConcurrentHashMap<>();
     private final Map<String, List<IMessage>> serviceBusTopicsByName = new ConcurrentHashMap<>();
 
+    public ServiceBusTopicTestOperation(ServiceBusTopicClientFactory clientFactory) {
+        super(clientFactory);
+    }
+
     @Override
-    public CompletableFuture<Void> sendAsync(String serviceBusTopicName, IMessage message,
+    public <T> CompletableFuture<Void> sendAsync(String serviceBusTopicName, Message<T> message,
             PartitionSupplier partitionSupplier) {
         CompletableFuture<Void> future = new CompletableFuture<>();
         serviceBusTopicsByName.putIfAbsent(serviceBusTopicName, new LinkedList<>());
-        serviceBusTopicsByName.get(serviceBusTopicName).add(message);
+        IMessage serviceBusMessage = toServiceBusMessage(message);
+
+        serviceBusTopicsByName.get(serviceBusTopicName).add(serviceBusMessage);
         consumerMap.putIfAbsent(serviceBusTopicName, new ConcurrentHashMap<>());
-        consumerMap.get(serviceBusTopicName).values().forEach(c -> c.accept(Collections.singleton(message)));
+        consumerMap.get(serviceBusTopicName).values().forEach(c -> c.accept(Collections.singleton(serviceBusMessage)));
         future.complete(null);
         return future;
     }

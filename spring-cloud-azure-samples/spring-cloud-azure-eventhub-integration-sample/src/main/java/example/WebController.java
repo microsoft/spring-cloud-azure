@@ -6,10 +6,10 @@
 
 package example;
 
+import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
 import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
 import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
 import com.microsoft.azure.spring.integration.eventhub.inbound.EventHubInboundChannelAdapter;
-import com.microsoft.azure.spring.integration.eventhub.outbound.EventHubMessageHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +59,7 @@ public class WebController {
     @Bean
     @ServiceActivator(inputChannel = OUTPUT_CHANNEL)
     public MessageHandler messageSender(EventHubOperation queueOperation) {
-        EventHubMessageHandler handler = new EventHubMessageHandler(EVENTHUB_NAME, queueOperation);
+        AzureMessageHandler handler = new AzureMessageHandler(EVENTHUB_NAME, queueOperation);
         handler.setSendCallback(new ListenableFutureCallback<Void>() {
             @Override
             public void onSuccess(Void result) {

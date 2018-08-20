@@ -20,8 +20,12 @@ import lombok.NonNull;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.util.Assert;
 
+import java.nio.charset.Charset;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,6 +53,9 @@ public class EventHubTemplate implements EventHubOperation {
     private final EventHubClientFactory clientFactory;
 
     @Setter
+    private MessageConverter messageConverter = new MappingJackson2MessageConverter();
+
+    @Setter
     private StartPosition startPosition = StartPosition.LATEST;
 
     public EventHubTemplate(EventHubClientFactory clientFactory) {
@@ -68,21 +75,22 @@ public class EventHubTemplate implements EventHubOperation {
     }
 
     @Override
-    public CompletableFuture<Void> sendAsync(String eventHubName, @NonNull EventData message,
+    public <T> CompletableFuture<Void> sendAsync(String eventHubName, @NonNull Message<T> message,
             PartitionSupplier partitionSupplier) {
         Assert.hasText(eventHubName, "eventHubName can't be null or empty");
+        EventData eventData = toEventData(message);
         try {
             EventHubClient client = this.clientFactory.getEventHubClientCreator().apply(eventHubName);
 
             if (partitionSupplier == null) {
-                return client.send(message);
+                return client.send(eventData);
             } else if (!Strings.isNullOrEmpty(partitionSupplier.getPartitionId())) {
                 return this.clientFactory.getPartitionSenderCreator()
-                                         .apply(Tuple.of(client, partitionSupplier.getPartitionId())).send(message);
+                                         .apply(Tuple.of(client, partitionSupplier.getPartitionId())).send(eventData);
             } else if (!Strings.isNullOrEmpty(partitionSupplier.getPartitionKey())) {
-                return client.send(message, partitionSupplier.getPartitionKey());
+                return client.send(eventData, partitionSupplier.getPartitionKey());
             } else {
-                return client.send(message);
+                return client.send(eventData);
             }
         } catch (EventHubRuntimeException e) {
             LOGGER.error(String.format("Failed to send to '%s' ", eventHubName), e);
@@ -109,8 +117,9 @@ public class EventHubTemplate implements EventHubOperation {
         }
 
         processorHostsByNameAndConsumerGroup.computeIfAbsent(nameAndConsumerGroup, key -> {
-            EventProcessorHost host = this.clientFactory.getProcessorHostCreator().apply(nameAndConsumerGroup);
-            host.registerEventProcessorFactory(context -> new EventHubProcessor(nameAndConsumerGroup));
+            EventProcessorHost host = this.clientFactory.getProcessorHostCreator().apply(key);
+            host.registerEventProcessorFactory(context -> new EventHubProcessor(key),
+                    buildEventProcessorOptions(startPosition));
             return host;
         });
         return true;
@@ -131,6 +140,23 @@ public class EventHubTemplate implements EventHubOperation {
         }
 
         return existed;
+    }
+
+    protected EventData toEventData(Message<?> message) {
+        Object payload = message.getPayload();
+        if (payload instanceof EventData) {
+            return (EventData) payload;
+        }
+
+        if (payload instanceof String) {
+            return EventData.create(((String) payload).getBytes(Charset.defaultCharset()));
+        }
+
+        if (payload instanceof byte[]) {
+            return EventData.create((byte[]) payload);
+        }
+
+        return EventData.create((byte[]) this.messageConverter.fromMessage(message, byte[].class));
     }
 
     private class EventHubProcessor implements IEventProcessor {

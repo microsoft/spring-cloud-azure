@@ -31,18 +31,16 @@ import java.util.concurrent.TimeoutException;
  * Base class of outbound adapter to publish to azure backed messaging service
  *
  * <p>
- * It delegates real operation to {@link SendOperation} and
- * converts the {@link Message} payload into specific type {@link D} accepted by
- * Azure SDK. It supports synchronous and asynchronous sending.
+ * It delegates real operation to {@link SendOperation} which supports synchronous and asynchronous sending.
  *
  * @author Warren Zhu
  */
 @Getter
 @Setter
-public abstract class AbstractAzureMessageHandler<D> extends AbstractMessageHandler {
+public class AzureMessageHandler extends AbstractMessageHandler {
     private static final long DEFAULT_SEND_TIMEOUT = 10000;
     private final String destination;
-    private final SendOperation<D> sendOperation;
+    private final SendOperation sendOperation;
     protected MessageConverter messageConverter;
     private boolean sync = false;
     private ListenableFutureCallback<Void> sendCallback;
@@ -50,7 +48,7 @@ public abstract class AbstractAzureMessageHandler<D> extends AbstractMessageHand
     private Expression sendTimeoutExpression = new ValueExpression<>(DEFAULT_SEND_TIMEOUT);
     private Expression partitionKeyExpression;
 
-    public AbstractAzureMessageHandler(String destination, @NonNull SendOperation<D> sendOperation) {
+    public AzureMessageHandler(String destination, @NonNull SendOperation sendOperation) {
         Assert.hasText(destination, "destination can't be null or empty");
         this.destination = destination;
         this.sendOperation = sendOperation;
@@ -63,12 +61,12 @@ public abstract class AbstractAzureMessageHandler<D> extends AbstractMessageHand
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void handleMessageInternal(Message<?> message) throws Exception {
 
         PartitionSupplier partitionSupplier = toPartitionSupplier(message);
         String destination = toDestination(message);
-        D azureMessage = toAzureMessage(message);
-        CompletableFuture future = this.sendOperation.sendAsync(destination, azureMessage, partitionSupplier);
+        CompletableFuture future = this.sendOperation.sendAsync(destination, message, partitionSupplier);
 
         if (this.sync) {
             waitingSendResponse(future, message);
@@ -113,8 +111,6 @@ public abstract class AbstractAzureMessageHandler<D> extends AbstractMessageHand
     public void setPartitionKeyExpressionString(String partitionKeyExpression) {
         setPartitionKeyExpression(EXPRESSION_PARSER.parseExpression(partitionKeyExpression));
     }
-
-    public abstract D toAzureMessage(Message<?> message);
 
     private String toDestination(Message<?> message) {
         if (message.getHeaders().containsKey(AzureHeaders.NAME)) {

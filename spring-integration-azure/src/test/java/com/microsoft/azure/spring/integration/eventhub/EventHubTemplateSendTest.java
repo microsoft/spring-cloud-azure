@@ -6,6 +6,7 @@
 
 package com.microsoft.azure.spring.integration.eventhub;
 
+import com.google.common.collect.ImmutableMap;
 import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.eventhubs.PartitionSender;
@@ -14,13 +15,15 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.GenericMessage;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EventHubTemplateSendTest extends SendOperationTest<EventData, EventHubOperation> {
+public class EventHubTemplateSendTest extends SendOperationTest<EventHubOperation> {
 
     @Mock
     private EventHubClientFactory mockClientFactory;
@@ -41,7 +44,6 @@ public class EventHubTemplateSendTest extends SendOperationTest<EventData, Event
         when(this.mockClientFactory.getPartitionSenderCreator()).thenReturn(t -> this.mockSender);
         when(this.mockSender.send(isA(EventData.class))).thenReturn(this.future);
         this.sendOperation = new EventHubTemplate(mockClientFactory);
-        this.message = EventData.create(payload.getBytes());
     }
 
     @Override
