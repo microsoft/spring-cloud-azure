@@ -8,7 +8,8 @@ package com.microsoft.azure.spring.cloud.autoconfigure.servicebus;
 
 import com.microsoft.azure.servicebus.QueueClient;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.integration.servicebus.factory.DefaultServiceBusQueueClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusQueueClientFactory;
@@ -16,6 +17,7 @@ import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueOp
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -31,6 +33,7 @@ import javax.annotation.PostConstruct;
  * @author Warren Zhu
  */
 @Configuration
+@AutoConfigureBefore(TelemetryAutoConfiguration.class)
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnClass(QueueClient.class)
 @ConditionalOnProperty(value = "spring.cloud.azure.servicebus.queue.enabled", matchIfMissing = true)
@@ -38,12 +41,9 @@ import javax.annotation.PostConstruct;
 public class AzureServiceBusQueueAutoConfiguration {
     private static final String SERVICE_BUS_QUEUE = "ServiceBusQueue";
 
-    @Autowired(required = false)
-    private TelemetryTracker telemetryTracker;
-
     @PostConstruct
-    public void triggerTelemetry() {
-        TelemetryTracker.triggerEvent(telemetryTracker, SERVICE_BUS_QUEUE);
+    public void collectTelemetry() {
+        TelemetryCollector.getInstance().addService(SERVICE_BUS_QUEUE);
     }
 
     @Bean

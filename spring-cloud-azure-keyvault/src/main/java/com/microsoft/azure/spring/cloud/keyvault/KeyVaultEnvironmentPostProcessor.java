@@ -59,6 +59,4 @@ public class KeyVaultEnvironmentPostProcessor implements EnvironmentPostProcesso
         return ClassUtils.isPresent("com.microsoft.azure.keyvault.KeyVaultClient",
                 KeyVaultEnvironmentPostProcessor.class.getClassLoader());
     }
-
-
 }

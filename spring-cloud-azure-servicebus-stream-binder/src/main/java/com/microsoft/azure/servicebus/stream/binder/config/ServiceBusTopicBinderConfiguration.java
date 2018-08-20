@@ -12,11 +12,11 @@ import com.microsoft.azure.servicebus.stream.binder.provisioning.ServiceBusTopic
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.servicebus.AzureServiceBusProperties;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.stream.binder.Binder;
@@ -30,18 +30,16 @@ import javax.annotation.PostConstruct;
  */
 @Configuration
 @ConditionalOnMissingBean(Binder.class)
+@AutoConfigureBefore(TelemetryAutoConfiguration.class)
 @AutoConfigureAfter({AzureContextAutoConfiguration.class, TelemetryAutoConfiguration.class})
 @EnableConfigurationProperties({AzureServiceBusProperties.class, ServiceBusExtendedBindingProperties.class})
 public class ServiceBusTopicBinderConfiguration {
 
     private static final String SERVICE_BUS_TOPIC_BINDER = "ServiceBusTopicBinder";
 
-    @Autowired(required = false)
-    private TelemetryTracker telemetryTracker;
-
     @PostConstruct
-    public void triggerTelemetry() {
-        TelemetryTracker.triggerEvent(telemetryTracker, SERVICE_BUS_TOPIC_BINDER);
+    public void collectTelemetry() {
+        TelemetryCollector.getInstance().addService(SERVICE_BUS_TOPIC_BINDER);
     }
 
     @Bean
