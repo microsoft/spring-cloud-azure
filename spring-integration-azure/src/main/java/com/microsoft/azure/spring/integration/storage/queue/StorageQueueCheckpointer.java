@@ -31,7 +31,7 @@ public class StorageQueueCheckpointer implements Checkpointer<CloudQueueMessage>
             try {
                 cloudQueue.deleteMessage(cloudQueueMessage);
             } catch (StorageException e) {
-                throw new StorageQueueRuntimeException("Failed to delete message from cloud queue", e);
+                throw new StorageQueueRuntimeException("Failed to checkpoint message from cloud queue", e);
             }
         });
         return completableFuture;

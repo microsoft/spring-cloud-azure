@@ -91,7 +91,7 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- Storage Queue -->
+        <!-- Storage -->
         <dependency>
             <groupId>com.microsoft.azure</groupId>
             <artifactId>azure-storage</artifactId>

@@ -6,10 +6,7 @@
 
 package example;
 
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class WebController {
@@ -20,7 +17,7 @@ public class WebController {
         this.storageQueueOutboundGateway = storageQueueOutboundGateway;
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
+    @PostMapping(value = "/messages")
     public void send(@RequestBody String data) {
         storageQueueOutboundGateway.send(data);
     }
