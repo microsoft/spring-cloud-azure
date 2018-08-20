@@ -7,7 +7,8 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.sql;
 
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -27,6 +28,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 /**
@@ -40,13 +42,15 @@ import javax.sql.DataSource;
 @ConditionalOnProperty(name = "spring.cloud.azure.sql.enabled", matchIfMissing = true)
 @EnableConfigurationProperties({AzureSqlProperties.class, DataSourceProperties.class})
 @AutoConfigureBefore({DataSourceAutoConfiguration.class, JndiDataSourceAutoConfiguration.class,
-        XADataSourceAutoConfiguration.class})
+        XADataSourceAutoConfiguration.class, TelemetryAutoConfiguration.class})
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 public class AzureSqlAutoConfiguration {
     private static final String SQL_SERVER = "SqlServer";
 
-    @Autowired(required = false)
-    private TelemetryTracker telemetryTracker;
+    @PostConstruct
+    public void collectTelemetry() {
+        TelemetryCollector.getInstance().addService(SQL_SERVER);
+    }
 
     /**
      * The Sql Server Configuration for the {@link SqlServerJdbcDataSourcePropertiesUpdater}
@@ -78,7 +82,6 @@ public class AzureSqlAutoConfiguration {
         public DataSourceProperties cloudSqlDataSourceProperties(DataSourceProperties dataSourceProperties,
                 JdbcDataSourcePropertiesUpdater dataSourcePropertiesProvider) {
 
-            TelemetryTracker.triggerEvent(telemetryTracker, SQL_SERVER);
             dataSourcePropertiesProvider.updateDataSourceProperties(dataSourceProperties);
 
             return dataSourceProperties;
