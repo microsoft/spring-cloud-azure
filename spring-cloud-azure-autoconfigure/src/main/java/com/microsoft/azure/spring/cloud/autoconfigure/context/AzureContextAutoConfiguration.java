@@ -64,7 +64,6 @@ public class AzureContextAutoConfiguration {
                 .withInterceptor(new ResourceManagerThrottlingInterceptor()).withUserAgent(SPRING_CLOUD_USER_AGENT)
                 .build();
 
-
         return Azure.authenticate(restClient, credentials.domain()).withDefaultSubscription();
     }
 
