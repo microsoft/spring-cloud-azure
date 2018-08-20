@@ -26,7 +26,7 @@ import org.springframework.messaging.MessageHandler;
 public class StorageQueueApplication {
 
     /*destination can only be made up of lowercase letters, the numbers and the hyphen(-).*/
-    private static final String DESTINATION = "example-queue2";
+    private static final String DESTINATION = "example-queue";
     private static final String OUTPUT_CHANNEL = "outputChannel";
     private static final String INPUT_CHANNEL = "inputChannel";
     private static final Log LOGGER = LogFactory.getLog(StorageQueueApplication.class);

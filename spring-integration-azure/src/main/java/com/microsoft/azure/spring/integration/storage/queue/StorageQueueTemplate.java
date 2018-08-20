@@ -20,11 +20,10 @@ import java.util.function.Function;
 
 public class StorageQueueTemplate implements StorageQueueOperation {
     private final StorageQueueFactory storageQueueFactory;
-    private final Function<String, Checkpointer<CloudQueueMessage>> checkpointGetter =
+    private final Function<String, Checkpointer<CloudQueueMessage>> checkpointerGetter =
             Memoizer.memoize(this::createCheckpointer);
     private static final int DEFAULT_VISIBILITY_TIMEOUT_IN_SECONDS = 30;
     private int visibilityTimeoutInSeconds;
-
 
     public StorageQueueTemplate(@NonNull StorageQueueFactory storageQueueFactory) {
         this.storageQueueFactory = storageQueueFactory;
@@ -70,7 +69,7 @@ public class StorageQueueTemplate implements StorageQueueOperation {
 
     @Override
     public Checkpointer<CloudQueueMessage> getCheckpointer(String destination) {
-        return checkpointGetter.apply(destination);
+        return checkpointerGetter.apply(destination);
     }
 
     private Checkpointer<CloudQueueMessage> createCheckpointer(String destination) {
