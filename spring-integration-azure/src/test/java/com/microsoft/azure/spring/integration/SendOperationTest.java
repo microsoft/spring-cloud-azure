@@ -25,7 +25,7 @@ public abstract class SendOperationTest<O extends SendOperation> {
     protected String payload = "payload";
     protected CompletableFuture<Void> future = new CompletableFuture<>();
     protected String partitionKey = "key";
-    private String destination = "event-hub";
+    protected String destination = "event-hub";
     private String partitionId = "1";
     private Message<?> message =
             new GenericMessage<>("testPayload", ImmutableMap.of("key1", "value1", "key2", "value2"));
@@ -84,7 +84,7 @@ public abstract class SendOperationTest<O extends SendOperation> {
     }
 
     @Test
-    public void testSendFailure() {
+    public void testSendFailure() throws Throwable {
         CompletableFuture<Void> future = this.sendOperation.sendAsync(destination, this.message, null);
         this.future.completeExceptionally(new Exception("future failed."));
 
