@@ -10,20 +10,10 @@ import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.spring.cloud.autoconfigure.eventhub.AzureEventHubProperties;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
-import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
-import com.microsoft.azure.spring.integration.eventhub.inbound.EventHubInboundChannelAdapter;
-import com.microsoft.azure.spring.integration.eventhub.outbound.EventHubMessageHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.integration.annotation.MessagingGateway;
-import org.springframework.integration.annotation.ServiceActivator;
-import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.MessageHandler;
-import org.springframework.util.concurrent.ListenableFutureCallback;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,7 +41,7 @@ public class WebController {
 
     @PostMapping("/messages")
     public String send(@RequestParam("message") String message) {
-        this.eventHubOperation.sendAsync(EVENT_HUB_NAME, EventData.create(message.getBytes()), null);
+        this.eventHubOperation.sendAsync(EVENT_HUB_NAME, MessageBuilder.withPayload(message).build());
         return message;
     }
 

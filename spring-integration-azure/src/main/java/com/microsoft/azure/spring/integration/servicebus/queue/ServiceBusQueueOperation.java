@@ -17,5 +17,5 @@ import java.util.UUID;
  *
  * @author Warren Zhu
  */
-public interface ServiceBusQueueOperation extends SendOperation<IMessage>, SubscribeOperation<IMessage, UUID> {
+public interface ServiceBusQueueOperation extends SendOperation, SubscribeOperation<IMessage, UUID> {
 }

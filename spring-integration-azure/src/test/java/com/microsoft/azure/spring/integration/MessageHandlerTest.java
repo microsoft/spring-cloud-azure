@@ -7,8 +7,7 @@
 package com.microsoft.azure.spring.integration;
 
 import com.google.common.collect.ImmutableMap;
-import com.microsoft.azure.eventhubs.EventData;
-import com.microsoft.azure.spring.integration.core.AbstractAzureMessageHandler;
+import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
 import com.microsoft.azure.spring.integration.core.PartitionSupplier;
 import com.microsoft.azure.spring.integration.core.SendOperation;
@@ -28,14 +27,13 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public abstract class MessageHandlerTest<M, O extends SendOperation<M>> {
+public abstract class MessageHandlerTest<M, O extends SendOperation> {
 
     protected O sendOperation;
 
-    protected AbstractAzureMessageHandler handler;
+    protected AzureMessageHandler handler;
     protected String destination = "dest";
     protected CompletableFuture<Void> future = new CompletableFuture<>();
-    protected Class<M> messageClass;
     private Message<?> message =
             new GenericMessage<>("testPayload", ImmutableMap.of("key1", "value1", "key2", "value2"));
     private String payload = "payload";
@@ -46,7 +44,7 @@ public abstract class MessageHandlerTest<M, O extends SendOperation<M>> {
     public void testSend() {
         this.handler.handleMessage(this.message);
         verify(this.sendOperation, times(1))
-                .sendAsync(eq(destination), isA(messageClass), isA(PartitionSupplier.class));
+                .sendAsync(eq(destination), isA(Message.class), isA(PartitionSupplier.class));
     }
 
     @Test
@@ -56,7 +54,7 @@ public abstract class MessageHandlerTest<M, O extends SendOperation<M>> {
                 new GenericMessage<>(payload, ImmutableMap.of(AzureHeaders.NAME, dynamicEventHubName));
         this.handler.handleMessage(dynamicMessage);
         verify(this.sendOperation, times(1))
-                .sendAsync(eq(dynamicEventHubName), isA(messageClass), isA(PartitionSupplier.class));
+                .sendAsync(eq(dynamicEventHubName), isA(Message.class), isA(PartitionSupplier.class));
     }
 
     @Test
@@ -71,7 +69,7 @@ public abstract class MessageHandlerTest<M, O extends SendOperation<M>> {
 
     @Test(expected = MessageTimeoutException.class)
     public void testSendTimeout() {
-        when(this.sendOperation.sendAsync(eq(this.destination), isA(messageClass), isA(PartitionSupplier.class)))
+        when(this.sendOperation.sendAsync(eq(this.destination), isA(Message.class), isA(PartitionSupplier.class)))
                 .thenReturn(new CompletableFuture<>());
         this.handler.setSync(true);
         this.handler.setSendTimeout(1);

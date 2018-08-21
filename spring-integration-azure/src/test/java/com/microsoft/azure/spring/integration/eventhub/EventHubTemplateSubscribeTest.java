@@ -8,6 +8,7 @@ package com.microsoft.azure.spring.integration.eventhub;
 
 import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
+import com.microsoft.azure.eventprocessorhost.EventProcessorOptions;
 import com.microsoft.azure.eventprocessorhost.IEventProcessorFactory;
 import com.microsoft.azure.spring.integration.SubscribeByGroupOperationTest;
 import org.junit.Before;
@@ -32,15 +33,24 @@ public class EventHubTemplateSubscribeTest
 
     @Before
     public void setUp() {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        future.complete(null);
         this.subscribeByGroupOperation = new EventHubTemplate(mockClientFactory);
         when(this.mockClientFactory.getProcessorHostCreator()).thenReturn(t -> this.host);
-        when(this.host.registerEventProcessorFactory(isA(IEventProcessorFactory.class)))
-                .thenReturn(new CompletableFuture<>());
+        when(this.host.registerEventProcessorFactory(isA(IEventProcessorFactory.class), isA(EventProcessorOptions
+                .class))).thenReturn(future);
     }
 
     @Override
     protected void verifySubscriberCreatorCalled(int times) {
         verify(this.mockClientFactory, times(times)).getProcessorHostCreator();
+    }
+
+    @Override
+    protected void verifySubscriberRegistered(int times) {
+        verify(this.host, times(times)).registerEventProcessorFactory(isA(IEventProcessorFactory.class), isA
+                (EventProcessorOptions
+                .class));
     }
 
 }

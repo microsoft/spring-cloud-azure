@@ -6,25 +6,29 @@
 
 package com.microsoft.azure.spring.integration;
 
+import com.google.common.collect.ImmutableMap;
 import com.microsoft.azure.spring.integration.core.PartitionSupplier;
 import com.microsoft.azure.spring.integration.core.SendOperation;
 import org.junit.Test;
 import org.springframework.core.NestedRuntimeException;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.GenericMessage;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.*;
 
-public abstract class SendOperationTest<D, O extends SendOperation<D>> {
+public abstract class SendOperationTest<O extends SendOperation> {
 
     protected O sendOperation;
     protected String payload = "payload";
     protected CompletableFuture<Void> future = new CompletableFuture<>();
-    protected D message;
     protected String partitionKey = "key";
     private String destination = "event-hub";
     private String partitionId = "1";
+    private Message<?> message =
+            new GenericMessage<>("testPayload", ImmutableMap.of("key1", "value1", "key2", "value2"));
 
     @Test
     public void testSendWithoutPartitionSupplier() throws ExecutionException, InterruptedException {

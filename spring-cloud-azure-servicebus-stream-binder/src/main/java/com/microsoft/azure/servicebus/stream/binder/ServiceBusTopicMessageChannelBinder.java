@@ -10,10 +10,10 @@ import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusConsume
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusExtendedBindingProperties;
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusProducerProperties;
 import com.microsoft.azure.servicebus.stream.binder.provisioning.ServiceBusTopicChannelProvisioner;
+import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
 import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
 import com.microsoft.azure.spring.integration.eventhub.inbound.ListenerMode;
 import com.microsoft.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter;
-import com.microsoft.azure.spring.integration.servicebus.outbound.ServiceBusMessageHandler;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
 import org.springframework.cloud.stream.binder.*;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
@@ -51,8 +51,8 @@ public class ServiceBusTopicMessageChannelBinder extends
     @Override
     protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
             ExtendedProducerProperties<ServiceBusProducerProperties> producerProperties, MessageChannel errorChannel) {
-        ServiceBusMessageHandler handler =
-                new ServiceBusMessageHandler(destination.getName(), this.serviceBusTopicOperation);
+        AzureMessageHandler handler =
+                new AzureMessageHandler(destination.getName(), this.serviceBusTopicOperation);
         handler.setBeanFactory(getBeanFactory());
         handler.setSync(producerProperties.getExtension().isSync());
         handler.setSendTimeout(producerProperties.getExtension().getSendTimeout());

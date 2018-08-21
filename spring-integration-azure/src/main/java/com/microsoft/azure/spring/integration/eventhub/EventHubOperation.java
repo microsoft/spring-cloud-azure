@@ -16,7 +16,7 @@ import com.microsoft.azure.spring.integration.core.SubscribeByGroupOperation;
  *
  * @author Warren Zhu
  */
-public interface EventHubOperation extends SendOperation<EventData>, SubscribeByGroupOperation<EventData, EventData> {
+public interface EventHubOperation extends SendOperation, SubscribeByGroupOperation<EventData, EventData> {
 
     void setStartPosition(StartPosition startPosition);
 }

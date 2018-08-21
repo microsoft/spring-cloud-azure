@@ -28,6 +28,7 @@ public abstract class SubscribeByGroupOperationTest<D, K, O extends SubscribeByG
         assertTrue(succeed);
 
         verifySubscriberCreatorCalled(1);
+        verifySubscriberRegistered(1);
 
         boolean unsubscribed =
                 this.subscribeByGroupOperation.subscribe(destination, this::handleMessage, consumerGroup);
@@ -40,12 +41,14 @@ public abstract class SubscribeByGroupOperationTest<D, K, O extends SubscribeByG
         boolean onceSucceed = this.subscribeByGroupOperation.subscribe(destination, consumer, consumerGroup);
 
         assertTrue(onceSucceed);
+        verifySubscriberRegistered(1);
 
         boolean twiceSucceed = this.subscribeByGroupOperation.subscribe(destination, consumer, consumerGroup);
 
         assertFalse(twiceSucceed);
 
         verifySubscriberCreatorCalled(1);
+        verifySubscriberRegistered(1);
     }
 
     @Test
@@ -53,6 +56,7 @@ public abstract class SubscribeByGroupOperationTest<D, K, O extends SubscribeByG
         boolean onceSucceed = this.subscribeByGroupOperation.subscribe(destination, this::handleMessage, consumerGroup);
 
         assertTrue(onceSucceed);
+        verifySubscriberRegistered(1);
 
         boolean twiceSucceed =
                 this.subscribeByGroupOperation.subscribe(destination, this::handleMessage, anotherConsumerGroup);
@@ -79,4 +83,6 @@ public abstract class SubscribeByGroupOperationTest<D, K, O extends SubscribeByG
     }
 
     protected abstract void verifySubscriberCreatorCalled(int times);
+
+    protected abstract void verifySubscriberRegistered(int times);
 }

@@ -36,7 +36,6 @@ public class TopicTemplateSendTest extends ServiceBusTemplateSendTest<ServiceBus
         when(this.mockClient.sendAsync(isA(IMessage.class))).thenReturn(future);
 
         this.sendOperation = new ServiceBusTopicTemplate(mockClientFactory);
-        this.message = new Message(payload);
     }
 
 }

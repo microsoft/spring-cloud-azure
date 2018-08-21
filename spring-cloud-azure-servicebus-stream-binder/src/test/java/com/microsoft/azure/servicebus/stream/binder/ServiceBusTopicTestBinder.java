@@ -23,7 +23,7 @@ public class ServiceBusTopicTestBinder extends
     public ServiceBusTopicTestBinder() {
         ServiceBusTopicMessageChannelBinder binder = new ServiceBusTopicMessageChannelBinder(BinderHeaders
                 .STANDARD_HEADERS,
-                new ServiceBusTopicTestChannelProvisioner(null, "namespace"), new ServiceBusTopicTestOperation());
+                new ServiceBusTopicTestChannelProvisioner(null, "namespace"), new ServiceBusTopicTestOperation(null));
         GenericApplicationContext context = new GenericApplicationContext();
         binder.setApplicationContext(context);
         this.setBinder(binder);

@@ -50,6 +50,15 @@ public class TopicTemplateSubscribeTest
         verify(this.mockClientFactory, times(times)).getSubscriptionClientCreator();
     }
 
+    @Override
+    protected void verifySubscriberRegistered(int times) {
+        try {
+            verify(this.subscriptionClient, times(times)).registerMessageHandler(isA(IMessageHandler.class));
+        } catch (InterruptedException | ServiceBusException e) {
+            fail("Exception should not throw" + e);
+        }
+    }
+
     private SubscriptionClient createSubscriptionClient(Tuple<String, String> nameAndConsumerGroup) {
         if (nameAndConsumerGroup.getSecond().equals(this.consumerGroup)) {
             return this.subscriptionClient;

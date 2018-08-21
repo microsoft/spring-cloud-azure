@@ -8,12 +8,13 @@ package com.microsoft.azure.spring.integration.servicebus;
 
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.spring.integration.MessageHandlerTest;
+import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
 import com.microsoft.azure.spring.integration.core.PartitionSupplier;
-import com.microsoft.azure.spring.integration.servicebus.outbound.ServiceBusMessageHandler;
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueOperation;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.messaging.Message;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
@@ -26,11 +27,10 @@ public class ServiceBusMessageHandlerTest extends MessageHandlerTest<IMessage, S
     @Before
     @Override
     public void setUp() {
-        this.messageClass = IMessage.class;
         this.future.complete(null);
         this.sendOperation = mock(ServiceBusQueueOperation.class);
-        when(this.sendOperation.sendAsync(eq(this.destination), isA(messageClass), isA(PartitionSupplier.class)))
+        when(this.sendOperation.sendAsync(eq(this.destination), isA(Message.class), isA(PartitionSupplier.class)))
                 .thenReturn(future);
-        this.handler = new ServiceBusMessageHandler(this.destination, this.sendOperation);
+        this.handler = new AzureMessageHandler(this.destination, this.sendOperation);
     }
 }
