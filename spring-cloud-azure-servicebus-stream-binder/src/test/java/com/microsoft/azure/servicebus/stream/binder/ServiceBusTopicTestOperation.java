@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class ServiceBusTopicTestOperation extends ServiceBusTopicTemplate implements ServiceBusTopicOperation {
-    private final Map<String, Map<String, Consumer<Iterable<IMessage>>>> consumerMap = new ConcurrentHashMap<>();
+    private final Map<String, Map<String, Consumer<IMessage>>> consumerMap = new ConcurrentHashMap<>();
     private final Map<String, List<IMessage>> serviceBusTopicsByName = new ConcurrentHashMap<>();
 
     public ServiceBusTopicTestOperation(ServiceBusTopicClientFactory clientFactory) {
@@ -36,13 +36,13 @@ public class ServiceBusTopicTestOperation extends ServiceBusTopicTemplate implem
 
         serviceBusTopicsByName.get(serviceBusTopicName).add(serviceBusMessage);
         consumerMap.putIfAbsent(serviceBusTopicName, new ConcurrentHashMap<>());
-        consumerMap.get(serviceBusTopicName).values().forEach(c -> c.accept(Collections.singleton(serviceBusMessage)));
+        consumerMap.get(serviceBusTopicName).values().forEach(c -> c.accept(serviceBusMessage));
         future.complete(null);
         return future;
     }
 
     @Override
-    public boolean subscribe(String destination, Consumer<Iterable<IMessage>> consumer, String consumerGroup) {
+    public boolean subscribe(String destination, Consumer<IMessage> consumer, String consumerGroup) {
         consumerMap.putIfAbsent(destination, new ConcurrentHashMap<>());
         consumerMap.get(destination).put(consumerGroup, consumer);
         serviceBusTopicsByName.putIfAbsent(destination, new LinkedList<>());
@@ -51,7 +51,7 @@ public class ServiceBusTopicTestOperation extends ServiceBusTopicTemplate implem
     }
 
     @Override
-    public boolean unsubscribe(String destination, Consumer<Iterable<IMessage>> consumer, String consumerGroup) {
+    public boolean unsubscribe(String destination, String consumerGroup) {
         consumerMap.get(destination).remove(consumerGroup);
         return true;
     }

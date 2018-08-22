@@ -21,10 +21,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -37,7 +35,7 @@ public class ServiceBusTopicTemplate extends ServiceBusSendTemplate<ServiceBusTo
         implements ServiceBusTopicOperation {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceBusTopicTemplate.class);
 
-    private final Map<Tuple<String, String>, Set<Consumer<Iterable<IMessage>>>> consumersByNameAndConsumerGroup =
+    private final Map<Tuple<String, String>, Consumer<IMessage>> consumerByNameAndConsumerGroup =
             new ConcurrentHashMap<>();
     private final Function<Tuple<String, String>, Checkpointer<UUID>> checkpointGetter =
             Memoizer.memoize(this::createCheckpointer);
@@ -47,42 +45,43 @@ public class ServiceBusTopicTemplate extends ServiceBusSendTemplate<ServiceBusTo
     }
 
     @Override
-    public synchronized boolean subscribe(String destination, @NonNull Consumer<Iterable<IMessage>> consumer,
+    public boolean subscribe(String destination, @NonNull Consumer<IMessage> consumer,
             @NonNull String consumerGroup) {
         Assert.hasText(destination, "destination can't be null or empty");
 
         Tuple<String, String> nameAndConsumerGroup = Tuple.of(destination, consumerGroup);
-        consumersByNameAndConsumerGroup.putIfAbsent(nameAndConsumerGroup, new CopyOnWriteArraySet<>());
-        boolean added = consumersByNameAndConsumerGroup.get(nameAndConsumerGroup).add(consumer);
 
-        if (!added) {
+        if (consumerByNameAndConsumerGroup.containsKey(nameAndConsumerGroup)) {
             return false;
         }
+
+        consumerByNameAndConsumerGroup.put(nameAndConsumerGroup, consumer);
 
         try {
             this.senderFactory.getSubscriptionClientCreator().apply(Tuple.of(destination, consumerGroup))
                               .registerMessageHandler(new ServiceBusMessageHandler(
-                                      consumersByNameAndConsumerGroup.get(nameAndConsumerGroup)));
+                                      consumerByNameAndConsumerGroup.get(nameAndConsumerGroup)));
         } catch (ServiceBusException | InterruptedException e) {
             LOGGER.error("Failed to register message handler", e);
             throw new ServiceBusRuntimeException("Failed to register message handler", e);
         }
 
-        return added;
+        return true;
     }
 
     @Override
-    public synchronized boolean unsubscribe(String destination, Consumer<Iterable<IMessage>> consumer,
-            String consumerGroup) {
+    public boolean unsubscribe(String destination, String consumerGroup) {
         Tuple<String, String> nameAndConsumerGroup = Tuple.of(destination, consumerGroup);
 
-        if (!consumersByNameAndConsumerGroup.containsKey(nameAndConsumerGroup)) {
+        if (!consumerByNameAndConsumerGroup.containsKey(nameAndConsumerGroup)) {
             return false;
         }
 
         //TODO: unregister message handler but service bus sdk unsupported
 
-        return consumersByNameAndConsumerGroup.get(nameAndConsumerGroup).remove(consumer);
+        consumerByNameAndConsumerGroup.remove(nameAndConsumerGroup);
+
+        return true;
     }
 
     @Override

@@ -7,8 +7,8 @@
 package com.microsoft.azure.spring.integration;
 
 import com.google.common.collect.ImmutableMap;
-import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
+import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
 import com.microsoft.azure.spring.integration.core.PartitionSupplier;
 import com.microsoft.azure.spring.integration.core.SendOperation;
 import org.junit.Test;
