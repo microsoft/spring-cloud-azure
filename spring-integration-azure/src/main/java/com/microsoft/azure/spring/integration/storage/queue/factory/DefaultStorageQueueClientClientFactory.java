@@ -21,16 +21,17 @@ import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.util.function.Function;
 
-public class DefaultStorageQueueFactory implements StorageQueueFactory {
+public class DefaultStorageQueueClientClientFactory implements StorageQueueClientFactory {
 
     private final AzureAdmin azureAdmin;
     private final StorageAccount storageAccount;
     private final Function<String, CloudQueue> queueCreater = Memoizer.memoize(this::createStorageQueue);
     private CloudQueueClient cloudQueueClient;
 
-    public DefaultStorageQueueFactory(@NonNull AzureAdmin azureAdmin, String storageAccountName) {
+    public DefaultStorageQueueClientClientFactory(@NonNull AzureAdmin azureAdmin, String storageAccountName) {
         this.azureAdmin = azureAdmin;
         this.storageAccount = azureAdmin.getOrCreateStorageAccount(storageAccountName);
+        this.cloudQueueClient = createStorageQueueClient();
     }
     
     @Override
@@ -51,9 +52,6 @@ public class DefaultStorageQueueFactory implements StorageQueueFactory {
 
     private CloudQueue createStorageQueue(String queueName) {
         Assert.hasText(queueName, "queueName can't be null or empty");
-        if (this.cloudQueueClient == null) {
-            this.cloudQueueClient = createStorageQueueClient();
-        }
         try {
             CloudQueue queue = this.cloudQueueClient.getQueueReference(queueName);
             queue.createIfNotExists();

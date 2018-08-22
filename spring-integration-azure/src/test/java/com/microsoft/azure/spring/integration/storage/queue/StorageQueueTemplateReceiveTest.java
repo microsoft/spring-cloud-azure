@@ -6,7 +6,7 @@
 
 package com.microsoft.azure.spring.integration.storage.queue;
 
-import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueFactory;
+import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueClientFactory;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.queue.CloudQueue;
 import com.microsoft.azure.storage.queue.CloudQueueMessage;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 public class StorageQueueTemplateReceiveTest {
 
     @Mock
-    private StorageQueueFactory mockStorageQueueFactory;
+    private StorageQueueClientFactory mockStorageQueueClientFactory;
 
     @Mock
     private CloudQueue mockCloudQueue;
@@ -38,8 +38,8 @@ public class StorageQueueTemplateReceiveTest {
 
     @Before
     public void setup() throws StorageException {
-        this.operation = new StorageQueueTemplate(this.mockStorageQueueFactory);
-        when(this.mockStorageQueueFactory.getQueueCreator()).thenReturn(t -> this.mockCloudQueue);
+        this.operation = new StorageQueueTemplate(this.mockStorageQueueClientFactory);
+        when(this.mockStorageQueueClientFactory.getQueueCreator()).thenReturn(t -> this.mockCloudQueue);
         when(this.mockCloudQueue.retrieveMessage(eq(this.visibilityTimeoutInSeconds), eq(null), eq(null)))
                 .thenReturn(this.cloudQueueMessage);
     }
