@@ -11,8 +11,8 @@ import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoCo
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueOperation;
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueTemplate;
-import com.microsoft.azure.spring.integration.storage.queue.factory.DefaultStorageQueueFactory;
-import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueFactory;
+import com.microsoft.azure.spring.integration.storage.queue.factory.DefaultStorageQueueClientClientFactory;
+import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueClientFactory;
 import com.microsoft.azure.storage.queue.CloudQueueClient;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -31,14 +31,15 @@ public class AzureStorageQueueAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    StorageQueueFactory storageQueueFactory(AzureAdmin azureAdmin, AzureStorageProperties azureStorageProperties) {
-        return new DefaultStorageQueueFactory(azureAdmin, azureStorageProperties.getAccount());
+    StorageQueueClientFactory storageQueueFactory(AzureAdmin azureAdmin,
+                                                  AzureStorageProperties azureStorageProperties) {
+        return new DefaultStorageQueueClientClientFactory(azureAdmin, azureStorageProperties.getAccount());
     }
 
     @Bean
     @ConditionalOnMissingBean
-    StorageQueueOperation storageQueueOperation(StorageQueueFactory storageQueueFactory){
-        return new StorageQueueTemplate(storageQueueFactory);
+    StorageQueueOperation storageQueueOperation(StorageQueueClientFactory storageQueueClientFactory){
+        return new StorageQueueTemplate(storageQueueClientFactory);
     }
 
 }
