@@ -39,22 +39,17 @@ import java.util.function.Function;
  */
 public class DefaultEventHubClientFactory implements EventHubClientFactory, DisposableBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultEventHubClientFactory.class);
-
+    private static final String PROJECT_VERSION =
+            DefaultEventHubClientFactory.class.getPackage().getImplementationVersion();
+    private static final String USER_AGENT = "spring-cloud-azure" + "/" + PROJECT_VERSION;
     private final Map<String, EventHubClient> clientsByName = new ConcurrentHashMap<>();
-
     // (eventHubClient, partitionId) -> partitionSender
     private final Map<Tuple<EventHubClient, String>, PartitionSender> partitionSenderMap = new ConcurrentHashMap<>();
-
     // (eventHubName, consumerGroup) -> eventProcessorHost
     private final Map<Tuple<String, String>, EventProcessorHost> processorHostMap = new ConcurrentHashMap<>();
-
     private final AzureAdmin azureAdmin;
     private final EventHubNamespace namespace;
     private String checkpointStorageConnectionString;
-
-    private static final String PROJECT_VERSION = DefaultEventHubClientFactory.class.getPackage()
-            .getImplementationVersion();
-    private static final String USER_AGENT = "spring-cloud-azure" + "/" + PROJECT_VERSION;
 
     public DefaultEventHubClientFactory(@NonNull AzureAdmin azureAdmin, String namespace) {
         Assert.hasText(namespace, "namespace can't be null or empty");

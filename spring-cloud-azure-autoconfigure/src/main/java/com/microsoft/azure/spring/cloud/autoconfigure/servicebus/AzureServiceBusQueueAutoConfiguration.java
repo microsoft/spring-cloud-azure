@@ -15,7 +15,6 @@ import com.microsoft.azure.spring.integration.servicebus.factory.DefaultServiceB
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusQueueClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueOperation;
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
