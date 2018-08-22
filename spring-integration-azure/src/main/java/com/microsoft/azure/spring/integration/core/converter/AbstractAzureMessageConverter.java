@@ -13,6 +13,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Abstract class handles common conversion logic between <T> and {@link Message}
@@ -94,7 +95,7 @@ public abstract class AbstractAzureMessageConverter<T> implements AzureMessageCo
         try {
             return objectMapper.readerFor(payloadType).readValue(payload);
         } catch (IOException e) {
-            throw new ConversionException("Failed to read JSON: " + payload, e);
+            throw new ConversionException("Failed to read JSON: " + Arrays.toString(payload), e);
         }
     }
 }
