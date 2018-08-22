@@ -7,7 +7,7 @@
 package com.microsoft.azure.spring.integration.storage.queue;
 
 import com.microsoft.azure.spring.integration.SendOperationTest;
-import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueFactory;
+import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueClientFactory;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.queue.CloudQueue;
 import com.microsoft.azure.storage.queue.CloudQueueMessage;
@@ -25,15 +25,15 @@ import static org.mockito.Mockito.*;
 public class StorageQueueTemplateSendTest extends SendOperationTest<CloudQueueMessage, StorageQueueOperation> {
 
     @Mock
-    private StorageQueueFactory mockStorageQueueFactory;
+    private StorageQueueClientFactory mockStorageQueueClientFactory;
 
     @Mock
     private CloudQueue mockCloudQueue;
 
     @Before
     public void setup() {
-        when(this.mockStorageQueueFactory.getQueueCreator()).thenReturn(t -> mockCloudQueue);
-        this.sendOperation = new StorageQueueTemplate(mockStorageQueueFactory);
+        when(this.mockStorageQueueClientFactory.getQueueCreator()).thenReturn(t -> mockCloudQueue);
+        this.sendOperation = new StorageQueueTemplate(mockStorageQueueClientFactory);
         this.message = new CloudQueueMessage("test message");
     }
 
@@ -73,14 +73,14 @@ public class StorageQueueTemplateSendTest extends SendOperationTest<CloudQueueMe
 
     @Override
     protected void whenSendWithException() {
-        when(this.mockStorageQueueFactory.getQueueCreator()).thenReturn((s) -> {
+        when(this.mockStorageQueueClientFactory.getQueueCreator()).thenReturn((s) -> {
             throw new StorageQueueRuntimeException("Failed to get queue creator.");
         });
     }
 
     @Override
     protected void verifyGetClientCreator(int times) {
-        verify(this.mockStorageQueueFactory, times(times)).getQueueCreator();
+        verify(this.mockStorageQueueClientFactory, times(times)).getQueueCreator();
     }
 
     @Override

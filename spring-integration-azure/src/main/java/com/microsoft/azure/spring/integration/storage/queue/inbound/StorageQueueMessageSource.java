@@ -35,7 +35,6 @@ public class StorageQueueMessageSource extends AbstractMessageSource<CloudQueueM
     private String destination;
     private CheckpointMode checkpointMode = CheckpointMode.RECORD;
     private Checkpointer<CloudQueueMessage> checkpointer;
-    private MessageConverter messageConverter;
     private Map<String, Object> commonHeaders = new HashMap<>();
 
     public StorageQueueMessageSource(String destination, StorageQueueOperation storageQueueOperation) {
@@ -69,10 +68,7 @@ public class StorageQueueMessageSource extends AbstractMessageSource<CloudQueueM
     }
 
     private Message<?> toMessage(Object payload) {
-        if (messageConverter == null) {
-            return MessageBuilder.withPayload(payload).copyHeaders(commonHeaders).build();
-        }
-        return messageConverter.toMessage(payload, new MessageHeaders(commonHeaders));
+        return MessageBuilder.withPayload(payload).copyHeaders(commonHeaders).build();
     }
 
     public void setCheckpointMode(CheckpointMode checkpointMode) {
