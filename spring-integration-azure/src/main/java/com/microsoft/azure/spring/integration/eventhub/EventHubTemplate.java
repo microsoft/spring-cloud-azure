@@ -12,20 +12,23 @@ import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.eventhubs.EventPosition;
 import com.microsoft.azure.eventprocessorhost.*;
 import com.microsoft.azure.spring.cloud.context.core.Tuple;
-import com.microsoft.azure.spring.integration.core.Checkpointer;
+import com.microsoft.azure.spring.integration.core.AzureCheckpointer;
+import com.microsoft.azure.spring.integration.core.AzureHeaders;
 import com.microsoft.azure.spring.integration.core.PartitionSupplier;
 import com.microsoft.azure.spring.integration.core.StartPosition;
-import com.microsoft.azure.spring.integration.eventhub.inbound.EventHubCheckpointer;
+import com.microsoft.azure.spring.integration.eventhub.converter.EventHubMessageConverter;
+import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.converter.MessageConverter;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.util.Assert;
 
-import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -41,20 +44,20 @@ import java.util.function.Consumer;
 public class EventHubTemplate implements EventHubOperation {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventHubTemplate.class);
-    private final ConcurrentHashMap<Tuple<String, String>, Consumer<EventData>> consumerByNameAndConsumerGroup =
-            new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<Tuple<String, String>, EventHubCheckpointer> checkpointersByNameAndConsumerGroup =
-            new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Tuple<String, String>, EventProcessorHost> processorHostsByNameAndConsumerGroup =
             new ConcurrentHashMap<>();
 
     private final EventHubClientFactory clientFactory;
 
+    @Getter
     @Setter
-    private MessageConverter messageConverter = new MappingJackson2MessageConverter();
+    private EventHubMessageConverter messageConverter = new EventHubMessageConverter();
 
     @Setter
     private StartPosition startPosition = StartPosition.LATEST;
+
+    @Setter
+    private CheckpointMode checkpointMode = CheckpointMode.BATCH;
 
     public EventHubTemplate(EventHubClientFactory clientFactory) {
         this.clientFactory = clientFactory;
@@ -76,7 +79,7 @@ public class EventHubTemplate implements EventHubOperation {
     public <T> CompletableFuture<Void> sendAsync(String eventHubName, @NonNull Message<T> message,
             PartitionSupplier partitionSupplier) {
         Assert.hasText(eventHubName, "eventHubName can't be null or empty");
-        EventData eventData = toEventData(message);
+        EventData eventData = messageConverter.fromMessage(message, EventData.class);
         try {
             EventHubClient client = this.clientFactory.getEventHubClientCreator().apply(eventHubName);
 
@@ -99,23 +102,17 @@ public class EventHubTemplate implements EventHubOperation {
     }
 
     @Override
-    public Checkpointer<EventData> getCheckpointer(String destination, String consumerGroup) {
-        return checkpointersByNameAndConsumerGroup.get(Tuple.of(destination, consumerGroup));
-    }
-
-    @Override
-    public boolean subscribe(String destination, Consumer<EventData> consumer, String consumerGroup) {
+    public <T> boolean subscribe(String destination, String consumerGroup, Consumer<Message<?>> consumer,
+            Class<T> messagePayloadType) {
         Tuple<String, String> nameAndConsumerGroup = Tuple.of(destination, consumerGroup);
 
-        if (consumerByNameAndConsumerGroup.containsKey(nameAndConsumerGroup)) {
+        if (processorHostsByNameAndConsumerGroup.containsKey(nameAndConsumerGroup)) {
             return false;
         }
 
-        consumerByNameAndConsumerGroup.put(nameAndConsumerGroup, consumer);
-
         processorHostsByNameAndConsumerGroup.computeIfAbsent(nameAndConsumerGroup, key -> {
             EventProcessorHost host = this.clientFactory.getProcessorHostCreator().apply(key);
-            host.registerEventProcessorFactory(context -> new EventHubProcessor(key),
+            host.registerEventProcessorFactory(context -> new EventHubProcessor(consumer, messagePayloadType),
                     buildEventProcessorOptions(startPosition));
             return host;
         });
@@ -126,59 +123,50 @@ public class EventHubTemplate implements EventHubOperation {
     public boolean unsubscribe(String destination, String consumerGroup) {
         Tuple<String, String> nameAndConsumerGroup = Tuple.of(destination, consumerGroup);
 
-        if (!consumerByNameAndConsumerGroup.containsKey(nameAndConsumerGroup)) {
+        if (!processorHostsByNameAndConsumerGroup.containsKey(nameAndConsumerGroup)) {
             return false;
         }
 
-        consumerByNameAndConsumerGroup.remove(nameAndConsumerGroup);
         processorHostsByNameAndConsumerGroup.remove(nameAndConsumerGroup).unregisterEventProcessor();
 
         return true;
     }
 
-    protected EventData toEventData(Message<?> message) {
-        Object payload = message.getPayload();
-        if (payload instanceof EventData) {
-            return (EventData) payload;
-        }
+    private class EventHubProcessor<T> implements IEventProcessor {
 
-        if (payload instanceof String) {
-            return EventData.create(((String) payload).getBytes(Charset.defaultCharset()));
-        }
+        private final Consumer<Message<T>> consumer;
+        private final Class payloadType;
 
-        if (payload instanceof byte[]) {
-            return EventData.create((byte[]) payload);
-        }
-
-        return EventData.create((byte[]) this.messageConverter.fromMessage(message, byte[].class));
-    }
-
-    private class EventHubProcessor implements IEventProcessor {
-
-        private final Tuple<String, String> nameAndConsumerGroup;
-
-        EventHubProcessor(Tuple<String, String> nameAndConsumerGroup) {
-            this.nameAndConsumerGroup = nameAndConsumerGroup;
+        EventHubProcessor(@NonNull Consumer<Message<T>> consumer, @NonNull Class<T> payloadType) {
+            this.consumer = consumer;
+            this.payloadType = payloadType;
         }
 
         @Override
         public void onOpen(PartitionContext context) throws Exception {
             LOGGER.info("Partition {} is opening", context.getPartitionId());
-            checkpointersByNameAndConsumerGroup.putIfAbsent(nameAndConsumerGroup, new EventHubCheckpointer());
-            checkpointersByNameAndConsumerGroup.get(nameAndConsumerGroup).addPartitionContext(context);
         }
 
         @Override
         public void onClose(PartitionContext context, CloseReason reason) throws Exception {
             LOGGER.info("Partition {} is closing for reason {}", context.getPartitionId(), reason);
-            checkpointersByNameAndConsumerGroup.get(nameAndConsumerGroup).removePartitionContext(context);
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public void onEvents(PartitionContext context, Iterable<EventData> events) throws Exception {
-            Consumer<EventData> consummer = consumerByNameAndConsumerGroup.get(nameAndConsumerGroup);
+            Map<String, Object> headers = new HashMap<>();
+            headers.put(AzureHeaders.PARTITION_ID, context.getPartitionId());
+
             for (EventData e : events) {
-                consummer.accept(e);
+                if (checkpointMode == CheckpointMode.MANUAL) {
+                    headers.put(AzureHeaders.CHECKPOINTER, new AzureCheckpointer(() -> context.checkpoint(e)));
+                }
+                this.consumer.accept(messageConverter.toMessage(e, new MessageHeaders(headers), payloadType));
+            }
+
+            if (checkpointMode == CheckpointMode.BATCH) {
+                context.checkpoint();
             }
         }
 

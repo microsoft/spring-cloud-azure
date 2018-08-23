@@ -8,7 +8,6 @@ package example;
 
 import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
 import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
-import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
 import com.microsoft.azure.spring.integration.eventhub.inbound.EventHubInboundChannelAdapter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -79,8 +78,8 @@ public class WebController {
      *  via {@link MessageChannel} has name {@value INPUT_CHANNEL}
      */
     @ServiceActivator(inputChannel = INPUT_CHANNEL)
-    public void messageReceiver(byte[] payload) {
-        LOGGER.info("Message arrived! Payload: " + new String(payload));
+    public void messageReceiver(String payload) {
+        LOGGER.info("Message arrived! Payload: " + payload);
     }
 
     @Bean
@@ -89,7 +88,6 @@ public class WebController {
         EventHubInboundChannelAdapter adapter = new EventHubInboundChannelAdapter(EVENTHUB_NAME,
                 eventhubOperation, "");
         adapter.setOutputChannel(inputChannel);
-        adapter.setCheckpointMode(CheckpointMode.BATCH);
         return adapter;
     }
 

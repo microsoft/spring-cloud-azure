@@ -7,45 +7,59 @@
 package com.microsoft.azure.servicebus.stream.binder;
 
 import com.microsoft.azure.servicebus.IMessage;
-import com.microsoft.azure.spring.integration.core.Checkpointer;
 import com.microsoft.azure.spring.integration.core.PartitionSupplier;
+import com.microsoft.azure.spring.integration.core.StartPosition;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicTemplate;
+import lombok.Setter;
 import org.springframework.messaging.Message;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class ServiceBusTopicTestOperation extends ServiceBusTopicTemplate implements ServiceBusTopicOperation {
-    private final Map<String, Map<String, Consumer<IMessage>>> consumerMap = new ConcurrentHashMap<>();
-    private final Map<String, List<IMessage>> serviceBusTopicsByName = new ConcurrentHashMap<>();
+    private final Map<String, Map<String, Consumer<Message<?>>>> consumerMap = new ConcurrentHashMap<>();
+    private final Map<String, List<IMessage>> topicsByName = new ConcurrentHashMap<>();
+
+    @Setter
+    private StartPosition startPosition = StartPosition.LATEST;
 
     public ServiceBusTopicTestOperation(ServiceBusTopicClientFactory clientFactory) {
         super(clientFactory);
     }
 
     @Override
-    public <T> CompletableFuture<Void> sendAsync(String serviceBusTopicName, Message<T> message,
+    public <T> CompletableFuture<Void> sendAsync(String topicName, Message<T> message,
             PartitionSupplier partitionSupplier) {
         CompletableFuture<Void> future = new CompletableFuture<>();
-        serviceBusTopicsByName.putIfAbsent(serviceBusTopicName, new LinkedList<>());
-        IMessage serviceBusMessage = toServiceBusMessage(message);
 
-        serviceBusTopicsByName.get(serviceBusTopicName).add(serviceBusMessage);
-        consumerMap.putIfAbsent(serviceBusTopicName, new ConcurrentHashMap<>());
-        consumerMap.get(serviceBusTopicName).values().forEach(c -> c.accept(serviceBusMessage));
+        IMessage serviceBusMessage = getMessageConverter().fromMessage(message, IMessage.class);
+
+        topicsByName.putIfAbsent(topicName, new LinkedList<>());
+        topicsByName.get(topicName).add(serviceBusMessage);
+        consumerMap.putIfAbsent(topicName, new ConcurrentHashMap<>());
+        consumerMap.get(topicName).values()
+                   .forEach(c -> c.accept(getMessageConverter().toMessage(serviceBusMessage, byte[].class)));
+
         future.complete(null);
         return future;
     }
 
     @Override
-    public boolean subscribe(String destination, Consumer<IMessage> consumer, String consumerGroup) {
-        consumerMap.putIfAbsent(destination, new ConcurrentHashMap<>());
-        consumerMap.get(destination).put(consumerGroup, consumer);
-        serviceBusTopicsByName.putIfAbsent(destination, new LinkedList<>());
+    public <T> boolean subscribe(String topicName, String consumerGroup, Consumer<Message<?>> consumer,
+            Class<T> payloadClass) {
+        consumerMap.putIfAbsent(topicName, new ConcurrentHashMap<>());
+        consumerMap.get(topicName).put(consumerGroup, consumer);
+        topicsByName.putIfAbsent(topicName, new LinkedList<>());
+
+        if (this.startPosition == StartPosition.EARLISET) {
+            topicsByName.get(topicName).forEach(e -> consumer.accept(getMessageConverter().toMessage(e, payloadClass)));
+        }
 
         return true;
     }
@@ -54,11 +68,6 @@ public class ServiceBusTopicTestOperation extends ServiceBusTopicTemplate implem
     public boolean unsubscribe(String destination, String consumerGroup) {
         consumerMap.get(destination).remove(consumerGroup);
         return true;
-    }
-
-    @Override
-    public Checkpointer<UUID> getCheckpointer(String destination, String consumerGroup) {
-        return new ServiceBusTopicTestCheckpointer();
     }
 }
 
