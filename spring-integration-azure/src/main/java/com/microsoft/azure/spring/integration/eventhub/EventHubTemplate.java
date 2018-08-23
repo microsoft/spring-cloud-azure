@@ -26,10 +26,8 @@ import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.util.Assert;
 
 import java.nio.charset.Charset;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Consumer;
 
 /**
@@ -43,8 +41,8 @@ import java.util.function.Consumer;
 public class EventHubTemplate implements EventHubOperation {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventHubTemplate.class);
-    private final ConcurrentHashMap<Tuple<String, String>, Set<Consumer<Iterable<EventData>>>>
-            consumersByNameAndConsumerGroup = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Tuple<String, String>, Consumer<EventData>> consumerByNameAndConsumerGroup =
+            new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Tuple<String, String>, EventHubCheckpointer> checkpointersByNameAndConsumerGroup =
             new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Tuple<String, String>, EventProcessorHost> processorHostsByNameAndConsumerGroup =
@@ -106,15 +104,14 @@ public class EventHubTemplate implements EventHubOperation {
     }
 
     @Override
-    public synchronized boolean subscribe(String destination, Consumer<Iterable<EventData>> consumer,
-            String consumerGroup) {
+    public boolean subscribe(String destination, Consumer<EventData> consumer, String consumerGroup) {
         Tuple<String, String> nameAndConsumerGroup = Tuple.of(destination, consumerGroup);
-        consumersByNameAndConsumerGroup.putIfAbsent(nameAndConsumerGroup, new CopyOnWriteArraySet<>());
-        boolean added = consumersByNameAndConsumerGroup.get(nameAndConsumerGroup).add(consumer);
 
-        if (!added) {
+        if (consumerByNameAndConsumerGroup.containsKey(nameAndConsumerGroup)) {
             return false;
         }
+
+        consumerByNameAndConsumerGroup.put(nameAndConsumerGroup, consumer);
 
         processorHostsByNameAndConsumerGroup.computeIfAbsent(nameAndConsumerGroup, key -> {
             EventProcessorHost host = this.clientFactory.getProcessorHostCreator().apply(key);
@@ -126,20 +123,17 @@ public class EventHubTemplate implements EventHubOperation {
     }
 
     @Override
-    public synchronized boolean unsubscribe(String destination, Consumer<Iterable<EventData>> consumer,
-            String consumerGroup) {
+    public boolean unsubscribe(String destination, String consumerGroup) {
         Tuple<String, String> nameAndConsumerGroup = Tuple.of(destination, consumerGroup);
 
-        if (!consumersByNameAndConsumerGroup.containsKey(nameAndConsumerGroup)) {
+        if (!consumerByNameAndConsumerGroup.containsKey(nameAndConsumerGroup)) {
             return false;
         }
 
-        boolean existed = consumersByNameAndConsumerGroup.get(nameAndConsumerGroup).remove(consumer);
-        if (consumersByNameAndConsumerGroup.get(nameAndConsumerGroup).isEmpty()) {
-            processorHostsByNameAndConsumerGroup.remove(nameAndConsumerGroup).unregisterEventProcessor();
-        }
+        consumerByNameAndConsumerGroup.remove(nameAndConsumerGroup);
+        processorHostsByNameAndConsumerGroup.remove(nameAndConsumerGroup).unregisterEventProcessor();
 
-        return existed;
+        return true;
     }
 
     protected EventData toEventData(Message<?> message) {
@@ -182,7 +176,10 @@ public class EventHubTemplate implements EventHubOperation {
 
         @Override
         public void onEvents(PartitionContext context, Iterable<EventData> events) throws Exception {
-            consumersByNameAndConsumerGroup.get(nameAndConsumerGroup).forEach(c -> c.accept(events));
+            Consumer<EventData> consummer = consumerByNameAndConsumerGroup.get(nameAndConsumerGroup);
+            for (EventData e : events) {
+                consummer.accept(e);
+            }
         }
 
         @Override

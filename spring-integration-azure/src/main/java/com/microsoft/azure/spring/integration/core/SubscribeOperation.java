@@ -21,7 +21,7 @@ public interface SubscribeOperation<D, K> {
      * @return {@code true} if the consumer was subscribed or {@code false} if it
      * was already subscribed.
      */
-    boolean subscribe(String destination, Consumer<Iterable<D>> consumer);
+    boolean subscribe(String destination, Consumer<D> consumer);
 
     /**
      * Un-register a message consumer.
@@ -29,7 +29,7 @@ public interface SubscribeOperation<D, K> {
      * @return {@code true} if the consumer was un-registered, or {@code false}
      * if was not registered.
      */
-    boolean unsubscribe(String destination, Consumer<Iterable<D>> consumer);
+    boolean unsubscribe(String destination);
 
     /**
      * Get checkpointer for a given destination

@@ -20,7 +20,6 @@ import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.StreamSupport;
 
 @Getter
 public abstract class AbstractInboundChannelAdapter<D, K> extends MessageProducerSupport {
@@ -30,11 +29,8 @@ public abstract class AbstractInboundChannelAdapter<D, K> extends MessageProduce
     protected SubscribeByGroupOperation<D, K> subscribeByGroupOperation;
     protected MessageConverter messageConverter;
     protected Map<String, Object> commonHeaders = new HashMap<>();
-
     @Setter
     private CheckpointMode checkpointMode = CheckpointMode.RECORD;
-    @Setter
-    private ListenerMode listenerMode = ListenerMode.RECORD;
 
     protected AbstractInboundChannelAdapter(String destination) {
         Assert.hasText(destination, "destination can't be null or empty");
@@ -57,21 +53,12 @@ public abstract class AbstractInboundChannelAdapter<D, K> extends MessageProduce
         }
     }
 
-    public void receiveMessage(Iterable<D> events) {
+    public void receiveMessage(D event) {
 
-        if (this.listenerMode == ListenerMode.BATCH) {
-            sendMessage(toMessage(events));
-        } else /* ListenerMode.RECORD */ {
-            StreamSupport.stream(events.spliterator(), false).forEach((e) -> {
-                sendMessage(toMessage(e));
-                if (this.checkpointMode == CheckpointMode.RECORD) {
-                    this.getCheckpointer().checkpoint(getCheckpointKey(e));
-                }
-            });
-        }
+        sendMessage(toMessage(event));
 
-        if (this.checkpointMode == CheckpointMode.BATCH) {
-            this.getCheckpointer().checkpoint();
+        if (this.checkpointMode == CheckpointMode.RECORD) {
+            this.getCheckpointer().checkpoint(getCheckpointKey(event));
         }
 
     }
@@ -93,18 +80,14 @@ public abstract class AbstractInboundChannelAdapter<D, K> extends MessageProduce
 
     protected abstract Object getPayload(D data);
 
-    protected Message<?> toMessage(Iterable<D> data) {
-        throw new UnsupportedOperationException();
-    }
-
     protected abstract K getCheckpointKey(D data);
 
     @Override
     protected void doStop() {
         if (useGroupOperation()) {
-            this.subscribeByGroupOperation.unsubscribe(destination, this::receiveMessage, this.consumerGroup);
+            this.subscribeByGroupOperation.unsubscribe(destination, this.consumerGroup);
         } else {
-            this.subscribeOperation.unsubscribe(destination, this::receiveMessage);
+            this.subscribeOperation.unsubscribe(destination);
         }
 
         super.doStop();

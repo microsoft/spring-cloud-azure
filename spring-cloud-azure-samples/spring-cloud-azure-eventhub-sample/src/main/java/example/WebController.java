@@ -51,8 +51,7 @@ public class WebController {
         this.eventHubOperation.subscribe(EVENT_HUB_NAME, this::messageReceiver, CONSUMER_GROUP);
     }
 
-    private void messageReceiver(Iterable<EventData> eventData) {
-        eventData.forEach(e ->
-        LOGGER.info("Message arrived! Payload: " + new String(e.getBytes())));
+    private void messageReceiver(EventData eventData) {
+        LOGGER.info("Message arrived! Payload: " + new String(eventData.getBytes()));
     }
 }

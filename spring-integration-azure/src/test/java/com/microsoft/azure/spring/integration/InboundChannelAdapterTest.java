@@ -36,12 +36,6 @@ public abstract class InboundChannelAdapterTest<D, K, A extends AbstractInboundC
     protected A adapter;
 
     @Test
-    public void testCheckpointBatchMode() throws InterruptedException {
-        sendAndReceive(CheckpointMode.BATCH);
-        verify(this.checkpointer, times(1)).checkpoint();
-    }
-
-    @Test
     public void testCheckpointRecordMode() throws InterruptedException {
         sendAndReceive(CheckpointMode.RECORD);
         verify(this.checkpointer, times(this.messages.size())).checkpoint(isA(clazz));
@@ -65,7 +59,7 @@ public abstract class InboundChannelAdapterTest<D, K, A extends AbstractInboundC
 
         });
 
-        this.adapter.receiveMessage(this.messages);
+        this.messages.stream().forEach(this.adapter::receiveMessage);
         Assert.isTrue(latch.await(5L, TimeUnit.SECONDS), "Failed to receive message");
 
         for (int i = 0; i < receivedMessages.size(); i++) {

@@ -19,7 +19,7 @@ public abstract class SubscribeByGroupOperationTest<D, K, O extends SubscribeByG
     protected String consumerGroup = "consumer-group";
     protected String anotherConsumerGroup = "consumer-group2";
     private String destination = "event-hub";
-    private Consumer<Iterable<D>> consumer = this::handleMessage;
+    private Consumer<D> consumer = this::handleMessage;
 
     @Test
     public void testSubscribeAndUnsubscribe() {
@@ -30,8 +30,7 @@ public abstract class SubscribeByGroupOperationTest<D, K, O extends SubscribeByG
         verifySubscriberCreatorCalled(1);
         verifySubscriberRegistered(1);
 
-        boolean unsubscribed =
-                this.subscribeByGroupOperation.subscribe(destination, this::handleMessage, consumerGroup);
+        boolean unsubscribed = this.subscribeByGroupOperation.unsubscribe(destination, consumerGroup);
 
         assertTrue(unsubscribed);
     }
@@ -68,18 +67,17 @@ public abstract class SubscribeByGroupOperationTest<D, K, O extends SubscribeByG
 
     @Test
     public void testUnsubscribeNotSubscribed() {
-        boolean unsubscribed =
-                this.subscribeByGroupOperation.unsubscribe(destination, this::handleMessageAnother, consumerGroup);
+        boolean unsubscribed = this.subscribeByGroupOperation.unsubscribe(destination, consumerGroup);
 
         assertFalse(unsubscribed);
 
         verifySubscriberCreatorCalled(0);
     }
 
-    private void handleMessage(Iterable<D> events) {
+    private void handleMessage(D event) {
     }
 
-    private void handleMessageAnother(Iterable<D> events) {
+    private void handleMessageAnother(D event) {
     }
 
     protected abstract void verifySubscriberCreatorCalled(int times);

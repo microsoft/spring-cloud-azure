@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class EventHubTestOperation extends EventHubTemplate implements EventHubOperation {
-    private final Map<String, Map<String, Consumer<Iterable<EventData>>>> consumerMap = new ConcurrentHashMap<>();
+    private final Map<String, Map<String, Consumer<EventData>>> consumerMap = new ConcurrentHashMap<>();
     private final Map<String, List<EventData>> eventHubsByName = new ConcurrentHashMap<>();
 
     @Setter
@@ -45,27 +45,27 @@ public class EventHubTestOperation extends EventHubTemplate implements EventHubO
         eventHubsByName.putIfAbsent(eventHubName, new LinkedList<>());
         eventHubsByName.get(eventHubName).add(eventData);
         consumerMap.putIfAbsent(eventHubName, new ConcurrentHashMap<>());
-        consumerMap.get(eventHubName).values().forEach(c -> c.accept(Collections.singleton(eventData)));
+        consumerMap.get(eventHubName).values().forEach(c -> c.accept(eventData));
 
         future.complete(null);
         return future;
     }
 
     @Override
-    public boolean subscribe(String eventHubName, Consumer<Iterable<EventData>> consumer, String consumerGroup) {
+    public boolean subscribe(String eventHubName, Consumer<EventData> consumer, String consumerGroup) {
         consumerMap.putIfAbsent(eventHubName, new ConcurrentHashMap<>());
         consumerMap.get(eventHubName).put(consumerGroup, consumer);
         eventHubsByName.putIfAbsent(eventHubName, new LinkedList<>());
 
         if (this.startPosition == StartPosition.EARLISET) {
-            consumer.accept(Collections.unmodifiableList(eventHubsByName.get(eventHubName)));
+            eventHubsByName.get(eventHubName).stream().forEach(consumer);
         }
 
         return true;
     }
 
     @Override
-    public boolean unsubscribe(String destination, Consumer<Iterable<EventData>> consumer, String consumerGroup) {
+    public boolean unsubscribe(String destination, String consumerGroup) {
         consumerMap.get(destination).remove(consumerGroup);
         return true;
     }

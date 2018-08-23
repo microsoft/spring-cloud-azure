@@ -21,7 +21,7 @@ public interface SubscribeByGroupOperation<D, K> {
      * @return {@code true} if the consumer was subscribed or {@code false} if it
      * was already subscribed.
      */
-    boolean subscribe(String destination, Consumer<Iterable<D>> consumer, String consumerGroup);
+    boolean subscribe(String destination, Consumer<D> consumer, String consumerGroup);
 
     /**
      * Un-register a message consumer with a given destination and consumer group.
@@ -29,7 +29,7 @@ public interface SubscribeByGroupOperation<D, K> {
      * @return {@code true} if the consumer was un-registered, or {@code false}
      * if was not registered.
      */
-    boolean unsubscribe(String destination, Consumer<Iterable<D>> consumer, String consumerGroup);
+    boolean unsubscribe(String destination, String consumerGroup);
 
     /**
      * Get checkpointer for a given destination and consumer group

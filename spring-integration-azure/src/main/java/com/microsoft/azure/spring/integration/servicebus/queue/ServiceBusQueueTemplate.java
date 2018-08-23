@@ -20,10 +20,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -36,7 +34,7 @@ public class ServiceBusQueueTemplate extends ServiceBusSendTemplate<ServiceBusQu
         implements ServiceBusQueueOperation {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceBusQueueTemplate.class);
 
-    private final Map<String, Set<Consumer<Iterable<IMessage>>>> consumersByName = new ConcurrentHashMap<>();
+    private final Map<String, Consumer<IMessage>> consumerByName = new ConcurrentHashMap<>();
     private final Function<String, Checkpointer<UUID>> checkpointGetter = Memoizer.memoize(this::createCheckpointer);
 
     public ServiceBusQueueTemplate(ServiceBusQueueClientFactory clientFactory) {
@@ -44,29 +42,30 @@ public class ServiceBusQueueTemplate extends ServiceBusSendTemplate<ServiceBusQu
     }
 
     @Override
-    public synchronized boolean subscribe(String destination, @NonNull Consumer<Iterable<IMessage>> consumer) {
+    public boolean subscribe(String destination, @NonNull Consumer<IMessage> consumer) {
         Assert.hasText(destination, "destination can't be null or empty");
-        consumersByName.putIfAbsent(destination, new CopyOnWriteArraySet<>());
-        boolean added = consumersByName.get(destination).add(consumer);
+
+        if (consumerByName.containsKey(destination)) {
+            return false;
+        }
 
         try {
             this.senderFactory.getQueueClientCreator().apply(destination)
-                              .registerMessageHandler(new ServiceBusMessageHandler(consumersByName.get(destination)));
+                              .registerMessageHandler(new ServiceBusMessageHandler(consumerByName.get(destination)));
         } catch (ServiceBusException | InterruptedException e) {
             LOGGER.error("Failed to register message handler", e);
             throw new ServiceBusRuntimeException("Failed to register message handler", e);
         }
 
-        return added;
+        return true;
     }
 
     @Override
-    public synchronized boolean unsubscribe(String destination, Consumer<Iterable<IMessage>> consumer) {
-        boolean existed = consumersByName.get(destination).remove(consumer);
-
+    public boolean unsubscribe(String destination) {
+        consumerByName.remove(destination);
         //TODO: unregister message handler but service bus sdk unsupported
 
-        return existed;
+        return true;
     }
 
     @Override
