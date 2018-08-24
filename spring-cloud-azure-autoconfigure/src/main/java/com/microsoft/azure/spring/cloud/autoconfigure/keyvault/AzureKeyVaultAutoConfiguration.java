@@ -35,7 +35,7 @@ import javax.annotation.PostConstruct;
 @AutoConfigureBefore(TelemetryAutoConfiguration.class)
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnProperty(value = "spring.cloud.azure.keyvault.enabled", matchIfMissing = true)
-@ConditionalOnClass(KeyVaultClient.class)
+@ConditionalOnClass({KeyVaultClient.class, KeyVaultOperation.class})
 @EnableConfigurationProperties(AzureKeyVaultProperties.class)
 public class AzureKeyVaultAutoConfiguration {
     private static final String KEY_VAULT = "KeyVault";
