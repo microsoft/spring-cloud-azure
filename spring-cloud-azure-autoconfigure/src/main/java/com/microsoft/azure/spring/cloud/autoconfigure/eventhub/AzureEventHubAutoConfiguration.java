@@ -42,7 +42,7 @@ public class AzureEventHubAutoConfiguration {
     private static final String EVENT_HUB = "EventHub";
 
     @PostConstruct
-    public void collectTelemetry(TelemetryCollector collector) {
+    public void collectTelemetry() {
         TelemetryCollector.getInstance().addService(EVENT_HUB);
     }
 
