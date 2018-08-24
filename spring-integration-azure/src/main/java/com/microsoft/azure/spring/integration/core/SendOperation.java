@@ -6,18 +6,27 @@
 
 package com.microsoft.azure.spring.integration.core;
 
+import org.springframework.messaging.Message;
+
 import java.util.concurrent.CompletableFuture;
 
 
 /**
- * Operations for sending message to a destination.
+ * Operations for sending {@link Message} to a destination.
  *
- * @param <D> the type of message
  * @author Warren Zhu
  */
-public interface SendOperation<D> {
+public interface SendOperation {
+
     /**
-     * Send a message to the given destination with a given partition supplier.
+     * Send a {@link Message} to the given destination with a given partition supplier.
      */
-    CompletableFuture<Void> sendAsync(String destination, D message, PartitionSupplier partitionSupplier);
+    <T> CompletableFuture<Void> sendAsync(String destination, Message<T> message, PartitionSupplier partitionSupplier);
+
+    /**
+     * Send a {@link Message} to the given destination.
+     */
+    default <T> CompletableFuture<Void> sendAsync(String destination, Message<T> message) {
+        return sendAsync(destination, message, null);
+    }
 }

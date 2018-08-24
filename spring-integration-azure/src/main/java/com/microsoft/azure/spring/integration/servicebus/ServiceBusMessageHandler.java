@@ -13,8 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 
-import java.util.Collections;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -25,15 +23,15 @@ import java.util.function.Consumer;
  */
 public class ServiceBusMessageHandler implements IMessageHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceBusMessageHandler.class);
-    private final Set<Consumer<Iterable<IMessage>>> consumers;
+    private final Consumer<IMessage> consumer;
 
-    public ServiceBusMessageHandler(@NonNull Set<Consumer<Iterable<IMessage>>> consumers) {
-        this.consumers = consumers;
+    public ServiceBusMessageHandler(@NonNull Consumer<IMessage> consumer) {
+        this.consumer = consumer;
     }
 
     @Override
     public CompletableFuture<Void> onMessageAsync(IMessage message) {
-        consumers.forEach(c -> c.accept(Collections.singleton(message)));
+        consumer.accept(message);
         return CompletableFuture.completedFuture(null);
     }
 

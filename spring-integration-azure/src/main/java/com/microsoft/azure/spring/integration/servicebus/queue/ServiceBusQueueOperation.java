@@ -10,10 +10,12 @@ import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.spring.integration.core.SendOperation;
 import com.microsoft.azure.spring.integration.core.SubscribeOperation;
 
+import java.util.UUID;
+
 /**
  * Azure service bus queue operation to support send {@link IMessage} asynchronously and subscribe
  *
  * @author Warren Zhu
  */
-public interface ServiceBusQueueOperation extends SendOperation<IMessage>, SubscribeOperation<IMessage> {
+public interface ServiceBusQueueOperation extends SendOperation, SubscribeOperation<IMessage, UUID> {
 }

@@ -7,7 +7,6 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.telemetry;
 
 import com.microsoft.applicationinsights.TelemetryClient;
-import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +29,9 @@ public class TelemetryAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "telemetry.instrumentationKey")
-    public TelemetryTracker telemetryTracker(Azure azure, TelemetryProperties telemetryProperties) {
+    public TelemetrySender telemetryTracker(TelemetryProperties telemetryProperties) {
         try {
-            return new TelemetryTracker(azure.getCurrentSubscription().subscriptionId(),
-                    telemetryProperties.getInstrumentationKey());
+            return new TelemetrySender(telemetryProperties.getInstrumentationKey(), TelemetryCollector.getInstance());
         } catch (IllegalArgumentException e) {
             LOG.warn("Invalid argument to build telemetry tracker");
             return null;

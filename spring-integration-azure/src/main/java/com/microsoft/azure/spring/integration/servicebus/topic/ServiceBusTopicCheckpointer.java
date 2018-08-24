@@ -6,13 +6,13 @@
 
 package com.microsoft.azure.spring.integration.servicebus.topic;
 
-import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.ISubscriptionClient;
 import com.microsoft.azure.spring.integration.core.Checkpointer;
 
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public class ServiceBusTopicCheckpointer implements Checkpointer<IMessage> {
+public class ServiceBusTopicCheckpointer implements Checkpointer<UUID> {
     private final ISubscriptionClient subscriptionClient;
 
     public ServiceBusTopicCheckpointer(ISubscriptionClient subscriptionClient) {
@@ -26,7 +26,7 @@ public class ServiceBusTopicCheckpointer implements Checkpointer<IMessage> {
     }
 
     @Override
-    public CompletableFuture<Void> checkpoint(IMessage iMessage) {
-        return this.subscriptionClient.completeAsync(iMessage.getLockToken());
+    public CompletableFuture<Void> checkpoint(UUID messageKey) {
+        return this.subscriptionClient.completeAsync(messageKey);
     }
 }

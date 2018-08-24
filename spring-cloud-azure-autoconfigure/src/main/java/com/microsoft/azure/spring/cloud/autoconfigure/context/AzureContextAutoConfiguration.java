@@ -6,16 +6,26 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.context;
 
+import com.microsoft.azure.AzureEnvironment;
+import com.microsoft.azure.AzureResponseBuilder;
+import com.microsoft.azure.credentials.ApplicationTokenCredentials;
 import com.microsoft.azure.management.Azure;
+import com.microsoft.azure.management.resources.fluentcore.utils.ProviderRegistrationInterceptor;
+import com.microsoft.azure.management.resources.fluentcore.utils.ResourceManagerThrottlingInterceptor;
+import com.microsoft.azure.serializer.AzureJacksonAdapter;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.AzureAopConfig;
 import com.microsoft.azure.spring.cloud.context.core.CredentialsProvider;
 import com.microsoft.azure.spring.cloud.context.core.DefaultCredentialsProvider;
+import com.microsoft.rest.RestClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import java.io.IOException;
 
@@ -27,14 +37,12 @@ import java.io.IOException;
 @Configuration
 @EnableConfigurationProperties(AzureProperties.class)
 @ConditionalOnClass(Azure.class)
-@ConditionalOnProperty(value = "spring.cloud.azure.enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "spring.cloud.azure", value = {"credentialFilePath", "resourceGroup", "region"})
+@Import(AzureAopConfig.class)
 public class AzureContextAutoConfiguration {
-
-    @Bean
-    @ConditionalOnMissingBean
-    public CredentialsProvider credentialsProvider(AzureProperties azureProperties) {
-        return new DefaultCredentialsProvider(azureProperties);
-    }
+    private static final String PROJECT_VERSION =
+            AzureContextAutoConfiguration.class.getPackage().getImplementationVersion();
+    private static final String SPRING_CLOUD_USER_AGENT = "spring-cloud-azure/" + PROJECT_VERSION;
 
     @Bean
     @ConditionalOnMissingBean
@@ -45,7 +53,18 @@ public class AzureContextAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public Azure azure(AzureProperties azureProperties) throws IOException {
-        return Azure.authenticate(credentialsProvider(azureProperties).getCredentials()).withDefaultSubscription();
+        CredentialsProvider credentialsProvider = new DefaultCredentialsProvider(azureProperties);
+        ApplicationTokenCredentials credentials = credentialsProvider.getCredentials();
+        TelemetryCollector.getInstance().setSubscription(credentials.defaultSubscriptionId());
+        RestClient restClient = new RestClient.Builder()
+                .withBaseUrl(credentials.environment(), AzureEnvironment.Endpoint.RESOURCE_MANAGER)
+                .withCredentials(credentials).withSerializerAdapter(new AzureJacksonAdapter())
+                .withResponseBuilderFactory(new AzureResponseBuilder.Factory())
+                .withInterceptor(new ProviderRegistrationInterceptor(credentials))
+                .withInterceptor(new ResourceManagerThrottlingInterceptor()).withUserAgent(SPRING_CLOUD_USER_AGENT)
+                .build();
+
+        return Azure.authenticate(restClient, credentials.domain()).withDefaultSubscription();
     }
 
 }

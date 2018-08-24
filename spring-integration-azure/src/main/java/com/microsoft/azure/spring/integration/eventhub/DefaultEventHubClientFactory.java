@@ -10,6 +10,7 @@ import com.microsoft.azure.eventhubs.ConnectionStringBuilder;
 import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.eventhubs.EventHubException;
 import com.microsoft.azure.eventhubs.PartitionSender;
+import com.microsoft.azure.eventhubs.impl.EventHubClientImpl;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.management.eventhub.AuthorizationRule;
 import com.microsoft.azure.management.eventhub.EventHubAuthorizationKey;
@@ -18,6 +19,7 @@ import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.cloud.context.core.AzureUtil;
 import com.microsoft.azure.spring.cloud.context.core.Tuple;
 import com.microsoft.azure.spring.integration.core.Memoizer;
+import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -37,24 +39,24 @@ import java.util.function.Function;
  */
 public class DefaultEventHubClientFactory implements EventHubClientFactory, DisposableBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultEventHubClientFactory.class);
-
+    private static final String PROJECT_VERSION =
+            DefaultEventHubClientFactory.class.getPackage().getImplementationVersion();
+    private static final String USER_AGENT = "spring-cloud-azure" + "/" + PROJECT_VERSION;
     private final Map<String, EventHubClient> clientsByName = new ConcurrentHashMap<>();
-
     // (eventHubClient, partitionId) -> partitionSender
     private final Map<Tuple<EventHubClient, String>, PartitionSender> partitionSenderMap = new ConcurrentHashMap<>();
-
     // (eventHubName, consumerGroup) -> eventProcessorHost
     private final Map<Tuple<String, String>, EventProcessorHost> processorHostMap = new ConcurrentHashMap<>();
-
     private final AzureAdmin azureAdmin;
     private final EventHubNamespace namespace;
     private String checkpointStorageConnectionString;
 
-    public DefaultEventHubClientFactory(AzureAdmin azureAdmin, String namespace) {
-        Assert.notNull(azureAdmin, "azureAdmin can't be null.");
+    public DefaultEventHubClientFactory(@NonNull AzureAdmin azureAdmin, String namespace) {
         Assert.hasText(namespace, "namespace can't be null or empty");
         this.azureAdmin = azureAdmin;
         this.namespace = azureAdmin.getOrCreateEventHubNamespace(namespace);
+
+        EventHubClientImpl.USER_AGENT = USER_AGENT + "/" + EventHubClientImpl.USER_AGENT;
     }
 
     public void initCheckpointConnectionString(String checkpointStorageAccount) {

@@ -2,7 +2,9 @@
 
 This code sample demonstrates how to read and write files with the Spring Resource abstraction for Azure Storage using
 the
-link:../../spring-cloud-azure-starters/spring-cloud-azure-starter-storage[Spring Cloud Azure Storage Starter].
+link:../../spring-cloud-azure-starters/spring-cloud-azure-starter-storage[Spring Cloud Azure Storage Starter].Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
+
+Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
 
 Maven coordinates:
 
@@ -23,16 +25,17 @@ dependencies {
 }
 ----
 
-= Running the example
+== How to run
 
 1. Create azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how to create credential file].
 +
 ....
+$  az login
 $  az account set --subscription <name or id>
 $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 ....
 +
-Make sure `my.azureauth` is encoding with UTF-8.
+Make sure `my.azureauth` is encoded with UTF-8.
 
 2. Put auth file under `src/main/resources/`.
 
@@ -40,7 +43,10 @@ Make sure `my.azureauth` is encoding with UTF-8.
 4. Update link:src/main/resources/application.properties[application.properties]
 +
 ....
+
+# Enter 'my.azureauth' here if following step 1 and 2
 spring.cloud.azure.credentialFilePath=[credential-file-path]
+
 spring.cloud.azure.resourceGroup=[resource-group]
 spring.cloud.azure.region=[region]
 
@@ -70,3 +76,4 @@ Verify by sending a GET request
 $ curl -XGET http://localhost:8080/
 ```
 
+7. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.

@@ -8,14 +8,15 @@ package com.microsoft.azure.spring.cloud.autoconfigure.servicebus;
 
 import com.microsoft.azure.servicebus.TopicClient;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryTracker;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.integration.servicebus.factory.DefaultServiceBusTopicClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -31,6 +32,7 @@ import javax.annotation.PostConstruct;
  * @author Warren Zhu
  */
 @Configuration
+@AutoConfigureBefore(TelemetryAutoConfiguration.class)
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnClass(TopicClient.class)
 @ConditionalOnProperty(value = "spring.cloud.azure.servicebus.topic.enabled", matchIfMissing = true)
@@ -38,12 +40,9 @@ import javax.annotation.PostConstruct;
 public class AzureServiceBusTopicAutoConfiguration {
     private static final String SERVICE_BUS_TOPIC = "ServiceBusTopic";
 
-    @Autowired(required = false)
-    private TelemetryTracker telemetryTracker;
-
     @PostConstruct
-    public void triggerTelemetry() {
-        TelemetryTracker.triggerEvent(telemetryTracker, SERVICE_BUS_TOPIC);
+    public void collectTelemetry() {
+        TelemetryCollector.getInstance().addService(SERVICE_BUS_TOPIC);
     }
 
     @Bean

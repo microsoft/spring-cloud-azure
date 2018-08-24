@@ -8,109 +8,101 @@ package com.microsoft.azure.spring.integration.core;
 
 import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
 import com.microsoft.azure.spring.integration.eventhub.inbound.ListenerMode;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.integration.endpoint.MessageProducerSupport;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.StreamSupport;
 
-public abstract class AbstractInboundChannelAdapter<D> extends MessageProducerSupport {
-    private static final String DEFAULT_CONSUMER_GROUP = "$Default";
+@Getter
+public abstract class AbstractInboundChannelAdapter<D, K> extends MessageProducerSupport {
     private final String destination;
-    private final SubscribeByGroupOperation<D> subscribeByGroupOperation;
+    protected String consumerGroup;
+    protected SubscribeOperation<D, K> subscribeOperation;
+    protected SubscribeByGroupOperation<D, K> subscribeByGroupOperation;
     protected MessageConverter messageConverter;
     protected Map<String, Object> commonHeaders = new HashMap<>();
+    @Setter
     private CheckpointMode checkpointMode = CheckpointMode.RECORD;
-    private ListenerMode listenerMode = ListenerMode.RECORD;
 
-    private String consumerGroup = DEFAULT_CONSUMER_GROUP;
-
-    public AbstractInboundChannelAdapter(String destination, SubscribeByGroupOperation<D> subscribeByGroupOperation,
-            String consumerGroup) {
+    protected AbstractInboundChannelAdapter(String destination) {
         Assert.hasText(destination, "destination can't be null or empty");
-        Assert.notNull(subscribeByGroupOperation, "subscribeByGroupOperation can't be null");
         this.destination = destination;
-        this.subscribeByGroupOperation = subscribeByGroupOperation;
-        if (StringUtils.hasText(consumerGroup)) {
-            this.consumerGroup = consumerGroup;
-        }
     }
 
     @Override
     public void doStart() {
         super.doStart();
 
-        this.subscribeByGroupOperation.subscribe(this.destination, this::receiveMessage, this.consumerGroup);
+        if (useGroupOperation()) {
+            this.subscribeByGroupOperation.subscribe(this.destination, this::receiveMessage, this.consumerGroup);
+        } else {
+            this.subscribeOperation.subscribe(this.destination, this::receiveMessage);
+        }
 
         if (this.checkpointMode == CheckpointMode.MANUAL) {
             // Send the checkpointer downstream so user decides on when to checkpoint.
-            this.commonHeaders.put(AzureHeaders.CHECKPOINTER,
-                    subscribeByGroupOperation.getCheckpointer(this.destination, this.consumerGroup));
+            this.commonHeaders.put(AzureHeaders.CHECKPOINTER, getCheckpointer());
         }
     }
 
-    public void receiveMessage(Iterable<D> events) {
+    public void receiveMessage(D event) {
 
-        if (this.listenerMode == ListenerMode.BATCH) {
-            sendMessage(toMessage(events));
-        } else /* ListenerMode.RECORD */ {
-            StreamSupport.stream(events.spliterator(), false).forEach((e) -> {
-                sendMessage(toMessage(e));
-                if (this.checkpointMode == CheckpointMode.RECORD) {
-                    this.subscribeByGroupOperation.getCheckpointer(destination, consumerGroup).checkpoint(e);
-                }
-            });
-        }
+        sendMessage(toMessage(event));
 
-        if (this.checkpointMode == CheckpointMode.BATCH) {
-            this.subscribeByGroupOperation.getCheckpointer(destination, consumerGroup).checkpoint();
+        if (this.checkpointMode == CheckpointMode.RECORD) {
+            this.getCheckpointer().checkpoint(getCheckpointKey(event));
         }
 
     }
 
-    protected abstract Message<?> toMessage(D data);
+    public Message<?> toMessage(D data) {
+        Object payload = getPayload(data);
+        if (this.messageConverter == null) {
+            return MessageBuilder.withPayload(payload).copyHeaders(commonHeaders).build();
+        }
 
-    protected abstract Message<?> toMessage(Iterable<D> data);
+        MessageHeaders headers = new MessageHeaders(commonHeaders);
+
+        if (this.checkpointMode == CheckpointMode.MANUAL) {
+            headers.put(AzureHeaders.CHECKPOINT_KEY, getCheckpointKey(data));
+        }
+
+        return this.messageConverter.toMessage(payload, headers);
+    }
+
+    protected abstract Object getPayload(D data);
+
+    protected abstract K getCheckpointKey(D data);
 
     @Override
     protected void doStop() {
-        this.subscribeByGroupOperation.unsubscribe(destination, this::receiveMessage, this.consumerGroup);
+        if (useGroupOperation()) {
+            this.subscribeByGroupOperation.unsubscribe(destination, this.consumerGroup);
+        } else {
+            this.subscribeOperation.unsubscribe(destination);
+        }
 
         super.doStop();
     }
 
-    public CheckpointMode getCheckpointMode() {
-        return checkpointMode;
+    private Checkpointer<K> getCheckpointer() {
+        if (useGroupOperation()) {
+            return this.subscribeByGroupOperation.getCheckpointer(this.destination, this.consumerGroup);
+        } else {
+            return this.subscribeOperation.getCheckpointer(this.destination);
+        }
     }
 
-    public void setCheckpointMode(CheckpointMode checkpointMode) {
-        this.checkpointMode = checkpointMode;
+    private boolean useGroupOperation() {
+        return this.subscribeByGroupOperation != null && StringUtils.hasText(consumerGroup);
     }
 
-    public ListenerMode getListenerMode() {
-        return listenerMode;
-    }
-
-    public void setListenerMode(ListenerMode listenerMode) {
-        this.listenerMode = listenerMode;
-    }
-
-    public MessageConverter getMessageConverter() {
-        return this.messageConverter;
-    }
-
-    /**
-     * Sets the {@link MessageConverter} to convert the payload of the incoming message from Event hub.
-     * If {@code messageConverter} is null, payload is {@code EventData} or
-     * {@code Iterable<EventData>} and returned in that form.
-     *
-     * @param messageConverter converts the payload of the incoming message
-     */
-    public void setMessageConverter(MessageConverter messageConverter) {
-        this.messageConverter = messageConverter;
-    }
 }

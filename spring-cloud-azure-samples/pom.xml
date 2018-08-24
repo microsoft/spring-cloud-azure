@@ -20,10 +20,15 @@
     <modules>
         <module>spring-cloud-azure-cache-sample</module>
         <module>spring-cloud-azure-storage-sample</module>
+        <module>spring-cloud-azure-eventhub-sample</module>
+        <module>spring-cloud-azure-eventhub-integration-sample</module>
         <module>spring-cloud-azure-eventhub-binder-sample</module>
         <module>spring-cloud-stream-eventhub-kafka-sample</module>
         <module>spring-cloud-azure-servicebus-sample</module>
         <module>spring-cloud-azure-sql-sample</module>
+        <module>spring-cloud-azure-cosmosdb-mongodb-sample</module>
+        <module>spring-cloud-azure-data-jpa-sample</module>
+        <module>spring-cloud-azure-keyvault-sample</module>
     </modules>
 
     <build>
@@ -31,6 +36,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
             </plugin>
         </plugins>
     </build>

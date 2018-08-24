@@ -6,9 +6,9 @@
 
 package example;
 
+import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
 import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
 import com.microsoft.azure.spring.integration.servicebus.inbound.ServiceBusQueueInboundChannelAdapter;
-import com.microsoft.azure.spring.integration.servicebus.outbound.ServiceBusMessageHandler;
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueOperation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,7 +44,7 @@ public class ServiceBusQueueApplication {
     @Bean
     @ServiceActivator(inputChannel = OUTPUT_CHANNEL)
     public MessageHandler messageSender(ServiceBusQueueOperation queueOperation) {
-        ServiceBusMessageHandler handler = new ServiceBusMessageHandler(SERVICE_BUS_QUEUE_NAME, queueOperation);
+        AzureMessageHandler handler = new AzureMessageHandler(SERVICE_BUS_QUEUE_NAME, queueOperation);
         handler.setSendCallback(new ListenableFutureCallback<Void>() {
             @Override
             public void onSuccess(Void result) {
