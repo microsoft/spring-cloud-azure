@@ -6,7 +6,6 @@
 
 package com.microsoft.azure.spring.integration.eventhub;
 
-import com.google.common.collect.ImmutableMap;
 import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.eventhubs.PartitionSender;
@@ -15,8 +14,6 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.GenericMessage;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
