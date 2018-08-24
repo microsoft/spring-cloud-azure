@@ -6,6 +6,8 @@
 
 package com.microsoft.azure.spring.cloud.keyvault;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -24,6 +26,7 @@ import java.util.Set;
  * @author Warren Zhu
  */
 public class KeyVaultEnvironmentPostProcessor implements EnvironmentPostProcessor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(KeyVaultEnvironmentPostProcessor.class);
     private static final String AZURE_KEY_VAULT_ENABLED = "spring.cloud.azure.keyvault.enabled";
     private static final String AZURE_CLIENT_ID = "spring.cloud.azure.keyvault.client-id";
     private static final String AZURE_CLIENT_SECRET = "spring.cloud.azure.keyvault.client-secret";
@@ -36,10 +39,12 @@ public class KeyVaultEnvironmentPostProcessor implements EnvironmentPostProcesso
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
 
         if (shouldAddKeyVaultPropertySource(environment)) {
+            LOGGER.info("Azure Key Vault enabled.");
             KeyVaultTemplate operation = new KeyVaultTemplate(environment.getProperty(AZURE_CLIENT_ID),
                     environment.getProperty(AZURE_CLIENT_SECRET));
             environment.getPropertySources()
                        .addLast(new KeyVaultPropertySource(operation, environment.getProperty(AZURE_KEY_VAULT_NAME)));
+            LOGGER.info("KeyVaultPropertySource registered.");
         }
     }
 
