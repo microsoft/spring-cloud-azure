@@ -18,21 +18,17 @@ public abstract class SubscribeByGroupOperationTest<D, K, O extends SubscribeByG
     protected O subscribeByGroupOperation;
     protected String consumerGroup = "consumer-group";
     protected String anotherConsumerGroup = "consumer-group2";
-    private String destination = "event-hub";
+    protected String destination = "event-hub";
     private Consumer<D> consumer = this::handleMessage;
 
     @Test
-    public void testSubscribeAndUnsubscribe() {
+    public void testSubscribe() {
         boolean succeed = this.subscribeByGroupOperation.subscribe(destination, this::handleMessage, consumerGroup);
 
         assertTrue(succeed);
 
         verifySubscriberCreatorCalled(1);
         verifySubscriberRegistered(1);
-
-        boolean unsubscribed = this.subscribeByGroupOperation.unsubscribe(destination, consumerGroup);
-
-        assertTrue(unsubscribed);
     }
 
     @Test

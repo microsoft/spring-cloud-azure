@@ -28,6 +28,7 @@ import org.springframework.util.Assert;
 import java.nio.charset.Charset;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 /**
@@ -131,9 +132,14 @@ public class EventHubTemplate implements EventHubOperation {
         }
 
         consumerByNameAndConsumerGroup.remove(nameAndConsumerGroup);
-        processorHostsByNameAndConsumerGroup.remove(nameAndConsumerGroup).unregisterEventProcessor();
 
-        return true;
+        try {
+            processorHostsByNameAndConsumerGroup.remove(nameAndConsumerGroup).unregisterEventProcessor().get();
+            return true;
+        } catch (InterruptedException | ExecutionException e) {
+            LOGGER.error("Failure while unregistering EventProcessor", e);
+        }
+        return false;
     }
 
     protected EventData toEventData(Message<?> message) {
