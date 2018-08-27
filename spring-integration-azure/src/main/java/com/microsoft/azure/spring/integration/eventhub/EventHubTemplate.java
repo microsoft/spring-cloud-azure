@@ -102,8 +102,9 @@ public class EventHubTemplate implements EventHubOperation {
     }
 
     @Override
-    public <T> boolean subscribe(String destination, String consumerGroup, Consumer<Message<?>> consumer,
-            Class<T> messagePayloadType) {
+    @SuppressWarnings("unchecked")
+    public boolean subscribe(String destination, String consumerGroup, Consumer<Message<?>> consumer,
+            Class<?> messagePayloadType) {
         Tuple<String, String> nameAndConsumerGroup = Tuple.of(destination, consumerGroup);
 
         if (processorHostsByNameAndConsumerGroup.containsKey(nameAndConsumerGroup)) {

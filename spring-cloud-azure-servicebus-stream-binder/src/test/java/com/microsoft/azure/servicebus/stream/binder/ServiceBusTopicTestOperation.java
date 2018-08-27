@@ -51,8 +51,8 @@ public class ServiceBusTopicTestOperation extends ServiceBusTopicTemplate implem
     }
 
     @Override
-    public <T> boolean subscribe(String topicName, String consumerGroup, Consumer<Message<?>> consumer,
-            Class<T> payloadClass) {
+    public boolean subscribe(String topicName, String consumerGroup, Consumer<Message<?>> consumer,
+            Class<?> payloadClass) {
         consumerMap.putIfAbsent(topicName, new ConcurrentHashMap<>());
         consumerMap.get(topicName).put(consumerGroup, consumer);
         topicsByName.putIfAbsent(topicName, new LinkedList<>());

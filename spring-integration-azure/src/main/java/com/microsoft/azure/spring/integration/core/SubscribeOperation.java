@@ -23,7 +23,7 @@ public interface SubscribeOperation {
      * @return {@code true} if the consumer was subscribed or {@code false} if it
      * was already subscribed.
      */
-    <T> boolean subscribe(String destination, Consumer<Message<?>> consumer, Class<T> messagePayloadType);
+    boolean subscribe(String destination, Consumer<Message<?>> consumer, Class<?> messagePayloadType);
 
     default boolean subscribe(String destination, Consumer<Message<?>> consumer) {
         return this.subscribe(destination, consumer, byte[].class);

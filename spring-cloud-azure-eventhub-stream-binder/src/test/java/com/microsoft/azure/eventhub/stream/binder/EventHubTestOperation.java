@@ -51,8 +51,8 @@ public class EventHubTestOperation extends EventHubTemplate implements EventHubO
     }
 
     @Override
-    public <T> boolean subscribe(String eventHubName, String consumerGroup, Consumer<Message<?>> consumer,
-            Class<T> payloadClass) {
+    public boolean subscribe(String eventHubName, String consumerGroup, Consumer<Message<?>> consumer,
+            Class<?> payloadClass) {
         consumerMap.putIfAbsent(eventHubName, new ConcurrentHashMap<>());
         consumerMap.get(eventHubName).put(consumerGroup, consumer);
         eventHubsByName.putIfAbsent(eventHubName, new LinkedList<>());
