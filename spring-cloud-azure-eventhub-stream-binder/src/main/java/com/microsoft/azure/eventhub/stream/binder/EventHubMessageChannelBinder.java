@@ -76,8 +76,6 @@ public class EventHubMessageChannelBinder extends
         EventHubInboundChannelAdapter inboundAdapter =
                 new EventHubInboundChannelAdapter(destination.getName(), this.eventHubOperation, group);
         inboundAdapter.setBeanFactory(getBeanFactory());
-        // Spring cloud stream only support record mode now
-        inboundAdapter.setCheckpointMode(CheckpointMode.BATCH);
         return inboundAdapter;
     }
 

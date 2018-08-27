@@ -7,7 +7,6 @@
 package com.microsoft.azure.eventhub.stream.binder;
 
 import com.microsoft.azure.eventhubs.EventData;
-import com.microsoft.azure.spring.integration.core.Checkpointer;
 import com.microsoft.azure.spring.integration.core.PartitionSupplier;
 import com.microsoft.azure.spring.integration.core.StartPosition;
 import com.microsoft.azure.spring.integration.eventhub.EventHubClientFactory;
@@ -16,7 +15,6 @@ import com.microsoft.azure.spring.integration.eventhub.EventHubTemplate;
 import lombok.Setter;
 import org.springframework.messaging.Message;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class EventHubTestOperation extends EventHubTemplate implements EventHubOperation {
-    private final Map<String, Map<String, Consumer<EventData>>> consumerMap = new ConcurrentHashMap<>();
+    private final Map<String, Map<String, Consumer<Message<?>>>> consumerMap = new ConcurrentHashMap<>();
     private final Map<String, List<EventData>> eventHubsByName = new ConcurrentHashMap<>();
 
     @Setter
@@ -40,25 +38,28 @@ public class EventHubTestOperation extends EventHubTemplate implements EventHubO
             PartitionSupplier partitionSupplier) {
         CompletableFuture<Void> future = new CompletableFuture<>();
 
-        EventData eventData = toEventData(message);
+        EventData eventData = getMessageConverter().fromMessage(message, EventData.class);
 
         eventHubsByName.putIfAbsent(eventHubName, new LinkedList<>());
         eventHubsByName.get(eventHubName).add(eventData);
         consumerMap.putIfAbsent(eventHubName, new ConcurrentHashMap<>());
-        consumerMap.get(eventHubName).values().forEach(c -> c.accept(eventData));
+        consumerMap.get(eventHubName).values()
+                   .forEach(c -> c.accept(getMessageConverter().toMessage(eventData, byte[].class)));
 
         future.complete(null);
         return future;
     }
 
     @Override
-    public boolean subscribe(String eventHubName, Consumer<EventData> consumer, String consumerGroup) {
+    public <T> boolean subscribe(String eventHubName, String consumerGroup, Consumer<Message<?>> consumer,
+            Class<T> payloadClass) {
         consumerMap.putIfAbsent(eventHubName, new ConcurrentHashMap<>());
         consumerMap.get(eventHubName).put(consumerGroup, consumer);
         eventHubsByName.putIfAbsent(eventHubName, new LinkedList<>());
 
         if (this.startPosition == StartPosition.EARLISET) {
-            eventHubsByName.get(eventHubName).stream().forEach(consumer);
+            eventHubsByName.get(eventHubName)
+                           .forEach(e -> consumer.accept(getMessageConverter().toMessage(e, payloadClass)));
         }
 
         return true;
@@ -68,11 +69,6 @@ public class EventHubTestOperation extends EventHubTemplate implements EventHubO
     public boolean unsubscribe(String destination, String consumerGroup) {
         consumerMap.get(destination).remove(consumerGroup);
         return true;
-    }
-
-    @Override
-    public Checkpointer<EventData> getCheckpointer(String destination, String consumerGroup) {
-        return new EventHubTestCheckpointer();
     }
 }
 

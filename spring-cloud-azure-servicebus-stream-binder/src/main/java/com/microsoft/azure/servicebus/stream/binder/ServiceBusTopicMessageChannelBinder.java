@@ -76,8 +76,6 @@ public class ServiceBusTopicMessageChannelBinder extends
         ServiceBusTopicInboundChannelAdapter inboundAdapter =
                 new ServiceBusTopicInboundChannelAdapter(destination.getName(), this.serviceBusTopicOperation, group);
         inboundAdapter.setBeanFactory(getBeanFactory());
-        // Spring cloud stream only support record mode now
-        inboundAdapter.setCheckpointMode(CheckpointMode.BATCH);
         return inboundAdapter;
     }
 

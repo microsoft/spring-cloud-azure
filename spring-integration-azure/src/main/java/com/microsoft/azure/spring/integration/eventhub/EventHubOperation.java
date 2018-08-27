@@ -6,17 +6,19 @@
 
 package com.microsoft.azure.spring.integration.eventhub;
 
-import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.spring.integration.core.SendOperation;
 import com.microsoft.azure.spring.integration.core.StartPosition;
 import com.microsoft.azure.spring.integration.core.SubscribeByGroupOperation;
+import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
 
 /**
  * Azure event hub operation to support send data asynchronously and subscribe
  *
  * @author Warren Zhu
  */
-public interface EventHubOperation extends SendOperation, SubscribeByGroupOperation<EventData, EventData> {
+public interface EventHubOperation extends SendOperation, SubscribeByGroupOperation {
 
     void setStartPosition(StartPosition startPosition);
+
+    void setCheckpointMode(CheckpointMode checkpointMode);
 }

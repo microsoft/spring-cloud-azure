@@ -6,16 +6,16 @@
 
 package com.microsoft.azure.spring.integration.servicebus.queue;
 
-import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.spring.integration.core.SendOperation;
 import com.microsoft.azure.spring.integration.core.SubscribeOperation;
-
-import java.util.UUID;
+import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
 
 /**
- * Azure service bus queue operation to support send {@link IMessage} asynchronously and subscribe
+ * Azure service bus queue operation to support send
+ * {@link org.springframework.messaging.Message} asynchronously and subscribe
  *
  * @author Warren Zhu
  */
-public interface ServiceBusQueueOperation extends SendOperation, SubscribeOperation<IMessage, UUID> {
+public interface ServiceBusQueueOperation extends SendOperation, SubscribeOperation {
+    void setCheckpointMode(CheckpointMode checkpointMode);
 }
