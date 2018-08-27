@@ -31,6 +31,7 @@ public abstract class SubscribeByGroupOperationTest<O extends SubscribeByGroupOp
         boolean unsubscribed = this.subscribeByGroupOperation.unsubscribe(destination, consumerGroup);
 
         assertTrue(unsubscribed);
+        verifySubscriberUnregistered(1);
     }
 
     @Test
@@ -47,6 +48,7 @@ public abstract class SubscribeByGroupOperationTest<O extends SubscribeByGroupOp
 
         verifySubscriberCreatorCalled();
         verifySubscriberRegistered(1);
+        verifySubscriberUnregistered(0);
     }
 
     @Test
@@ -62,6 +64,7 @@ public abstract class SubscribeByGroupOperationTest<O extends SubscribeByGroupOp
         assertTrue(twiceSucceed);
 
         verifySubscriberCreatorCalled();
+        verifySubscriberUnregistered(0);
     }
 
     @Test
@@ -71,6 +74,7 @@ public abstract class SubscribeByGroupOperationTest<O extends SubscribeByGroupOp
         assertFalse(unsubscribed);
 
         verifySubscriberCreatorNotCalled();
+        verifySubscriberUnregistered(0);
     }
 
     private void handleMessage(Message<?> message) {
@@ -81,4 +85,6 @@ public abstract class SubscribeByGroupOperationTest<O extends SubscribeByGroupOp
     protected abstract void verifySubscriberCreatorNotCalled();
 
     protected abstract void verifySubscriberRegistered(int times);
+
+    protected abstract void verifySubscriberUnregistered(int times);
 }
