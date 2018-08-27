@@ -173,7 +173,11 @@ public class EventHubTemplate implements EventHubOperation {
             }
 
             if (checkpointMode == CheckpointMode.BATCH) {
-                context.checkpoint();
+                context.checkpoint().whenComplete((s, t) -> {
+                    if (t != null) {
+                        LOGGER.warn("Failed to checkpoint", t);
+                    }
+                });
             }
         }
 
