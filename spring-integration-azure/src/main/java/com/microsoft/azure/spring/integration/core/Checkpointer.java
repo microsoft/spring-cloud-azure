@@ -16,12 +16,12 @@ import java.util.concurrent.CompletableFuture;
 public interface Checkpointer {
 
     /**
-     * Acknowledge current message succeed. Please check result to detect failure
+     * Acknowledge success of current message. Please check result to detect failure
      */
     CompletableFuture<Void> success();
 
     /**
      * Fail current message. Please check result to detect failure
      */
-    CompletableFuture<Void> fail();
+    CompletableFuture<Void> failure();
 }
