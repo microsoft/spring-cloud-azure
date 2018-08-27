@@ -6,6 +6,7 @@
 
 package com.microsoft.azure.servicebus.stream.binder;
 
+import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusConsumerProperties;
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusProducerProperties;
 import org.springframework.cloud.stream.binder.*;
@@ -23,7 +24,8 @@ public class ServiceBusTopicTestBinder extends
     public ServiceBusTopicTestBinder() {
         ServiceBusTopicMessageChannelBinder binder = new ServiceBusTopicMessageChannelBinder(BinderHeaders
                 .STANDARD_HEADERS,
-                new ServiceBusTopicTestChannelProvisioner(null, "namespace"), new ServiceBusTopicTestOperation(null));
+                new ServiceBusTopicTestChannelProvisioner(null, "namespace"), new ServiceBusTopicTestOperation
+                ());
         GenericApplicationContext context = new GenericApplicationContext();
         binder.setApplicationContext(context);
         this.setBinder(binder);
