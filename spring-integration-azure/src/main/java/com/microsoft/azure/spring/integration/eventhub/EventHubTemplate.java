@@ -128,6 +128,16 @@ public class EventHubTemplate implements EventHubOperation {
             return false;
         }
 
+<<<<<<< HEAD
+        processorHostsByNameAndConsumerGroup.remove(nameAndConsumerGroup).unregisterEventProcessor()
+                                            .whenComplete((s, t) -> {
+                                                if (t != null) {
+                                                    LOGGER.warn(String.format(
+                                                            "Failed to unregister consumer '%s' with consumer group '%s' ",
+                                                            destination, consumerGroup), t);
+                                                }
+                                            });
+=======
         EventProcessorHost processorHost = processorByNameAndGroup.remove(nameAndConsumerGroup);
 
         processorHost.unregisterEventProcessor().whenComplete((s, t) -> {
@@ -137,6 +147,7 @@ public class EventHubTemplate implements EventHubOperation {
                         t);
             }
         });
+>>>>>>> ca855b5431e0149ac5c17883fc41d2f1eb1d6c40
 
         return true;
     }
