@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public abstract class MessageHandlerTest<M, O extends SendOperation> {
+public abstract class MessageHandlerTest<O extends SendOperation> {
 
     protected O sendOperation;
 
