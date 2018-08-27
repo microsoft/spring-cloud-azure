@@ -38,6 +38,7 @@ public class EventHubTemplateSubscribeTest extends SubscribeByGroupOperationTest
         when(this.host
                 .registerEventProcessorFactory(isA(IEventProcessorFactory.class), isA(EventProcessorOptions.class)))
                 .thenReturn(future);
+        when(this.host.unregisterEventProcessor()).thenReturn(future);
     }
 
     @Override

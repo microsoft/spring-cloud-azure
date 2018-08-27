@@ -44,7 +44,7 @@ import java.util.function.Consumer;
 public class EventHubTemplate implements EventHubOperation {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventHubTemplate.class);
-    private final ConcurrentHashMap<Tuple<String, String>, EventProcessorHost> processorHostsByNameAndConsumerGroup =
+    private final ConcurrentHashMap<Tuple<String, String>, EventProcessorHost> processorByNameAndGroup =
             new ConcurrentHashMap<>();
 
     private final EventHubClientFactory clientFactory;
@@ -102,15 +102,16 @@ public class EventHubTemplate implements EventHubOperation {
     }
 
     @Override
-    public <T> boolean subscribe(String destination, String consumerGroup, Consumer<Message<?>> consumer,
-            Class<T> messagePayloadType) {
+    @SuppressWarnings("unchecked")
+    public boolean subscribe(String destination, String consumerGroup, Consumer<Message<?>> consumer,
+            Class<?> messagePayloadType) {
         Tuple<String, String> nameAndConsumerGroup = Tuple.of(destination, consumerGroup);
 
-        if (processorHostsByNameAndConsumerGroup.containsKey(nameAndConsumerGroup)) {
+        if (processorByNameAndGroup.containsKey(nameAndConsumerGroup)) {
             return false;
         }
 
-        processorHostsByNameAndConsumerGroup.computeIfAbsent(nameAndConsumerGroup, key -> {
+        processorByNameAndGroup.computeIfAbsent(nameAndConsumerGroup, key -> {
             EventProcessorHost host = this.clientFactory.getProcessorHostCreator().apply(key);
             host.registerEventProcessorFactory(context -> new EventHubProcessor(consumer, messagePayloadType),
                     buildEventProcessorOptions(startPosition));
@@ -123,11 +124,19 @@ public class EventHubTemplate implements EventHubOperation {
     public boolean unsubscribe(String destination, String consumerGroup) {
         Tuple<String, String> nameAndConsumerGroup = Tuple.of(destination, consumerGroup);
 
-        if (!processorHostsByNameAndConsumerGroup.containsKey(nameAndConsumerGroup)) {
+        if (!processorByNameAndGroup.containsKey(nameAndConsumerGroup)) {
             return false;
         }
 
-        processorHostsByNameAndConsumerGroup.remove(nameAndConsumerGroup).unregisterEventProcessor();
+        EventProcessorHost processorHost = processorByNameAndGroup.remove(nameAndConsumerGroup);
+
+        processorHost.unregisterEventProcessor().whenComplete((s, t) -> {
+            if (t != null) {
+                LOGGER.warn(
+                        String.format("Failed to unregister consumer '%s' with group '%s'", destination, consumerGroup),
+                        t);
+            }
+        });
 
         return true;
     }
@@ -166,7 +175,11 @@ public class EventHubTemplate implements EventHubOperation {
             }
 
             if (checkpointMode == CheckpointMode.BATCH) {
-                context.checkpoint();
+                context.checkpoint().whenComplete((s, t) -> {
+                    if (t != null) {
+                        LOGGER.warn("Failed to checkpoint", t);
+                    }
+                });
             }
         }
 

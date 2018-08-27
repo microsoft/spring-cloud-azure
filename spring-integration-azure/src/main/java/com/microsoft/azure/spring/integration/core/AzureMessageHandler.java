@@ -71,12 +71,14 @@ public class AzureMessageHandler extends AbstractMessageHandler {
         if (this.sync) {
             waitingSendResponse(future, message);
         } else if (sendCallback != null) {
-            future.whenComplete((t, ex) -> {
+            future.handle((t, ex) -> {
                 if (ex != null) {
                     this.sendCallback.onFailure((Throwable) ex);
                 } else {
                     this.sendCallback.onSuccess((Void) t);
                 }
+
+                return null;
             });
         }
     }

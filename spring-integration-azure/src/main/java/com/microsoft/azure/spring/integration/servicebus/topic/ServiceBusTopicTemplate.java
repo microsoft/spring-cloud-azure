@@ -41,8 +41,8 @@ public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicC
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> boolean subscribe(String destination, String consumerGroup, @NonNull Consumer<Message<?>> consumer,
-            Class<T> payloadType) {
+    public boolean subscribe(String destination, String consumerGroup, @NonNull Consumer<Message<?>> consumer,
+            Class<?> payloadType) {
         Assert.hasText(destination, "destination can't be null or empty");
 
         Tuple<String, String> nameAndConsumerGroup = Tuple.of(destination, consumerGroup);

@@ -31,7 +31,7 @@ public class AzureCheckpointer implements Checkpointer {
     }
 
     @Override
-    public CompletableFuture<Void> fail() {
+    public CompletableFuture<Void> failure() {
         if (this.fail == null) {
             throw new UnsupportedOperationException("Fail current message unsupported");
         }

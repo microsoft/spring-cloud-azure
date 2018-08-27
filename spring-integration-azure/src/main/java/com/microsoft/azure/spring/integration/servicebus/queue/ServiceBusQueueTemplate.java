@@ -41,8 +41,8 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> boolean subscribe(String destination, @NonNull Consumer<Message<?>> consumer,
-            Class<T> targetPayloadClass) {
+    public boolean subscribe(String destination, @NonNull Consumer<Message<?>> consumer,
+            Class<?> targetPayloadClass) {
         Assert.hasText(destination, "destination can't be null or empty");
 
         if (subscribedQueues.contains(destination)) {
