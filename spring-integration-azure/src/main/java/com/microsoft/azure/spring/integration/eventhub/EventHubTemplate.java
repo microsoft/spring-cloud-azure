@@ -128,7 +128,14 @@ public class EventHubTemplate implements EventHubOperation {
             return false;
         }
 
-        processorHostsByNameAndConsumerGroup.remove(nameAndConsumerGroup).unregisterEventProcessor();
+        processorHostsByNameAndConsumerGroup.remove(nameAndConsumerGroup).unregisterEventProcessor()
+                                            .whenComplete((s, t) -> {
+                                                if (t != null) {
+                                                    LOGGER.warn(String.format(
+                                                            "Failed to unregister consumer '%s' with group '%s'",
+                                                            destination, consumerGroup), t);
+                                                }
+                                            });
 
         return true;
     }
