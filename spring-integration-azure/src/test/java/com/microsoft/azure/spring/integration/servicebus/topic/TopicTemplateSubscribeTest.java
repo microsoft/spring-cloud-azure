@@ -6,7 +6,6 @@
 
 package com.microsoft.azure.spring.integration.servicebus.topic;
 
-import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.IMessageHandler;
 import com.microsoft.azure.servicebus.SubscriptionClient;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
@@ -18,15 +17,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.UUID;
-
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TopicTemplateSubscribeTest
-        extends SubscribeByGroupOperationTest<IMessage, UUID, ServiceBusTopicOperation> {
+public class TopicTemplateSubscribeTest extends SubscribeByGroupOperationTest<ServiceBusTopicOperation> {
 
     @Mock
     private ServiceBusTopicClientFactory mockClientFactory;
@@ -46,8 +42,13 @@ public class TopicTemplateSubscribeTest
     }
 
     @Override
-    protected void verifySubscriberCreatorCalled(int times) {
-        verify(this.mockClientFactory, times(times)).getSubscriptionClientCreator();
+    protected void verifySubscriberCreatorCalled() {
+        verify(this.mockClientFactory, atLeastOnce()).getSubscriptionClientCreator();
+    }
+
+    @Override
+    protected void verifySubscriberCreatorNotCalled() {
+        verify(this.mockClientFactory, never()).getSubscriptionClientCreator();
     }
 
     @Override

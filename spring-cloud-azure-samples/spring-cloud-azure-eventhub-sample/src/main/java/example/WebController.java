@@ -6,7 +6,6 @@
 
 package example;
 
-import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.spring.cloud.autoconfigure.eventhub.AzureEventHubProperties;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
@@ -14,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.support.MessageBuilder;
+import org.springframework.messaging.Message;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,11 +48,10 @@ public class WebController {
     @PostConstruct
     public void initEventHub(){
         this.azureAdmin.getOrCreateEventHub(eventHubProperties.getNamespace(), EVENT_HUB_NAME);
-        this.eventHubOperation.subscribe(EVENT_HUB_NAME, this::messageReceiver, CONSUMER_GROUP);
+        this.eventHubOperation.subscribe(EVENT_HUB_NAME, CONSUMER_GROUP, this::messageReceiver, String.class);
     }
 
-    private void messageReceiver(Iterable<EventData> eventData) {
-        eventData.forEach(e ->
-        LOGGER.info("Message arrived! Payload: " + new String(e.getBytes())));
+    private void messageReceiver(Message<?> message) {
+        LOGGER.info("Message arrived! Payload: " + message.getPayload());
     }
 }

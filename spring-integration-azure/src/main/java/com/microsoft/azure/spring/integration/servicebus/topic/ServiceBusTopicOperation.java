@@ -7,17 +7,16 @@
 package com.microsoft.azure.spring.integration.servicebus.topic;
 
 import com.microsoft.azure.management.servicebus.ServiceBusSubscription;
-import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.spring.integration.core.SendOperation;
 import com.microsoft.azure.spring.integration.core.SubscribeByGroupOperation;
-
-import java.util.UUID;
+import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
 
 /**
- * Azure service bus topic operation to support send {@link IMessage} asynchronously
+ * Azure service bus topic operation to support send {@link org.springframework.messaging.Message} asynchronously
  * and subscribe by {@link ServiceBusSubscription} as consumer group
  *
  * @author Warren Zhu
  */
-public interface ServiceBusTopicOperation extends SendOperation, SubscribeByGroupOperation<IMessage, UUID> {
+public interface ServiceBusTopicOperation extends SendOperation, SubscribeByGroupOperation {
+    void setCheckpointMode(CheckpointMode checkpointMode);
 }

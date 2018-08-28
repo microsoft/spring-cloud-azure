@@ -6,7 +6,6 @@
 
 package com.microsoft.azure.spring.integration.eventhub;
 
-import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.eventprocessorhost.EventProcessorOptions;
 import com.microsoft.azure.eventprocessorhost.IEventProcessorFactory;
@@ -22,8 +21,7 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EventHubTemplateSubscribeTest
-        extends SubscribeByGroupOperationTest<EventData, EventData, EventHubOperation> {
+public class EventHubTemplateSubscribeTest extends SubscribeByGroupOperationTest<EventHubOperation> {
 
     @Mock
     private EventHubClientFactory mockClientFactory;
@@ -37,20 +35,26 @@ public class EventHubTemplateSubscribeTest
         future.complete(null);
         this.subscribeByGroupOperation = new EventHubTemplate(mockClientFactory);
         when(this.mockClientFactory.getProcessorHostCreator()).thenReturn(t -> this.host);
-        when(this.host.registerEventProcessorFactory(isA(IEventProcessorFactory.class), isA(EventProcessorOptions
-                .class))).thenReturn(future);
+        when(this.host
+                .registerEventProcessorFactory(isA(IEventProcessorFactory.class), isA(EventProcessorOptions.class)))
+                .thenReturn(future);
+        when(this.host.unregisterEventProcessor()).thenReturn(future);
     }
 
     @Override
-    protected void verifySubscriberCreatorCalled(int times) {
-        verify(this.mockClientFactory, times(times)).getProcessorHostCreator();
+    protected void verifySubscriberCreatorCalled() {
+        verify(this.mockClientFactory, atLeastOnce()).getProcessorHostCreator();
+    }
+
+    @Override
+    protected void verifySubscriberCreatorNotCalled() {
+        verify(this.mockClientFactory, never()).getProcessorHostCreator();
     }
 
     @Override
     protected void verifySubscriberRegistered(int times) {
-        verify(this.host, times(times)).registerEventProcessorFactory(isA(IEventProcessorFactory.class), isA
-                (EventProcessorOptions
-                .class));
+        verify(this.host, times(times))
+                .registerEventProcessorFactory(isA(IEventProcessorFactory.class), isA(EventProcessorOptions.class));
     }
 
 }

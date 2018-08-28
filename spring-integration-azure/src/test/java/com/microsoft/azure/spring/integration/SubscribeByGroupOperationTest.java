@@ -8,81 +8,77 @@ package com.microsoft.azure.spring.integration;
 
 import com.microsoft.azure.spring.integration.core.SubscribeByGroupOperation;
 import org.junit.Test;
-
-import java.util.function.Consumer;
+import org.springframework.messaging.Message;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public abstract class SubscribeByGroupOperationTest<D, K, O extends SubscribeByGroupOperation<D, K>> {
+public abstract class SubscribeByGroupOperationTest<O extends SubscribeByGroupOperation> {
     protected O subscribeByGroupOperation;
     protected String consumerGroup = "consumer-group";
     protected String anotherConsumerGroup = "consumer-group2";
     private String destination = "event-hub";
-    private Consumer<Iterable<D>> consumer = this::handleMessage;
 
     @Test
     public void testSubscribeAndUnsubscribe() {
-        boolean succeed = this.subscribeByGroupOperation.subscribe(destination, this::handleMessage, consumerGroup);
+        boolean succeed = this.subscribeByGroupOperation.subscribe(destination, consumerGroup, this::handleMessage);
 
         assertTrue(succeed);
 
-        verifySubscriberCreatorCalled(1);
+        verifySubscriberCreatorCalled();
         verifySubscriberRegistered(1);
 
-        boolean unsubscribed =
-                this.subscribeByGroupOperation.subscribe(destination, this::handleMessage, consumerGroup);
+        boolean unsubscribed = this.subscribeByGroupOperation.unsubscribe(destination, consumerGroup);
 
         assertTrue(unsubscribed);
     }
 
     @Test
     public void testSubscribeTwice() {
-        boolean onceSucceed = this.subscribeByGroupOperation.subscribe(destination, consumer, consumerGroup);
-
-        assertTrue(onceSucceed);
-        verifySubscriberRegistered(1);
-
-        boolean twiceSucceed = this.subscribeByGroupOperation.subscribe(destination, consumer, consumerGroup);
-
-        assertFalse(twiceSucceed);
-
-        verifySubscriberCreatorCalled(1);
-        verifySubscriberRegistered(1);
-    }
-
-    @Test
-    public void testSubscribeWithAnotherGroup() {
-        boolean onceSucceed = this.subscribeByGroupOperation.subscribe(destination, this::handleMessage, consumerGroup);
+        boolean onceSucceed = this.subscribeByGroupOperation.subscribe(destination, consumerGroup, this::handleMessage);
 
         assertTrue(onceSucceed);
         verifySubscriberRegistered(1);
 
         boolean twiceSucceed =
-                this.subscribeByGroupOperation.subscribe(destination, this::handleMessage, anotherConsumerGroup);
+                this.subscribeByGroupOperation.subscribe(destination, consumerGroup, this::handleMessage);
+
+        assertFalse(twiceSucceed);
+
+        verifySubscriberCreatorCalled();
+        verifySubscriberRegistered(1);
+    }
+
+    @Test
+    public void testSubscribeWithAnotherGroup() {
+        boolean onceSucceed = this.subscribeByGroupOperation.subscribe(destination, consumerGroup, this::handleMessage);
+
+        assertTrue(onceSucceed);
+        verifySubscriberRegistered(1);
+
+        boolean twiceSucceed =
+                this.subscribeByGroupOperation.subscribe(destination, anotherConsumerGroup, this::handleMessage);
 
         assertTrue(twiceSucceed);
 
-        verifySubscriberCreatorCalled(2);
+        verifySubscriberCreatorCalled();
     }
 
     @Test
     public void testUnsubscribeNotSubscribed() {
-        boolean unsubscribed =
-                this.subscribeByGroupOperation.unsubscribe(destination, this::handleMessageAnother, consumerGroup);
+        boolean unsubscribed = this.subscribeByGroupOperation.unsubscribe(destination, consumerGroup);
 
         assertFalse(unsubscribed);
 
-        verifySubscriberCreatorCalled(0);
+        verifySubscriberCreatorNotCalled();
     }
 
-    private void handleMessage(Iterable<D> events) {
+    private void handleMessage(Message<?> message) {
     }
 
-    private void handleMessageAnother(Iterable<D> events) {
-    }
+    protected abstract void verifySubscriberCreatorCalled();
 
-    protected abstract void verifySubscriberCreatorCalled(int times);
+    protected abstract void verifySubscriberCreatorNotCalled();
 
     protected abstract void verifySubscriberRegistered(int times);
 }

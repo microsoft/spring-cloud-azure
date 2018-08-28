@@ -7,7 +7,6 @@
 package example;
 
 import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
-import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
 import com.microsoft.azure.spring.integration.servicebus.inbound.ServiceBusQueueInboundChannelAdapter;
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueOperation;
 import org.apache.commons.logging.Log;
@@ -72,12 +71,11 @@ public class ServiceBusQueueApplication {
         ServiceBusQueueInboundChannelAdapter adapter = new ServiceBusQueueInboundChannelAdapter(SERVICE_BUS_QUEUE_NAME,
                 queueOperation);
         adapter.setOutputChannel(inputChannel);
-        adapter.setCheckpointMode(CheckpointMode.MANUAL);
         return adapter;
     }
 
     @ServiceActivator(inputChannel = INPUT_CHANNEL)
-    public void messageReceiver(byte[] payload) {
-        LOGGER.info("Message arrived! Payload: " + new String(payload));
+    public void messageReceiver(String payload) {
+        LOGGER.info("Message arrived! Payload: " + payload);
     }
 }

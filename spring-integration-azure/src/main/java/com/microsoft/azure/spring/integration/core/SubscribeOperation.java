@@ -6,6 +6,8 @@
 
 package com.microsoft.azure.spring.integration.core;
 
+import org.springframework.messaging.Message;
+
 import java.util.function.Consumer;
 
 /**
@@ -13,7 +15,7 @@ import java.util.function.Consumer;
  *
  * @author Warren Zhu
  */
-public interface SubscribeOperation<D, K> {
+public interface SubscribeOperation {
 
     /**
      * Register a message consumer to a given destination.
@@ -21,7 +23,11 @@ public interface SubscribeOperation<D, K> {
      * @return {@code true} if the consumer was subscribed or {@code false} if it
      * was already subscribed.
      */
-    boolean subscribe(String destination, Consumer<Iterable<D>> consumer);
+    boolean subscribe(String destination, Consumer<Message<?>> consumer, Class<?> messagePayloadType);
+
+    default boolean subscribe(String destination, Consumer<Message<?>> consumer) {
+        return this.subscribe(destination, consumer, byte[].class);
+    }
 
     /**
      * Un-register a message consumer.
@@ -29,10 +35,5 @@ public interface SubscribeOperation<D, K> {
      * @return {@code true} if the consumer was un-registered, or {@code false}
      * if was not registered.
      */
-    boolean unsubscribe(String destination, Consumer<Iterable<D>> consumer);
-
-    /**
-     * Get checkpointer for a given destination
-     */
-    Checkpointer<K> getCheckpointer(String destination);
+    boolean unsubscribe(String destination);
 }

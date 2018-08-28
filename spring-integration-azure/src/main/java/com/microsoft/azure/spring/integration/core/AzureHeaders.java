@@ -24,10 +24,4 @@ public class AzureHeaders {
      * The {@value CHECKPOINTER} header for checkpoint the specific message.
      */
     public static final String CHECKPOINTER = PREFIX + "checkpointer";
-
-    /**
-     * The checkpoint key for specific message.
-     */
-    public static final String CHECKPOINT_KEY = PREFIX + "checkpoint_key";
-
 }
