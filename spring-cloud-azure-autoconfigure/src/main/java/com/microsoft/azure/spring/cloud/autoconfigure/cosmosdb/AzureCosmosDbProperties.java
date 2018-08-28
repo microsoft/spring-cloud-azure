@@ -3,6 +3,7 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
+
 package com.microsoft.azure.spring.cloud.autoconfigure.cosmosdb;
 
 
@@ -26,4 +27,5 @@ public class AzureCosmosDbProperties {
         Assert.hasText(database, "spring.cloud.azure.cosmosdb.database must be provided");
         Assert.hasText(readReplication, "spring.cloud.azure.cosmosdb.read-replication must be provided");
     }
+
 }
