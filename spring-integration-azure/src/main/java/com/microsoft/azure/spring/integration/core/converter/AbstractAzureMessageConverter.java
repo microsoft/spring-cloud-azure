@@ -23,6 +23,22 @@ import java.util.Arrays;
 public abstract class AbstractAzureMessageConverter<T> implements AzureMessageConverter<T> {
     private static ObjectMapper objectMapper = new ObjectMapper();
 
+    private static byte[] toPayload(Object object) {
+        try {
+            return objectMapper.writeValueAsBytes(object);
+        } catch (JsonProcessingException e) {
+            throw new ConversionException("Failed to write JSON: " + object, e);
+        }
+    }
+
+    private static <U> U fromPayload(byte[] payload, Class<U> payloadType) {
+        try {
+            return objectMapper.readerFor(payloadType).readValue(payload);
+        } catch (IOException e) {
+            throw new ConversionException("Failed to read JSON: " + Arrays.toString(payload), e);
+        }
+    }
+
     @Override
     public T fromMessage(Message<?> message, Class<T> targetClass) {
         T azureMessage = internalFromMessage(message, targetClass);
@@ -81,21 +97,5 @@ public abstract class AbstractAzureMessageConverter<T> implements AzureMessageCo
         }
 
         return MessageBuilder.withPayload(fromPayload(payload, targetPayloadClass)).copyHeaders(headers).build();
-    }
-
-    private static byte[] toPayload(Object object) {
-        try {
-            return objectMapper.writeValueAsBytes(object);
-        } catch (JsonProcessingException e) {
-            throw new ConversionException("Failed to write JSON: " + object, e);
-        }
-    }
-
-    private static <U> U fromPayload(byte[] payload, Class<U> payloadType) {
-        try {
-            return objectMapper.readerFor(payloadType).readValue(payload);
-        } catch (IOException e) {
-            throw new ConversionException("Failed to read JSON: " + Arrays.toString(payload), e);
-        }
     }
 }

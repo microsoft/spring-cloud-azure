@@ -17,7 +17,6 @@ import java.util.HashMap;
  * Object and vice versa.
  *
  * @param <T> Azure message type
- *
  * @author Warren Zhu
  */
 public interface AzureMessageConverter<T> {
