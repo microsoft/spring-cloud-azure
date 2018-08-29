@@ -4,7 +4,7 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.integration.core;
+package com.microsoft.azure.spring.integration.core.api;
 
 import java.util.concurrent.CompletableFuture;
 

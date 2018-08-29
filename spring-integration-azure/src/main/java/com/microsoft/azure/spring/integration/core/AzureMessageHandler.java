@@ -6,6 +6,8 @@
 
 package com.microsoft.azure.spring.integration.core;
 
+import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
+import com.microsoft.azure.spring.integration.core.api.SendOperation;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;

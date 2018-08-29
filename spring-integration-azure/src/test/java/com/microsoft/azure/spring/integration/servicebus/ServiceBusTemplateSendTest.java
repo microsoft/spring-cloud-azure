@@ -9,7 +9,7 @@ package com.microsoft.azure.spring.integration.servicebus;
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.IMessageSender;
 import com.microsoft.azure.spring.integration.SendOperationTest;
-import com.microsoft.azure.spring.integration.core.SendOperation;
+import com.microsoft.azure.spring.integration.core.api.SendOperation;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusSenderFactory;
 import org.junit.Before;
 

@@ -6,7 +6,7 @@
 
 package com.microsoft.azure.spring.integration;
 
-import com.microsoft.azure.spring.integration.core.SubscribeByGroupOperation;
+import com.microsoft.azure.spring.integration.core.api.SubscribeByGroupOperation;
 import org.junit.Test;
 import org.springframework.messaging.Message;
 

@@ -7,7 +7,7 @@
 package com.microsoft.azure.spring.integration.servicebus.inbound;
 
 import com.microsoft.azure.spring.integration.core.AbstractInboundChannelAdapter;
-import com.microsoft.azure.spring.integration.core.SubscribeByGroupOperation;
+import com.microsoft.azure.spring.integration.core.api.SubscribeByGroupOperation;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
