@@ -7,6 +7,7 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
+import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueClientFactory;
 import com.microsoft.azure.storage.queue.CloudQueueClient;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -16,7 +17,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-
 
 public class AzureStorageQueueAutoConfigurationTest {
 
@@ -39,7 +39,7 @@ public class AzureStorageQueueAutoConfigurationTest {
 
     @Test
     public void testAzureStoragePropertiesConfigured() {
-        this.contextRunner.withPropertyValues("spring" + ".cloud.azure.storage.account=squeue").run(context -> {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.storage.account=squeue").run(context -> {
             assertThat(context).hasSingleBean(AzureStorageProperties.class);
             assertThat(context.getBean(AzureStorageProperties.class).getAccount()).isEqualTo("squeue");
         });
@@ -52,5 +52,9 @@ public class AzureStorageQueueAutoConfigurationTest {
             return mock(AzureAdmin.class);
         }
 
+        @Bean
+        StorageQueueClientFactory storageQueueClientFactory() {
+            return mock(StorageQueueClientFactory.class);
+        }
     }
 }
