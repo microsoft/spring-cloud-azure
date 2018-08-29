@@ -4,7 +4,7 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.integration.core.converter;
+package com.microsoft.azure.spring.integration.pojo;
 
 import lombok.*;
 
@@ -14,7 +14,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-class User {
+public class User {
     String name;
 
     @Override
