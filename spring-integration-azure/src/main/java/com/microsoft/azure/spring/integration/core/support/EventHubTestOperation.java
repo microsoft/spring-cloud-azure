@@ -4,16 +4,14 @@
  * license information.
  */
 
-package com.microsoft.azure.eventhub.stream.binder;
+package com.microsoft.azure.spring.integration.core.support;
 
 import com.microsoft.azure.eventhubs.EventData;
-import com.microsoft.azure.spring.integration.core.support.InMemoryOperation;
 import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
 import com.microsoft.azure.spring.integration.eventhub.converter.EventHubMessageConverter;
 
-class EventHubTestOperation extends InMemoryOperation<EventData> implements EventHubOperation {
-
-    EventHubTestOperation() {
+public class EventHubTestOperation extends InMemoryOperation<EventData> implements EventHubOperation {
+    public EventHubTestOperation() {
         super(EventData.class, new EventHubMessageConverter());
     }
 }
