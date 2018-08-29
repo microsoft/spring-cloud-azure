@@ -11,7 +11,7 @@ import com.microsoft.azure.management.servicebus.AuthorizationRule;
 import com.microsoft.azure.management.servicebus.ServiceBusNamespace;
 import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
-import com.microsoft.azure.spring.integration.core.Memoizer;
+import com.microsoft.azure.spring.cloud.context.core.Memoizer;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
