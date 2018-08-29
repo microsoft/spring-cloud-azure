@@ -14,7 +14,7 @@ public class EventHubOperationSendSubscribeTest extends SendSubscribeOperationTe
 
     @Before
     @Override
-    public void setUp(){
+    public void setUp() {
         this.sendSubscribeOperation = new EventHubTestOperation();
     }
 }
