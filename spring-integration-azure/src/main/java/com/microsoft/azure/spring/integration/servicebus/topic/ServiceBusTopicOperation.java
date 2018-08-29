@@ -7,9 +7,9 @@
 package com.microsoft.azure.spring.integration.servicebus.topic;
 
 import com.microsoft.azure.management.servicebus.ServiceBusSubscription;
-import com.microsoft.azure.spring.integration.core.SendOperation;
-import com.microsoft.azure.spring.integration.core.SubscribeByGroupOperation;
-import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
+import com.microsoft.azure.spring.integration.core.api.SendOperation;
+import com.microsoft.azure.spring.integration.core.api.SubscribeByGroupOperation;
+import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 
 /**
  * Azure service bus topic operation to support send {@link org.springframework.messaging.Message} asynchronously

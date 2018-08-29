@@ -11,8 +11,6 @@ import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusExtende
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusProducerProperties;
 import com.microsoft.azure.servicebus.stream.binder.provisioning.ServiceBusTopicChannelProvisioner;
 import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
-import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
-import com.microsoft.azure.spring.integration.eventhub.inbound.ListenerMode;
 import com.microsoft.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
 import org.springframework.cloud.stream.binder.*;

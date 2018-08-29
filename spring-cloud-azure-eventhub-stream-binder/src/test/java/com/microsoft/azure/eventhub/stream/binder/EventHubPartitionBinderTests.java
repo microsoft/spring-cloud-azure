@@ -8,7 +8,7 @@ package com.microsoft.azure.eventhub.stream.binder;
 
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubConsumerProperties;
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubProducerProperties;
-import com.microsoft.azure.spring.integration.core.StartPosition;
+import com.microsoft.azure.spring.integration.core.api.StartPosition;
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.springframework.cloud.stream.binder.*;

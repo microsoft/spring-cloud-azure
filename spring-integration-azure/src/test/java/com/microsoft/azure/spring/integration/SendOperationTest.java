@@ -7,8 +7,8 @@
 package com.microsoft.azure.spring.integration;
 
 import com.google.common.collect.ImmutableMap;
-import com.microsoft.azure.spring.integration.core.PartitionSupplier;
-import com.microsoft.azure.spring.integration.core.SendOperation;
+import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
+import com.microsoft.azure.spring.integration.core.api.SendOperation;
 import org.junit.Test;
 import org.springframework.core.NestedRuntimeException;
 import org.springframework.messaging.Message;
