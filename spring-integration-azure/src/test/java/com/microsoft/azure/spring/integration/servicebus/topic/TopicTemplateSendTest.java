@@ -9,7 +9,6 @@ package com.microsoft.azure.spring.integration.servicebus.topic;
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.IMessageSender;
 import com.microsoft.azure.servicebus.ITopicClient;
-import com.microsoft.azure.servicebus.Message;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusTemplateSendTest;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
 import org.junit.Before;

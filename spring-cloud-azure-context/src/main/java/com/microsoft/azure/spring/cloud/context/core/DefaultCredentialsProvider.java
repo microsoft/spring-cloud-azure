@@ -48,18 +48,15 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
     }
 
     private void initCredentials(CredentialSupplier supplier) {
-        if (!Strings.isNullOrEmpty(supplier.getCredentialFilePath())) {
-            try {
-                DefaultResourceLoader resourceLoader = new DefaultResourceLoader();
-                InputStream inputStream = resourceLoader.getResource(supplier.getCredentialFilePath()).getInputStream();
-                File credentialFile = this.createTempCredentialFile(inputStream);
+        try {
+            DefaultResourceLoader resourceLoader = new DefaultResourceLoader();
+            InputStream inputStream = resourceLoader.getResource(supplier.getCredentialFilePath()).getInputStream();
+            File credentialFile = this.createTempCredentialFile(inputStream);
 
-                this.credentials = ApplicationTokenCredentials.fromFile(credentialFile);
-            } catch (IOException e) {
-                LOGGER.error("Credential file path not found.", e);
-            }
-        } else {
-            throw new RuntimeException("No credentials provided.");
+            this.credentials = ApplicationTokenCredentials.fromFile(credentialFile);
+        } catch (IOException e) {
+            LOGGER.error("Credential file path not found.", e);
+            throw new IllegalArgumentException("Credential file path not found", e);
         }
     }
 
