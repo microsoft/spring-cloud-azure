@@ -6,10 +6,13 @@
 
 package com.microsoft.azure.servicebus.stream.binder;
 
-import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusConsumerProperties;
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusProducerProperties;
-import org.springframework.cloud.stream.binder.*;
+import com.microsoft.azure.spring.integration.core.support.ServiceBusTopicTestOperation;
+import org.springframework.cloud.stream.binder.AbstractTestBinder;
+import org.springframework.cloud.stream.binder.BinderHeaders;
+import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
+import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.context.support.GenericApplicationContext;
 
 /**

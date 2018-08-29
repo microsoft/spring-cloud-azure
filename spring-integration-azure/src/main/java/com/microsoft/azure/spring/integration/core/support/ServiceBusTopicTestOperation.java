@@ -4,15 +4,14 @@
  * license information.
  */
 
-package com.microsoft.azure.servicebus.stream.binder;
+package com.microsoft.azure.spring.integration.core.support;
 
 import com.microsoft.azure.servicebus.IMessage;
-import com.microsoft.azure.spring.integration.core.support.InMemoryOperation;
 import com.microsoft.azure.spring.integration.servicebus.converter.ServiceBusMessageConverter;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
 
-class ServiceBusTopicTestOperation extends InMemoryOperation<IMessage> implements ServiceBusTopicOperation {
-    ServiceBusTopicTestOperation() {
+public class ServiceBusTopicTestOperation extends InMemoryOperation<IMessage> implements ServiceBusTopicOperation {
+    public ServiceBusTopicTestOperation() {
         super(IMessage.class, new ServiceBusMessageConverter());
     }
 }
