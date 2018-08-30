@@ -34,7 +34,7 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     private int visibilityTimeoutInSeconds;
     @Getter
     @Setter
-    private Class messagePayloadType;
+    private Class messagePayloadType = String.class;
     @Setter
     protected CheckpointMode checkpointMode = CheckpointMode.RECORD;
 
