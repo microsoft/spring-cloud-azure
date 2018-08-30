@@ -37,4 +37,6 @@ public interface SubscribeByGroupOperation {
      * if was not registered.
      */
     boolean unsubscribe(String destination, String consumerGroup);
+
+    void setCheckpointMode(CheckpointMode checkpointMode);
 }
