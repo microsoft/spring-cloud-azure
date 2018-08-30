@@ -6,24 +6,43 @@
 
 package com.microsoft.azure.spring.integration.storage.queue;
 
-import com.microsoft.azure.spring.integration.core.Checkpointer;
-import com.microsoft.azure.spring.integration.core.Memoizer;
-import com.microsoft.azure.spring.integration.core.PartitionSupplier;
+import com.microsoft.azure.spring.integration.core.*;
+import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
+import com.microsoft.azure.spring.integration.storage.queue.converter.StorageQueueMessageConverter;
 import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueClientFactory;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.queue.CloudQueue;
 import com.microsoft.azure.storage.queue.CloudQueueMessage;
+import javafx.util.Pair;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.lang.NonNull;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.util.Assert;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 public class StorageQueueTemplate implements StorageQueueOperation {
     private final StorageQueueClientFactory storageQueueClientFactory;
-    private final Function<String, Checkpointer<CloudQueueMessage>> checkpointerGetter =
-            Memoizer.memoize(this::createCheckpointer);
     private static final int DEFAULT_VISIBILITY_TIMEOUT_IN_SECONDS = 30;
+
+    @Getter
+    @Setter
     private int visibilityTimeoutInSeconds;
+    @Getter
+    @Setter
+    private Class messagePayloadType;
+    @Setter
+    protected CheckpointMode checkpointMode = CheckpointMode.RECORD;
+
+    @Getter
+    @Setter
+    protected StorageQueueMessageConverter messageConverter = new StorageQueueMessageConverter();
+
+    private Function<Pair<CloudQueue, CloudQueueMessage>, CompletableFuture<Void>> checkpoint = this::checkpointMessage;
 
     public StorageQueueTemplate(@NonNull StorageQueueClientFactory storageQueueClientFactory) {
         this.storageQueueClientFactory = storageQueueClientFactory;
@@ -31,9 +50,10 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     }
 
     @Override
-    public CompletableFuture<Void> sendAsync(String destination, CloudQueueMessage cloudQueueMessage,
+    public <T> CompletableFuture<Void> sendAsync(String destination, @NonNull Message<T> message,
                                              PartitionSupplier partitionSupplier) {
         Assert.hasText(destination, "destination can't be null or empty");
+        CloudQueueMessage cloudQueueMessage = messageConverter.fromMessage(message, CloudQueueMessage.class);
         CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(() -> {
             CloudQueue cloudQueue = storageQueueClientFactory.getQueueCreator().apply(destination);
             try {
@@ -46,40 +66,48 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     }
 
     @Override
-    public CompletableFuture<CloudQueueMessage> receiveAsync(String destination) {
+    public CompletableFuture<Message<?>> receiveAsync(String destination) {
         return this.receiveAsync(destination, visibilityTimeoutInSeconds);
     }
 
     @Override
-    public CompletableFuture<CloudQueueMessage> receiveAsync(String destination, int visibilityTimeoutInSeconds) {
+    public CompletableFuture<Message<?>> receiveAsync(String destination, int visibilityTimeoutInSeconds) {
         Assert.hasText(destination, "destination can't be null or empty");
-        CompletableFuture<CloudQueueMessage> completableFuture = CompletableFuture.supplyAsync(() -> {
+
+        CompletableFuture<Message<?>> completableFuture = CompletableFuture.supplyAsync(() -> {
             CloudQueue cloudQueue = storageQueueClientFactory.getQueueCreator().apply(destination);
+            CloudQueueMessage cloudQueueMessage;
+            Map<String, Object> headers = new HashMap<>();
             try {
-                return cloudQueue.retrieveMessage(visibilityTimeoutInSeconds, null, null);
+                cloudQueueMessage = cloudQueue.retrieveMessage(visibilityTimeoutInSeconds, null, null);
             } catch (StorageException e) {
                 throw new StorageQueueRuntimeException("Failed to peek message from cloud queue", e);
             }
+
+            Checkpointer checkpointer = new AzureCheckpointer(()->
+                    checkpoint.apply(new Pair<>(cloudQueue, cloudQueueMessage)));
+            if (checkpointMode == CheckpointMode.RECORD) {
+                checkpointer.success();
+            } else if (checkpointMode == CheckpointMode.MANUAL) {
+                headers.put(AzureHeaders.CHECKPOINTER, checkpointer);
+            }
+
+            Message<?> message = messageConverter.toMessage(cloudQueueMessage, new MessageHeaders(headers),
+                    messagePayloadType);
+            return message;
+
         });
         return completableFuture;
     }
 
-    @Override
-    public Checkpointer<CloudQueueMessage> getCheckpointer(String destination) {
-        return checkpointerGetter.apply(destination);
-    }
-
-    private Checkpointer<CloudQueueMessage> createCheckpointer(String destination) {
-        return new StorageQueueCheckpointer(this.storageQueueClientFactory.getQueueCreator().apply(destination));
-    }
-
-    @Override
-    public void setVisibilityTimeoutInSeconds(int visibilityTimeoutInSeconds) {
-        this.visibilityTimeoutInSeconds = visibilityTimeoutInSeconds;
-    }
-
-    @Override
-    public int getVisibilityTimeoutInSeconds() {
-        return this.visibilityTimeoutInSeconds;
+    public CompletableFuture<Void> checkpointMessage(Pair<CloudQueue, CloudQueueMessage> pair) {
+        CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(() -> {
+            try {
+                pair.getKey().deleteMessage(pair.getValue());
+            } catch (StorageException e) {
+                throw new StorageQueueRuntimeException("Failed to checkpoint message from cloud queue", e);
+            }
+        });
+        return completableFuture;
     }
 }

@@ -64,6 +64,10 @@ public abstract class AbstractAzureMessageConverter<T> implements AzureMessageCo
     }
 
     private T internalFromMessage(Message<?> message, Class<T> targetClass) {
+        if (message == null) {
+            return null;
+        }
+
         Object payload = message.getPayload();
 
         if (targetClass.isInstance(payload)) {
@@ -82,6 +86,10 @@ public abstract class AbstractAzureMessageConverter<T> implements AzureMessageCo
     }
 
     private <U> Message<?> internalToMessage(T azureMessage, MessageHeaders headers, Class<U> targetPayloadClass) {
+        if (azureMessage == null) {
+            return null;
+        }
+
         byte[] payload = getPayload(azureMessage);
 
         if (targetPayloadClass.isInstance(azureMessage)) {
