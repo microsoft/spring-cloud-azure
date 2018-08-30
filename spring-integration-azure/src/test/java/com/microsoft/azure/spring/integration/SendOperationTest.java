@@ -84,7 +84,7 @@ public abstract class SendOperationTest<O extends SendOperation> {
     }
 
     @Test
-    public void testSendFailure() throws Throwable {
+    public void testSendFailure() {
         CompletableFuture<Void> future = this.sendOperation.sendAsync(destination, this.message, null);
         this.future.completeExceptionally(new Exception("future failed."));
 
