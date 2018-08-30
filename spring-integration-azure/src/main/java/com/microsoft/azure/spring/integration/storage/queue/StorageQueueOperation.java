@@ -6,9 +6,9 @@
 
 package com.microsoft.azure.spring.integration.storage.queue;
 
-import com.microsoft.azure.spring.integration.core.Checkpointer;
 import com.microsoft.azure.spring.integration.core.SendOperation;
-import com.microsoft.azure.storage.queue.CloudQueueMessage;
+import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
+import org.springframework.messaging.Message;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * @author Miao Cao
  */
-public interface StorageQueueOperation extends SendOperation<CloudQueueMessage> {
+public interface StorageQueueOperation extends SendOperation {
 
     /**
      * Receives a message from the front of destination queue.
@@ -27,7 +27,7 @@ public interface StorageQueueOperation extends SendOperation<CloudQueueMessage> 
      *
      * @param destination the destination queue name
      */
-    CompletableFuture<CloudQueueMessage> receiveAsync(String destination);
+    CompletableFuture<Message<?>> receiveAsync(String destination);
 
     /**
      * Receives a message from the front of destination queue.
@@ -39,13 +39,7 @@ public interface StorageQueueOperation extends SendOperation<CloudQueueMessage> 
      * @param destination the destination queue name
      * @param visibilityTimeoutInSeconds Specifies the visibility timeout for the message, in seconds
      */
-    CompletableFuture<CloudQueueMessage> receiveAsync(String destination, int visibilityTimeoutInSeconds);
-
-    /**
-     * Get checkpointer for a given destination.
-     * @param destination the destination queue name
-     */
-    Checkpointer<CloudQueueMessage> getCheckpointer(String destination);
+    CompletableFuture<Message<?>> receiveAsync(String destination, int visibilityTimeoutInSeconds);
 
     /**
      * Set visibility timeout.
@@ -54,4 +48,10 @@ public interface StorageQueueOperation extends SendOperation<CloudQueueMessage> 
     void setVisibilityTimeoutInSeconds(int visibilityTimeoutInSeconds);
 
     int getVisibilityTimeoutInSeconds();
+
+    void setCheckpointMode(CheckpointMode checkpointMode);
+
+    void setMessagePayloadType(Class messagePayloadType);
+
+    Class getMessagePayloadType();
 }
