@@ -6,7 +6,6 @@
 
 package com.microsoft.azure.spring.integration.servicebus;
 
-import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.spring.integration.MessageHandlerTest;
 import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
 import com.microsoft.azure.spring.integration.core.PartitionSupplier;
@@ -22,7 +21,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ServiceBusMessageHandlerTest extends MessageHandlerTest<IMessage, ServiceBusQueueOperation> {
+public class ServiceBusMessageHandlerTest extends MessageHandlerTest<ServiceBusQueueOperation> {
 
     @Before
     @Override

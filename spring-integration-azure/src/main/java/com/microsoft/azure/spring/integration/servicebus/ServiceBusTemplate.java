@@ -83,20 +83,24 @@ public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements Se
     protected class ServiceBusMessageHandler<U> implements IMessageHandler {
         private final Consumer<Message<U>> consumer;
         private final Class<U> payloadType;
-        private final Function<UUID, CompletableFuture<Void>> checkpoint;
+        private final Function<UUID, CompletableFuture<Void>> success;
+        private final Function<UUID, CompletableFuture<Void>> failure;
 
-        public ServiceBusMessageHandler(@NonNull Consumer<Message<U>> consumer, Class<U> payloadType,
-                Function<UUID, CompletableFuture<Void>> checkpoint) {
+        public ServiceBusMessageHandler(@NonNull Consumer<Message<U>> consumer, @NonNull Class<U> payloadType,
+                @NonNull Function<UUID, CompletableFuture<Void>> success,
+                @NonNull Function<UUID, CompletableFuture<Void>> failure) {
             this.consumer = consumer;
             this.payloadType = payloadType;
-            this.checkpoint = checkpoint;
+            this.success = success;
+            this.failure = failure;
         }
 
         @Override
         public CompletableFuture<Void> onMessageAsync(IMessage serviceBusMessage) {
             Map<String, Object> headers = new HashMap<>();
 
-            Checkpointer checkpointer = new AzureCheckpointer(() -> checkpoint.apply(serviceBusMessage.getLockToken()));
+            Checkpointer checkpointer = new AzureCheckpointer(() -> success.apply(serviceBusMessage.getLockToken()),
+                    () -> failure.apply(serviceBusMessage.getLockToken()));
             if (checkpointMode == CheckpointMode.MANUAL) {
                 headers.put(AzureHeaders.CHECKPOINTER, checkpointer);
             }

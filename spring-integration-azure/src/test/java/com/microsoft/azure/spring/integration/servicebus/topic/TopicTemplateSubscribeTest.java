@@ -60,6 +60,10 @@ public class TopicTemplateSubscribeTest extends SubscribeByGroupOperationTest<Se
         }
     }
 
+    @Override
+    protected void verifySubscriberUnregistered(int times) {
+    }
+
     private SubscriptionClient createSubscriptionClient(Tuple<String, String> nameAndConsumerGroup) {
         if (nameAndConsumerGroup.getSecond().equals(this.consumerGroup)) {
             return this.subscriptionClient;

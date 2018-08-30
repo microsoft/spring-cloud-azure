@@ -55,9 +55,12 @@ public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicC
         ISubscriptionClient subscriptionClient =
                 this.senderFactory.getSubscriptionClientCreator().apply(nameAndConsumerGroup);
 
+        Function<UUID, CompletableFuture<Void>> success = subscriptionClient::completeAsync;
+        Function<UUID, CompletableFuture<Void>> failure = subscriptionClient::abandonAsync;
+
         try {
-            subscriptionClient.registerMessageHandler(new ServiceBusMessageHandler(consumer, payloadType,
-                    (Function<UUID, CompletableFuture<Void>>) subscriptionClient::completeAsync));
+            subscriptionClient
+                    .registerMessageHandler(new ServiceBusMessageHandler(consumer, payloadType, success, failure));
         } catch (ServiceBusException | InterruptedException e) {
             LOGGER.error("Failed to register message handler", e);
             throw new ServiceBusRuntimeException("Failed to register message handler", e);

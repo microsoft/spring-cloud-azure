@@ -8,8 +8,11 @@ package com.microsoft.azure.eventhub.stream.binder;
 
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubConsumerProperties;
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubProducerProperties;
-import com.microsoft.azure.eventhubs.EventData;
-import org.springframework.cloud.stream.binder.*;
+import com.microsoft.azure.spring.integration.core.support.EventHubTestOperation;
+import org.springframework.cloud.stream.binder.AbstractTestBinder;
+import org.springframework.cloud.stream.binder.BinderHeaders;
+import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
+import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.context.support.GenericApplicationContext;
 
 /**

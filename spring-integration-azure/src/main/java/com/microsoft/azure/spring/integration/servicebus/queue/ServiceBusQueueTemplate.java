@@ -41,8 +41,7 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean subscribe(String destination, @NonNull Consumer<Message<?>> consumer,
-            Class<?> targetPayloadClass) {
+    public boolean subscribe(String destination, @NonNull Consumer<Message<?>> consumer, Class<?> targetPayloadClass) {
         Assert.hasText(destination, "destination can't be null or empty");
 
         if (subscribedQueues.contains(destination)) {
@@ -52,10 +51,13 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
         subscribedQueues.add(destination);
         IQueueClient queueClient = this.senderFactory.getQueueClientCreator().apply(destination);
 
+        Function<UUID, CompletableFuture<Void>> success = queueClient::completeAsync;
+        Function<UUID, CompletableFuture<Void>> failure = queueClient::abandonAsync;
+
         try {
 
-            queueClient.registerMessageHandler(new ServiceBusMessageHandler(consumer, targetPayloadClass,
-                    (Function<UUID, CompletableFuture<Void>>) queueClient::completeAsync));
+            queueClient.registerMessageHandler(
+                    new ServiceBusMessageHandler(consumer, targetPayloadClass, success, failure));
         } catch (ServiceBusException | InterruptedException e) {
             LOGGER.error("Failed to register message handler", e);
             throw new ServiceBusRuntimeException("Failed to register message handler", e);

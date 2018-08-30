@@ -23,7 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class InMemoryOperation<T> implements SendOperation, SubscribeByGroupOperation {
-    private final Map<String, Map<String, Consumer<Message<?>>>> consumerMap = new ConcurrentHashMap<>();
+    private final Map<String, Map<String, Consumer<Message<?>>>> consumerByNameAndGroup = new ConcurrentHashMap<>();
+    private final Map<String, Map<String, Class<?>>> payloadTypeByNameAndGroup = new ConcurrentHashMap<>();
     private final Map<String, List<T>> topicsByName = new ConcurrentHashMap<>();
 
     @Setter
@@ -50,9 +51,9 @@ public class InMemoryOperation<T> implements SendOperation, SubscribeByGroupOper
 
         topicsByName.putIfAbsent(topicName, new LinkedList<>());
         topicsByName.get(topicName).add(azureMessage);
-        consumerMap.putIfAbsent(topicName, new ConcurrentHashMap<>());
-        consumerMap.get(topicName).values()
-                   .forEach(c -> c.accept(messageConverter.toMessage(azureMessage, byte[].class)));
+        consumerByNameAndGroup.putIfAbsent(topicName, new ConcurrentHashMap<>());
+        consumerByNameAndGroup.get(topicName).forEach((k, v) -> v.accept(messageConverter.toMessage(azureMessage,
+                payloadTypeByNameAndGroup.get(topicName).get(k))));
 
         future.complete(null);
         return future;
@@ -61,8 +62,10 @@ public class InMemoryOperation<T> implements SendOperation, SubscribeByGroupOper
     @Override
     public boolean subscribe(String topicName, String consumerGroup, Consumer<Message<?>> consumer,
             Class<?> payloadClass) {
-        consumerMap.putIfAbsent(topicName, new ConcurrentHashMap<>());
-        consumerMap.get(topicName).put(consumerGroup, consumer);
+        consumerByNameAndGroup.putIfAbsent(topicName, new ConcurrentHashMap<>());
+        consumerByNameAndGroup.get(topicName).put(consumerGroup, consumer);
+        payloadTypeByNameAndGroup.putIfAbsent(topicName, new ConcurrentHashMap<>());
+        payloadTypeByNameAndGroup.get(topicName).put(consumerGroup, payloadClass);
         topicsByName.putIfAbsent(topicName, new LinkedList<>());
 
         if (this.startPosition == StartPosition.EARLISET) {
@@ -74,7 +77,7 @@ public class InMemoryOperation<T> implements SendOperation, SubscribeByGroupOper
 
     @Override
     public boolean unsubscribe(String destination, String consumerGroup) {
-        consumerMap.get(destination).remove(consumerGroup);
+        consumerByNameAndGroup.get(destination).remove(consumerGroup);
         return true;
     }
 }

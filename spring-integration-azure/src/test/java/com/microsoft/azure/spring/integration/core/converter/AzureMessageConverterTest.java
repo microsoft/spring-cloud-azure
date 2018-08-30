@@ -6,6 +6,7 @@
 
 package com.microsoft.azure.spring.integration.core.converter;
 
+import com.microsoft.azure.spring.integration.pojo.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.integration.support.MessageBuilder;
