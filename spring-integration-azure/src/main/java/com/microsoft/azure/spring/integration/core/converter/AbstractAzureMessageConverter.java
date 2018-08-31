@@ -9,6 +9,7 @@ package com.microsoft.azure.spring.integration.core.converter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.integration.support.MessageBuilder;
+import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 
@@ -40,7 +41,7 @@ public abstract class AbstractAzureMessageConverter<T> implements AzureMessageCo
     }
 
     @Override
-    public T fromMessage(Message<?> message, Class<T> targetClass) {
+    public T fromMessage(@NonNull Message<?> message, @NonNull Class<T> targetClass) {
         T azureMessage = internalFromMessage(message, targetClass);
 
         setCustomHeaders(message, azureMessage);
@@ -50,7 +51,8 @@ public abstract class AbstractAzureMessageConverter<T> implements AzureMessageCo
 
     @Override
     @SuppressWarnings("unchecked")
-    public <U> Message<U> toMessage(T azureMessage, MessageHeaders headers, Class<U> targetPayloadClass) {
+    public <U> Message<U> toMessage(@NonNull T azureMessage, MessageHeaders headers,
+                                    @NonNull Class<U> targetPayloadClass) {
         return (Message<U>) internalToMessage(azureMessage, headers, targetPayloadClass);
     }
 
@@ -64,10 +66,6 @@ public abstract class AbstractAzureMessageConverter<T> implements AzureMessageCo
     }
 
     private T internalFromMessage(Message<?> message, Class<T> targetClass) {
-        if (message == null) {
-            return null;
-        }
-
         Object payload = message.getPayload();
 
         if (targetClass.isInstance(payload)) {
@@ -86,10 +84,6 @@ public abstract class AbstractAzureMessageConverter<T> implements AzureMessageCo
     }
 
     private <U> Message<?> internalToMessage(T azureMessage, MessageHeaders headers, Class<U> targetPayloadClass) {
-        if (azureMessage == null) {
-            return null;
-        }
-
         byte[] payload = getPayload(azureMessage);
 
         if (targetPayloadClass.isInstance(azureMessage)) {

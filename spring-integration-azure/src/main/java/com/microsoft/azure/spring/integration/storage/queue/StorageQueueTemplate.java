@@ -15,7 +15,6 @@ import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueue
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.queue.CloudQueue;
 import com.microsoft.azure.storage.queue.CloudQueueMessage;
-import javafx.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.lang.NonNull;
@@ -25,7 +24,6 @@ import org.springframework.util.Assert;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 
 public class StorageQueueTemplate implements StorageQueueOperation {
     private final StorageQueueClientFactory storageQueueClientFactory;
@@ -44,8 +42,6 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     @Getter
     @Setter
     protected StorageQueueMessageConverter messageConverter = new StorageQueueMessageConverter();
-
-    private Function<Pair<CloudQueue, CloudQueueMessage>, CompletableFuture<Void>> checkpoint = this::checkpointMessage;
 
     public StorageQueueTemplate(@NonNull StorageQueueClientFactory storageQueueClientFactory) {
         this.storageQueueClientFactory = storageQueueClientFactory;
@@ -89,24 +85,27 @@ public class StorageQueueTemplate implements StorageQueueOperation {
         } catch (StorageException e) {
             throw new StorageQueueRuntimeException("Failed to peek message from cloud queue", e);
         }
+
         Map<String, Object> headers = new HashMap<>();
-        Checkpointer checkpointer = new AzureCheckpointer(() ->
-                checkpoint.apply(new Pair<>(cloudQueue, cloudQueueMessage)));
+        Checkpointer checkpointer = new AzureCheckpointer(() -> checkpointMessage(cloudQueue, cloudQueueMessage));
 
         if (checkpointMode == CheckpointMode.RECORD) {
             checkpointer.success();
         } else if (checkpointMode == CheckpointMode.MANUAL) {
             headers.put(AzureHeaders.CHECKPOINTER, checkpointer);
         }
-        Message<?> message = messageConverter.toMessage(cloudQueueMessage,
-                new MessageHeaders(headers), messagePayloadType);
+
+        Message<?> message = null;
+        if (cloudQueueMessage != null) {
+            messageConverter.toMessage(cloudQueueMessage, new MessageHeaders(headers), messagePayloadType);
+        }
         return message;
     }
 
-    private CompletableFuture<Void> checkpointMessage(Pair<CloudQueue, CloudQueueMessage> pair) {
+    private CompletableFuture<Void> checkpointMessage(CloudQueue cloudQueue, CloudQueueMessage cloudQueueMessage) {
         CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(() -> {
             try {
-                pair.getKey().deleteMessage(pair.getValue());
+                cloudQueue.deleteMessage(cloudQueueMessage);
             } catch (StorageException e) {
                 throw new StorageQueueRuntimeException("Failed to checkpoint message from cloud queue", e);
             }
