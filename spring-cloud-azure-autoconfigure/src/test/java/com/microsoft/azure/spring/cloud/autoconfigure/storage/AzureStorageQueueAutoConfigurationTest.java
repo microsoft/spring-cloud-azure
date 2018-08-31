@@ -6,8 +6,7 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 
-import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
-import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueClientFactory;
+import com.microsoft.azure.spring.integration.storage.queue.factory.DefaultStorageQueueClientFactory;
 import com.microsoft.azure.storage.queue.CloudQueueClient;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -48,13 +47,8 @@ public class AzureStorageQueueAutoConfigurationTest {
     @Configuration
     static class TestConfiguration {
         @Bean
-        AzureAdmin azureAdmin() {
-            return mock(AzureAdmin.class);
-        }
-
-        @Bean
-        StorageQueueClientFactory storageQueueClientFactory() {
-            return mock(StorageQueueClientFactory.class);
+        DefaultStorageQueueClientFactory defaultStorageQueueClientFactory() {
+            return mock(DefaultStorageQueueClientFactory.class);
         }
     }
 }

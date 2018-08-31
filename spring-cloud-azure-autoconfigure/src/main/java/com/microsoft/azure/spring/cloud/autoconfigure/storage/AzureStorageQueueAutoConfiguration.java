@@ -6,12 +6,11 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 
-
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueOperation;
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueTemplate;
-import com.microsoft.azure.spring.integration.storage.queue.factory.DefaultStorageQueueClientClientFactory;
+import com.microsoft.azure.spring.integration.storage.queue.factory.DefaultStorageQueueClientFactory;
 import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueClientFactory;
 import com.microsoft.azure.storage.queue.CloudQueueClient;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -33,7 +32,7 @@ public class AzureStorageQueueAutoConfiguration {
     @ConditionalOnMissingBean
     StorageQueueClientFactory storageQueueFactory(AzureAdmin azureAdmin,
                                                   AzureStorageProperties azureStorageProperties) {
-        return new DefaultStorageQueueClientClientFactory(azureAdmin, azureStorageProperties.getAccount());
+        return new DefaultStorageQueueClientFactory(azureAdmin, azureStorageProperties.getAccount());
     }
 
     @Bean
