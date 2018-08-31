@@ -21,15 +21,13 @@ import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.util.function.Function;
 
-public class DefaultStorageQueueClientClientFactory implements StorageQueueClientFactory {
+public class DefaultStorageQueueClientFactory implements StorageQueueClientFactory {
 
-    private final AzureAdmin azureAdmin;
     private final StorageAccount storageAccount;
     private final Function<String, CloudQueue> queueCreater = Memoizer.memoize(this::createStorageQueue);
     private CloudQueueClient cloudQueueClient;
 
-    public DefaultStorageQueueClientClientFactory(@NonNull AzureAdmin azureAdmin, String storageAccountName) {
-        this.azureAdmin = azureAdmin;
+    public DefaultStorageQueueClientFactory(@NonNull AzureAdmin azureAdmin, String storageAccountName) {
         this.storageAccount = azureAdmin.getOrCreateStorageAccount(storageAccountName);
         this.cloudQueueClient = createStorageQueueClient();
     }
@@ -44,22 +42,26 @@ public class DefaultStorageQueueClientClientFactory implements StorageQueueClien
         CloudStorageAccount account;
         try {
             account = CloudStorageAccount.parse(connectionString);
-        } catch (URISyntaxException | InvalidKeyException e) {
-            throw new StorageQueueRuntimeException("Failed to parse connection string.", e);
+        } catch (URISyntaxException e) {
+            throw new StorageQueueRuntimeException("Connection string could not be parsed as a URI reference", e);
+        } catch (InvalidKeyException e) {
+            throw new StorageQueueRuntimeException("Failed to configure cloud storage account", e);
         }
         return account.createCloudQueueClient();
     }
 
     private CloudQueue createStorageQueue(String queueName) {
         Assert.hasText(queueName, "queueName can't be null or empty");
+        CloudQueue queue = null;
         try {
-            CloudQueue queue = this.cloudQueueClient.getQueueReference(queueName);
+            queue = this.cloudQueueClient.getQueueReference(queueName);
             queue.createIfNotExists();
-            return queue;
         } catch (URISyntaxException e) {
-            throw new StorageQueueRuntimeException("Failed to parse connection string.", e);
+            throw new StorageQueueRuntimeException("Failed to create cloud queue. " +
+                    "Ensure queueName only be made up of lowercase letters, the numbers and the hyphen(-)", e);
         } catch (StorageException e) {
-            throw new StorageQueueRuntimeException("Failed to create cloud queue.", e);
+            // StorageException is never thrown.
         }
+        return queue;
     }
 }

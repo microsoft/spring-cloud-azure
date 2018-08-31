@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutionException;
  *
  * @author Miao Cao
  */
-public class StorageQueueMessageSource extends AbstractMessageSource<CloudQueueMessage> {
+public class StorageQueueMessageSource extends AbstractMessageSource<Message<?>> {
 
     private StorageQueueOperation storageQueueOperation;
     private String destination;
@@ -35,9 +35,12 @@ public class StorageQueueMessageSource extends AbstractMessageSource<CloudQueueM
         Message<?> message;
         try {
             message = storageQueueOperation.receiveAsync(destination).get();
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException e) {
+            return null;
+        } catch (ExecutionException e) {
             throw new StorageQueueRuntimeException("Failed to receive message.", e);
         }
+
         return message;
     }
 

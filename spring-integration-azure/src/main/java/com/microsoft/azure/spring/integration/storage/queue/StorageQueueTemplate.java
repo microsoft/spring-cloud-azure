@@ -31,12 +31,13 @@ public class StorageQueueTemplate implements StorageQueueOperation {
 
     @Getter
     @Setter
-    private int visibilityTimeoutInSeconds;
+    private int visibilityTimeoutInSeconds = DEFAULT_VISIBILITY_TIMEOUT_IN_SECONDS;
     @Getter
     @Setter
-    private Class messagePayloadType = String.class;
+    private Class messagePayloadType = byte[].class;
+    @Getter
     @Setter
-    protected CheckpointMode checkpointMode = CheckpointMode.RECORD;
+    private CheckpointMode checkpointMode = CheckpointMode.RECORD;
 
     @Getter
     @Setter
@@ -46,7 +47,6 @@ public class StorageQueueTemplate implements StorageQueueOperation {
 
     public StorageQueueTemplate(@NonNull StorageQueueClientFactory storageQueueClientFactory) {
         this.storageQueueClientFactory = storageQueueClientFactory;
-        visibilityTimeoutInSeconds = DEFAULT_VISIBILITY_TIMEOUT_IN_SECONDS;
     }
 
     @Override
@@ -77,30 +77,34 @@ public class StorageQueueTemplate implements StorageQueueOperation {
         CompletableFuture<Message<?>> completableFuture = CompletableFuture.supplyAsync(() -> {
             CloudQueue cloudQueue = storageQueueClientFactory.getQueueCreator().apply(destination);
             CloudQueueMessage cloudQueueMessage;
-            Map<String, Object> headers = new HashMap<>();
             try {
                 cloudQueueMessage = cloudQueue.retrieveMessage(visibilityTimeoutInSeconds, null, null);
             } catch (StorageException e) {
                 throw new StorageQueueRuntimeException("Failed to peek message from cloud queue", e);
             }
 
-            Checkpointer checkpointer = new AzureCheckpointer(()->
-                    checkpoint.apply(new Pair<>(cloudQueue, cloudQueueMessage)));
-            if (checkpointMode == CheckpointMode.RECORD) {
-                checkpointer.success();
-            } else if (checkpointMode == CheckpointMode.MANUAL) {
-                headers.put(AzureHeaders.CHECKPOINTER, checkpointer);
-            }
-
-            Message<?> message = messageConverter.toMessage(cloudQueueMessage, new MessageHeaders(headers),
-                    messagePayloadType);
+            Message<?> message = messageConverter.toMessage(cloudQueueMessage,
+                    new MessageHeaders(getHeadersOrCheckPoint(cloudQueue, cloudQueueMessage)), messagePayloadType);
             return message;
-
         });
         return completableFuture;
     }
 
-    public CompletableFuture<Void> checkpointMessage(Pair<CloudQueue, CloudQueueMessage> pair) {
+    private Map<String, Object> getHeadersOrCheckPoint(CloudQueue cloudQueue, CloudQueueMessage cloudQueueMessage) {
+        Map<String, Object> headers = new HashMap<>();
+        Checkpointer checkpointer = new AzureCheckpointer(()->
+                checkpoint.apply(new Pair<>(cloudQueue, cloudQueueMessage)));
+
+        if (checkpointMode == CheckpointMode.RECORD) {
+            checkpointer.success();
+        } else if (checkpointMode == CheckpointMode.MANUAL) {
+            headers.put(AzureHeaders.CHECKPOINTER, checkpointer);
+        }
+
+        return headers;
+    }
+
+    private CompletableFuture<Void> checkpointMessage(Pair<CloudQueue, CloudQueueMessage> pair) {
         CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(() -> {
             try {
                 pair.getKey().deleteMessage(pair.getValue());

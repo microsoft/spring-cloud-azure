@@ -12,8 +12,8 @@ import org.springframework.messaging.Message;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Operations for sending or receiving message on destination Azure storage queue.
- *
+ * Azure storage queue operation to support send and receive
+ * {@link org.springframework.messaging.Message} asynchronously
  * @author Miao Cao
  */
 public interface StorageQueueOperation extends SendOperation {
@@ -21,7 +21,8 @@ public interface StorageQueueOperation extends SendOperation {
     /**
      * Receives a message from the front of destination queue.
      * This operation marks the retrieved message as invisible in the queue for a visibility timeout period.
-     * The default visibility timeout is 30 seconds.
+     * The default visibility timeout is 30 seconds. You can change visibility timeout by
+     * {@link #setVisibilityTimeoutInSeconds(int) }
      * You should check point if message has been processed successfully, otherwise the message will be visible
      * in the queue again.
      *
@@ -49,8 +50,18 @@ public interface StorageQueueOperation extends SendOperation {
 
     int getVisibilityTimeoutInSeconds();
 
+    /**
+     * Set visibility timeout.
+     * @param checkpointMode Specifies checkpoint mode, default checkpoint mode is RECORD
+     */
     void setCheckpointMode(CheckpointMode checkpointMode);
 
+    CheckpointMode getCheckpointMode();
+
+    /**
+     * Set visibility timeout.
+     * @param messagePayloadType Specifies the payload type of the message, the default payload type is byte[]
+     */
     void setMessagePayloadType(Class messagePayloadType);
 
     Class getMessagePayloadType();
