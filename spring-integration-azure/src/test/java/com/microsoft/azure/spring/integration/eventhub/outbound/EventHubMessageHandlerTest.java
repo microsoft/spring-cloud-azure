@@ -6,10 +6,9 @@
 
 package com.microsoft.azure.spring.integration.eventhub.outbound;
 
-import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.spring.integration.MessageHandlerTest;
 import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
-import com.microsoft.azure.spring.integration.core.PartitionSupplier;
+import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
 import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -22,7 +21,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EventHubMessageHandlerTest extends MessageHandlerTest<EventData, EventHubOperation> {
+public class EventHubMessageHandlerTest extends MessageHandlerTest<EventHubOperation> {
 
     @Before
     @Override

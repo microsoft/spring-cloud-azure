@@ -11,8 +11,8 @@ import com.microsoft.azure.servicebus.*;
 import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.Memoizer;
 import com.microsoft.azure.spring.cloud.context.core.Tuple;
-import com.microsoft.azure.spring.integration.core.Memoizer;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
 import org.springframework.util.Assert;
 

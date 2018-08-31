@@ -6,9 +6,9 @@
 
 package com.microsoft.azure.spring.integration.servicebus.queue;
 
-import com.microsoft.azure.spring.integration.core.SendOperation;
-import com.microsoft.azure.spring.integration.core.SubscribeOperation;
-import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
+import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
+import com.microsoft.azure.spring.integration.core.api.SendOperation;
+import com.microsoft.azure.spring.integration.core.api.SubscribeOperation;
 
 /**
  * Azure service bus queue operation to support send

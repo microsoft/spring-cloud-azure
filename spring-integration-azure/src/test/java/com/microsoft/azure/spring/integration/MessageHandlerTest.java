@@ -9,8 +9,8 @@ package com.microsoft.azure.spring.integration;
 import com.google.common.collect.ImmutableMap;
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
 import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
-import com.microsoft.azure.spring.integration.core.PartitionSupplier;
-import com.microsoft.azure.spring.integration.core.SendOperation;
+import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
+import com.microsoft.azure.spring.integration.core.api.SendOperation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public abstract class MessageHandlerTest<M, O extends SendOperation> {
+public abstract class MessageHandlerTest<O extends SendOperation> {
 
     protected O sendOperation;
 

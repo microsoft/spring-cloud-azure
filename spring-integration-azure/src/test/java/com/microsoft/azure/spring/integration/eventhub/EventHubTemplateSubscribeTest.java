@@ -57,4 +57,8 @@ public class EventHubTemplateSubscribeTest extends SubscribeByGroupOperationTest
                 .registerEventProcessorFactory(isA(IEventProcessorFactory.class), isA(EventProcessorOptions.class));
     }
 
+    @Override
+    protected void verifySubscriberUnregistered(int times) {
+        verify(this.host, times(times)).unregisterEventProcessor();
+    }
 }
