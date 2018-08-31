@@ -37,7 +37,7 @@ public interface StorageQueueOperation extends SendOperation {
      * You should check point if message has been processed successfully, otherwise the message will be visible
      * in the queue again.
      *
-     * @param destination the destination queue name
+     * @param destination the queue name
      * @param visibilityTimeoutInSeconds Specifies the visibility timeout for the message, in seconds
      */
     CompletableFuture<Message<?>> receiveAsync(String destination, int visibilityTimeoutInSeconds);
@@ -51,7 +51,7 @@ public interface StorageQueueOperation extends SendOperation {
     int getVisibilityTimeoutInSeconds();
 
     /**
-     * Set visibility timeout.
+     * Set checkpoint mode.
      * @param checkpointMode Specifies checkpoint mode, default checkpoint mode is RECORD
      */
     void setCheckpointMode(CheckpointMode checkpointMode);
@@ -59,7 +59,7 @@ public interface StorageQueueOperation extends SendOperation {
     CheckpointMode getCheckpointMode();
 
     /**
-     * Set visibility timeout.
+     * Set payload type.
      * @param messagePayloadType Specifies the payload type of the message, the default payload type is byte[]
      */
     void setMessagePayloadType(Class messagePayloadType);
