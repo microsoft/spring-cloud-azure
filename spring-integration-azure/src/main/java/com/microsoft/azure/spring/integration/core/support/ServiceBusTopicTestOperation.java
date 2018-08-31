@@ -19,11 +19,9 @@ import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicTe
 import org.springframework.messaging.Message;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class ServiceBusTopicTestOperation extends ServiceBusTopicTemplate {
     private final Multimap<String, IMessage> topicsByName = ArrayListMultimap.create();
@@ -49,15 +47,13 @@ public class ServiceBusTopicTestOperation extends ServiceBusTopicTemplate {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void internalSubscribe(String name, String consumerGroup, Consumer<Message<?>> consumer,
             Class<?> payloadType) {
         ISubscriptionClient subscriptionClient =
                 this.senderFactory.getSubscriptionClientCreator().apply(Tuple.of(name, consumerGroup));
 
-        Function<UUID, CompletableFuture<Void>> success = subscriptionClient::completeAsync;
-        Function<UUID, CompletableFuture<Void>> failure = subscriptionClient::abandonAsync;
-
-        ServiceBusMessageHandler handler = new ServiceBusMessageHandler(consumer, payloadType, success, failure);
+        ServiceBusMessageHandler handler = new TopicMessageHandler(consumer, payloadType, subscriptionClient);
 
         try {
             subscriptionClient.registerMessageHandler(handler);
