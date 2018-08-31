@@ -6,8 +6,6 @@
 
 package com.microsoft.azure.spring.integration.core.api;
 
-import com.microsoft.azure.spring.integration.core.api.ListenerMode;
-
 /**
  * The Checkpoint mode.
  *
