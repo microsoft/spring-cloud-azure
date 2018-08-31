@@ -74,25 +74,21 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     public CompletableFuture<Message<?>> receiveAsync(String destination, int visibilityTimeoutInSeconds) {
         Assert.hasText(destination, "destination can't be null or empty");
 
-        CompletableFuture<Message<?>> completableFuture = CompletableFuture.supplyAsync(() -> {
-            CloudQueue cloudQueue = storageQueueClientFactory.getQueueCreator().apply(destination);
-            CloudQueueMessage cloudQueueMessage;
-            try {
-                cloudQueueMessage = cloudQueue.retrieveMessage(visibilityTimeoutInSeconds, null, null);
-            } catch (StorageException e) {
-                throw new StorageQueueRuntimeException("Failed to peek message from cloud queue", e);
-            }
-
-            Message<?> message = messageConverter.toMessage(cloudQueueMessage,
-                    new MessageHeaders(getHeadersOrCheckPoint(cloudQueue, cloudQueueMessage)), messagePayloadType);
-            return message;
-        });
+        CompletableFuture<Message<?>> completableFuture = CompletableFuture.supplyAsync(
+                () -> receiveMessage(destination, visibilityTimeoutInSeconds));
         return completableFuture;
     }
 
-    private Map<String, Object> getHeadersOrCheckPoint(CloudQueue cloudQueue, CloudQueueMessage cloudQueueMessage) {
+    private Message<?> receiveMessage(String destination, int visibilityTimeoutInSeconds) {
+        CloudQueue cloudQueue = storageQueueClientFactory.getQueueCreator().apply(destination);
+        CloudQueueMessage cloudQueueMessage;
+        try {
+            cloudQueueMessage = cloudQueue.retrieveMessage(visibilityTimeoutInSeconds, null, null);
+        } catch (StorageException e) {
+            throw new StorageQueueRuntimeException("Failed to peek message from cloud queue", e);
+        }
         Map<String, Object> headers = new HashMap<>();
-        Checkpointer checkpointer = new AzureCheckpointer(()->
+        Checkpointer checkpointer = new AzureCheckpointer(() ->
                 checkpoint.apply(new Pair<>(cloudQueue, cloudQueueMessage)));
 
         if (checkpointMode == CheckpointMode.RECORD) {
@@ -100,8 +96,9 @@ public class StorageQueueTemplate implements StorageQueueOperation {
         } else if (checkpointMode == CheckpointMode.MANUAL) {
             headers.put(AzureHeaders.CHECKPOINTER, checkpointer);
         }
-
-        return headers;
+        Message<?> message = messageConverter.toMessage(cloudQueueMessage,
+                new MessageHeaders(headers), messagePayloadType);
+        return message;
     }
 
     private CompletableFuture<Void> checkpointMessage(Pair<CloudQueue, CloudQueueMessage> pair) {
