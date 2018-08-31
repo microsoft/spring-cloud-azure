@@ -8,7 +8,7 @@ package com.microsoft.azure.servicebus.stream.binder;
 
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusConsumerProperties;
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusProducerProperties;
-import com.microsoft.azure.spring.integration.core.support.ServiceBusTopicTestOperation;
+import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
 import org.springframework.cloud.stream.binder.AbstractTestBinder;
 import org.springframework.cloud.stream.binder.BinderHeaders;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
@@ -18,17 +18,16 @@ import org.springframework.context.support.GenericApplicationContext;
 /**
  * @author Warren Zhu
  */
-
 public class ServiceBusTopicTestBinder extends
         AbstractTestBinder<ServiceBusTopicMessageChannelBinder,
                 ExtendedConsumerProperties<ServiceBusConsumerProperties>,
                 ExtendedProducerProperties<ServiceBusProducerProperties>> {
 
-    public ServiceBusTopicTestBinder() {
-        ServiceBusTopicMessageChannelBinder binder = new ServiceBusTopicMessageChannelBinder(BinderHeaders
-                .STANDARD_HEADERS,
-                new ServiceBusTopicTestChannelProvisioner(null, "namespace"), new ServiceBusTopicTestOperation
-                ());
+    ServiceBusTopicTestBinder(ServiceBusTopicOperation operation) {
+
+        ServiceBusTopicMessageChannelBinder binder =
+                new ServiceBusTopicMessageChannelBinder(BinderHeaders.STANDARD_HEADERS,
+                        new ServiceBusTopicTestChannelProvisioner(null, "namespace"), operation);
         GenericApplicationContext context = new GenericApplicationContext();
         binder.setApplicationContext(context);
         this.setBinder(binder);

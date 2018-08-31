@@ -8,9 +8,16 @@ package com.microsoft.azure.eventhub.stream.binder;
 
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubConsumerProperties;
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubProducerProperties;
+import com.microsoft.azure.eventprocessorhost.PartitionContext;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
+import com.microsoft.azure.spring.integration.core.support.EventHubTestOperation;
+import com.microsoft.azure.spring.integration.eventhub.EventHubClientFactory;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.cloud.stream.binder.*;
 import org.springframework.cloud.stream.config.BindingProperties;
 import org.springframework.integration.channel.DirectChannel;
@@ -21,28 +28,42 @@ import org.springframework.util.Assert;
 import org.springframework.util.MimeTypeUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static org.mockito.Mockito.when;
 
 /**
  * Test cases are defined in super class
  *
  * @author Warren Zhu
  */
+@RunWith(MockitoJUnitRunner.class)
 public class EventHubPartitionBinderTests extends
-        PartitionCapableBinderTests<EventHubTestBinder,
-                ExtendedConsumerProperties<EventHubConsumerProperties>,
+        PartitionCapableBinderTests<EventHubTestBinder, ExtendedConsumerProperties<EventHubConsumerProperties>,
                 ExtendedProducerProperties<EventHubProducerProperties>> {
+
+    @Mock
+    EventHubClientFactory clientFactory;
+
+    @Mock
+    PartitionContext context;
 
     private EventHubTestBinder binder;
 
-    public EventHubPartitionBinderTests() {
-        this.binder = new EventHubTestBinder();
-    }
-
     @BeforeClass
     public static void enableTests() {
+    }
+
+    @Before
+    public void setUp() {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        future.complete(null);
+        when(this.context.getPartitionId()).thenReturn("1");
+        when(this.context.checkpoint()).thenReturn(future);
+        this.binder = new EventHubTestBinder(new EventHubTestOperation(clientFactory, () -> context));
     }
 
     @Override

@@ -14,10 +14,11 @@ import com.microsoft.azure.eventprocessorhost.*;
 import com.microsoft.azure.spring.cloud.context.core.Tuple;
 import com.microsoft.azure.spring.integration.core.AzureCheckpointer;
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
+import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
+import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
 import com.microsoft.azure.spring.integration.eventhub.converter.EventHubMessageConverter;
-import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -53,6 +54,7 @@ public class EventHubTemplate implements EventHubOperation {
     @Setter
     private EventHubMessageConverter messageConverter = new EventHubMessageConverter();
 
+    @Getter
     @Setter
     private StartPosition startPosition = StartPosition.LATEST;
 
@@ -111,12 +113,8 @@ public class EventHubTemplate implements EventHubOperation {
             return false;
         }
 
-        processorByNameAndGroup.computeIfAbsent(nameAndConsumerGroup, key -> {
-            EventProcessorHost host = this.clientFactory.getProcessorHostCreator().apply(key);
-            host.registerEventProcessorFactory(context -> new EventHubProcessor(consumer, messagePayloadType),
-                    buildEventProcessorOptions(startPosition));
-            return host;
-        });
+        processorByNameAndGroup
+                .computeIfAbsent(nameAndConsumerGroup, k -> this.register(k, consumer, messagePayloadType));
         return true;
     }
 
@@ -141,12 +139,20 @@ public class EventHubTemplate implements EventHubOperation {
         return true;
     }
 
-    private class EventHubProcessor<T> implements IEventProcessor {
+    protected EventProcessorHost register(Tuple<String, String> nameAndGroup, Consumer<Message<?>> consumer,
+            Class<?> messagePayloadType) {
+        EventProcessorHost host = this.clientFactory.getProcessorHostCreator().apply(nameAndGroup);
+        host.registerEventProcessorFactory(context -> new EventHubProcessor(consumer, messagePayloadType),
+                buildEventProcessorOptions(startPosition));
+        return host;
+    }
+
+    public class EventHubProcessor<T> implements IEventProcessor {
 
         private final Consumer<Message<T>> consumer;
         private final Class payloadType;
 
-        EventHubProcessor(@NonNull Consumer<Message<T>> consumer, @NonNull Class<T> payloadType) {
+        public EventHubProcessor(@NonNull Consumer<Message<T>> consumer, @NonNull Class<T> payloadType) {
             this.consumer = consumer;
             this.payloadType = payloadType;
         }
@@ -168,10 +174,15 @@ public class EventHubTemplate implements EventHubOperation {
             headers.put(AzureHeaders.PARTITION_ID, context.getPartitionId());
 
             for (EventData e : events) {
+                Checkpointer checkpointer = new AzureCheckpointer(() -> context.checkpoint(e));
                 if (checkpointMode == CheckpointMode.MANUAL) {
-                    headers.put(AzureHeaders.CHECKPOINTER, new AzureCheckpointer(() -> context.checkpoint(e)));
+                    headers.put(AzureHeaders.CHECKPOINTER, checkpointer);
                 }
                 this.consumer.accept(messageConverter.toMessage(e, new MessageHeaders(headers), payloadType));
+
+                if (checkpointMode == CheckpointMode.RECORD) {
+                    checkpointer.success();
+                }
             }
 
             if (checkpointMode == CheckpointMode.BATCH) {
