@@ -6,7 +6,7 @@
 
 package com.microsoft.azure.spring.integration;
 
-import com.microsoft.azure.spring.integration.core.SubscribeOperation;
+import com.microsoft.azure.spring.integration.core.api.SubscribeOperation;
 import org.junit.Test;
 import org.springframework.messaging.Message;
 
@@ -19,7 +19,7 @@ public abstract class SubscribeOperationTest<O extends SubscribeOperation> {
 
     @Test
     public void testSubscribeAndUnsubscribe() {
-        boolean succeed = this.subscribeOperation.subscribe(destination,  this::handleMessage);
+        boolean succeed = this.subscribeOperation.subscribe(destination, this::handleMessage);
 
         assertTrue(succeed);
 
@@ -34,13 +34,12 @@ public abstract class SubscribeOperationTest<O extends SubscribeOperation> {
 
     @Test
     public void testSubscribeTwice() {
-        boolean onceSucceed = this.subscribeOperation.subscribe(destination,  this::handleMessage);
+        boolean onceSucceed = this.subscribeOperation.subscribe(destination, this::handleMessage);
 
         assertTrue(onceSucceed);
         verifySubscriberRegistered(1);
 
-        boolean twiceSucceed =
-                this.subscribeOperation.subscribe(destination, this::handleMessage);
+        boolean twiceSucceed = this.subscribeOperation.subscribe(destination, this::handleMessage);
 
         assertFalse(twiceSucceed);
 

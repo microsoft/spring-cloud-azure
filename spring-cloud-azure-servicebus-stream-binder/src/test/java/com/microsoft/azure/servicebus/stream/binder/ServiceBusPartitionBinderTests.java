@@ -6,10 +6,17 @@
 
 package com.microsoft.azure.servicebus.stream.binder;
 
+import com.microsoft.azure.servicebus.SubscriptionClient;
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusConsumerProperties;
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusProducerProperties;
+import com.microsoft.azure.spring.integration.core.support.ServiceBusTopicTestOperation;
+import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.cloud.stream.binder.*;
 import org.springframework.cloud.stream.config.BindingProperties;
 import org.springframework.integration.channel.DirectChannel;
@@ -24,24 +31,33 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static org.mockito.Mockito.when;
+
 /**
  * Test cases are defined in super class
  *
  * @author Warren Zhu
  */
+@RunWith(MockitoJUnitRunner.class)
 public class ServiceBusPartitionBinderTests extends
-        PartitionCapableBinderTests<ServiceBusTopicTestBinder,
-                ExtendedConsumerProperties<ServiceBusConsumerProperties>,
+        PartitionCapableBinderTests<ServiceBusTopicTestBinder, ExtendedConsumerProperties<ServiceBusConsumerProperties>,
                 ExtendedProducerProperties<ServiceBusProducerProperties>> {
+    @Mock
+    ServiceBusTopicClientFactory clientFactory;
+
+    @Mock
+    SubscriptionClient subscriptionClient;
 
     private ServiceBusTopicTestBinder binder;
 
-    public ServiceBusPartitionBinderTests() {
-        this.binder = new ServiceBusTopicTestBinder();
-    }
-
     @BeforeClass
     public static void enableTests() {
+    }
+
+    @Before
+    public void setUp() {
+        when(this.clientFactory.getSubscriptionClientCreator()).thenReturn((s) -> subscriptionClient);
+        this.binder = new ServiceBusTopicTestBinder(new ServiceBusTopicTestOperation(this.clientFactory));
     }
 
     @Override

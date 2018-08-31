@@ -6,7 +6,9 @@
 
 package com.microsoft.azure.spring.integration.core;
 
-import com.microsoft.azure.spring.integration.eventhub.inbound.ListenerMode;
+import com.microsoft.azure.spring.integration.core.api.ListenerMode;
+import com.microsoft.azure.spring.integration.core.api.SubscribeByGroupOperation;
+import com.microsoft.azure.spring.integration.core.api.SubscribeOperation;
 import lombok.Getter;
 import org.springframework.integration.endpoint.MessageProducerSupport;
 import org.springframework.messaging.Message;

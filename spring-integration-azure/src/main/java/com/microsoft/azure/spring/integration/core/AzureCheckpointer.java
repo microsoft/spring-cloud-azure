@@ -6,6 +6,7 @@
 
 package com.microsoft.azure.spring.integration.core;
 
+import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import lombok.NonNull;
 
 import java.util.concurrent.CompletableFuture;

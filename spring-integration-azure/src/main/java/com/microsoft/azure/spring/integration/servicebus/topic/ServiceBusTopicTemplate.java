@@ -40,7 +40,6 @@ public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicC
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public boolean subscribe(String destination, String consumerGroup, @NonNull Consumer<Message<?>> consumer,
             Class<?> payloadType) {
         Assert.hasText(destination, "destination can't be null or empty");
@@ -52,20 +51,8 @@ public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicC
         }
 
         nameAndConsumerGroups.add(nameAndConsumerGroup);
-        ISubscriptionClient subscriptionClient =
-                this.senderFactory.getSubscriptionClientCreator().apply(nameAndConsumerGroup);
 
-        Function<UUID, CompletableFuture<Void>> success = subscriptionClient::completeAsync;
-        Function<UUID, CompletableFuture<Void>> failure = subscriptionClient::abandonAsync;
-
-        try {
-            subscriptionClient
-                    .registerMessageHandler(new ServiceBusMessageHandler(consumer, payloadType, success, failure));
-        } catch (ServiceBusException | InterruptedException e) {
-            LOGGER.error("Failed to register message handler", e);
-            throw new ServiceBusRuntimeException("Failed to register message handler", e);
-        }
-
+        internalSubscribe(destination, consumerGroup, consumer, payloadType);
         return true;
     }
 
@@ -74,5 +61,23 @@ public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicC
         //TODO: unregister message handler but service bus sdk unsupported
 
         return nameAndConsumerGroups.remove(Tuple.of(destination, consumerGroup));
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void internalSubscribe(String name, String consumerGroup, Consumer<Message<?>> consumer,
+            Class<?> payloadType) {
+        ISubscriptionClient subscriptionClient =
+                this.senderFactory.getSubscriptionClientCreator().apply(Tuple.of(name, consumerGroup));
+
+        Function<UUID, CompletableFuture<Void>> success = subscriptionClient::completeAsync;
+        Function<UUID, CompletableFuture<Void>> failure = subscriptionClient::abandonAsync;
+
+        try {
+            subscriptionClient
+                    .registerMessageHandler(new ServiceBusMessageHandler(consumer, payloadType, success, failure));
+        } catch (ServiceBusException | InterruptedException e) {
+            LOGGER.error("Failed to register topic message handler", e);
+            throw new ServiceBusRuntimeException("Failed to register topic message handler", e);
+        }
     }
 }

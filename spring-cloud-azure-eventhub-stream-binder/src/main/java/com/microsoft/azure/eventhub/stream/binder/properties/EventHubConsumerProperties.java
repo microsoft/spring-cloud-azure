@@ -6,7 +6,7 @@
 
 package com.microsoft.azure.eventhub.stream.binder.properties;
 
-import com.microsoft.azure.spring.integration.core.StartPosition;
+import com.microsoft.azure.spring.integration.core.api.StartPosition;
 import lombok.Getter;
 import lombok.Setter;
 

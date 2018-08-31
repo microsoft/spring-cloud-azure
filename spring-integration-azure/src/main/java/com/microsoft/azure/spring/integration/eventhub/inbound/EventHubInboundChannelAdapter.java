@@ -7,7 +7,7 @@
 package com.microsoft.azure.spring.integration.eventhub.inbound;
 
 import com.microsoft.azure.spring.integration.core.AbstractInboundChannelAdapter;
-import com.microsoft.azure.spring.integration.core.SubscribeByGroupOperation;
+import com.microsoft.azure.spring.integration.core.api.SubscribeByGroupOperation;
 import org.springframework.util.Assert;
 
 public class EventHubInboundChannelAdapter extends AbstractInboundChannelAdapter {
