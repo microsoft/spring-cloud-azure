@@ -8,7 +8,7 @@ package com.microsoft.azure.spring.integration.eventhub.outbound;
 
 import com.microsoft.azure.spring.integration.MessageHandlerTest;
 import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
-import com.microsoft.azure.spring.integration.core.PartitionSupplier;
+import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
 import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
 import org.junit.Before;
 import org.junit.runner.RunWith;

@@ -6,8 +6,8 @@
 
 package com.microsoft.azure.spring.integration;
 
-import com.microsoft.azure.spring.integration.core.SendOperation;
-import com.microsoft.azure.spring.integration.core.SubscribeByGroupOperation;
+import com.microsoft.azure.spring.integration.core.api.SendOperation;
+import com.microsoft.azure.spring.integration.core.api.SubscribeByGroupOperation;
 import com.microsoft.azure.spring.integration.pojo.User;
 import org.junit.Before;
 import org.junit.Test;
