@@ -61,5 +61,4 @@ public class EventHubTemplateSubscribeTest extends SubscribeByGroupOperationTest
     protected void verifySubscriberUnregistered(int times) {
         verify(this.host, times(times)).unregisterEventProcessor();
     }
-
 }
