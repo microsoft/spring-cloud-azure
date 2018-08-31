@@ -7,7 +7,7 @@
 package example;
 
 import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
-import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
+import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueOperation;
 import com.microsoft.azure.spring.integration.storage.queue.inbound.StorageQueueMessageSource;
 import org.apache.commons.logging.Log;

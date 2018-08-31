@@ -6,8 +6,8 @@
 
 package com.microsoft.azure.spring.integration.storage.queue;
 
-import com.microsoft.azure.spring.integration.core.SendOperation;
-import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
+import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
+import com.microsoft.azure.spring.integration.core.api.SendOperation;
 import org.springframework.messaging.Message;
 import java.util.concurrent.CompletableFuture;
 

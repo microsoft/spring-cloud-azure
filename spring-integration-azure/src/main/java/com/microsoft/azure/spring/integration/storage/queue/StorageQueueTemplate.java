@@ -7,7 +7,9 @@
 package com.microsoft.azure.spring.integration.storage.queue;
 
 import com.microsoft.azure.spring.integration.core.*;
-import com.microsoft.azure.spring.integration.eventhub.inbound.CheckpointMode;
+import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
+import com.microsoft.azure.spring.integration.core.api.Checkpointer;
+import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
 import com.microsoft.azure.spring.integration.storage.queue.converter.StorageQueueMessageConverter;
 import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueClientFactory;
 import com.microsoft.azure.storage.StorageException;

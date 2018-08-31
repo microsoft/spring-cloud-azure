@@ -8,7 +8,6 @@ package com.microsoft.azure.spring.integration.storage.queue.inbound;
 
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueOperation;
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueRuntimeException;
-import com.microsoft.azure.storage.queue.CloudQueueMessage;
 import org.springframework.integration.endpoint.AbstractMessageSource;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
