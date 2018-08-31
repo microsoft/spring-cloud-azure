@@ -7,14 +7,10 @@
 package com.microsoft.azure.spring.integration.servicebus.queue;
 
 import com.microsoft.azure.servicebus.IQueueClient;
-import com.microsoft.azure.servicebus.SubscriptionClient;
 import com.microsoft.azure.spring.integration.InboundChannelAdapterTest;
 import com.microsoft.azure.spring.integration.core.support.ServiceBusQueueTestOperation;
-import com.microsoft.azure.spring.integration.core.support.ServiceBusTopicTestOperation;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusQueueClientFactory;
-import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.inbound.ServiceBusQueueInboundChannelAdapter;
-import com.microsoft.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
