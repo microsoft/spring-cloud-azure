@@ -24,6 +24,7 @@ import org.springframework.util.Assert;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class StorageQueueTemplate implements StorageQueueOperation {
     private final StorageQueueClientFactory storageQueueClientFactory;
@@ -72,9 +73,7 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     public CompletableFuture<Message<?>> receiveAsync(String destination, int visibilityTimeoutInSeconds) {
         Assert.hasText(destination, "destination can't be null or empty");
 
-        CompletableFuture<Message<?>> completableFuture = CompletableFuture.supplyAsync(
-                () -> receiveMessage(destination, visibilityTimeoutInSeconds));
-        return completableFuture;
+        return CompletableFuture.supplyAsync(() -> receiveMessage(destination, visibilityTimeoutInSeconds));
     }
 
     private Message<?> receiveMessage(String destination, int visibilityTimeoutInSeconds) {
@@ -97,7 +96,7 @@ public class StorageQueueTemplate implements StorageQueueOperation {
 
         Message<?> message = null;
         if (cloudQueueMessage != null) {
-            messageConverter.toMessage(cloudQueueMessage, new MessageHeaders(headers), messagePayloadType);
+            message = messageConverter.toMessage(cloudQueueMessage, new MessageHeaders(headers), messagePayloadType);
         }
         return message;
     }
