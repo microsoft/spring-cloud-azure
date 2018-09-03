@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * Azure service bus template to support send {@link Message} asynchronously
@@ -84,27 +83,21 @@ public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements Se
         return "";
     }
 
-    protected class ServiceBusMessageHandler<U> implements IMessageHandler {
+    protected abstract class ServiceBusMessageHandler<U> implements IMessageHandler {
         private final Consumer<Message<U>> consumer;
         private final Class<U> payloadType;
-        private final Function<UUID, CompletableFuture<Void>> success;
-        private final Function<UUID, CompletableFuture<Void>> failure;
 
-        public ServiceBusMessageHandler(@NonNull Consumer<Message<U>> consumer, @NonNull Class<U> payloadType,
-                @NonNull Function<UUID, CompletableFuture<Void>> success,
-                @NonNull Function<UUID, CompletableFuture<Void>> failure) {
+        public ServiceBusMessageHandler(@NonNull Consumer<Message<U>> consumer, @NonNull Class<U> payloadType) {
             this.consumer = consumer;
             this.payloadType = payloadType;
-            this.success = success;
-            this.failure = failure;
         }
 
         @Override
         public CompletableFuture<Void> onMessageAsync(IMessage serviceBusMessage) {
             Map<String, Object> headers = new HashMap<>();
 
-            Checkpointer checkpointer = new AzureCheckpointer(() -> success.apply(serviceBusMessage.getLockToken()),
-                    () -> failure.apply(serviceBusMessage.getLockToken()));
+            Checkpointer checkpointer = new AzureCheckpointer(() -> this.success(serviceBusMessage.getLockToken()),
+                    () -> this.failure(serviceBusMessage.getLockToken()));
             if (checkpointMode == CheckpointMode.MANUAL) {
                 headers.put(AzureHeaders.CHECKPOINTER, checkpointer);
             }
@@ -123,6 +116,9 @@ public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements Se
         public void notifyException(Throwable exception, ExceptionPhase phase) {
             LOGGER.error(String.format("Exception encountered in phase %s", phase), exception);
         }
+
+        protected abstract CompletableFuture<Void> success(UUID uuid);
+        protected abstract CompletableFuture<Void> failure(UUID uuid);
     }
 
 }

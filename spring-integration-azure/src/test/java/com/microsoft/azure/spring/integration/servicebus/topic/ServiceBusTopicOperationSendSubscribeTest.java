@@ -9,7 +9,7 @@ package com.microsoft.azure.spring.integration.servicebus.topic;
 import com.microsoft.azure.servicebus.IMessageHandler;
 import com.microsoft.azure.servicebus.SubscriptionClient;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
-import com.microsoft.azure.spring.integration.SendSubscribeOperationTest;
+import com.microsoft.azure.spring.integration.SendSubscribeByGroupOperationTest;
 import com.microsoft.azure.spring.integration.core.support.ServiceBusTopicTestOperation;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
 import org.junit.Before;
@@ -23,9 +23,9 @@ import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 
-
 @RunWith(MockitoJUnitRunner.class)
-public class ServiceBusTopicOperationSendSubscribeTest extends SendSubscribeOperationTest<ServiceBusTopicOperation> {
+public class ServiceBusTopicOperationSendSubscribeTest
+        extends SendSubscribeByGroupOperationTest<ServiceBusTopicOperation> {
 
     @Mock
     ServiceBusTopicClientFactory clientFactory;

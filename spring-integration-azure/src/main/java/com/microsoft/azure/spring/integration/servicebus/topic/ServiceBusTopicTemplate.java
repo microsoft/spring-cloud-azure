@@ -7,6 +7,7 @@
 package com.microsoft.azure.spring.integration.servicebus.topic;
 
 import com.google.common.collect.Sets;
+import com.microsoft.azure.servicebus.IQueueClient;
 import com.microsoft.azure.servicebus.ISubscriptionClient;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import com.microsoft.azure.spring.cloud.context.core.Tuple;
@@ -69,15 +70,32 @@ public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicC
         ISubscriptionClient subscriptionClient =
                 this.senderFactory.getSubscriptionClientCreator().apply(Tuple.of(name, consumerGroup));
 
-        Function<UUID, CompletableFuture<Void>> success = subscriptionClient::completeAsync;
-        Function<UUID, CompletableFuture<Void>> failure = subscriptionClient::abandonAsync;
-
         try {
             subscriptionClient
-                    .registerMessageHandler(new ServiceBusMessageHandler(consumer, payloadType, success, failure));
+                    .registerMessageHandler(new TopicMessageHandler(consumer, payloadType, subscriptionClient));
         } catch (ServiceBusException | InterruptedException e) {
             LOGGER.error("Failed to register topic message handler", e);
             throw new ServiceBusRuntimeException("Failed to register topic message handler", e);
+        }
+    }
+
+    protected class TopicMessageHandler<U> extends ServiceBusMessageHandler<U>{
+        private final ISubscriptionClient subscriptionClient;
+
+        public TopicMessageHandler(Consumer<Message<U>> consumer, Class<U> payloadType,
+                ISubscriptionClient subscriptionClient) {
+            super(consumer, payloadType);
+            this.subscriptionClient = subscriptionClient;
+        }
+
+        @Override
+        protected CompletableFuture<Void> success(UUID uuid) {
+            return subscriptionClient.completeAsync(uuid);
+        }
+
+        @Override
+        protected CompletableFuture<Void> failure(UUID uuid) {
+            return subscriptionClient.abandonAsync(uuid);
         }
     }
 }

@@ -9,26 +9,34 @@ package com.microsoft.azure.spring.integration.core.support;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.microsoft.azure.servicebus.IMessage;
+import com.microsoft.azure.servicebus.IMessageHandler;
+import com.microsoft.azure.servicebus.IQueueClient;
 import com.microsoft.azure.servicebus.ISubscriptionClient;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import com.microsoft.azure.spring.cloud.context.core.Tuple;
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
+import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusQueueClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
+import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueTemplate;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicTemplate;
 import org.springframework.messaging.Message;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
-public class ServiceBusTopicTestOperation extends ServiceBusTopicTemplate {
+public class ServiceBusQueueTestOperation extends ServiceBusQueueTemplate {
     private final Multimap<String, IMessage> topicsByName = ArrayListMultimap.create();
-    private final Map<String, Map<String, ServiceBusMessageHandler<?>>> handlersByNameAndGroup =
-            new ConcurrentHashMap<>();
+    private final Multimap<String, IMessageHandler> handlersByQueue =
+            ArrayListMultimap.create();
 
-    public ServiceBusTopicTestOperation(ServiceBusTopicClientFactory clientFactory) {
+    public ServiceBusQueueTestOperation(ServiceBusQueueClientFactory clientFactory) {
         super(clientFactory);
     }
 
@@ -39,36 +47,40 @@ public class ServiceBusTopicTestOperation extends ServiceBusTopicTemplate {
         IMessage azureMessage = getMessageConverter().fromMessage(message, IMessage.class);
 
         topicsByName.put(name, azureMessage);
-        handlersByNameAndGroup.putIfAbsent(name, new ConcurrentHashMap<>());
-        handlersByNameAndGroup.get(name).values().forEach(c -> c.onMessageAsync(azureMessage));
+        getRandom(handlersByQueue.get(name)).map(c -> c.onMessageAsync(azureMessage));
 
         future.complete(null);
         return future;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    protected void internalSubscribe(String name, String consumerGroup, Consumer<Message<?>> consumer,
+    protected void internalSubscribe(String name, Consumer<Message<?>> consumer,
             Class<?> payloadType) {
-        ISubscriptionClient subscriptionClient =
-                this.senderFactory.getSubscriptionClientCreator().apply(Tuple.of(name, consumerGroup));
+        IQueueClient queueClient =
+                this.senderFactory.getQueueClientCreator().apply(name);
 
-        ServiceBusMessageHandler handler = new TopicMessageHandler(consumer, payloadType, subscriptionClient);
+        ServiceBusMessageHandler handler = new QueueMessageHandler(consumer, payloadType, queueClient);
 
         try {
-            subscriptionClient.registerMessageHandler(handler);
+            queueClient.registerMessageHandler(handler);
         } catch (ServiceBusException | InterruptedException e) {
             throw new ServiceBusRuntimeException("Failed to internalSubscribe message handler", e);
         }
 
-        handlersByNameAndGroup.putIfAbsent(name, new ConcurrentHashMap<>());
-        handlersByNameAndGroup.get(name).put(consumerGroup, handler);
+        handlersByQueue.put(name, handler);
     }
 
     @Override
-    public boolean unsubscribe(String name, String consumerGroup) {
-        handlersByNameAndGroup.get(name).remove(consumerGroup);
+    public boolean unsubscribe(String name) {
+        handlersByQueue.removeAll(name);
         return true;
+    }
+
+    public static <E> Optional<E> getRandom (Collection<E> e) {
+
+        return e.stream()
+                .skip((int) (e.size() * Math.random()))
+                .findFirst();
     }
 }
 
