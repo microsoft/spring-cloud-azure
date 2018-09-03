@@ -27,7 +27,7 @@ public abstract class SendOperationTest<O extends SendOperation> {
     protected String partitionKey = "key";
     protected String destination = "event-hub";
     private String partitionId = "1";
-    private Message<?> message =
+    protected Message<?> message =
             new GenericMessage<>("testPayload", ImmutableMap.of("key1", "value1", "key2", "value2"));
 
     @Test

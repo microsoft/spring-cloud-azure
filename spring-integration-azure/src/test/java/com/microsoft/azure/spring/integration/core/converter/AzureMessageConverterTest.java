@@ -49,7 +49,11 @@ public abstract class AzureMessageConverterTest<T> {
         Message<U> message = MessageBuilder.withPayload(payload).build();
         T azureMessage = converter.fromMessage(message, targetClass);
         Message<U> convertedMessage = converter.toMessage(azureMessage, payloadClass);
-        assertEquals(convertedMessage.getPayload(), payload);
+        assertMessagePayloadEquals(convertedMessage.getPayload(), payload);
+    }
+
+    protected <U> void assertMessagePayloadEquals(U convertedPayload, U payload){
+        assertEquals(convertedPayload, payload);
     }
 
     protected abstract T getInstance();
