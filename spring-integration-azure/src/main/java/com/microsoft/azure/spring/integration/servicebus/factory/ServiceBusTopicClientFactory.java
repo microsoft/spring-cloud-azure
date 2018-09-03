@@ -7,7 +7,7 @@
 package com.microsoft.azure.spring.integration.servicebus.factory;
 
 import com.microsoft.azure.servicebus.ISubscriptionClient;
-import com.microsoft.azure.spring.cloud.context.core.Tuple;
+import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 
 import java.util.function.Function;
 

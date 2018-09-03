@@ -4,7 +4,7 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.cloud.context.core;
+package com.microsoft.azure.spring.cloud.context.core.util;
 
 import java.util.Objects;
 

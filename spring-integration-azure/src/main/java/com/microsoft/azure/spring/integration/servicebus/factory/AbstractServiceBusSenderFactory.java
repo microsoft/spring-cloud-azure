@@ -10,9 +10,10 @@ import com.microsoft.azure.management.servicebus.AuthorizationKeys;
 import com.microsoft.azure.management.servicebus.AuthorizationRule;
 import com.microsoft.azure.management.servicebus.ServiceBusNamespace;
 import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
-import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
-import com.microsoft.azure.spring.cloud.context.core.Memoizer;
+import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
+import lombok.Getter;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
@@ -27,14 +28,13 @@ public abstract class AbstractServiceBusSenderFactory implements ServiceBusSende
     protected final AzureAdmin azureAdmin;
     protected final ServiceBusNamespace namespace;
 
-    public AbstractServiceBusSenderFactory(@NonNull AzureAdmin azureAdmin, @NonNull String namespace) {
+    @Getter
+    private final Function<String, String> connectionStringCreator = Memoizer.memoize(this::getConnectionString);
+
+    AbstractServiceBusSenderFactory(@NonNull AzureAdmin azureAdmin, @NonNull String namespace) {
         Assert.hasText(namespace, "namespace can't be null or empty");
         this.azureAdmin = azureAdmin;
         this.namespace = azureAdmin.getOrCreateServiceBusNamespace(namespace);
-    }
-
-    protected Function<String, String> getConnectionStringCreator() {
-        return Memoizer.memoize(this::getConnectionString);
     }
 
     private String getConnectionString(String name) {

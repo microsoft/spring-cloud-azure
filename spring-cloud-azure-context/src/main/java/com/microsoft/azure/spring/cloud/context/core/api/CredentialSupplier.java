@@ -4,7 +4,7 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.cloud.context.core;
+package com.microsoft.azure.spring.cloud.context.core.api;
 
 /**
  * An interface meant to be implemented by configuration properties POJOs that store information about

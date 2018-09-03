@@ -4,7 +4,7 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.cloud.context.core;
+package com.microsoft.azure.spring.cloud.context.core.api;
 
 import com.microsoft.azure.credentials.ApplicationTokenCredentials;
 

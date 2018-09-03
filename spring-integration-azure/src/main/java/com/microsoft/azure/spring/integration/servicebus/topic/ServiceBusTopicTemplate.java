@@ -7,10 +7,9 @@
 package com.microsoft.azure.spring.integration.servicebus.topic;
 
 import com.google.common.collect.Sets;
-import com.microsoft.azure.servicebus.IQueueClient;
 import com.microsoft.azure.servicebus.ISubscriptionClient;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
-import com.microsoft.azure.spring.cloud.context.core.Tuple;
+import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusTemplate;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
@@ -24,7 +23,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * Default implementation of {@link ServiceBusTopicOperation}.

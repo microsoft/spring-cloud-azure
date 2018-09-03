@@ -6,19 +6,16 @@
 
 package com.microsoft.azure.spring.integration.eventhub;
 
-import com.microsoft.azure.eventhubs.ConnectionStringBuilder;
 import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.eventhubs.EventHubException;
 import com.microsoft.azure.eventhubs.PartitionSender;
 import com.microsoft.azure.eventhubs.impl.EventHubClientImpl;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
-import com.microsoft.azure.management.eventhub.AuthorizationRule;
-import com.microsoft.azure.management.eventhub.EventHubAuthorizationKey;
-import com.microsoft.azure.management.eventhub.EventHubNamespace;
-import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
-import com.microsoft.azure.spring.cloud.context.core.AzureUtil;
-import com.microsoft.azure.spring.cloud.context.core.Memoizer;
-import com.microsoft.azure.spring.cloud.context.core.Tuple;
+import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.impl.AzureUtil;
+import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
+import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
+import lombok.Getter;
 import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,49 +38,47 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultEventHubClientFactory.class);
     private static final String PROJECT_VERSION =
             DefaultEventHubClientFactory.class.getPackage().getImplementationVersion();
-    private static final String USER_AGENT = "spring-cloud-azure" + "/" + PROJECT_VERSION;
+    private static final String USER_AGENT = "spring-cloud-azure/" + PROJECT_VERSION;
+
+    // Maps used for cache and clean up clients
     private final Map<String, EventHubClient> clientsByName = new ConcurrentHashMap<>();
     // (eventHubClient, partitionId) -> partitionSender
     private final Map<Tuple<EventHubClient, String>, PartitionSender> partitionSenderMap = new ConcurrentHashMap<>();
     // (eventHubName, consumerGroup) -> eventProcessorHost
     private final Map<Tuple<String, String>, EventProcessorHost> processorHostMap = new ConcurrentHashMap<>();
+
+    // Memoized functional client creator
+    @Getter
+    private final Function<String, EventHubClient> eventHubClientCreator =
+            Memoizer.memoize(clientsByName, this::createEventHubClient);
+    @Getter
+    private final Function<Tuple<String, String>, EventProcessorHost> processorHostCreator =
+            Memoizer.memoize(processorHostMap, this::createEventProcessorHost);
+    @Getter
+    private final Function<Tuple<EventHubClient, String>, PartitionSender> partitionSenderCreator =
+            Memoizer.memoize(partitionSenderMap, this::createPartitionSender);
+    private final Function<String, String> connectionStringProvider;
+
     private final AzureAdmin azureAdmin;
-    private final EventHubNamespace namespace;
-    private String checkpointStorageConnectionString;
+    private final String checkpointStorageConnectionString;
 
-    public DefaultEventHubClientFactory(@NonNull AzureAdmin azureAdmin, String namespace) {
-        Assert.hasText(namespace, "namespace can't be null or empty");
+    public DefaultEventHubClientFactory(@NonNull AzureAdmin azureAdmin, String checkpointStorageAccount,
+            Function<String, String> connectionStringProvider) {
+        Assert.hasText(checkpointStorageAccount, "checkpointStorageAccount can't be null or empty");
         this.azureAdmin = azureAdmin;
-        this.namespace = azureAdmin.getOrCreateEventHubNamespace(namespace);
-
+        this.connectionStringProvider = connectionStringProvider;
+        this.checkpointStorageConnectionString = buildConnectionString(checkpointStorageAccount);
         EventHubClientImpl.USER_AGENT = USER_AGENT + "/" + EventHubClientImpl.USER_AGENT;
     }
 
-    public void initCheckpointConnectionString(String checkpointStorageAccount) {
-        Assert.hasText(checkpointStorageAccount, "checkpointStorageAccount can't be null or empty");
-        this.checkpointStorageConnectionString =
-                AzureUtil.getConnectionString(azureAdmin.getOrCreateStorageAccount(checkpointStorageAccount));
-    }
-
-    @Override
-    public Function<String, EventHubClient> getEventHubClientCreator() {
-        return Memoizer.memoize(clientsByName, this::createEventHubClient);
-    }
-
-    @Override
-    public Function<Tuple<EventHubClient, String>, PartitionSender> getPartitionSenderCreator() {
-        return Memoizer.memoize(partitionSenderMap, this::createPartitionSender);
-    }
-
-    @Override
-    public Function<Tuple<String, String>, EventProcessorHost> getProcessorHostCreator() {
-        return Memoizer.memoize(processorHostMap, this::createEventProcessorHost);
+    private String buildConnectionString(String checkpointStorageAccount) {
+        return AzureUtil.getConnectionString(azureAdmin.getOrCreateStorageAccount(checkpointStorageAccount));
     }
 
     private EventHubClient createEventHubClient(String eventHubName) {
         try {
             return EventHubClient
-                    .createSync(connectionStringCreator().apply(eventHubName), Executors.newSingleThreadExecutor());
+                    .createSync(connectionStringProvider.apply(eventHubName), Executors.newSingleThreadExecutor());
         } catch (EventHubException | IOException e) {
             throw new EventHubRuntimeException("Error when creating event hub client", e);
         }
@@ -100,20 +95,8 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
     private EventProcessorHost createEventProcessorHost(Tuple<String, String> nameAndConsumerGroup) {
         String eventHubName = nameAndConsumerGroup.getFirst();
         return new EventProcessorHost(EventProcessorHost.createHostName(HostnameHelper.getHostname()), eventHubName,
-                nameAndConsumerGroup.getSecond(), connectionStringCreator().apply(eventHubName),
+                nameAndConsumerGroup.getSecond(), connectionStringProvider.apply(eventHubName),
                 checkpointStorageConnectionString, eventHubName);
-    }
-
-    private Function<String, String> connectionStringCreator() {
-        return Memoizer.memoize(this::getConnectionString);
-    }
-
-    private String getConnectionString(String eventHubName) {
-        return namespace.listAuthorizationRules().stream().findFirst().map(AuthorizationRule::getKeys)
-                        .map(EventHubAuthorizationKey::primaryConnectionString)
-                        .map(s -> new ConnectionStringBuilder(s).setEventHubName(eventHubName).toString()).orElseThrow(
-                        () -> new RuntimeException(
-                                String.format("Failed to fetch connection string of '%s'", eventHubName), null));
     }
 
     private <K, V> void close(Map<K, V> map, Function<V, CompletableFuture<Void>> close) {

@@ -10,7 +10,7 @@ import com.microsoft.azure.eventhubs.ConnectionStringBuilder;
 import com.microsoft.azure.management.eventhub.AuthorizationRule;
 import com.microsoft.azure.management.eventhub.EventHubAuthorizationKey;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
-import com.microsoft.azure.spring.cloud.context.core.Memoizer;
+import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
 import lombok.Getter;
 import org.springframework.lang.NonNull;
 

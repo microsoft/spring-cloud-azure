@@ -4,7 +4,7 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.cloud.context.core;
+package com.microsoft.azure.spring.cloud.context.core.impl;
 
 import com.microsoft.azure.management.storage.StorageAccount;
 

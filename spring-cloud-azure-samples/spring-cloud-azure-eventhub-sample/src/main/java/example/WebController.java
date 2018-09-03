@@ -7,7 +7,7 @@
 package example;
 
 import com.microsoft.azure.spring.cloud.autoconfigure.eventhub.AzureEventHubProperties;
-import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
 import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

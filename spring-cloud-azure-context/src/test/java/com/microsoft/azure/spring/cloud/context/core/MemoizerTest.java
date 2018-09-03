@@ -6,6 +6,7 @@
 
 package com.microsoft.azure.spring.cloud.context.core;
 
+import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -7,7 +7,7 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.sql;
 
 import com.microsoft.azure.management.sql.SqlServer;
-import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 
 /**
