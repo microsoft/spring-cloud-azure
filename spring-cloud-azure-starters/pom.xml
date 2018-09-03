@@ -17,7 +17,7 @@
     </properties>
 
     <modules>
-        <module>spring-cloud-azure-starter-cache</module>
+        <module>spring-azure-starter-cache</module>
         <module>spring-cloud-azure-starter-storage</module>
         <module>spring-cloud-azure-starter-eventhub</module>
         <module>spring-cloud-azure-starter-servicebus</module>
