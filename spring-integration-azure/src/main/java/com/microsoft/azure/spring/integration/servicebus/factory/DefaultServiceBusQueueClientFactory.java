@@ -45,7 +45,7 @@ public class DefaultServiceBusQueueClientFactory extends AbstractServiceBusSende
     private IQueueClient createQueueClient(String destination) {
         azureAdmin.getOrCreateServiceBusQueue(namespace, destination);
         try {
-            return new QueueClient(new ConnectionStringBuilder(getConnectionStringCreator().apply(destination)),
+            return new QueueClient(new ConnectionStringBuilder(connectionStringCreator.apply(destination)),
                     ReceiveMode.PEEKLOCK);
         } catch (InterruptedException | ServiceBusException e) {
             throw new ServiceBusRuntimeException("Failed to create service bus queue client", e);
