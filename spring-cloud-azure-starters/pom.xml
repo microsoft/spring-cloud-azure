@@ -21,7 +21,6 @@
         <module>spring-cloud-azure-starter-storage</module>
         <module>spring-cloud-azure-starter-eventhub</module>
         <module>spring-cloud-azure-starter-servicebus</module>
-        <module>spring-cloud-azure-starter-sql-sqlserver</module>
         <module>spring-cloud-azure-starter-storage-queue</module>
     </modules>
 
