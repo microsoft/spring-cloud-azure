@@ -26,5 +26,7 @@ public class AzureEventHubProperties {
     @PostConstruct
     public void validate() {
         Assert.hasText(namespace, "spring.cloud.azure.eventhub.namespace must be provided");
+        Assert.hasText(checkpointStorageAccount, "spring.cloud.azure.eventhub.checkpoint-storage-account must be " +
+                "provided");
     }
 }
