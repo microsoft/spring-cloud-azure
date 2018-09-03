@@ -11,6 +11,7 @@ import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoCo
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.integration.eventhub.EventHubConnectionStringProvider;
 import com.microsoft.azure.spring.integration.eventhub.*;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;

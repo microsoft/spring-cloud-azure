@@ -7,15 +7,26 @@
 package com.microsoft.azure.spring.cloud.context.core.impl;
 
 import com.microsoft.azure.management.storage.StorageAccount;
+import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class AzureUtil {
-    public static String getConnectionString(StorageAccount storageAccount){
-        return storageAccount.getKeys().stream().findFirst().map(key -> ConnectionStringBuilder.build(storageAccount
-                .name(), key.value())).orElseThrow(() -> new RuntimeException("Storage account key is empty."));
+public class StorageConnectionStringProvider {
+
+    private static final Function<StorageAccount, String> connectionStringProvider =
+            Memoizer.memoize(StorageConnectionStringProvider::buildConnectionString);
+
+    private static String buildConnectionString(StorageAccount storageAccount) {
+        return storageAccount.getKeys().stream().findFirst()
+                             .map(key -> ConnectionStringBuilder.build(storageAccount.name(), key.value()))
+                             .orElseThrow(() -> new RuntimeException("Storage account key is empty."));
+    }
+
+    public static String getConnectionString(StorageAccount storageAccount) {
+        return connectionStringProvider.apply(storageAccount);
     }
 
     private static class ConnectionStringBuilder {

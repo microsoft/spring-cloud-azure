@@ -11,8 +11,9 @@ import com.microsoft.azure.eventhubs.EventHubException;
 import com.microsoft.azure.eventhubs.PartitionSender;
 import com.microsoft.azure.eventhubs.impl.EventHubClientImpl;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
+import com.microsoft.azure.management.storage.StorageAccount;
 import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureUtil;
+import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStringProvider;
 import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import lombok.Getter;
@@ -72,7 +73,9 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
     }
 
     private String buildConnectionString(String checkpointStorageAccount) {
-        return AzureUtil.getConnectionString(azureAdmin.getOrCreateStorageAccount(checkpointStorageAccount));
+        StorageAccount storageAccount = azureAdmin.getOrCreateStorageAccount
+                (checkpointStorageAccount);
+        return StorageConnectionStringProvider.getConnectionString(storageAccount);
     }
 
     private EventHubClient createEventHubClient(String eventHubName) {

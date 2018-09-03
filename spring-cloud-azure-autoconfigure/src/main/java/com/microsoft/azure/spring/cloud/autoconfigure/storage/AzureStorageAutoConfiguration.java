@@ -11,7 +11,7 @@ import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoCo
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureUtil;
+import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStringProvider;
 import com.microsoft.azure.spring.cloud.storage.AzureStorageProtocolResolver;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.blob.CloudBlobClient;
@@ -60,7 +60,7 @@ public class AzureStorageAutoConfiguration {
 
         StorageAccount storageAccount = azureAdmin.getOrCreateStorageAccount(accountName);
 
-        String connectionString = AzureUtil.getConnectionString(storageAccount);
+        String connectionString = StorageConnectionStringProvider.getConnectionString(storageAccount);
 
         try {
             return CloudStorageAccount.parse(connectionString);
