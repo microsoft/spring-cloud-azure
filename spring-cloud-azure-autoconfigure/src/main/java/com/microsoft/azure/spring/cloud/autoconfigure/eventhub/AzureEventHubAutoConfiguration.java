@@ -55,6 +55,6 @@ public class AzureEventHubAutoConfiguration {
         EventHubConnectionStringProvider provider = new EventHubConnectionStringProvider(azureAdmin
                 .getOrCreateEventHubNamespace(eventHubProperties.getNamespace()));
         return new DefaultEventHubClientFactory(azureAdmin, eventHubProperties.getCheckpointStorageAccount(),
-                provider.getConnectionStringProvider());
+                provider::getConnectionString);
     }
 }
