@@ -128,7 +128,7 @@
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
-                <artifactId>spring-cloud-azure-starter-storage</artifactId>
+                <artifactId>spring-azure-starter-storage</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
