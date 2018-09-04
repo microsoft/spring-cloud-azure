@@ -46,10 +46,8 @@ public class StorageQueueTemplateSendTest extends SendOperationTest<StorageQueue
             doThrow(StorageException.class)
                     .when(mockClient)
                     .addMessage(isA(CloudQueueMessage.class));
-            System.out.println("hi1");
         } catch (StorageException e) {
             // StorageException is never thrown here
-            System.out.println("hi2");
         }
 
         CompletableFuture<Void> future = this.sendOperation.sendAsync(this.destination, this.message, null);

@@ -24,7 +24,6 @@ import org.springframework.util.Assert;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class StorageQueueTemplate implements StorageQueueOperation {
     private final StorageQueueClientFactory storageQueueClientFactory;

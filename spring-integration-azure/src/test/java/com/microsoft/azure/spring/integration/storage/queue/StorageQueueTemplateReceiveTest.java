@@ -86,14 +86,21 @@ public class StorageQueueTemplateReceiveTest {
         try {
             verify(this.mockClient, times(1))
                     .retrieveMessage(visibilityTimeoutInSeconds, null, null);
-            verify(this.mockClient, times(1))
-                    .deleteMessage(cloudQueueMessage);
         } catch (StorageException e) {
             fail("Test should not throw StorageException.");
         }
+
+        try {
+            Map<String, Object> headers = future.get().getHeaders();
+            assertNull(headers.get(AzureHeaders.CHECKPOINTER));
+        } catch (InterruptedException e) {
+            fail("Test should not throw InterruptedException.");
+        } catch (ExecutionException e) {
+            fail("Test should not throw ExecutionException.");
+        }
     }
 
-    protected void verifyStorageQueueRuntimeExceptionThrown(CompletableFuture<Message<?>> future) {
+    private void verifyStorageQueueRuntimeExceptionThrown(CompletableFuture<Message<?>> future) {
         try {
             future.get();
             fail("Test should fail.");
