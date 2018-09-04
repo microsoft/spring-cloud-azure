@@ -27,8 +27,8 @@ public class AzureProperties implements CredentialSupplier {
 
     @PostConstruct
     public void validate() {
-        Assert.hasText(credentialFilePath, "spring.cloud.azure.credentialFilePath must be provided");
-        Assert.hasText(resourceGroup, "spring.cloud.azure.resourceGroup must be provided");
+        Assert.hasText(credentialFilePath, "spring.cloud.azure.credential-file-path must be provided");
+        Assert.hasText(resourceGroup, "spring.cloud.azure.resource-group must be provided");
         Assert.hasText(region, "spring.cloud.azure.region must be provided");
     }
 }

@@ -44,9 +44,9 @@ https://docs.microsoft.com/en-us/azure/redis-cache/[Azure redis cache].
 +
 ....
 # Enter 'my.azureauth' here if following step 1 and 2
-spring.cloud.azure.credentialFilePath=[credential-file-path]
+spring.cloud.azure.credential-file-path=[credential-file-path]
 
-spring.cloud.azure.resourceGroup=[resource-group]
+spring.cloud.azure.resource-group=[resource-group]
 spring.cloud.azure.region=[region]
 
 spring.cloud.azure.redis.name=[azure-redis-instance-name]
