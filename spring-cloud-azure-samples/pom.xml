@@ -26,6 +26,7 @@
         <module>spring-cloud-stream-eventhub-kafka-sample</module>
         <module>spring-cloud-azure-servicebus-sample</module>
         <module>spring-cloud-azure-storage-queue-sample</module>
+        <module>spring-cloud-azure-storage-queue-integration-sample</module>
     </modules>
 
     <build>
