@@ -7,7 +7,7 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.servicebus;
 
 import com.microsoft.azure.servicebus.TopicClient;
-import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
 import org.junit.Test;

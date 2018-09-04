@@ -11,8 +11,8 @@ import com.microsoft.azure.PagedList;
 import com.microsoft.azure.keyvault.KeyVaultClient;
 import com.microsoft.azure.keyvault.models.SecretItem;
 import com.microsoft.azure.serializer.AzureJacksonAdapter;
-import com.microsoft.azure.spring.cloud.context.core.Memoizer;
-import com.microsoft.azure.spring.cloud.context.core.Tuple;
+import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
+import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.rest.RestClient;
 
 import java.util.Collection;

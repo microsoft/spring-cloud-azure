@@ -11,8 +11,8 @@ import com.microsoft.azure.servicebus.QueueClient;
 import com.microsoft.azure.servicebus.ReceiveMode;
 import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
-import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
-import com.microsoft.azure.spring.cloud.context.core.Memoizer;
+import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
 
 import java.util.function.Function;
@@ -45,7 +45,7 @@ public class DefaultServiceBusQueueClientFactory extends AbstractServiceBusSende
     private IQueueClient createQueueClient(String destination) {
         azureAdmin.getOrCreateServiceBusQueue(namespace, destination);
         try {
-            return new QueueClient(new ConnectionStringBuilder(getConnectionStringCreator().apply(destination)),
+            return new QueueClient(new ConnectionStringBuilder(connectionStringCreator.apply(destination)),
                     ReceiveMode.PEEKLOCK);
         } catch (InterruptedException | ServiceBusException e) {
             throw new ServiceBusRuntimeException("Failed to create service bus queue client", e);

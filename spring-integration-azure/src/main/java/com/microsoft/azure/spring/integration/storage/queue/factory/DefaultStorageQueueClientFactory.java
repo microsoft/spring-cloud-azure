@@ -7,9 +7,9 @@
 package com.microsoft.azure.spring.integration.storage.queue.factory;
 
 import com.microsoft.azure.management.storage.StorageAccount;
-import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
-import com.microsoft.azure.spring.cloud.context.core.AzureUtil;
-import com.microsoft.azure.spring.cloud.context.core.Memoizer;
+import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStringProvider;
+import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueRuntimeException;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.StorageException;
@@ -38,7 +38,7 @@ public class DefaultStorageQueueClientFactory implements StorageQueueClientFacto
     }
 
     private CloudQueueClient createStorageQueueClient() {
-        String connectionString = AzureUtil.getConnectionString(storageAccount);
+        String connectionString = StorageConnectionStringProvider.getConnectionString(storageAccount);
         CloudStorageAccount account;
         try {
             account = CloudStorageAccount.parse(connectionString);

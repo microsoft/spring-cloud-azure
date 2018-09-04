@@ -4,10 +4,11 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.cloud.context.core;
+package com.microsoft.azure.spring.cloud.context.core.impl;
 
-import com.google.common.base.Strings;
 import com.microsoft.azure.credentials.ApplicationTokenCredentials;
+import com.microsoft.azure.spring.cloud.context.core.api.CredentialSupplier;
+import com.microsoft.azure.spring.cloud.context.core.api.CredentialsProvider;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

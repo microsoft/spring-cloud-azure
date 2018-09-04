@@ -11,7 +11,7 @@ import com.microsoft.azure.PagedList;
 import com.microsoft.azure.management.eventhub.EventHubAuthorizationKey;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
 import com.microsoft.azure.management.eventhub.EventHubNamespaceAuthorizationRule;
-import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
 import com.microsoft.rest.RestException;
 import org.junit.Ignore;
 import org.junit.Test;

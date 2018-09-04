@@ -10,9 +10,9 @@ import com.microsoft.azure.management.servicebus.Topic;
 import com.microsoft.azure.servicebus.*;
 import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
-import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
-import com.microsoft.azure.spring.cloud.context.core.Memoizer;
-import com.microsoft.azure.spring.cloud.context.core.Tuple;
+import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
+import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
 import org.springframework.util.Assert;
 
@@ -54,7 +54,7 @@ public class DefaultServiceBusTopicClientFactory extends AbstractServiceBusSende
 
         try {
             return new SubscriptionClient(
-                    new ConnectionStringBuilder(getConnectionStringCreator().apply(nameAndSubscription.getFirst())),
+                    new ConnectionStringBuilder(connectionStringCreator.apply(nameAndSubscription.getFirst())),
                     ReceiveMode.PEEKLOCK);
         } catch (InterruptedException | ServiceBusException e) {
             throw new ServiceBusRuntimeException("Failed to create service bus subscription client", e);
@@ -64,7 +64,7 @@ public class DefaultServiceBusTopicClientFactory extends AbstractServiceBusSende
     private IMessageSender createTopicClient(String destination) {
         azureAdmin.getOrCreateServiceBusTopic(namespace, destination);
         try {
-            return new TopicClient(new ConnectionStringBuilder(getConnectionStringCreator().apply(destination)));
+            return new TopicClient(new ConnectionStringBuilder(connectionStringCreator.apply(destination)));
         } catch (InterruptedException | ServiceBusException e) {
             throw new ServiceBusRuntimeException("Failed to create service bus topic client", e);
         }

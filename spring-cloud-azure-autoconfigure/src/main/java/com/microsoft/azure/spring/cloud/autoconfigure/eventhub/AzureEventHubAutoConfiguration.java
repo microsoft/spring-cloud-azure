@@ -10,12 +10,9 @@ import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
-import com.microsoft.azure.spring.cloud.context.core.AzureAdmin;
-import com.microsoft.azure.spring.integration.eventhub.DefaultEventHubClientFactory;
-import com.microsoft.azure.spring.integration.eventhub.EventHubClientFactory;
-import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
-import com.microsoft.azure.spring.integration.eventhub.EventHubTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.integration.eventhub.EventHubConnectionStringProvider;
+import com.microsoft.azure.spring.integration.eventhub.*;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -55,9 +52,9 @@ public class AzureEventHubAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public EventHubClientFactory clientFactory(AzureAdmin azureAdmin, AzureEventHubProperties eventHubProperties) {
-        DefaultEventHubClientFactory clientFactory =
-                new DefaultEventHubClientFactory(azureAdmin, eventHubProperties.getNamespace());
-        clientFactory.initCheckpointConnectionString(eventHubProperties.getCheckpointStorageAccount());
-        return clientFactory;
+        EventHubConnectionStringProvider provider = new EventHubConnectionStringProvider(azureAdmin
+                .getOrCreateEventHubNamespace(eventHubProperties.getNamespace()));
+        return new DefaultEventHubClientFactory(azureAdmin, eventHubProperties.getCheckpointStorageAccount(),
+                provider::getConnectionString);
     }
 }

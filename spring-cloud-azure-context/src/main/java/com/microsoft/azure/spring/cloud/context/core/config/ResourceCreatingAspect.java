@@ -4,9 +4,10 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.cloud.context.core;
+package com.microsoft.azure.spring.cloud.context.core.config;
 
 import com.microsoft.azure.CloudException;
+import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -41,7 +42,7 @@ public class ResourceCreatingAspect {
         throw new IllegalArgumentException("Create method parameter must be String or Tuple");
     }
 
-    @Around("execution(* com.microsoft.azure.spring.cloud.context.core.AzureAdmin.getOrCreate*(..))")
+    @Around("execution(* com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin.getOrCreate*(..))")
     public Object handleExceptionAndLog(ProceedingJoinPoint joinPoint) throws Throwable {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

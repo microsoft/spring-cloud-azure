@@ -4,7 +4,7 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.cloud.context.core;
+package com.microsoft.azure.spring.cloud.context.core.impl;
 
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.cosmosdb.CosmosDBAccount;
@@ -22,6 +22,7 @@ import com.microsoft.azure.management.servicebus.Topic;
 import com.microsoft.azure.management.sql.SqlDatabase;
 import com.microsoft.azure.management.sql.SqlServer;
 import com.microsoft.azure.management.storage.StorageAccount;
+import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import lombok.NonNull;
 import org.springframework.util.Assert;
 

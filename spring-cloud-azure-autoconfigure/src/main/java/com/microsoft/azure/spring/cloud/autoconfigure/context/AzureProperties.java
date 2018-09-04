@@ -6,7 +6,7 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.context;
 
-import com.microsoft.azure.spring.cloud.context.core.CredentialSupplier;
+import com.microsoft.azure.spring.cloud.context.core.api.CredentialSupplier;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
