@@ -45,9 +45,9 @@ Make sure `my.azureauth` is encoded with UTF-8.
 ....
 
 # Enter 'my.azureauth' here if following step 1 and 2
-spring.cloud.azure.credentialFilePath=[credential-file-path]
+spring.cloud.azure.credential-file-path=[credential-file-path]
 
-spring.cloud.azure.resourceGroup=[resource-group]
+spring.cloud.azure.resource-group=[resource-group]
 spring.cloud.azure.region=[region]
 
 # Auto create storage account if not existed
