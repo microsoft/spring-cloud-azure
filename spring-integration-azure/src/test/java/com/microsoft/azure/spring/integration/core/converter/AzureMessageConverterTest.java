@@ -11,8 +11,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
-
+import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public abstract class AzureMessageConverterTest<T> {
     protected String payload = "payload";
@@ -49,7 +50,15 @@ public abstract class AzureMessageConverterTest<T> {
         Message<U> message = MessageBuilder.withPayload(payload).build();
         T azureMessage = converter.fromMessage(message, targetClass);
         Message<U> convertedMessage = converter.toMessage(azureMessage, payloadClass);
-        assertEquals(convertedMessage.getPayload(), payload);
+        assertMessagePayloadEquals(convertedMessage.getPayload(), payload);
+    }
+
+    private <U> void assertMessagePayloadEquals(U convertedPayload, U payload){
+        if (convertedPayload.getClass().equals(byte[].class)) {
+            assertTrue(Arrays.equals((byte[]) convertedPayload, (byte[]) payload));
+        } else {
+            assertEquals(convertedPayload, payload);
+        }
     }
 
     protected abstract T getInstance();
