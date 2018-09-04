@@ -23,9 +23,9 @@ import java.util.concurrent.ExecutionException;
  * @author Miao Cao
  */
 @RestController
-    public class WebController {
+public class WebController {
 
-    private static final Log LOGGER = LogFactory.getLog(StorageQueueApplication.class);
+    private static final Log LOGGER = LogFactory.getLog(WebController.class);
     private static final String STORAGE_QUEUE_NAME = "example";
 
     @Autowired

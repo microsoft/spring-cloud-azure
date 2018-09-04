@@ -6,10 +6,13 @@
 
 package example;
 
+import com.microsoft.azure.spring.integration.storage.queue.StorageQueueOperation;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
+ * {@link StorageQueueOperation} code sample.
+ *
  * @author Miao Cao
  */
 @SpringBootApplication

@@ -28,12 +28,12 @@ import org.springframework.web.bind.annotation.*;
  * @author Miao Cao
  */
 @RestController
-    public class WebController {
+public class WebController {
     /*Storage queue name can only be made up of lowercase letters, the numbers and the hyphen(-).*/
     private static final String STORAGE_QUEUE_NAME = "example";
     private static final String OUTPUT_CHANNEL = "outputChannel";
     private static final String INPUT_CHANNEL = "inputChannel";
-    private static final Log LOGGER = LogFactory.getLog(StorageQueueIntegrationApplication.class);
+    private static final Log LOGGER = LogFactory.getLog(WebController.class);
 
     @Autowired
     StorageQueueOutboundGateway storageQueueOutboundGateway;
