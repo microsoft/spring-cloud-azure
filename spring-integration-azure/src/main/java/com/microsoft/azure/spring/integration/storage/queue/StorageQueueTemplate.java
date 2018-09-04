@@ -52,7 +52,7 @@ public class StorageQueueTemplate implements StorageQueueOperation {
                                              PartitionSupplier partitionSupplier) {
         Assert.hasText(destination, "destination can't be null or empty");
         CloudQueueMessage cloudQueueMessage = messageConverter.fromMessage(message, CloudQueueMessage.class);
-        CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(() -> {
+        return CompletableFuture.runAsync(() -> {
             CloudQueue cloudQueue = storageQueueClientFactory.getQueueCreator().apply(destination);
             try {
                 cloudQueue.addMessage(cloudQueueMessage);
@@ -60,7 +60,6 @@ public class StorageQueueTemplate implements StorageQueueOperation {
                 throw new StorageQueueRuntimeException("Failed to add message to cloud queue", e);
             }
         });
-        return completableFuture;
     }
 
     @Override
@@ -101,13 +100,12 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     }
 
     private CompletableFuture<Void> checkpointMessage(CloudQueue cloudQueue, CloudQueueMessage cloudQueueMessage) {
-        CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(() -> {
+        return CompletableFuture.runAsync(() -> {
             try {
                 cloudQueue.deleteMessage(cloudQueueMessage);
             } catch (StorageException e) {
                 throw new StorageQueueRuntimeException("Failed to checkpoint message from cloud queue", e);
             }
         });
-        return completableFuture;
     }
 }

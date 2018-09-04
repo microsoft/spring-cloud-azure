@@ -8,6 +8,7 @@ package com.microsoft.azure.spring.integration.storage.queue;
 
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
+import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueClientFactory;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.queue.CloudQueue;
@@ -43,32 +44,22 @@ public class StorageQueueTemplateReceiveTest {
     private String destination = "queue";
 
     @Before
-    public void setup() {
-
+    public void setup() throws StorageException {
         when(this.mockClientFactory.getQueueCreator()).thenReturn(t -> this.mockClient);
-        try {
-            when(this.mockClient.retrieveMessage(anyInt(), eq(null), eq(null)))
+        when(this.mockClient.retrieveMessage(anyInt(), eq(null), eq(null)))
                     .thenReturn(this.cloudQueueMessage);
-        } catch (StorageException e) {
-            // StorageException is never thrown here
-        }
         this.operation = new StorageQueueTemplate(this.mockClientFactory);
     }
 
     @Test
-    public void testReceiveFailure() {
-        try {
-            when(this.mockClient.retrieveMessage(eq(visibilityTimeoutInSeconds), eq(null), eq(null)))
+    public void testReceiveFailure() throws StorageException {
+        when(this.mockClient.retrieveMessage(eq(visibilityTimeoutInSeconds), eq(null), eq(null)))
                     .thenThrow(StorageException.class);
-        } catch (StorageException e) {
-            // StorageException is never thrown here
-        }
 
         CompletableFuture<Message<?>> future =
                 this.operation.receiveAsync(this.destination, this.visibilityTimeoutInSeconds);
         verifyStorageQueueRuntimeExceptionThrown(future);
     }
-
 
     @Test
     public void testReceiveSuccessWithRecordMode() {
@@ -76,12 +67,8 @@ public class StorageQueueTemplateReceiveTest {
         try {
             assertTrue(Arrays.equals((byte[]) future.get().getPayload(),
                     this.cloudQueueMessage.getMessageContentAsByte()));
-        } catch (InterruptedException e) {
-            fail("Test should not throw InterruptedException.");
-        } catch (ExecutionException e) {
-            fail("Test should not throw ExecutionException.");
-        } catch (StorageException e) {
-            fail("Test should not throw StorageException.");
+        } catch (InterruptedException | ExecutionException | StorageException e) {
+            fail("Test should not throw Exception.");
         }
         try {
             verify(this.mockClient, times(1))
@@ -93,10 +80,8 @@ public class StorageQueueTemplateReceiveTest {
         try {
             Map<String, Object> headers = future.get().getHeaders();
             assertNull(headers.get(AzureHeaders.CHECKPOINTER));
-        } catch (InterruptedException e) {
-            fail("Test should not throw InterruptedException.");
-        } catch (ExecutionException e) {
-            fail("Test should not throw ExecutionException.");
+        } catch (InterruptedException | ExecutionException e) {
+            fail("Test should not throw Exception.");
         }
     }
 
@@ -112,16 +97,19 @@ public class StorageQueueTemplateReceiveTest {
     }
 
     @Test
-    public void testReceiveSuccessWithManualMode() {
+    public void testReceiveSuccessWithManualMode() throws StorageException {
         operation.setCheckpointMode(CheckpointMode.MANUAL);
         CompletableFuture<Message<?>> future = this.operation.receiveAsync(destination);
+
         try {
             Map<String, Object> headers = future.get().getHeaders();
-            assertNotNull(headers.get(AzureHeaders.CHECKPOINTER));
-        } catch (InterruptedException e) {
-            fail("Test should not throw InterruptedException.");
-        } catch (ExecutionException e) {
-            fail("Test should not throw ExecutionException.");
+            Checkpointer checkpointer = (Checkpointer) headers.get(AzureHeaders.CHECKPOINTER);
+            CompletableFuture<Void> checkpointFuture = checkpointer.success();
+            checkpointFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            fail("Test should not throw Exception.");
         }
+
+        verify(this.mockClient, times(1)).deleteMessage(cloudQueueMessage);
     }
 }

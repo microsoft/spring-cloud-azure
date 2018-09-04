@@ -97,4 +97,16 @@ public class StorageQueueTemplateSendTest extends SendOperationTest<StorageQueue
     protected void verifySendWithPartitionId(int times) {
         // Unsupported feature
     }
+
+    @Override
+    @Test
+    public void testSendWithPartitionKey() {
+        // Unsupported feature
+    }
+
+    @Override
+    @Test
+    public void testSendWithPartitionId() {
+        // Unsupported feature
+    }
 }

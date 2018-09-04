@@ -11,7 +11,6 @@ import com.microsoft.azure.spring.integration.core.converter.AzureMessageConvert
 import com.microsoft.azure.storage.queue.CloudQueueMessage;
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class StorageQueueMessageConverterTest extends AzureMessageConverterTest<CloudQueueMessage> {
@@ -35,7 +34,7 @@ public class StorageQueueMessageConverterTest extends AzureMessageConverterTest<
         if (convertedPayload.getClass().equals(byte[].class)) {
             assertTrue(Arrays.equals((byte[]) convertedPayload, (byte[]) payload));
         } else {
-            assertEquals(convertedPayload, payload);
+            super.assertMessagePayloadEquals(convertedPayload, payload);
         }
     }
 }
