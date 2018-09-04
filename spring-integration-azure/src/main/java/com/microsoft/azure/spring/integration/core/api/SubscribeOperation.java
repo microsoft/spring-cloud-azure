@@ -36,4 +36,6 @@ public interface SubscribeOperation {
      * if was not registered.
      */
     boolean unsubscribe(String destination);
+
+    void setCheckpointMode(CheckpointMode checkpointMode);
 }

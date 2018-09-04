@@ -8,7 +8,7 @@ package com.microsoft.azure.spring.integration.eventhub;
 
 import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.eventprocessorhost.PartitionContext;
-import com.microsoft.azure.spring.integration.SendSubscribeOperationTest;
+import com.microsoft.azure.spring.integration.SendSubscribeByGroupOperationTest;
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.Checkpointer;
@@ -29,7 +29,7 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EventHubOperationSendSubscribeTest extends SendSubscribeOperationTest<EventHubOperation> {
+public class EventHubOperationSendSubscribeTest extends SendSubscribeByGroupOperationTest<EventHubOperation> {
 
     @Mock
     PartitionContext context;
