@@ -49,9 +49,10 @@ public class WebController {
     /**
      * Posts a message to a Azure Storage Queue
      */
-    @PostMapping(value = "/messages")
-    public void send(@RequestBody String data) {
-        storageQueueOutboundGateway.send(data);
+    @PostMapping("/messages")
+    public String send(@RequestParam("message") String message) {
+        storageQueueOutboundGateway.send(message);
+        return message;
     }
 
     @Bean
