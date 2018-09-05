@@ -23,8 +23,8 @@ Make sure `my.azureauth` is encoded with UTF-8.
 +
 ....
 # Enter 'my.azureauth' here if following step 1 and 2
-spring.cloud.azure.credentialFilePath=[credential-file-path]
-spring.cloud.azure.resourceGroup=[resource-group]
+spring.cloud.azure.credential-file-path=[credential-file-path]
+spring.cloud.azure.resource-group=[resource-group]
 spring.cloud.azure.region=[region]
 
 #Storage account name must be between 3 and 24 characters in length and use numbers and lower-case letters only.
