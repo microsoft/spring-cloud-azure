@@ -38,11 +38,14 @@ public class WebController {
     }
 
     @GetMapping("/messages")
-    public void receive() throws ExecutionException, InterruptedException {
+    public String receive() throws ExecutionException, InterruptedException {
         this.storageQueueOperation.setMessagePayloadType(String.class);
         Message<?> message = this.storageQueueOperation.receiveAsync(STORAGE_QUEUE_NAME).get();
-        if(message != null) {
-            LOGGER.info("Message arrived! Payload: " + message.getPayload());
+        if(message == null) {
+            LOGGER.info("You have no new messages.");
+            return null;
         }
+        LOGGER.info("Message arrived! Payload: " + message.getPayload());
+        return (String) message.getPayload();
     }
 }
