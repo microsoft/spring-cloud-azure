@@ -27,12 +27,11 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Warren Zhu
  */
 @RestController
-public class WebController {
+public class SendController {
 
-    private static final Log LOGGER = LogFactory.getLog(WebController.class);
+    private static final Log LOGGER = LogFactory.getLog(SendController.class);
     private static final String OUTPUT_CHANNEL = "output";
-    private static final String INPUT_CHANNEL = "input";
-    private static final String EVENTHUB_NAME = "example";
+    private static final String EVENTHUB_NAME = "eventhub";
 
     @Autowired
     EventHubOutboundGateway messagingGateway;
@@ -42,7 +41,6 @@ public class WebController {
      */
     @MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL)
     public interface EventHubOutboundGateway {
-
         void send(String text);
     }
 
@@ -73,22 +71,4 @@ public class WebController {
 
         return handler;
     }
-
-    /** This message receiver binding with {@link EventHubInboundChannelAdapter}
-     *  via {@link MessageChannel} has name {@value INPUT_CHANNEL}
-     */
-    @ServiceActivator(inputChannel = INPUT_CHANNEL)
-    public void messageReceiver(String payload) {
-        LOGGER.info("Message arrived! Payload: " + payload);
-    }
-
-    @Bean
-    public EventHubInboundChannelAdapter messageChannelAdapter(
-            @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel, EventHubOperation eventhubOperation) {
-        EventHubInboundChannelAdapter adapter = new EventHubInboundChannelAdapter(EVENTHUB_NAME,
-                eventhubOperation, "");
-        adapter.setOutputChannel(inputChannel);
-        return adapter;
-    }
-
 }
