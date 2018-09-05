@@ -38,9 +38,7 @@ public class ServiceBusMessageConverter extends AbstractAzureMessageConverter<IM
 
     @Override
     protected void setCustomHeaders(org.springframework.messaging.Message<?> message, IMessage serviceBusMessage) {
-        if (message.getHeaders().containsKey(MessageHeaders.CONTENT_TYPE)) {
-            serviceBusMessage.setContentType(message.getHeaders().get(MessageHeaders.CONTENT_TYPE, String.class));
-        }
+        //TODO: figure out how to set content-type header since value could be String or MimeType
 
         if (message.getHeaders().containsKey(MessageHeaders.ID)) {
             serviceBusMessage.setMessageId(message.getHeaders().get(MessageHeaders.ID, UUID.class).toString());

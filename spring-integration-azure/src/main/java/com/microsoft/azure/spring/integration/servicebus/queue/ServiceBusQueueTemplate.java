@@ -8,6 +8,7 @@ package com.microsoft.azure.spring.integration.servicebus.queue;
 
 import com.google.common.collect.Sets;
 import com.microsoft.azure.servicebus.IQueueClient;
+import com.microsoft.azure.servicebus.MessageHandlerOptions;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusTemplate;
@@ -71,7 +72,7 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
 
         try {
             queueClient.registerMessageHandler(
-                    new QueueMessageHandler(consumer, payloadType, queueClient));
+                    new QueueMessageHandler(consumer, payloadType, queueClient), options);
         } catch (ServiceBusException | InterruptedException e) {
             LOGGER.error("Failed to register queue message handler", e);
             throw new ServiceBusRuntimeException("Failed to register queue message handler", e);

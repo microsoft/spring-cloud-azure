@@ -6,6 +6,7 @@
 
 package com.microsoft.azure.spring.integration.servicebus.factory;
 
+import com.microsoft.azure.management.servicebus.ServiceBusNamespace;
 import com.microsoft.azure.servicebus.IQueueClient;
 import com.microsoft.azure.servicebus.QueueClient;
 import com.microsoft.azure.servicebus.ReceiveMode;
@@ -43,9 +44,9 @@ public class DefaultServiceBusQueueClientFactory extends AbstractServiceBusSende
     }
 
     private IQueueClient createQueueClient(String destination) {
-        azureAdmin.getOrCreateServiceBusQueue(namespace, destination);
+        azureAdmin.getOrCreateServiceBusQueue(serviceBusNamespace, destination);
         try {
-            return new QueueClient(new ConnectionStringBuilder(connectionStringCreator.apply(destination)),
+            return new QueueClient(new ConnectionStringBuilder(connectionStringCreator.apply(namespace), destination),
                     ReceiveMode.PEEKLOCK);
         } catch (InterruptedException | ServiceBusException e) {
             throw new ServiceBusRuntimeException("Failed to create service bus queue client", e);
