@@ -180,7 +180,13 @@ public class AzureAdmin {
     }
 
     private ServiceBusSubscription getServiceBusTopicSubscription(Tuple<Topic, String> topicAndSubscriptionName) {
-        return topicAndSubscriptionName.getFirst().subscriptions().getByName(topicAndSubscriptionName.getSecond());
+        try {
+            return topicAndSubscriptionName.getFirst().subscriptions().getByName(topicAndSubscriptionName.getSecond());
+        } catch (NullPointerException ignore) {
+            // azure management api has no way to determine whether an service bus topic subscription exists
+            // Workaround for this is by catching NPE
+            return null;
+        }
     }
 
     private ServiceBusSubscription createServiceBusTopicSubscription(Tuple<Topic, String> topicAndSubscriptionName) {
