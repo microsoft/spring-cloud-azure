@@ -6,8 +6,6 @@
 
 package example;
 
-import com.microsoft.azure.spring.cloud.autoconfigure.eventhub.AzureEventHubProperties;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
 import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,18 +24,12 @@ import javax.annotation.PostConstruct;
 @RestController
 public class WebController {
 
-    private static final Log LOGGER = LogFactory.getLog(EventHubApplication.class);
-    private static final String EVENT_HUB_NAME = "example";
+    private static final Log LOGGER = LogFactory.getLog(WebController.class);
+    private static final String EVENT_HUB_NAME = "eventhub";
     private static final String CONSUMER_GROUP = "$Default";
 
     @Autowired
     EventHubOperation eventHubOperation;
-
-    @Autowired
-    AzureAdmin azureAdmin;
-
-    @Autowired
-    AzureEventHubProperties eventHubProperties;
 
     @PostMapping("/messages")
     public String send(@RequestParam("message") String message) {
@@ -46,8 +38,7 @@ public class WebController {
     }
 
     @PostConstruct
-    public void initEventHub(){
-        this.azureAdmin.getOrCreateEventHub(eventHubProperties.getNamespace(), EVENT_HUB_NAME);
+    public void subscribeToEventHub(){
         this.eventHubOperation.subscribe(EVENT_HUB_NAME, CONSUMER_GROUP, this::messageReceiver, String.class);
     }
 

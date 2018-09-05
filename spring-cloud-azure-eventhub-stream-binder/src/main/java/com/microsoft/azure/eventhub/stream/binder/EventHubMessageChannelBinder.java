@@ -65,6 +65,7 @@ public class EventHubMessageChannelBinder extends
     protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group,
             ExtendedConsumerProperties<EventHubConsumerProperties> properties) {
         this.eventHubOperation.setStartPosition(properties.getExtension().getStartPosition());
+        this.eventHubOperation.setCheckpointMode(properties.getExtension().getCheckpointMode());
 
         boolean anonymous = !StringUtils.hasText(group);
         if (anonymous) {

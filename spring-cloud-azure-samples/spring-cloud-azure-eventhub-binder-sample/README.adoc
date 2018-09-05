@@ -25,14 +25,14 @@ Make sure `my.azureauth` is encoded with UTF-8.
 +
 ....
 # Enter 'my.azureauth' here if following step 1 and 2
-spring.cloud.azure.credentialFilePath=[credential-file-path]
+spring.cloud.azure.credential-file-path=[credential-file-path]
 
-spring.cloud.azure.resourceGroup=[resource-group]
+spring.cloud.azure.resource-group=[resource-group]
 spring.cloud.azure.region=[region]
 
 spring.cloud.azure.eventhub.namespace=[eventhub-namespace]
 
-spring.cloud.stream.eventhub.checkpointStorageAccount=[checkpoint-storage-account]
+spring.cloud.stream.eventhub.checkpoint-storage-account=[checkpoint-storage-account]
 
 spring.cloud.stream.bindings.input.destination=[eventhub-name]
 spring.cloud.stream.bindings.input.group=[consumer-group]

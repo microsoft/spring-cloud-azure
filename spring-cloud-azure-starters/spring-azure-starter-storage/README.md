@@ -35,8 +35,8 @@ The [`spring-cloud-azure-starter-storage`](spring-cloud-azure-starters/spring-cl
 
 Name | Description | Required | Default 
 ---|---|---|---
- spring.cloud.azure.credentialFilePath | Location of azure credential file | Yes | 
- spring.cloud.azure.resourceGroup | Name of Azure resource group | Yes | 
+ spring.cloud.azure.credential-file-path | Location of azure credential file | Yes |
+ spring.cloud.azure.resource-group | Name of Azure resource group | Yes |
  spring.cloud.azure.region | Region name of the Azure resource group, e.g. westus | Yes | 
  spring.cloud.azure.storage.account | Name of the Azure Storage Account. Will create a new one if not existing | Yes |
  spring.cloud.azure.storage.enabled | Turn on or off functionalities of Spring Cloud Azure Storage | No | true
