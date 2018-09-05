@@ -20,7 +20,6 @@ import com.microsoft.azure.management.servicebus.ServiceBusNamespace;
 import com.microsoft.azure.management.servicebus.ServiceBusSubscription;
 import com.microsoft.azure.management.servicebus.Topic;
 import com.microsoft.azure.management.sql.SqlDatabase;
-import com.microsoft.azure.management.sql.SqlServer;
 import com.microsoft.azure.management.storage.StorageAccount;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import lombok.NonNull;
@@ -129,25 +128,6 @@ public class AzureAdmin {
 
         return azure.sqlServers().databases().define(databaseName)
                     .withExistingSqlServer(resourceGroup, sqlServerName, region).create();
-    }
-
-    private SqlServer createSqlServer(String username, String password, String sqlServerName) {
-        return azure.sqlServers().define(sqlServerName).withRegion(region).withExistingResourceGroup(resourceGroup)
-                    .withAdministratorLogin(username).withAdministratorPassword(password).create();
-    }
-
-    public SqlServer getOrCreateSqlServer(String username, String password, String sqlServerName) {
-        SqlServer sqlServer = getSqlServer(sqlServerName);
-
-        if (sqlServer != null) {
-            return sqlServer;
-        }
-
-        return createSqlServer(username, password, sqlServerName);
-    }
-
-    public SqlServer getSqlServer(String sqlServerName) {
-        return azure.sqlServers().getByResourceGroup(resourceGroup, sqlServerName);
     }
 
     private SqlDatabase getSqlDatabase(String sqlServerName, String databaseName) {
