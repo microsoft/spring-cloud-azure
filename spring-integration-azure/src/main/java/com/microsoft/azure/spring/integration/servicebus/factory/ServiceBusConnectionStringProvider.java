@@ -7,31 +7,32 @@
 package com.microsoft.azure.spring.integration.servicebus.factory;
 
 import com.microsoft.azure.management.servicebus.AuthorizationKeys;
-import com.microsoft.azure.management.servicebus.ServiceBusNamespace;
+import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
 import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
-import org.springframework.lang.NonNull;
+import lombok.NonNull;
 
 import java.util.function.Function;
 
 class ServiceBusConnectionStringProvider {
-    private ServiceBusNamespace serviceBusNamespace;
     private final Function<String, String> connectionStringProvider = Memoizer.memoize(this::buildConnectionString);
 
-    ServiceBusConnectionStringProvider(@NonNull ServiceBusNamespace serviceBusNamespace) {
-        this.serviceBusNamespace = serviceBusNamespace;
+    private final AzureAdmin azureAdmin;
+
+    ServiceBusConnectionStringProvider(@NonNull AzureAdmin azureAdmin) {
+        this.azureAdmin = azureAdmin;
     }
 
-    private String buildConnectionString(String name) {
-        return serviceBusNamespace.authorizationRules().list().stream().findFirst()
+    private String buildConnectionString(String namespace) {
+        return azureAdmin.getOrCreateServiceBusNamespace(namespace).authorizationRules().list().stream().findFirst()
                                   .map(com.microsoft.azure.management.servicebus.AuthorizationRule::getKeys)
                                   .map(AuthorizationKeys::primaryConnectionString)
                                   .map(s -> new com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder(s,
-                                          name).toString()).orElseThrow(() -> new ServiceBusRuntimeException(
-                        String.format("Service bus namespace '%s' key is empty", name), null));
+                                          namespace).toString()).orElseThrow(() -> new ServiceBusRuntimeException(
+                        String.format("Service bus namespace '%s' key is empty", namespace), null));
     }
 
-    public String getConnectionString(String eventHub) {
-        return connectionStringProvider.apply(eventHub);
+    public String getConnectionString(String namespace) {
+        return connectionStringProvider.apply(namespace);
     }
 }
