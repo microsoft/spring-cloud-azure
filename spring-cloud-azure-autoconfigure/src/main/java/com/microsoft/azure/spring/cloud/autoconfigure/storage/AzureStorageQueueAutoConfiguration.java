@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
-@ConditionalOnClass(CloudQueueClient.class)
+@ConditionalOnClass({CloudQueueClient.class, StorageQueueClientFactory.class})
 @ConditionalOnProperty(name = "spring.cloud.azure.storage.account")
 @EnableConfigurationProperties(AzureStorageProperties.class)
 public class AzureStorageQueueAutoConfiguration {
