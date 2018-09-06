@@ -28,12 +28,11 @@ import org.springframework.web.bind.annotation.*;
  * @author Miao Cao
  */
 @RestController
-public class WebController {
+public class SendController {
     /*Storage queue name can only be made up of lowercase letters, the numbers and the hyphen(-).*/
     private static final String STORAGE_QUEUE_NAME = "example";
     private static final String OUTPUT_CHANNEL = "outputChannel";
-    private static final String INPUT_CHANNEL = "inputChannel";
-    private static final Log LOGGER = LogFactory.getLog(WebController.class);
+    private static final Log LOGGER = LogFactory.getLog(SendController.class);
 
     @Autowired
     StorageQueueOutboundGateway storageQueueOutboundGateway;
@@ -71,24 +70,5 @@ public class WebController {
             }
         });
         return handler;
-    }
-
-    @Bean
-    @InboundChannelAdapter(channel = INPUT_CHANNEL, poller = @Poller(fixedDelay = "5000"))
-    public StorageQueueMessageSource StorageQueueMessageSource(StorageQueueOperation storageQueueOperation) {
-        storageQueueOperation.setVisibilityTimeoutInSeconds(10);
-        storageQueueOperation.setCheckpointMode(CheckpointMode.RECORD);
-        storageQueueOperation.setMessagePayloadType(String.class);
-        StorageQueueMessageSource messageSource =
-                new StorageQueueMessageSource(STORAGE_QUEUE_NAME, storageQueueOperation);
-        return messageSource;
-    }
-
-    /** This message receiver binding with {@link StorageQueueMessageSource}
-     *  via {@link MessageChannel} has name {@value INPUT_CHANNEL}
-     */
-    @ServiceActivator(inputChannel = INPUT_CHANNEL)
-    public void messageReceiver(Message<?> message) {
-        LOGGER.info("message received: " + message.getPayload());
     }
 }
