@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MacAddressHelper {
@@ -27,7 +25,7 @@ public class MacAddressHelper {
             byte[] macBytes = NetworkInterface.getByInetAddress(host).getHardwareAddress();
 
             return DigestUtils.sha256Hex(macBytes);
-        } catch (UnknownHostException | SocketException ignore) {
+        } catch (Exception ignore) {
             return UNKNOWN_MAC;
         }
     }
