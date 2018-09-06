@@ -82,6 +82,11 @@
                 <artifactId>spring-cloud-azure-eventhub-stream-binder</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>spring-cloud-azure-servicebus-topic-stream-binder</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!--Azure Java SDKs-->
             <dependency>
@@ -134,6 +139,11 @@
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-azure-starter-eventhub</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>spring-cloud-azure-starter-servicebus</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

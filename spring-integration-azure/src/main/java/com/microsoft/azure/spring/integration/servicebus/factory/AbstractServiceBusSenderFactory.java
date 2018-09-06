@@ -18,14 +18,15 @@ import java.util.function.Function;
  */
 public abstract class AbstractServiceBusSenderFactory implements ServiceBusSenderFactory {
     protected final AzureAdmin azureAdmin;
-    protected final ServiceBusNamespace namespace;
+    protected final String namespace;
+    protected final ServiceBusNamespace serviceBusNamespace;
     protected final Function<String, String> connectionStringCreator;
 
     AbstractServiceBusSenderFactory(AzureAdmin azureAdmin, String namespace) {
         this.azureAdmin = azureAdmin;
-        this.namespace = azureAdmin
-                .getOrCreateServiceBusNamespace(namespace);
-        ServiceBusConnectionStringProvider provider = new ServiceBusConnectionStringProvider(this.namespace);
+        this.namespace = namespace;
+        this.serviceBusNamespace = azureAdmin.getOrCreateServiceBusNamespace(namespace);
+        ServiceBusConnectionStringProvider provider = new ServiceBusConnectionStringProvider(this.azureAdmin);
         this.connectionStringCreator = provider::getConnectionString;
     }
 }

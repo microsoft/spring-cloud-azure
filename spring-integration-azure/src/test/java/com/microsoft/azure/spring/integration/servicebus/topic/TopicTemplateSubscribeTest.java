@@ -54,7 +54,7 @@ public class TopicTemplateSubscribeTest extends SubscribeByGroupOperationTest<Se
     @Override
     protected void verifySubscriberRegistered(int times) {
         try {
-            verify(this.subscriptionClient, times(times)).registerMessageHandler(isA(IMessageHandler.class));
+            verify(this.subscriptionClient, times(times)).registerMessageHandler(isA(IMessageHandler.class), any());
         } catch (InterruptedException | ServiceBusException e) {
             fail("Exception should not throw" + e);
         }
@@ -74,7 +74,7 @@ public class TopicTemplateSubscribeTest extends SubscribeByGroupOperationTest<Se
 
     private void whenRegisterMessageHandler(SubscriptionClient subscriptionClient) {
         try {
-            doNothing().when(subscriptionClient).registerMessageHandler(isA(IMessageHandler.class));
+            doNothing().when(subscriptionClient).registerMessageHandler(isA(IMessageHandler.class), any());
         } catch (InterruptedException | ServiceBusException e) {
             fail("Exception should not throw" + e);
         }

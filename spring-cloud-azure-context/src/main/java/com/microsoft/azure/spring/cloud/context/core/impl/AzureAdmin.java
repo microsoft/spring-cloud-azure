@@ -7,20 +7,16 @@
 package com.microsoft.azure.spring.cloud.context.core.impl;
 
 import com.microsoft.azure.management.Azure;
-import com.microsoft.azure.management.cosmosdb.CosmosDBAccount;
-import com.microsoft.azure.management.cosmosdb.DatabaseAccountKind;
 import com.microsoft.azure.management.eventhub.EventHub;
 import com.microsoft.azure.management.eventhub.EventHubConsumerGroup;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
 import com.microsoft.azure.management.redis.RedisCache;
 import com.microsoft.azure.management.resources.ResourceGroup;
-import com.microsoft.azure.management.resources.fluentcore.arm.Region;
 import com.microsoft.azure.management.servicebus.Queue;
 import com.microsoft.azure.management.servicebus.ServiceBusNamespace;
 import com.microsoft.azure.management.servicebus.ServiceBusSubscription;
 import com.microsoft.azure.management.servicebus.Topic;
 import com.microsoft.azure.management.sql.SqlDatabase;
-import com.microsoft.azure.management.sql.SqlServer;
 import com.microsoft.azure.management.storage.StorageAccount;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import lombok.NonNull;
@@ -131,25 +127,6 @@ public class AzureAdmin {
                     .withExistingSqlServer(resourceGroup, sqlServerName, region).create();
     }
 
-    private SqlServer createSqlServer(String username, String password, String sqlServerName) {
-        return azure.sqlServers().define(sqlServerName).withRegion(region).withExistingResourceGroup(resourceGroup)
-                    .withAdministratorLogin(username).withAdministratorPassword(password).create();
-    }
-
-    public SqlServer getOrCreateSqlServer(String username, String password, String sqlServerName) {
-        SqlServer sqlServer = getSqlServer(sqlServerName);
-
-        if (sqlServer != null) {
-            return sqlServer;
-        }
-
-        return createSqlServer(username, password, sqlServerName);
-    }
-
-    public SqlServer getSqlServer(String sqlServerName) {
-        return azure.sqlServers().getByResourceGroup(resourceGroup, sqlServerName);
-    }
-
     private SqlDatabase getSqlDatabase(String sqlServerName, String databaseName) {
         return azure.sqlServers().databases().getBySqlServer(resourceGroup, sqlServerName, databaseName);
     }
@@ -203,7 +180,13 @@ public class AzureAdmin {
     }
 
     private ServiceBusSubscription getServiceBusTopicSubscription(Tuple<Topic, String> topicAndSubscriptionName) {
-        return topicAndSubscriptionName.getFirst().subscriptions().getByName(topicAndSubscriptionName.getSecond());
+        try {
+            return topicAndSubscriptionName.getFirst().subscriptions().getByName(topicAndSubscriptionName.getSecond());
+        } catch (NullPointerException ignore) {
+            // azure management api has no way to determine whether an service bus topic subscription exists
+            // Workaround for this is by catching NPE
+            return null;
+        }
     }
 
     private ServiceBusSubscription createServiceBusTopicSubscription(Tuple<Topic, String> topicAndSubscriptionName) {
@@ -222,27 +205,6 @@ public class AzureAdmin {
 
     public RedisCache getOrCreateRedisCache(String name) {
         return getOrCreate(this::getRedisCache, this::createRedisCache).apply(name);
-    }
-
-    private CosmosDBAccount getCosmosDBAccount(String name) {
-        return azure.cosmosDBAccounts().getByResourceGroup(resourceGroup, name);
-    }
-
-    private CosmosDBAccount createCosmosDBAccount(DatabaseAccountKind kind,
-                                                  String readReplication, String name) {
-        return azure.cosmosDBAccounts().define(name).withRegion(region)
-                .withExistingResourceGroup(resourceGroup)
-                .withKind(kind)
-                .withStrongConsistency()
-                .withReadReplication(Region.create(readReplication, readReplication)).create();
-    }
-
-    public CosmosDBAccount getOrCreateCosmosDBAccount(DatabaseAccountKind kind, String readReplication, String name) {
-        CosmosDBAccount cosmosDBAccount = getCosmosDBAccount(name);
-        if (cosmosDBAccount != null) {
-            return cosmosDBAccount;
-        }
-        return createCosmosDBAccount(kind, readReplication, name);
     }
 
     private <T, R> Function<T, R> getOrCreate(Function<T, R> getter, Function<T, R> creator) {

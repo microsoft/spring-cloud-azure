@@ -9,8 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>spring-cloud-azure-servicebus-stream-binder</artifactId>
-    <name>Spring Cloud Azure Stream Service Bus Binder</name>
+    <artifactId>spring-cloud-azure-servicebus-topic-stream-binder</artifactId>
+    <name>Spring Cloud Azure Stream Service Bus Topic Binder</name>
     <description>Azure Service Bus binder for Spring Cloud Stream</description>
 
     <dependencies>

@@ -49,7 +49,7 @@ public class QueueTemplateSubscribeTest extends SubscribeOperationTest<ServiceBu
     @Override
     protected void verifySubscriberRegistered(int times) {
         try {
-            verify(this.queueClient, times(times)).registerMessageHandler(isA(IMessageHandler.class));
+            verify(this.queueClient, times(times)).registerMessageHandler(isA(IMessageHandler.class), any());
         } catch (InterruptedException | ServiceBusException e) {
             fail("Exception should not throw" + e);
         }
@@ -61,7 +61,7 @@ public class QueueTemplateSubscribeTest extends SubscribeOperationTest<ServiceBu
 
     private void whenRegisterMessageHandler(QueueClient queueClient) {
         try {
-            doNothing().when(queueClient).registerMessageHandler(isA(IMessageHandler.class));
+            doNothing().when(queueClient).registerMessageHandler(isA(IMessageHandler.class), any());
         } catch (InterruptedException | ServiceBusException e) {
             fail("Exception should not throw" + e);
         }

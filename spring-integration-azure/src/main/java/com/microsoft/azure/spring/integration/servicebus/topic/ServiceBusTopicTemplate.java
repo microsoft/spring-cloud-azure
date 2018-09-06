@@ -70,14 +70,15 @@ public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicC
 
         try {
             subscriptionClient
-                    .registerMessageHandler(new TopicMessageHandler(consumer, payloadType, subscriptionClient));
+                    .registerMessageHandler(new TopicMessageHandler(consumer, payloadType, subscriptionClient),
+                            options);
         } catch (ServiceBusException | InterruptedException e) {
             LOGGER.error("Failed to register topic message handler", e);
             throw new ServiceBusRuntimeException("Failed to register topic message handler", e);
         }
     }
 
-    protected class TopicMessageHandler<U> extends ServiceBusMessageHandler<U>{
+    protected class TopicMessageHandler<U> extends ServiceBusMessageHandler<U> {
         private final ISubscriptionClient subscriptionClient;
 
         public TopicMessageHandler(Consumer<Message<U>> consumer, Class<U> payloadType,

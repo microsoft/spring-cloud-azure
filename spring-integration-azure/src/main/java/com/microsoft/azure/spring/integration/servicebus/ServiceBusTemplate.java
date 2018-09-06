@@ -9,6 +9,7 @@ package com.microsoft.azure.spring.integration.servicebus;
 import com.microsoft.azure.servicebus.ExceptionPhase;
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.IMessageHandler;
+import com.microsoft.azure.servicebus.MessageHandlerOptions;
 import com.microsoft.azure.spring.integration.core.AzureCheckpointer;
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
@@ -27,6 +28,7 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -41,6 +43,7 @@ import java.util.function.Consumer;
 public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements SendOperation {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceBusTemplate.class);
     protected final T senderFactory;
+    protected final MessageHandlerOptions options = new MessageHandlerOptions(1, false, Duration.ofMinutes(5));
 
     @Setter
     protected CheckpointMode checkpointMode = CheckpointMode.RECORD;
