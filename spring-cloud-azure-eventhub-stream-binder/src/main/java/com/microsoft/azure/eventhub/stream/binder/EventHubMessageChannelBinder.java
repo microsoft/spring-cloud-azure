@@ -14,6 +14,7 @@ import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
 import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
 import com.microsoft.azure.spring.integration.eventhub.inbound.EventHubInboundChannelAdapter;
+import lombok.Setter;
 import org.springframework.cloud.stream.binder.*;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
@@ -36,7 +37,8 @@ public class EventHubMessageChannelBinder extends
 
     private final EventHubOperation eventHubOperation;
 
-    private final EventHubExtendedBindingProperties bindingProperties = new EventHubExtendedBindingProperties();
+    @Setter
+    private EventHubExtendedBindingProperties bindingProperties = new EventHubExtendedBindingProperties();
 
     public EventHubMessageChannelBinder(String[] headersToEmbed, EventHubChannelProvisioner provisioningProvider,
             EventHubOperation eventHubOperation) {

@@ -50,7 +50,10 @@ public class EventHubBinderConfiguration {
 
     @Bean
     public EventHubMessageChannelBinder eventHubBinder(EventHubChannelProvisioner eventHubChannelProvisioner,
-            EventHubOperation eventHubOperation) {
-        return new EventHubMessageChannelBinder(null, eventHubChannelProvisioner, eventHubOperation);
+            EventHubOperation eventHubOperation, EventHubExtendedBindingProperties bindingProperties) {
+        EventHubMessageChannelBinder binder = new EventHubMessageChannelBinder(null, eventHubChannelProvisioner,
+                eventHubOperation);
+        binder.setBindingProperties(bindingProperties);
+        return binder;
     }
 }
