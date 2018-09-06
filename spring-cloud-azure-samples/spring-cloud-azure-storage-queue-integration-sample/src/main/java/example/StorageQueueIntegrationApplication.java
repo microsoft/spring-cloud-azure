@@ -6,19 +6,20 @@
 
 package example;
 
-import com.microsoft.azure.spring.integration.storage.queue.StorageQueueOperation;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.integration.config.EnableIntegration;
 
 /**
- * {@link StorageQueueOperation} code sample.
+ * Spring Integration Channel Adapters for Azure Storage Queue code sample.
  *
  * @author Miao Cao
  */
 @SpringBootApplication
-public class StorageQueueApplication {
+@EnableIntegration
+public class StorageQueueIntegrationApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(StorageQueueApplication.class, args);
+        SpringApplication.run(StorageQueueIntegrationApplication.class, args);
     }
 }
