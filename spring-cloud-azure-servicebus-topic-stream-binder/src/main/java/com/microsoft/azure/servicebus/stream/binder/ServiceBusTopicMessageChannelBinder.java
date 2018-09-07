@@ -13,6 +13,7 @@ import com.microsoft.azure.servicebus.stream.binder.provisioning.ServiceBusTopic
 import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
 import com.microsoft.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
+import lombok.Setter;
 import org.springframework.cloud.stream.binder.*;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
@@ -37,11 +38,12 @@ public class ServiceBusTopicMessageChannelBinder extends
 
     private final ServiceBusTopicOperation serviceBusTopicOperation;
 
+    @Setter
     private ServiceBusExtendedBindingProperties bindingProperties = new ServiceBusExtendedBindingProperties();
 
     public ServiceBusTopicMessageChannelBinder(String[] headersToEmbed,
-            @NonNull ServiceBusTopicChannelProvisioner provisioningProvider, @NonNull ServiceBusTopicOperation
-            serviceBusTopicOperation) {
+            @NonNull ServiceBusTopicChannelProvisioner provisioningProvider,
+            @NonNull ServiceBusTopicOperation serviceBusTopicOperation) {
         super(headersToEmbed, provisioningProvider);
         this.serviceBusTopicOperation = serviceBusTopicOperation;
     }
@@ -49,8 +51,7 @@ public class ServiceBusTopicMessageChannelBinder extends
     @Override
     protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
             ExtendedProducerProperties<ServiceBusProducerProperties> producerProperties, MessageChannel errorChannel) {
-        AzureMessageHandler handler =
-                new AzureMessageHandler(destination.getName(), this.serviceBusTopicOperation);
+        AzureMessageHandler handler = new AzureMessageHandler(destination.getName(), this.serviceBusTopicOperation);
         handler.setBeanFactory(getBeanFactory());
         handler.setSync(producerProperties.getExtension().isSync());
         handler.setSendTimeout(producerProperties.getExtension().getSendTimeout());
@@ -67,6 +68,7 @@ public class ServiceBusTopicMessageChannelBinder extends
     @Override
     protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group,
             ExtendedConsumerProperties<ServiceBusConsumerProperties> properties) {
+        this.serviceBusTopicOperation.setCheckpointMode(properties.getExtension().getCheckpointMode());
         boolean anonymous = !StringUtils.hasText(group);
         if (anonymous) {
             group = "anonymous." + UUID.randomUUID().toString();

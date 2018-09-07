@@ -20,11 +20,11 @@
     <modules>
         <module>spring-cloud-azure-cache-sample</module>
         <module>spring-cloud-azure-storage-sample</module>
-        <module>spring-cloud-azure-eventhub-sample</module>
+        <module>spring-cloud-azure-eventhub-operation-sample</module>
         <module>spring-cloud-azure-eventhub-integration-sample</module>
         <module>spring-cloud-azure-eventhub-binder-sample</module>
         <module>spring-cloud-stream-eventhub-kafka-sample</module>
-        <module>spring-cloud-azure-servicebus-sample</module>
+        <module>spring-cloud-azure-servicebus-operation-sample</module>
         <module>spring-cloud-azure-servicebus-integration-sample</module>
         <module>spring-cloud-azure-servicebus-topic-binder-sample</module>
         <module>spring-cloud-azure-storage-queue-sample</module>

@@ -16,8 +16,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>spring-cloud-azure-servicebus-sample</artifactId>
-    <name>Spring Cloud Azure Service Bus Sample</name>
+    <artifactId>spring-cloud-azure-servicebus-operation-sample</artifactId>
+    <name>Spring Cloud Azure Service Bus Operation Sample</name>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

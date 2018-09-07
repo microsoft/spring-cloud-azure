@@ -21,10 +21,7 @@
             <groupId>com.microsoft.azure</groupId>
             <artifactId>spring-cloud-azure-servicebus-topic-stream-binder</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-cloud-azure-starter-servicebus</artifactId>
-        </dependency>
+
     </dependencies>
 
 </project>

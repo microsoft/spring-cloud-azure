@@ -20,15 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReceiveController {
     /*Storage queue name can only be made up of lowercase letters, the numbers and the hyphen(-).*/
     private static final String STORAGE_QUEUE_NAME = "example";
-    private static final String INPUT_CHANNEL = "inputChannel";
+    private static final String INPUT_CHANNEL = "input";
     private static final Log LOGGER = LogFactory.getLog(SendController.class);
 
-
     @Bean
-    @InboundChannelAdapter(channel = INPUT_CHANNEL, poller = @Poller(fixedDelay = "5000"))
+    @InboundChannelAdapter(channel = INPUT_CHANNEL, poller = @Poller(fixedDelay = "1000"))
     public StorageQueueMessageSource StorageQueueMessageSource(StorageQueueOperation storageQueueOperation) {
         storageQueueOperation.setVisibilityTimeoutInSeconds(10);
-        storageQueueOperation.setCheckpointMode(CheckpointMode.RECORD);
         storageQueueOperation.setMessagePayloadType(String.class);
         StorageQueueMessageSource messageSource =
                 new StorageQueueMessageSource(STORAGE_QUEUE_NAME, storageQueueOperation);

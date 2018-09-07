@@ -21,10 +21,6 @@
             <groupId>com.microsoft.azure</groupId>
             <artifactId>spring-cloud-azure-eventhub-stream-binder</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-cloud-azure-starter-eventhub</artifactId>
-        </dependency>
     </dependencies>
 
 </project>
