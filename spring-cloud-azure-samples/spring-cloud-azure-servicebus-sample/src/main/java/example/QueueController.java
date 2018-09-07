@@ -6,9 +6,12 @@
 
 package example;
 
+import com.microsoft.azure.spring.integration.core.AzureHeaders;
+import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
+import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueOperation;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
@@ -24,7 +27,7 @@ import javax.annotation.PostConstruct;
 @RestController
 public class QueueController {
 
-    private static final Log LOGGER = LogFactory.getLog(QueueController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QueueController.class);
     private static final String QUEUE_NAME = "example";
 
     @Autowired
@@ -38,10 +41,18 @@ public class QueueController {
 
     @PostConstruct
     public void subscribe(){
+        this.queueOperation.setCheckpointMode(CheckpointMode.MANUAL);
         this.queueOperation.subscribe(QUEUE_NAME, this::messageReceiver, String.class);
     }
 
     private void messageReceiver(Message<?> message) {
         LOGGER.info("Message arrived! Payload: " + message.getPayload());
+        Checkpointer checkpointer = message.getHeaders().get(AzureHeaders.CHECKPOINTER, Checkpointer.class);
+        checkpointer.success().handle((r, ex) -> {
+            if (ex == null) {
+                LOGGER.info("Message '{}' successfully checkpointed", message.getPayload());
+            }
+            return null;
+        });
     }
 }
