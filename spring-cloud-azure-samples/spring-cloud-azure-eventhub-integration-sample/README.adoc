@@ -1,6 +1,6 @@
-= Spring Cloud Azure Storage Queue Code Sample
+= Spring Cloud Azure Event Hub Integration Code Sample
 
-This code sample demonstrates how to use https://github.com/Microsoft/spring-cloud-azure/blob/master/spring-integration-azure/src/main/java/com/microsoft/azure/spring/integration/storage/queue/StorageQueueOperation.java[Storage Queue Operation].
+This code sample demonstrates how to use Spring Integration for Azure Event Hub.
 
 Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
 
@@ -23,16 +23,16 @@ Make sure `my.azureauth` is encoded with UTF-8.
 +
 ....
 # Enter 'my.azureauth' here if following step 1 and 2
-spring.cloud.azure.credential-file-path=[credential-file-path]
+spring.cloud.azure.credential-file-path=[credential-file]
 spring.cloud.azure.resource-group=[resource-group]
 spring.cloud.azure.region=[region]
 
-#Storage account name must be between 3 and 24 characters in length and use numbers and lower-case letters only.
-spring.cloud.azure.storage.account=[account-name]
+spring.cloud.azure.eventhub.namespace=[eventhub-namespace]
+spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-account]
 ....
 +
 All azure resources will be created if missing. Alternatively, you can manually create
-https://docs.microsoft.com/en-us/azure/storage/common/storage-create-storage-account[Azure Storage Account].
+https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create[Azure Event Hubs].
 
 4. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
 
@@ -42,8 +42,8 @@ https://docs.microsoft.com/en-us/azure/storage/common/storage-create-storage-acc
 $ curl -X POST localhost:8080/messages?message=hello
 ....
 
-6. Receive the message you posted
+6. Verify in your app's logs that a similar message was posted:
 +
-$ curl -X GET localhost:8080/messages
+`message received: hello`
 
 7. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
