@@ -1,6 +1,6 @@
-= Spring Cloud Azure Stream Binder for Service Bus Topic Code Sample
+= Spring Cloud Azure Stream Binder for Service Bus topic Code Sample
 
-This code sample demonstrates how to use the Spring Cloud Stream binder for Azure Service Bus Topic.
+This code sample demonstrates how to use the Spring Cloud Stream binder for Azure Service Bus topic.
 The sample app exposes a rest api to receive string message. Then message is sent through Azure
 Service Bus to a `sink` which simply logs the message.
 
@@ -21,6 +21,8 @@ Make sure `my.azureauth` is encoded with UTF-8.
 
 2. Put auth file under `src/main/resources/`.
 
+3. Create https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-create-namespace-portal[Azure Service Bus]
+
 3. Update link:src/main/resources/application.properties[application.properties] file
 +
 ....
@@ -37,8 +39,6 @@ spring.cloud.stream.bindings.input.group=[topic-subscription-name]
 spring.cloud.stream.bindings.output.destination=[servicebus-topic-name-same-as-above]
 ....
 +
-All azure resources will be created if missing. Alternatively, you can manually create
-https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-create-namespace-portal[Azure Service Bus].
 
 4. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
 
