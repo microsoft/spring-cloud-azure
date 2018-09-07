@@ -40,14 +40,8 @@ Please use this [sample](../spring-cloud-azure-samples/spring-cloud-azure-eventh
 
 ### Dependency Management
 
-Please use [`spring-cloud-azure-starter-eventhub`](spring-cloud-azure-starters/spring-cloud-azure-starter-eventhub/) to auto-configure Azure Event Hub and `spring-cloud-azure-eventhub-stream-binder` in your project. 
-
 **Maven Coordinates** 
 ```
-<dependency>
-    <groupId>com.microsoft.azure</groupId>
-    <artifactId>spring-cloud-azure-starter-eventhub</artifactId>
-</dependency>
 <dependency>
     <groupId>com.microsoft.azure</groupId>
     <artifactId>spring-cloud-azure-eventhub-stream-binder</artifactId>
@@ -57,7 +51,6 @@ Please use [`spring-cloud-azure-starter-eventhub`](spring-cloud-azure-starters/s
 **Gradle Coordinates** 
 ```
 dependencies {
-    compile group: 'com.microsoft.azure', name: 'spring-cloud-azure-starter-eventhub'
     compile group: 'com.microsoft.azure', name: 'spring-cloud-azure-eventhub-stream-binder'
 }
 ```
@@ -74,7 +67,7 @@ Name | Description | Required | Default
  spring.cloud.azure.resource-group | Name of Azure resource group | Yes |
  spring.cloud.azure.region | Region name of the Azure resource group, e.g. westus | Yes | 
  spring.cloud.azure.eventhub.namespace | Event Hub Namespace. Auto creating if missing | Yes |
- spring.cloud.stream.eventhub.checkpoint-storage-account | StorageAccount name for checkpoint message successfully consumed | Yes
+ spring.cloud.azure.eventhub.checkpoint-storage-account | StorageAccount name for checkpoint message successfully consumed | Yes
 
  #### Event Hub Producer Properties ####
 
@@ -87,9 +80,28 @@ Name | Description | Required | Default
 
  Default: `false`
 
-  **_sendTimeout_**
+ **_sendTimeout_**
 
  Effective only if `sync` is set to true. The amount of time to wait for a response from Event Hub after a send operation, in milliseconds.
 
  Default: `10000`
  
+ #### Event Hub Consumer Properties ####
+
+  It supports the following configurations with the format of `spring.cloud.stream.eventhub.bindings.<channelName>
+  .consumer`.
+
+  **_startPosition_**
+
+  Whether the consumer receives messages from the beginning or end of event hub. if `EAELIEST`, from beginning. If `LATEST`, from end.
+
+  Default: `LATEST`
+
+  **_checkpointMode_**
+
+  The mode in which checkpoints are updated.
+  If `RECORD`, checkpoints occur after each record is received by Spring Channel.
+  If `BATCH`, checkpoints occur after each batch of records is received by Spring Channel.
+  If `MANUAL`, checkpoints occur on demand by the user via the `Checkpointer`. You can get `Checkpointer` by `Message.getHeaders.get(AzureHeaders.CHECKPOINTER)`callback.
+
+  Default: `BATCH`
