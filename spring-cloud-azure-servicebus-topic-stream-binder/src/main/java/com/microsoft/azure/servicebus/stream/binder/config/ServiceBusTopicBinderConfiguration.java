@@ -51,7 +51,10 @@ public class ServiceBusTopicBinderConfiguration {
     @Bean
     public ServiceBusTopicMessageChannelBinder serviceBusTopicBinder(
             ServiceBusTopicChannelProvisioner topicChannelProvisioner,
-            ServiceBusTopicOperation serviceBusTopicOperation) {
-        return new ServiceBusTopicMessageChannelBinder(null, topicChannelProvisioner, serviceBusTopicOperation);
+            ServiceBusTopicOperation serviceBusTopicOperation, ServiceBusExtendedBindingProperties bindingProperties) {
+        ServiceBusTopicMessageChannelBinder binder =
+                new ServiceBusTopicMessageChannelBinder(null, topicChannelProvisioner, serviceBusTopicOperation);
+        binder.setBindingProperties(bindingProperties);
+        return binder;
     }
 }

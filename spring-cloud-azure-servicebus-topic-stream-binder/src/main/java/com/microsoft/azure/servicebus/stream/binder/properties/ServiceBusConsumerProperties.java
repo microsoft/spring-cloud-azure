@@ -6,9 +6,15 @@
 
 package com.microsoft.azure.servicebus.stream.binder.properties;
 
+import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author Warren Zhu
  */
+@Getter
+@Setter
 public class ServiceBusConsumerProperties {
-
+    private CheckpointMode checkpointMode = CheckpointMode.BATCH;
 }
