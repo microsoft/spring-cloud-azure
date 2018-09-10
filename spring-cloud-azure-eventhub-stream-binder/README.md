@@ -24,14 +24,9 @@ consumers and partitions, Event Hub provides a kind of preemptive mode. Storage 
 determine which partition is owned by which consumer. When a new consumer starts, it will try to steal some partitions 
 from most heavy-loaded consumer to achieve workload balancing.
 
-### Checkpoint Mode
-
-Currently, event hub binder considers one message as successfully processed once received and sent to downstream
- channel.
-
 ## Samples 
 
-Please use this [sample](../spring-cloud-azure-samples/spring-cloud-azure-eventhub-binder-sample/) as a reference for how to use Spring Cloud Stream Binder for Azure Event Hub in your projects. 
+Please use this [sample](../spring-cloud-azure-samples/spring-cloud-azure-eventhub-binder-sample/) as a reference for how to use this binder. 
 
 ## Feature List 
 
@@ -57,7 +52,7 @@ dependencies {
 
 ### Configuration Options 
 
-The [`spring-cloud-azure-starter-eventhub`](spring-cloud-azure-starters/spring-cloud-azure-starter-eventhub/) provides the following configuration options in `application.properties`.
+The binder provides the following configuration options in `application.properties`.
 
 #### Spring Cloud Azure Properties ####
 
@@ -100,8 +95,8 @@ Name | Description | Required | Default
   **_checkpointMode_**
 
   The mode in which checkpoints are updated.
-  If `RECORD`, checkpoints occur after each record is received by Spring Channel.
-  If `BATCH`, checkpoints occur after each batch of records is received by Spring Channel.
-  If `MANUAL`, checkpoints occur on demand by the user via the `Checkpointer`. You can get `Checkpointer` by `Message.getHeaders.get(AzureHeaders.CHECKPOINTER)`callback.
+  If `RECORD`, checkpoints occur after each record is received by Spring Channel. If you use `StorageAccount` as checkpoint store, this might become botterneck. 
+  If `BATCH`, checkpoints occur after each batch of records is received by Spring Channel. This is recommended and default mode.
+  If `MANUAL`, checkpoints occur on demand by the user via the `Checkpointer`. You can get `Checkpointer` by `Message.getHeaders.get(AzureHeaders.CHECKPOINTER)`callback. Please be aware all messages in this partition before this message will be considered as successfully processed.
 
   Default: `BATCH`
