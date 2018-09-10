@@ -6,7 +6,8 @@
 
 package com.microsoft.azure.spring.integration.storage.queue;
 
-import com.microsoft.azure.spring.integration.core.*;
+import com.microsoft.azure.spring.integration.core.AzureCheckpointer;
+import com.microsoft.azure.spring.integration.core.AzureHeaders;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
@@ -21,70 +22,76 @@ import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.util.Assert;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class StorageQueueTemplate implements StorageQueueOperation {
-    private final StorageQueueClientFactory storageQueueClientFactory;
     private static final int DEFAULT_VISIBILITY_TIMEOUT_IN_SECONDS = 30;
-
-    @Getter
-    @Setter
-    private int visibilityTimeoutInSeconds = DEFAULT_VISIBILITY_TIMEOUT_IN_SECONDS;
-    @Getter
-    @Setter
-    private Class messagePayloadType = byte[].class;
-    @Getter
-    @Setter
-    private CheckpointMode checkpointMode = CheckpointMode.RECORD;
+    private final StorageQueueClientFactory storageQueueClientFactory;
+    private final String storageAccountName;
 
     @Getter
     @Setter
     protected StorageQueueMessageConverter messageConverter = new StorageQueueMessageConverter();
 
-    public StorageQueueTemplate(@NonNull StorageQueueClientFactory storageQueueClientFactory) {
+    @Getter
+    @Setter
+    private int visibilityTimeoutInSeconds = DEFAULT_VISIBILITY_TIMEOUT_IN_SECONDS;
+
+    @Getter
+    @Setter
+    private Class<?> messagePayloadType = byte[].class;
+
+    @Getter
+    @Setter
+    private CheckpointMode checkpointMode = CheckpointMode.RECORD;
+
+    public StorageQueueTemplate(@NonNull StorageQueueClientFactory storageQueueClientFactory,
+            String storageAccountName) {
         this.storageQueueClientFactory = storageQueueClientFactory;
+        this.storageAccountName = storageAccountName;
     }
 
     @Override
-    public <T> CompletableFuture<Void> sendAsync(String destination, @NonNull Message<T> message,
-                                             PartitionSupplier partitionSupplier) {
-        Assert.hasText(destination, "destination can't be null or empty");
+    public <T> CompletableFuture<Void> sendAsync(String queueName, @NonNull Message<T> message,
+            PartitionSupplier partitionSupplier) {
+        Assert.hasText(queueName, "queueName can't be null or empty");
         CloudQueueMessage cloudQueueMessage = messageConverter.fromMessage(message, CloudQueueMessage.class);
+        CloudQueue cloudQueue = storageQueueClientFactory.getOrCreateQueue(storageAccountName, queueName);
         return CompletableFuture.runAsync(() -> {
-            CloudQueue cloudQueue = storageQueueClientFactory.getQueueCreator().apply(destination);
             try {
                 cloudQueue.addMessage(cloudQueueMessage);
             } catch (StorageException e) {
-                throw new StorageQueueRuntimeException("Failed to add message to cloud queue", e);
+                throw new StorageQueueRuntimeException("Failed to send message to storage queue", e);
             }
         });
     }
 
     @Override
-    public CompletableFuture<Message<?>> receiveAsync(String destination) {
-        return this.receiveAsync(destination, visibilityTimeoutInSeconds);
+    public CompletableFuture<Message<?>> receiveAsync(String queueName) {
+        return this.receiveAsync(queueName, visibilityTimeoutInSeconds);
     }
 
     @Override
-    public CompletableFuture<Message<?>> receiveAsync(String destination, int visibilityTimeoutInSeconds) {
-        Assert.hasText(destination, "destination can't be null or empty");
+    public CompletableFuture<Message<?>> receiveAsync(String queueName, int visibilityTimeoutInSeconds) {
+        Assert.hasText(queueName, "queueName can't be null or empty");
 
-        return CompletableFuture.supplyAsync(() -> receiveMessage(destination, visibilityTimeoutInSeconds));
+        return CompletableFuture.supplyAsync(() -> receiveMessage(queueName, visibilityTimeoutInSeconds));
     }
 
-    private Message<?> receiveMessage(String destination, int visibilityTimeoutInSeconds) {
-        CloudQueue cloudQueue = storageQueueClientFactory.getQueueCreator().apply(destination);
+    private Message<?> receiveMessage(String queueName, int visibilityTimeoutInSeconds) {
+        CloudQueue cloudQueue = storageQueueClientFactory.getOrCreateQueue(storageAccountName, queueName);
         CloudQueueMessage cloudQueueMessage;
         try {
             cloudQueueMessage = cloudQueue.retrieveMessage(visibilityTimeoutInSeconds, null, null);
         } catch (StorageException e) {
-            throw new StorageQueueRuntimeException("Failed to peek message from cloud queue", e);
+            throw new StorageQueueRuntimeException("Failed to receive message from storage queue", e);
         }
 
         Map<String, Object> headers = new HashMap<>();
-        Checkpointer checkpointer = new AzureCheckpointer(() -> checkpointMessage(cloudQueue, cloudQueueMessage));
+        Checkpointer checkpointer = new AzureCheckpointer(() -> checkpoint(cloudQueue, cloudQueueMessage));
 
         if (checkpointMode == CheckpointMode.RECORD) {
             checkpointer.success();
@@ -92,19 +99,18 @@ public class StorageQueueTemplate implements StorageQueueOperation {
             headers.put(AzureHeaders.CHECKPOINTER, checkpointer);
         }
 
-        Message<?> message = null;
-        if (cloudQueueMessage != null) {
-            message = messageConverter.toMessage(cloudQueueMessage, new MessageHeaders(headers), messagePayloadType);
+        if (cloudQueueMessage == null) {
+            return null;
         }
-        return message;
+        return messageConverter.toMessage(cloudQueueMessage, new MessageHeaders(headers), messagePayloadType);
     }
 
-    private CompletableFuture<Void> checkpointMessage(CloudQueue cloudQueue, CloudQueueMessage cloudQueueMessage) {
+    private CompletableFuture<Void> checkpoint(CloudQueue cloudQueue, CloudQueueMessage cloudQueueMessage) {
         return CompletableFuture.runAsync(() -> {
             try {
                 cloudQueue.deleteMessage(cloudQueueMessage);
             } catch (StorageException e) {
-                throw new StorageQueueRuntimeException("Failed to checkpoint message from cloud queue", e);
+                throw new StorageQueueRuntimeException("Failed to checkpoint message from storage queue", e);
             }
         });
     }

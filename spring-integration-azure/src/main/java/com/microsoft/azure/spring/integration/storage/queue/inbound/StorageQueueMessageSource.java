@@ -11,6 +11,7 @@ import com.microsoft.azure.spring.integration.storage.queue.StorageQueueRuntimeE
 import org.springframework.integration.endpoint.AbstractMessageSource;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
+
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -37,7 +38,7 @@ public class StorageQueueMessageSource extends AbstractMessageSource<Message<?>>
         } catch (InterruptedException e) {
             return null;
         } catch (ExecutionException e) {
-            throw new StorageQueueRuntimeException("Failed to receive message.", e);
+            throw new StorageQueueRuntimeException("Failed to receive message.", e.getCause());
         }
 
         return message;

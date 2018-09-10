@@ -43,12 +43,13 @@ public class StorageQueueTemplateReceiveTest {
     private int visibilityTimeoutInSeconds = 30;
     private String destination = "queue";
 
+
     @Before
     public void setup() throws StorageException {
-        when(this.mockClientFactory.getQueueCreator()).thenReturn(t -> this.mockClient);
+        when(this.mockClientFactory.getOrCreateQueue(any(), eq(destination))).thenReturn(this.mockClient);
         when(this.mockClient.retrieveMessage(anyInt(), eq(null), eq(null)))
                     .thenReturn(this.cloudQueueMessage);
-        this.operation = new StorageQueueTemplate(this.mockClientFactory);
+        this.operation = new StorageQueueTemplate(this.mockClientFactory, "");
     }
 
     @Test

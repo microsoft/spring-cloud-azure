@@ -35,8 +35,8 @@ public class StorageQueueTemplateSendTest extends SendOperationTest<StorageQueue
 
     @Before
     public void setup() {
-        when(this.mockClientFactory.getQueueCreator()).thenReturn(t -> mockClient);
-        this.sendOperation = new StorageQueueTemplate(mockClientFactory);
+        when(this.mockClientFactory.getOrCreateQueue(any(), eq(destination))).thenReturn(mockClient);
+        this.sendOperation = new StorageQueueTemplate(mockClientFactory, "");
     }
 
     @Override
@@ -78,14 +78,13 @@ public class StorageQueueTemplateSendTest extends SendOperationTest<StorageQueue
 
     @Override
     protected void whenSendWithException() {
-        when(this.mockClientFactory.getQueueCreator()).thenReturn((s) -> {
-            throw new StorageQueueRuntimeException("Failed to get queue creator.");
-        });
+        when(this.mockClientFactory.getOrCreateQueue(any(), eq(destination))).thenThrow(
+            new StorageQueueRuntimeException("Failed to get or create queue.")
+        );
     }
 
     @Override
     protected void verifyGetClientCreator(int times) {
-        verify(this.mockClientFactory, times(times)).getQueueCreator();
     }
 
     @Override
