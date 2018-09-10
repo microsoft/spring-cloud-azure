@@ -19,7 +19,9 @@ Make sure `my.azureauth` is encoded with UTF-8.
 
 2. Put auth file under `src/main/resources/`.
 
-3. Update link:src/main/resources/application.properties[application.properties] file
+3. Create https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-create-namespace-portal[Azure Service Bus]
+
+4. Update link:src/main/resources/application.properties[application.properties] file
 +
 ....
 # Enter 'my.azureauth' here if following step 1 and 2
@@ -30,29 +32,27 @@ spring.cloud.azure.region=[region]
 spring.cloud.azure.servicebus.namespace=[servicebus-namespace]
 ....
 +
-All azure resources will be created if missing. Alternatively, you can manually create
-https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-create-namespace-portal[Azure Service Bus].
 
-4. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
+5. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
 
-5.  Send a POST request
+6.  Send a POST request to service bus queue
 +
 ....
 $ curl -X POST localhost:8080/queues?message=hello
 ....
 
-6. Verify in your app's logs that a similar message was posted:
+7. Verify in your app's logs that a similar message was posted:
 +
 `message received: hello`
 
-7.  Send a POST request
+8.  Send a POST request to service bus topic
 +
 ....
 $ curl -X POST localhost:8080/topics?message=hello
 ....
 
-8. Verify in your app's logs that a similar message was posted:
+9. Verify in your app's logs that a similar message was posted:
 +
 `message received: hello`
 
-9. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
+10. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.

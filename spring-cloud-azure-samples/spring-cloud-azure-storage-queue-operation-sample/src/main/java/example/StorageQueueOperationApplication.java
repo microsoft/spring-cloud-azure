@@ -16,9 +16,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author Miao Cao
  */
 @SpringBootApplication
-public class StorageQueueApplication {
+public class StorageQueueOperationApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(StorageQueueApplication.class, args);
+        SpringApplication.run(StorageQueueOperationApplication.class, args);
     }
 }
