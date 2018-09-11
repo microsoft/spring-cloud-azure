@@ -45,7 +45,10 @@ $ curl -X POST localhost:8080/queues?message=hello
 
 7. Verify in your app's logs that a similar message was posted:
 +
-`message received: hello`
+....
+Message arrived! Payload: hello
+Message 'hello' successfully checkpointed
+....
 
 8.  Send a POST request to service bus topic
 +
@@ -55,6 +58,9 @@ $ curl -X POST localhost:8080/topics?message=hello
 
 9. Verify in your app's logs that a similar message was posted:
 +
-`message received: hello`
+....
+Message arrived! Payload: hello
+Message 'hello' successfully checkpointed
+....
 
 10. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
