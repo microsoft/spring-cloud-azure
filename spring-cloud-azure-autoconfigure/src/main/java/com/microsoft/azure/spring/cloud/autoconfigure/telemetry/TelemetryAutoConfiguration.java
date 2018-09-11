@@ -22,7 +22,7 @@ import org.springframework.context.annotation.PropertySource;
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @PropertySource(value = "classpath:telemetry.config")
 @EnableConfigurationProperties(TelemetryProperties.class)
-@ConditionalOnProperty(name = "spring.cloud.azure.telemetry.enable", matchIfMissing = true)
+@ConditionalOnProperty(name = "spring.cloud.azure.telemetry.enabled", matchIfMissing = true)
 @ConditionalOnClass(TelemetryClient.class)
 public class TelemetryAutoConfiguration {
     private static final Logger LOG = LoggerFactory.getLogger(TelemetryAutoConfiguration.class);
