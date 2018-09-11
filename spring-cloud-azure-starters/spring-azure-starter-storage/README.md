@@ -40,6 +40,7 @@ Name | Description | Required | Default
  spring.cloud.azure.region | Region name of the Azure resource group, e.g. westus | Yes | 
  spring.cloud.azure.storage.account | Name of the Azure Storage Account. Will create a new one if not existing | Yes |
  spring.cloud.azure.storage.enabled | Turn on or off functionalities of Spring Cloud Azure Storage | No | true
+ spring.cloud.azure.telemetry.enabled |  Set the value to false to disable the telemetry tracing | No | true
 
 ### Autowire a resource 
 You can use the annotation of `@Value("blob://{containerName}/{blobName}")` to autowire a `Resource` with that in [Azure Blob storage](https://azure.microsoft.com/en-us/services/storage/blobs/).
