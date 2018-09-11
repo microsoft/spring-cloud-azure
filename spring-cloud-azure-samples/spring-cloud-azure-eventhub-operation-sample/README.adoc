@@ -34,16 +34,18 @@ spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-accou
 ....
 +
 
-5. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
+5. Update event hub name in https://github.com/Microsoft/spring-cloud-azure/blob/master/spring-cloud-azure-samples/spring-cloud-azure-eventhub-operation-sample/src/main/java/example/WebController.java[WebController].
 
-6.  Send a POST request
+6. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
+
+7.  Send a POST request
 +
 ....
 $ curl -X POST localhost:8080/messages?message=hello
 ....
 
-7. Verify in your app's logs that a similar message was posted:
+8. Verify in your app's logs that a similar message was posted:
 +
 `Message arrived! Payload: hello`
 
-8. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
+9. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
