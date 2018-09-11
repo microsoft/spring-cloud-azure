@@ -37,6 +37,9 @@ spring.cloud.azure.servicebus.namespace=[servicebus-namespace]
 spring.cloud.stream.bindings.input.destination=[servicebus-topic-name]
 spring.cloud.stream.bindings.input.group=[topic-subscription-name]
 spring.cloud.stream.bindings.output.destination=[servicebus-topic-name-same-as-above]
+
+# Set the value to false to disable the telemetry tracing
+spring.cloud.azure.telemetry.enabled=true
 ....
 +
 

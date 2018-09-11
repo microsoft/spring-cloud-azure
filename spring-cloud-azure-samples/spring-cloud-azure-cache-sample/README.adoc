@@ -50,6 +50,9 @@ spring.cloud.azure.resource-group=[resource-group]
 spring.cloud.azure.region=[region]
 
 spring.cloud.azure.redis.name=[azure-redis-instance-name]
+
+# Set the value to false to disable the telemetry tracing
+spring.cloud.azure.telemetry.enabled=true
 ....
 +
 
