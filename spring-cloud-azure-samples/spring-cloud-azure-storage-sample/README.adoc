@@ -52,6 +52,9 @@ spring.cloud.azure.region=[region]
 
 # Auto create storage account if not existed
 spring.cloud.azure.storage.account=[account-name]
+
+# Set the value to false to disable the telemetry tracing
+spring.cloud.azure.telemetry.enabled=true
 ....
 
 +

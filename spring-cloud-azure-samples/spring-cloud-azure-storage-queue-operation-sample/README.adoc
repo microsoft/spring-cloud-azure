@@ -29,6 +29,9 @@ spring.cloud.azure.region=[region]
 
 #Storage account name must be between 3 and 24 characters in length and use numbers and lower-case letters only.
 spring.cloud.azure.storage.account=[account-name]
+
+# Set the value to false to disable the telemetry tracing
+spring.cloud.azure.telemetry.enabled=true
 ....
 +
 All azure resources will be created if missing. Alternatively, you can manually create

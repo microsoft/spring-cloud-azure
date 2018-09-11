@@ -37,6 +37,9 @@ spring.cloud.azure.eventhub.namespace=[eventhub-namespace]
 spring.cloud.stream.bindings.input.destination=[eventhub-name]
 spring.cloud.stream.bindings.input.group=[consumer-group]
 spring.cloud.stream.bindings.output.destination=[eventhub-name]
+
+# Set the value to false to disable the telemetry tracing
+spring.cloud.azure.telemetry.enabled=true
 ....
 +
 

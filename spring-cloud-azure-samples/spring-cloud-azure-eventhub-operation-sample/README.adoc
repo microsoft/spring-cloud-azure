@@ -31,6 +31,9 @@ spring.cloud.azure.region=[region]
 
 spring.cloud.azure.eventhub.namespace=[eventhub-namespace]
 spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-account]
+
+# Set the value to false to disable the telemetry tracing
+spring.cloud.azure.telemetry.enabled=true
 ....
 +
 
