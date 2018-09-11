@@ -48,7 +48,9 @@ $ curl -X GET localhost:8080/messages
 
 8. Verify in your app's logs that a similar message was posted:
 +
-`Message arrived! Payload: hello`
-`Message 'hello' successfully checkpointed`
+....
+Message arrived! Payload: hello
+Message 'hello' successfully checkpointed
+....
 
 9. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
