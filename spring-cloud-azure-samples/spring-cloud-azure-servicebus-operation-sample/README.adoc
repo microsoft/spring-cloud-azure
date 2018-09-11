@@ -19,7 +19,7 @@ Make sure `my.azureauth` is encoded with UTF-8.
 
 2. Put auth file under `src/main/resources/`.
 
-3. Create https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-create-namespace-portal[Azure Service Bus]
+3. Create https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-create-namespace-portal[Azure Service Bus], then create service bus queue and service bus topic.
 
 4. Update link:src/main/resources/application.properties[application.properties] file
 +
@@ -32,6 +32,8 @@ spring.cloud.azure.region=[region]
 spring.cloud.azure.servicebus.namespace=[servicebus-namespace]
 ....
 +
+
+5. Update queue name in https://github.com/Microsoft/spring-cloud-azure/tree/master/spring-cloud-azure-samples/spring-cloud-azure-servicebus-operation-sample/src/main/java/example/QueueController.java[QueueController] and topic name in https://github.com/Microsoft/spring-cloud-azure/tree/master/spring-cloud-azure-samples/spring-cloud-azure-servicebus-operation-sample/src/main/java/example/TopicController.java[TopicController].
 
 5. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
 
