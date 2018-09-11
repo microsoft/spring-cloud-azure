@@ -7,7 +7,8 @@
 package com.microsoft.azure.spring.integration.storage.queue.factory;
 
 import com.microsoft.azure.management.storage.StorageAccount;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManager;
+import com.microsoft.azure.spring.cloud.context.core.impl.StorageAccountManager;
 import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStringProvider;
 import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
@@ -24,17 +25,17 @@ import java.security.InvalidKeyException;
 import java.util.function.Function;
 
 public class DefaultStorageQueueClientFactory implements StorageQueueClientFactory {
-    private final AzureAdmin azureAdmin;
+    private final ResourceManager<StorageAccount, String> storageAccountManager;
     private final Function<String, CloudQueueClient> queueClientCreator =
             Memoizer.memoize(this::createStorageQueueClient);
     private final Function<Tuple<String, String>, CloudQueue> queueCreator = Memoizer.memoize(this::createStorageQueue);
 
-    public DefaultStorageQueueClientFactory(@NonNull AzureAdmin azureAdmin) {
-        this.azureAdmin = azureAdmin;
+    public DefaultStorageQueueClientFactory(@NonNull ResourceManager<StorageAccount, String> storageAccountManager) {
+        this.storageAccountManager = storageAccountManager;
     }
 
     private CloudQueueClient createStorageQueueClient(String storageAccountName) {
-        StorageAccount storageAccount = azureAdmin.getOrCreateStorageAccount(storageAccountName);
+        StorageAccount storageAccount = storageAccountManager.getOrCreate(storageAccountName);
         String connectionString = StorageConnectionStringProvider.getConnectionString(storageAccount);
 
         try {

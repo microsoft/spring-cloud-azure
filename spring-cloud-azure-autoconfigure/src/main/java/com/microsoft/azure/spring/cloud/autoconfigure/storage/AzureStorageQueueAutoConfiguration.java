@@ -8,7 +8,7 @@ package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueOperation;
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueTemplate;
 import com.microsoft.azure.spring.integration.storage.queue.factory.DefaultStorageQueueClientFactory;
@@ -40,8 +40,8 @@ public class AzureStorageQueueAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    StorageQueueClientFactory storageQueueClientFactory(AzureAdmin azureAdmin) {
-        return new DefaultStorageQueueClientFactory(azureAdmin);
+    StorageQueueClientFactory storageQueueClientFactory(ResourceManagerProvider resourceManagerProvider) {
+        return new DefaultStorageQueueClientFactory(resourceManagerProvider.getStorageAccountManager());
     }
 
     @Bean

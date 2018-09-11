@@ -10,7 +10,7 @@ import com.microsoft.azure.management.redis.RedisCache;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -50,11 +50,11 @@ public class AzureRedisAutoConfiguration {
     @ConditionalOnMissingBean
     @Primary
     @Bean
-    public RedisProperties redisProperties(AzureAdmin azureAdmin, AzureRedisProperties azureRedisProperties)
-            throws IOException {
+    public RedisProperties redisProperties(ResourceManagerProvider resourceManagerProvider,
+            AzureRedisProperties azureRedisProperties) throws IOException {
         String cacheName = azureRedisProperties.getName();
 
-        RedisCache redisCache = azureAdmin.getOrCreateRedisCache(cacheName);
+        RedisCache redisCache = resourceManagerProvider.getRedisCacheManager().getOrCreate(cacheName);
 
         RedisProperties redisProperties = new RedisProperties();
 

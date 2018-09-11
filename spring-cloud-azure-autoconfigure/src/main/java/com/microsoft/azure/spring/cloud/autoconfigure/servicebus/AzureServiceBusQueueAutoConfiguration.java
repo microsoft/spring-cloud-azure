@@ -10,7 +10,7 @@ import com.microsoft.azure.servicebus.QueueClient;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.integration.servicebus.factory.DefaultServiceBusQueueClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusQueueClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueOperation;
@@ -47,9 +47,9 @@ public class AzureServiceBusQueueAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ServiceBusQueueClientFactory queueClientFactory(AzureAdmin azureAdmin,
+    public ServiceBusQueueClientFactory queueClientFactory(ResourceManagerProvider resourceManagerProvider,
             AzureServiceBusProperties serviceBusProperties) {
-        return new DefaultServiceBusQueueClientFactory(azureAdmin, serviceBusProperties.getNamespace());
+        return new DefaultServiceBusQueueClientFactory(resourceManagerProvider, serviceBusProperties.getNamespace());
     }
 
     @Bean

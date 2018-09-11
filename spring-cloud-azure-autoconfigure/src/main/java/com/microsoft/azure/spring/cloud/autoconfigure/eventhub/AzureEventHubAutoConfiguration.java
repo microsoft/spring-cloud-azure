@@ -7,11 +7,11 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.eventhub;
 
 import com.microsoft.azure.eventhubs.EventHubClient;
+import com.microsoft.azure.management.eventhub.EventHubNamespace;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
-import com.microsoft.azure.spring.integration.eventhub.EventHubConnectionStringProvider;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.integration.eventhub.*;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -51,10 +51,12 @@ public class AzureEventHubAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public EventHubClientFactory clientFactory(AzureAdmin azureAdmin, AzureEventHubProperties eventHubProperties) {
-        EventHubConnectionStringProvider provider = new EventHubConnectionStringProvider(azureAdmin
-                .getOrCreateEventHubNamespace(eventHubProperties.getNamespace()));
-        return new DefaultEventHubClientFactory(azureAdmin, eventHubProperties.getCheckpointStorageAccount(),
-                provider::getConnectionString);
+    public EventHubClientFactory clientFactory(ResourceManagerProvider resourceManagerProvider,
+            AzureEventHubProperties eventHubProperties) {
+        EventHubNamespace namespace =
+                resourceManagerProvider.getEventHubNamespaceManager().getOrCreate(eventHubProperties.getNamespace());
+        EventHubConnectionStringProvider provider = new EventHubConnectionStringProvider(namespace);
+        return new DefaultEventHubClientFactory(resourceManagerProvider,
+                eventHubProperties.getCheckpointStorageAccount(), provider::getConnectionString);
     }
 }

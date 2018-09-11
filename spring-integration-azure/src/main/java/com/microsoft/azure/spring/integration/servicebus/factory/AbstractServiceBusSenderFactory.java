@@ -7,7 +7,7 @@
 package com.microsoft.azure.spring.integration.servicebus.factory;
 
 import com.microsoft.azure.management.servicebus.ServiceBusNamespace;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 
 import java.util.function.Function;
 
@@ -17,16 +17,17 @@ import java.util.function.Function;
  * @author Warren Zhu
  */
 public abstract class AbstractServiceBusSenderFactory implements ServiceBusSenderFactory {
-    protected final AzureAdmin azureAdmin;
+    protected final ResourceManagerProvider resourceManagerProvider;
     protected final String namespace;
     protected final ServiceBusNamespace serviceBusNamespace;
     protected final Function<String, String> connectionStringCreator;
 
-    AbstractServiceBusSenderFactory(AzureAdmin azureAdmin, String namespace) {
-        this.azureAdmin = azureAdmin;
+    AbstractServiceBusSenderFactory(ResourceManagerProvider resourceManagerProvider, String namespace) {
+        this.resourceManagerProvider = resourceManagerProvider;
         this.namespace = namespace;
-        this.serviceBusNamespace = azureAdmin.getOrCreateServiceBusNamespace(namespace);
-        ServiceBusConnectionStringProvider provider = new ServiceBusConnectionStringProvider(this.azureAdmin);
+        this.serviceBusNamespace = this.resourceManagerProvider.getServiceBusNamespaceManager().getOrCreate(namespace);
+        ServiceBusConnectionStringProvider provider =
+                new ServiceBusConnectionStringProvider(this.resourceManagerProvider.getServiceBusNamespaceManager());
         this.connectionStringCreator = provider::getConnectionString;
     }
 }

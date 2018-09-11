@@ -13,7 +13,7 @@ import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoCo
 import com.microsoft.azure.spring.cloud.autoconfigure.servicebus.AzureServiceBusProperties;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -43,9 +43,9 @@ public class ServiceBusTopicBinderConfiguration {
     }
 
     @Bean
-    public ServiceBusTopicChannelProvisioner serviceBusChannelProvisioner(AzureAdmin azureAdmin,
-            AzureServiceBusProperties serviceBusProperties) {
-        return new ServiceBusTopicChannelProvisioner(azureAdmin, serviceBusProperties.getNamespace());
+    public ServiceBusTopicChannelProvisioner serviceBusChannelProvisioner(
+            ResourceManagerProvider resourceManagerProvider, AzureServiceBusProperties serviceBusProperties) {
+        return new ServiceBusTopicChannelProvisioner(resourceManagerProvider, serviceBusProperties.getNamespace());
     }
 
     @Bean

@@ -8,7 +8,6 @@ package com.microsoft.azure.spring.integration.servicebus.queue;
 
 import com.google.common.collect.Sets;
 import com.microsoft.azure.servicebus.IQueueClient;
-import com.microsoft.azure.servicebus.MessageHandlerOptions;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusTemplate;
@@ -41,8 +40,8 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean subscribe(String destination, @NonNull Consumer<Message<?>> consumer, @NonNull Class<?>
-            targetPayloadClass) {
+    public boolean subscribe(String destination, @NonNull Consumer<Message<?>> consumer,
+            @NonNull Class<?> targetPayloadClass) {
         Assert.hasText(destination, "destination can't be null or empty");
 
         if (subscribedQueues.contains(destination)) {
@@ -65,21 +64,19 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
     }
 
     @SuppressWarnings("unchecked")
-    protected void internalSubscribe(String name, Consumer<Message<?>> consumer,
-            Class<?> payloadType) {
+    protected void internalSubscribe(String name, Consumer<Message<?>> consumer, Class<?> payloadType) {
 
         IQueueClient queueClient = this.senderFactory.getQueueClientCreator().apply(name);
 
         try {
-            queueClient.registerMessageHandler(
-                    new QueueMessageHandler(consumer, payloadType, queueClient), options);
+            queueClient.registerMessageHandler(new QueueMessageHandler(consumer, payloadType, queueClient), options);
         } catch (ServiceBusException | InterruptedException e) {
             LOGGER.error("Failed to register queue message handler", e);
             throw new ServiceBusRuntimeException("Failed to register queue message handler", e);
         }
     }
 
-    protected class QueueMessageHandler<U> extends ServiceBusMessageHandler<U>{
+    protected class QueueMessageHandler<U> extends ServiceBusMessageHandler<U> {
         private final IQueueClient queueClient;
 
         public QueueMessageHandler(Consumer<Message<U>> consumer, Class<U> payloadType, IQueueClient queueClient) {
