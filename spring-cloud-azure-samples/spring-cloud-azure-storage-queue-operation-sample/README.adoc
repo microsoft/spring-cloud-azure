@@ -1,4 +1,4 @@
-= Spring Cloud Azure Storage Queue Code Sample
+= Spring Cloud Azure Storage Queue Operation Code Sample
 
 This code sample demonstrates how to use https://github.com/Microsoft/spring-cloud-azure/blob/master/spring-integration-azure/src/main/java/com/microsoft/azure/spring/integration/storage/queue/StorageQueueOperation.java[Storage Queue Operation].
 
@@ -44,7 +44,9 @@ $ curl -X POST localhost:8080/messages?message=hello
 
 6. Receive the message you posted
 +
+....
 $ curl -X GET localhost:8080/messages
+....
 
 8. Verify in your app's logs that a similar message was posted:
 +
