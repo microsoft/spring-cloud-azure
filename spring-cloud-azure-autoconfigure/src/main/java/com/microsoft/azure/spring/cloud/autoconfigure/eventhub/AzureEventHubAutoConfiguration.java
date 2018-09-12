@@ -11,7 +11,6 @@ import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoCo
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
-import com.microsoft.azure.spring.integration.eventhub.EventHubConnectionStringProvider;
 import com.microsoft.azure.spring.integration.eventhub.*;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -33,7 +32,7 @@ import javax.annotation.PostConstruct;
 @AutoConfigureBefore(TelemetryAutoConfiguration.class)
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnClass(EventHubClient.class)
-@ConditionalOnProperty(value = "spring.cloud.azure.eventhub.enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "spring.cloud.azure.eventhub", value = {"namespace", "checkpoint-storage-account"})
 @EnableConfigurationProperties(AzureEventHubProperties.class)
 public class AzureEventHubAutoConfiguration {
     private static final String EVENT_HUB = "EventHub";
@@ -52,8 +51,8 @@ public class AzureEventHubAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public EventHubClientFactory clientFactory(AzureAdmin azureAdmin, AzureEventHubProperties eventHubProperties) {
-        EventHubConnectionStringProvider provider = new EventHubConnectionStringProvider(azureAdmin
-                .getOrCreateEventHubNamespace(eventHubProperties.getNamespace()));
+        EventHubConnectionStringProvider provider = new EventHubConnectionStringProvider(
+                azureAdmin.getOrCreateEventHubNamespace(eventHubProperties.getNamespace()));
         return new DefaultEventHubClientFactory(azureAdmin, eventHubProperties.getCheckpointStorageAccount(),
                 provider::getConnectionString);
     }

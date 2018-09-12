@@ -21,7 +21,7 @@ Make sure `my.azureauth` is encoded with UTF-8.
 
 2. Put auth file under `src/main/resources/`.
 
-3. Create https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-create-namespace-portal[Azure Service Bus]
+3. Create Azure Service Bus Namespace, and create service bus queue and topic. Please see https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-create-namespace-portal[how to create].
 
 3. Update link:src/main/resources/application.properties[application.properties] file
 +
@@ -50,6 +50,9 @@ $ curl -X POST localhost:8080/messages?message=hello
 
 6. Verify in your app's logs that a similar message was posted:
 +
-`New message received: hello`
+....
+Message arrived! Payload: hello
+Message 'hello' successfully checkpointed
+....
 
 7. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.

@@ -29,7 +29,7 @@ public class TelemetryAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "telemetry.instrumentationKey")
-    public TelemetrySender telemetryTracker(TelemetryProperties telemetryProperties) {
+    public TelemetrySender telemetrySender(TelemetryProperties telemetryProperties) {
         try {
             return new TelemetrySender(telemetryProperties.getInstrumentationKey(), TelemetryCollector.getInstance());
         } catch (IllegalArgumentException e) {
