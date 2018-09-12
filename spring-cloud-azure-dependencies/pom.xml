@@ -143,11 +143,6 @@
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
-                <artifactId>spring-cloud-azure-starter-servicebus</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-azure-starter-storage-queue</artifactId>
                 <version>${project.version}</version>
             </dependency>
