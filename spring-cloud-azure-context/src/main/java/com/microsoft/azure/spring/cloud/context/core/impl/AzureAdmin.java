@@ -109,7 +109,7 @@ public class AzureAdmin {
 
     private EventHubConsumerGroup getEventHubConsumerGroup(String namespace, String name, String group) {
         return azure.eventHubs().getByName(resourceGroup, namespace, name).listConsumerGroups().stream()
-                    .filter(c -> c.namespaceResourceGroupName().equals(group)).findAny().orElse(null);
+                    .filter(c -> c.name().equals(group)).findAny().orElse(null);
     }
 
     private EventHubConsumerGroup createEventHubConsumerGroup(String namespace, String name, String group) {
