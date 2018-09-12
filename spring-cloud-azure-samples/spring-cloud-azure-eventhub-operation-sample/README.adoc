@@ -34,7 +34,7 @@ spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-accou
 ....
 +
 
-5. Update event hub name in https://github.com/Microsoft/spring-cloud-azure/blob/master/spring-cloud-azure-samples/spring-cloud-azure-eventhub-operation-sample/src/main/java/example/WebController.java[WebController].
+5. Update event hub name in link:src/main/java/example/WebController.java#L31[WebController].
 
 6. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
 
