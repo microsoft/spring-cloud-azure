@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
-
 import javax.validation.constraints.NotEmpty;
 
 /**
@@ -25,6 +24,5 @@ public class AzureEventHubProperties {
     @NotEmpty(message = "spring.cloud.azure.eventhub.namespace must be provided")
     private String namespace;
 
-    @NotEmpty(message = "spring.cloud.azure.eventhub.checkpoint-storage-account must be provided")
     private String checkpointStorageAccount;
 }

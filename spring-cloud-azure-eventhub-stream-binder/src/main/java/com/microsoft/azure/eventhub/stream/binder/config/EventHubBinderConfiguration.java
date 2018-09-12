@@ -10,6 +10,7 @@ import com.microsoft.azure.eventhub.stream.binder.EventHubMessageChannelBinder;
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubExtendedBindingProperties;
 import com.microsoft.azure.eventhub.stream.binder.provisioning.EventHubChannelProvisioner;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
+import com.microsoft.azure.spring.cloud.autoconfigure.eventhub.AzureEventHubAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.eventhub.AzureEventHubProperties;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
@@ -31,7 +32,7 @@ import javax.annotation.PostConstruct;
 @Configuration
 @ConditionalOnMissingBean(Binder.class)
 @AutoConfigureBefore(TelemetryAutoConfiguration.class)
-@AutoConfigureAfter({AzureContextAutoConfiguration.class, TelemetryAutoConfiguration.class})
+@AutoConfigureAfter({AzureContextAutoConfiguration.class, AzureEventHubAutoConfiguration.class})
 @EnableConfigurationProperties({AzureEventHubProperties.class, EventHubExtendedBindingProperties.class})
 public class EventHubBinderConfiguration {
 
