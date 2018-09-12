@@ -19,9 +19,11 @@ Make sure `my.azureauth` is encoded with UTF-8.
 
 2. Put auth file under `src/main/resources/`.
 
-3. Create https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create[Azure Event Hubs].
+3. Create Azure Event Hub Namespace and event hub. Please see https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create[how to create].
 
-4. Update link:src/main/resources/application.properties[application.properties] file
+4. Update event hub name in link:src/main/java/example/ReceiveController.java#L31[ReceiveController] and link:src/main/java/example/SendController.java#L34[SendController].
+
+5. Update link:src/main/resources/application.properties[application.properties] file
 +
 ....
 # Enter 'my.azureauth' here if following step 1 and 2
@@ -34,16 +36,19 @@ spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-accou
 ....
 +
 
-5. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
+6. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
 
-6.  Send a POST request
+7.  Send a POST request
 +
 ....
 $ curl -X POST localhost:8080/messages?message=hello
 ....
 
-7. Verify in your app's logs that a similar message was posted:
+8. Verify in your app's logs that a similar message was posted:
 +
-`message received: hello`
+....
+Message arrived! Payload: hello
+Message 'hello' successfully checkpointed
+....
 
-8. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
+9. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.

@@ -52,6 +52,9 @@ $ curl -X POST -H "Content-Type: text/plain" -d "hello" http://localhost:8080/me
 
 6. Verify in your app's logs that a similar message was posted:
 +
-`New message received: hello`
+....
+Message arrived! Payload: hello
+Message 'hello' successfully checkpointed
+....
 
 7. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
