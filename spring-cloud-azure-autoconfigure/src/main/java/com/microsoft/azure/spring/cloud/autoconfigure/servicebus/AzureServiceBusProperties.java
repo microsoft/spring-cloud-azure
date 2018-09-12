@@ -9,21 +9,19 @@ package com.microsoft.azure.spring.cloud.autoconfigure.servicebus;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.util.Assert;
+import org.springframework.validation.annotation.Validated;
 
-import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * @author Warren Zhu
  */
 @Getter
 @Setter
+@Validated
 @ConfigurationProperties("spring.cloud.azure.servicebus")
 public class AzureServiceBusProperties {
-    private String namespace;
 
-    @PostConstruct
-    public void validate() {
-        Assert.hasText(namespace, "spring.cloud.azure.servicebus.namespace must be provided");
-    }
+    @NotEmpty(message = "spring.cloud.azure.servicebus.namespace must be provided")
+    private String namespace;
 }
