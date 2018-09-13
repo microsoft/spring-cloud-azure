@@ -1,6 +1,8 @@
 # Spring Cloud Azure
 
-[Spring Cloud](http://projects.spring.io/spring-cloud/) provides boilerplate patterns for developers to quickly build and orchestrate their microservice based applications. Based on that, **Spring Cloud Azure** is designed to provide seamless Spring integration with Azure services. Developers can adopt a Spring-idiomatic way to automatically provision resources and take advantage of services on Azure, with only few lines of configuration and minimal code changes. It takes care of configurations and offers key features to interact with Azure services, such as Azure Storage and Azure Event Hub. 
+[Spring Cloud](http://projects.spring.io/spring-cloud/) provides boilerplate patterns for developers to quickly build and orchestrate their microservice based applications. Based on that, **Spring Cloud Azure** is designed to provide seamless Spring integration with Azure services. 
+
+Developers can adopt a Spring-idiomatic way to automatically provision resources and take advantage of services on Azure, with only few lines of configuration and minimal code changes. It takes care of configurations and offers key features to interact with Azure services, such as Azure Storage and Azure Event Hub. 
 
 ## Module and Starter 
 
@@ -16,12 +18,14 @@ The following Spring Boot Starters are available in Maven Central Repository.
 Starter Name | Version | Sample
 ---|---|---
 [spring-cloud-azure-starter-eventhub](spring-cloud-azure-starters/spring-cloud-azure-starter-eventhub/) | [![Maven Central](https://img.shields.io/maven-central/v/com.microsoft.azure/spring-cloud-azure-starter-eventhub.svg)](https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22spring-cloud-azure-starter-eventhub%22) | [Sample](spring-cloud-azure-samples/spring-cloud-azure-eventhub-binder-sample)
-[spring-azure-starter-storage](spring-cloud-azure-starters/spring-azure-starter-storage/) | [![Maven Central](https://img.shields.io/maven-central/v/com.microsoft.azure/spring-cloud-azure-starter-storage.svg)](https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22spring-cloud-azure-starter-storage%22) | [Sample](spring-cloud-azure-samples/spring-cloud-azure-storage-sample)
-[spring-azure-starter-cache](spring-cloud-azure-starters/spring-azure-starter-cache/) | [![Maven Central](https://img.shields.io/maven-central/v/com.microsoft.azure/spring-cloud-azure-starter-cache.svg)](https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22spring-cloud-azure-starter-cache%22) | [Sample](spring-cloud-azure-samples/spring-cloud-azure-cache-sample)
+[spring-azure-starter-storage](spring-cloud-azure-starters/spring-azure-starter-storage/) | [![Maven Central](https://img.shields.io/maven-central/v/com.microsoft.azure/spring-azure-starter-storage.svg)](https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22spring-azure-starter-storage%22) | [Sample](spring-cloud-azure-samples/spring-cloud-azure-storage-sample)
+[spring-azure-starter-cache](spring-cloud-azure-starters/spring-azure-starter-cache/) | [![Maven Central](https://img.shields.io/maven-central/v/com.microsoft.azure/spring-azure-starter-cache.svg)](https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22spring-azure-starter-cache%22) | [Sample](spring-cloud-azure-samples/spring-cloud-azure-cache-sample)
 
 ## Sample and Tutorial 
 
-Please use the [samples](spring-cloud-azure-samples/) as a reference for how to use Spring Cloud Azure in your projects. For more information about building Spring applications on Azure, please check [Spring on Azure tutorials](https://docs.microsoft.com/en-us/java/azure/spring-framework/?view=azure-java-stable). You can also visit [Spring Cloud Azure Playground](https://aka.ms/springcloud) to quickly generate a new Spring Cloud applications for Azure.  
+Please use the [samples](spring-cloud-azure-samples/) as a reference for how to use Spring Cloud Azure in your projects. For more information about building Spring applications on Azure, please check [Spring on Azure tutorials](https://docs.microsoft.com/en-us/java/azure/spring-framework/?view=azure-java-stable). 
+
+You can also visit [Spring Cloud Azure Playground](https://aka.ms/springcloud) to quickly generate a new Spring Cloud applications for Azure.  
 
 ## Contributing
 
@@ -39,4 +43,6 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 
 ## Data and Telemetry 
 
-This project collects usage data and sends it to Microsoft to help improve our products and services. Read our [privacy statement](https://privacy.microsoft.com/en-us/privacystatement) to learn more. To disable this, you can add `spring.cloud.azure.telemetry.enabled=false` in the `application.properties` file. 
+This project collects usage data and sends it to Microsoft to help improve our products and services. Read our [privacy statement](https://privacy.microsoft.com/en-us/privacystatement) to learn more. 
+
+To disable this, you can add `spring.cloud.azure.telemetry.enabled=false` in the `application.properties` file. 
