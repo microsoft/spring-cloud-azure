@@ -28,7 +28,7 @@ public class TelemetrySender {
     public TelemetrySender(String instrumentKey, @NonNull TelemetryCollector collector) {
         this.client = buildTelemetryClient(instrumentKey);
         this.collector = collector;
-        this.scheduler.scheduleAtFixedRate(this::sendEvent, 3, 60, TimeUnit.HOURS);
+        this.scheduler.scheduleAtFixedRate(this::sendEvent, 0, 1, TimeUnit.HOURS);
     }
 
     private static TelemetryClient buildTelemetryClient(String instrumentationKey) {
