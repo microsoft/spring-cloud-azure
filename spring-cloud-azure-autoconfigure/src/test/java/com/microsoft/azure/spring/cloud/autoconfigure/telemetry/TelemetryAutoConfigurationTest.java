@@ -37,7 +37,7 @@ public class TelemetryAutoConfigurationTest {
 
     @Test
     public void testAzureTelemetryDisabled() {
-        this.contextRunner.withPropertyValues("spring.cloud.azure.telemetry.enable=false")
+        this.contextRunner.withPropertyValues("spring.cloud.azure.telemetry.enabled=false")
                           .run(context -> assertThat(context).doesNotHaveBean(TelemetrySender.class));
     }
 

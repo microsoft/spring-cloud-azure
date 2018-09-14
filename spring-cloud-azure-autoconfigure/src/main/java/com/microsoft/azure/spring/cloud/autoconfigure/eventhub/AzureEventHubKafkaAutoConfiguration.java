@@ -39,7 +39,7 @@ import java.util.Arrays;
 @AutoConfigureBefore({KafkaAutoConfiguration.class, TelemetryAutoConfiguration.class})
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnClass({EventHubClient.class, KafkaTemplate.class})
-@ConditionalOnProperty(value = "spring.cloud.azure.eventhub.enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "spring.cloud.azure.eventhub", value = "namespace")
 @EnableConfigurationProperties(AzureEventHubProperties.class)
 public class AzureEventHubKafkaAutoConfiguration {
     private static final String SECURITY_PROTOCOL = "security.protocol";

@@ -45,7 +45,7 @@ spring.cloud.stream.bindings.output.destination=[eventhub-name]
 6.  Send a POST request
 +
 ....
-$ curl -X POST -H "Content-Type: text/plain" -d "hello" http://localhost:8080/messages
+$ curl -X POST http://localhost:8080/messages?message=hello
 ....
 
 7. Verify in your app's logs that a similar message was posted:

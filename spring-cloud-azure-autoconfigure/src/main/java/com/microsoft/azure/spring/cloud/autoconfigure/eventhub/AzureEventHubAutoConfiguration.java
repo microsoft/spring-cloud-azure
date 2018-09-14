@@ -33,7 +33,7 @@ import javax.annotation.PostConstruct;
 @AutoConfigureBefore(TelemetryAutoConfiguration.class)
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnClass(EventHubClient.class)
-@ConditionalOnProperty(value = "spring.cloud.azure.eventhub.enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "spring.cloud.azure.eventhub", value = {"namespace", "checkpoint-storage-account"})
 @EnableConfigurationProperties(AzureEventHubProperties.class)
 public class AzureEventHubAutoConfiguration {
     private static final String EVENT_HUB = "EventHub";
