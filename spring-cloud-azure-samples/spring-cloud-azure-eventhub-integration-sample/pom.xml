@@ -10,7 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>spring-cloud-azure-eventhub-integartion-sample</artifactId>
+    <artifactId>spring-cloud-azure-eventhub-integration-sample</artifactId>
     <name>Spring Cloud Azure Event Hub Integration Sample</name>
     <dependencies>
         <dependency>
