@@ -28,7 +28,7 @@ public class SourceExample {
     private Source source;
 
     @PostMapping("/messages")
-    public String sendMessage(@RequestBody String message) {
+    public String sendMessage(@RequestParam String message) {
         this.source.output().send(new GenericMessage<>(message));
         return message;
     }
