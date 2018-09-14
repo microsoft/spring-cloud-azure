@@ -9,8 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>spring-cloud-stream-eventhub-kafka-sample</artifactId>
-    <name>Spring Cloud Stream Azure Event Hub using Kafka API Sample</name>
+    <artifactId>spring-cloud-azure-eventhub-kafka-sample</artifactId>
+    <name>Spring Cloud Azure Event Hub using Kafka Binder Sample</name>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
