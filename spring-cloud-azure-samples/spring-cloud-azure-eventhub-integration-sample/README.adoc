@@ -41,7 +41,7 @@ spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-accou
 7.  Send a POST request
 +
 ....
-$ curl -X POST localhost:8080/messages?message=hello
+$ curl -X POST http://localhost:8080/messages?message=hello
 ....
 
 8. Verify in your app's logs that a similar message was posted:
