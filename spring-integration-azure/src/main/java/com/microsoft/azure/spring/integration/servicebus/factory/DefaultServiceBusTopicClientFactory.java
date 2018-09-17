@@ -6,12 +6,11 @@
 
 package com.microsoft.azure.spring.integration.servicebus.factory;
 
-import com.microsoft.azure.management.servicebus.ServiceBusNamespace;
 import com.microsoft.azure.management.servicebus.Topic;
 import com.microsoft.azure.servicebus.*;
 import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
@@ -27,14 +26,13 @@ import java.util.function.Function;
  */
 public class DefaultServiceBusTopicClientFactory extends AbstractServiceBusSenderFactory
         implements ServiceBusTopicClientFactory {
+    private static final String SUBSCRIPTION_PATH = "%s/subscriptions/%s";
     private final Function<Tuple<String, String>, ISubscriptionClient> subscriptionClientCreator =
             Memoizer.memoize(this::createSubscriptionClient);
-    private static final String SUBSCRIPTION_PATH = "%s/subscriptions/%s";
-
     private final Function<String, ? extends IMessageSender> sendCreator = Memoizer.memoize(this::createTopicClient);
 
-    public DefaultServiceBusTopicClientFactory(AzureAdmin azureAdmin, String namespace) {
-        super(azureAdmin, namespace);
+    public DefaultServiceBusTopicClientFactory(ResourceManagerProvider resourceManagerProvider, String namespace) {
+        super(resourceManagerProvider, namespace);
     }
 
     @Override
@@ -51,14 +49,12 @@ public class DefaultServiceBusTopicClientFactory extends AbstractServiceBusSende
         String topicName = nameAndSubscription.getFirst();
         String subscription = nameAndSubscription.getSecond();
 
-        Topic topic = azureAdmin.getServiceBusTopic(Tuple.of(serviceBusNamespace, topicName));
-        Assert.notNull(topic,
-                () -> String.format("Service bus topic '%s' not existed", topicName));
+        Topic topic = resourceManagerProvider.getServiceBusTopicManager().getOrCreate(Tuple.of
+                (serviceBusNamespace, topicName));
 
-        azureAdmin.getOrCreateServiceBusTopicSubscription(topic, subscription);
+        resourceManagerProvider.getServiceBusTopicSubscriptionManager().getOrCreate(Tuple.of(topic, subscription));
 
-        String subscriptionPath = String.format
-                (SUBSCRIPTION_PATH, topicName, subscription);
+        String subscriptionPath = String.format(SUBSCRIPTION_PATH, topicName, subscription);
         try {
             return new SubscriptionClient(
                     new ConnectionStringBuilder(connectionStringCreator.apply(namespace), subscriptionPath),
@@ -68,10 +64,11 @@ public class DefaultServiceBusTopicClientFactory extends AbstractServiceBusSende
         }
     }
 
-    private IMessageSender createTopicClient(String destination) {
-        azureAdmin.getOrCreateServiceBusTopic(serviceBusNamespace, destination);
+    private IMessageSender createTopicClient(String topicName) {
+        resourceManagerProvider.getServiceBusTopicManager().getOrCreate(Tuple.of
+                (serviceBusNamespace, topicName));
         try {
-            return new TopicClient(new ConnectionStringBuilder(connectionStringCreator.apply(namespace), destination));
+            return new TopicClient(new ConnectionStringBuilder(connectionStringCreator.apply(namespace), topicName));
         } catch (InterruptedException | ServiceBusException e) {
             throw new ServiceBusRuntimeException("Failed to create service bus topic client", e);
         }

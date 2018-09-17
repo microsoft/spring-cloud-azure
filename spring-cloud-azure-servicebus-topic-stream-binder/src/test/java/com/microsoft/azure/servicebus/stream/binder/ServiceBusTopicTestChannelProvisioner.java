@@ -11,7 +11,7 @@ import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusProduce
 import com.microsoft.azure.servicebus.stream.binder.provisioning.ServiceBusTopicChannelProvisioner;
 import com.microsoft.azure.servicebus.stream.binder.provisioning.ServiceBusTopicConsumerDestination;
 import com.microsoft.azure.servicebus.stream.binder.provisioning.ServiceBusTopicProducerDestination;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
@@ -23,8 +23,8 @@ import org.springframework.cloud.stream.provisioning.ProvisioningException;
  */
 public class ServiceBusTopicTestChannelProvisioner extends ServiceBusTopicChannelProvisioner {
 
-    public ServiceBusTopicTestChannelProvisioner(AzureAdmin azureAdmin, String namespace) {
-        super(azureAdmin, namespace);
+    public ServiceBusTopicTestChannelProvisioner(ResourceManagerProvider resourceManagerProvider, String namespace) {
+        super(resourceManagerProvider, namespace);
     }
 
     @Override

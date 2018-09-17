@@ -6,14 +6,14 @@
 
 package com.microsoft.azure.spring.integration.servicebus.factory;
 
-import com.microsoft.azure.management.servicebus.ServiceBusNamespace;
 import com.microsoft.azure.servicebus.IQueueClient;
 import com.microsoft.azure.servicebus.QueueClient;
 import com.microsoft.azure.servicebus.ReceiveMode;
 import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
+import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
 
 import java.util.function.Function;
@@ -29,8 +29,8 @@ public class DefaultServiceBusQueueClientFactory extends AbstractServiceBusSende
 
     private final Function<String, IQueueClient> queueClientCreator = Memoizer.memoize(this::createQueueClient);
 
-    public DefaultServiceBusQueueClientFactory(AzureAdmin azureAdmin, String namespace) {
-        super(azureAdmin, namespace);
+    public DefaultServiceBusQueueClientFactory(ResourceManagerProvider resourceManagerProvider, String namespace) {
+        super(resourceManagerProvider, namespace);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class DefaultServiceBusQueueClientFactory extends AbstractServiceBusSende
     }
 
     private IQueueClient createQueueClient(String destination) {
-        azureAdmin.getOrCreateServiceBusQueue(serviceBusNamespace, destination);
+        resourceManagerProvider.getServiceBusQueueManager().getOrCreate(Tuple.of(serviceBusNamespace, destination));
         try {
             return new QueueClient(new ConnectionStringBuilder(connectionStringCreator.apply(namespace), destination),
                     ReceiveMode.PEEKLOCK);

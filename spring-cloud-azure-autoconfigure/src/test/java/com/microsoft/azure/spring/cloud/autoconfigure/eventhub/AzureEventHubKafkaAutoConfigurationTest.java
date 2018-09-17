@@ -11,7 +11,7 @@ import com.microsoft.azure.PagedList;
 import com.microsoft.azure.management.eventhub.EventHubAuthorizationKey;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
 import com.microsoft.azure.management.eventhub.EventHubNamespaceAuthorizationRule;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.rest.RestException;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -61,9 +61,9 @@ public class AzureEventHubKafkaAutoConfigurationTest {
     static class TestConfiguration {
 
         @Bean
-        AzureAdmin azureAdmin() {
+        ResourceManagerProvider resourceManagerProvider() {
 
-            AzureAdmin azureAdmin = mock(AzureAdmin.class);
+            ResourceManagerProvider resourceManagerProvider = mock(ResourceManagerProvider.class);
             EventHubNamespace namespace = mock(EventHubNamespace.class);
             EventHubAuthorizationKey key = mock(EventHubAuthorizationKey.class);
             when(key.primaryConnectionString()).thenReturn("connectionString1");
@@ -79,7 +79,7 @@ public class AzureEventHubKafkaAutoConfigurationTest {
             rules.add(rule);
             when(namespace.listAuthorizationRules()).thenReturn(rules);
             when(namespace.serviceBusEndpoint()).thenReturn("localhost");
-            return azureAdmin;
+            return resourceManagerProvider;
         }
 
     }

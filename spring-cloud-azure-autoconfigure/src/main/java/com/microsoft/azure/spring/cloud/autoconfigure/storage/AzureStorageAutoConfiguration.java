@@ -10,7 +10,7 @@ import com.microsoft.azure.management.storage.StorageAccount;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStringProvider;
 import com.microsoft.azure.spring.cloud.storage.AzureStorageProtocolResolver;
 import com.microsoft.azure.storage.CloudStorageAccount;
@@ -55,10 +55,11 @@ public class AzureStorageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public CloudStorageAccount storage(AzureAdmin azureAdmin, AzureStorageProperties storageProperties) {
+    public CloudStorageAccount storage(ResourceManagerProvider resourceManagerProvider,
+            AzureStorageProperties storageProperties) {
         String accountName = storageProperties.getAccount();
 
-        StorageAccount storageAccount = azureAdmin.getOrCreateStorageAccount(accountName);
+        StorageAccount storageAccount = resourceManagerProvider.getStorageAccountManager().getOrCreate(accountName);
 
         String connectionString = StorageConnectionStringProvider.getConnectionString(storageAccount);
 

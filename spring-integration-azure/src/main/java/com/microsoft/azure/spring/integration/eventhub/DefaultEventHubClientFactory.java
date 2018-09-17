@@ -12,7 +12,7 @@ import com.microsoft.azure.eventhubs.PartitionSender;
 import com.microsoft.azure.eventhubs.impl.EventHubClientImpl;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.management.storage.StorageAccount;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStringProvider;
 import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
@@ -60,21 +60,21 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
             Memoizer.memoize(partitionSenderMap, this::createPartitionSender);
     private final Function<String, String> connectionStringProvider;
 
-    private final AzureAdmin azureAdmin;
+    private final ResourceManagerProvider resourceManagerProvider;
     private final String checkpointStorageConnectionString;
 
-    public DefaultEventHubClientFactory(@NonNull AzureAdmin azureAdmin, String checkpointStorageAccount,
-            Function<String, String> connectionStringProvider) {
+    public DefaultEventHubClientFactory(@NonNull ResourceManagerProvider resourceManagerProvider,
+            String checkpointStorageAccount, Function<String, String> connectionStringProvider) {
         Assert.hasText(checkpointStorageAccount, "checkpointStorageAccount can't be null or empty");
-        this.azureAdmin = azureAdmin;
+        this.resourceManagerProvider = resourceManagerProvider;
         this.connectionStringProvider = connectionStringProvider;
         this.checkpointStorageConnectionString = buildConnectionString(checkpointStorageAccount);
         EventHubClientImpl.USER_AGENT = USER_AGENT + "/" + EventHubClientImpl.USER_AGENT;
     }
 
     private String buildConnectionString(String checkpointStorageAccount) {
-        StorageAccount storageAccount = azureAdmin.getOrCreateStorageAccount
-                (checkpointStorageAccount);
+        StorageAccount storageAccount =
+                resourceManagerProvider.getStorageAccountManager().getOrCreate(checkpointStorageAccount);
         return StorageConnectionStringProvider.getConnectionString(storageAccount);
     }
 

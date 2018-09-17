@@ -6,7 +6,6 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.blob.CloudBlobClient;
 import org.junit.Test;
@@ -46,11 +45,6 @@ public class AzureStorageAutoConfigurationTest {
 
     @Configuration
     static class TestConfiguration {
-
-        @Bean
-        AzureAdmin azureAdmin() {
-            return mock(AzureAdmin.class);
-        }
 
         @Bean
         CloudStorageAccount cloudStorageAccount() {

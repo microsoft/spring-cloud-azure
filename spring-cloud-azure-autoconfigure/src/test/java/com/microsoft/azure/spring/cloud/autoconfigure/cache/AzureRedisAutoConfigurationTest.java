@@ -8,7 +8,8 @@ package com.microsoft.azure.spring.cloud.autoconfigure.cache;
 
 import com.microsoft.azure.management.redis.RedisAccessKeys;
 import com.microsoft.azure.management.redis.RedisCache;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
+import com.microsoft.azure.spring.cloud.context.core.impl.RedisCacheManager;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
@@ -61,9 +62,10 @@ public class AzureRedisAutoConfigurationTest {
     static class TestConfiguration {
 
         @Bean
-        AzureAdmin azureAdmin() {
+        ResourceManagerProvider resourceManagerProvider() {
 
-            AzureAdmin azureAdmin = mock(AzureAdmin.class);
+            ResourceManagerProvider resourceManagerProvider = mock(ResourceManagerProvider.class);
+            RedisCacheManager redisCacheManager = mock(RedisCacheManager.class);
             RedisCache redisCache = mock(RedisCache.class);
             RedisAccessKeys accessKeys = mock(RedisAccessKeys.class);
             when(accessKeys.primaryKey()).thenReturn(KEY);
@@ -72,8 +74,9 @@ public class AzureRedisAutoConfigurationTest {
             when(redisCache.sslPort()).thenReturn(PORT);
             when(redisCache.shardCount()).thenReturn(0);
             when(redisCache.getKeys()).thenReturn(accessKeys);
-            when(azureAdmin.getOrCreateRedisCache(isA(String.class))).thenReturn(redisCache);
-            return azureAdmin;
+            when(resourceManagerProvider.getRedisCacheManager()).thenReturn(redisCacheManager);
+            when(redisCacheManager.getOrCreate(isA(String.class))).thenReturn(redisCache);
+            return resourceManagerProvider;
         }
 
     }

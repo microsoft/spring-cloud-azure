@@ -14,9 +14,10 @@ import com.microsoft.azure.management.resources.fluentcore.utils.ProviderRegistr
 import com.microsoft.azure.management.resources.fluentcore.utils.ResourceManagerThrottlingInterceptor;
 import com.microsoft.azure.serializer.AzureJacksonAdapter;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
-import com.microsoft.azure.spring.cloud.context.core.config.AzureAopConfig;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
+import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
 import com.microsoft.azure.spring.cloud.context.core.api.CredentialsProvider;
+import com.microsoft.azure.spring.cloud.context.core.impl.AzureResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.impl.DefaultCredentialsProvider;
 import com.microsoft.rest.RestClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -25,7 +26,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 import java.io.IOException;
 
@@ -38,7 +38,6 @@ import java.io.IOException;
 @EnableConfigurationProperties(AzureProperties.class)
 @ConditionalOnClass(Azure.class)
 @ConditionalOnProperty(prefix = "spring.cloud.azure", value = {"credential-file-path", "resource-group", "region"})
-@Import(AzureAopConfig.class)
 public class AzureContextAutoConfiguration {
     private static final String PROJECT_VERSION =
             AzureContextAutoConfiguration.class.getPackage().getImplementationVersion();
@@ -46,8 +45,8 @@ public class AzureContextAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public AzureAdmin azureAdmin(Azure azure, AzureProperties azureProperties) {
-        return new AzureAdmin(azure, azureProperties.getResourceGroup(), azureProperties.getRegion());
+    public ResourceManagerProvider resourceManagerProvider(Azure azure, AzureProperties azureProperties) {
+        return new AzureResourceManagerProvider(azure, azureProperties);
     }
 
     @Bean

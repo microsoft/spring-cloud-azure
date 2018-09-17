@@ -11,7 +11,7 @@ import com.microsoft.azure.eventhub.stream.binder.properties.EventHubProducerPro
 import com.microsoft.azure.eventhub.stream.binder.provisioning.EventHubChannelProvisioner;
 import com.microsoft.azure.eventhub.stream.binder.provisioning.EventHubConsumerDestination;
 import com.microsoft.azure.eventhub.stream.binder.provisioning.EventHubProducerDestination;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
@@ -23,8 +23,8 @@ import org.springframework.cloud.stream.provisioning.ProvisioningException;
  */
 public class EventHubTestChannelProvisioner extends EventHubChannelProvisioner {
 
-    public EventHubTestChannelProvisioner(AzureAdmin azureAdmin, String namespace) {
-        super(azureAdmin, namespace);
+    public EventHubTestChannelProvisioner(ResourceManagerProvider resourceManagerProvider, String namespace) {
+        super(resourceManagerProvider, namespace);
     }
 
     @Override

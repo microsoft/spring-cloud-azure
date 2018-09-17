@@ -13,7 +13,7 @@ import com.microsoft.azure.management.eventhub.EventHubNamespace;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -61,9 +61,11 @@ public class AzureEventHubKafkaAutoConfiguration {
     @ConditionalOnMissingBean
     @Primary
     @Bean
-    public KafkaProperties kafkaProperties(AzureAdmin azureAdmin, AzureEventHubProperties eventHubProperties) {
+    public KafkaProperties kafkaProperties(ResourceManagerProvider resourceManagerProvider,
+            AzureEventHubProperties eventHubProperties) {
         KafkaProperties kafkaProperties = new KafkaProperties();
-        EventHubNamespace namespace = azureAdmin.getOrCreateEventHubNamespace(eventHubProperties.getNamespace());
+        EventHubNamespace namespace =
+                resourceManagerProvider.getEventHubNamespaceManager().getOrCreate(eventHubProperties.getNamespace());
         String connectionString =
                 namespace.listAuthorizationRules().stream().findFirst().map(AuthorizationRule::getKeys)
                          .map(EventHubAuthorizationKey::primaryConnectionString).orElseThrow(() -> new RuntimeException(

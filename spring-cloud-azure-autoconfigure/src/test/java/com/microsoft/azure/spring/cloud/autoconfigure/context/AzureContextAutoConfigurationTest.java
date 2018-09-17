@@ -7,7 +7,8 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.context;
 
 import com.microsoft.azure.management.Azure;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
+import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
 import com.microsoft.azure.spring.cloud.context.core.api.CredentialsProvider;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -63,8 +64,8 @@ public class AzureContextAutoConfigurationTest {
         }
 
         @Bean
-        AzureAdmin azureAdmin() {
-            return mock(AzureAdmin.class);
+        ResourceManagerProvider resourceManagerProvider() {
+            return mock(ResourceManagerProvider.class);
         }
     }
 }

@@ -4,7 +4,7 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.cloud.autoconfigure.context;
+package com.microsoft.azure.spring.cloud.context.core.config;
 
 import com.microsoft.azure.spring.cloud.context.core.api.CredentialSupplier;
 import lombok.Getter;
@@ -24,6 +24,8 @@ public class AzureProperties implements CredentialSupplier {
     private String resourceGroup;
 
     private String region;
+
+    private boolean autoCreateResources = false;
 
     @PostConstruct
     public void validate() {
