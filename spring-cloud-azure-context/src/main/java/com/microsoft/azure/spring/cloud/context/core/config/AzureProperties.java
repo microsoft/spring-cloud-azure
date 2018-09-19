@@ -20,13 +20,13 @@ import javax.validation.constraints.NotEmpty;
 @ConfigurationProperties("spring.cloud.azure")
 public class AzureProperties implements CredentialSupplier {
 
-    @NotEmpty(message = "spring.cloud.azure.credential-file-path must be provided")
+    @NotEmpty
     private String credentialFilePath;
 
-    @NotEmpty(message = "spring.cloud.azure.resource-group must be provided")
+    @NotEmpty
     private String resourceGroup;
 
-    @NotEmpty(message = "spring.cloud.azure.region must be provided")
+    @NotEmpty
     private String region;
 
     private boolean autoCreateResources = false;

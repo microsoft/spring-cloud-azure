@@ -21,6 +21,6 @@ import javax.validation.constraints.NotEmpty;
 @ConfigurationProperties("spring.cloud.azure.redis")
 public class AzureRedisProperties {
 
-    @NotEmpty(message = "spring.cloud.azure.redis.name must be provided.")
+    @NotEmpty
     private String name;
 }

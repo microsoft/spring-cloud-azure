@@ -22,6 +22,6 @@ import javax.validation.constraints.NotEmpty;
 @ConfigurationProperties("spring.cloud.azure.servicebus")
 public class AzureServiceBusProperties {
 
-    @NotEmpty(message = "spring.cloud.azure.servicebus.namespace must be provided")
+    @NotEmpty
     private String namespace;
 }
