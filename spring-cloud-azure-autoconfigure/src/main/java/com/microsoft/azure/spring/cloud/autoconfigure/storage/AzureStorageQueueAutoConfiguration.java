@@ -8,7 +8,7 @@ package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueOperation;
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueTemplate;
 import com.microsoft.azure.spring.integration.storage.queue.factory.DefaultStorageQueueClientFactory;
@@ -40,15 +40,15 @@ public class AzureStorageQueueAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    StorageQueueClientFactory storageQueueFactory(AzureAdmin azureAdmin,
-                                                  AzureStorageProperties azureStorageProperties) {
-        return new DefaultStorageQueueClientFactory(azureAdmin, azureStorageProperties.getAccount());
+    StorageQueueClientFactory storageQueueClientFactory(ResourceManagerProvider resourceManagerProvider) {
+        return new DefaultStorageQueueClientFactory(resourceManagerProvider.getStorageAccountManager());
     }
 
     @Bean
     @ConditionalOnMissingBean
-    StorageQueueOperation storageQueueOperation(StorageQueueClientFactory storageQueueClientFactory){
-        return new StorageQueueTemplate(storageQueueClientFactory);
+    StorageQueueOperation storageQueueOperation(StorageQueueClientFactory storageQueueClientFactory,
+            AzureStorageProperties azureStorageProperties) {
+        return new StorageQueueTemplate(storageQueueClientFactory, azureStorageProperties.getAccount());
     }
 
 }

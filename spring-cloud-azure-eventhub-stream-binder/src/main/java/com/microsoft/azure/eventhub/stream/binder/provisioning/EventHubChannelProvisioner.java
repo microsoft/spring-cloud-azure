@@ -8,7 +8,9 @@ package com.microsoft.azure.eventhub.stream.binder.provisioning;
 
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubConsumerProperties;
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubProducerProperties;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.management.eventhub.EventHub;
+import com.microsoft.azure.management.eventhub.EventHubNamespace;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
@@ -25,19 +27,21 @@ public class EventHubChannelProvisioner implements
         ProvisioningProvider<ExtendedConsumerProperties<EventHubConsumerProperties>,
                 ExtendedProducerProperties<EventHubProducerProperties>> {
 
-    private final AzureAdmin azureAdmin;
+    private final ResourceManagerProvider resourceManagerProvider;
     private final String namespace;
 
-    public EventHubChannelProvisioner(AzureAdmin azureAdmin, String namespace) {
+    public EventHubChannelProvisioner(ResourceManagerProvider resourceManagerProvider, String namespace) {
         Assert.hasText(namespace, "The namespace can't be null or empty");
-        this.azureAdmin = azureAdmin;
+        this.resourceManagerProvider = resourceManagerProvider;
         this.namespace = namespace;
     }
 
     @Override
     public ProducerDestination provisionProducerDestination(String name,
             ExtendedProducerProperties<EventHubProducerProperties> properties) throws ProvisioningException {
-        this.azureAdmin.getOrCreateEventHub(namespace, name);
+        EventHubNamespace eventHubNamespace =
+                this.resourceManagerProvider.getEventHubNamespaceManager().getOrCreate(namespace);
+        this.resourceManagerProvider.getEventHubManager().getOrCreate(Tuple.of(eventHubNamespace, name));
 
         return new EventHubProducerDestination(name);
     }
@@ -45,12 +49,16 @@ public class EventHubChannelProvisioner implements
     @Override
     public ConsumerDestination provisionConsumerDestination(String name, String group,
             ExtendedConsumerProperties<EventHubConsumerProperties> properties) throws ProvisioningException {
-        if (this.azureAdmin.getEventHub(Tuple.of(namespace, name)) == null) {
+        EventHubNamespace eventHubNamespace =
+                this.resourceManagerProvider.getEventHubNamespaceManager().getOrCreate(namespace);
+        EventHub eventHub = this.resourceManagerProvider.getEventHubManager().get(Tuple.of(eventHubNamespace,
+                name));
+        if (eventHub == null) {
             throw new ProvisioningException(
                     String.format("Event hub with name '%s' in namespace '%s' not existed", name, namespace));
         }
 
-        this.azureAdmin.getOrCreateEventHubConsumerGroup(namespace, name, group);
+        this.resourceManagerProvider.getEventHubConsumerGroupManager().getOrCreate(Tuple.of(eventHub, group));
         return new EventHubConsumerDestination(name);
     }
 }

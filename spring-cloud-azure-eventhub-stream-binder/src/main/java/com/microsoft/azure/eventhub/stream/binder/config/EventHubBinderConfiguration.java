@@ -14,7 +14,7 @@ import com.microsoft.azure.spring.cloud.autoconfigure.eventhub.AzureEventHubAuto
 import com.microsoft.azure.spring.cloud.autoconfigure.eventhub.AzureEventHubProperties;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -44,16 +44,16 @@ public class EventHubBinderConfiguration {
     }
 
     @Bean
-    public EventHubChannelProvisioner eventHubChannelProvisioner(AzureAdmin azureAdmin,
+    public EventHubChannelProvisioner eventHubChannelProvisioner(ResourceManagerProvider resourceManagerProvider,
             AzureEventHubProperties eventHubProperties) {
-        return new EventHubChannelProvisioner(azureAdmin, eventHubProperties.getNamespace());
+        return new EventHubChannelProvisioner(resourceManagerProvider, eventHubProperties.getNamespace());
     }
 
     @Bean
     public EventHubMessageChannelBinder eventHubBinder(EventHubChannelProvisioner eventHubChannelProvisioner,
             EventHubOperation eventHubOperation, EventHubExtendedBindingProperties bindingProperties) {
-        EventHubMessageChannelBinder binder = new EventHubMessageChannelBinder(null, eventHubChannelProvisioner,
-                eventHubOperation);
+        EventHubMessageChannelBinder binder =
+                new EventHubMessageChannelBinder(null, eventHubChannelProvisioner, eventHubOperation);
         binder.setBindingProperties(bindingProperties);
         return binder;
     }

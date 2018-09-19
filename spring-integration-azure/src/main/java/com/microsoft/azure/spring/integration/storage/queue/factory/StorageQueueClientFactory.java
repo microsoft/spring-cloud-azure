@@ -7,14 +7,13 @@
 package com.microsoft.azure.spring.integration.storage.queue.factory;
 
 import com.microsoft.azure.storage.queue.CloudQueue;
-import java.util.function.Function;
+import com.microsoft.azure.storage.queue.CloudQueueClient;
 
 /**
  * @author Miao Cao
  */
 public interface StorageQueueClientFactory {
-    /**
-     * Return a function which accepts storage queue name, then returns {@link CloudQueue}
-     */
-    Function<String, CloudQueue> getQueueCreator();
+    CloudQueueClient getOrCreateQueueClient(String storageAccountName);
+
+    CloudQueue getOrCreateQueue(String storageAccountName, String queueName);
 }

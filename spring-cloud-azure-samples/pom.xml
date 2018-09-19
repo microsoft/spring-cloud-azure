@@ -23,7 +23,7 @@
         <module>spring-cloud-azure-eventhub-operation-sample</module>
         <module>spring-cloud-azure-eventhub-integration-sample</module>
         <module>spring-cloud-azure-eventhub-binder-sample</module>
-        <module>spring-cloud-stream-eventhub-kafka-sample</module>
+        <module>spring-cloud-azure-eventhub-kafka-sample</module>
         <module>spring-cloud-azure-servicebus-operation-sample</module>
         <module>spring-cloud-azure-servicebus-integration-sample</module>
         <module>spring-cloud-azure-servicebus-topic-binder-sample</module>

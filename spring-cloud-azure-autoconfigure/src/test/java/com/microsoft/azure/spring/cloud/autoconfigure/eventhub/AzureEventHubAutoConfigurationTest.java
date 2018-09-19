@@ -7,7 +7,6 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.eventhub;
 
 import com.microsoft.azure.eventhubs.EventHubClient;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureAdmin;
 import com.microsoft.azure.spring.integration.eventhub.EventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
 import org.junit.Test;
@@ -51,11 +50,6 @@ public class AzureEventHubAutoConfigurationTest {
 
     @Configuration
     static class TestConfiguration {
-
-        @Bean
-        AzureAdmin azureAdmin() {
-            return mock(AzureAdmin.class);
-        }
 
         @Bean
         EventHubClientFactory clientFactory() {

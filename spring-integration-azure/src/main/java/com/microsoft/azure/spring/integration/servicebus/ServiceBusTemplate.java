@@ -121,6 +121,7 @@ public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements Se
         }
 
         protected abstract CompletableFuture<Void> success(UUID uuid);
+
         protected abstract CompletableFuture<Void> failure(UUID uuid);
     }
 

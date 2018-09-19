@@ -9,60 +9,52 @@ package com.microsoft.azure.spring.integration.storage.queue;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.SendOperation;
 import org.springframework.messaging.Message;
+
 import java.util.concurrent.CompletableFuture;
 
 /**
  * Azure storage queue operation to support send and receive
  * {@link org.springframework.messaging.Message} asynchronously
+ *
  * @author Miao Cao
  */
 public interface StorageQueueOperation extends SendOperation {
 
     /**
-     * Receives a message from the front of destination queue.
-     * This operation marks the retrieved message as invisible in the queue for a visibility timeout period.
-     * The default visibility timeout is 30 seconds. You can change visibility timeout by
-     * {@link #setVisibilityTimeoutInSeconds(int) }
-     * You should check point if message has been processed successfully, otherwise the message will be visible
-     * in the queue again.
-     *
-     * @param destination the destination queue name
+     * Receives a message from the head of queue. This message become invisible for a visibility timeout period.
+     * You can change visibility timeout by {@link #setVisibilityTimeoutInSeconds(int)}
+     * You should checkpoint if message has been processed successfully, otherwise it will be visible again.
      */
-    CompletableFuture<Message<?>> receiveAsync(String destination);
+    CompletableFuture<Message<?>> receiveAsync(String queueName);
 
     /**
-     * Receives a message from the front of destination queue.
-     * This operation marks the retrieved message as invisible in the queue for a visibility timeout period.
-     * The default visibility timeout is 30 seconds.
-     * You should check point if message has been processed successfully, otherwise the message will be visible
-     * in the queue again.
-     *
-     * @param destination the queue name
-     * @param visibilityTimeoutInSeconds Specifies the visibility timeout for the message, in seconds
+     * Receives a message from the head of queue. This message become invisible for a visibility timeout period.
+     * You should check point if message has been processed successfully, otherwise it will be visible again.
      */
-    CompletableFuture<Message<?>> receiveAsync(String destination, int visibilityTimeoutInSeconds);
-
-    /**
-     * Set visibility timeout.
-     * @param visibilityTimeoutInSeconds Specifies the visibility timeout for the message, in seconds
-     */
-    void setVisibilityTimeoutInSeconds(int visibilityTimeoutInSeconds);
+    CompletableFuture<Message<?>> receiveAsync(String queueName, int visibilityTimeoutInSeconds);
 
     int getVisibilityTimeoutInSeconds();
 
     /**
-     * Set checkpoint mode.
-     * @param checkpointMode Specifies checkpoint mode, default checkpoint mode is RECORD
+     * Set visibility timeout. Default is 30
+     *
      */
-    void setCheckpointMode(CheckpointMode checkpointMode);
+    void setVisibilityTimeoutInSeconds(int visibilityTimeoutInSeconds);
 
     CheckpointMode getCheckpointMode();
 
     /**
-     * Set payload type.
-     * @param messagePayloadType Specifies the payload type of the message, the default payload type is byte[]
+     * Set checkpoint mode. Default is {@link CheckpointMode#RECORD}
+     *
      */
-    void setMessagePayloadType(Class messagePayloadType);
+    void setCheckpointMode(CheckpointMode checkpointMode);
 
-    Class getMessagePayloadType();
+    Class<?> getMessagePayloadType();
+
+    /**
+     * Set payload type. Default is {@link byte[]}
+     *
+     * @param messagePayloadType Specifies the payload type of {@link Message}
+     */
+    void setMessagePayloadType(Class<?> messagePayloadType);
 }
