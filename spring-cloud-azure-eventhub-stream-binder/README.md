@@ -98,8 +98,8 @@ Name | Description | Required | Default
   
   If `RECORD`, checkpoints occur after each record is received by Spring Channel. If you use `StorageAccount` as checkpoint store, this might become botterneck.
   
-  If `BATCH`, checkpoints occur after each batch of records is received by Spring Channel. This is recommended and default mode if you can tolerate failure during message processing. That means once your processor revevices the message, this message will be acknowledged.
+  If `BATCH`, checkpoints occur after each batch of records is received by Spring Channel. This is the default mode if you can tolerate failure during message processing. That means once your processor receives (the actual processing of the message could be unfinished) the message, the receipt of the message will be acknowldged.
   
-  If `MANUAL`, checkpoints occur on demand by the user via the `Checkpointer`. You can get `Checkpointer` by `Message.getHeaders.get(AzureHeaders.CHECKPOINTER)`callback. Please be aware all messages in this partition before this message will be considered as successfully processed.
+  If `MANUAL`, checkpoints occur on demand by the user via the `Checkpointer`. You can do checkpoints after the message has been successfully processed. `Message.getHeaders.get(AzureHeaders.CHECKPOINTER)`callback can get you the `Checkpointer` you need. Please be aware all messages in the corresponding Event Hub partition before this message will be considered as successfully processed.
 
   Default: `BATCH`
