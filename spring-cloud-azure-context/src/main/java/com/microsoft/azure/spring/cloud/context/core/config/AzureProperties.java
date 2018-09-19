@@ -10,27 +10,24 @@ import com.microsoft.azure.spring.cloud.context.core.api.CredentialSupplier;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.util.Assert;
+import org.springframework.validation.annotation.Validated;
 
-import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
+@Validated
 @ConfigurationProperties("spring.cloud.azure")
 public class AzureProperties implements CredentialSupplier {
 
+    @NotEmpty
     private String credentialFilePath;
 
+    @NotEmpty
     private String resourceGroup;
 
+    @NotEmpty
     private String region;
 
     private boolean autoCreateResources = false;
-
-    @PostConstruct
-    public void validate() {
-        Assert.hasText(credentialFilePath, "spring.cloud.azure.credential-file-path must be provided");
-        Assert.hasText(resourceGroup, "spring.cloud.azure.resource-group must be provided");
-        Assert.hasText(region, "spring.cloud.azure.region must be provided");
-    }
 }

@@ -9,21 +9,22 @@ package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.util.Assert;
+import org.springframework.validation.annotation.Validated;
 
-import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 
 /**
  * @author Warren Zhu
  */
 @Getter
 @Setter
+@Validated
 @ConfigurationProperties("spring.cloud.azure.storage")
 public class AzureStorageProperties {
-    private String account;
 
-    @PostConstruct
-    public void validate() {
-        Assert.hasText(account, "spring.cloud.azure.storage.account must be provided");
-    }
+    @NotEmpty
+    @Pattern(regexp = "^[a-z0-9]{3,24}$",
+            message = "must be between 3 and 24 characters in length and use numbers and lower-case letters only")
+    private String account;
 }

@@ -9,22 +9,23 @@ package com.microsoft.azure.spring.cloud.autoconfigure.eventhub;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.util.Assert;
-
-import javax.annotation.PostConstruct;
+import org.springframework.validation.annotation.Validated;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 
 /**
  * @author Warren Zhu
  */
 @Getter
 @Setter
+@Validated
 @ConfigurationProperties("spring.cloud.azure.eventhub")
 public class AzureEventHubProperties {
-    private String namespace;
-    private String checkpointStorageAccount;
 
-    @PostConstruct
-    public void validate() {
-        Assert.hasText(namespace, "spring.cloud.azure.eventhub.namespace must be provided");
-    }
+    @NotEmpty
+    private String namespace;
+
+    @Pattern(regexp = "^[a-z0-9]{3,24}$",
+            message = "must be between 3 and 24 characters in length and use numbers and lower-case letters only")
+    private String checkpointStorageAccount;
 }

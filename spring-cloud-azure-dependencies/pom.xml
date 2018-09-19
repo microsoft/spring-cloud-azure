@@ -25,6 +25,7 @@
         <spring.boot.version>2.0.1.RELEASE</spring.boot.version>
         <lombok.version>1.16.20</lombok.version>
         <commons.io.version>2.6</commons.io.version>
+        <hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
         <google.guava.version>20.0</google.guava.version>
         <azure.applicationinsights.version>2.0.1</azure.applicationinsights.version>
         <azure.sdk.version>1.14.0</azure.sdk.version>
@@ -177,6 +178,11 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons.io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate.validator.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
