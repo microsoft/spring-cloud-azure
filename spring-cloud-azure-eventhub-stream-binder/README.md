@@ -95,8 +95,11 @@ Name | Description | Required | Default
   **_checkpointMode_**
 
   The mode in which checkpoints are updated.
-  If `RECORD`, checkpoints occur after each record is received by Spring Channel. If you use `StorageAccount` as checkpoint store, this might become botterneck. 
-  If `BATCH`, checkpoints occur after each batch of records is received by Spring Channel. This is recommended and default mode.
+  
+  If `RECORD`, checkpoints occur after each record is received by Spring Channel. If you use `StorageAccount` as checkpoint store, this might become botterneck.
+  
+  If `BATCH`, checkpoints occur after each batch of records is received by Spring Channel. This is recommended and default mode if you can tolerate failure during message processing. That means once your processor revevices the message, this message will be acknowledged.
+  
   If `MANUAL`, checkpoints occur on demand by the user via the `Checkpointer`. You can get `Checkpointer` by `Message.getHeaders.get(AzureHeaders.CHECKPOINTER)`callback. Please be aware all messages in this partition before this message will be considered as successfully processed.
 
   Default: `BATCH`
