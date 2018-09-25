@@ -35,9 +35,15 @@ public class AzureStorageAutoConfigurationTest {
                           .run(context -> assertThat(context).doesNotHaveBean(AzureStorageProperties.class));
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void testAzureStoragePropertiesIllegal() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.storage.account=a")
+                .run(context -> context.getBean(AzureStorageProperties.class));
+    }
+
     @Test
     public void testAzureStoragePropertiesConfigured() {
-        this.contextRunner.withPropertyValues("spring" + ".cloud.azure.storage.account=acc1").run(context -> {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.storage.account=acc1").run(context -> {
             assertThat(context).hasSingleBean(AzureStorageProperties.class);
             assertThat(context.getBean(AzureStorageProperties.class).getAccount()).isEqualTo("acc1");
         });

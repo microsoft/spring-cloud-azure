@@ -36,6 +36,12 @@ public class AzureStorageQueueAutoConfigurationTest {
                 .run(context -> assertThat(context).doesNotHaveBean(AzureStorageProperties.class));
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void testAzureStoragePropertiesIllegal() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.storage.account=a")
+                .run(context -> context.getBean(AzureStorageProperties.class));
+    }
+
     @Test
     public void testAzureStoragePropertiesConfigured() {
         this.contextRunner.withPropertyValues("spring.cloud.azure.storage.account=squeue").run(context -> {

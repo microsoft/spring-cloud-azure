@@ -33,6 +33,12 @@ public class AzureServiceBusTopicAutoConfigurationTest {
                           .run(context -> assertThat(context).doesNotHaveBean(AzureServiceBusProperties.class));
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void testAzureServiceBusPropertiesNamespaceIllegal() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.servicebus.namespace=")
+                .run(context -> context.getBean(AzureServiceBusProperties.class));
+    }
+
     @Test
     public void testAzureServiceBusPropertiesConfigured() {
         this.contextRunner.withPropertyValues("spring.cloud.azure.servicebus.namespace=ns1").run(context -> {
