@@ -46,6 +46,20 @@ public class AzureEventHubKafkaAutoConfigurationTest {
                           .run(context -> assertThat(context).doesNotHaveBean(AzureEventHubProperties.class));
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void testAzureEventHubPropertiesNamespaceIllegal() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.eventhub.namespace=")
+                .withPropertyValues("spring.cloud.azure.eventhub.checkpoint-storage-account=")
+                .run(context -> context.getBean(AzureEventHubProperties.class));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testAzureEventHubPropertiesStorageAccountIllegal() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.eventhub.namespace=nsl")
+                .withPropertyValues("spring.cloud.azure.eventhub.checkpoint-storage-account=1")
+                .run(context -> context.getBean(AzureEventHubProperties.class));
+    }
+
     @Ignore("org.apache.kafka.common.serialization.StringSerializer required on classpath")
     @Test
     public void testAzureEventHubPropertiesConfigured() {

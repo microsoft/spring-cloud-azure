@@ -36,8 +36,22 @@ public class AzureEventHubAutoConfigurationTest {
                           .run(context -> assertThat(context).doesNotHaveBean(AzureEventHubProperties.class));
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void testAzureEventHubPropertiesNamespaceIllegal() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.eventhub.namespace=")
+                .withPropertyValues("spring.cloud.azure.eventhub.checkpoint-storage-account=")
+                .run(context -> context.getBean(AzureEventHubProperties.class));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testAzureEventHubPropertiesStorageAccountIllegal() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.eventhub.namespace=nsl")
+                .withPropertyValues("spring.cloud.azure.eventhub.checkpoint-storage-account=1")
+                .run(context -> context.getBean(AzureEventHubProperties.class));
+    }
+
     @Test
-    public void testAzureServiceBusPropertiesConfigured() {
+    public void testAzureEventHubPropertiesConfigured() {
         this.contextRunner.withPropertyValues("spring.cloud.azure.eventhub.namespace=ns1").
                 withPropertyValues("spring.cloud.azure.eventhub.checkpoint-storage-account=sa1").run(context -> {
             assertThat(context).hasSingleBean(AzureEventHubProperties.class);
