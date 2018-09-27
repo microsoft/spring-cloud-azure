@@ -15,6 +15,8 @@ import org.springframework.messaging.MessageHeaders;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Abstract class handles common conversion logic between <T> and {@link Message}
@@ -44,16 +46,19 @@ public abstract class AbstractAzureMessageConverter<T> implements AzureMessageCo
     public T fromMessage(@NonNull Message<?> message, @NonNull Class<T> targetClass) {
         T azureMessage = internalFromMessage(message, targetClass);
 
-        setCustomHeaders(message, azureMessage);
+        setCustomHeaders(message.getHeaders(), azureMessage);
 
         return azureMessage;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <U> Message<U> toMessage(@NonNull T azureMessage, MessageHeaders headers,
+    public <U> Message<U> toMessage(@NonNull T azureMessage, Map<String, Object> headers,
                                     @NonNull Class<U> targetPayloadClass) {
-        return (Message<U>) internalToMessage(azureMessage, headers, targetPayloadClass);
+        Map<String, Object> mergedHeaders = new HashMap<>();
+        mergedHeaders.putAll(buildCustomHeaders(azureMessage));
+        mergedHeaders.putAll(headers);
+        return (Message<U>) internalToMessage(azureMessage, new MessageHeaders(mergedHeaders), targetPayloadClass);
     }
 
     protected abstract byte[] getPayload(T azureMessage);
@@ -62,7 +67,11 @@ public abstract class AbstractAzureMessageConverter<T> implements AzureMessageCo
 
     protected abstract T fromByte(byte[] payload);
 
-    protected void setCustomHeaders(Message<?> message, T azureMessage) {
+    protected void setCustomHeaders(MessageHeaders headers, T azureMessage) {
+    }
+
+    protected Map<String, Object> buildCustomHeaders(T azureMessage) {
+        return new HashMap<>();
     }
 
     private T internalFromMessage(Message<?> message, Class<T> targetClass) {
