@@ -9,13 +9,12 @@ package com.microsoft.azure.spring.integration.core.support;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.microsoft.azure.eventhubs.EventData;
-import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.eventprocessorhost.PartitionContext;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
 import com.microsoft.azure.spring.integration.eventhub.EventHubClientFactory;
-import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
+import com.microsoft.azure.spring.integration.eventhub.EventHubProcessor;
 import com.microsoft.azure.spring.integration.eventhub.EventHubTemplate;
 import org.springframework.messaging.Message;
 
@@ -23,12 +22,11 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class EventHubTestOperation extends EventHubTemplate implements EventHubOperation {
+public class EventHubTestOperation extends EventHubTemplate {
     private final Multimap<String, EventData> eventHubsByName = ArrayListMultimap.create();
-    private final Map<String, Map<String, EventHubProcessor<?>>> processorsByNameAndGroup = new ConcurrentHashMap<>();
+    private final Map<String, Map<String, EventHubProcessor>> processorsByNameAndGroup = new ConcurrentHashMap<>();
     private final Supplier<PartitionContext> partitionContextSupplier;
 
     public EventHubTestOperation(EventHubClientFactory clientFactory,
@@ -58,14 +56,12 @@ public class EventHubTestOperation extends EventHubTemplate implements EventHubO
     }
 
     @Override
-    protected synchronized EventProcessorHost register(Tuple<String, String> nameAndGroup,
-            Consumer<Message<?>> consumer, Class<?> messagePayloadType) {
+    protected synchronized void register(Tuple<String, String> nameAndGroup, EventHubProcessor eventProcessor) {
         String name = nameAndGroup.getFirst();
         String group = nameAndGroup.getSecond();
         processorsByNameAndGroup.putIfAbsent(name, new ConcurrentHashMap<>());
 
-        processorsByNameAndGroup.get(name)
-                                .computeIfAbsent(group, (k) -> new EventHubProcessor(consumer, messagePayloadType));
+        processorsByNameAndGroup.get(name).putIfAbsent(group, eventProcessor);
 
         if (getStartPosition() == StartPosition.EARLISET) {
             processorsByNameAndGroup.get(name).values().forEach(c -> {
@@ -76,8 +72,6 @@ public class EventHubTestOperation extends EventHubTemplate implements EventHubO
                 }
             });
         }
-
-        return null;
     }
 
     @Override
