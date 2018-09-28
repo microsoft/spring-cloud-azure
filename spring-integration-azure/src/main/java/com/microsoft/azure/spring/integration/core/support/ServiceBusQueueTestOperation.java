@@ -46,6 +46,7 @@ public class ServiceBusQueueTestOperation extends ServiceBusQueueTemplate {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void internalSubscribe(String name, Consumer<Message<?>> consumer,
             Class<?> payloadType) {
         IQueueClient queueClient =

@@ -6,6 +6,7 @@
 
 package com.microsoft.azure.spring.integration.eventhub;
 
+import com.microsoft.azure.spring.integration.core.api.BatchSendOperation;
 import com.microsoft.azure.spring.integration.core.api.SendOperation;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
 import com.microsoft.azure.spring.integration.core.api.SubscribeByGroupOperation;
@@ -15,7 +16,7 @@ import com.microsoft.azure.spring.integration.core.api.SubscribeByGroupOperation
  *
  * @author Warren Zhu
  */
-public interface EventHubOperation extends SendOperation, SubscribeByGroupOperation {
+public interface EventHubOperation extends SendOperation, BatchSendOperation, SubscribeByGroupOperation {
 
     void setStartPosition(StartPosition startPosition);
 }

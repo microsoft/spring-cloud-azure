@@ -35,17 +35,17 @@ public class EventHubTemplateSendTest extends SendOperationTest<EventHubOperatio
     public void setUp() {
 
         when(this.mockClientFactory.getEventHubClientCreator()).thenReturn(s -> this.mockClient);
-        when(this.mockClient.send(isA(EventData.class))).thenReturn(this.future);
-        when(this.mockClient.send(isA(EventData.class), eq(partitionKey))).thenReturn(this.future);
+        when(this.mockClient.send(anyCollection())).thenReturn(this.future);
+        when(this.mockClient.send(anyCollection(), eq(partitionKey))).thenReturn(this.future);
 
         when(this.mockClientFactory.getPartitionSenderCreator()).thenReturn(t -> this.mockSender);
-        when(this.mockSender.send(isA(EventData.class))).thenReturn(this.future);
+        when(this.mockSender.send(anyCollection())).thenReturn(this.future);
         this.sendOperation = new EventHubTemplate(mockClientFactory);
     }
 
     @Override
     protected void verifySendCalled(int times) {
-        verify(this.mockClient, times(times)).send(isA(EventData.class));
+        verify(this.mockClient, times(times)).send(anyCollection());
     }
 
     @Override
@@ -67,12 +67,12 @@ public class EventHubTemplateSendTest extends SendOperationTest<EventHubOperatio
 
     @Override
     protected void verifySendWithPartitionKey(int times) {
-        verify(this.mockClient, times(times)).send(isA(EventData.class), eq(partitionKey));
+        verify(this.mockClient, times(times)).send(anyCollection(), eq(partitionKey));
     }
 
     @Override
     protected void verifySendWithPartitionId(int times) {
-        verify(this.mockSender, times(times)).send(isA(EventData.class));
+        verify(this.mockSender, times(times)).send(anyCollection());
     }
 
 }

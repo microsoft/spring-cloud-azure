@@ -41,6 +41,7 @@ public abstract class MessageHandlerTest<O extends SendOperation> {
     public abstract void setUp();
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testSend() {
         this.handler.handleMessage(this.message);
         verify(this.sendOperation, times(1))
@@ -48,6 +49,7 @@ public abstract class MessageHandlerTest<O extends SendOperation> {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testSendDynamicTopic() {
         String dynamicEventHubName = "dynamicName";
         Message<?> dynamicMessage =
@@ -68,6 +70,7 @@ public abstract class MessageHandlerTest<O extends SendOperation> {
     }
 
     @Test(expected = MessageTimeoutException.class)
+    @SuppressWarnings("unchecked")
     public void testSendTimeout() {
         when(this.sendOperation.sendAsync(eq(this.destination), isA(Message.class), isA(PartitionSupplier.class)))
                 .thenReturn(new CompletableFuture<>());

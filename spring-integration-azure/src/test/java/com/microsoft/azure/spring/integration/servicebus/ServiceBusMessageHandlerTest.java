@@ -25,6 +25,7 @@ public class ServiceBusMessageHandlerTest extends MessageHandlerTest<ServiceBusQ
 
     @Before
     @Override
+    @SuppressWarnings("unchecked")
     public void setUp() {
         this.future.complete(null);
         this.sendOperation = mock(ServiceBusQueueOperation.class);
