@@ -25,7 +25,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * Abstract base implementation of event hub template.
@@ -70,8 +74,19 @@ public class AbstractEventHubTemplate {
 
     public <T> CompletableFuture<Void> sendAsync(String eventHubName, @NonNull Message<T> message,
             PartitionSupplier partitionSupplier) {
+        return sendAsync(eventHubName, Collections.singleton(message), partitionSupplier);
+    }
+
+    public <T> CompletableFuture<Void> sendAsync(String eventHubName, Collection<Message<T>> messages,
+            PartitionSupplier partitionSupplier) {
         Assert.hasText(eventHubName, "eventHubName can't be null or empty");
-        EventData eventData = messageConverter.fromMessage(message, EventData.class);
+        List<EventData> eventData = messages.stream().map(m -> messageConverter.fromMessage(m, EventData.class))
+                                            .collect(Collectors.toList());
+        return doSend(eventHubName, partitionSupplier, eventData);
+    }
+
+    private CompletableFuture<Void> doSend(String eventHubName, PartitionSupplier partitionSupplier,
+            List<EventData> eventData) {
         try {
             EventHubClient client = this.clientFactory.getEventHubClientCreator().apply(eventHubName);
 
