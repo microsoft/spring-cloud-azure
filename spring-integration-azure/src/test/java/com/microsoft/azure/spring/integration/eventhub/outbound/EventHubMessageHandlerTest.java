@@ -25,6 +25,7 @@ public class EventHubMessageHandlerTest extends MessageHandlerTest<EventHubOpera
 
     @Before
     @Override
+    @SuppressWarnings("unchecked")
     public void setUp() {
         this.future.complete(null);
         this.sendOperation = mock(EventHubOperation.class);
