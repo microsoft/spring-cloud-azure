@@ -10,7 +10,11 @@ import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.Message;
 import com.microsoft.azure.spring.integration.core.converter.AbstractAzureMessageConverter;
 import org.springframework.messaging.MessageHeaders;
+import org.springframework.util.MimeType;
+import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -37,11 +41,37 @@ public class ServiceBusMessageConverter extends AbstractAzureMessageConverter<IM
     }
 
     @Override
-    protected void setCustomHeaders(org.springframework.messaging.Message<?> message, IMessage serviceBusMessage) {
-        //TODO: figure out how to set content-type header since value could be String or MimeType
+    protected void setCustomHeaders(MessageHeaders headers, IMessage serviceBusMessage) {
 
-        if (message.getHeaders().containsKey(MessageHeaders.ID)) {
-            serviceBusMessage.setMessageId(message.getHeaders().get(MessageHeaders.ID, UUID.class).toString());
+        if (headers.containsKey(MessageHeaders.CONTENT_TYPE)) {
+            Object contentType = headers.get(MessageHeaders.CONTENT_TYPE);
+
+            if (contentType instanceof MimeType) {
+                serviceBusMessage.setContentType(((MimeType) contentType).getType());
+            } else /* contentType is String */ {
+                serviceBusMessage.setContentType((String) contentType);
+            }
         }
+
+        if (headers.containsKey(MessageHeaders.ID)) {
+            serviceBusMessage.setMessageId(headers.get(MessageHeaders.ID, UUID.class).toString());
+        }
+
+        if (headers.containsKey(MessageHeaders.REPLY_CHANNEL)) {
+            serviceBusMessage.setReplyTo(headers.get(MessageHeaders.REPLY_CHANNEL, String.class));
+        }
+    }
+
+    @Override
+    protected MessageHeaders buildCustomHeaders(IMessage serviceBusMessage) {
+        Map<String, Object> headers = new HashMap<>();
+
+        headers.put(MessageHeaders.ID, UUID.fromString(serviceBusMessage.getMessageId()));
+        headers.put(MessageHeaders.CONTENT_TYPE, serviceBusMessage.getContentType());
+        if (StringUtils.hasText(serviceBusMessage.getReplyTo())) {
+            headers.put(MessageHeaders.REPLY_CHANNEL, serviceBusMessage.getReplyTo());
+        }
+
+        return new MessageHeaders(headers);
     }
 }

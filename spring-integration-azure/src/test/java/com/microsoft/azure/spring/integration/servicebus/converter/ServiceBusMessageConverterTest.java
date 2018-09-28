@@ -10,6 +10,9 @@ import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.Message;
 import com.microsoft.azure.spring.integration.core.converter.AzureMessageConverter;
 import com.microsoft.azure.spring.integration.core.converter.AzureMessageConverterTest;
+import org.springframework.messaging.MessageHeaders;
+
+import static org.junit.Assert.assertEquals;
 
 public class ServiceBusMessageConverterTest extends AzureMessageConverterTest<IMessage> {
     @Override
@@ -25,5 +28,14 @@ public class ServiceBusMessageConverterTest extends AzureMessageConverterTest<IM
     @Override
     protected Class<IMessage> getTargetClass() {
         return IMessage.class;
+    }
+
+    protected void assertMessageHeadersEqual(IMessage serviceBusMessage,
+            org.springframework.messaging.Message<?> message) {
+        assertEquals(serviceBusMessage.getMessageId(), message.getHeaders().getId().toString());
+        assertEquals(serviceBusMessage.getContentType(),
+                message.getHeaders().get(MessageHeaders.CONTENT_TYPE, String.class));
+        assertEquals(serviceBusMessage.getReplyTo(),
+                message.getHeaders().get(MessageHeaders.REPLY_CHANNEL, String.class));
     }
 }

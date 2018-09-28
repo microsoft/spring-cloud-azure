@@ -61,6 +61,8 @@ public abstract class AzureMessageConverterTest<T> {
         }
     }
 
+    protected void assertMessageHeadersEqual(T azureMessage, Message<?> message){}
+
     protected abstract T getInstance();
 
     protected abstract AzureMessageConverter<T> getConverter();
