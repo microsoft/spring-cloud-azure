@@ -18,7 +18,7 @@ public class Tuple<T, U> {
     }
 
     public static <T, U> Tuple<T, U> of(T first, U second) {
-        return new Tuple(first, second);
+        return new Tuple<>(first, second);
     }
 
     public T getFirst() {
