@@ -56,9 +56,7 @@ public class EventHubTestOperation extends EventHubTemplate {
     }
 
     @Override
-    protected synchronized void register(Tuple<String, String> nameAndGroup, EventHubProcessor eventProcessor) {
-        String name = nameAndGroup.getFirst();
-        String group = nameAndGroup.getSecond();
+    protected synchronized void register(String name, String group, EventHubProcessor eventProcessor) {
         processorsByNameAndGroup.putIfAbsent(name, new ConcurrentHashMap<>());
 
         processorsByNameAndGroup.get(name).putIfAbsent(group, eventProcessor);

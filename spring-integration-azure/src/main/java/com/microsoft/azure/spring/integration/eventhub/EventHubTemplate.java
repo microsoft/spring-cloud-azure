@@ -30,10 +30,8 @@ public class EventHubTemplate extends AbstractEventHubTemplate implements EventH
     @Override
     public boolean subscribe(String destination, String consumerGroup, Consumer<Message<?>> consumer,
             Class<?> messagePayloadType) {
-        Tuple<String, String> nameAndConsumerGroup = Tuple.of(destination, consumerGroup);
-
-        if (subscribedNameAndGroup.putIfAbsent(nameAndConsumerGroup, true) == null) {
-            this.register(nameAndConsumerGroup,
+        if (subscribedNameAndGroup.putIfAbsent(Tuple.of(destination, consumerGroup), true) == null) {
+            this.register(destination, consumerGroup,
                     new EventHubProcessor(consumer, messagePayloadType, getCheckpointMode(), getMessageConverter()));
             return true;
         }
@@ -43,10 +41,8 @@ public class EventHubTemplate extends AbstractEventHubTemplate implements EventH
 
     @Override
     public boolean unsubscribe(String destination, String consumerGroup) {
-        Tuple<String, String> nameAndConsumerGroup = Tuple.of(destination, consumerGroup);
-
-        if (subscribedNameAndGroup.remove(nameAndConsumerGroup, true)) {
-            unregister(nameAndConsumerGroup);
+        if (subscribedNameAndGroup.remove(Tuple.of(destination, consumerGroup), true)) {
+            unregister(destination, consumerGroup);
             return true;
         }
 

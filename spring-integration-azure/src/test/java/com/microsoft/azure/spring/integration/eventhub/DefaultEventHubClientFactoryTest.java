@@ -13,7 +13,6 @@ import com.microsoft.azure.management.storage.StorageAccount;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.impl.StorageAccountManager;
 import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStringProvider;
-import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -75,28 +74,28 @@ public class DefaultEventHubClientFactoryTest {
 
     @Test
     public void testGetEventHubClient() {
-        EventHubClient client = clientFactory.getEventHubClientCreator().apply(eventHubName);
+        EventHubClient client = clientFactory.getOrCreateClient(eventHubName);
         assertNotNull(client);
-        EventHubClient another = clientFactory.getEventHubClientCreator().apply(eventHubName);
+        EventHubClient another = clientFactory.getOrCreateClient(eventHubName);
         assertEquals(client, another);
     }
 
     @Test
     public void testGetPartitionSender() {
-        EventHubClient client = clientFactory.getEventHubClientCreator().apply(eventHubName);
-        PartitionSender sender = clientFactory.getPartitionSenderCreator().apply(Tuple.of(client, partitionId));
+        EventHubClient client = clientFactory.getOrCreateClient(eventHubName);
+        PartitionSender sender = clientFactory.getOrCreatePartitionSender(this.eventHubName, partitionId);
         assertNotNull(sender);
-        PartitionSender another = clientFactory.getPartitionSenderCreator().apply(Tuple.of(client, partitionId));
+        PartitionSender another = clientFactory.getOrCreatePartitionSender(eventHubName, partitionId);
         assertEquals(sender, another);
     }
 
     @Test
     @Ignore("Cannot mock EventProcessorHost constructor")
     public void testGetEventProcessorHost() {
-        EventProcessorHost host = clientFactory.getProcessorHostCreator().apply(Tuple.of(eventHubName, consumerGroup));
+        EventProcessorHost host = clientFactory.getOrCreateEventProcessorHost(eventHubName, consumerGroup);
         assertNotNull(host);
         EventProcessorHost another =
-                clientFactory.getProcessorHostCreator().apply(Tuple.of(eventHubName, consumerGroup));
+                clientFactory.getOrCreateEventProcessorHost(eventHubName, consumerGroup);
         assertEquals(host, another);
     }
 }
