@@ -38,7 +38,8 @@ public class ServiceBusTopicOperationSendSubscribeTest
     public void setUp() {
         CompletableFuture<Void> future = new CompletableFuture<>();
         future.complete(null);
-        when(this.clientFactory.getSubscriptionClientCreator()).thenReturn((s) -> subscriptionClient);
+        when(this.clientFactory.getOrCreateSubscriptionClient(anyString(), anyString()))
+                .thenReturn(this.subscriptionClient);
         whenRegisterMessageHandler(subscriptionClient);
         when(this.subscriptionClient.completeAsync(any())).thenReturn(future);
         when(this.subscriptionClient.abandonAsync(any())).thenReturn(future);

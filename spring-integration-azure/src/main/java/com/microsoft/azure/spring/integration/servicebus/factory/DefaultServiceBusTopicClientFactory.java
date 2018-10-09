@@ -14,8 +14,8 @@ import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider
 import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
-import org.springframework.util.Assert;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -27,7 +27,7 @@ import java.util.function.Function;
 public class DefaultServiceBusTopicClientFactory extends AbstractServiceBusSenderFactory
         implements ServiceBusTopicClientFactory {
     private static final String SUBSCRIPTION_PATH = "%s/subscriptions/%s";
-    private final Function<Tuple<String, String>, ISubscriptionClient> subscriptionClientCreator =
+    private final BiFunction<String, String, ISubscriptionClient> subscriptionClientCreator =
             Memoizer.memoize(this::createSubscriptionClient);
     private final Function<String, ? extends IMessageSender> sendCreator = Memoizer.memoize(this::createTopicClient);
 
@@ -35,19 +35,7 @@ public class DefaultServiceBusTopicClientFactory extends AbstractServiceBusSende
         super(resourceManagerProvider, namespace);
     }
 
-    @Override
-    public Function<Tuple<String, String>, ISubscriptionClient> getSubscriptionClientCreator() {
-        return subscriptionClientCreator;
-    }
-
-    @Override
-    public Function<String, ? extends IMessageSender> getSenderCreator() {
-        return sendCreator;
-    }
-
-    private ISubscriptionClient createSubscriptionClient(Tuple<String, String> nameAndSubscription) {
-        String topicName = nameAndSubscription.getFirst();
-        String subscription = nameAndSubscription.getSecond();
+    private ISubscriptionClient createSubscriptionClient(String topicName, String subscription) {
 
         Topic topic = resourceManagerProvider.getServiceBusTopicManager().getOrCreate(Tuple.of
                 (serviceBusNamespace, topicName));
@@ -72,5 +60,15 @@ public class DefaultServiceBusTopicClientFactory extends AbstractServiceBusSende
         } catch (InterruptedException | ServiceBusException e) {
             throw new ServiceBusRuntimeException("Failed to create service bus topic client", e);
         }
+    }
+
+    @Override
+    public ISubscriptionClient getOrCreateSubscriptionClient(String topic, String subscription) {
+        return this.subscriptionClientCreator.apply(topic, subscription);
+    }
+
+    @Override
+    public IMessageSender getOrCreateSender(String name) {
+        return this.sendCreator.apply(name);
     }
 }

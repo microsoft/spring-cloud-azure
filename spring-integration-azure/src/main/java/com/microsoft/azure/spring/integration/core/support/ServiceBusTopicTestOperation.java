@@ -51,7 +51,7 @@ public class ServiceBusTopicTestOperation extends ServiceBusTopicTemplate {
     protected void internalSubscribe(String name, String consumerGroup, Consumer<Message<?>> consumer,
             Class<?> payloadType) {
         ISubscriptionClient subscriptionClient =
-                this.senderFactory.getSubscriptionClientCreator().apply(Tuple.of(name, consumerGroup));
+                this.senderFactory.getOrCreateSubscriptionClient(name, consumerGroup);
 
         ServiceBusMessageHandler handler = new TopicMessageHandler(consumer, payloadType, subscriptionClient);
 

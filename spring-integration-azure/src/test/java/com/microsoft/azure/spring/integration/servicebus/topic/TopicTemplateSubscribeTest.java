@@ -9,7 +9,6 @@ package com.microsoft.azure.spring.integration.servicebus.topic;
 import com.microsoft.azure.servicebus.IMessageHandler;
 import com.microsoft.azure.servicebus.SubscriptionClient;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
-import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.azure.spring.integration.SubscribeByGroupOperationTest;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
 import org.junit.Before;
@@ -36,19 +35,24 @@ public class TopicTemplateSubscribeTest extends SubscribeByGroupOperationTest<Se
     @Before
     public void setUp() {
         this.subscribeByGroupOperation = new ServiceBusTopicTemplate(mockClientFactory);
-        when(this.mockClientFactory.getSubscriptionClientCreator()).thenReturn(this::createSubscriptionClient);
+        when(this.mockClientFactory.getOrCreateSubscriptionClient(this.destination, this.consumerGroup))
+                .thenReturn(this.subscriptionClient);
+        when(this.mockClientFactory.getOrCreateSubscriptionClient(this.destination, this.anotherConsumerGroup))
+                .thenReturn(this.anotherSubscriptionClient);
         whenRegisterMessageHandler(this.subscriptionClient);
         whenRegisterMessageHandler(this.anotherSubscriptionClient);
     }
 
     @Override
     protected void verifySubscriberCreatorCalled() {
-        verify(this.mockClientFactory, atLeastOnce()).getSubscriptionClientCreator();
+        verify(this.mockClientFactory, atLeastOnce())
+                .getOrCreateSubscriptionClient(eq(this.destination), eq(this.consumerGroup));
     }
 
     @Override
     protected void verifySubscriberCreatorNotCalled() {
-        verify(this.mockClientFactory, never()).getSubscriptionClientCreator();
+        verify(this.mockClientFactory, never())
+                .getOrCreateSubscriptionClient(eq(this.destination), eq(this.consumerGroup));
     }
 
     @Override
@@ -62,14 +66,6 @@ public class TopicTemplateSubscribeTest extends SubscribeByGroupOperationTest<Se
 
     @Override
     protected void verifySubscriberUnregistered(int times) {
-    }
-
-    private SubscriptionClient createSubscriptionClient(Tuple<String, String> nameAndConsumerGroup) {
-        if (nameAndConsumerGroup.getSecond().equals(this.consumerGroup)) {
-            return this.subscriptionClient;
-        } else {
-            return this.anotherSubscriptionClient;
-        }
     }
 
     private void whenRegisterMessageHandler(SubscriptionClient subscriptionClient) {

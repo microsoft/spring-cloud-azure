@@ -31,6 +31,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
@@ -56,7 +57,8 @@ public class ServiceBusPartitionBinderTests extends
 
     @Before
     public void setUp() {
-        when(this.clientFactory.getSubscriptionClientCreator()).thenReturn((s) -> subscriptionClient);
+        when(this.clientFactory.getOrCreateSubscriptionClient(anyString(), anyString()))
+                .thenReturn(this.subscriptionClient);
         this.binder = new ServiceBusTopicTestBinder(new ServiceBusTopicTestOperation(this.clientFactory));
     }
 
