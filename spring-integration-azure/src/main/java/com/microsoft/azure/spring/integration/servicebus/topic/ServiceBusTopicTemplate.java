@@ -66,7 +66,7 @@ public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicC
     protected void internalSubscribe(String name, String consumerGroup, Consumer<Message<?>> consumer,
             Class<?> payloadType) {
         ISubscriptionClient subscriptionClient =
-                this.senderFactory.getSubscriptionClientCreator().apply(Tuple.of(name, consumerGroup));
+                this.senderFactory.getOrCreateSubscriptionClient(name, consumerGroup);
 
         try {
             subscriptionClient

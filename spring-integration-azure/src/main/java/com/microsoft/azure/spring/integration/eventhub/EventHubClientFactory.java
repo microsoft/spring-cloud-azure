@@ -9,28 +9,16 @@ package com.microsoft.azure.spring.integration.eventhub;
 import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.eventhubs.PartitionSender;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
-import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
-
-import java.util.function.Function;
 
 /**
  * @author Warren Zhu
  */
 public interface EventHubClientFactory {
 
-    /**
-     * Return a function which accepts event hub name, then returns {@link EventHubClient}
-     */
-    Function<String, EventHubClient> getEventHubClientCreator();
+    EventHubClient getOrCreateClient(String name);
 
-    /**
-     * Return a function which accepts {@link EventHubClient} and partition id, then returns {@link PartitionSender}
-     */
-    Function<Tuple<EventHubClient, String>, PartitionSender> getPartitionSenderCreator();
+    PartitionSender getOrCreatePartitionSender(String eventhub, String partition);
 
-    /**
-     * Return a function which accepts event hub name and consumer group, then returns {@link EventProcessorHost}
-     */
-    Function<Tuple<String, String>, EventProcessorHost> getProcessorHostCreator();
+    EventProcessorHost getOrCreateEventProcessorHost(String name, String consumerGroup);
 
 }

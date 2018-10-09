@@ -19,5 +19,5 @@ public interface ServiceBusQueueClientFactory extends ServiceBusSenderFactory {
     /**
      * Return a function which accepts service bus queue name, then returns {@link IQueueClient}
      */
-    Function<String, IQueueClient> getQueueClientCreator();
+    IQueueClient getOrCreateClient(String name);
 }

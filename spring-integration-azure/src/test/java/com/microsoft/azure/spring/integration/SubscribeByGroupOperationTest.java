@@ -17,7 +17,7 @@ public abstract class SubscribeByGroupOperationTest<O extends SubscribeByGroupOp
     protected O subscribeByGroupOperation;
     protected String consumerGroup = "consumer-group";
     protected String anotherConsumerGroup = "consumer-group2";
-    private String destination = "event-hub";
+    protected String destination = "event-hub";
 
     @Test
     public void testSubscribeAndUnsubscribe() {

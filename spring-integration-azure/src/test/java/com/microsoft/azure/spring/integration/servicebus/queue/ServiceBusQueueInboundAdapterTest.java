@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -28,7 +29,7 @@ public class ServiceBusQueueInboundAdapterTest extends InboundChannelAdapterTest
 
     @Override
     public void setUp() {
-        when(this.clientFactory.getQueueClientCreator()).thenReturn((s) -> queueClient);
+        when(this.clientFactory.getOrCreateClient(anyString())).thenReturn(queueClient);
         this.adapter =
                 new ServiceBusQueueInboundChannelAdapter(destination, new ServiceBusQueueTestOperation(clientFactory));
     }

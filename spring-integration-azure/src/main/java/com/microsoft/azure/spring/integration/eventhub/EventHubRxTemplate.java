@@ -50,9 +50,10 @@ public class EventHubRxTemplate extends AbstractEventHubTemplate implements Even
         Tuple<String, String> nameAndConsumerGroup = Tuple.of(destination, consumerGroup);
 
         subjectByNameAndGroup.computeIfAbsent(nameAndConsumerGroup, k -> Observable.<Message<?>>create(subscriber -> {
-            this.register(k, new EventHubProcessor(subscriber::onNext, messagePayloadType, getCheckpointMode(),
-                    getMessageConverter()));
-            subscriber.add(Subscriptions.create(() -> unregister(nameAndConsumerGroup)));
+            this.register(destination, consumerGroup,
+                    new EventHubProcessor(subscriber::onNext, messagePayloadType, getCheckpointMode(),
+                            getMessageConverter()));
+            subscriber.add(Subscriptions.create(() -> unregister(destination, consumerGroup)));
         }).share());
 
         return subjectByNameAndGroup.get(nameAndConsumerGroup);

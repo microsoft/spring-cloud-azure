@@ -66,7 +66,7 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
     @SuppressWarnings("unchecked")
     protected void internalSubscribe(String name, Consumer<Message<?>> consumer, Class<?> payloadType) {
 
-        IQueueClient queueClient = this.senderFactory.getQueueClientCreator().apply(name);
+        IQueueClient queueClient = this.senderFactory.getOrCreateClient(name);
 
         try {
             queueClient.registerMessageHandler(new QueueMessageHandler(consumer, payloadType, queueClient), options);

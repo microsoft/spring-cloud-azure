@@ -32,18 +32,18 @@ public class QueueTemplateSubscribeTest extends SubscribeOperationTest<ServiceBu
     @Before
     public void setUp() {
         this.subscribeOperation = new ServiceBusQueueTemplate(mockClientFactory);
-        when(this.mockClientFactory.getQueueClientCreator()).thenReturn((s) -> queueClient);
+        when(this.mockClientFactory.getOrCreateClient(anyString())).thenReturn(queueClient);
         whenRegisterMessageHandler(this.queueClient);
     }
 
     @Override
     protected void verifySubscriberCreatorCalled() {
-        verify(this.mockClientFactory, atLeastOnce()).getQueueClientCreator();
+        verify(this.mockClientFactory, atLeastOnce()).getOrCreateClient(anyString());
     }
 
     @Override
     protected void verifySubscriberCreatorNotCalled() {
-        verify(this.mockClientFactory, never()).getQueueClientCreator();
+        verify(this.mockClientFactory, never()).getOrCreateClient(anyString());
     }
 
     @Override

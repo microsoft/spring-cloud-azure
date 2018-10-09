@@ -6,7 +6,6 @@
 
 package com.microsoft.azure.spring.integration.eventhub;
 
-import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.eventhubs.PartitionSender;
 import com.microsoft.azure.spring.integration.SendOperationTest;
@@ -16,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -34,11 +32,12 @@ public class EventHubTemplateSendTest extends SendOperationTest<EventHubOperatio
     @Before
     public void setUp() {
 
-        when(this.mockClientFactory.getEventHubClientCreator()).thenReturn(s -> this.mockClient);
+        when(this.mockClientFactory.getOrCreateClient(this.destination)).thenReturn(this.mockClient);
         when(this.mockClient.send(anyCollection())).thenReturn(this.future);
         when(this.mockClient.send(anyCollection(), eq(partitionKey))).thenReturn(this.future);
 
-        when(this.mockClientFactory.getPartitionSenderCreator()).thenReturn(t -> this.mockSender);
+        when(this.mockClientFactory.getOrCreatePartitionSender(eq(this.destination), anyString()))
+                .thenReturn(this.mockSender);
         when(this.mockSender.send(anyCollection())).thenReturn(this.future);
         this.sendOperation = new EventHubTemplate(mockClientFactory);
     }
@@ -50,19 +49,17 @@ public class EventHubTemplateSendTest extends SendOperationTest<EventHubOperatio
 
     @Override
     protected void verifyPartitionSenderCalled(int times) {
-        verify(this.mockClientFactory, times(times)).getPartitionSenderCreator();
+        verify(this.mockClientFactory, times(times)).getOrCreatePartitionSender(eq(this.destination), anyString());
     }
 
     @Override
     protected void whenSendWithException() {
-        when(this.mockClientFactory.getEventHubClientCreator()).thenReturn((s) -> {
-            throw new EventHubRuntimeException("couldn't create the event hub client.");
-        });
+        when(this.mockClientFactory.getOrCreateClient(this.destination)).thenThrow(EventHubRuntimeException.class);
     }
 
     @Override
     protected void verifyGetClientCreator(int times) {
-        verify(this.mockClientFactory, times(times)).getEventHubClientCreator();
+        verify(this.mockClientFactory, times(times)).getOrCreateClient(this.destination);
     }
 
     @Override

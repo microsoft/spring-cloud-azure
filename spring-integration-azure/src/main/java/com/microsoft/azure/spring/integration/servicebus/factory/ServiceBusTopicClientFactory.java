@@ -20,5 +20,5 @@ public interface ServiceBusTopicClientFactory extends ServiceBusSenderFactory {
     /**
      * Return a function which accepts service bus topic and subscription name, then returns {@link ISubscriptionClient}
      */
-    Function<Tuple<String, String>, ISubscriptionClient> getSubscriptionClientCreator();
+    ISubscriptionClient getOrCreateSubscriptionClient(String topic, String subscription);
 }

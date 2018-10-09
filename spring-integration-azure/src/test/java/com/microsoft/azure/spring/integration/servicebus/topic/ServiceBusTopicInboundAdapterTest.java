@@ -28,7 +28,8 @@ public class ServiceBusTopicInboundAdapterTest extends InboundChannelAdapterTest
 
     @Override
     public void setUp() {
-        when(this.clientFactory.getSubscriptionClientCreator()).thenReturn((s) -> subscriptionClient);
+        when(this.clientFactory.getOrCreateSubscriptionClient(this.destination, this.consumerGroup))
+                .thenReturn(this.subscriptionClient);
         this.adapter =
                 new ServiceBusTopicInboundChannelAdapter(destination, new ServiceBusTopicTestOperation(clientFactory),
                         consumerGroup);

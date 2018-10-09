@@ -12,7 +12,6 @@ import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.eventhubs.EventPosition;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.eventprocessorhost.EventProcessorOptions;
-import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
@@ -88,13 +87,13 @@ public class AbstractEventHubTemplate {
     private CompletableFuture<Void> doSend(String eventHubName, PartitionSupplier partitionSupplier,
             List<EventData> eventData) {
         try {
-            EventHubClient client = this.clientFactory.getEventHubClientCreator().apply(eventHubName);
+            EventHubClient client = this.clientFactory.getOrCreateClient(eventHubName);
 
             if (partitionSupplier == null) {
                 return client.send(eventData);
             } else if (!Strings.isNullOrEmpty(partitionSupplier.getPartitionId())) {
-                return this.clientFactory.getPartitionSenderCreator()
-                                         .apply(Tuple.of(client, partitionSupplier.getPartitionId())).send(eventData);
+                return this.clientFactory.getOrCreatePartitionSender(eventHubName, partitionSupplier.getPartitionId())
+                                         .send(eventData);
             } else if (!Strings.isNullOrEmpty(partitionSupplier.getPartitionKey())) {
                 return client.send(eventData, partitionSupplier.getPartitionKey());
             } else {
@@ -108,17 +107,17 @@ public class AbstractEventHubTemplate {
         }
     }
 
-    protected void register(Tuple<String, String> nameAndGroup, EventHubProcessor eventProcessor) {
-        EventProcessorHost host = this.clientFactory.getProcessorHostCreator().apply(nameAndGroup);
+    protected void register(String name, String consumerGroup, EventHubProcessor eventProcessor) {
+        EventProcessorHost host = this.clientFactory.getOrCreateEventProcessorHost(name, consumerGroup);
         host.registerEventProcessorFactory(context -> eventProcessor, buildEventProcessorOptions(startPosition));
     }
 
-    protected void unregister(Tuple<String, String> nameAndGroup) {
-        this.clientFactory.getProcessorHostCreator().apply(nameAndGroup).unregisterEventProcessor()
+    protected void unregister(String name, String consumerGroup) {
+        this.clientFactory.getOrCreateEventProcessorHost(name, consumerGroup).unregisterEventProcessor()
                           .whenComplete((s, t) -> {
                               if (t != null) {
-                                  LOGGER.warn(String.format("Failed to unregister consumer '%s' with group '%s'",
-                                          nameAndGroup.getFirst(), nameAndGroup.getSecond()), t);
+                                  LOGGER.warn(String.format("Failed to unregister consumer '%s' with group '%s'", name,
+                                          consumerGroup), t);
                               }
                           });
     }

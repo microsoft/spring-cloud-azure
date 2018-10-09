@@ -16,12 +16,12 @@ import org.junit.Before;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 
-public abstract class ServiceBusTemplateSendTest<T extends ServiceBusSenderFactory>
+public abstract class ServiceBusTemplateSendTest<T extends ServiceBusSenderFactory, C extends IMessageSender>
         extends SendOperationTest<SendOperation> {
 
     protected T mockClientFactory;
 
-    protected IMessageSender mockClient;
+    protected C mockClient;
 
     @Before
     public abstract void setUp();
@@ -38,14 +38,12 @@ public abstract class ServiceBusTemplateSendTest<T extends ServiceBusSenderFacto
 
     @Override
     protected void whenSendWithException() {
-        when(this.mockClientFactory.getSenderCreator()).thenReturn((s) -> {
-            throw new ServiceBusRuntimeException("couldn't create the service bus topic client.");
-        });
+        when(this.mockClientFactory.getOrCreateSender(anyString())).thenThrow(ServiceBusRuntimeException.class);
     }
 
     @Override
     protected void verifyGetClientCreator(int times) {
-        verify(this.mockClientFactory, times(times)).getSenderCreator();
+        verify(this.mockClientFactory, times(times)).getOrCreateSender(anyString());
     }
 
     @Override

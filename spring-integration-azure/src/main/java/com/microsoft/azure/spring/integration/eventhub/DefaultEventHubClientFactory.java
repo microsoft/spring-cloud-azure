@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -49,14 +50,11 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
     private final Map<Tuple<String, String>, EventProcessorHost> processorHostMap = new ConcurrentHashMap<>();
 
     // Memoized functional client creator
-    @Getter
     private final Function<String, EventHubClient> eventHubClientCreator =
             Memoizer.memoize(clientsByName, this::createEventHubClient);
-    @Getter
-    private final Function<Tuple<String, String>, EventProcessorHost> processorHostCreator =
+    private final BiFunction<String, String, EventProcessorHost> processorHostCreator =
             Memoizer.memoize(processorHostMap, this::createEventProcessorHost);
-    @Getter
-    private final Function<Tuple<EventHubClient, String>, PartitionSender> partitionSenderCreator =
+    private final BiFunction<EventHubClient, String, PartitionSender> partitionSenderCreator =
             Memoizer.memoize(partitionSenderMap, this::createPartitionSender);
     private final Function<String, String> connectionStringProvider;
 
@@ -87,19 +85,17 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
         }
     }
 
-    private PartitionSender createPartitionSender(Tuple<EventHubClient, String> clientAndPartitionId) {
+    private PartitionSender createPartitionSender(EventHubClient client, String partitionId) {
         try {
-            return clientAndPartitionId.getFirst().createPartitionSenderSync(clientAndPartitionId.getSecond());
+            return client.createPartitionSenderSync(partitionId);
         } catch (EventHubException e) {
             throw new EventHubRuntimeException("Error when creating event hub partition sender", e);
         }
     }
 
-    private EventProcessorHost createEventProcessorHost(Tuple<String, String> nameAndConsumerGroup) {
-        String eventHubName = nameAndConsumerGroup.getFirst();
-        return new EventProcessorHost(EventProcessorHost.createHostName(HostnameHelper.getHostname()), eventHubName,
-                nameAndConsumerGroup.getSecond(), connectionStringProvider.apply(eventHubName),
-                checkpointStorageConnectionString, eventHubName);
+    private EventProcessorHost createEventProcessorHost(String name, String consumerGroup) {
+        return new EventProcessorHost(EventProcessorHost.createHostName(HostnameHelper.getHostname()), name,
+                consumerGroup, connectionStringProvider.apply(name), checkpointStorageConnectionString, name);
     }
 
     private <K, V> void close(Map<K, V> map, Function<V, CompletableFuture<Void>> close) {
@@ -117,4 +113,18 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
         close(processorHostMap, EventProcessorHost::unregisterEventProcessor);
     }
 
+    @Override
+    public EventHubClient getOrCreateClient(String name) {
+        return this.eventHubClientCreator.apply(name);
+    }
+
+    @Override
+    public PartitionSender getOrCreatePartitionSender(String eventhub, String partition) {
+        return this.partitionSenderCreator.apply(getOrCreateClient(eventhub), partition);
+    }
+
+    @Override
+    public EventProcessorHost getOrCreateEventProcessorHost(String name, String consumerGroup) {
+        return this.processorHostCreator.apply(name, consumerGroup);
+    }
 }
