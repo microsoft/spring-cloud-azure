@@ -50,7 +50,7 @@ public class ServiceBusQueueTestOperation extends ServiceBusQueueTemplate {
     protected void internalSubscribe(String name, Consumer<Message<?>> consumer,
             Class<?> payloadType) {
         IQueueClient queueClient =
-                this.senderFactory.getQueueClientCreator().apply(name);
+                this.senderFactory.getOrCreateClient(name);
 
         ServiceBusMessageHandler handler = new QueueMessageHandler(consumer, payloadType, queueClient);
 

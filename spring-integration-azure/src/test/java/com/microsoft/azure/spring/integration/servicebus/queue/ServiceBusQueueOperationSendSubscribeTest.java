@@ -38,7 +38,7 @@ public class ServiceBusQueueOperationSendSubscribeTest
     public void setUp() {
         CompletableFuture<Void> future = new CompletableFuture<>();
         future.complete(null);
-        when(this.clientFactory.getQueueClientCreator()).thenReturn((s) -> queueClient);
+        when(this.clientFactory.getOrCreateClient(anyString())).thenReturn(queueClient);
         whenRegisterMessageHandler(queueClient);
         when(this.queueClient.completeAsync(any())).thenReturn(future);
         when(this.queueClient.abandonAsync(any())).thenReturn(future);

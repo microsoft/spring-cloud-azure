@@ -67,7 +67,7 @@ public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements Se
             serviceBusMessage.setPartitionKey(partitionKey);
         }
 
-        return this.senderFactory.getSenderCreator().apply(destination).sendAsync(serviceBusMessage);
+        return this.senderFactory.getOrCreateSender(destination).sendAsync(serviceBusMessage);
     }
 
     private String getPartitionKey(PartitionSupplier partitionSupplier) {

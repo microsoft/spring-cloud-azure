@@ -6,6 +6,7 @@
 
 package com.microsoft.azure.spring.integration.servicebus.factory;
 
+import com.microsoft.azure.servicebus.IMessageSender;
 import com.microsoft.azure.servicebus.IQueueClient;
 import com.microsoft.azure.servicebus.QueueClient;
 import com.microsoft.azure.servicebus.ReceiveMode;
@@ -33,16 +34,6 @@ public class DefaultServiceBusQueueClientFactory extends AbstractServiceBusSende
         super(resourceManagerProvider, namespace);
     }
 
-    @Override
-    public Function<String, IQueueClient> getQueueClientCreator() {
-        return queueClientCreator;
-    }
-
-    @Override
-    public Function<String, IQueueClient> getSenderCreator() {
-        return getQueueClientCreator();
-    }
-
     private IQueueClient createQueueClient(String destination) {
         resourceManagerProvider.getServiceBusQueueManager().getOrCreate(Tuple.of(serviceBusNamespace, destination));
         try {
@@ -51,5 +42,15 @@ public class DefaultServiceBusQueueClientFactory extends AbstractServiceBusSende
         } catch (InterruptedException | ServiceBusException e) {
             throw new ServiceBusRuntimeException("Failed to create service bus queue client", e);
         }
+    }
+
+    @Override
+    public IQueueClient getOrCreateClient(String name) {
+        return this.queueClientCreator.apply(name);
+    }
+
+    @Override
+    public IMessageSender getOrCreateSender(String name) {
+        return getOrCreateClient(name);
     }
 }

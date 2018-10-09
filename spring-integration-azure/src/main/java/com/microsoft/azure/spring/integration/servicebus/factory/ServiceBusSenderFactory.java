@@ -19,5 +19,5 @@ public interface ServiceBusSenderFactory {
     /**
      * Return a function which accepts service bus topic or queue name, then returns {@link IMessageSender}
      */
-    Function<String, ? extends IMessageSender> getSenderCreator();
+    IMessageSender getOrCreateSender(String name);
 }
