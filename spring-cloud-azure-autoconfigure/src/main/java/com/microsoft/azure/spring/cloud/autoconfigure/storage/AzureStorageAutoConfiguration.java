@@ -15,8 +15,7 @@ import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStrin
 import com.microsoft.azure.spring.cloud.storage.AzureStorageProtocolResolver;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.blob.CloudBlobClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -36,6 +35,7 @@ import java.security.InvalidKeyException;
  *
  * @author Warren Zhu
  */
+@Slf4j
 @Configuration
 @AutoConfigureBefore(TelemetryAutoConfiguration.class)
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
@@ -44,7 +44,6 @@ import java.security.InvalidKeyException;
 @EnableConfigurationProperties(AzureStorageProperties.class)
 @Import(AzureStorageProtocolResolver.class)
 public class AzureStorageAutoConfiguration {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AzureStorageAutoConfiguration.class);
 
     private static final String STORAGE_BLOB = "StorageBlob";
 
@@ -56,7 +55,7 @@ public class AzureStorageAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public CloudStorageAccount storage(ResourceManagerProvider resourceManagerProvider,
-            AzureStorageProperties storageProperties) {
+                                       AzureStorageProperties storageProperties) {
         String accountName = storageProperties.getAccount();
 
         StorageAccount storageAccount = resourceManagerProvider.getStorageAccountManager().getOrCreate(accountName);
@@ -66,7 +65,7 @@ public class AzureStorageAutoConfiguration {
         try {
             return CloudStorageAccount.parse(connectionString);
         } catch (URISyntaxException | InvalidKeyException e) {
-            LOGGER.error("Failed to parse connection string" + connectionString, e);
+            log.error("Failed to parse connection string" + connectionString, e);
             throw new RuntimeException("Failed to parse connection string" + connectionString, e);
         }
     }

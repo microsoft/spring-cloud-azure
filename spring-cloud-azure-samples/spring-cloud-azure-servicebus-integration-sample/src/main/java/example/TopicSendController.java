@@ -7,10 +7,8 @@
 package example;
 
 import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
-import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.MessagingGateway;
@@ -25,18 +23,19 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author Warren Zhu
  */
+@Slf4j
 @RestController
 public class TopicSendController {
 
-    private static final Log LOGGER = LogFactory.getLog(TopicSendController.class);
     private static final String OUTPUT_CHANNEL = "topic.output";
     private static final String TOPIC_NAME = "topic";
 
     @Autowired
     TopicOutboundGateway messagingGateway;
 
-    /** Message gateway binding with {@link MessageHandler}
-     *  via {@link MessageChannel} has name {@value OUTPUT_CHANNEL}
+    /**
+     * Message gateway binding with {@link MessageHandler}
+     * via {@link MessageChannel} has name {@value OUTPUT_CHANNEL}
      */
     @MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL)
     public interface TopicOutboundGateway {
@@ -59,12 +58,12 @@ public class TopicSendController {
         handler.setSendCallback(new ListenableFutureCallback<Void>() {
             @Override
             public void onSuccess(Void result) {
-                LOGGER.info("Message was sent successfully.");
+                log.info("Message was sent successfully.");
             }
 
             @Override
             public void onFailure(Throwable ex) {
-                LOGGER.info("There was an error sending the message.");
+                log.info("There was an error sending the message.");
             }
         });
 

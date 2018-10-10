@@ -8,8 +8,7 @@ package com.microsoft.azure.spring.cloud.storage;
 
 import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.blob.CloudBlobClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -24,9 +23,8 @@ import org.springframework.core.io.ResourceLoader;
  *
  * @author Warren Zhu
  */
+@Slf4j
 public class AzureStorageProtocolResolver implements ProtocolResolver, BeanFactoryPostProcessor, ResourceLoaderAware {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AzureStorageProtocolResolver.class);
 
     private ConfigurableListableBeanFactory beanFactory;
     private CloudBlobClient blobClient;
@@ -48,7 +46,7 @@ public class AzureStorageProtocolResolver implements ProtocolResolver, BeanFacto
         if (DefaultResourceLoader.class.isAssignableFrom(resourceLoader.getClass())) {
             ((DefaultResourceLoader) resourceLoader).addProtocolResolver(this);
         } else {
-            LOGGER.warn("The provided delegate resource loader is not an implementation " +
+            log.warn("The provided delegate resource loader is not an implementation " +
                     "of DefaultResourceLoader. Custom Protocol using blob:// prefix will not be enabled.");
         }
     }
