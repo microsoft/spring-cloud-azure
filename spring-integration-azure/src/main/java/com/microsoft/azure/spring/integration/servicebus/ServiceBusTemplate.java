@@ -20,8 +20,7 @@ import com.microsoft.azure.spring.integration.servicebus.converter.ServiceBusMes
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusSenderFactory;
 import lombok.Getter;
 import lombok.Setter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
@@ -40,8 +39,8 @@ import java.util.function.Consumer;
  *
  * @author Warren Zhu
  */
+@Slf4j
 public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements SendOperation {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceBusTemplate.class);
     protected final T senderFactory;
     protected final MessageHandlerOptions options = new MessageHandlerOptions(1, false, Duration.ofMinutes(5));
 
@@ -117,7 +116,7 @@ public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements Se
 
         @Override
         public void notifyException(Throwable exception, ExceptionPhase phase) {
-            LOGGER.error(String.format("Exception encountered in phase %s", phase), exception);
+            log.error(String.format("Exception encountered in phase %s", phase), exception);
         }
 
         protected abstract CompletableFuture<Void> success(UUID uuid);

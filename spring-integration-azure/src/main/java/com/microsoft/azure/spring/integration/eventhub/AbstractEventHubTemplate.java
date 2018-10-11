@@ -19,8 +19,7 @@ import com.microsoft.azure.spring.integration.eventhub.converter.EventHubMessage
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
 
@@ -38,9 +37,9 @@ import java.util.stream.Collectors;
  *
  * @author Warren Zhu
  */
+@Slf4j
 public class AbstractEventHubTemplate {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEventHubTemplate.class);
     private final EventHubClientFactory clientFactory;
 
     @Getter
@@ -100,7 +99,7 @@ public class AbstractEventHubTemplate {
                 return client.send(eventData);
             }
         } catch (EventHubRuntimeException e) {
-            LOGGER.error(String.format("Failed to send to '%s' ", eventHubName), e);
+            log.error(String.format("Failed to send to '%s' ", eventHubName), e);
             CompletableFuture<Void> future = new CompletableFuture<>();
             future.completeExceptionally(e);
             return future;
@@ -116,7 +115,7 @@ public class AbstractEventHubTemplate {
         this.clientFactory.getOrCreateEventProcessorHost(name, consumerGroup).unregisterEventProcessor()
                           .whenComplete((s, t) -> {
                               if (t != null) {
-                                  LOGGER.warn(String.format("Failed to unregister consumer '%s' with group '%s'", name,
+                                  log.warn(String.format("Failed to unregister consumer '%s' with group '%s'", name,
                                           consumerGroup), t);
                               }
                           });

@@ -13,8 +13,7 @@ import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusTemplate;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
@@ -29,9 +28,9 @@ import java.util.function.Consumer;
  *
  * @author Warren Zhu
  */
+@Slf4j
 public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicClientFactory>
         implements ServiceBusTopicOperation {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceBusTopicTemplate.class);
     private Set<Tuple<String, String>> nameAndConsumerGroups = Sets.newConcurrentHashSet();
 
     public ServiceBusTopicTemplate(ServiceBusTopicClientFactory clientFactory) {
@@ -73,7 +72,7 @@ public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicC
                     .registerMessageHandler(new TopicMessageHandler(consumer, payloadType, subscriptionClient),
                             options);
         } catch (ServiceBusException | InterruptedException e) {
-            LOGGER.error("Failed to register topic message handler", e);
+            log.error("Failed to register topic message handler", e);
             throw new ServiceBusRuntimeException("Failed to register topic message handler", e);
         }
     }

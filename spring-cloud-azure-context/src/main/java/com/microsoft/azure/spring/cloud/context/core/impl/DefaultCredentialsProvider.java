@@ -9,9 +9,8 @@ package com.microsoft.azure.spring.cloud.context.core.impl;
 import com.microsoft.azure.credentials.ApplicationTokenCredentials;
 import com.microsoft.azure.spring.cloud.context.core.api.CredentialSupplier;
 import com.microsoft.azure.spring.cloud.context.core.api.CredentialsProvider;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.lang.NonNull;
 
@@ -25,13 +24,12 @@ import java.io.InputStream;
  *
  * @author Warren Zhu
  */
+@Slf4j
 public class DefaultCredentialsProvider implements CredentialsProvider {
 
     private static final String TEMP_CREDENTIAL_FILE_PREFIX = "azure";
 
     private static final String TEMP_CREDENTIAL_FILE_SUFFIX = "credential";
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultCredentialsProvider.class);
 
     private ApplicationTokenCredentials credentials;
 
@@ -56,7 +54,7 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
 
             this.credentials = ApplicationTokenCredentials.fromFile(credentialFile);
         } catch (IOException e) {
-            LOGGER.error("Credential file path not found.", e);
+            log.error("Credential file path not found.", e);
             throw new IllegalArgumentException("Credential file path not found", e);
         }
     }

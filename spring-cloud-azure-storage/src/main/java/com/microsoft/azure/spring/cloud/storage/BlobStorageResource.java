@@ -10,8 +10,7 @@ import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.blob.CloudBlobClient;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
@@ -27,8 +26,8 @@ import java.net.URL;
  *
  * @author Warren Zhu
  */
+@Slf4j
 public class BlobStorageResource extends AbstractResource implements WritableResource {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BlobStorageResource.class);
 
     private final CloudBlobClient blobClient;
     private final String location;
@@ -50,7 +49,7 @@ public class BlobStorageResource extends AbstractResource implements WritableRes
             this.blobContainer = blobClient.getContainerReference(AzureStorageUtils.getContainerName(location));
             this.blockBlob = blobContainer.getBlockBlobReference(AzureStorageUtils.getBlobName(location));
         } catch (URISyntaxException | StorageException e) {
-            LOGGER.error("Failed to get cloud blob or container ", e);
+            log.error("Failed to get cloud blob or container ", e);
             throw new RuntimeException("Failed to get cloud blob or container", e);
         }
 
@@ -68,7 +67,7 @@ public class BlobStorageResource extends AbstractResource implements WritableRes
             }
             return this.blockBlob.openOutputStream();
         } catch (StorageException e) {
-            LOGGER.error("Failed to open output stream of cloud blob", e);
+            log.error("Failed to open output stream of cloud blob", e);
             throw new IOException("Failed to open output stream of cloud blob");
         }
     }
@@ -78,7 +77,7 @@ public class BlobStorageResource extends AbstractResource implements WritableRes
         try {
             return this.blobContainer.exists() && blockBlob.exists();
         } catch (StorageException e) {
-            LOGGER.error("Failed to check existence of cloud blob or container", e);
+            log.error("Failed to check existence of cloud blob or container", e);
             return false;
         }
     }
@@ -132,7 +131,7 @@ public class BlobStorageResource extends AbstractResource implements WritableRes
             assertExisted();
             return this.blockBlob.openInputStream();
         } catch (StorageException e) {
-            LOGGER.error("Failed to open input stream of cloud blob", e);
+            log.error("Failed to open input stream of cloud blob", e);
             throw new IOException("Failed to open input stream of cloud blob");
         }
     }
