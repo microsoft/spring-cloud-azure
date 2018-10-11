@@ -17,6 +17,7 @@ import com.microsoft.azure.management.servicebus.ServiceBusSubscription;
 import com.microsoft.azure.management.servicebus.Topic;
 import com.microsoft.azure.management.storage.StorageAccount;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
+import com.microsoft.azure.storage.queue.CloudQueue;
 
 /**
  * Interface to provide {@link ResourceManager}
@@ -33,5 +34,6 @@ public interface ResourceManagerProvider {
     ResourceManager<Queue, Tuple<ServiceBusNamespace, String>> getServiceBusQueueManager();
     ResourceManager<Topic, Tuple<ServiceBusNamespace, String>> getServiceBusTopicManager();
     ResourceManager<StorageAccount, String> getStorageAccountManager();
+    ResourceManager<CloudQueue, Tuple<String, String>> getStorageQueueManager();
     ResourceManager<ServiceBusSubscription, Tuple<Topic, String>> getServiceBusTopicSubscriptionManager();
 }
