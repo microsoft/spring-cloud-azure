@@ -60,7 +60,7 @@ public class StorageQueueTemplateReceiveTest {
                 .thenThrow(StorageException.class);
 
         CompletableFuture<Message<?>> future =
-                this.operation.receiveAsync(this.destination, this.visibilityTimeoutInSeconds);
+                this.operation.receiveAsync(this.destination);
         verifyStorageQueueRuntimeExceptionThrown(future);
     }
 

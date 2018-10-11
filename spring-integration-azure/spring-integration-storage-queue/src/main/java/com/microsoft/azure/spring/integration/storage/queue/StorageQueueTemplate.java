@@ -74,8 +74,7 @@ public class StorageQueueTemplate implements StorageQueueOperation {
         return this.receiveAsync(queueName, visibilityTimeoutInSeconds);
     }
 
-    @Override
-    public CompletableFuture<Message<?>> receiveAsync(String queueName, int visibilityTimeoutInSeconds) {
+    private CompletableFuture<Message<?>> receiveAsync(String queueName, int visibilityTimeoutInSeconds) {
         Assert.hasText(queueName, "queueName can't be null or empty");
 
         return CompletableFuture.supplyAsync(() -> receiveMessage(queueName, visibilityTimeoutInSeconds));
