@@ -9,7 +9,7 @@ package com.microsoft.azure.servicebus.stream.binder;
 import com.microsoft.azure.servicebus.SubscriptionClient;
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusConsumerProperties;
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusProducerProperties;
-import com.microsoft.azure.spring.integration.core.support.ServiceBusTopicTestOperation;
+import com.microsoft.azure.spring.integration.servicebus.topic.support.ServiceBusTopicTestOperation;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;

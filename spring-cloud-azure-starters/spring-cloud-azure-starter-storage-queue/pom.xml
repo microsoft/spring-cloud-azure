@@ -27,7 +27,7 @@
         </dependency>
         <dependency>
             <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-integration-azure</artifactId>
+            <artifactId>spring-integration-storage-queue</artifactId>
         </dependency>
     </dependencies>
 

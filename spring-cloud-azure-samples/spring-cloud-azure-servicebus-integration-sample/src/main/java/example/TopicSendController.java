@@ -7,7 +7,6 @@
 package example;
 
 import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
-import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
