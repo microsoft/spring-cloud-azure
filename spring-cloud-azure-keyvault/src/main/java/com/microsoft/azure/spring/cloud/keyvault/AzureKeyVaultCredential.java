@@ -11,8 +11,7 @@ import com.microsoft.aad.adal4j.AuthenticationResult;
 import com.microsoft.aad.adal4j.ClientCredential;
 import com.microsoft.azure.keyvault.authentication.KeyVaultCredentials;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.MalformedURLException;
 import java.util.concurrent.ExecutionException;
@@ -25,9 +24,9 @@ import java.util.concurrent.Future;
  *
  * @author Warren Zhu
  */
+@Slf4j
 @AllArgsConstructor
 public class AzureKeyVaultCredential extends KeyVaultCredentials {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AzureKeyVaultCredential.class);
     private final String clientId;
     private final String clientSecret;
 
@@ -41,7 +40,7 @@ public class AzureKeyVaultCredential extends KeyVaultCredentials {
                     context.acquireToken(resource, new ClientCredential(this.clientId, this.clientSecret), null);
             return future.get().getAccessToken();
         } catch (MalformedURLException | InterruptedException | ExecutionException e) {
-            LOGGER.error("Failed to do Azure Key Vault authentication.", e);
+            log.error("Failed to do Azure Key Vault authentication.", e);
             throw new IllegalStateException("Failed to do Azure Key Vault authentication.", e);
         }
     }

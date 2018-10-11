@@ -6,8 +6,7 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.telemetry;
 
 import com.microsoft.applicationinsights.TelemetryClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 
@@ -15,8 +14,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class TelemetrySender {
-    private static final Logger LOG = LoggerFactory.getLogger(TelemetrySender.class);
 
     private static final int INSTRUMENTATION_KEY_LENGTH = 36;
 
@@ -35,7 +34,7 @@ public class TelemetrySender {
         TelemetryClient client = new TelemetryClient();
 
         if (!isValid(instrumentationKey)) {
-            LOG.warn("Telemetry instrumentationKey {} is invalid", instrumentationKey);
+            log.warn("Telemetry instrumentationKey {} is invalid", instrumentationKey);
             throw new IllegalArgumentException("Telemetry instrumentationKey is invalid");
         }
 
@@ -50,7 +49,7 @@ public class TelemetrySender {
 
     private void sendEvent() {
         collector.getProperties().forEach((m) -> {
-            LOG.info("Sending telemetry event with properties {}", m);
+            log.info("Sending telemetry event with properties {}", m);
             this.client.trackEvent(collector.getName(), m, null);
             this.client.flush();
         });

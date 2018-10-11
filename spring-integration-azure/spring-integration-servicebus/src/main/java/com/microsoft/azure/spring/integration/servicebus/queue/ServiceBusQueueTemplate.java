@@ -13,8 +13,7 @@ import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeExcept
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusTemplate;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusQueueClientFactory;
 import lombok.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
 
@@ -28,9 +27,9 @@ import java.util.function.Consumer;
  *
  * @author Warren Zhu
  */
+@Slf4j
 public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueClientFactory>
         implements ServiceBusQueueOperation {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceBusQueueTemplate.class);
 
     private final Set<String> subscribedQueues = Sets.newConcurrentHashSet();
 
@@ -71,7 +70,7 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
         try {
             queueClient.registerMessageHandler(new QueueMessageHandler(consumer, payloadType, queueClient), options);
         } catch (ServiceBusException | InterruptedException e) {
-            LOGGER.error("Failed to register queue message handler", e);
+            log.error("Failed to register queue message handler", e);
             throw new ServiceBusRuntimeException("Failed to register queue message handler", e);
         }
     }

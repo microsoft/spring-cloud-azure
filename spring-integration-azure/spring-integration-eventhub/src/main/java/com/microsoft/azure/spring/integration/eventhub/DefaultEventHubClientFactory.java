@@ -17,8 +17,7 @@ import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStrin
 import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import lombok.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.util.Assert;
 
@@ -35,8 +34,8 @@ import java.util.function.Function;
  *
  * @author Warren Zhu
  */
+@Slf4j
 public class DefaultEventHubClientFactory implements EventHubClientFactory, DisposableBean {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultEventHubClientFactory.class);
     private static final String PROJECT_VERSION =
             DefaultEventHubClientFactory.class.getPackage().getImplementationVersion();
     private static final String USER_AGENT = "spring-cloud-azure/" + PROJECT_VERSION;
@@ -98,7 +97,7 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
     private <K, V> void close(Map<K, V> map, Function<V, CompletableFuture<Void>> close) {
         CompletableFuture.allOf(map.values().stream().map(close).toArray(CompletableFuture[]::new))
                          .exceptionally((ex) -> {
-                             LOGGER.warn("Failed to clean event hub client factory", ex);
+                             log.warn("Failed to clean event hub client factory", ex);
                              return null;
                          });
     }

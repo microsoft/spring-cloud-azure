@@ -11,14 +11,13 @@ import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManager;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public abstract class AzureManager<T, K> implements ResourceManager<T, K> {
-    private static final Logger LOG = LoggerFactory.getLogger(AzureManager.class);
     protected final AzureProperties azureProperties;
     protected final Azure azure;
 
@@ -39,17 +38,17 @@ public abstract class AzureManager<T, K> implements ResourceManager<T, K> {
         String name = getResourceName(key);
 
         try {
-            LOG.info("Fetching {} with name '{}' ...", getResourceType(), name);
+            log.info("Fetching {} with name '{}' ...", getResourceType(), name);
             return internalGet(key);
         } catch (CloudException e) {
             String errorMessage = String.join(", ", e.getMessage(), e.body().code(), e.body().message());
             String message = String.format("Fetching %s with name '%s' failed due to: %s", getResourceType(), name,
                     errorMessage);
-            LOG.error(message);
+            log.error(message);
             throw new RuntimeException(message);
         } finally {
             stopWatch.stop();
-            LOG.info("Fetching {} with name '{}' finished in {} seconds", getResourceType(), name,
+            log.info("Fetching {} with name '{}' finished in {} seconds", getResourceType(), name,
                     stopWatch.getTime(TimeUnit.SECONDS));
         }
     }
@@ -61,17 +60,17 @@ public abstract class AzureManager<T, K> implements ResourceManager<T, K> {
         String name = getResourceName(key);
 
         try {
-            LOG.info("Creating {} with name '{}' ...", getResourceType(), name);
+            log.info("Creating {} with name '{}' ...", getResourceType(), name);
             return internalCreate(key);
         } catch (CloudException e) {
             String errorMessage = String.join(", ", e.getMessage(), e.body().code(), e.body().message());
             String message = String.format("Creating %s with name '%s' failed due to: %s", getResourceType(), name,
                     errorMessage);
-            LOG.error(message);
+            log.error(message);
             throw new RuntimeException(message);
         } finally {
             stopWatch.stop();
-            LOG.info("Creating {} with name '{}' finished in {} seconds", getResourceType(), name,
+            log.info("Creating {} with name '{}' finished in {} seconds", getResourceType(), name,
                     stopWatch.getTime(TimeUnit.SECONDS));
         }
     }
@@ -86,7 +85,7 @@ public abstract class AzureManager<T, K> implements ResourceManager<T, K> {
 
         if (!azureProperties.isAutoCreateResources()) {
             String message = String.format("%s with name '%s' not existed.", getResourceType(), getResourceName(key));
-            LOG.warn(message);
+            log.warn(message);
             String enable = "If you want to enable automatic resource creation. Please set spring.cloud.azure" +
                     ".auto-create-resources=true";
             throw new IllegalArgumentException(message + enable);

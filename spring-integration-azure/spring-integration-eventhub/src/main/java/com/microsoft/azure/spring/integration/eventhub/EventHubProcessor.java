@@ -16,8 +16,7 @@ import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.eventhub.converter.EventHubMessageConverter;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 
@@ -32,9 +31,9 @@ import java.util.function.Consumer;
  *
  * @author Warren Zhu
  */
+@Slf4j
 @AllArgsConstructor
 public class EventHubProcessor implements IEventProcessor {
-    private static final Logger LOGGER = LoggerFactory.getLogger(EventHubProcessor.class);
     private final Consumer<Message<?>> consumer;
     private final Class<?> payloadType;
     private final CheckpointMode checkpointMode;
@@ -42,12 +41,12 @@ public class EventHubProcessor implements IEventProcessor {
 
     @Override
     public void onOpen(PartitionContext context) throws Exception {
-        LOGGER.info("Partition {} is opening", context.getPartitionId());
+        log.info("Partition {} is opening", context.getPartitionId());
     }
 
     @Override
     public void onClose(PartitionContext context, CloseReason reason) throws Exception {
-        LOGGER.info("Partition {} is closing for reason {}", context.getPartitionId(), reason);
+        log.info("Partition {} is closing for reason {}", context.getPartitionId(), reason);
     }
 
     @Override
@@ -65,7 +64,7 @@ public class EventHubProcessor implements IEventProcessor {
             if (checkpointMode == CheckpointMode.RECORD) {
                 checkpointer.success().whenComplete((s, t) -> {
                     if (t != null) {
-                        LOGGER.warn("Failed to checkpoint", t);
+                        log.warn("Failed to checkpoint", t);
                     }
                 });
             }
@@ -74,7 +73,7 @@ public class EventHubProcessor implements IEventProcessor {
         if (checkpointMode == CheckpointMode.BATCH) {
             context.checkpoint().whenComplete((s, t) -> {
                 if (t != null) {
-                    LOGGER.warn("Failed to checkpoint", t);
+                    log.warn("Failed to checkpoint", t);
                 }
             });
         }
@@ -82,6 +81,6 @@ public class EventHubProcessor implements IEventProcessor {
 
     @Override
     public void onError(PartitionContext context, Throwable error) {
-        LOGGER.error("Partition {} onError", context.getPartitionId(), error);
+        log.error("Partition {} onError", context.getPartitionId(), error);
     }
 }
