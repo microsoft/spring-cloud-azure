@@ -59,7 +59,7 @@ public class StorageQueueTemplate implements StorageQueueOperation {
             PartitionSupplier partitionSupplier) {
         Assert.hasText(queueName, "queueName can't be null or empty");
         CloudQueueMessage cloudQueueMessage = messageConverter.fromMessage(message, CloudQueueMessage.class);
-        CloudQueue cloudQueue = storageQueueClientFactory.getOrCreateQueue(storageAccountName, queueName);
+        CloudQueue cloudQueue = storageQueueClientFactory.getOrCreateQueueClient(storageAccountName, queueName);
         return CompletableFuture.runAsync(() -> {
             try {
                 cloudQueue.addMessage(cloudQueueMessage);
@@ -81,7 +81,7 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     }
 
     private Message<?> receiveMessage(String queueName, int visibilityTimeoutInSeconds) {
-        CloudQueue cloudQueue = storageQueueClientFactory.getOrCreateQueue(storageAccountName, queueName);
+        CloudQueue cloudQueue = storageQueueClientFactory.getOrCreateQueueClient(storageAccountName, queueName);
         CloudQueueMessage cloudQueueMessage;
         try {
             cloudQueueMessage = cloudQueue.retrieveMessage(visibilityTimeoutInSeconds, null, null);

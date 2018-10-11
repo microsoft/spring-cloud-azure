@@ -22,6 +22,7 @@ import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider
 import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.azure.spring.cloud.context.core.util.TypeMap;
+import com.microsoft.azure.storage.queue.CloudQueue;
 import lombok.NonNull;
 
 public class AzureResourceManagerProvider implements ResourceManagerProvider {
@@ -44,6 +45,8 @@ public class AzureResourceManagerProvider implements ResourceManagerProvider {
         this.resourceManagerByType.put(ServiceBusTopicSubscriptionManager.class,
                 new ServiceBusTopicSubscriptionManager(azure, azureProperties));
         this.resourceManagerByType.put(StorageAccountManager.class, new StorageAccountManager(azure, azureProperties));
+        this.resourceManagerByType.put(StorageQueueManager.class, new StorageQueueManager(azure, azureProperties,
+                resourceManagerByType.get(StorageAccountManager.class)));
         this.getResourceGroupManager().getOrCreate(azureProperties.getResourceGroup());
     }
 
@@ -90,6 +93,11 @@ public class AzureResourceManagerProvider implements ResourceManagerProvider {
     @Override
     public ResourceManager<StorageAccount, String> getStorageAccountManager() {
         return this.resourceManagerByType.get(StorageAccountManager.class);
+    }
+
+    @Override
+    public ResourceManager<CloudQueue, Tuple<String, String>> getStorageQueueManager() {
+        return this.resourceManagerByType.get(StorageQueueManager.class);
     }
 
     @Override

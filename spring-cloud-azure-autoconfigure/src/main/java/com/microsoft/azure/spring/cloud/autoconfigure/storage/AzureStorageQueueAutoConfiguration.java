@@ -41,7 +41,7 @@ public class AzureStorageQueueAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     StorageQueueClientFactory storageQueueClientFactory(ResourceManagerProvider resourceManagerProvider) {
-        return new DefaultStorageQueueClientFactory(resourceManagerProvider.getStorageAccountManager());
+        return new DefaultStorageQueueClientFactory(resourceManagerProvider.getStorageQueueManager());
     }
 
     @Bean
