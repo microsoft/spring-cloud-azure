@@ -55,7 +55,7 @@ public class AzureStorageAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public CloudStorageAccount storage(ResourceManagerProvider resourceManagerProvider,
-                                       AzureStorageProperties storageProperties) {
+            AzureStorageProperties storageProperties) {
         String accountName = storageProperties.getAccount();
 
         StorageAccount storageAccount = resourceManagerProvider.getStorageAccountManager().getOrCreate(accountName);
