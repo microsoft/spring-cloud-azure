@@ -60,7 +60,7 @@ public class DefaultStorageQueueClientFactory implements StorageQueueClientFacto
     }
 
     @Override
-    public CloudQueue getOrCreateQueue(String storageAccountName, String queueName) {
+    public CloudQueue getOrCreateQueueClient(String storageAccountName, String queueName) {
         return queueCreator.apply(Tuple.of(storageAccountName, queueName));
     }
 }
