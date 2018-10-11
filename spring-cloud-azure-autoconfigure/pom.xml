@@ -26,12 +26,6 @@
 
         <dependency>
             <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-integration-azure</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>com.microsoft.azure</groupId>
             <artifactId>spring-cloud-azure-keyvault</artifactId>
             <optional>true</optional>
         </dependency>
@@ -80,14 +74,21 @@
         <!-- Event Hub -->
         <dependency>
             <groupId>com.microsoft.azure</groupId>
-            <artifactId>azure-eventhubs-eph</artifactId>
+            <artifactId>spring-integration-eventhub</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Storage Queue -->
+        <dependency>
+            <groupId>com.microsoft.azure</groupId>
+            <artifactId>spring-integration-storage-queue</artifactId>
             <optional>true</optional>
         </dependency>
 
         <!-- Service Bus -->
         <dependency>
             <groupId>com.microsoft.azure</groupId>
-            <artifactId>azure-servicebus</artifactId>
+            <artifactId>spring-integration-servicebus</artifactId>
             <optional>true</optional>
         </dependency>
 
@@ -123,6 +124,7 @@
             <artifactId>spring-context-support</artifactId>
             <optional>true</optional>
         </dependency>
+
 
     </dependencies>
 
