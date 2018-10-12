@@ -27,6 +27,7 @@
         <module>spring-cloud-azure-servicebus-topic-stream-binder</module>
         <module>spring-cloud-azure-samples</module>
         <module>spring-cloud-azure-starters</module>
+        <module>spring-cloud-azure-keyvault-config</module>
     </modules>
 
     <properties>

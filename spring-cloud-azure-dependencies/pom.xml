@@ -104,6 +104,11 @@
                 <artifactId>spring-cloud-azure-servicebus-topic-stream-binder</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>spring-cloud-azure-keyvault-config</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!--Azure Java SDKs-->
             <dependency>
@@ -168,7 +173,13 @@
                 <artifactId>spring-cloud-azure-starter-storage-queue</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>spring-cloud-starter-azure-keyvault-config</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
+            <!--Others-->
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
