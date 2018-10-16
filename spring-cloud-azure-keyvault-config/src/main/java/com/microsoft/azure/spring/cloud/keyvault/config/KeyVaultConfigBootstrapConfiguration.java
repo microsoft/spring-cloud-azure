@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 public class KeyVaultConfigBootstrapConfiguration {
 
     @Bean
-    KeyVaultPropertySourceLocator keyVaultPropertySourceLocator(KeyVaultConfigProperties properties) {
+    public KeyVaultPropertySourceLocator keyVaultPropertySourceLocator(KeyVaultConfigProperties properties) {
         return new KeyVaultPropertySourceLocator(properties);
     }
 }
