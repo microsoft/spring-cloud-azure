@@ -24,12 +24,6 @@
             <artifactId>spring-cloud-azure-context</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-cloud-azure-keyvault</artifactId>
-            <optional>true</optional>
-        </dependency>
-
         <!-- Storage -->
         <dependency>
             <groupId>com.microsoft.azure</groupId>
