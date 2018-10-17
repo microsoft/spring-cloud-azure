@@ -37,7 +37,7 @@ class EventHubCheckpointManager {
             context.checkpoint(eventData).whenComplete(this::checkpointHandler);
         } else if (this.checkpointConfig.getCheckpointMode() == CheckpointMode.PARTITION_COUNT) {
             String partitionId = context.getPartitionId();
-            this.countByPartition.putIfAbsent(partitionId, new AtomicInteger(1));
+            this.countByPartition.computeIfAbsent(partitionId, (k) -> new AtomicInteger(1));
             AtomicInteger count = this.countByPartition.get(partitionId);
             if (count.incrementAndGet() >= checkpointConfig.getCheckpointCount()) {
                 context.checkpoint(eventData).whenComplete(this::checkpointHandler);
