@@ -12,10 +12,7 @@ import com.microsoft.azure.servicebus.IMessageHandler;
 import com.microsoft.azure.servicebus.MessageHandlerOptions;
 import com.microsoft.azure.spring.integration.core.AzureCheckpointer;
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
-import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
-import com.microsoft.azure.spring.integration.core.api.Checkpointer;
-import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
-import com.microsoft.azure.spring.integration.core.api.SendOperation;
+import com.microsoft.azure.spring.integration.core.api.*;
 import com.microsoft.azure.spring.integration.servicebus.converter.ServiceBusMessageConverter;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusSenderFactory;
 import lombok.Getter;
@@ -45,7 +42,9 @@ public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements Se
     protected final MessageHandlerOptions options = new MessageHandlerOptions(1, false, Duration.ofMinutes(5));
 
     @Setter
-    protected CheckpointMode checkpointMode = CheckpointMode.RECORD;
+    @Getter
+    protected CheckpointConfig checkpointConfig =
+            CheckpointConfig.builder().checkpointMode(CheckpointMode.RECORD).build();
 
     @Getter
     @Setter
@@ -100,7 +99,7 @@ public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements Se
 
             Checkpointer checkpointer = new AzureCheckpointer(() -> this.success(serviceBusMessage.getLockToken()),
                     () -> this.failure(serviceBusMessage.getLockToken()));
-            if (checkpointMode == CheckpointMode.MANUAL) {
+            if (checkpointConfig.getCheckpointMode() == CheckpointMode.MANUAL) {
                 headers.put(AzureHeaders.CHECKPOINTER, checkpointer);
             }
 
@@ -108,7 +107,7 @@ public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements Se
                     messageConverter.toMessage(serviceBusMessage, new MessageHeaders(headers), payloadType);
             consumer.accept(message);
 
-            if (checkpointMode == CheckpointMode.RECORD) {
+            if (checkpointConfig.getCheckpointMode() == CheckpointMode.RECORD) {
                 return checkpointer.success();
             }
             return CompletableFuture.completedFuture(null);

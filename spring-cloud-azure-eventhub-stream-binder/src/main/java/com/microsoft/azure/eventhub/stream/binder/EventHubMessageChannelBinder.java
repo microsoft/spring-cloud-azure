@@ -11,6 +11,7 @@ import com.microsoft.azure.eventhub.stream.binder.properties.EventHubExtendedBin
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubProducerProperties;
 import com.microsoft.azure.eventhub.stream.binder.provisioning.EventHubChannelProvisioner;
 import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
+import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
 import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
 import com.microsoft.azure.spring.integration.eventhub.inbound.EventHubInboundChannelAdapter;
@@ -67,7 +68,9 @@ public class EventHubMessageChannelBinder extends
     protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group,
             ExtendedConsumerProperties<EventHubConsumerProperties> properties) {
         this.eventHubOperation.setStartPosition(properties.getExtension().getStartPosition());
-        this.eventHubOperation.setCheckpointMode(properties.getExtension().getCheckpointMode());
+        CheckpointConfig checkpointConfig =
+                CheckpointConfig.builder().checkpointMode(properties.getExtension().getCheckpointMode()).build();
+        this.eventHubOperation.setCheckpointConfig(checkpointConfig);
 
         boolean anonymous = !StringUtils.hasText(group);
         if (anonymous) {

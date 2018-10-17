@@ -51,7 +51,7 @@ public class EventHubRxTemplate extends AbstractEventHubTemplate implements Even
 
         subjectByNameAndGroup.computeIfAbsent(nameAndConsumerGroup, k -> Observable.<Message<?>>create(subscriber -> {
             this.register(destination, consumerGroup,
-                    new EventHubProcessor(subscriber::onNext, messagePayloadType, getCheckpointMode(),
+                    new EventHubProcessor(subscriber::onNext, messagePayloadType, getCheckpointConfig(),
                             getMessageConverter()));
             subscriber.add(Subscriptions.create(() -> unregister(destination, consumerGroup)));
         }).share());

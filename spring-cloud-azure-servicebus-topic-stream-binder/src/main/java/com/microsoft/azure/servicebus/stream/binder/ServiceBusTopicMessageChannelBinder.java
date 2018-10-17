@@ -11,6 +11,7 @@ import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusExtende
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusProducerProperties;
 import com.microsoft.azure.servicebus.stream.binder.provisioning.ServiceBusTopicChannelProvisioner;
 import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
+import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
 import lombok.Setter;
@@ -68,7 +69,9 @@ public class ServiceBusTopicMessageChannelBinder extends
     @Override
     protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group,
             ExtendedConsumerProperties<ServiceBusConsumerProperties> properties) {
-        this.serviceBusTopicOperation.setCheckpointMode(properties.getExtension().getCheckpointMode());
+        CheckpointConfig checkpointConfig =
+                CheckpointConfig.builder().checkpointMode(properties.getExtension().getCheckpointMode()).build();
+        this.serviceBusTopicOperation.setCheckpointConfig(checkpointConfig);
         boolean anonymous = !StringUtils.hasText(group);
         if (anonymous) {
             group = "anonymous." + UUID.randomUUID().toString();

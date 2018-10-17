@@ -12,6 +12,7 @@ import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.eventhubs.EventPosition;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.eventprocessorhost.EventProcessorOptions;
+import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
@@ -52,7 +53,7 @@ public class AbstractEventHubTemplate {
 
     @Setter
     @Getter
-    private CheckpointMode checkpointMode = CheckpointMode.BATCH;
+    private CheckpointConfig checkpointConfig = CheckpointConfig.builder().checkpointMode(CheckpointMode.BATCH).build();
 
     AbstractEventHubTemplate(EventHubClientFactory clientFactory) {
         this.clientFactory = clientFactory;

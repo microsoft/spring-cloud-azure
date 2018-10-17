@@ -15,7 +15,7 @@ import java.util.function.Consumer;
  *
  * @author Warren Zhu
  */
-public interface SubscribeOperation {
+public interface SubscribeOperation extends Checkpointable {
 
     /**
      * Register a message consumer to a given destination.
@@ -36,6 +36,4 @@ public interface SubscribeOperation {
      * if was not registered.
      */
     boolean unsubscribe(String destination);
-
-    void setCheckpointMode(CheckpointMode checkpointMode);
 }

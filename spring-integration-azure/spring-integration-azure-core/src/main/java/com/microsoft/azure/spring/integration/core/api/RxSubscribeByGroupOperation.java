@@ -14,7 +14,7 @@ import rx.Observable;
  *
  * @author Warren Zhu
  */
-public interface RxSubscribeByGroupOperation {
+public interface RxSubscribeByGroupOperation extends Checkpointable {
 
     /**
      * Register a message consumer to a given destination with a given consumer group.
@@ -23,6 +23,4 @@ public interface RxSubscribeByGroupOperation {
      */
     Observable<Message<?>> subscribe(String destination, String consumerGroup,
             Class<?> messagePayloadType);
-
-    void setCheckpointMode(CheckpointMode checkpointMode);
 }

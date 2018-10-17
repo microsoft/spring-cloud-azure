@@ -7,6 +7,7 @@
 package example;
 
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
+import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
@@ -41,8 +42,9 @@ public class WebController {
     }
 
     @PostConstruct
-    public void subscribeToEventHub(){
-        this.eventHubOperation.setCheckpointMode(CheckpointMode.MANUAL);
+    public void subscribeToEventHub() {
+        this.eventHubOperation
+                .setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.MANUAL).build());
         this.eventHubOperation.subscribe(EVENT_HUB_NAME, CONSUMER_GROUP, this::messageReceiver, String.class);
     }
 

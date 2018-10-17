@@ -7,6 +7,7 @@
 package com.microsoft.azure.spring.integration.test.support;
 
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
+import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.core.api.SendOperation;
@@ -61,14 +62,14 @@ public abstract class SendSubscribeOperationTest<T extends SendOperation> {
 
     @Test
     public void testSendReceiveWithManualCheckpointMode() {
-        setCheckpointMode(CheckpointMode.MANUAL);
+        setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.MANUAL).build());
         subscribe(destination, this::manualCheckpointHandler, User.class);
         sendSubscribeOperation.sendAsync(destination, userMessage);
     }
 
     @Test
     public void testSendReceiveWithRecordCheckpointMode() {
-        setCheckpointMode(CheckpointMode.RECORD);
+        setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.RECORD).build());
         subscribe(destination, this::recordCheckpointHandler, User.class);
         messages.forEach(m -> sendSubscribeOperation.sendAsync(destination, m));
         verifyCheckpointSuccessCalled(messages.size());
@@ -109,7 +110,7 @@ public abstract class SendSubscribeOperationTest<T extends SendOperation> {
 
     protected abstract void subscribe(String destination, Consumer<Message<?>> consumer, Class<?> payloadType);
 
-    protected abstract void setCheckpointMode(CheckpointMode checkpointMode);
+    protected abstract void setCheckpointConfig(CheckpointConfig checkpointConfig);
 
     protected void verifyCheckpointSuccess(Checkpointer checkpointer) {
         checkpointer.success();
