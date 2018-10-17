@@ -32,8 +32,7 @@ public class EventHubTemplate extends AbstractEventHubTemplate implements EventH
             Class<?> messagePayloadType) {
         if (subscribedNameAndGroup.putIfAbsent(Tuple.of(destination, consumerGroup), true) == null) {
             this.register(destination, consumerGroup,
-                    new EventHubProcessor(consumer, messagePayloadType, getCheckpointConfig(), getMessageConverter
-                            ()));
+                    new EventHubProcessor(consumer, messagePayloadType, getCheckpointConfig(), getMessageConverter()));
             return true;
         }
 

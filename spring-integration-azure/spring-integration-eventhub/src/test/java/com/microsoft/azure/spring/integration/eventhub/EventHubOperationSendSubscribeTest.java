@@ -64,8 +64,8 @@ public class EventHubOperationSendSubscribeTest extends SendSubscribeByGroupOper
 
     @Test
     public void testSendReceiveWithBatchCheckpointMode() {
-        sendSubscribeOperation.setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.BATCH).build
-                ());
+        sendSubscribeOperation
+                .setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.BATCH).build());
         sendSubscribeOperation.setStartPosition(StartPosition.EARLISET);
         messages.forEach(m -> sendSubscribeOperation.sendAsync(destination, m));
         sendSubscribeOperation.subscribe(destination, consumerGroup, this::batchCheckpointHandler, User.class);
