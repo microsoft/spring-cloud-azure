@@ -6,7 +6,7 @@
 
 package com.microsoft.azure.spring.integration.test.support;
 
-import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
+import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.SendOperation;
 import com.microsoft.azure.spring.integration.core.api.SubscribeByGroupOperation;
 import org.springframework.messaging.Message;
@@ -23,7 +23,7 @@ public abstract class SendSubscribeByGroupOperationTest<T extends SendOperation 
     }
 
     @Override
-    protected void setCheckpointMode(CheckpointMode checkpointMode) {
-        sendSubscribeOperation.setCheckpointMode(checkpointMode);
+    protected void setCheckpointConfig(CheckpointConfig checkpointConfig) {
+        sendSubscribeOperation.setCheckpointConfig(checkpointConfig);
     }
 }

@@ -7,6 +7,7 @@
 package example;
 
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
+import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
@@ -49,7 +50,7 @@ public class ReceiveController {
     @Bean
     public EventHubInboundChannelAdapter messageChannelAdapter(
             @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel, EventHubOperation eventhubOperation) {
-        eventhubOperation.setCheckpointMode(CheckpointMode.MANUAL);
+        eventhubOperation.setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.MANUAL).build());
         EventHubInboundChannelAdapter adapter = new EventHubInboundChannelAdapter(EVENTHUB_NAME,
                 eventhubOperation, CONSUMER_GROUP);
         adapter.setOutputChannel(inputChannel);

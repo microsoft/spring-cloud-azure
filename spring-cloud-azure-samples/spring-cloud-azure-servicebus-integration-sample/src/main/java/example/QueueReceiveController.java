@@ -7,6 +7,7 @@
 package example;
 
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
+import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.servicebus.inbound.ServiceBusQueueInboundChannelAdapter;
@@ -48,7 +49,7 @@ public class QueueReceiveController {
     @Bean
     public ServiceBusQueueInboundChannelAdapter queueMessageChannelAdapter(
             @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel, ServiceBusQueueOperation queueOperation) {
-        queueOperation.setCheckpointMode(CheckpointMode.MANUAL);
+        queueOperation.setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.MANUAL).build());
         ServiceBusQueueInboundChannelAdapter adapter = new ServiceBusQueueInboundChannelAdapter(QUEUE_NAME,
                 queueOperation);
         adapter.setOutputChannel(inputChannel);

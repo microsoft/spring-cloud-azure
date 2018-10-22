@@ -18,5 +18,4 @@ import com.microsoft.azure.spring.integration.core.api.SubscribeByGroupOperation
  * @author Warren Zhu
  */
 public interface ServiceBusTopicOperation extends SendOperation, SubscribeByGroupOperation {
-    void setCheckpointMode(CheckpointMode checkpointMode);
 }

@@ -28,4 +28,10 @@ public enum CheckpointMode {
      * User decide when to checkpoint manually
      */
     MANUAL,
+
+    /**
+     * Checkpoint once for number of message specified by {@link CheckpointConfig#getCheckpointCount()}
+     * in each partition
+     */
+    PARTITION_COUNT,
 }

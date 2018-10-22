@@ -7,6 +7,7 @@
 package example;
 
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
+import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueOperation;
@@ -41,7 +42,7 @@ public class QueueController {
 
     @PostConstruct
     public void subscribe(){
-        this.queueOperation.setCheckpointMode(CheckpointMode.MANUAL);
+        this.queueOperation.setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.MANUAL).build());
         this.queueOperation.subscribe(QUEUE_NAME, this::messageReceiver, String.class);
     }
 

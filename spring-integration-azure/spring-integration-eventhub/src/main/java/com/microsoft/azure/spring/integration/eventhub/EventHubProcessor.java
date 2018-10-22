@@ -12,10 +12,10 @@ import com.microsoft.azure.eventprocessorhost.IEventProcessor;
 import com.microsoft.azure.eventprocessorhost.PartitionContext;
 import com.microsoft.azure.spring.integration.core.AzureCheckpointer;
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
+import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.eventhub.converter.EventHubMessageConverter;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
@@ -32,12 +32,21 @@ import java.util.function.Consumer;
  * @author Warren Zhu
  */
 @Slf4j
-@AllArgsConstructor
 public class EventHubProcessor implements IEventProcessor {
     private final Consumer<Message<?>> consumer;
     private final Class<?> payloadType;
-    private final CheckpointMode checkpointMode;
+    private final CheckpointConfig checkpointConfig;
     private final EventHubMessageConverter messageConverter;
+    private final EventHubCheckpointManager checkpointManager;
+
+    public EventHubProcessor(Consumer<Message<?>> consumer, Class<?> payloadType, CheckpointConfig checkpointConfig,
+            EventHubMessageConverter messageConverter) {
+        this.consumer = consumer;
+        this.payloadType = payloadType;
+        this.checkpointConfig = checkpointConfig;
+        this.messageConverter = messageConverter;
+        this.checkpointManager = new EventHubCheckpointManager(checkpointConfig);
+    }
 
     @Override
     public void onOpen(PartitionContext context) throws Exception {
@@ -56,27 +65,15 @@ public class EventHubProcessor implements IEventProcessor {
 
         for (EventData e : events) {
             Checkpointer checkpointer = new AzureCheckpointer(() -> context.checkpoint(e));
-            if (checkpointMode == CheckpointMode.MANUAL) {
+            if (this.checkpointConfig.getCheckpointMode() == CheckpointMode.MANUAL) {
                 headers.put(AzureHeaders.CHECKPOINTER, checkpointer);
             }
             this.consumer.accept(messageConverter.toMessage(e, new MessageHeaders(headers), payloadType));
 
-            if (checkpointMode == CheckpointMode.RECORD) {
-                checkpointer.success().whenComplete((s, t) -> {
-                    if (t != null) {
-                        log.warn("Failed to checkpoint", t);
-                    }
-                });
-            }
+            this.checkpointManager.onMessage(context, e);
         }
 
-        if (checkpointMode == CheckpointMode.BATCH) {
-            context.checkpoint().whenComplete((s, t) -> {
-                if (t != null) {
-                    log.warn("Failed to checkpoint", t);
-                }
-            });
-        }
+        this.checkpointManager.completeBatch(context);
     }
 
     @Override

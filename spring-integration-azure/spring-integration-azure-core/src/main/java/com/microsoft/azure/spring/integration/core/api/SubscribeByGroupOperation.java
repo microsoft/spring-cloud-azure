@@ -15,7 +15,7 @@ import java.util.function.Consumer;
  *
  * @author Warren Zhu
  */
-public interface SubscribeByGroupOperation {
+public interface SubscribeByGroupOperation extends Checkpointable {
 
     /**
      * Register a message consumer to a given destination with a given consumer group.
@@ -37,6 +37,4 @@ public interface SubscribeByGroupOperation {
      * if was not registered.
      */
     boolean unsubscribe(String destination, String consumerGroup);
-
-    void setCheckpointMode(CheckpointMode checkpointMode);
 }

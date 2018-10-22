@@ -9,6 +9,7 @@ package com.microsoft.azure.spring.integration.eventhub;
 import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.eventprocessorhost.PartitionContext;
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
+import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
@@ -63,7 +64,8 @@ public class EventHubOperationSendSubscribeTest extends SendSubscribeByGroupOper
 
     @Test
     public void testSendReceiveWithBatchCheckpointMode() {
-        sendSubscribeOperation.setCheckpointMode(CheckpointMode.BATCH);
+        sendSubscribeOperation
+                .setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.BATCH).build());
         sendSubscribeOperation.setStartPosition(StartPosition.EARLISET);
         messages.forEach(m -> sendSubscribeOperation.sendAsync(destination, m));
         sendSubscribeOperation.subscribe(destination, consumerGroup, this::batchCheckpointHandler, User.class);
