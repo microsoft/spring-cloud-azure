@@ -46,7 +46,7 @@ public class DefaultAuthenticationExecutorFactory implements AuthenticationExecu
         throw new IllegalArgumentException(CREDENTIAL_NOT_COMPLETE);
     }
 
-    private AuthenticationExecutor create(String clientId, Resource clientCertificate) {
+    private static AuthenticationExecutor create(String clientId, Resource clientCertificate) {
         try {
             AsymmetricKeyCredential credential = createAsymmetricKeyCredential(clientId, clientCertificate);
             return new CertificateAuthenticationExecutor(credential);
@@ -55,7 +55,7 @@ public class DefaultAuthenticationExecutorFactory implements AuthenticationExecu
         }
     }
 
-    private AuthenticationExecutor create(String clientId, String clientSecret) {
+    private static AuthenticationExecutor create(String clientId, String clientSecret) {
         final ClientCredential credential =  new ClientCredential(clientId, clientSecret);
         return new SecretAuthenticationExecutor(credential);
     }

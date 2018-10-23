@@ -7,42 +7,37 @@
 package com.microsoft.azure.spring.cloud.keyvault.config.auth;
 
 import com.microsoft.aad.adal4j.AuthenticationContext;
-import com.microsoft.aad.adal4j.AuthenticationResult;
 import com.microsoft.azure.keyvault.authentication.KeyVaultCredentials;
-import lombok.AllArgsConstructor;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.net.MalformedURLException;
+import java.util.concurrent.*;
 
 /**
  * Subclass of {@link KeyVaultCredentials}.
  */
-@AllArgsConstructor
 public class AadKeyVaultCredentials extends KeyVaultCredentials {
     // TODO: make it configurable.
     private static final int TIMEOUT_IN_SECONDS = 15;
+    private static final String AUTH_FAILED = "Failed to authenticate with Azure Key Vault.";
+
+    private final ExecutorService service = Executors.newSingleThreadExecutor();
 
     private AuthenticationExecutor authExecutor;
 
+    public AadKeyVaultCredentials(AuthenticationExecutor authExecutor) {
+        this.authExecutor = authExecutor;
+    }
+
     @Override
     public String doAuthenticate(String authorization, String resource, String scope) {
-        AuthenticationResult result;
 
-        //Starts a service to fetch access token.
-        ExecutorService service = null;
         try {
-            service = Executors.newSingleThreadExecutor();
             AuthenticationContext context = new AuthenticationContext(authorization, false, service);
-            result = authExecutor.acquireToken(context, resource).get(TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
-        } catch (Exception ex) {
-            throw new IllegalStateException("Failed to authenticate with Azure Key Vault.", ex);
-        } finally {
-            if (service != null) {
-                service.shutdown();
-            }
+            return authExecutor.acquireToken(context, resource)
+                    .get(TIMEOUT_IN_SECONDS, TimeUnit.SECONDS)
+                    .getAccessToken();
+        } catch (InterruptedException | ExecutionException | TimeoutException | MalformedURLException ex) {
+            throw new IllegalStateException(AUTH_FAILED, ex);
         }
-
-        return result.getAccessToken();
     }
 }

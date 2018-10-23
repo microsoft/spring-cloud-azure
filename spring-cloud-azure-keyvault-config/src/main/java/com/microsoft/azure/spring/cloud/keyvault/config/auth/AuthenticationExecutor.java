@@ -14,4 +14,3 @@ import java.util.concurrent.Future;
 public interface AuthenticationExecutor {
     Future<AuthenticationResult> acquireToken(AuthenticationContext context, String resource);
 }
-
