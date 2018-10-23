@@ -36,5 +36,5 @@ public class KeyVaultConfigProperties {
 
     private String name;
 
-    private String activeProfile;
+    private String activeProfiles;
 }

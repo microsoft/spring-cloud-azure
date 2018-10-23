@@ -25,7 +25,7 @@ public class KeyVaultConfigBootstrapConfigurationTest {
                 .run(context -> {
                     KeyVaultConfigProperties properties = context.getBean(KeyVaultConfigProperties.class);
                     assertEquals(null, properties.getName());
-                    assertEquals(null, properties.getActiveProfile());
+                    assertEquals(null, properties.getActiveProfiles());
                     assertEquals(true, properties.isEnabled());
                     assertEquals(true, properties.isFailFast());
                 });
