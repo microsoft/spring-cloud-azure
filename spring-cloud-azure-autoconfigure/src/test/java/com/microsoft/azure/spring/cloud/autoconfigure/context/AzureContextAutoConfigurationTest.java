@@ -7,9 +7,10 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.context;
 
 import com.microsoft.azure.management.Azure;
+import com.microsoft.azure.spring.cloud.context.core.api.CredentialsProvider;
+import com.microsoft.azure.spring.cloud.context.core.api.Region;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
-import com.microsoft.azure.spring.cloud.context.core.api.CredentialsProvider;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.FilteredClassLoader;
@@ -30,11 +31,13 @@ public class AzureContextAutoConfigurationTest {
         this.contextRunner.
                                   withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
                           .withPropertyValues("spring.cloud.azure.resourceGroup=group1")
-                          .withPropertyValues("spring.cloud.azure.region=westUS").run(context -> {
+                          .withPropertyValues("spring.cloud.azure.location=westUS")
+                          .withPropertyValues("spring.cloud.azure.region=US").run(context -> {
             assertThat(context).hasSingleBean(AzureProperties.class);
             assertThat(context.getBean(AzureProperties.class).getCredentialFilePath()).isEqualTo("credential");
             assertThat(context.getBean(AzureProperties.class).getResourceGroup()).isEqualTo("group1");
-            assertThat(context.getBean(AzureProperties.class).getRegion()).isEqualTo("westUS");
+            assertThat(context.getBean(AzureProperties.class).getLocation()).isEqualTo("westUS");
+            assertThat(context.getBean(AzureProperties.class).getRegion()).isEqualTo(Region.US);
         });
     }
 

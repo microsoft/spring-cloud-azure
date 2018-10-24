@@ -39,7 +39,7 @@ public class EventHubNamesapceManager extends AzureManager<EventHubNamespace, St
 
     @Override
     public EventHubNamespace internalCreate(String namespace) {
-        return azure.eventHubNamespaces().define(namespace).withRegion(azureProperties.getRegion())
+        return azure.eventHubNamespaces().define(namespace).withRegion(azureProperties.getLocation())
                     .withExistingResourceGroup(azureProperties.getResourceGroup()).create();
     }
 }

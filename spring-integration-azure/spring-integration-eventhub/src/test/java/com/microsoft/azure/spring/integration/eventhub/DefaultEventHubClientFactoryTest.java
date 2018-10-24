@@ -10,6 +10,7 @@ import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.eventhubs.PartitionSender;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.management.storage.StorageAccount;
+import com.microsoft.azure.spring.cloud.context.core.api.Region;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.impl.StorageAccountManager;
 import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStringProvider;
@@ -63,12 +64,12 @@ public class DefaultEventHubClientFactoryTest {
         when(eventHubClient.createPartitionSenderSync(eq(partitionId))).thenReturn(partitionSender);
 
         PowerMockito.mockStatic(StorageConnectionStringProvider.class);
-        when(StorageConnectionStringProvider.getConnectionString(isA(StorageAccount.class)))
+        when(StorageConnectionStringProvider.getConnectionString(isA(StorageAccount.class), isA(Region.class)))
                 .thenReturn(connectionString);
         when(resourceManagerProvider.getStorageAccountManager()).thenReturn(storageAccountManager);
         when(storageAccountManager.getOrCreate(any())).thenReturn(storageAccount);
         PowerMockito.whenNew(EventProcessorHost.class).withAnyArguments().thenReturn(eventProcessorHost);
-        this.clientFactory = new DefaultEventHubClientFactory(resourceManagerProvider, checkpointStorageAccount,
+        this.clientFactory = new DefaultEventHubClientFactory(checkpointStorageAccount,
                 (s) -> connectionString);
     }
 
@@ -82,7 +83,6 @@ public class DefaultEventHubClientFactoryTest {
 
     @Test
     public void testGetPartitionSender() {
-        EventHubClient client = clientFactory.getOrCreateClient(eventHubName);
         PartitionSender sender = clientFactory.getOrCreatePartitionSender(this.eventHubName, partitionId);
         assertNotNull(sender);
         PartitionSender another = clientFactory.getOrCreatePartitionSender(eventHubName, partitionId);

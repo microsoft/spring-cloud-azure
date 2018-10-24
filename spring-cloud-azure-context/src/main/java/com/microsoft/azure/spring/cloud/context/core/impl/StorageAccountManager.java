@@ -33,7 +33,7 @@ public class StorageAccountManager extends AzureManager<StorageAccount, String> 
 
     @Override
     public StorageAccount internalCreate(String key) {
-        return azure.storageAccounts().define(key).withRegion(azureProperties.getRegion())
+        return azure.storageAccounts().define(key).withRegion(azureProperties.getLocation())
                     .withExistingResourceGroup(azureProperties.getResourceGroup()).create();
     }
 }
