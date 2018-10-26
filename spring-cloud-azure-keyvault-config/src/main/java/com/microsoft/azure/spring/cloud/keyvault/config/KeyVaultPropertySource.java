@@ -10,6 +10,7 @@ import com.microsoft.azure.PagedList;
 import com.microsoft.azure.keyvault.KeyVaultClient;
 import com.microsoft.azure.keyvault.models.SecretItem;
 import org.springframework.core.env.EnumerablePropertySource;
+import org.springframework.util.StringUtils;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,6 +42,10 @@ public class KeyVaultPropertySource extends EnumerablePropertySource<KeyVaultCli
 
     @Override
     public Object getProperty(String name) {
+        if (StringUtils.isEmpty(name)) {
+            return null;
+        }
+
         // NOTE:
         // Azure Key Vault secret name pattern is: ^[0-9a-zA-Z-]+$
         // "." is not allowed.
@@ -57,10 +62,10 @@ public class KeyVaultPropertySource extends EnumerablePropertySource<KeyVaultCli
         final PagedList<SecretItem> secrets = this.keyVaultClient.listSecrets(this.vaultUrl);
         secrets.loadAll();
 
-        for (final SecretItem secret : secrets) {
-            final String secretId = secret.id().replace(this.vaultUrl + "/secrets/", "");
-            this.secretNames.putIfAbsent(secretId, "");
-        }
+        final String vaultSecretsBaseUrl = this.vaultUrl + "/secrets/";
+        secrets.stream()
+                .map(s -> s.id().replace(vaultSecretsBaseUrl, ""))
+                .forEach(id -> this.secretNames.putIfAbsent(id, ""));
     }
 
     private String getSecretFromKeyVault(final String secretName) {

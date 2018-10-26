@@ -17,9 +17,9 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Builds a {@link KeyVaultPropertySource} instance based on application name and active profiles.
@@ -86,14 +86,11 @@ public class KeyVaultPropertySourceLocator implements PropertySourceLocator {
             return Arrays.asList(String.format(GLOBAL_KEY_VAULT_ENDPOINT_TEMPLATE, appName));
         }
 
-        final List<String> keyVaultUrls = new ArrayList<>();
-        for (String profile : profiles) {
-            if (StringUtils.hasText(profile)) {
-                final String keyVaultName = String.format("%s-%s", appName, profile);
-                keyVaultUrls.add(String.format(GLOBAL_KEY_VAULT_ENDPOINT_TEMPLATE, keyVaultName));
-            }
-        }
-
-        return keyVaultUrls;
+        final String keyVaultNameTemplate = appName + "-%s";
+        return Arrays.stream(profiles)
+                .filter(StringUtils::hasText)
+                .map(p -> String.format(keyVaultNameTemplate, p))
+                .map(name -> String.format(GLOBAL_KEY_VAULT_ENDPOINT_TEMPLATE, name))
+                .collect(Collectors.toList());
     }
 }
