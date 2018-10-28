@@ -9,6 +9,8 @@ Import these files by navigating `Windows -> Preferences` and then the menu item
 `Preferences > Java > Code Style > Formatter` and `Preferences > Java > Code Style >
 Organize Imports` respectively.
 
+Some files within `spring-cloud-azure` make use of [Project Lombok](https://howtodoinjava.com/automation/lombok-eclipse-installation-examples/#lombok-eclipse) - this must be installed within Eclipse, otherwise the IDE will flag certain uses of the library as compilation errors.
+
 == IntelliJ IDEA
 Install the plugin `Eclipse Code Formatter`. You can find it by searching in "Browse Repositories",
 under `Settings > Plugins` within IDEA (Once installed, you will need to reboot IDEA for it to take
