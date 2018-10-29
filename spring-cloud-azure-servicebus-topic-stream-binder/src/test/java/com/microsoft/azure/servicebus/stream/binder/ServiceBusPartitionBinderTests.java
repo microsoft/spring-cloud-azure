@@ -149,7 +149,7 @@ public class ServiceBusPartitionBinderTests extends
         //moduleOutputChannel.send(message);
 
         final CountDownLatch latch = new CountDownLatch(1);
-        final AtomicReference<Message<byte[]>> inboundMessageRef = new AtomicReference();
+        final AtomicReference<Message<byte[]>> inboundMessageRef = new AtomicReference<>();
         moduleInputChannel.subscribe(message1 -> {
             try {
                 inboundMessageRef.set((Message<byte[]>) message1);
@@ -162,7 +162,7 @@ public class ServiceBusPartitionBinderTests extends
         Assert.isTrue(latch.await(5L, TimeUnit.SECONDS), "Failed to receive message");
         Assertions.assertThat(inboundMessageRef.get()).isNotNull();
         Assertions.assertThat(
-                new String((byte[]) ((Message) inboundMessageRef.get()).getPayload(), StandardCharsets.UTF_8))
+                new String(((Message<byte[]>) inboundMessageRef.get()).getPayload(), StandardCharsets.UTF_8))
                   .isEqualTo("foo");
         Assertions.assertThat(inboundMessageRef.get().getHeaders().get("contentType").toString())
                   .isEqualTo("text/plain");

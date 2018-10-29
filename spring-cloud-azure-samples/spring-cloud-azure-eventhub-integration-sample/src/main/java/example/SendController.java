@@ -8,7 +8,6 @@ package example;
 
 import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
 import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
-import com.microsoft.azure.spring.integration.eventhub.inbound.EventHubInboundChannelAdapter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;

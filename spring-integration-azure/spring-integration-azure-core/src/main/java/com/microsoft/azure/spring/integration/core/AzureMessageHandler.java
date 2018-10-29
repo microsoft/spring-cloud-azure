@@ -68,7 +68,7 @@ public class AzureMessageHandler extends AbstractMessageHandler {
 
         PartitionSupplier partitionSupplier = toPartitionSupplier(message);
         String destination = toDestination(message);
-        CompletableFuture future = this.sendOperation.sendAsync(destination, message, partitionSupplier);
+        CompletableFuture<?> future = this.sendOperation.sendAsync(destination, message, partitionSupplier);
 
         if (this.sync) {
             waitingSendResponse(future, message);
