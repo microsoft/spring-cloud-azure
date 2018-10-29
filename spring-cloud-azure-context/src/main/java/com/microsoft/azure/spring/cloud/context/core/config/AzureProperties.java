@@ -7,6 +7,7 @@
 package com.microsoft.azure.spring.cloud.context.core.config;
 
 import com.microsoft.azure.spring.cloud.context.core.api.CredentialSupplier;
+import com.microsoft.azure.spring.cloud.context.core.api.Region;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -26,8 +27,10 @@ public class AzureProperties implements CredentialSupplier {
     @NotEmpty
     private String resourceGroup;
 
+    private Region region = Region.US;
+
     @NotEmpty
-    private String region;
+    private String location;
 
     private boolean autoCreateResources = false;
 }

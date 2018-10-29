@@ -52,24 +52,16 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
     // Memoized functional client creator
     private final Function<String, EventHubClient> eventHubClientCreator =
             Memoizer.memoize(clientsByName, this::createEventHubClient);
-    private final ResourceManagerProvider resourceManagerProvider;
     private final String checkpointStorageConnectionString;
     private final BiFunction<String, String, EventProcessorHost> processorHostCreator =
             Memoizer.memoize(processorHostMap, this::createEventProcessorHost);
 
-    public DefaultEventHubClientFactory(@NonNull ResourceManagerProvider resourceManagerProvider,
-            String checkpointStorageAccount, Function<String, String> connectionStringProvider) {
-        Assert.hasText(checkpointStorageAccount, "checkpointStorageAccount can't be null or empty");
-        this.resourceManagerProvider = resourceManagerProvider;
+    public DefaultEventHubClientFactory(String checkpointConnectionString,
+            Function<String, String> connectionStringProvider) {
+        Assert.hasText(checkpointConnectionString, "checkpointConnectionString can't be null or empty");
         this.connectionStringProvider = connectionStringProvider;
-        this.checkpointStorageConnectionString = buildConnectionString(checkpointStorageAccount);
+        this.checkpointStorageConnectionString = checkpointConnectionString;
         EventHubClientImpl.USER_AGENT = USER_AGENT + "/" + EventHubClientImpl.USER_AGENT;
-    }
-
-    private String buildConnectionString(String checkpointStorageAccount) {
-        StorageAccount storageAccount =
-                resourceManagerProvider.getStorageAccountManager().getOrCreate(checkpointStorageAccount);
-        return StorageConnectionStringProvider.getConnectionString(storageAccount);
     }
 
     private EventHubClient createEventHubClient(String eventHubName) {

@@ -7,26 +7,27 @@
 package com.microsoft.azure.spring.cloud.context.core.impl;
 
 import com.microsoft.azure.management.storage.StorageAccount;
+import com.microsoft.azure.spring.cloud.context.core.api.Region;
 import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public class StorageConnectionStringProvider {
 
-    private static final Function<StorageAccount, String> connectionStringProvider =
+    private static final BiFunction<StorageAccount, Region, String> connectionStringProvider =
             Memoizer.memoize(StorageConnectionStringProvider::buildConnectionString);
 
-    private static String buildConnectionString(StorageAccount storageAccount) {
+    private static String buildConnectionString(StorageAccount storageAccount, Region region) {
         return storageAccount.getKeys().stream().findFirst()
-                             .map(key -> ConnectionStringBuilder.build(storageAccount.name(), key.value()))
+                             .map(key -> ConnectionStringBuilder.build(storageAccount.name(), key.value(), region))
                              .orElseThrow(() -> new RuntimeException("Storage account key is empty."));
     }
 
-    public static String getConnectionString(StorageAccount storageAccount) {
-        return connectionStringProvider.apply(storageAccount);
+    public static String getConnectionString(StorageAccount storageAccount, Region region) {
+        return connectionStringProvider.apply(storageAccount, region);
     }
 
     private static class ConnectionStringBuilder {
@@ -40,16 +41,14 @@ public class StorageConnectionStringProvider {
 
         private static final String HTTP_PROTOCOL = "http";
 
-        private static final String DEFAULT_ENDPOINT_SUFFIX = "core.windows.net";
-
         private static final String SEPARATOR = ";";
 
-        static String build(String accountName, String accountKey) {
+        static String build(String accountName, String accountKey, Region region) {
             Map<String, String> map = new HashMap<>();
             map.put(DEFAULT_PROTOCOL, HTTP_PROTOCOL);
             map.put(ACCOUNT_NAME, accountName);
             map.put(ACCOUNT_KEY, accountKey);
-            map.put(ENDPOINT_SUFFIX, DEFAULT_ENDPOINT_SUFFIX);
+            map.put(ENDPOINT_SUFFIX, region.getStorageEndpoint());
 
             return map.entrySet().stream().map(Object::toString).collect(Collectors.joining(SEPARATOR));
         }
