@@ -2,7 +2,7 @@
 
 This code sample demonstrates how to read and write files with the Spring Resource abstraction for Azure Storage using
 the
-link:../../spring-cloud-azure-starters/spring-cloud-azure-starter-storage[Spring Cloud Azure Storage Starter].Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
+link:../../spring-cloud-azure-starters/spring-azure-starter-storage[Spring Cloud Azure Storage Starter].Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
 
 Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
 
@@ -37,10 +37,24 @@ $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 +
 Make sure `my.azureauth` is encoded with UTF-8.
 
-2. Put auth file under `src/main/resources/`.
+2. Put credential file under `src/main/resources/`.
 
-3. Edit the `src/main/java/com/example/WebController.java` file, replace `{containerName}` and `{blobName}` into correct value
-4. Update link:src/main/resources/application.properties[application.properties]
+3. You can manually create https://docs.microsoft.com/en-us/azure/storage/[Azure Storage]. Or enable auto create
+resources feature in link:src/main/resources/application.properties[application.properties]:
++
+....
+spring.cloud.azure.auto-create-resources=true
+
+# Default region is US. Provide your own if in another region
+# Example region is China, US
+# spring.cloud.azure.region=[region]
+# Example location is westUS, northchina
+spring.cloud.azure.location=[location]
+....
+
+4. Edit `src/main/java/com/example/WebController.java` file, replace `{containerName}` and `{blobName}` into
+correct value
+5. Update link:src/main/resources/application.properties[application.properties]
 +
 ....
 
@@ -48,23 +62,17 @@ Make sure `my.azureauth` is encoded with UTF-8.
 spring.cloud.azure.credential-file-path=[credential-file-path]
 
 spring.cloud.azure.resource-group=[resource-group]
-spring.cloud.azure.region=[region]
 
-# Auto create storage account if not existed
 spring.cloud.azure.storage.account=[account-name]
 ....
 
-+
-All azure resources will be created if missing. Alternatively, you can manually create
-https://docs.microsoft.com/en-us/azure/storage/[Azure Storage].
-
-5. Start the `StorageApplication` Spring Boot app.
+6. Start the `StorageApplication` Spring Boot app.
 +
 ```
 $ mvn spring-boot:run
 ```
 
-6. Send a POST request to update file contents:
+7. Send a POST request to update file contents:
 +
 ```
 $ curl -d 'new message' -H 'Content-Type: text/plain' localhost:8080
@@ -76,4 +84,4 @@ Verify by sending a GET request
 $ curl -XGET http://localhost:8080/
 ```
 
-7. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
+8. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
