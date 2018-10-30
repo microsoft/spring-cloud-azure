@@ -19,7 +19,7 @@ $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 +
 Make sure `my.azureauth` is encoded with UTF-8.
 
-2. Put auth file under `src/main/resources/`.
+2. Put credential file under `src/main/resources/`.
 
 3. Create Kafka enabled event hub. Please follow https://github.com/MicrosoftDocs/azure-docs/blob/master/articles/event-hubs/event-hubs-create-kafka-enabled.md[How to create Kafka enabled Event Hubs]
 
@@ -30,7 +30,6 @@ Make sure `my.azureauth` is encoded with UTF-8.
 spring.cloud.azure.credential-file-path=[credential-file-path]
 
 spring.cloud.azure.resource-group=[resource-group]
-spring.cloud.azure.region=[region]
 
 spring.cloud.azure.eventhub.namespace=[eventhub-namespace]
 
