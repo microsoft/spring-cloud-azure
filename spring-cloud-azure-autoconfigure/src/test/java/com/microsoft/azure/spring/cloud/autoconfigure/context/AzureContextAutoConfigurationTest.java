@@ -28,8 +28,7 @@ public class AzureContextAutoConfigurationTest {
 
     @Test
     public void testAzurePropertiesConfigured() {
-        this.contextRunner.
-                                  withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
+        this.contextRunner.withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
                           .withPropertyValues("spring.cloud.azure.resourceGroup=group1")
                           .withPropertyValues("spring.cloud.azure.location=westUS")
                           .withPropertyValues("spring.cloud.azure.region=US").run(context -> {
@@ -38,6 +37,16 @@ public class AzureContextAutoConfigurationTest {
             assertThat(context.getBean(AzureProperties.class).getResourceGroup()).isEqualTo("group1");
             assertThat(context.getBean(AzureProperties.class).getLocation()).isEqualTo("westUS");
             assertThat(context.getBean(AzureProperties.class).getRegion()).isEqualTo(Region.US);
+        });
+    }
+
+    @Test
+    public void testRequiredAzureProperties() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
+                          .withPropertyValues("spring.cloud.azure.resourceGroup=group1").run(context -> {
+            assertThat(context).hasSingleBean(AzureProperties.class);
+            assertThat(context.getBean(AzureProperties.class).getCredentialFilePath()).isEqualTo("credential");
+            assertThat(context.getBean(AzureProperties.class).getResourceGroup()).isEqualTo("group1");
         });
     }
 
@@ -51,6 +60,14 @@ public class AzureContextAutoConfigurationTest {
     public void testWithoutAzureClass() {
         this.contextRunner.withClassLoader(new FilteredClassLoader(Azure.class))
                           .run(context -> assertThat(context).doesNotHaveBean(AzureProperties.class));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testLocationRequiredWhenAutoCreateResources() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
+                          .withPropertyValues("spring.cloud.azure.resourceGroup=group1")
+                          .withPropertyValues("spring.cloud.azure.auto-create-resources=true")
+                          .run(context -> context.getBean(AzureProperties.class));
     }
 
     @Configuration

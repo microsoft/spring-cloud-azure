@@ -19,17 +19,28 @@ $  az ad sp create-for-rbac --sdk-auth > my.azureauth
 +
 Make sure `my.azureauth` is encoded with UTF-8.
 
-2. Put auth file under `src/main/resources/`.
+2. Put credential file under `src/main/resources/`.
 
-3. Create Azure Service Bus Namespace, and create service bus queue and topic. Please see https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-create-namespace-portal[how to create].
+3. Create Azure Service Bus Namespace, and create service bus queue and topic.
+Please see https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-create-namespace-portal[how to create]. Or enable auto create
+resources feature in link:src/main/resources/application.properties[application.properties]:
++
+....
+spring.cloud.azure.auto-create-resources=true
 
-3. Update link:src/main/resources/application.properties[application.properties] file
+# Default region is US. Provide your own if in another region
+# Example region is China, US
+# spring.cloud.azure.region=[region]
+# Example location is westUS, northchina
+spring.cloud.azure.location=[location]
+....
+
+4. Update link:src/main/resources/application.properties[application.properties] file
 +
 ....
 # Enter 'my.azureauth' here if following step 1 and 2
 spring.cloud.azure.credential-file-path=[credential-file-path]
 spring.cloud.azure.resource-group=[resource-group]
-spring.cloud.azure.region=[region]
 
 spring.cloud.azure.servicebus.namespace=[servicebus-namespace]
 
@@ -40,19 +51,19 @@ spring.cloud.stream.bindings.output.destination=[servicebus-topic-name-same-as-a
 ....
 +
 
-4. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
+5. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
 
-5.  Send a POST request
+6.  Send a POST request
 +
 ....
 $ curl -X POST localhost:8080/messages?message=hello
 ....
 
-6. Verify in your app's logs that a similar message was posted:
+7. Verify in your app's logs that a similar message was posted:
 +
 ....
 Message arrived! Payload: hello
 Message 'hello' successfully checkpointed
 ....
 
-7. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
+8. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.

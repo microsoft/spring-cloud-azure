@@ -11,8 +11,10 @@ import com.microsoft.azure.spring.cloud.context.core.api.Region;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
+import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotEmpty;
 
 @Getter
@@ -29,8 +31,15 @@ public class AzureProperties implements CredentialSupplier {
 
     private Region region = Region.US;
 
-    @NotEmpty
     private String location;
 
     private boolean autoCreateResources = false;
+
+    @PostConstruct
+    private void validate() {
+        if (autoCreateResources) {
+            Assert.hasText(this.location,
+                    "When auto create resources is enabled, spring.cloud.azure.location must be provided");
+        }
+    }
 }
