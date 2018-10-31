@@ -4,12 +4,15 @@
 
 ## Module and Starter 
 
-Module | Spring Library | Description
----|---|---
-[Spring Cloud Stream Binder for Azure Event Hub](spring-cloud-azure-eventhub-stream-binder/) | [Spring Cloud Stream](https://cloud.spring.io/spring-cloud-stream/) | Binder implementation for Spring Cloud Stream with Azure Event Hub service
-[Spring Cloud Stream with Azure Event Hub Kafka API](spring-cloud-azure-samples/spring-cloud-stream-eventhub-kafka-sample/) | [Spring Cloud Stream](https://cloud.spring.io/spring-cloud-stream/) | Auto configuration for Kafka Binder with Azure Event Hub service
-[Spring Resource Abstraction for Azure Storage](spring-cloud-azure-storage/) | [Spring Resource](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#resources) | Implementation for Spring Resource with Azure Storage
-[Spring Caching with Azure Redis Cache](spring-cloud-azure-samples/spring-cloud-azure-cache-sample) | [Spring Caching](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-caching.html) | Auto configuration for Spring Caching with Azure Redis Cache
+Module | Spring Library | Description | Sample
+---|---|--- | ---
+[Spring Cloud Stream Binder for Azure Event Hub](spring-cloud-azure-eventhub-stream-binder/) | [Spring Cloud Stream](https://cloud.spring.io/spring-cloud-stream/) | Binder implementation for Spring Cloud Stream with Azure Event Hub | [Sample](spring-cloud-azure-samples/spring-cloud-azure-eventhub-binder-sample)
+[Spring Cloud Stream with Azure Event Hub Kafka API](spring-cloud-azure-samples/spring-cloud-stream-eventhub-kafka-sample/) | [Spring Cloud Stream](https://cloud.spring.io/spring-cloud-stream/) | Auto configuration for Kafka Binder with Azure Event Hub | [Sample](spring-cloud-azure-samples/spring-cloud-azure-eventhub-kafka-sample)
+[Spring Integration for Azure Event Hub](spring-integration-azure/spring-integration-eventhub) | [Spring Integration](https://spring.io/projects/spring-integration) | Event hub template and adapter implementaion for Spring Integration | [Integration Sample](spring-cloud-azure-samples/spring-cloud-azure-eventhub-integration-sample) [Template Sample](spring-cloud-azure-samples/spring-cloud-azure-eventhub-operation-sample)
+[Spring Cloud Stream Binder for Azure Service Bus Topic](spring-cloud-azure-servicebus-topic-stream-binder/) | [Spring Cloud Stream](https://cloud.spring.io/spring-cloud-stream/) | Binder implementation for Spring Cloud Stream with Azure Service Bus Topic | [Sample](spring-cloud-azure-samples/spring-cloud-azure-servicebus-topic-binder-sample)
+[Spring Integration for Azure Service Bus](spring-integration-azure/spring-integration-servicebus) | [Spring Integration](https://spring.io/projects/spring-integration) | Service Bus template and adapter implementaion for Spring Integration | [Integration Sample](spring-cloud-azure-samples/spring-cloud-azure-servicebus-integration-sample) [Template Sample](spring-cloud-azure-samples/spring-cloud-azure-servicebus-operation-sample)
+[Spring Resource Abstraction for Azure Storage](spring-cloud-azure-storage/) | [Spring Resource](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#resources) | Implementation for Spring Resource with Azure Storage | [Sample](spring-cloud-azure-samples/spring-cloud-azure-storage-sample)
+[Spring Caching with Azure Redis Cache](spring-cloud-azure-samples/spring-cloud-azure-cache-sample) | [Spring Caching](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-caching.html) | Auto configuration for Spring Caching with Azure Redis Cache | [Sample](spring-cloud-azure-samples/spring-cloud-azure-cache-sample)
 
 The following Spring Boot Starters are available in Maven Central Repository. 
 
