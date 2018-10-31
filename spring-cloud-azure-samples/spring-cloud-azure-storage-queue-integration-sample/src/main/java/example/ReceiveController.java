@@ -24,6 +24,7 @@ public class ReceiveController {
     private static final String STORAGE_QUEUE_NAME = "example";
     private static final String INPUT_CHANNEL = "input";
     private static final Logger LOGGER = LoggerFactory.getLogger(ReceiveController.class);
+
     @Bean
     @InboundChannelAdapter(channel = INPUT_CHANNEL, poller = @Poller(fixedDelay = "1000"))
     public StorageQueueMessageSource StorageQueueMessageSource(StorageQueueOperation storageQueueOperation) {
