@@ -25,14 +25,14 @@ import java.nio.charset.Charset;
 @RestController
 public class WebController {
 
-    @Value("blob://{containerName}/{blobName}")
+    @Value("${blob}")
     private Resource blobFile;
 
     @GetMapping(value = "/")
     public String readBlobFile() throws IOException {
         return StreamUtils.copyToString(
                 this.blobFile.getInputStream(),
-                Charset.defaultCharset()) + "\n";
+                Charset.defaultCharset());
     }
 
     @PostMapping(value = "/")
@@ -40,6 +40,6 @@ public class WebController {
         try (OutputStream os = ((WritableResource) this.blobFile).getOutputStream()) {
             os.write(data.getBytes());
         }
-        return "file was updated\n";
+        return "file was updated";
     }
 }

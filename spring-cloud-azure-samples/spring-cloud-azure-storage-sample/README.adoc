@@ -52,8 +52,6 @@ spring.cloud.azure.auto-create-resources=true
 spring.cloud.azure.location=[location]
 ....
 
-4. Edit `src/main/java/com/example/WebController.java` file, replace `{containerName}` and `{blobName}` into
-correct value
 5. Update link:src/main/resources/application.properties[application.properties]
 +
 ....
@@ -64,6 +62,9 @@ spring.cloud.azure.credential-file-path=[credential-file-path]
 spring.cloud.azure.resource-group=[resource-group]
 
 spring.cloud.azure.storage.account=[account-name]
+
+# Change into your containerName and blobName
+blob=blob://containerName/blobName
 ....
 
 6. Start the `StorageApplication` Spring Boot app.
