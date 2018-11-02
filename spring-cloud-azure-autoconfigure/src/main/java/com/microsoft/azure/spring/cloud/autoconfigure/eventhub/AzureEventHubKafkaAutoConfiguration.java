@@ -38,7 +38,7 @@ import java.util.Arrays;
 @Configuration
 @AutoConfigureBefore({KafkaAutoConfiguration.class, TelemetryAutoConfiguration.class})
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
-@ConditionalOnClass({EventHubClient.class, KafkaTemplate.class})
+@ConditionalOnClass(KafkaTemplate.class)
 @ConditionalOnProperty(prefix = "spring.cloud.azure.eventhub", value = "namespace")
 @EnableConfigurationProperties(AzureEventHubProperties.class)
 public class AzureEventHubKafkaAutoConfiguration {
@@ -58,7 +58,6 @@ public class AzureEventHubKafkaAutoConfiguration {
         TelemetryCollector.getInstance().addService(EVENT_HUB_KAFKA);
     }
 
-    @ConditionalOnMissingBean
     @Primary
     @Bean
     public KafkaProperties kafkaProperties(ResourceManagerProvider resourceManagerProvider,
