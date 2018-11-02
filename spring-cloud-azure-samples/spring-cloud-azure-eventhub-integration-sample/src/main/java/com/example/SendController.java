@@ -8,10 +8,7 @@ package com.example;
 
 import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
 import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -28,9 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SendController {
 
-    private static final Log LOGGER = LogFactory.getLog(SendController.class);
     private static final String OUTPUT_CHANNEL = "output";
-    private static final String EVENTHUB_NAME = "eventhub";
+    private static final String EVENTHUB_NAME = "eventhub1";
 
     @Autowired
     EventHubOutboundGateway messagingGateway;
@@ -59,12 +55,12 @@ public class SendController {
         handler.setSendCallback(new ListenableFutureCallback<Void>() {
             @Override
             public void onSuccess(Void result) {
-                LOGGER.info("Message was sent successfully.");
+                System.out.println("Message was sent successfully.");
             }
 
             @Override
             public void onFailure(Throwable ex) {
-                LOGGER.info("There was an error sending the message.");
+                System.out.println("There was an error sending the message.");
             }
         });
 

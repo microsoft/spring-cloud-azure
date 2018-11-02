@@ -27,10 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ReceiveController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ReceiveController.class);
     private static final String INPUT_CHANNEL = "input";
-    private static final String EVENTHUB_NAME = "eventhub";
-    private static final String CONSUMER_GROUP = "$Default";
+    private static final String EVENTHUB_NAME = "eventhub1";
+    private static final String CONSUMER_GROUP = "cg1";
 
     /** This message receiver binding with {@link EventHubInboundChannelAdapter}
      *  via {@link MessageChannel} has name {@value INPUT_CHANNEL}
@@ -38,10 +37,10 @@ public class ReceiveController {
     @ServiceActivator(inputChannel = INPUT_CHANNEL)
     public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
         String message = new String(payload);
-        LOGGER.info("Message arrived! Payload: {}", message);
+        System.out.println(String.format("New message received: '%s'", message));
         checkpointer.success().handle((r, ex) -> {
             if (ex == null) {
-                LOGGER.info("Message '{}' successfully checkpointed", message);
+                System.out.println(String.format("Message '%s' successfully checkpointed", message));
             }
             return null;
         });
