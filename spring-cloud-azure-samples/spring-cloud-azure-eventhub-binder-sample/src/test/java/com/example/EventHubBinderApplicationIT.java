@@ -6,10 +6,6 @@
 
 package com.example;
 
-import com.example.EventHubBinderApplication;
-import org.apache.commons.io.output.TeeOutputStream;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,8 +17,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
