@@ -10,11 +10,13 @@ import com.example.EventHubBinderApplication;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.rule.OutputCapture;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,23 +36,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class EventHubBinderApplicationIT {
 
-    private static PrintStream systemOut;
-    private static ByteArrayOutputStream baos;
     @Autowired
     private MockMvc mvc;
 
-    @BeforeClass
-    public static void captureSystemOut() {
-        systemOut = System.out;
-        baos = new ByteArrayOutputStream();
-        TeeOutputStream out = new TeeOutputStream(systemOut, baos);
-        System.setOut(new PrintStream(out));
-    }
-
-    @AfterClass
-    public static void revertSystemOut() {
-        System.setOut(systemOut);
-    }
+    @Rule
+    public OutputCapture capture = new OutputCapture();
 
     @Test
     public void testSendAndReceiveMessage() throws Exception {
@@ -64,7 +54,7 @@ public class EventHubBinderApplicationIT {
         boolean messageReceived = false;
         boolean messageCheckpointed = false;
         for (int i = 0; i < 100; i++) {
-            String output = baos.toString();
+            String output = capture.toString();
             if (!messageReceived && output.contains(messageReceivedLog)) {
                 messageReceived = true;
             }
