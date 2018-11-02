@@ -16,9 +16,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author Warren Zhu
  */
 @SpringBootApplication
-public class EventHubApplication {
+public class EventHubOperationApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(EventHubApplication.class, args);
+        SpringApplication.run(EventHubOperationApplication.class, args);
     }
 }

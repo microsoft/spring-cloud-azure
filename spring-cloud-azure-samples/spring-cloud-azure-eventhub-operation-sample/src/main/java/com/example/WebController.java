@@ -11,8 +11,6 @@ import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
@@ -28,9 +26,8 @@ import javax.annotation.PostConstruct;
 @RestController
 public class WebController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(WebController.class);
-    private static final String EVENT_HUB_NAME = "eventhub";
-    private static final String CONSUMER_GROUP = "$Default";
+    private static final String EVENT_HUB_NAME = "eventhub1";
+    private static final String CONSUMER_GROUP = "cg1";
 
     @Autowired
     EventHubOperation eventHubOperation;
@@ -49,11 +46,11 @@ public class WebController {
     }
 
     private void messageReceiver(Message<?> message) {
-        LOGGER.info("Message arrived! Payload: " + message.getPayload());
+        System.out.println(String.format("New message received: '%s'", message.getPayload()));
         Checkpointer checkpointer = message.getHeaders().get(AzureHeaders.CHECKPOINTER, Checkpointer.class);
         checkpointer.success().handle((r, ex) -> {
             if (ex == null) {
-                LOGGER.info("Message '{}' successfully checkpointed", message.getPayload());
+                System.out.println(String.format("Message '%s' successfully checkpointed", message.getPayload()));
             }
             return null;
         });
