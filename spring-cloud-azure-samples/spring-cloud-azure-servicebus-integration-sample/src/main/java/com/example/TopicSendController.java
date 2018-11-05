@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TopicSendController {
 
     private static final String OUTPUT_CHANNEL = "topic.output";
-    private static final String TOPIC_NAME = "topic";
+    private static final String TOPIC_NAME = "topic1";
 
     @Autowired
     TopicOutboundGateway messagingGateway;

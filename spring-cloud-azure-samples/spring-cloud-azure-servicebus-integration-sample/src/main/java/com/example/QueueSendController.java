@@ -29,7 +29,7 @@ public class QueueSendController {
 
     private static final Log LOGGER = LogFactory.getLog(QueueSendController.class);
     private static final String OUTPUT_CHANNEL = "queue.output";
-    private static final String QUEUE_NAME = "example";
+    private static final String QUEUE_NAME = "queue1";
 
     @Autowired
     QueueOutboundGateway messagingGateway;
