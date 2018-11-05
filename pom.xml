@@ -140,13 +140,6 @@
                         </dependency>
                     </dependencies>
                 </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <configuration>
-                        <argLine>${argLine} -Xms512m -Xmx512m</argLine>
-                    </configuration>
-                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -207,8 +200,76 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.18.1</version>
+                <configuration>
+                    <skipITs>${skip.integration.tests}</skipITs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/libs-snapshot-local</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/libs-milestone-local</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>spring-releases</id>
+            <name>Spring Releases</name>
+            <url>https://repo.spring.io/release</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/libs-snapshot-local</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </pluginRepository>
+        <pluginRepository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/libs-milestone-local</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 
     <reporting>
         <plugins>
@@ -231,60 +292,19 @@
 
     <profiles>
         <profile>
-            <id>spring</id>
+            <id>dev</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <repositories>
-                <repository>
-                    <id>spring-snapshots</id>
-                    <name>Spring Snapshots</name>
-                    <url>https://repo.spring.io/libs-snapshot-local</url>
-                    <snapshots>
-                        <enabled>true</enabled>
-                    </snapshots>
-                    <releases>
-                        <enabled>false</enabled>
-                    </releases>
-                </repository>
-                <repository>
-                    <id>spring-milestones</id>
-                    <name>Spring Milestones</name>
-                    <url>https://repo.spring.io/libs-milestone-local</url>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </repository>
-                <repository>
-                    <id>spring-releases</id>
-                    <name>Spring Releases</name>
-                    <url>https://repo.spring.io/release</url>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </repository>
-            </repositories>
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>spring-snapshots</id>
-                    <name>Spring Snapshots</name>
-                    <url>https://repo.spring.io/libs-snapshot-local</url>
-                    <snapshots>
-                        <enabled>true</enabled>
-                    </snapshots>
-                    <releases>
-                        <enabled>false</enabled>
-                    </releases>
-                </pluginRepository>
-                <pluginRepository>
-                    <id>spring-milestones</id>
-                    <name>Spring Milestones</name>
-                    <url>https://repo.spring.io/libs-milestone-local</url>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </pluginRepository>
-            </pluginRepositories>
+            <properties>
+                <skip.integration.tests>true</skip.integration.tests>
+            </properties>
+        </profile>
+        <profile>
+            <id>integration-test</id>
+            <properties>
+                <skip.integration.tests>false</skip.integration.tests>
+            </properties>
         </profile>
     </profiles>
 
