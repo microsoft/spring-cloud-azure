@@ -28,8 +28,7 @@ import javax.annotation.PostConstruct;
 @RestController
 public class QueueController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(QueueController.class);
-    private static final String QUEUE_NAME = "example";
+    private static final String QUEUE_NAME = "queue1";
 
     @Autowired
     ServiceBusQueueOperation queueOperation;
@@ -47,11 +46,11 @@ public class QueueController {
     }
 
     private void messageReceiver(Message<?> message) {
-        LOGGER.info("Message arrived! Payload: " + message.getPayload());
+        System.out.println(String.format("New message received: '%s'", message.getPayload()));
         Checkpointer checkpointer = message.getHeaders().get(AzureHeaders.CHECKPOINTER, Checkpointer.class);
         checkpointer.success().handle((r, ex) -> {
             if (ex == null) {
-                LOGGER.info("Message '{}' successfully checkpointed", message.getPayload());
+                System.out.println(String.format("Message '%s' successfully checkpointed", message.getPayload()));
             }
             return null;
         });
