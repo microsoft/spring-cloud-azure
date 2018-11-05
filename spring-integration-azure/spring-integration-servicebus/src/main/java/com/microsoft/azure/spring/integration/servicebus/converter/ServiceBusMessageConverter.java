@@ -9,7 +9,9 @@ package com.microsoft.azure.spring.integration.servicebus.converter;
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.Message;
 import com.microsoft.azure.spring.integration.core.converter.AbstractAzureMessageConverter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.MessageHeaders;
+import org.springframework.util.InvalidMimeTypeException;
 import org.springframework.util.MimeType;
 import org.springframework.util.StringUtils;
 
@@ -23,6 +25,7 @@ import java.util.UUID;
  *
  * @author Warren Zhu
  */
+@Slf4j
 public class ServiceBusMessageConverter extends AbstractAzureMessageConverter<IMessage> {
 
     @Override
@@ -47,7 +50,7 @@ public class ServiceBusMessageConverter extends AbstractAzureMessageConverter<IM
             Object contentType = headers.get(MessageHeaders.CONTENT_TYPE);
 
             if (contentType instanceof MimeType) {
-                serviceBusMessage.setContentType(((MimeType) contentType).getType());
+                serviceBusMessage.setContentType(((MimeType) contentType).toString());
             } else /* contentType is String */ {
                 serviceBusMessage.setContentType((String) contentType);
             }
@@ -67,7 +70,14 @@ public class ServiceBusMessageConverter extends AbstractAzureMessageConverter<IM
         Map<String, Object> headers = new HashMap<>();
 
         headers.put(MessageHeaders.ID, UUID.fromString(serviceBusMessage.getMessageId()));
-        headers.put(MessageHeaders.CONTENT_TYPE, serviceBusMessage.getContentType());
+
+        try {
+            MimeType mimeType = MimeType.valueOf(serviceBusMessage.getContentType());
+            headers.put(MessageHeaders.CONTENT_TYPE, mimeType.toString());
+        } catch (InvalidMimeTypeException e){
+            log.warn("Invalid mimeType '{}' from service bus message.");
+        }
+
         if (StringUtils.hasText(serviceBusMessage.getReplyTo())) {
             headers.put(MessageHeaders.REPLY_CHANNEL, serviceBusMessage.getReplyTo());
         }
