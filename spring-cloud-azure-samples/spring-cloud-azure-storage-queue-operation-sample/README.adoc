@@ -22,6 +22,8 @@ Make sure `my.azureauth` is encoded with UTF-8.
 3. Create storage account and queue by follow
    https://docs.microsoft.com/en-us/azure/storage/common/storage-create-storage-account[how to create].
 
+4. Update queue name in link:src/main/java/com/example/WebController.java#L31[WebController]
+
 3. Update link:src/main/resources/application.properties[application.properties] file
 +
 ....
