@@ -32,7 +32,11 @@ spring.cloud.azure.servicebus.namespace=[servicebus-namespace]
 ....
 +
 
-5. Update queue name in link:src/main/java/example/QueueReceiveController.java#L31[QueueReceiveController] and link:src/main/java/example/QueueSendController.java#L33[QueueSendController], and update topic name in link:src/main/java/example/TopicReceiveController.java#L33[TopicReceiveController] and link:src/main/java/example/TopicSendController.java#L33[TopicSendController].
+5. Update queue name in link:src/main/java/com/example/QueueReceiveController.java#L29[QueueReceiveController] and
+link:src/main/java/com/example/QueueSendController.java#L32[QueueSendController], and update topic name and
+subscription in
+link:src/main/java/com/example/TopicReceiveController.java#L29[TopicReceiveController] and
+link:src/main/java/com/example/TopicSendController.java#L31[TopicSendController].
 
 6. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
 
@@ -45,7 +49,7 @@ $ curl -X POST localhost:8080/queues?message=hello
 8. Verify in your app's logs that a similar message was posted:
 +
 ....
-Message arrived! Payload: hello
+New message received: 'hello'
 Message 'hello' successfully checkpointed
 ....
 
@@ -58,7 +62,7 @@ $ curl -X POST localhost:8080/topics?message=hello
 10. Verify in your app's logs that a similar message was posted:
 +
 ....
-Message arrived! Payload: hello
+New message received: 'hello'
 Message 'hello' successfully checkpointed
 ....
 

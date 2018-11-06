@@ -21,7 +21,8 @@ Make sure `my.azureauth` is encoded with UTF-8.
 
 3. Create Azure Event Hub Namespace and event hub. Please see https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create[how to create].
 
-4. Update event hub name in link:src/main/java/example/ReceiveController.java#L31[ReceiveController] and link:src/main/java/example/SendController.java#L34[SendController].
+4. Update event hub name and consumer group in link:src/main/java/com/example/ReceiveController.java#L31[ReceiveController] and
+link:src/main/java/com/example/SendController.java#L29[SendController].
 
 5. Update link:src/main/resources/application.properties[application.properties] file
 +
@@ -46,7 +47,7 @@ $ curl -X POST http://localhost:8080/messages?message=hello
 8. Verify in your app's logs that a similar message was posted:
 +
 ....
-Message arrived! Payload: hello
+New message received: 'hello'
 Message 'hello' successfully checkpointed
 ....
 

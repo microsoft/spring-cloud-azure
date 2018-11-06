@@ -60,7 +60,7 @@ $ curl -X POST http://localhost:8080/messages?message=hello
 7. Verify in your app's logs that a similar message was posted:
 +
 ....
-Message arrived! Payload: hello
+New message received: 'hello'
 Message 'hello' successfully checkpointed
 ....
 

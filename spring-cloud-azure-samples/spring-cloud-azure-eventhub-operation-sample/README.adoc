@@ -33,7 +33,7 @@ spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-accou
 ....
 +
 
-5. Update event hub name in link:src/main/java/example/WebController.java#L31[WebController].
+5. Update event hub name and consumer group in link:src/main/java/com/example/WebController.java#L29[WebController].
 
 6. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
 
@@ -46,7 +46,7 @@ $ curl -X POST http://localhost:8080/messages?message=hello
 8. Verify in your app's logs that a similar message was posted:
 +
 ....
-Message arrived! Payload: hello
+New message received: 'hello'
 Message 'hello' successfully checkpointed
 ....
 

@@ -22,6 +22,9 @@ Make sure `my.azureauth` is encoded with UTF-8.
 3. Create storage account and queue by follow
    https://docs.microsoft.com/en-us/azure/storage/common/storage-create-storage-account[how to create].
 
+4. Update queue name in link:src/main/java/com/example/SendController.java#L30[SendController] and
+link:src/main/java/com/example/ReceiveController.java#L22[ReceiveController]
+
 3. Update link:src/main/resources/application.properties[application.properties] file
 +
 ....
@@ -43,7 +46,7 @@ $ curl -X POST localhost:8080/messages?message=hello
 6. Verify in your app's logs that a similar message was posted:
 +
 ....
-Message arrived! Payload: hello
+New message received: 'hello'
 Message 'hello' successfully checkpointed
 ....
 

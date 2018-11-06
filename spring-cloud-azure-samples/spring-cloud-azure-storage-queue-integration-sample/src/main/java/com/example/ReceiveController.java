@@ -33,8 +33,9 @@ public class ReceiveController {
         return messageSource;
     }
 
-    /** This message receiver binding with {@link StorageQueueMessageSource}
-     *  via {@link MessageChannel} has name {@value INPUT_CHANNEL}
+    /**
+     * This message receiver binding with {@link StorageQueueMessageSource}
+     * via {@link MessageChannel} has name {@value INPUT_CHANNEL}
      */
     @ServiceActivator(inputChannel = INPUT_CHANNEL)
     public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
