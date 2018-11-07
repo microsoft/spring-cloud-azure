@@ -1,0 +1,44 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License. See LICENSE in the project root for
+ * license information.
+ */
+
+package com.microsoft.azure.spring.messaging.annotation;
+
+
+import com.microsoft.azure.spring.messaging.container.ListenerContainerFactory;
+import com.microsoft.azure.spring.messaging.endpoint.AzureListenerEndpoint;
+import com.microsoft.azure.spring.messaging.endpoint.AzureListenerEndpointRegistrar;
+import com.microsoft.azure.spring.messaging.endpoint.AzureListenerEndpointRegistry;
+
+/**
+ * Optional interface to be implemented by a Spring managed bean willing
+ * to customize how Azure listener endpoints are configured. Typically
+ * used to define the default {@link ListenerContainerFactory
+ * ListenerContainerFactory} to use or for registering Azure endpoints
+ * in a <em>programmatic</em> fashion as opposed to the <em>declarative</em>
+ * approach of using the @{@link AzureListener} annotation.
+ *
+ * <p>See @{@link EnableAzureMessaging} for detailed usage examples.
+ *
+ * @author Warren Zhu
+ * @see EnableAzureMessaging
+ * @see AzureListenerEndpointRegistrar
+ */
+@FunctionalInterface
+public interface AzureListenerConfigurer {
+
+    /**
+     * Callback allowing a {@link AzureListenerEndpointRegistry
+     * AzureListenerEndpointRegistry} and specific {@link AzureListenerEndpoint
+     * AzureListenerEndpoint} instances to be registered against the given
+     * {@link AzureListenerEndpointRegistrar}. The default
+     * {@link ListenerContainerFactory ListenerContainerFactory}
+     * can also be customized.
+     *
+     * @param registrar the registrar to be configured
+     */
+    void configureAzureListeners(AzureListenerEndpointRegistrar registrar);
+
+}
