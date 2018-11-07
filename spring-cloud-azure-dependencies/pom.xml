@@ -109,6 +109,11 @@
                 <artifactId>spring-cloud-azure-keyvault-config</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>spring-cloud-azure-messaging</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!--Azure Java SDKs-->
             <dependency>
