@@ -5,6 +5,14 @@
  */
 package com.microsoft.azure;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.HmacAlgorithms;
@@ -18,30 +26,24 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.URISyntaxException;
-import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
 import static org.apache.commons.codec.digest.HmacAlgorithms.HMAC_SHA_256;
 import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA_256;
 
 /**
- * Util class to execute http request, before sending http request, valid request headers will be added for each request
- * based on given credential ID and secret.
+ * Util class to execute http request, before sending http request, valid request headers
+ * will be added for each request based on given credential ID and secret.
  *
  * How to use:
  * <p>
- *     HttpGet httpGet = new HttpGet("https://my-config-store.azconfig.io/keys");
- *     CloseableHttpResponse response = ConfigHttpClient.execute(httpGet, "my-credential", "my-secret");
+ * HttpGet httpGet = new HttpGet("https://my-config-store.azconfig.io/keys");
+ * CloseableHttpResponse response = ConfigHttpClient.execute(httpGet, "my-credential",
+ * "my-secret");
  * <p/>
  */
 @Slf4j
 public class ConfigHttpClient {
     private static final String DATE_FORMAT = "EEE, d MMM yyyy hh:mm:ss z";
+
     private static final SimpleDateFormat GMT_DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT);
 
     static {
@@ -54,13 +56,13 @@ public class ConfigHttpClient {
         authHeaders.forEach((k, v) -> request.setHeader(k, v));
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault();
-             CloseableHttpResponse response = httpClient.execute(request)) {
+                CloseableHttpResponse response = httpClient.execute(request)) {
             return response;
         }
     }
 
     private static Map<String, String> buildRequestHeaders(HttpUriRequest request, Date date, String credential,
-                                                           String secret) throws URISyntaxException, IOException {
+            String secret) throws URISyntaxException, IOException {
         String requestTime = GMT_DATE_FORMAT.format(date);
 
         String content = "";
@@ -76,8 +78,8 @@ public class ConfigHttpClient {
 
         // String-To-Sign
         String toSign = request.getRequestLine().getMethod().toUpperCase() + "\n"
-                    + getPath(request) + "\n"
-                    + requestTime + ';' + getHost(request) + ';' + contentHash;
+                + getPath(request) + "\n"
+                + requestTime + ';' + getHost(request) + ';' + contentHash;
 
         // Signature
         byte[] decodedKey = Base64.getDecoder().decode(secret);
@@ -111,10 +113,12 @@ public class ConfigHttpClient {
             IOUtils.copy(inputStream, writer, Charset.defaultCharset());
 
             return writer.toString();
-        } finally {
+        }
+        finally {
             try {
                 inputStream.close();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 log.trace("Failed to close the input stream.", e);
             }
         }
