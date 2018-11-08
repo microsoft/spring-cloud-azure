@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure;
+package com.microsoft.azure.config;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -76,9 +76,10 @@ public class ConfigHttpClient {
         String signedHeaders = "x-ms-date;host;x-ms-content-sha256";
 
         // String-To-Sign
-        String toSign = request.getRequestLine().getMethod().toUpperCase() + "\n"
-                + getPath(request) + "\n"
-                + requestTime + ';' + getHost(request) + ';' + contentHash;
+        String methodName = request.getRequestLine().getMethod().toUpperCase();
+        String requestPath = getPath(request);
+        String host = getHost(request);
+        String toSign = String.format("%s\n%s\n%s;%s;%s", methodName, requestPath, requestTime, host, contentHash);
 
         // Signature
         byte[] decodedKey = Base64.getDecoder().decode(secret);
@@ -88,8 +89,10 @@ public class ConfigHttpClient {
         Map<String, String> headers = new HashMap<>();
         headers.put("x-ms-date", requestTime);
         headers.put("x-ms-content-sha256", contentHash);
-        headers.put("Authorization", "HMAC-SHA256 Credential=" + credential +
-                ", SignedHeaders=" + signedHeaders + ", Signature=" + signature);
+
+        String authorization = String.format("HMAC-SHA256 Credential=%s, SignedHeaders=%s, Signature=%s",
+                credential, signedHeaders, signature);
+        headers.put("Authorization", authorization);
 
         return headers;
     }
