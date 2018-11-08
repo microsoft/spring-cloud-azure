@@ -55,9 +55,8 @@ public class ConfigHttpClient {
         Map<String, String> authHeaders = buildRequestHeaders(request, new Date(), credential, secret);
         authHeaders.forEach(request::setHeader);
 
-        try (CloseableHttpClient httpClient = HttpClients.createDefault();
-                CloseableHttpResponse response = httpClient.execute(request)) {
-            return response;
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            return httpClient.execute(request);
         }
     }
 
