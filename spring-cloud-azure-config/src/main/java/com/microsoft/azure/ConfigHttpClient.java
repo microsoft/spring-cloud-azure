@@ -53,7 +53,7 @@ public class ConfigHttpClient {
     public static CloseableHttpResponse execute(HttpUriRequest request, String credential, String secret)
             throws IOException, URISyntaxException {
         Map<String, String> authHeaders = buildRequestHeaders(request, new Date(), credential, secret);
-        authHeaders.forEach((k, v) -> request.setHeader(k, v));
+        authHeaders.forEach(request::setHeader);
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault();
                 CloseableHttpResponse response = httpClient.execute(request)) {
