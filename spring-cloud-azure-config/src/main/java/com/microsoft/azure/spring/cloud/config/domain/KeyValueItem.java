@@ -15,7 +15,9 @@ import lombok.ToString;
 import java.util.Date;
 
 @NoArgsConstructor
-@Getter @Setter @ToString
+@Getter
+@Setter
+@ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KeyValueItem {
     private String etag;
