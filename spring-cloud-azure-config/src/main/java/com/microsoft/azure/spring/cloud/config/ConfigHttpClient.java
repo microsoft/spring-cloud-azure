@@ -27,6 +27,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import static org.apache.commons.codec.digest.HmacAlgorithms.HMAC_SHA_256;
 import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA_256;
@@ -105,7 +106,7 @@ public class ConfigHttpClient {
             throws URISyntaxException {
         // String-To-Sign
         String methodName = request.getRequestLine().getMethod().toUpperCase();
-        String requestPath = getPath(request);
+        String requestPath = getRequestPath(request);
         String host = getHost(request);
         String toSign = String.format("%s\n%s\n%s;%s;%s", methodName, requestPath, requestTime, host, contentHash);
 
@@ -114,8 +115,11 @@ public class ConfigHttpClient {
         return encodeHmac(HMAC_SHA_256, decodedKey, toSign);
     }
 
-    private static String getPath(HttpRequest request) throws URISyntaxException {
-        return new URIBuilder(request.getRequestLine().getUri()).getPath();
+    private static String getRequestPath(HttpRequest request) throws URISyntaxException {
+        URIBuilder uri = new URIBuilder(request.getRequestLine().getUri());
+        String protocol = StringUtils.isEmpty(uri.getScheme()) ? "" : uri.getScheme() + ":";
+
+        return uri.toString().replaceFirst(protocol + "//", "").replaceFirst(uri.getHost(), "");
     }
 
     private static String getHost(HttpRequest request) throws URISyntaxException {
