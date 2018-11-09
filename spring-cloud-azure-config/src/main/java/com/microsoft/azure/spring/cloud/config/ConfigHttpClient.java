@@ -25,6 +25,9 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 
+import org.springframework.lang.NonNull;
+import org.springframework.util.Assert;
+
 import static org.apache.commons.codec.digest.HmacAlgorithms.HMAC_SHA_256;
 import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA_256;
 
@@ -55,8 +58,10 @@ public class ConfigHttpClient {
         this.httpClient = httpClient;
     }
 
-    public CloseableHttpResponse execute(HttpUriRequest request, String credential, String secret)
+    public CloseableHttpResponse execute(@NonNull HttpUriRequest request, String credential, String secret)
             throws IOException, URISyntaxException {
+        Assert.notNull(request, "Request should not be null.");
+
         Map<String, String> authHeaders = buildRequestHeaders(request, new Date(), credential, secret);
         authHeaders.forEach(request::setHeader);
 
