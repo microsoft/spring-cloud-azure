@@ -24,7 +24,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 
 import static org.apache.commons.codec.digest.HmacAlgorithms.HMAC_SHA_256;
 import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA_256;
@@ -50,14 +49,18 @@ public class ConfigHttpClient {
         GMT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
-    public static CloseableHttpResponse execute(HttpUriRequest request, String credential, String secret)
+    private final CloseableHttpClient httpClient;
+
+    public ConfigHttpClient(CloseableHttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
+
+    public CloseableHttpResponse execute(HttpUriRequest request, String credential, String secret)
             throws IOException, URISyntaxException {
         Map<String, String> authHeaders = buildRequestHeaders(request, new Date(), credential, secret);
         authHeaders.forEach(request::setHeader);
 
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            return httpClient.execute(request);
-        }
+        return httpClient.execute(request);
     }
 
     private static Map<String, String> buildRequestHeaders(HttpUriRequest request, Date date, String credential,
@@ -94,7 +97,7 @@ public class ConfigHttpClient {
     }
 
     private static String buildSignature(HttpUriRequest request, String requestTime, String contentHash, String secret)
-            throws URISyntaxException{
+            throws URISyntaxException {
         // String-To-Sign
         String methodName = request.getRequestLine().getMethod().toUpperCase();
         String requestPath = getPath(request);
@@ -124,12 +127,10 @@ public class ConfigHttpClient {
             IOUtils.copy(inputStream, writer, Charset.defaultCharset());
 
             return writer.toString();
-        }
-        finally {
+        } finally {
             try {
                 inputStream.close();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 log.trace("Failed to close the input stream.", e);
             }
         }
