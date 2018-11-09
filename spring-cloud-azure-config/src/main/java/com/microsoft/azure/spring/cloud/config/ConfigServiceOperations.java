@@ -8,7 +8,6 @@ package com.microsoft.azure.spring.cloud.config;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 import org.springframework.lang.Nullable;
 
-import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
@@ -16,19 +15,11 @@ import java.util.List;
  */
 public interface ConfigServiceOperations {
     /**
-     * Find all key-value items in current configuration store.
-     *
-     * @return all key-value items {@link List<KeyValueItem>} in current configuration store, return empty list if
-     *         no key found.
-     */
-    List<KeyValueItem> getAllKeys();
-
-    /**
      * Find all key-value items which key name is prefixed with {@code prefix}, and has {@code label} if provided.
      *
-     * @param prefix key name prefix of which keys will be loaded.
+     * @param prefix key name prefix of which keys will be loaded, is {@link Nullable}.
      * @param label
      * @return all key-value items {@link List<KeyValueItem>} which match given condition.
      */
-    List<KeyValueItem> getKeys(@NotEmpty String prefix, @Nullable String label);
+    List<KeyValueItem> getKeys(@Nullable String prefix, @Nullable String label);
 }
