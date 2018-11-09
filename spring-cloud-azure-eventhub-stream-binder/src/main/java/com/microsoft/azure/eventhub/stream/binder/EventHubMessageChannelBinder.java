@@ -13,7 +13,7 @@ import com.microsoft.azure.eventhub.stream.binder.provisioning.EventHubChannelPr
 import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
-import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import com.microsoft.azure.spring.integration.eventhub.inbound.EventHubInboundChannelAdapter;
 import lombok.Setter;
 import org.springframework.cloud.stream.binder.*;

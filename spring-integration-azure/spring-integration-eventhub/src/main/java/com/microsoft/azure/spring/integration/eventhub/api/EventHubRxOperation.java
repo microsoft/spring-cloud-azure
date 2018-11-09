@@ -4,7 +4,7 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.integration.eventhub;
+package com.microsoft.azure.spring.integration.eventhub.api;
 
 import com.microsoft.azure.spring.integration.core.api.RxSendOperation;
 import com.microsoft.azure.spring.integration.core.api.RxSubscribeByGroupOperation;

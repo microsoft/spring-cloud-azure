@@ -13,6 +13,7 @@ import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import com.microsoft.azure.spring.integration.eventhub.support.EventHubTestOperation;
 import com.microsoft.azure.spring.integration.test.support.SendSubscribeByGroupOperationTest;
 import com.microsoft.azure.spring.integration.test.support.pojo.User;

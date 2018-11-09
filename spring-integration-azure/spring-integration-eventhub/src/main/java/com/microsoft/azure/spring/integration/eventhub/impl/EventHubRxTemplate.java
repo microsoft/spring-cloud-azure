@@ -4,10 +4,12 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.integration.eventhub;
+package com.microsoft.azure.spring.integration.eventhub.impl;
 
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubRxOperation;
 import org.springframework.messaging.Message;
 import rx.Observable;
 import rx.subscriptions.Subscriptions;

@@ -4,7 +4,7 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.integration.eventhub;
+package com.microsoft.azure.spring.integration.eventhub.impl;
 
 import org.springframework.core.NestedRuntimeException;
 

@@ -7,7 +7,7 @@
 package com.example;
 
 import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
-import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.MessagingGateway;

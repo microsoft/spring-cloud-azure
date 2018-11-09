@@ -4,7 +4,7 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.integration.eventhub;
+package com.microsoft.azure.spring.integration.eventhub.impl;
 
 import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.eventprocessorhost.PartitionContext;
