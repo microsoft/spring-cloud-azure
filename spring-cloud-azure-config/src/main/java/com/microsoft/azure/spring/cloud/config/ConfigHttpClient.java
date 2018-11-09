@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.config;
+package com.microsoft.azure.spring.cloud.config;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,27 +63,13 @@ public class ConfigHttpClient {
     private static Map<String, String> buildRequestHeaders(HttpUriRequest request, Date date, String credential,
             String secret) throws URISyntaxException, IOException {
         String requestTime = GMT_DATE_FORMAT.format(date);
-
-        String content = "";
-        if (request instanceof HttpEntityEnclosingRequest) {
-            content = copyInputStream(((HttpEntityEnclosingRequest) request).getEntity().getContent());
-        }
-
-        byte[] digest = new DigestUtils(SHA_256).digest(content);
-        String contentHash = Base64.getEncoder().encodeToString(digest);
+        String contentHash = buildContentHash(request);
 
         // SignedHeaders
         String signedHeaders = "x-ms-date;host;x-ms-content-sha256";
 
-        // String-To-Sign
-        String methodName = request.getRequestLine().getMethod().toUpperCase();
-        String requestPath = getPath(request);
-        String host = getHost(request);
-        String toSign = String.format("%s\n%s\n%s;%s;%s", methodName, requestPath, requestTime, host, contentHash);
-
         // Signature
-        byte[] decodedKey = Base64.getDecoder().decode(secret);
-        String signature = encodeHmac(HMAC_SHA_256, decodedKey, toSign);
+        String signature = buildSignature(request, requestTime, contentHash, secret);
 
         // Compose headers
         Map<String, String> headers = new HashMap<>();
@@ -95,6 +81,29 @@ public class ConfigHttpClient {
         headers.put("Authorization", authorization);
 
         return headers;
+    }
+
+    private static String buildContentHash(HttpUriRequest request) throws IOException {
+        String content = "";
+        if (request instanceof HttpEntityEnclosingRequest) {
+            content = copyInputStream(((HttpEntityEnclosingRequest) request).getEntity().getContent());
+        }
+
+        byte[] digest = new DigestUtils(SHA_256).digest(content);
+        return Base64.getEncoder().encodeToString(digest);
+    }
+
+    private static String buildSignature(HttpUriRequest request, String requestTime, String contentHash, String secret)
+            throws URISyntaxException{
+        // String-To-Sign
+        String methodName = request.getRequestLine().getMethod().toUpperCase();
+        String requestPath = getPath(request);
+        String host = getHost(request);
+        String toSign = String.format("%s\n%s\n%s;%s;%s", methodName, requestPath, requestTime, host, contentHash);
+
+        // Signature
+        byte[] decodedKey = Base64.getDecoder().decode(secret);
+        return encodeHmac(HMAC_SHA_256, decodedKey, toSign);
     }
 
     private static String getPath(HttpRequest request) throws URISyntaxException {
