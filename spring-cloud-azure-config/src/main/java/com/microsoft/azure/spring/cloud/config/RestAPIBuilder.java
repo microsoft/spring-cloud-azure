@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -19,6 +18,28 @@ import org.springframework.util.StringUtils;
  */
 public class RestAPIBuilder {
     public static final String KEY_VALUE_API = "/kv";
+
+    private String endpoint;
+    private String path;
+    private Map<String, String> params = new HashMap<>();
+
+    public RestAPIBuilder() {
+    }
+
+    public RestAPIBuilder withEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+        return this;
+    }
+
+    public RestAPIBuilder withPath(String path) {
+        this.path = path;
+        return this;
+    }
+
+    public RestAPIBuilder addParam(String key, String value) {
+        this.params.put(key, value);
+        return this;
+    }
 
     /**
      * Build REST API for kv request, depending on prefix and label is empty or not, different URIs will be built.
@@ -31,25 +52,24 @@ public class RestAPIBuilder {
      *   https://host.domain.io/kv?key=abc*&label=prod
      * </p>
      *
-     * @param endpoint config store service endpoint, e.g., https://my-test-config.host.domain.io
      * @param prefix is {@link Nullable}, key name prefix to be searched
      * @param label  is {@link Nullable}, key label value to be searched
      * @return valid full path of target REST API
      */
-    public static String buildKVApi(@NonNull String endpoint, @Nullable String prefix, @Nullable String label) {
-        Map<String, String> params = new HashMap<>();
+    public String buildKVApi(@Nullable String prefix, @Nullable String label) {
+        this.withPath(KEY_VALUE_API);
         if (StringUtils.hasText(prefix)) {
-            params.put("key", prefix);
+            this.addParam("key", prefix);
         }
 
         if (StringUtils.hasText(label)) {
-            params.put("label", label);
+            this.addParam("label", label);
         }
 
-        return buildRequestUri(endpoint, KEY_VALUE_API, params);
+        return buildRequestUri();
     }
 
-    private static String buildRequestUri(@NonNull String endpoint, String path, Map<String, String> params) {
+    private String buildRequestUri() {
         Assert.notNull(endpoint, "Endpoint should not be null");
         Assert.hasText(path, "Request path should not be empty or null");
 

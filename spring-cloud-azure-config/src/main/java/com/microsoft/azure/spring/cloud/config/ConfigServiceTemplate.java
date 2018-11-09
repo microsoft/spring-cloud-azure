@@ -41,7 +41,7 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
 
     @Override
     public List<KeyValueItem> getKeys(@Nullable String prefix, @Nullable String label) {
-        String requestUri = RestAPIBuilder.buildKVApi(storeEndpoint, prefix, label);
+        String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildKVApi(prefix, label);
         HttpGet httpGet = new HttpGet(requestUri);
 
         try (CloseableHttpResponse response = configClient.execute(httpGet, credential, secret)) {
