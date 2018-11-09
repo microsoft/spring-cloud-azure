@@ -20,6 +20,22 @@ import org.springframework.util.StringUtils;
 public class RestAPIBuilder {
     public static final String KEY_VALUE_API = "/kv";
 
+    /**
+     * Build REST API for kv request, depending on prefix and label is empty or not, different URIs will be built.
+     *
+     * <p>
+     * e.g.,
+     *   https://host.domain.io/kv
+     *   https://host.domain.io/kv?key=abc
+     *   https://host.domain.io/kv?key=abc*
+     *   https://host.domain.io/kv?key=abc*&label=prod
+     * </p>
+     *
+     * @param endpoint config store service endpoint, e.g., https://my-test-config.host.domain.io
+     * @param prefix is {@link Nullable}, key name prefix to be searched
+     * @param label  is {@link Nullable}, key label value to be searched
+     * @return valid full path of target REST API
+     */
     public static String buildKVApi(@NonNull String endpoint, @Nullable String prefix, @Nullable String label) {
         Map<String, String> params = new HashMap<>();
         if (StringUtils.hasText(prefix)) {
@@ -42,6 +58,7 @@ public class RestAPIBuilder {
         builder.append(path);
 
         if (params != null && params.size() > 0) {
+            // append query params, example: "?param1=value1&param2=value2"
             builder.append("?");
 
             String queryParams = String.join("&", params.entrySet().stream()
