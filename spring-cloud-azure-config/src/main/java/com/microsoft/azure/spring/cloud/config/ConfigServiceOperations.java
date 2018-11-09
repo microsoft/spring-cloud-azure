@@ -29,7 +29,7 @@ public interface ConfigServiceOperations {
      * Find all key-value items in current configuration store.
      *
      * @return all key-value items {@link List<KeyValueItem>} in current configuration store, return empty list if
-     *         no key found。
+     *         no key found.
      */
     List<KeyValueItem> getAllKeys();
 
