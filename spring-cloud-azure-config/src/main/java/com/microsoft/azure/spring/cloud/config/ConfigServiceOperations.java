@@ -10,21 +10,11 @@ import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Operations to access certain Azure Config Service configuration store.
  */
 public interface ConfigServiceOperations {
-    /**
-     * Find a config key-value item with given {@code keyName} and {@link Nullable} {@code label}
-     *
-     * @param keyName name of the key
-     * @param label   label of the key, can be null
-     * @return {@link Optional<KeyValueItem>}, if key does not exist, return {@link Optional#empty()}.
-     */
-    Optional<KeyValueItem> getKey(String keyName, @Nullable String label);
-
     /**
      * Find all key-value items in current configuration store.
      *
