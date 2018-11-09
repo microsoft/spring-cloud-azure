@@ -39,8 +39,7 @@ import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA_256;
  * How to use:
  * <p>
  * HttpGet httpGet = new HttpGet("https://my-config-store.azconfig.io/keys");
- * CloseableHttpResponse response = ConfigHttpClient.execute(httpGet, "my-credential",
- * "my-secret");
+ * CloseableHttpResponse response = ConfigHttpClient.execute(httpGet, "my-credential", "my-secret");
  * <p/>
  */
 @Slf4j
