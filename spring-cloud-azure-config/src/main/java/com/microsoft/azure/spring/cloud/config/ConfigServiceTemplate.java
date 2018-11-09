@@ -12,6 +12,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -20,24 +21,14 @@ import org.apache.http.client.methods.HttpGet;
 import org.springframework.lang.Nullable;
 
 @Slf4j
+@AllArgsConstructor
 public class ConfigServiceTemplate implements ConfigServiceOperations {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     private final ConfigHttpClient configClient;
-
     private final String storeEndpoint;
-
     private final String credential;
-
     private final String secret;
-
-    public ConfigServiceTemplate(ConfigHttpClient configClient, String storeEndpoint, String credential,
-            String secret) {
-        this.configClient = configClient;
-        this.storeEndpoint = storeEndpoint;
-        this.credential = credential;
-        this.secret = secret;
-    }
 
     @Override
     public List<KeyValueItem> getKeys(@Nullable String prefix, @Nullable String label) {
@@ -54,7 +45,8 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
                 return mapper.readValue(node.get("items").toString(),
                         mapper.getTypeFactory().constructCollectionType(List.class, KeyValueItem.class));
             } else {
-                throw new IllegalStateException("Failed to load keys with status code: " + statusCode);
+                throw new IllegalStateException("Failed to load keys with status code: " + statusCode +
+                        ", with reason: " + response.getStatusLine().getReasonPhrase());
             }
         }
         catch (IOException | URISyntaxException e) {
