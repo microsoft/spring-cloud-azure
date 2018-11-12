@@ -35,6 +35,7 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildKVApi(prefix, label);
         HttpGet httpGet = new HttpGet(requestUri);
 
+        log.debug("Querying key-value items from API [{}].", requestUri);
         try (CloseableHttpResponse response = configClient.execute(httpGet, credential, secret)) {
             int statusCode = response.getStatusLine().getStatusCode();
 
@@ -45,12 +46,12 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
                 return mapper.readValue(node.get("items").toString(),
                         mapper.getTypeFactory().constructCollectionType(List.class, KeyValueItem.class));
             } else {
-                throw new IllegalStateException("Failed to load keys with status code: " + statusCode +
-                        ", with reason: " + response.getStatusLine().getReasonPhrase());
+                throw new IllegalStateException("Failed to load keys from Azure Config Service with status code: "
+                        + statusCode + ", with reason: " + response.getStatusLine().getReasonPhrase());
             }
         }
         catch (IOException | URISyntaxException e) {
-            log.error("Failed to load keys.", e);
+            log.error("Failed to load keys from Azure Config service.", e);
             // TODO (wp) wrap exception as config service specific exception in order to provide fail-fast etc.
             // features?
             throw new IllegalStateException("Failed to load keys from Azure Config service.", e);
