@@ -70,7 +70,7 @@ public class RestAPIBuilder {
     }
 
     private String buildRequestUri() {
-        Assert.notNull(endpoint, "Endpoint should not be null");
+        Assert.hasText(endpoint, "Endpoint should not be empty or null");
         Assert.hasText(path, "Request path should not be empty or null");
 
         StringBuilder builder = new StringBuilder();
