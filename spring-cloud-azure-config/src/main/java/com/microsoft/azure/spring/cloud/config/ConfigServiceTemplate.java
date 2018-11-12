@@ -23,6 +23,9 @@ import org.springframework.lang.Nullable;
 @Slf4j
 @AllArgsConstructor
 public class ConfigServiceTemplate implements ConfigServiceOperations {
+    private static final String LOAD_FAILURE_MSG = "Failed to load keys from Azure Config Service.";
+    private static final String LOAD_FAILURE_VERBOSE_MSG = LOAD_FAILURE_MSG + " With status code: %s, reason: %s";
+
     private static final ObjectMapper mapper = new ObjectMapper();
 
     private final ConfigHttpClient configClient;
@@ -35,7 +38,7 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildKVApi(prefix, label);
         HttpGet httpGet = new HttpGet(requestUri);
 
-        log.debug("Querying key-value items from API [{}].", requestUri);
+        log.debug("Loading key-value items from Azure Config service at [{}].", requestUri);
         try (CloseableHttpResponse response = configClient.execute(httpGet, credential, secret)) {
             int statusCode = response.getStatusLine().getStatusCode();
 
@@ -46,15 +49,15 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
                 return mapper.readValue(node.get("items").toString(),
                         mapper.getTypeFactory().constructCollectionType(List.class, KeyValueItem.class));
             } else {
-                throw new IllegalStateException("Failed to load keys from Azure Config Service with status code: "
-                        + statusCode + ", with reason: " + response.getStatusLine().getReasonPhrase());
+                throw new IllegalStateException(String.format(LOAD_FAILURE_VERBOSE_MSG, statusCode,
+                        response.getStatusLine().getReasonPhrase()));
             }
         }
         catch (IOException | URISyntaxException e) {
-            log.error("Failed to load keys from Azure Config service.", e);
+            log.error(LOAD_FAILURE_MSG, e);
             // TODO (wp) wrap exception as config service specific exception in order to provide fail-fast etc.
             // features?
-            throw new IllegalStateException("Failed to load keys from Azure Config service.", e);
+            throw new IllegalStateException(LOAD_FAILURE_MSG, e);
         }
     }
 }
