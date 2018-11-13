@@ -9,8 +9,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
+import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotEmpty;
 
 @Validated
@@ -44,19 +46,30 @@ public class AzureCloudConfigProperties {
     @NotEmpty
     private String separator = "/";
 
+    // Values extracted from connection string
+    private String endpoint;
+    private String credential;
+    private String secret;
+
     public String getEndpoint() {
-        return splitConnectionStr()[0].replaceFirst("Endpoint=", "");
+        return endpoint;
     }
 
     public String getCredential() {
-        return splitConnectionStr()[1].replaceFirst("Id=", "");
+        return credential;
     }
 
     public String getSecret() {
-        return splitConnectionStr()[2].replaceFirst("Secret=", "");
+        return secret;
     }
 
-    private String[] splitConnectionStr() {
-        return connectionString.split(";");
+    @PostConstruct
+    private void validateAndInit() {
+        String[] items = connectionString.split(";");
+        Assert.isTrue(items.length == 3, "Connection string should contain three items split by ;.");
+
+        this.endpoint = items[0].replaceFirst("Endpoint=", "");
+        this.credential = items[1].replaceFirst("Id=", "");
+        this.secret = items[2].replaceFirst("Secret=", "");
     }
 }
