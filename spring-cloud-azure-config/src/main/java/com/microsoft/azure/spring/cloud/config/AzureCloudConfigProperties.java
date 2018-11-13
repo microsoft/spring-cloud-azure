@@ -25,7 +25,7 @@ public class AzureCloudConfigProperties {
     public static final String CONFIG_PREFIX = "spring.cloud.azure.config";
     private static final String CONN_STRING_SPLITTER = ";";
     private static final String ENDPOINT_PREFIX = "endpoint=";
-    private static final String ID_PREFIX = "credential=";
+    private static final String ID_PREFIX = "id=";
     private static final String SECRET_PREFIX = "secret=";
     private static final String NON_EMPTY_MSG = "%s property should not be null or empty in the connection string of " +
             "Azure Config Service.";
