@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.PostConstruct;
@@ -22,6 +23,9 @@ import javax.validation.constraints.Pattern;
 @ConfigurationProperties(prefix = AzureCloudConfigProperties.CONFIG_PREFIX)
 public class AzureCloudConfigProperties {
     public static final String CONFIG_PREFIX = "spring.cloud.azure.config";
+    private static final String ENDPOINT_PREFIX = "Endpoint=";
+    private static final String ID_PREFIX = "Id=";
+    private static final String SECRET_PREFIX = "Secret=";
 
     private boolean enabled = true;
 
@@ -68,10 +72,22 @@ public class AzureCloudConfigProperties {
     @PostConstruct
     private void validateAndInit() {
         String[] items = connectionString.split(";");
-        Assert.isTrue(items.length == 3, "Connection string should contain three items split by ;.");
+        for (String item : items) {
+            if (!StringUtils.hasText(item)) {
+                continue;
+            }
 
-        this.endpoint = items[0].replaceFirst("Endpoint=", "");
-        this.credential = items[1].replaceFirst("Id=", "");
-        this.secret = items[2].replaceFirst("Secret=", "");
+            if (item.startsWith(ENDPOINT_PREFIX)) {
+                this.endpoint = item.replaceFirst(ENDPOINT_PREFIX, "");
+            } else if (item.startsWith(ID_PREFIX)) {
+                this.credential = item.replaceFirst(ID_PREFIX, "");
+            } else if (item.startsWith(SECRET_PREFIX)) {
+                this.secret = item.replaceFirst(SECRET_PREFIX, "");
+            }
+        }
+
+        Assert.hasText(this.endpoint, "Endpoint should not be null or empty.");
+        Assert.hasText(this.credential, "Credential should not be null or empty.");
+        Assert.hasText(this.secret, "Secret should not be null or empty.");
     }
 }
