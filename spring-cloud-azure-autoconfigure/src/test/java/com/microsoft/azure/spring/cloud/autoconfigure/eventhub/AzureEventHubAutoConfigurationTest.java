@@ -7,8 +7,8 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.eventhub;
 
 import com.microsoft.azure.eventhubs.EventHubClient;
-import com.microsoft.azure.spring.integration.eventhub.EventHubClientFactory;
-import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.FilteredClassLoader;

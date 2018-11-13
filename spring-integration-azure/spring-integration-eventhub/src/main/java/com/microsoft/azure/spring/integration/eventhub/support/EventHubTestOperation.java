@@ -12,9 +12,9 @@ import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.eventprocessorhost.PartitionContext;
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
-import com.microsoft.azure.spring.integration.eventhub.EventHubClientFactory;
-import com.microsoft.azure.spring.integration.eventhub.EventHubProcessor;
-import com.microsoft.azure.spring.integration.eventhub.EventHubTemplate;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
+import com.microsoft.azure.spring.integration.eventhub.impl.EventHubProcessor;
+import com.microsoft.azure.spring.integration.eventhub.impl.EventHubTemplate;
 import org.springframework.messaging.Message;
 
 import java.util.Collections;

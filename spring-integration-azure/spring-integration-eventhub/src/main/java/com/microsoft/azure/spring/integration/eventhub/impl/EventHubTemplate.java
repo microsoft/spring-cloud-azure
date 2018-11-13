@@ -4,9 +4,11 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.integration.eventhub;
+package com.microsoft.azure.spring.integration.eventhub.impl;
 
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import org.springframework.messaging.Message;
 
 import java.util.concurrent.ConcurrentHashMap;
