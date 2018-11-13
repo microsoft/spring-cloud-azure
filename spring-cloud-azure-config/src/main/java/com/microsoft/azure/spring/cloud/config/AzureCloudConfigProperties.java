@@ -23,9 +23,12 @@ import javax.validation.constraints.Pattern;
 @ConfigurationProperties(prefix = AzureCloudConfigProperties.CONFIG_PREFIX)
 public class AzureCloudConfigProperties {
     public static final String CONFIG_PREFIX = "spring.cloud.azure.config";
-    private static final String ENDPOINT_PREFIX = "Endpoint=";
-    private static final String ID_PREFIX = "Id=";
-    private static final String SECRET_PREFIX = "Secret=";
+    private static final String CONN_STRING_SPLITTER = ";";
+    private static final String ENDPOINT_PREFIX = "endpoint=";
+    private static final String ID_PREFIX = "credential=";
+    private static final String SECRET_PREFIX = "secret=";
+    private static final String NON_EMPTY_MSG = "%s property should not be null or empty in the connection string of " +
+            "Azure Config Service.";
 
     private boolean enabled = true;
 
@@ -71,23 +74,24 @@ public class AzureCloudConfigProperties {
 
     @PostConstruct
     private void validateAndInit() {
-        String[] items = connectionString.split(";");
+        String[] items = connectionString.split(CONN_STRING_SPLITTER);
         for (String item : items) {
             if (!StringUtils.hasText(item)) {
                 continue;
             }
 
-            if (item.startsWith(ENDPOINT_PREFIX)) {
+            String lowerCasedItem = item.toLowerCase();
+            if (lowerCasedItem.startsWith(ENDPOINT_PREFIX)) {
                 this.endpoint = item.substring(ENDPOINT_PREFIX.length());
-            } else if (item.startsWith(ID_PREFIX)) {
+            } else if (lowerCasedItem.startsWith(ID_PREFIX)) {
                 this.credential = item.substring(ID_PREFIX.length());
-            } else if (item.startsWith(SECRET_PREFIX)) {
+            } else if (lowerCasedItem.startsWith(SECRET_PREFIX)) {
                 this.secret = item.substring(SECRET_PREFIX.length());
             }
         }
 
-        Assert.hasText(this.endpoint, "Endpoint should not be null or empty.");
-        Assert.hasText(this.credential, "Credential should not be null or empty.");
-        Assert.hasText(this.secret, "Secret should not be null or empty.");
+        Assert.hasText(this.endpoint, String.format(NON_EMPTY_MSG, "Endpoint"));
+        Assert.hasText(this.credential, String.format(NON_EMPTY_MSG, "Credential"));
+        Assert.hasText(this.secret, String.format(NON_EMPTY_MSG, "Secret"));
     }
 }
