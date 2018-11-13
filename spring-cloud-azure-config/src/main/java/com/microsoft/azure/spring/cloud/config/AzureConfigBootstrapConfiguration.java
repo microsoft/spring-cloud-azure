@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License. See LICENSE in the project root for
+ * license information.
+ */
 package com.microsoft.azure.spring.cloud.config;
 
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
@@ -17,7 +22,7 @@ import javax.annotation.PostConstruct;
 @AutoConfigureBefore(TelemetryAutoConfiguration.class)
 @EnableConfigurationProperties(AzureCloudConfigProperties.class)
 @ConditionalOnClass(AzureConfigPropertySourceLocator.class)
-@ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name="enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "enabled", matchIfMissing = true)
 public class AzureConfigBootstrapConfiguration {
     private static final String AZURE_CONFIG_STORE = "AzureConfigService";
 
@@ -32,7 +37,8 @@ public class AzureConfigBootstrapConfiguration {
     }
 
     @Bean
-    public ConfigServiceOperations azureConfigOperations(ConfigHttpClient client, AzureCloudConfigProperties properties) {
+    public ConfigServiceOperations azureConfigOperations(ConfigHttpClient client,
+                                                         AzureCloudConfigProperties properties) {
         return new ConfigServiceTemplate(client, properties.getEndpoint(), properties.getCredential(),
                 properties.getSecret());
     }

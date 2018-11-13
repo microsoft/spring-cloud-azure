@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License. See LICENSE in the project root for
+ * license information.
+ */
 package com.microsoft.azure.spring.cloud.config;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +40,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
             return null;
         }
 
-        ConfigurableEnvironment env = (ConfigurableEnvironment)environment;
+        ConfigurableEnvironment env = (ConfigurableEnvironment) environment;
 
         String applicationName = this.properties.getName();
         if (!StringUtils.hasText(applicationName)) {

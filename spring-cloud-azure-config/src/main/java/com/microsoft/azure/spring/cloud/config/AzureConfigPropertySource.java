@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License. See LICENSE in the project root for
+ * license information.
+ */
 package com.microsoft.azure.spring.cloud.config;
 
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
@@ -36,7 +41,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
         // * for wildcard match
         List<KeyValueItem> items = source.getKeys(context + "*", label);
 
-        for(KeyValueItem item : items) {
+        for (KeyValueItem item : items) {
             String key = item.getKey().replaceFirst(context, "");
             properties.put(key, item.getValue());
         }
