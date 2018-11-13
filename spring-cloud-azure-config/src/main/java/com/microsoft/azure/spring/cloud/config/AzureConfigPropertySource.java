@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigServiceOperations> {
-    private String context;
+    private final String context;
     private final AzureCloudConfigProperties configProperties;
     private Map<String, Object> properties = new LinkedHashMap<>();
 

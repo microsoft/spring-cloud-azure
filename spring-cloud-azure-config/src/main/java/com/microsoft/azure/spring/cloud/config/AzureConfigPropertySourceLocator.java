@@ -54,8 +54,8 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
            active profile is: dev, separator is: /
            Will generate these contexts: /application, /application/dev, /foo, /foo/dev
          */
-        generateContexts(this.properties.getDefaultContext(), profiles);
-        generateContexts(applicationName, profiles);
+        this.contexts.addAll(generateContexts(this.properties.getDefaultContext(), profiles));
+        this.contexts.addAll(generateContexts(applicationName, profiles));
 
         CompositePropertySource composite = new CompositePropertySource(PROPERTY_SOURCE_NAME);
         Collections.reverse(this.contexts);
@@ -67,12 +67,15 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         return composite;
     }
 
-    private void generateContexts(String applicationName, List<String> profiles) {
+    private List<String> generateContexts(String applicationName, List<String> profiles) {
+        List<String> result = new ArrayList<>();
         String prefix = this.properties.getPrefix();
 
         String prefixedContext = propWithAppName(prefix, applicationName);
-        this.contexts.add(prefixedContext + this.separator);
-        profiles.forEach(profile -> this.contexts.add(propWithProfile(prefixedContext, profile)));
+        result.add(prefixedContext + this.separator);
+        profiles.forEach(profile -> result.add(propWithProfile(prefixedContext, profile)));
+
+        return result;
     }
 
     private String propWithAppName(String prefix, String applicationName) {
