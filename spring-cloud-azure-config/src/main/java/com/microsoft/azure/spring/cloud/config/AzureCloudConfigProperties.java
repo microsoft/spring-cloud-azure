@@ -78,11 +78,11 @@ public class AzureCloudConfigProperties {
             }
 
             if (item.startsWith(ENDPOINT_PREFIX)) {
-                this.endpoint = item.replaceFirst(ENDPOINT_PREFIX, "");
+                this.endpoint = item.substring(ENDPOINT_PREFIX.length());
             } else if (item.startsWith(ID_PREFIX)) {
-                this.credential = item.replaceFirst(ID_PREFIX, "");
+                this.credential = item.substring(ID_PREFIX.length());
             } else if (item.startsWith(SECRET_PREFIX)) {
-                this.secret = item.replaceFirst(SECRET_PREFIX, "");
+                this.secret = item.substring(SECRET_PREFIX.length());
             }
         }
 
