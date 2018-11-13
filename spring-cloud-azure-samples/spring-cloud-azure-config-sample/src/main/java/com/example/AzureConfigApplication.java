@@ -13,11 +13,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class AzureConfigApplication implements CommandLineRunner {
-    @Value("${abc.def}")
-    private String foovalue;
+    @Value("${azure.config.test}")
+    private String remoteValue;
 
-    @Value("${my.test.value}")
-    private String myTestyValue;
+    @Value("${azure.local.test.value}")
+    private String localValue;
 
     public static void main(String[] args) {
         SpringApplication.run(AzureConfigApplication.class, args);
@@ -25,8 +25,8 @@ public class AzureConfigApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("foovalue: " + foovalue);
-        System.out.println("myTestyValue: " + myTestyValue);
+        System.out.println("remoteValue: " + remoteValue);
+        System.out.println("localValue: " + localValue);
 
         System.exit(0);
     }

@@ -22,16 +22,17 @@ import java.util.List;
 public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private static final String SPRING_APP_NAME_PROP = "spring.application.name";
     private static final String PROPERTY_SOURCE_NAME = "azure-config-store";
+    private static final String PATH_SPLITTER = "/";
 
     private final ConfigServiceOperations operations;
     private final AzureCloudConfigProperties properties;
     private List<String> contexts = new ArrayList<>();
-    private final String separator;
+    private final String profileSeparator;
 
     public AzureConfigPropertySourceLocator(ConfigServiceOperations operations, AzureCloudConfigProperties properties) {
         this.operations = operations;
         this.properties = properties;
-        this.separator = properties.getSeparator();
+        this.profileSeparator = properties.getProfileSeparator();
     }
 
     @Override
@@ -51,8 +52,8 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
         /* Generate which contexts(key prefixes) will be used for key-value items search
            If key prefix is empty, default context is: application, current application name is: foo,
-           active profile is: dev, separator is: /
-           Will generate these contexts: /application, /application/dev, /foo, /foo/dev
+           active profile is: dev, profileSeparator is: _
+           Will generate these contexts: /application/, /application_dev/, /foo/, /foo_dev/
          */
         this.contexts.addAll(generateContexts(this.properties.getDefaultContext(), profiles));
         this.contexts.addAll(generateContexts(applicationName, profiles));
@@ -73,7 +74,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         String prefix = this.properties.getPrefix();
 
         String prefixedContext = propWithAppName(prefix, applicationName);
-        result.add(prefixedContext + this.separator);
+        result.add(prefixedContext + PATH_SPLITTER);
         profiles.forEach(profile -> result.add(propWithProfile(prefixedContext, profile)));
 
         return result;
@@ -81,15 +82,15 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
     private String propWithAppName(String prefix, String applicationName) {
         if (StringUtils.hasText(prefix)) {
-            return prefix.startsWith(this.separator) ? prefix + this.separator + applicationName :
-                    this.separator + prefix + this.separator + applicationName;
+            return prefix.startsWith(PATH_SPLITTER) ? prefix + PATH_SPLITTER + applicationName :
+                    PATH_SPLITTER + prefix + PATH_SPLITTER + applicationName;
         }
 
-        return this.separator + applicationName;
+        return PATH_SPLITTER + applicationName;
     }
 
     private String propWithProfile(String context, String profile) {
-        return context + separator + profile + separator;
+        return context + this.profileSeparator + profile + PATH_SPLITTER;
     }
 
     private AzureConfigPropertySource create(String context) {

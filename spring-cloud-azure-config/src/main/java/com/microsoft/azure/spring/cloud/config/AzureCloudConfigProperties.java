@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 
 @Validated
 @Getter
@@ -42,9 +43,10 @@ public class AzureCloudConfigProperties {
     @Nullable
     private String label;
 
-    // Path separator for the key name, e.g., /foo-app/dev/db.connection.key
+    // Profile separator for the key name, e.g., /foo-app_dev/db.connection.key
     @NotEmpty
-    private String separator = "/";
+    @Pattern(regexp = "^[a-zA-Z0-9_@]+$")
+    private String profileSeparator = "_";
 
     // Values extracted from connection string
     private String endpoint;
