@@ -125,7 +125,7 @@
                             <compilerArg>-Xlint:-serial</compilerArg>
                             <!--compilerArg>-Werror</compilerArg-->
                             <!-- Workaround errorprone with lombok log result in IndexOutOfRange Exception -->
-                            <!--<compilerArg>-Xep:ParameterName:OFF</compilerArg>-->
+                            <compilerArg>-Xep:ParameterName:OFF</compilerArg>
                         </compilerArgs>
                     </configuration>
                     <dependencies>
