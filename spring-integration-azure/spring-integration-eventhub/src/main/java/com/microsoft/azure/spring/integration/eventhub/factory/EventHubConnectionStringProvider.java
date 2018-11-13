@@ -4,13 +4,14 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.integration.eventhub;
+package com.microsoft.azure.spring.integration.eventhub.factory;
 
 import com.microsoft.azure.eventhubs.ConnectionStringBuilder;
 import com.microsoft.azure.management.eventhub.AuthorizationRule;
 import com.microsoft.azure.management.eventhub.EventHubAuthorizationKey;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
 import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
+import com.microsoft.azure.spring.integration.eventhub.impl.EventHubRuntimeException;
 import org.springframework.lang.NonNull;
 
 import java.util.function.Function;

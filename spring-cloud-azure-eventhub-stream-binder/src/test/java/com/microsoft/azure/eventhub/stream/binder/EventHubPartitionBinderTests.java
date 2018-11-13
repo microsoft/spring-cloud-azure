@@ -11,7 +11,7 @@ import com.microsoft.azure.eventhub.stream.binder.properties.EventHubProducerPro
 import com.microsoft.azure.eventprocessorhost.PartitionContext;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
 import com.microsoft.azure.spring.integration.eventhub.support.EventHubTestOperation;
-import com.microsoft.azure.spring.integration.eventhub.EventHubClientFactory;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;

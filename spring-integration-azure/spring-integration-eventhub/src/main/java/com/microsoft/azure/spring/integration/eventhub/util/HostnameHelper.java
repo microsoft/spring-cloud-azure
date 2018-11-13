@@ -4,7 +4,7 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.integration.eventhub;
+package com.microsoft.azure.spring.integration.eventhub.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

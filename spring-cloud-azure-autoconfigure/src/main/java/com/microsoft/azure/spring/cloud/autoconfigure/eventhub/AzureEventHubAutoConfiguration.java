@@ -15,7 +15,11 @@ import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollect
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
 import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStringProvider;
-import com.microsoft.azure.spring.integration.eventhub.*;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
+import com.microsoft.azure.spring.integration.eventhub.factory.DefaultEventHubClientFactory;
+import com.microsoft.azure.spring.integration.eventhub.factory.EventHubConnectionStringProvider;
+import com.microsoft.azure.spring.integration.eventhub.impl.EventHubTemplate;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

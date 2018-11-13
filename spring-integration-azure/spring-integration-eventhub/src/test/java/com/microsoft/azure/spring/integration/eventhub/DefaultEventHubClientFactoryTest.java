@@ -14,6 +14,8 @@ import com.microsoft.azure.spring.cloud.context.core.api.Region;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.impl.StorageAccountManager;
 import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStringProvider;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
+import com.microsoft.azure.spring.integration.eventhub.factory.DefaultEventHubClientFactory;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
