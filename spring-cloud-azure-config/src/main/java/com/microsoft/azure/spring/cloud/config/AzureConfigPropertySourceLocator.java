@@ -58,6 +58,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         this.contexts.addAll(generateContexts(applicationName, profiles));
 
         CompositePropertySource composite = new CompositePropertySource(PROPERTY_SOURCE_NAME);
+        // Reverse in order to add Profile specific properties earlier
         Collections.reverse(this.contexts);
         for (String sourceContext : this.contexts) {
             composite.addPropertySource(create(sourceContext));
