@@ -18,7 +18,7 @@
         </dependency>
         <dependency>
             <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-cloud-azure-starter-eventhub-kafka</artifactId>
+            <artifactId>spring-cloud-starter-azure-eventhub-kafka</artifactId>
         </dependency>
     </dependencies>
 
