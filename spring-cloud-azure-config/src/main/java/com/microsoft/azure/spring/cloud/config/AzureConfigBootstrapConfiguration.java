@@ -39,8 +39,7 @@ public class AzureConfigBootstrapConfiguration {
     @Bean
     public ConfigServiceOperations azureConfigOperations(ConfigHttpClient client,
                                                          AzureCloudConfigProperties properties) {
-        return new ConfigServiceTemplate(client, properties.getEndpoint(), properties.getCredential(),
-                properties.getSecret());
+        return new ConfigServiceTemplate(client, properties.getEndpoint(), properties.getId(), properties.getSecret());
     }
 
     @Bean

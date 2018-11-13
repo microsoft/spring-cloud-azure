@@ -57,15 +57,15 @@ public class AzureCloudConfigProperties {
 
     // Values extracted from connection string
     private String endpoint;
-    private String credential;
+    private String id;
     private String secret;
 
     public String getEndpoint() {
         return endpoint;
     }
 
-    public String getCredential() {
-        return credential;
+    public String getId() {
+        return id;
     }
 
     public String getSecret() {
@@ -84,14 +84,14 @@ public class AzureCloudConfigProperties {
             if (lowerCasedItem.startsWith(ENDPOINT_PREFIX)) {
                 this.endpoint = item.substring(ENDPOINT_PREFIX.length());
             } else if (lowerCasedItem.startsWith(ID_PREFIX)) {
-                this.credential = item.substring(ID_PREFIX.length());
+                this.id = item.substring(ID_PREFIX.length());
             } else if (lowerCasedItem.startsWith(SECRET_PREFIX)) {
                 this.secret = item.substring(SECRET_PREFIX.length());
             }
         }
 
         Assert.hasText(this.endpoint, String.format(NON_EMPTY_MSG, "Endpoint"));
-        Assert.hasText(this.credential, String.format(NON_EMPTY_MSG, "Credential"));
+        Assert.hasText(this.id, String.format(NON_EMPTY_MSG, "Id"));
         Assert.hasText(this.secret, String.format(NON_EMPTY_MSG, "Secret"));
     }
 }
