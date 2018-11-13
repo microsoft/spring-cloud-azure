@@ -19,6 +19,7 @@
 
     <modules>
         <module>spring-cloud-azure-cache-sample</module>
+        <module>spring-cloud-azure-config-sample</module>
         <module>spring-cloud-azure-storage-sample</module>
         <module>spring-cloud-azure-eventhub-operation-sample</module>
         <module>spring-cloud-azure-eventhub-integration-sample</module>
