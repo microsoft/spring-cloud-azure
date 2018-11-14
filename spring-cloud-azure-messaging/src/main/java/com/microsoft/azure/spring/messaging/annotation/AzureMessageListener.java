@@ -19,7 +19,7 @@ import java.lang.annotation.*;
  * assumed to be available with a bean name of {@code azureListenerContainerFactory}
  * unless an explicit default has been provided through configuration.
  *
- * <p>Processing of {@code @AzureListener} annotations is performed by registering a
+ * <p>Processing of {@code @AzureMessageListener} annotations is performed by registering a
  * {@link AzureListenerAnnotationBeanPostProcessor}. This can be done through the
  * {@link @EnableAzureMessaging} annotation.
  *
@@ -52,7 +52,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @MessageMapping
-public @interface AzureListener {
+public @interface AzureMessageListener {
 
     /**
      * The unique identifier of the container managing this endpoint.

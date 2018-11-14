@@ -7,7 +7,7 @@
 package com.example;
 
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
-import com.microsoft.azure.spring.messaging.annotation.AzureListener;
+import com.microsoft.azure.spring.messaging.annotation.AzureMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +32,7 @@ public class WebController {
         return user;
     }
 
-    @AzureListener(destination = EVENT_HUB_NAME, group = CONSUMER_GROUP)
+    @AzureMessageListener(destination = EVENT_HUB_NAME, group = CONSUMER_GROUP)
     public void handleMessage(User user) {
         System.out.println(String.format("New message received: '%s'", user));
     }

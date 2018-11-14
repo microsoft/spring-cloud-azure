@@ -6,8 +6,8 @@
 
 package com.microsoft.azure.spring.messaging.config;
 
-import com.microsoft.azure.spring.messaging.annotation.AzureListener;
 import com.microsoft.azure.spring.messaging.annotation.AzureListenerAnnotationBeanPostProcessor;
+import com.microsoft.azure.spring.messaging.annotation.AzureMessageListener;
 import com.microsoft.azure.spring.messaging.annotation.EnableAzureMessaging;
 import com.microsoft.azure.spring.messaging.endpoint.AzureListenerEndpointRegistry;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Role;
 
 /**
  * {@code @Configuration} class that registers a {@link AzureListenerAnnotationBeanPostProcessor}
- * bean capable of processing Spring's @{@link AzureListener} annotation. Also register
+ * bean capable of processing Spring's @{@link AzureMessageListener} annotation. Also register
  * a default {@link AzureListenerEndpointRegistry}.
  *
  * <p>This configuration class is automatically imported when using the @{@link EnableAzureMessaging}

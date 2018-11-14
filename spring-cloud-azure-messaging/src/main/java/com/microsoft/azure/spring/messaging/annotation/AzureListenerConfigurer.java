@@ -17,7 +17,7 @@ import com.microsoft.azure.spring.messaging.endpoint.AzureListenerEndpointRegist
  * used to define the default {@link ListenerContainerFactory
  * ListenerContainerFactory} to use or for registering Azure endpoints
  * in a <em>programmatic</em> fashion as opposed to the <em>declarative</em>
- * approach of using the @{@link AzureListener} annotation.
+ * approach of using the @{@link AzureMessageListener} annotation.
  *
  * <p>See @{@link EnableAzureMessaging} for detailed usage examples.
  *

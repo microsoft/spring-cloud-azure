@@ -125,7 +125,6 @@ public class AzureListenerEndpointRegistrar implements BeanFactoryAware, Initial
         registerEndpoint(endpoint, null);
     }
 
-
     private static class AzureListenerEndpointDescriptor {
 
         public final AzureListenerEndpoint endpoint;

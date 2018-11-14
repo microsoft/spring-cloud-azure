@@ -38,12 +38,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Bean post-processor that registers methods annotated with {@link AzureListener}
+ * Bean post-processor that registers methods annotated with {@link AzureMessageListener}
  * to be invoked by a Azure message listener container created under the cover
  * by a {@link ListenerContainerFactory}
  * according to the attributes of the annotation.
  *
- * <p>Annotated methods can use flexible arguments as defined by {@link AzureListener}.
+ * <p>Annotated methods can use flexible arguments as defined by {@link AzureMessageListener}.
  *
  * <p>This post-processor is automatically registered by the {@link EnableAzureMessaging} annotation.
  *
@@ -53,7 +53,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * {@link EnableAzureMessaging} javadocs for complete usage details.
  *
  * @author Warren Zhu
- * @see AzureListener
+ * @see AzureMessageListener
  * @see EnableAzureMessaging
  * @see AzureListenerConfigurer
  * @see AzureListenerEndpointRegistrar
@@ -102,7 +102,6 @@ public class AzureListenerAnnotationBeanPostProcessor
         this.registrar.setBeanFactory(beanFactory);
     }
 
-
     @Override
     public void afterSingletonsInstantiated() {
         // Remove resolved singleton classes from cache
@@ -134,7 +133,6 @@ public class AzureListenerAnnotationBeanPostProcessor
             this.registrar.setEndpointRegistry(this.endpointRegistry);
         }
 
-
         // Set the custom handler method factory once resolved by the configurer
         MessageHandlerMethodFactory handlerMethodFactory = this.registrar.getMessageHandlerMethodFactory();
         if (handlerMethodFactory != null) {
@@ -144,7 +142,6 @@ public class AzureListenerAnnotationBeanPostProcessor
         // Actually register all listeners
         this.registrar.afterPropertiesSet();
     }
-
 
     @Override
     public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
@@ -165,16 +162,17 @@ public class AzureListenerAnnotationBeanPostProcessor
 
         Class<?> targetClass = AopProxyUtils.ultimateTargetClass(bean);
         if (!this.nonAnnotatedClasses.contains(targetClass)) {
-            Map<Method, Set<AzureListener>> annotatedMethods = MethodIntrospector
-                    .selectMethods(targetClass, (MethodIntrospector.MetadataLookup<Set<AzureListener>>) method -> {
-                        Set<AzureListener> listenerMethods = AnnotatedElementUtils
-                                .getMergedRepeatableAnnotations(method, AzureListener.class, AzureListeners.class);
+            Map<Method, Set<AzureMessageListener>> annotatedMethods = MethodIntrospector.selectMethods(targetClass,
+                    (MethodIntrospector.MetadataLookup<Set<AzureMessageListener>>) method -> {
+                        Set<AzureMessageListener> listenerMethods = AnnotatedElementUtils
+                                .getMergedRepeatableAnnotations(method, AzureMessageListener.class,
+                                        AzureMessageListeners.class);
                         return (!listenerMethods.isEmpty() ? listenerMethods : null);
                     });
             if (annotatedMethods.isEmpty()) {
                 this.nonAnnotatedClasses.add(targetClass);
                 if (log.isTraceEnabled()) {
-                    log.trace("No @AzureListener annotations found on bean type: " + targetClass);
+                    log.trace("No @AzureMessageListener annotations found on bean type: " + targetClass);
                 }
             } else {
                 // Non-empty set of methods
@@ -182,8 +180,8 @@ public class AzureListenerAnnotationBeanPostProcessor
                         .forEach(listener -> processAzureListener(listener, method, bean)));
                 if (log.isDebugEnabled()) {
                     log.debug(
-                            annotatedMethods.size() + " @AzureListener methods processed on bean '" + beanName + "': " +
-                                    annotatedMethods);
+                            annotatedMethods.size() + " @AzureMessageListener methods processed on bean '" + beanName +
+                                    "': " + annotatedMethods);
                 }
             }
         }
@@ -191,16 +189,17 @@ public class AzureListenerAnnotationBeanPostProcessor
     }
 
     /**
-     * Process the given {@link AzureListener} annotation on the given method,
+     * Process the given {@link AzureMessageListener} annotation on the given method,
      * registering a corresponding endpoint for the given bean instance.
      *
-     * @param azureListener      the annotation to process
-     * @param mostSpecificMethod the annotated method
-     * @param bean               the instance to invoke the method on
+     * @param azureMessageListener the annotation to process
+     * @param mostSpecificMethod   the annotated method
+     * @param bean                 the instance to invoke the method on
      * @see #createMethodAzureListenerEndpoint()
      * @see AzureListenerEndpointRegistrar#registerEndpoint
      */
-    protected void processAzureListener(AzureListener azureListener, Method mostSpecificMethod, Object bean) {
+    protected void processAzureListener(AzureMessageListener azureMessageListener, Method mostSpecificMethod,
+            Object bean) {
         Method invocableMethod = AopUtils.selectInvocableMethod(mostSpecificMethod, bean.getClass());
 
         MethodAzureListenerEndpoint endpoint = createMethodAzureListenerEndpoint();
@@ -208,18 +207,18 @@ public class AzureListenerAnnotationBeanPostProcessor
         endpoint.setMethod(invocableMethod);
         endpoint.setBeanFactory(this.beanFactory);
         endpoint.setMessageHandlerMethodFactory(this.messageHandlerMethodFactory);
-        endpoint.setId(getEndpointId(azureListener));
-        endpoint.setDestination(resolve(azureListener.destination()));
+        endpoint.setId(getEndpointId(azureMessageListener));
+        endpoint.setDestination(resolve(azureMessageListener.destination()));
 
-        if (StringUtils.hasText(azureListener.group())) {
-            endpoint.setGroup(resolve(azureListener.group()));
+        if (StringUtils.hasText(azureMessageListener.group())) {
+            endpoint.setGroup(resolve(azureMessageListener.group()));
         }
-        if (StringUtils.hasText(azureListener.concurrency())) {
-            endpoint.setConcurrency(resolve(azureListener.concurrency()));
+        if (StringUtils.hasText(azureMessageListener.concurrency())) {
+            endpoint.setConcurrency(resolve(azureMessageListener.concurrency()));
         }
 
         ListenerContainerFactory<?> factory = null;
-        String containerFactoryBeanName = resolve(azureListener.containerFactory());
+        String containerFactoryBeanName = resolve(azureMessageListener.containerFactory());
         if (StringUtils.hasText(containerFactoryBeanName)) {
             Assert.state(this.beanFactory != null, "BeanFactory must be set to obtain container factory by bean name");
             try {
@@ -245,9 +244,9 @@ public class AzureListenerAnnotationBeanPostProcessor
         return new MethodAzureListenerEndpoint();
     }
 
-    private String getEndpointId(AzureListener azureListener) {
-        if (StringUtils.hasText(azureListener.id())) {
-            String id = resolve(azureListener.id());
+    private String getEndpointId(AzureMessageListener azureMessageListener) {
+        if (StringUtils.hasText(azureMessageListener.id())) {
+            String id = resolve(azureMessageListener.id());
             return (id != null ? id : "");
         } else {
             return "org.springframework.azure.AzureListenerEndpointContainer#" + this.counter.getAndIncrement();
