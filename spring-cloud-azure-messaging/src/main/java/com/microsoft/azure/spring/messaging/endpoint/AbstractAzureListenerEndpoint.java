@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
 
-
 /**
  * Base model for a Azure listener endpoint.
  *

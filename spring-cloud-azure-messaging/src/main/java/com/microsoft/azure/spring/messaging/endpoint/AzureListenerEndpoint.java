@@ -6,7 +6,6 @@
 
 package com.microsoft.azure.spring.messaging.endpoint;
 
-
 import com.microsoft.azure.spring.messaging.container.MessageListenerContainer;
 
 /**

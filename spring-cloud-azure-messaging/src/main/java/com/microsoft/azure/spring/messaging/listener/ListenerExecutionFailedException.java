@@ -6,7 +6,6 @@
 
 package com.microsoft.azure.spring.messaging.listener;
 
-
 import org.springframework.core.NestedRuntimeException;
 
 /**

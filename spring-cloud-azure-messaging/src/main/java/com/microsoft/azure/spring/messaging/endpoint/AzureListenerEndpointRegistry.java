@@ -44,7 +44,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @see MessageListenerContainer
  * @see ListenerContainerFactory
  */
-
 @Slf4j
 public class AzureListenerEndpointRegistry
         implements DisposableBean, SmartLifecycle, ApplicationContextAware, ApplicationListener<ContextRefreshedEvent> {

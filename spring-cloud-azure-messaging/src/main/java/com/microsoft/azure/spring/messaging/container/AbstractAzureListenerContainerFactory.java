@@ -12,7 +12,6 @@ import com.microsoft.azure.spring.messaging.endpoint.AzureListenerEndpoint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-
 /**
  * Base {@link ListenerContainerFactory} for Spring's base container implementation.
  *
@@ -20,7 +19,6 @@ import lombok.Getter;
  * @author Warren Zhu
  * @see AbstractAzureListenerEndpoint
  */
-
 @Getter
 @AllArgsConstructor
 public abstract class AbstractAzureListenerContainerFactory<C extends AbstractListenerContainer>

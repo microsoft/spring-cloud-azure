@@ -13,13 +13,11 @@ import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.handler.invocation.InvocableHandlerMethod;
 import org.springframework.util.Assert;
 
-
 /**
  * @author Warren Zhu
  * @see Message
  * @see InvocableHandlerMethod
  */
-
 @Getter
 public class DefaultAzureMessageHandler implements AzureMessageHandler {
 

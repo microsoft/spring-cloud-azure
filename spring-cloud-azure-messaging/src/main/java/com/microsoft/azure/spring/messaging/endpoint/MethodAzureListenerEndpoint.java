@@ -29,7 +29,6 @@ import java.lang.reflect.Method;
  *
  * @author Warren Zhu
  */
-
 @Getter
 @Setter
 public class MethodAzureListenerEndpoint extends AbstractAzureListenerEndpoint implements BeanFactoryAware {

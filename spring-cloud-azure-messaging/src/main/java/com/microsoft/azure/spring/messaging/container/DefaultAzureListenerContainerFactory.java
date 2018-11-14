@@ -6,7 +6,6 @@
 
 package com.microsoft.azure.spring.messaging.container;
 
-
 import com.microsoft.azure.spring.integration.core.api.SubscribeByGroupOperation;
 
 /**

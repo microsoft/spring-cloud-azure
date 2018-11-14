@@ -6,7 +6,6 @@
 
 package com.microsoft.azure.spring.messaging.annotation;
 
-
 import com.microsoft.azure.spring.messaging.container.ListenerContainerFactory;
 import com.microsoft.azure.spring.messaging.endpoint.AzureListenerEndpoint;
 import com.microsoft.azure.spring.messaging.endpoint.AzureListenerEndpointRegistrar;

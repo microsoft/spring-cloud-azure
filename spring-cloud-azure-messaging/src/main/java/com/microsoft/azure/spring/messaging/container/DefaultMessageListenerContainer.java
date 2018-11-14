@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * @author Warren Zhu
  */
-
 @Slf4j
 @Getter
 @AllArgsConstructor
