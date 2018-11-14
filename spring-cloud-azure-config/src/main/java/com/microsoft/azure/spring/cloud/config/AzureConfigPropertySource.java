@@ -46,7 +46,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
                 continue; // Skip non-expected label
             }
 
-            String key = item.getKey().replaceFirst(context, "");
+            String key = item.getKey().trim().substring(context.length());
             properties.put(key, item.getValue());
         }
     }
