@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-cloud-azure-starter-eventhub</artifactId>
+            <artifactId>spring-cloud-starter-azure-eventhub</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
