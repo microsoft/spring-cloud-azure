@@ -1,6 +1,6 @@
 # Spring Cloud Azure Storage Starter
 
-The project provides a Spring Boot Starter `spring-cloud-azure-starter-storage` to auto-configure [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction) in your Spring projects. It implements Spring Resource abstraction for Azure Storage service which allows you to interact with Azure Blob storage using Spring programming model.
+The project provides a Spring Boot Starter `spring-cloud-starter-azure-storage` to auto-configure [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction) in your Spring projects. It implements Spring Resource abstraction for Azure Storage service which allows you to interact with Azure Blob storage using Spring programming model.
 
 ## Samples 
 
@@ -15,23 +15,23 @@ Please use this [sample](../../spring-cloud-azure-samples/spring-cloud-azure-sto
 
 ### Auto-configuration for Azure Blob storage
 
-Please use [`spring-cloud-azure-starter-storage`](spring-cloud-azure-starters/spring-cloud-azure-starter-storage/) to auto-configure Azure Storge in your project. 
+Please use [`spring-cloud-starter-azure-storage`](spring-cloud-azure-starters/spring-cloud-starter-azure-storage/) to auto-configure Azure Storge in your project. 
 
 **Maven Coordinates** 
 ```
 <dependency>
     <groupId>com.microsoft.azure</groupId>
-    <artifactId>spring-cloud-azure-starter-storage</artifactId>
+    <artifactId>spring-cloud-starter-azure-storage</artifactId>
 </dependency>
 ```
 **Gradle Coordinates** 
 ```
 dependencies {
-    compile group: 'com.microsoft.azure', name: 'spring-cloud-azure-starter-storage'
+    compile group: 'com.microsoft.azure', name: 'spring-cloud-starter-azure-storage'
 }
 ```
 
-The [`spring-cloud-azure-starter-storage`](spring-cloud-azure-starters/spring-cloud-azure-starter-storage/) provides the following configuration options in `application.properties`.
+The [`spring-cloud-starter-azure-storage`](spring-cloud-azure-starters/spring-cloud-starter-azure-storage/) provides the following configuration options in `application.properties`.
 
 Name | Description | Required | Default 
 ---|---|---|---
