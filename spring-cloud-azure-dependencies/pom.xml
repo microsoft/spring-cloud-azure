@@ -150,32 +150,32 @@
             <!--Spring Cloud Azure Starters-->
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
-                <artifactId>spring-azure-starter-cache</artifactId>
+                <artifactId>spring-starter-azure-cache</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
-                <artifactId>spring-cloud-azure-starter-servicebus</artifactId>
+                <artifactId>spring-cloud-starter-azure-servicebus</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
-                <artifactId>spring-azure-starter-storage</artifactId>
+                <artifactId>spring-starter-azure-storage</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
-                <artifactId>spring-cloud-azure-starter-eventhub</artifactId>
+                <artifactId>spring-cloud-starter-azure-eventhub</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
-                <artifactId>spring-cloud-azure-starter-eventhub-kafka</artifactId>
+                <artifactId>spring-cloud-starter-azure-eventhub-kafka</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
-                <artifactId>spring-cloud-azure-starter-storage-queue</artifactId>
+                <artifactId>spring-cloud-starter-azure-storage-queue</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

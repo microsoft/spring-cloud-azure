@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>spring-cloud-azure-starter-eventhub-kafka</artifactId>
+    <artifactId>spring-cloud-starter-azure-eventhub</artifactId>
 
     <properties>
         <main.basedir>${basedir}/../..</main.basedir>
@@ -20,8 +20,16 @@
             <artifactId>spring-cloud-azure-autoconfigure</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-stream-kafka</artifactId>
+            <groupId>com.microsoft.azure</groupId>
+            <artifactId>spring-integration-eventhub</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.microsoft.azure</groupId>
+            <artifactId>spring-cloud-azure-messaging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.microsoft.azure</groupId>
+            <artifactId>azure-eventhubs-eph</artifactId>
         </dependency>
     </dependencies>
 
