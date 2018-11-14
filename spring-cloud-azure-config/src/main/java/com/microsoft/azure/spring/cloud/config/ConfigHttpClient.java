@@ -116,7 +116,7 @@ public class ConfigHttpClient {
 
     private static String getRequestPath(HttpRequest request) throws URISyntaxException {
         URIBuilder uri = new URIBuilder(request.getRequestLine().getUri());
-        String scheme = StringUtils.isEmpty(uri.getScheme()) ? "//" : uri.getScheme() + "://";
+        String scheme = uri.getScheme() + "://";
 
         return uri.toString().substring(scheme.length()).substring(uri.getHost().length());
     }
