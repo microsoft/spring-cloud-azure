@@ -27,7 +27,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 import static org.apache.commons.codec.digest.HmacAlgorithms.HMAC_SHA_256;
 import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA_256;
@@ -114,6 +113,8 @@ public class ConfigHttpClient {
         return encodeHmac(HMAC_SHA_256, decodedKey, toSign);
     }
 
+
+    // Extract request path and query params, e.g., https://example.com/abc?param=xyz -> /abc?param=xyz
     private static String getRequestPath(HttpRequest request) throws URISyntaxException {
         URIBuilder uri = new URIBuilder(request.getRequestLine().getUri());
         String scheme = uri.getScheme() + "://";
