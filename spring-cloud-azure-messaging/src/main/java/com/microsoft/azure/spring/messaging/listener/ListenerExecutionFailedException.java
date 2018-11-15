@@ -14,7 +14,7 @@ import org.springframework.core.NestedRuntimeException;
  * @author Warren Zhu
  */
 @SuppressWarnings("serial")
-public class ListenerExecutionFailedException extends NestedRuntimeException {
+class ListenerExecutionFailedException extends NestedRuntimeException {
 
     /**
      * Constructor for ListenerExecutionFailedException.
@@ -22,7 +22,7 @@ public class ListenerExecutionFailedException extends NestedRuntimeException {
      * @param msg   the detail message
      * @param cause the exception thrown by the listener method
      */
-    public ListenerExecutionFailedException(String msg, Throwable cause) {
+    ListenerExecutionFailedException(String msg, Throwable cause) {
         super(msg, cause);
     }
 
