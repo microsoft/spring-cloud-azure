@@ -4,9 +4,10 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.messaging.endpoint;
+package com.microsoft.azure.spring.messaging.config;
 
 import com.microsoft.azure.spring.messaging.container.ListenerContainerFactory;
+import com.microsoft.azure.spring.messaging.endpoint.AzureListenerEndpoint;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.BeanFactory;
@@ -27,7 +28,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class AzureListenerEndpointRegistrar implements BeanFactoryAware, InitializingBean {
+class AzureListenerEndpointRegistrar implements BeanFactoryAware, InitializingBean {
 
     private final List<AzureListenerEndpointDescriptor> endpointDescriptors = new ArrayList<>();
     @Nullable
