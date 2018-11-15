@@ -8,7 +8,7 @@ package com.microsoft.azure.spring.integration.test.support;
 
 import com.google.common.collect.ImmutableMap;
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
-import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
+import com.microsoft.azure.spring.integration.core.DefaultMessageHandler;
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
 import com.microsoft.azure.spring.integration.core.api.SendOperation;
 import org.junit.Test;
@@ -31,7 +31,7 @@ public abstract class MessageHandlerTest<O extends SendOperation> {
 
     protected O sendOperation;
 
-    protected AzureMessageHandler handler;
+    protected DefaultMessageHandler handler;
     protected String destination = "dest";
     protected CompletableFuture<Void> future = new CompletableFuture<>();
     private Message<?> message =
