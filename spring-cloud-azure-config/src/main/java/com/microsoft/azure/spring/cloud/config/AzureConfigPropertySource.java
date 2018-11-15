@@ -42,11 +42,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
         List<KeyValueItem> items = source.getKeys(context + "*", label);
 
         for (KeyValueItem item : items) {
-            if (item.getLabel() != label) {
-                continue; // Skip non-expected label
-            }
-
-            String key = item.getKey().replaceFirst(context, "");
+            String key = item.getKey().trim().substring(context.length());
             properties.put(key, item.getValue());
         }
     }
