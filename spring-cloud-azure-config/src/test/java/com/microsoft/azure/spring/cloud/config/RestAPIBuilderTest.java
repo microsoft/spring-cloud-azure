@@ -31,7 +31,7 @@ public class RestAPIBuilderTest {
 
     @Test
     public void endpointShouldHaveText() {
-        final RestAPIBuilder builder = new RestAPIBuilder().withPath(KV_API);
+        final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(null).withPath(KV_API);
 
         expected.expect(IllegalArgumentException.class);
         expected.expectMessage("Endpoint should not be empty or null");
