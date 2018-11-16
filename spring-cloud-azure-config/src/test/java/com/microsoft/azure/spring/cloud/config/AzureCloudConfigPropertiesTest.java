@@ -95,7 +95,8 @@ public class AzureCloudConfigPropertiesTest {
 
     private void assertInvalidField(AssertableApplicationContext context, String fieldName) {
         assertThat(context).getFailure().hasCauseInstanceOf(BindException.class);
-        assertThat(context).getFailure().hasStackTraceContaining(String.format("field '%s': rejected value", fieldName));
+        assertThat(context).getFailure()
+                .hasStackTraceContaining(String.format("field '%s': rejected value", fieldName));
     }
 }
 
