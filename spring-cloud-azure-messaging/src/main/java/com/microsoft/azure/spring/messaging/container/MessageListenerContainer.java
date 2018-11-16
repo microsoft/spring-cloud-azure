@@ -17,6 +17,8 @@ import org.springframework.context.SmartLifecycle;
  */
 public interface MessageListenerContainer extends SmartLifecycle {
 
+    AzureMessageHandler getMessageHandler();
+
     void setMessageHandler(AzureMessageHandler messageHandler);
 
     void setDestination(String destination);
