@@ -180,6 +180,11 @@
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
+                <artifactId>spring-cloud-starter-azure-config</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-starter-azure-keyvault-config</artifactId>
                 <version>${project.version}</version>
             </dependency>

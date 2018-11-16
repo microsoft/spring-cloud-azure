@@ -14,11 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-cloud-azure-config</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <artifactId>spring-cloud-starter-azure-config</artifactId>
         </dependency>
     </dependencies>
 </project>
