@@ -8,6 +8,7 @@ package com.microsoft.azure.spring.messaging.endpoint;
 
 import com.microsoft.azure.spring.messaging.container.ListenerContainerFactory;
 import com.microsoft.azure.spring.messaging.container.MessageListenerContainer;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.DisposableBean;
@@ -23,6 +24,7 @@ import org.springframework.util.Assert;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -207,6 +209,29 @@ public class AzureListenerEndpointRegistry
                 }
             }
         }
+    }
+
+    /**
+     * Return the {@link MessageListenerContainer} with the specified id or
+     * {@code null} if no such container exists.
+     *
+     * @param id the id of the container
+     * @return the container or {@code null} if no container with that id exists
+     * @see AzureListenerEndpoint#getId()
+     * @see #getListenerContainerIds()
+     */
+    @Nullable
+    public MessageListenerContainer getListenerContainer(@NonNull String id) {
+        return this.listenerContainers.get(id);
+    }
+
+    /**
+     * Return the ids of the managed {@link MessageListenerContainer} instance(s).
+     *
+     * @see #getListenerContainer(String)
+     */
+    public Set<String> getListenerContainerIds() {
+        return Collections.unmodifiableSet(this.listenerContainers.keySet());
     }
 
     @Override
