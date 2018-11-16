@@ -30,7 +30,7 @@ public class RestAPIBuilderTest {
     public ExpectedException expected = ExpectedException.none();
 
     @Test
-    public void endpointShouldHaveText() {
+    public void endpointShouldNotBeNull() {
         final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(null).withPath(KV_API);
 
         expected.expect(IllegalArgumentException.class);
@@ -39,8 +39,17 @@ public class RestAPIBuilderTest {
     }
 
     @Test
+    public void endpointShouldNotBeEmpty() {
+        final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint("  ").withPath(KV_API);
+
+        expected.expect(IllegalArgumentException.class);
+        expected.expectMessage("Endpoint should not be empty or null");
+        builder.buildKVApi(null, null);
+    }
+
+    @Test
     public void kvAPIShouldInitPath() throws URISyntaxException {
-        final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT);
+        final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT).withPath(null);
         String apiPath = builder.buildKVApi(null, null);
         URIBuilder uriBuilder = new URIBuilder(apiPath);
 
