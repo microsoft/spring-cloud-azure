@@ -10,14 +10,15 @@ import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBindException;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.assertj.AssertableApplicationContext;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Arrays;
 
 import static com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties.NON_EMPTY_MSG;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
+import static com.microsoft.azure.spring.cloud.config.TestUtils.propPair;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AzureCloudConfigPropertiesTest {
@@ -99,7 +100,7 @@ public class AzureCloudConfigPropertiesTest {
         });
     }
 
-    private void assertInvalidField(ApplicationContext context, String fieldName) {
+    private void assertInvalidField(AssertableApplicationContext context, String fieldName) {
         try {
             context.getBean(AzureCloudConfigProperties.class);
             Assert.fail("Should throw exception for illegal input of field " + fieldName);
@@ -107,10 +108,6 @@ public class AzureCloudConfigPropertiesTest {
             assertThat(e).hasCauseInstanceOf(ConfigurationPropertiesBindException.class);
             assertThat(e).hasStackTraceContaining(String.format("field '%s': rejected value", fieldName));
         }
-    }
-
-    private static String propPair(String propName, String propValue) {
-        return String.format("%s=%s", propName, propValue);
     }
 }
 
