@@ -10,6 +10,7 @@ import com.microsoft.azure.spring.messaging.container.ListenerContainerFactory;
 import com.microsoft.azure.spring.messaging.endpoint.AzureListenerEndpointRegistrar;
 import com.microsoft.azure.spring.messaging.endpoint.AzureListenerEndpointRegistry;
 import com.microsoft.azure.spring.messaging.endpoint.MethodAzureListenerEndpoint;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopInfrastructureBean;
 import org.springframework.aop.framework.AopProxyUtils;
@@ -76,6 +77,8 @@ public class AzureListenerAnnotationBeanPostProcessor
     private final AzureListenerEndpointRegistrar registrar = new AzureListenerEndpointRegistrar();
     private final AtomicInteger counter = new AtomicInteger();
     private final Set<Class<?>> nonAnnotatedClasses = Collections.newSetFromMap(new ConcurrentHashMap<>(64));
+
+    @Setter
     private String containerFactoryBeanName = DEFAULT_AZURE_LISTENER_CONTAINER_FACTORY_BEAN_NAME;
     @Nullable
     private AzureListenerEndpointRegistry endpointRegistry;
