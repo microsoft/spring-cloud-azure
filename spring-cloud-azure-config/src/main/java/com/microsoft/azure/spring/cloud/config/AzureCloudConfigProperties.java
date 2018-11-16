@@ -44,6 +44,7 @@ public class AzureCloudConfigProperties {
 
     // Prefix for all properties, can be empty
     @Nullable
+    @Pattern(regexp = "(/[a-zA-Z0-9.\\-_]+)*")
     private String prefix;
 
     // Label value in the Azure Config Service, can be empty
