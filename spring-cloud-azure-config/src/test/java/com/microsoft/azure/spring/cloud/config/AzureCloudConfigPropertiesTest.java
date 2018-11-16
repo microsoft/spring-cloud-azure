@@ -5,11 +5,10 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.context.properties.ConfigurationPropertiesBindException;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.context.properties.bind.BindException;
 import org.springframework.boot.test.context.assertj.AssertableApplicationContext;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Configuration;
@@ -61,15 +60,9 @@ public class AzureCloudConfigPropertiesTest {
     }
 
     private void testConnStringFields(String connString, String fieldName) {
-        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, connString))
-                .run(context -> {
-                    try {
-                        context.getBean(AzureCloudConfigProperties.class);
-                        Assert.fail("Should throw exception.");
-                    } catch (IllegalStateException e) {
-                        assertThat(e).hasStackTraceContaining(String.format(NON_EMPTY_MSG, fieldName));
-                    }
-                });
+        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, connString)).run(context -> {
+            assertThat(context).getFailure().hasStackTraceContaining(String.format(NON_EMPTY_MSG, fieldName));
+        });
     }
 
     @Test
@@ -101,13 +94,8 @@ public class AzureCloudConfigPropertiesTest {
     }
 
     private void assertInvalidField(AssertableApplicationContext context, String fieldName) {
-        try {
-            context.getBean(AzureCloudConfigProperties.class);
-            Assert.fail("Should throw exception for illegal input of field " + fieldName);
-        } catch (IllegalStateException e) {
-            assertThat(e).hasCauseInstanceOf(ConfigurationPropertiesBindException.class);
-            assertThat(e).hasStackTraceContaining(String.format("field '%s': rejected value", fieldName));
-        }
+        assertThat(context).getFailure().hasCauseInstanceOf(BindException.class);
+        assertThat(context).getFailure().hasStackTraceContaining(String.format("field '%s': rejected value", fieldName));
     }
 }
 
