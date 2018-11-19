@@ -39,7 +39,7 @@ import java.util.concurrent.TimeoutException;
  */
 @Getter
 @Setter
-public class AzureMessageHandler extends AbstractMessageHandler {
+public class DefaultMessageHandler extends AbstractMessageHandler {
     private static final long DEFAULT_SEND_TIMEOUT = 10000;
     private final String destination;
     private final SendOperation sendOperation;
@@ -50,7 +50,7 @@ public class AzureMessageHandler extends AbstractMessageHandler {
     private Expression sendTimeoutExpression = new ValueExpression<>(DEFAULT_SEND_TIMEOUT);
     private Expression partitionKeyExpression;
 
-    public AzureMessageHandler(String destination, @NonNull SendOperation sendOperation) {
+    public DefaultMessageHandler(String destination, @NonNull SendOperation sendOperation) {
         Assert.hasText(destination, "destination can't be null or empty");
         this.destination = destination;
         this.sendOperation = sendOperation;
@@ -75,7 +75,7 @@ public class AzureMessageHandler extends AbstractMessageHandler {
         } else if (sendCallback != null) {
             future.handle((t, ex) -> {
                 if (ex != null) {
-                    this.sendCallback.onFailure((Throwable) ex);
+                    this.sendCallback.onFailure(ex);
                 } else {
                     this.sendCallback.onSuccess((Void) t);
                 }

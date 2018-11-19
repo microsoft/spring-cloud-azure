@@ -32,7 +32,7 @@ class EventHubCheckpointManager {
         this.checkpointConfig = checkpointConfig;
     }
 
-    void onMessage(PartitionContext context, EventData eventData) {
+    protected void onMessage(PartitionContext context, EventData eventData) {
         if (this.checkpointConfig.getCheckpointMode() == CheckpointMode.RECORD) {
             context.checkpoint(eventData).whenComplete(this::checkpointHandler);
         } else if (this.checkpointConfig.getCheckpointMode() == CheckpointMode.PARTITION_COUNT) {
@@ -46,7 +46,7 @@ class EventHubCheckpointManager {
         }
     }
 
-    void completeBatch(PartitionContext context) {
+    protected void completeBatch(PartitionContext context) {
         if (this.checkpointConfig.getCheckpointMode() == CheckpointMode.BATCH) {
             context.checkpoint().whenComplete(this::checkpointHandler);
         }

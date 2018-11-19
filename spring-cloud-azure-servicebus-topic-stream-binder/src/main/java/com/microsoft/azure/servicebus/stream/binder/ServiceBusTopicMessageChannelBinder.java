@@ -10,7 +10,7 @@ import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusConsume
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusExtendedBindingProperties;
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusProducerProperties;
 import com.microsoft.azure.servicebus.stream.binder.provisioning.ServiceBusTopicChannelProvisioner;
-import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
+import com.microsoft.azure.spring.integration.core.DefaultMessageHandler;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
@@ -52,7 +52,7 @@ public class ServiceBusTopicMessageChannelBinder extends
     @Override
     protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
             ExtendedProducerProperties<ServiceBusProducerProperties> producerProperties, MessageChannel errorChannel) {
-        AzureMessageHandler handler = new AzureMessageHandler(destination.getName(), this.serviceBusTopicOperation);
+        DefaultMessageHandler handler = new DefaultMessageHandler(destination.getName(), this.serviceBusTopicOperation);
         handler.setBeanFactory(getBeanFactory());
         handler.setSync(producerProperties.getExtension().isSync());
         handler.setSendTimeout(producerProperties.getExtension().getSendTimeout());

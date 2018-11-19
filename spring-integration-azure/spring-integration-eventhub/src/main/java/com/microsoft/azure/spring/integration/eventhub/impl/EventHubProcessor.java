@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * Implementation of {@link IEventProcessor} to be registered vis event hub sdk.
+ * Implementation of {@link IEventProcessor} to be registered via event hub sdk.
  * <p>
  * Mainly handle message conversion and checkpoint
  *
