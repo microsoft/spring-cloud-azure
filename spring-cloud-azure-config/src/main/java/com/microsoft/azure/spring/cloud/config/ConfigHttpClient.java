@@ -57,11 +57,11 @@ public class ConfigHttpClient {
         this.httpClient = httpClient;
     }
 
-    public CloseableHttpResponse execute(@NonNull HttpUriRequest request, String credential, String secret)
+    public CloseableHttpResponse execute(@NonNull HttpUriRequest request, Date date, String credential, String secret)
             throws IOException, URISyntaxException {
         Assert.notNull(request, "Request should not be null.");
 
-        Map<String, String> authHeaders = buildRequestHeaders(request, new Date(), credential, secret);
+        Map<String, String> authHeaders = buildRequestHeaders(request, date, credential, secret);
         authHeaders.forEach(request::setHeader);
 
         return httpClient.execute(request);
