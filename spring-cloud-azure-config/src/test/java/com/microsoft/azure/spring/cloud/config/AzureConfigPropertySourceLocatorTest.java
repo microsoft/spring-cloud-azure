@@ -14,7 +14,7 @@ import static com.microsoft.azure.spring.cloud.config.TestConstants.VALID_CONN_S
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-public class PropertySourceLocatorTest {
+public class AzureConfigPropertySourceLocatorTest {
     private static final String APPLICATION_NAME = "foo";
     private static final String PROFILE_NAME = "dev";
     private static final String PREFIX = "/config";
