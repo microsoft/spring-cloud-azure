@@ -5,6 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +14,15 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TestUtils {
-    public static String propPair(String propName, String propValue) {
+    static String propPair(String propName, String propValue) {
         return String.format("%s=%s", propName, propValue);
+    }
+
+    static KeyValueItem createItem(String context, String key, String value) {
+        KeyValueItem item = new KeyValueItem();
+        item.setKey(context + key);
+        item.setValue(value);
+
+        return item;
     }
 }

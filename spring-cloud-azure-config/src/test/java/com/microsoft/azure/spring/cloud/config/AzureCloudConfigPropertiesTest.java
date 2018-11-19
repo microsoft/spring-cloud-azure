@@ -32,7 +32,7 @@ public class AzureCloudConfigPropertiesTest {
 
     @Test
     public void validInputShouldCreatePropertiesBean() {
-        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, VALID_CONN_STRING)).run(context -> {
+        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING)).run(context -> {
            assertThat(context).hasSingleBean(AzureCloudConfigProperties.class);
         });
     }
@@ -67,7 +67,7 @@ public class AzureCloudConfigPropertiesTest {
 
     @Test
     public void defaultContextShouldNotBeEmpty() {
-        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, VALID_CONN_STRING),
+        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                 propPair(DEFAULT_CONTEXT_PROP, "")).run(context -> {
             assertInvalidField(context, "defaultContext");
         });
@@ -76,7 +76,7 @@ public class AzureCloudConfigPropertiesTest {
     @Test
     public void prefixShouldFollowPattern() {
         Arrays.asList(ILLEGAL_PREFIXES).stream().forEach(prefix -> {
-            this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, VALID_CONN_STRING),
+            this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                     propPair(PREFIX_PROP, prefix)).run(context -> {
                 assertInvalidField(context, "prefix");
             });
@@ -86,7 +86,7 @@ public class AzureCloudConfigPropertiesTest {
     @Test
     public void profileSeparatorShouldFollowPattern() {
         Arrays.asList(ILLEGAL_PROFILE_SEPARATOR).stream().forEach(separator -> {
-            this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, VALID_CONN_STRING),
+            this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                     propPair(SEPARATOR_PROP, separator)).run(context -> {
                         assertInvalidField(context, "profileSeparator");
             });
