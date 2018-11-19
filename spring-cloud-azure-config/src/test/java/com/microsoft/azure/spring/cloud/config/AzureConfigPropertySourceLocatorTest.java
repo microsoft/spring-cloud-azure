@@ -21,7 +21,8 @@ import static org.mockito.Mockito.when;
 
 public class AzureConfigPropertySourceLocatorTest {
     private static final String APPLICATION_NAME = "foo";
-    private static final String PROFILE_NAME = "dev";
+    private static final String PROFILE_NAME_1 = "dev";
+    private static final String PROFILE_NAME_2 = "prod";
     private static final String PREFIX = "/config";
 
     @Mock
@@ -37,7 +38,7 @@ public class AzureConfigPropertySourceLocatorTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        when(environment.getActiveProfiles()).thenReturn(new String[]{PROFILE_NAME});
+        when(environment.getActiveProfiles()).thenReturn(new String[]{PROFILE_NAME_1, PROFILE_NAME_2});
 
         properties = new AzureCloudConfigProperties();
         properties.setConnectionString(VALID_CONN_STRING);
@@ -51,11 +52,12 @@ public class AzureConfigPropertySourceLocatorTest {
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
 
-        Collection<PropertySource<?>> sources = ((CompositePropertySource)source).getPropertySources();
-        // Application name: foo and active profile: dev, should construct below composite Property Source:
-        // [/foo_dev/, /foo/, /application_dev/, /application/]
-        String[] expectedPrefixes = new String[]{"/foo_dev/", "/foo/", "/application_dev/", "/application/"};
-        assertThat(sources.size()).isEqualTo(4);
+        Collection<PropertySource<?>> sources = ((CompositePropertySource) source).getPropertySources();
+        // Application name: foo and active profile: dev,prod, should construct below composite Property Source:
+        // [/foo_prod/, /foo_dev/, /foo/, /application_prod/, /application_dev/, /application/]
+        String[] expectedPrefixes = new String[]{"/foo_prod/", "/foo_dev/", "/foo/", "/application_prod/",
+                "/application_dev/", "/application/"};
+        assertThat(sources.size()).isEqualTo(6);
         assertThat(sources.stream().map(s -> s.getName()).toArray()).containsExactly(expectedPrefixes);
     }
 
@@ -67,13 +69,14 @@ public class AzureConfigPropertySourceLocatorTest {
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
 
-        Collection<PropertySource<?>> sources = ((CompositePropertySource)source).getPropertySources();
-        // Application name: foo, active profile: dev and prefix: /config,
+        Collection<PropertySource<?>> sources = ((CompositePropertySource) source).getPropertySources();
+        // Application name: foo, active profile: dev,prod and prefix: /config,
         // should construct below composite Property Source:
-        // [/config/foo_dev/, /config/foo/, /config/application_dev/, /config/application/]
-        String[] expectedPrefixes = new String[]{"/config/foo_dev/", "/config/foo/", "/config/application_dev/",
-                "/config/application/"};
-        assertThat(sources.size()).isEqualTo(4);
+        // [/config/foo_prod/, /config/foo_dev/, /config/foo/, /config/application_prod/,
+        // /config/application_dev/, /config/application/]
+        String[] expectedPrefixes = new String[]{"/config/foo_prod/", "/config/foo_dev/", "/config/foo/",
+                "/config/application_prod/", "/config/application_dev/", "/config/application/"};
+        assertThat(sources.size()).isEqualTo(6);
         assertThat(sources.stream().map(s -> s.getName()).toArray()).containsExactly(expectedPrefixes);
     }
 }
