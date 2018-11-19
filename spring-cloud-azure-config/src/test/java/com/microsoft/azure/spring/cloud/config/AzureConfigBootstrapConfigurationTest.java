@@ -11,14 +11,14 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import static com.microsoft.azure.spring.cloud.config.TestConstants.CONN_STRING_PROP;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.VALID_CONN_STRING;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.propPair;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AzureConfigBootstrapConfigurationTest {
     private static final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class))
-            .withPropertyValues(propPair(CONN_STRING_PROP, VALID_CONN_STRING));
+            .withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING));
 
     @Test
     public void closeableHttpClientBeanCreated() {

@@ -15,7 +15,7 @@ import org.springframework.core.env.PropertySource;
 
 import java.util.Collection;
 
-import static com.microsoft.azure.spring.cloud.config.TestConstants.VALID_CONN_STRING;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +41,7 @@ public class AzureConfigPropertySourceLocatorTest {
         when(environment.getActiveProfiles()).thenReturn(new String[]{PROFILE_NAME_1, PROFILE_NAME_2});
 
         properties = new AzureCloudConfigProperties();
-        properties.setConnectionString(VALID_CONN_STRING);
+        properties.setConnectionString(TEST_CONN_STRING);
         properties.setName(APPLICATION_NAME);
 
         locator = new AzureConfigPropertySourceLocator(operations, properties);

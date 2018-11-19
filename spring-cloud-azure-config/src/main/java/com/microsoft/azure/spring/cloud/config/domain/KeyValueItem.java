@@ -7,10 +7,7 @@ package com.microsoft.azure.spring.cloud.config.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Date;
 
@@ -18,6 +15,7 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KeyValueItem {
     private String etag;
