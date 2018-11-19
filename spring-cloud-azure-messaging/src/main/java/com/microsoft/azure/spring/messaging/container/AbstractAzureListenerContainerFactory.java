@@ -21,7 +21,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public abstract class AbstractAzureListenerContainerFactory<C extends AbstractListenerContainer>
+abstract class AbstractAzureListenerContainerFactory<C extends AbstractListenerContainer>
         implements ListenerContainerFactory<C> {
 
     private final SubscribeByGroupOperation subscribeOperation;

@@ -4,11 +4,12 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.messaging.annotation;
+package com.microsoft.azure.spring.messaging.config;
 
+import com.microsoft.azure.spring.messaging.annotation.AzureMessageListener;
+import com.microsoft.azure.spring.messaging.annotation.AzureMessageListeners;
+import com.microsoft.azure.spring.messaging.annotation.EnableAzureMessaging;
 import com.microsoft.azure.spring.messaging.container.ListenerContainerFactory;
-import com.microsoft.azure.spring.messaging.endpoint.AzureListenerEndpointRegistrar;
-import com.microsoft.azure.spring.messaging.endpoint.AzureListenerEndpointRegistry;
 import com.microsoft.azure.spring.messaging.endpoint.MethodAzureListenerEndpoint;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
