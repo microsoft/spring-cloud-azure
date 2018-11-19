@@ -16,7 +16,7 @@ import org.springframework.beans.factory.DisposableBean;
 @Slf4j
 @Getter
 @Setter
-public abstract class AbstractListenerContainer implements BeanNameAware, DisposableBean, MessageListenerContainer {
+abstract class AbstractListenerContainer implements BeanNameAware, DisposableBean, MessageListenerContainer {
     private final Object lifecycleMonitor = new Object();
     private String destination;
     private String group;

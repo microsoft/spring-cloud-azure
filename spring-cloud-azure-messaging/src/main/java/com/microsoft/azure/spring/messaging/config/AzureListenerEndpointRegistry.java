@@ -4,10 +4,11 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.messaging.endpoint;
+package com.microsoft.azure.spring.messaging.config;
 
 import com.microsoft.azure.spring.messaging.container.ListenerContainerFactory;
 import com.microsoft.azure.spring.messaging.container.MessageListenerContainer;
+import com.microsoft.azure.spring.messaging.endpoint.AzureListenerEndpoint;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.DisposableBean;
@@ -44,7 +45,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @see ListenerContainerFactory
  */
 @Slf4j
-public class AzureListenerEndpointRegistry
+class AzureListenerEndpointRegistry
         implements DisposableBean, SmartLifecycle, ApplicationContextAware, ApplicationListener<ContextRefreshedEvent> {
 
     private final Map<String, MessageListenerContainer> listenerContainers = new ConcurrentHashMap<>();

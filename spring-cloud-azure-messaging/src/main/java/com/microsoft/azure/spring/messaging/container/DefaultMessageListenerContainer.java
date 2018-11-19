@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @AllArgsConstructor
-public class DefaultMessageListenerContainer extends AbstractListenerContainer {
+class DefaultMessageListenerContainer extends AbstractListenerContainer {
 
     private final SubscribeByGroupOperation subscribeOperation;
 

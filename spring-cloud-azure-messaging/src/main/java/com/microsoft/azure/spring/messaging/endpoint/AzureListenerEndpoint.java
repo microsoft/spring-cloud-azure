@@ -6,11 +6,12 @@
 
 package com.microsoft.azure.spring.messaging.endpoint;
 
+import com.microsoft.azure.spring.messaging.config.AzureListenerConfigurer;
 import com.microsoft.azure.spring.messaging.container.MessageListenerContainer;
 
 /**
  * Model for a Azure listener endpoint. Can be used against a
- * {@link com.microsoft.azure.spring.messaging.annotation.AzureListenerConfigurer
+ * {@link AzureListenerConfigurer
  * AzureListenerConfigurer} to register endpoints programmatically.
  *
  * @author Warren Zhu
