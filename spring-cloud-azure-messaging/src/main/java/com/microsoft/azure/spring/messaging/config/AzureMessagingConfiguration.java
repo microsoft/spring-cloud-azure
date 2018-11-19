@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 public class AzureMessagingConfiguration {
 
     @ConditionalOnMissingBean
-    @Bean
+    @Bean(name = AzureListenerAnnotationBeanPostProcessor.DEFAULT_AZURE_LISTENER_CONTAINER_FACTORY_BEAN_NAME)
     public ListenerContainerFactory azureListenerContainerFactory(SubscribeByGroupOperation subscribeByGroupOperation) {
         return new DefaultAzureListenerContainerFactory(subscribeByGroupOperation);
     }

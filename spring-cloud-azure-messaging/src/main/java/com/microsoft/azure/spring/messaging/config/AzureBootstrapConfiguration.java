@@ -36,7 +36,7 @@ public class AzureBootstrapConfiguration {
         return new AzureListenerAnnotationBeanPostProcessor();
     }
 
-    @Bean
+    @Bean(name = AzureListenerAnnotationBeanPostProcessor.DEFAULT_AZURE_LISTENER_ENDPOINT_REGISTRY_BEAN_NAME)
     public AzureListenerEndpointRegistry azureListenerEndpointRegistry() {
         return new AzureListenerEndpointRegistry();
     }

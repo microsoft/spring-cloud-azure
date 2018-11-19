@@ -69,9 +69,9 @@ public class AzureListenerAnnotationBeanPostProcessor
     /**
      * The bean name of the default {@link ListenerContainerFactory}.
      */
-    static final String DEFAULT_AZURE_LISTENER_CONTAINER_FACTORY_BEAN_NAME = "azureListenerContainerFactory";
+    public static final String DEFAULT_AZURE_LISTENER_CONTAINER_FACTORY_BEAN_NAME = "azureListenerContainerFactory";
 
-    static final String DEFAULT_AZURE_LISTENER_ENDPOINT_REGISTRY_BEAN_NAME = "azureListenerEndpointRegistry";
+    public static final String DEFAULT_AZURE_LISTENER_ENDPOINT_REGISTRY_BEAN_NAME = "azureListenerEndpointRegistry";
 
     private final MessageHandlerMethodFactoryAdapter messageHandlerMethodFactory =
             new MessageHandlerMethodFactoryAdapter();
