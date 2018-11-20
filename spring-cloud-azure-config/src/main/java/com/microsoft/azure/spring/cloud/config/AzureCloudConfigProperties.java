@@ -56,6 +56,8 @@ public class AzureCloudConfigProperties {
     @Pattern(regexp = "^[a-zA-Z0-9_@]+$")
     private String profileSeparator = "_";
 
+    private boolean failFast = true;
+
     // Values extracted from connection string
     private String endpoint;
     private String id;

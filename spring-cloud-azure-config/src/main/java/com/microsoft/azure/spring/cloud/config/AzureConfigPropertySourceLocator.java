@@ -11,6 +11,7 @@ import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -62,8 +63,18 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         // Reverse in order to add Profile specific properties earlier
         Collections.reverse(this.contexts);
         for (String sourceContext : this.contexts) {
-            composite.addPropertySource(create(sourceContext));
-            log.debug("PropertySource context {} is added.", sourceContext);
+            try {
+                composite.addPropertySource(create(sourceContext));
+                log.debug("PropertySource context {} is added.", sourceContext);
+            } catch (Exception e) {
+                if (properties.isFailFast()) {
+                    log.error("Fail fast is set and there was an error reading configuration from Azure Config " +
+                            "Service for " + sourceContext, e);
+                    ReflectionUtils.rethrowRuntimeException(e);
+                } else {
+                    log.warn("Unable to load configuration from Azure Config Service for " + sourceContext, e);
+                }
+            }
         }
 
         return composite;
