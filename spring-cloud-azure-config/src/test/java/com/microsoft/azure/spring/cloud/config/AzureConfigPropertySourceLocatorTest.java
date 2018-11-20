@@ -94,6 +94,7 @@ public class AzureConfigPropertySourceLocatorTest {
         expected.expectMessage(failureMsg);
 
         when(operations.getKeys(any(), any())).thenThrow(new IllegalStateException(failureMsg));
+        assertThat(properties.isFailFast()).isTrue();
         locator.locate(environment);
     }
 
