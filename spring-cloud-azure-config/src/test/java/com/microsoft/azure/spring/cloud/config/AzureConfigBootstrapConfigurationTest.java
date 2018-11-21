@@ -9,9 +9,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.core.Ordered;
 
-import static com.microsoft.azure.spring.cloud.config.TestConstants.CONN_STRING_PROP;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.propPair;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,5 +41,16 @@ public class AzureConfigBootstrapConfigurationTest {
     @Test
     public void propertySourceLocatorBeanCreated() {
         contextRunner.run(context -> assertThat(context).hasSingleBean(AzureConfigPropertySourceLocator.class));
+    }
+
+    @Test
+    public void propertySourceLocatorChangeOrder() {
+        contextRunner.run(context -> assertThat(context.getBean(AzureConfigPropertySourceLocator.class).getOrder())
+                .isEqualTo(Ordered.LOWEST_PRECEDENCE));
+
+        assertThat(TEST_LOCATOR_ORDER).isNotEqualTo(Ordered.LOWEST_PRECEDENCE);
+        contextRunner.withPropertyValues(propPair(ORDER_PROP, Integer.toString(TEST_LOCATOR_ORDER))).run(context ->
+                assertThat(context.getBean(AzureConfigPropertySourceLocator.class).getOrder())
+                        .isEqualTo(TEST_LOCATOR_ORDER));
     }
 }

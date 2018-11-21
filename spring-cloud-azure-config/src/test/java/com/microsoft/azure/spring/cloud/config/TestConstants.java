@@ -7,6 +7,7 @@ package com.microsoft.azure.spring.cloud.config;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.core.Ordered;
 
 /**
  * Test constants which can be shared across different test classes
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TestConstants {
     public static final String CONN_STRING_PROP = "spring.cloud.azure.config.connection-string";
+    public static final String ORDER_PROP = "spring.cloud.azure.config.order";
     public static final String DEFAULT_CONTEXT_PROP = "spring.cloud.azure.config.default-context";
     public static final String PREFIX_PROP = "spring.cloud.azure.config.prefix";
     public static final String SEPARATOR_PROP = "spring.cloud.azure.config.profile-separator";
@@ -33,4 +35,6 @@ public class TestConstants {
     public static final String TEST_VALUE_2 = "test_value_2";
     public static final String TEST_KEY_3 = "test_key_3";
     public static final String TEST_VALUE_3 = "test_value_3";
+
+    public static final int TEST_LOCATOR_ORDER = Ordered.HIGHEST_PRECEDENCE;
 }

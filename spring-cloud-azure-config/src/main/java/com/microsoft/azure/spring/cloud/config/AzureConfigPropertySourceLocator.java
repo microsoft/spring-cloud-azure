@@ -7,6 +7,7 @@ package com.microsoft.azure.spring.cloud.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
+import org.springframework.core.Ordered;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
@@ -19,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Slf4j
-public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
+public class AzureConfigPropertySourceLocator implements PropertySourceLocator, Ordered {
     private static final String SPRING_APP_NAME_PROP = "spring.application.name";
     private static final String PROPERTY_SOURCE_NAME = "azure-config-store";
     private static final String PATH_SPLITTER = "/";
@@ -28,11 +29,13 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private final AzureCloudConfigProperties properties;
     private List<String> contexts = new ArrayList<>();
     private final String profileSeparator;
+    private final int order;
 
     public AzureConfigPropertySourceLocator(ConfigServiceOperations operations, AzureCloudConfigProperties properties) {
         this.operations = operations;
         this.properties = properties;
         this.profileSeparator = properties.getProfileSeparator();
+        this.order = properties.getOrder();
     }
 
     @Override
@@ -98,5 +101,10 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         propertySource.initProperties();
 
         return propertySource;
+    }
+
+    @Override
+    public int getOrder() {
+        return order;
     }
 }

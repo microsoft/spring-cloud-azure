@@ -8,6 +8,7 @@ package com.microsoft.azure.spring.cloud.config;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.Ordered;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -55,6 +56,8 @@ public class AzureCloudConfigProperties {
     @NotEmpty
     @Pattern(regexp = "^[a-zA-Z0-9_@]+$")
     private String profileSeparator = "_";
+
+    private int order = Ordered.LOWEST_PRECEDENCE;
 
     // Values extracted from connection string
     private String endpoint;
