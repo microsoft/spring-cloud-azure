@@ -53,6 +53,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @MessageMapping
+@Repeatable(AzureMessageListeners.class)
 public @interface AzureMessageListener {
 
     /**

@@ -9,6 +9,7 @@ package com.microsoft.azure.spring.messaging.config;
 import com.microsoft.azure.spring.integration.core.api.SubscribeByGroupOperation;
 import com.microsoft.azure.spring.messaging.container.DefaultAzureListenerContainerFactory;
 import com.microsoft.azure.spring.messaging.container.ListenerContainerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AzureMessagingConfiguration {
 
+    @ConditionalOnMissingBean
     @Bean
     public ListenerContainerFactory azureListenerContainerFactory(SubscribeByGroupOperation subscribeByGroupOperation) {
         return new DefaultAzureListenerContainerFactory(subscribeByGroupOperation);
