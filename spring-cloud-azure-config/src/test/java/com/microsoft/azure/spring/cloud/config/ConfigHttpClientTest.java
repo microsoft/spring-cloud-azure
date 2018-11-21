@@ -6,6 +6,7 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -37,8 +38,9 @@ public class ConfigHttpClientTest {
     private static final String DATE_FORMAT = "EEE, d MMM yyyy hh:mm:ss z";
     private static final SimpleDateFormat GMT_DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT);
     private static final String TEST_DATE = "Mon, 19 Nov 2018 12:00:00 GMT";
+    private static final String TEST_USER_AGENT = ConfigHttpClient.USER_AGENT;
 
-    private static final Map<String, String> AUTH_HEADERS = new HashMap<>();
+    private static final Map<String, String> REQ_HEADERS = new HashMap<>();
 
     @Mock
     private CloseableHttpClient httpClient;
@@ -48,10 +50,11 @@ public class ConfigHttpClientTest {
     @BeforeClass
     public static void init() {
         GMT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
-        AUTH_HEADERS.put("x-ms-date", TEST_DATE);
-        AUTH_HEADERS.put("x-ms-content-sha256", "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=");
-        AUTH_HEADERS.put("Authorization", "HMAC-SHA256 Credential=fake-conn-id, SignedHeaders=x-ms-date;host;" +
+        REQ_HEADERS.put("x-ms-date", TEST_DATE);
+        REQ_HEADERS.put("x-ms-content-sha256", "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=");
+        REQ_HEADERS.put("Authorization", "HMAC-SHA256 Credential=fake-conn-id, SignedHeaders=x-ms-date;host;" +
                 "x-ms-content-sha256, Signature=P1SJR6iQjGgDmoV8/utXdwFyj69nYpd1OLkH1B9xjl8=");
+        REQ_HEADERS.put(HttpHeaders.USER_AGENT, TEST_USER_AGENT);
     }
 
     @Before
@@ -74,7 +77,8 @@ public class ConfigHttpClientTest {
                 Arrays.stream(headers).forEach(h -> actualHeaderMap.put(h.getName(), h.getValue()));
 
                 // Test the headers of the passed in request has been correctly configured before firing request.
-                AUTH_HEADERS.forEach((k, v) -> {
+                assertThat(REQ_HEADERS.size()).isEqualTo(4);
+                REQ_HEADERS.forEach((k, v) -> {
                     assertThat(actualHeaderMap).containsEntry(k, v);
                 });
 

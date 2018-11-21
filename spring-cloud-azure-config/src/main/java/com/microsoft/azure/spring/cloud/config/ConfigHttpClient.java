@@ -19,6 +19,7 @@ import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpRequest;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -44,8 +45,9 @@ import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA_256;
 @Slf4j
 public class ConfigHttpClient {
     private static final String DATE_FORMAT = "EEE, d MMM yyyy hh:mm:ss z";
-
     private static final SimpleDateFormat GMT_DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT);
+    public static final String USER_AGENT = String.format("SpringConfigClient/%s/Java",
+            ConfigHttpClient.class.getCanonicalName());
 
     static {
         GMT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -86,6 +88,8 @@ public class ConfigHttpClient {
         String authorization = String.format("HMAC-SHA256 Credential=%s, SignedHeaders=%s, Signature=%s",
                 credential, signedHeaders, signature);
         headers.put("Authorization", authorization);
+
+        headers.put(HttpHeaders.USER_AGENT, USER_AGENT);
 
         return headers;
     }
