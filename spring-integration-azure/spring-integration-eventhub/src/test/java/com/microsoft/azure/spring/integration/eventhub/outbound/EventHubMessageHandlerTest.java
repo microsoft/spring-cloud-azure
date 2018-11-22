@@ -31,6 +31,9 @@ public class EventHubMessageHandlerTest extends MessageHandlerTest<EventHubOpera
         this.sendOperation = mock(EventHubOperation.class);
         when(this.sendOperation.sendAsync(eq(this.destination), isA(Message.class), isA(PartitionSupplier.class)))
                 .thenReturn(future);
+        when(this.sendOperation
+                .sendAsync(eq(this.dynamicDestination), isA(Message.class), isA(PartitionSupplier.class)))
+                .thenReturn(future);
         this.handler = new DefaultMessageHandler(this.destination, this.sendOperation);
     }
 

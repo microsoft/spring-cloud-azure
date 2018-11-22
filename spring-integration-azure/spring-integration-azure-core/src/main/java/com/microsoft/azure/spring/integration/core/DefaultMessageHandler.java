@@ -11,6 +11,7 @@ import com.microsoft.azure.spring.integration.core.api.SendOperation;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.common.LiteralExpression;
@@ -24,6 +25,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +42,7 @@ import java.util.concurrent.TimeoutException;
  */
 @Getter
 @Setter
+@Slf4j
 public class DefaultMessageHandler extends AbstractMessageHandler {
     private static final long DEFAULT_SEND_TIMEOUT = 10000;
     private final String destination;
@@ -60,6 +64,7 @@ public class DefaultMessageHandler extends AbstractMessageHandler {
     protected void onInit() throws Exception {
         super.onInit();
         this.evaluationContext = ExpressionUtils.createStandardEvaluationContext(getBeanFactory());
+        log.info("Started DefaultMessageHandler with properties: {}", buildPropertiesMap());
     }
 
     @Override
@@ -72,17 +77,28 @@ public class DefaultMessageHandler extends AbstractMessageHandler {
 
         if (this.sync) {
             waitingSendResponse(future, message);
-        } else if (sendCallback != null) {
-            future.handle((t, ex) -> {
-                if (ex != null) {
+            return;
+        }
+
+        handleSendResponseAsync(message, future);
+    }
+
+    private void handleSendResponseAsync(Message<?> message, CompletableFuture<?> future) {
+        future.handle((t, ex) -> {
+            if (ex != null) {
+                log.warn("{} sent failed in async mode", message);
+                if (this.sendCallback != null) {
                     this.sendCallback.onFailure(ex);
-                } else {
+                }
+            } else {
+                log.debug("{} sent successfully in async mode", message);
+                if (this.sendCallback != null) {
                     this.sendCallback.onSuccess((Void) t);
                 }
+            }
 
-                return null;
-            });
-        }
+            return null;
+        });
     }
 
     private void waitingSendResponse(CompletableFuture future, Message<?> message)
@@ -93,8 +109,9 @@ public class DefaultMessageHandler extends AbstractMessageHandler {
         } else {
             try {
                 future.get(sendTimeout, TimeUnit.MILLISECONDS);
-            } catch (TimeoutException te) {
-                throw new MessageTimeoutException(message, "Timeout waiting for response from Event Hub send", te);
+                log.debug("{} sent successfully in sync mode", message);
+            } catch (TimeoutException e) {
+                throw new MessageTimeoutException(message, "Timeout waiting for send event hub response", e);
             }
         }
     }
@@ -140,5 +157,14 @@ public class DefaultMessageHandler extends AbstractMessageHandler {
                     .setPartitionId(message.getHeaders().get(AzureHeaders.PARTITION_ID, Integer.class).toString());
         }
         return partitionSupplier;
+    }
+
+    private Map<String, Object> buildPropertiesMap() {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("sync", sync);
+        properties.put("sendTimeout", sendTimeoutExpression);
+        properties.put("destination", destination);
+
+        return properties;
     }
 }
