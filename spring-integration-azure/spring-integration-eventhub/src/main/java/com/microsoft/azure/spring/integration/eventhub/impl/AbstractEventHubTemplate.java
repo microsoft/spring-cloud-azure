@@ -25,9 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -49,10 +47,8 @@ public class AbstractEventHubTemplate {
     private EventHubMessageConverter messageConverter = new EventHubMessageConverter();
 
     @Getter
-    @Setter
     private StartPosition startPosition = StartPosition.LATEST;
 
-    @Setter
     @Getter
     private CheckpointConfig checkpointConfig = CheckpointConfig.builder().checkpointMode(CheckpointMode.BATCH).build();
 
@@ -83,6 +79,16 @@ public class AbstractEventHubTemplate {
         List<EventData> eventData = messages.stream().map(m -> messageConverter.fromMessage(m, EventData.class))
                                             .collect(Collectors.toList());
         return doSend(eventHubName, partitionSupplier, eventData);
+    }
+
+    public void setCheckpointConfig(CheckpointConfig checkpointConfig){
+        log.info("EventHubTemplate checkpoint config becomes: {}", checkpointConfig);
+        this.checkpointConfig = checkpointConfig;
+    }
+
+    public void setStartPosition(StartPosition startPosition){
+        log.info("EventHubTemplate startPosition becomes: {}", startPosition);
+        this.startPosition = startPosition;
     }
 
     private CompletableFuture<Void> doSend(String eventHubName, PartitionSupplier partitionSupplier,
@@ -121,6 +127,14 @@ public class AbstractEventHubTemplate {
                                           consumerGroup), t);
                               }
                           });
+    }
+
+    protected Map<String, Object> buildPropertiesMap(){
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("startPosition", this.startPosition);
+        properties.put("checkpointConfig", this.getCheckpointConfig());
+
+        return properties;
     }
 
 }

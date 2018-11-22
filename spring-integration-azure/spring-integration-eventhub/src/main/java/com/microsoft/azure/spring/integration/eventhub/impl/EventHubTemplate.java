@@ -9,6 +9,7 @@ package com.microsoft.azure.spring.integration.eventhub.impl;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,6 +21,7 @@ import java.util.function.Consumer;
  *
  * @author Warren Zhu
  */
+@Slf4j
 public class EventHubTemplate extends AbstractEventHubTemplate implements EventHubOperation {
 
     // Use this concurrent map as set since no concurrent set which has putIfAbsent
@@ -27,6 +29,7 @@ public class EventHubTemplate extends AbstractEventHubTemplate implements EventH
 
     public EventHubTemplate(EventHubClientFactory clientFactory) {
         super(clientFactory);
+        log.info("Started EventHubTemplate with properties: {}", buildPropertiesMap());
     }
 
     @Override
@@ -35,6 +38,7 @@ public class EventHubTemplate extends AbstractEventHubTemplate implements EventH
         if (subscribedNameAndGroup.putIfAbsent(Tuple.of(destination, consumerGroup), true) == null) {
             this.register(destination, consumerGroup,
                     new EventHubProcessor(consumer, messagePayloadType, getCheckpointConfig(), getMessageConverter()));
+            log.info("Consumer subscribed to destination '{}' with consumer group '{}'", destination, consumerGroup);
             return true;
         }
 
@@ -45,6 +49,7 @@ public class EventHubTemplate extends AbstractEventHubTemplate implements EventH
     public boolean unsubscribe(String destination, String consumerGroup) {
         if (subscribedNameAndGroup.remove(Tuple.of(destination, consumerGroup), true)) {
             unregister(destination, consumerGroup);
+            log.info("Consumer unsubscribed from destination '{}' with consumer group '{}'", destination, consumerGroup);
             return true;
         }
 

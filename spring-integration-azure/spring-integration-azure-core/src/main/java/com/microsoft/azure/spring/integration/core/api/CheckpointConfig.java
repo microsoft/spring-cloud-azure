@@ -8,6 +8,7 @@ package com.microsoft.azure.spring.integration.core.api;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Checkpoint related config
@@ -16,6 +17,7 @@ import lombok.Getter;
  */
 @Getter
 @Builder
+@ToString
 public class CheckpointConfig {
     private final CheckpointMode checkpointMode;
     /**
