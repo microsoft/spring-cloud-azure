@@ -49,7 +49,8 @@ public class EventHubTemplate extends AbstractEventHubTemplate implements EventH
     public boolean unsubscribe(String destination, String consumerGroup) {
         if (subscribedNameAndGroup.remove(Tuple.of(destination, consumerGroup), true)) {
             unregister(destination, consumerGroup);
-            log.info("Consumer unsubscribed from destination '{}' with consumer group '{}'", destination, consumerGroup);
+            log.info("Consumer unsubscribed from destination '{}' with consumer group '{}'", destination,
+                    consumerGroup);
             return true;
         }
 
