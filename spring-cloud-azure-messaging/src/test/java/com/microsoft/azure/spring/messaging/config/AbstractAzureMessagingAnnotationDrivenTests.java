@@ -169,7 +169,8 @@ public abstract class AbstractAzureMessagingAnnotationDrivenTests {
     @Component
     static class FullBean {
 
-        @AzureMessageListener(id = "listener1", containerFactory = "simpleFactory", destination = "queueIn", group = "group1", concurrency = "1-10")
+        @AzureMessageListener(id = "listener1", containerFactory = "simpleFactory", destination = "queueIn",
+                group = "group1", concurrency = "1-10")
         @SendTo("queueOut")
         public String fullHandle(String msg) {
             return "reply";
