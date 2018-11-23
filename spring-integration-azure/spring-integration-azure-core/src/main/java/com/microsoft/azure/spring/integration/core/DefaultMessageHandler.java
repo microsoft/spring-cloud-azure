@@ -116,6 +116,11 @@ public class DefaultMessageHandler extends AbstractMessageHandler {
         }
     }
 
+    public void setSync(boolean sync){
+        this.sync = sync;
+        log.info("DefaultMessageHandler sync becomes: {}", sync);
+    }
+
     public void setSendTimeout(long sendTimeout) {
         setSendTimeoutExpression(new ValueExpression<>(sendTimeout));
     }
@@ -123,6 +128,7 @@ public class DefaultMessageHandler extends AbstractMessageHandler {
     public void setSendTimeoutExpression(Expression sendTimeoutExpression) {
         Assert.notNull(sendTimeoutExpression, "'sendTimeoutExpression' must not be null");
         this.sendTimeoutExpression = sendTimeoutExpression;
+        log.info("DefaultMessageHandler syncTimeout becomes: {}", sendTimeoutExpression);
     }
 
     public void setPartitionKey(String partitionKey) {
