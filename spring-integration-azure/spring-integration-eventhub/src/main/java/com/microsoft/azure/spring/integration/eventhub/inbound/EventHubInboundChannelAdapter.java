@@ -8,8 +8,10 @@ package com.microsoft.azure.spring.integration.eventhub.inbound;
 
 import com.microsoft.azure.spring.integration.core.AbstractInboundChannelAdapter;
 import com.microsoft.azure.spring.integration.core.api.SubscribeByGroupOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 
+@Slf4j
 public class EventHubInboundChannelAdapter extends AbstractInboundChannelAdapter {
 
     public EventHubInboundChannelAdapter(String destination, SubscribeByGroupOperation subscribeByGroupOperation,
@@ -18,5 +20,6 @@ public class EventHubInboundChannelAdapter extends AbstractInboundChannelAdapter
         Assert.hasText(consumerGroup, "consumerGroup can't be null or empty");
         this.subscribeByGroupOperation = subscribeByGroupOperation;
         this.consumerGroup = consumerGroup;
+        log.info("Started EventHubInboundChannelAdapter with properties: {}", buildPropertiesMap());
     }
 }
