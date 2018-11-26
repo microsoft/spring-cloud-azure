@@ -38,7 +38,7 @@ class EventHubCheckpointManager {
             context.checkpoint(eventData).whenComplete((v, t) -> checkpointHandler(context, eventData, t));
         } else if (this.checkpointConfig.getCheckpointMode() == CheckpointMode.PARTITION_COUNT) {
             String partitionId = context.getPartitionId();
-            this.countByPartition.computeIfAbsent(partitionId, (k) -> new AtomicInteger(1));
+            this.countByPartition.computeIfAbsent(partitionId, (k) -> new AtomicInteger(0));
             AtomicInteger count = this.countByPartition.get(partitionId);
             if (count.incrementAndGet() >= checkpointConfig.getCheckpointCount()) {
                 context.checkpoint(eventData).whenComplete((v, t) -> checkpointHandler(context, eventData, t));
@@ -70,8 +70,10 @@ class EventHubCheckpointManager {
 
     private void checkpointHandler(PartitionContext context, EventData eventData, Throwable t) {
         if (t != null) {
-            log.warn(buildCheckpointFailMessage(context, eventData), t);
-        } else {
+            if (log.isWarnEnabled()) {
+                log.warn(buildCheckpointFailMessage(context, eventData), t);
+            }
+        } else if (log.isDebugEnabled()) {
             log.debug(buildCheckpointSuccessMessage(context, eventData));
         }
     }
