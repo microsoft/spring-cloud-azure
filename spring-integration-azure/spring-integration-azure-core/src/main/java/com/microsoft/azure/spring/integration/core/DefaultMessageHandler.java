@@ -86,12 +86,16 @@ public class DefaultMessageHandler extends AbstractMessageHandler {
     private void handleSendResponseAsync(Message<?> message, CompletableFuture<?> future) {
         future.handle((t, ex) -> {
             if (ex != null) {
-                log.warn("{} sent failed in async mode", message);
+                if (log.isWarnEnabled()) {
+                    log.warn("{} sent failed in async mode", message);
+                }
                 if (this.sendCallback != null) {
                     this.sendCallback.onFailure(ex);
                 }
             } else {
-                log.debug("{} sent successfully in async mode", message);
+                if (log.isDebugEnabled()) {
+                    log.debug("{} sent successfully in async mode", message);
+                }
                 if (this.sendCallback != null) {
                     this.sendCallback.onSuccess((Void) t);
                 }
@@ -109,14 +113,16 @@ public class DefaultMessageHandler extends AbstractMessageHandler {
         } else {
             try {
                 future.get(sendTimeout, TimeUnit.MILLISECONDS);
-                log.debug("{} sent successfully in sync mode", message);
+                if (log.isDebugEnabled()) {
+                    log.debug("{} sent successfully in sync mode", message);
+                }
             } catch (TimeoutException e) {
                 throw new MessageTimeoutException(message, "Timeout waiting for send event hub response", e);
             }
         }
     }
 
-    public void setSync(boolean sync){
+    public void setSync(boolean sync) {
         this.sync = sync;
         log.info("DefaultMessageHandler sync becomes: {}", sync);
     }

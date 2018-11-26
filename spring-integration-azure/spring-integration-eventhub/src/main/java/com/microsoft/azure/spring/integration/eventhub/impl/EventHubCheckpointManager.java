@@ -70,8 +70,10 @@ class EventHubCheckpointManager {
 
     private void checkpointHandler(PartitionContext context, EventData eventData, Throwable t) {
         if (t != null) {
-            log.warn(buildCheckpointFailMessage(context, eventData), t);
-        } else {
+            if (log.isWarnEnabled()) {
+                log.warn(buildCheckpointFailMessage(context, eventData), t);
+            }
+        } else if (log.isDebugEnabled()) {
             log.debug(buildCheckpointSuccessMessage(context, eventData));
         }
     }
