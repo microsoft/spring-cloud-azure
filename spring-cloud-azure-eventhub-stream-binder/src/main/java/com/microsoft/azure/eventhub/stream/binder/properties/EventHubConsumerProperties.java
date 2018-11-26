@@ -19,4 +19,5 @@ import lombok.Setter;
 public class EventHubConsumerProperties {
     private StartPosition startPosition = StartPosition.LATEST;
     private CheckpointMode checkpointMode = CheckpointMode.BATCH;
+    private int checkpointCount = 10;
 }
