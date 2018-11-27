@@ -16,5 +16,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ServiceBusConsumerProperties {
-    private CheckpointMode checkpointMode = CheckpointMode.BATCH;
+    private CheckpointMode checkpointMode = CheckpointMode.RECORD;
 }
