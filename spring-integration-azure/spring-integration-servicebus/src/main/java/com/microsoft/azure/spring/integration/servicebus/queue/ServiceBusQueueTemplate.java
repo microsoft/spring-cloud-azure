@@ -9,6 +9,7 @@ package com.microsoft.azure.spring.integration.servicebus.queue;
 import com.google.common.collect.Sets;
 import com.microsoft.azure.servicebus.IQueueClient;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
+import com.microsoft.azure.spring.integration.servicebus.ServiceBusMessageHandler;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusTemplate;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusQueueClientFactory;
@@ -79,7 +80,8 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
         private final IQueueClient queueClient;
 
         public QueueMessageHandler(Consumer<Message<U>> consumer, Class<U> payloadType, IQueueClient queueClient) {
-            super(consumer, payloadType);
+            super(consumer, payloadType, ServiceBusQueueTemplate.this.getCheckpointConfig(), ServiceBusQueueTemplate
+                    .this.getMessageConverter());
             this.queueClient = queueClient;
         }
 
@@ -91,6 +93,19 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
         @Override
         protected CompletableFuture<Void> failure(UUID uuid) {
             return queueClient.abandonAsync(uuid);
+        }
+
+        @Override
+        protected String buildCheckpointFailMessage(Message<?> message) {
+            String failMsg = "Failed to checkpoint %s in queue '%s'";
+            return String.format(failMsg, message, queueClient.getQueueName());
+        }
+
+        @Override
+        protected String buildCheckpointSuccessMessage(Message<?> message) {
+            String successMsg = "Checkpointed %s in queue '%s' in %s mode";
+            return String
+                    .format(successMsg, message, queueClient.getQueueName(), getCheckpointConfig().getCheckpointMode());
         }
     }
 }

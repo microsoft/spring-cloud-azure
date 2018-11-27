@@ -10,6 +10,7 @@ import com.google.common.collect.Sets;
 import com.microsoft.azure.servicebus.ISubscriptionClient;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
+import com.microsoft.azure.spring.integration.servicebus.ServiceBusMessageHandler;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusTemplate;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
@@ -81,7 +82,8 @@ public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicC
 
         public TopicMessageHandler(Consumer<Message<U>> consumer, Class<U> payloadType,
                 ISubscriptionClient subscriptionClient) {
-            super(consumer, payloadType);
+            super(consumer, payloadType, ServiceBusTopicTemplate.this.getCheckpointConfig(), ServiceBusTopicTemplate
+                    .this.getMessageConverter());
             this.subscriptionClient = subscriptionClient;
         }
 
@@ -93,6 +95,21 @@ public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicC
         @Override
         protected CompletableFuture<Void> failure(UUID uuid) {
             return subscriptionClient.abandonAsync(uuid);
+        }
+
+        @Override
+        protected String buildCheckpointFailMessage(Message<?> message) {
+            String failMsg = "Consumer group '%s' of topic '%s' failed to checkpoint %s";
+            return String.format(failMsg, subscriptionClient.getSubscriptionName(), subscriptionClient.getTopicName(),
+                    message);
+        }
+
+        @Override
+        protected String buildCheckpointSuccessMessage(Message<?> message) {
+            String successMsg = "Consumer group '%s' of topic '%s' checkpointed %s in %s mode";
+            return String
+                    .format(successMsg, subscriptionClient.getSubscriptionName(), subscriptionClient.getTopicName(),
+                            message, getCheckpointConfig().getCheckpointMode());
         }
     }
 }
