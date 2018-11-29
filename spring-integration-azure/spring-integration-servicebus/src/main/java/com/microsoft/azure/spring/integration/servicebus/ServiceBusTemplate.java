@@ -63,10 +63,10 @@ public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements Se
     }
 
     public void setCheckpointConfig(CheckpointConfig checkpointConfig) {
-        Assert.state(isValidCheckpointConfig(),
+        Assert.state(isValidCheckpointConfig(checkpointConfig),
                 "Only MANUAL or RECORD checkpoint mode is supported in ServiceBusTemplate");
         this.checkpointConfig = checkpointConfig;
-        log.info("ServiceBusTemplate checkpoint config becomes: {}", checkpointConfig);
+        log.info("ServiceBusTemplate checkpoint config becomes: {}", this.checkpointConfig);
     }
 
     private String getPartitionKey(PartitionSupplier partitionSupplier) {
@@ -85,7 +85,7 @@ public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements Se
         return "";
     }
 
-    private boolean isValidCheckpointConfig() {
+    private static boolean isValidCheckpointConfig(CheckpointConfig checkpointConfig) {
         return checkpointConfig.getCheckpointMode() == CheckpointMode.MANUAL ||
                 checkpointConfig.getCheckpointMode() == CheckpointMode.RECORD;
     }
