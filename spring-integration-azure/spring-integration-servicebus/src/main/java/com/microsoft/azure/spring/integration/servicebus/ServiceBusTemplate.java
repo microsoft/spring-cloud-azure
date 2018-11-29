@@ -64,7 +64,7 @@ public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements Se
 
     public void setCheckpointConfig(CheckpointConfig checkpointConfig) {
         Assert.state(isValidCheckpointConfig(),
-                "Only MANUAL or RECORD checkpoint mode supported in ServiceBusTemplate");
+                "Only MANUAL or RECORD checkpoint mode is supported in ServiceBusTemplate");
         this.checkpointConfig = checkpointConfig;
         log.info("ServiceBusTemplate checkpoint config becomes: {}", checkpointConfig);
     }

@@ -32,6 +32,8 @@ import java.util.function.Consumer;
 @Slf4j
 public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicClientFactory>
         implements ServiceBusTopicOperation {
+    private static final String MSG_FAIL_CHECKPOINT = "Consumer group '%s' of topic '%s' failed to checkpoint %s";
+    private static final String MSG_SUCCESS_CHECKPOINT = "Consumer group '%s' of topic '%s' checkpointed %s in %s mode";
     private Set<Tuple<String, String>> nameAndConsumerGroups = Sets.newConcurrentHashSet();
 
     public ServiceBusTopicTemplate(ServiceBusTopicClientFactory clientFactory) {
@@ -99,17 +101,14 @@ public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicC
 
         @Override
         protected String buildCheckpointFailMessage(Message<?> message) {
-            String failMsg = "Consumer group '%s' of topic '%s' failed to checkpoint %s";
-            return String.format(failMsg, subscriptionClient.getSubscriptionName(), subscriptionClient.getTopicName(),
-                    message);
+            return String.format(MSG_FAIL_CHECKPOINT, subscriptionClient.getSubscriptionName(),
+                    subscriptionClient.getTopicName(), message);
         }
 
         @Override
         protected String buildCheckpointSuccessMessage(Message<?> message) {
-            String successMsg = "Consumer group '%s' of topic '%s' checkpointed %s in %s mode";
-            return String
-                    .format(successMsg, subscriptionClient.getSubscriptionName(), subscriptionClient.getTopicName(),
-                            message, getCheckpointConfig().getCheckpointMode());
+            return String.format(MSG_SUCCESS_CHECKPOINT, subscriptionClient.getSubscriptionName(),
+                    subscriptionClient.getTopicName(), message, getCheckpointConfig().getCheckpointMode());
         }
     }
 }

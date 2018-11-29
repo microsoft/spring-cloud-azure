@@ -31,7 +31,8 @@ import java.util.function.Consumer;
 @Slf4j
 public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueClientFactory>
         implements ServiceBusQueueOperation {
-
+    private static final String MSG_FAIL_CHECKPOINT = "Failed to checkpoint %s in queue '%s'";
+    private static final String MSG_SUCCESS_CHECKPOINT = "Checkpointed %s in queue '%s' in %s mode";
     private final Set<String> subscribedQueues = Sets.newConcurrentHashSet();
 
     public ServiceBusQueueTemplate(ServiceBusQueueClientFactory clientFactory) {
@@ -97,15 +98,13 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
 
         @Override
         protected String buildCheckpointFailMessage(Message<?> message) {
-            String failMsg = "Failed to checkpoint %s in queue '%s'";
-            return String.format(failMsg, message, queueClient.getQueueName());
+            return String.format(MSG_FAIL_CHECKPOINT, message, queueClient.getQueueName());
         }
 
         @Override
         protected String buildCheckpointSuccessMessage(Message<?> message) {
-            String successMsg = "Checkpointed %s in queue '%s' in %s mode";
-            return String
-                    .format(successMsg, message, queueClient.getQueueName(), getCheckpointConfig().getCheckpointMode());
+            return String.format(MSG_SUCCESS_CHECKPOINT, message, queueClient.getQueueName(),
+                    getCheckpointConfig().getCheckpointMode());
         }
     }
 }
