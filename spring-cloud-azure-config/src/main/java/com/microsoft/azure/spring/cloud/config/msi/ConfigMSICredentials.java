@@ -44,7 +44,7 @@ public class ConfigMSICredentials extends AzureTokenCredentials {
     private final ConcurrentHashMap<String, MSIToken> cache = new ConcurrentHashMap<>();
     private final String resource;
     private AzureInstanceMetadataService metadataService;
-    private ConcurrentHashMap<String, String> tokenReqHeaders = new ConcurrentHashMap<>();
+    private ImmutableMap<String, String> tokenReqHeaders = ImmutableMap.of();
     private MSIType msiType;
 
     public ConfigMSICredentials() {
@@ -184,10 +184,10 @@ public class ConfigMSICredentials extends AzureTokenCredentials {
     private void setHeader(MSIType type) {
         switch (type) {
             case VM:
-                tokenReqHeaders.putAll(ImmutableMap.of("Metadata", "true"));
+                tokenReqHeaders = ImmutableMap.of("Metadata", "true");
                 break;
             case APP_SERVICE:
-                tokenReqHeaders.putAll(ImmutableMap.of("Secret", System.getenv("MSI_SECRET")));
+                tokenReqHeaders = ImmutableMap.of("Secret", System.getenv("MSI_SECRET"));
                 break;
             default:
                 break;

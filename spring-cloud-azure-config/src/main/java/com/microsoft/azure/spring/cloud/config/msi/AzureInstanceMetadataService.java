@@ -6,8 +6,12 @@
 package com.microsoft.azure.spring.cloud.config.msi;
 
 import org.springframework.util.Assert;
+import retrofit2.http.Url;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.URLEncoder;
 
 /**
@@ -52,9 +56,20 @@ public class AzureInstanceMetadataService {
     }
 
     public AzureInstanceMetadataService withTokenEndpoint(String endpoint) {
-        Assert.hasText(endpoint, "Endpoint should not be emtpy.");
+        Assert.isTrue(isValidUrl(endpoint), "Endpoint should be valid url.");
         this.tokenEndpoint = endpoint;
         return this;
+    }
+
+    private boolean isValidUrl(String urlString) {
+        try {
+            URL url = new URL(urlString);
+            url.toURI();
+        } catch (MalformedURLException | URISyntaxException e) {
+            return false;
+        }
+
+        return true;
     }
 
     public AzureInstanceMetadataService withObjectId(String objectId) {
