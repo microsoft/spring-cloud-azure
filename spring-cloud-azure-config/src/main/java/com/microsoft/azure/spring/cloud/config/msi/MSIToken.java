@@ -10,7 +10,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 /**
- * Type representing response from the local MSI token provider.
+ * Type representing response from the MSI token provider.
  */
 class MSIToken {
     private static DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeZone.UTC);
