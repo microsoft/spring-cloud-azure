@@ -82,9 +82,8 @@ public class ConfigMSICredentials extends AzureTokenCredentials {
             }
 
             token = retrieveTokenFromIDMSWithRetry(resource);
-            if (token != null) {
-                cache.put(resource, token);
-            }
+            cache.put(resource, token);
+
             return token.accessToken();
         } finally {
             lock.unlock();
@@ -172,8 +171,6 @@ public class ConfigMSICredentials extends AzureTokenCredentials {
 
     private AzureInstanceMetadataService getMetadataService(MSIType type) {
         switch (type) {
-            case VM:
-                return new AzureInstanceMetadataService();
             case APP_SERVICE:
                 return new AzureInstanceMetadataService().withTokenEndpoint(System.getenv("MSI_ENDPOINT"));
             default:
@@ -183,14 +180,11 @@ public class ConfigMSICredentials extends AzureTokenCredentials {
 
     private void setHeader(MSIType type) {
         switch (type) {
-            case VM:
-                tokenReqHeaders = ImmutableMap.of("Metadata", "true");
-                break;
             case APP_SERVICE:
                 tokenReqHeaders = ImmutableMap.of("Secret", System.getenv("MSI_SECRET"));
                 break;
             default:
-                break;
+                tokenReqHeaders = ImmutableMap.of("Metadata", "true");;
         }
     }
 }
