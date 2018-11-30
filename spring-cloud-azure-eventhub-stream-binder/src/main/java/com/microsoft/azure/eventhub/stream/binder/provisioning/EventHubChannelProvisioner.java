@@ -18,6 +18,7 @@ import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.cloud.stream.provisioning.ProvisioningException;
 import org.springframework.cloud.stream.provisioning.ProvisioningProvider;
+import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
 /**
@@ -30,7 +31,8 @@ public class EventHubChannelProvisioner implements
     private final ResourceManagerProvider resourceManagerProvider;
     private final String namespace;
 
-    public EventHubChannelProvisioner(ResourceManagerProvider resourceManagerProvider, String namespace) {
+    public EventHubChannelProvisioner(@NonNull ResourceManagerProvider resourceManagerProvider,
+                                      @NonNull String namespace) {
         Assert.hasText(namespace, "The namespace can't be null or empty");
         this.resourceManagerProvider = resourceManagerProvider;
         this.namespace = namespace;
