@@ -31,8 +31,6 @@ import javax.annotation.PostConstruct;
  */
 @Configuration
 @ConditionalOnMissingBean(Binder.class)
-@AutoConfigureBefore(TelemetryAutoConfiguration.class)
-@AutoConfigureAfter({AzureContextAutoConfiguration.class, AzureEventHubAutoConfiguration.class})
 @EnableConfigurationProperties({AzureEventHubProperties.class, EventHubExtendedBindingProperties.class})
 public class EventHubBinderConfiguration {
 
