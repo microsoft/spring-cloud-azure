@@ -14,10 +14,52 @@ import lombok.Setter;
 /**
  * @author Warren Zhu
  */
-@Getter
-@Setter
 public class EventHubConsumerProperties {
+    /**
+     * Whether the consumer receives messages from the beginning or end of event hub.
+     * If {@link StartPosition#EARLISET}, from beginning. If {@link StartPosition#LATEST}, from end.
+     * <p>
+     * Default: {@link StartPosition#LATEST}
+     */
     private StartPosition startPosition = StartPosition.LATEST;
+
+    /**
+     * Checkpoint mode used when consumer decide how to checkpoint message
+     * <p>
+     * Default: {@link CheckpointMode#BATCH}
+     */
     private CheckpointMode checkpointMode = CheckpointMode.BATCH;
+
+    /**
+     * Effectively only when {@link CheckpointMode#PARTITION_COUNT}.
+     * Decides the amount of message for each partition to do one checkpoint
+     *
+     * <p>
+     * Default : 10
+     */
     private int checkpointCount = 10;
+
+    public StartPosition getStartPosition() {
+        return startPosition;
+    }
+
+    public void setStartPosition(StartPosition startPosition) {
+        this.startPosition = startPosition;
+    }
+
+    public CheckpointMode getCheckpointMode() {
+        return checkpointMode;
+    }
+
+    public void setCheckpointMode(CheckpointMode checkpointMode) {
+        this.checkpointMode = checkpointMode;
+    }
+
+    public int getCheckpointCount() {
+        return checkpointCount;
+    }
+
+    public void setCheckpointCount(int checkpointCount) {
+        this.checkpointCount = checkpointCount;
+    }
 }

@@ -6,15 +6,26 @@
 
 package com.microsoft.azure.eventhub.stream.binder.properties;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * @author Warren Zhu
  */
-@Getter
-@Setter
 public class EventHubBindingProperties {
     private EventHubConsumerProperties consumer = new EventHubConsumerProperties();
     private EventHubProducerProperties producer = new EventHubProducerProperties();
+
+    public EventHubConsumerProperties getConsumer() {
+        return consumer;
+    }
+
+    public void setConsumer(EventHubConsumerProperties consumer) {
+        this.consumer = consumer;
+    }
+
+    public EventHubProducerProperties getProducer() {
+        return producer;
+    }
+
+    public void setProducer(EventHubProducerProperties producer) {
+        this.producer = producer;
+    }
 }
