@@ -32,7 +32,6 @@ public class AzureConfigBootstrapConfiguration {
 
     @Bean
     @Primary
-    @ConditionalOnMissingBean
     public AzureCloudConfigProperties initProperties(AzureCloudConfigProperties properties) {
         if (StringUtils.hasText(properties.getConnectionString())) {
             return properties;
