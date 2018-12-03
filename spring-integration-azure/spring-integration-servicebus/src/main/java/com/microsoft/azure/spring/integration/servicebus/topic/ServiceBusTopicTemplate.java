@@ -10,6 +10,7 @@ import com.google.common.collect.Sets;
 import com.microsoft.azure.servicebus.ISubscriptionClient;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
+import com.microsoft.azure.spring.integration.servicebus.ServiceBusMessageHandler;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusTemplate;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
@@ -31,6 +32,8 @@ import java.util.function.Consumer;
 @Slf4j
 public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicClientFactory>
         implements ServiceBusTopicOperation {
+    private static final String MSG_FAIL_CHECKPOINT = "Consumer group '%s' of topic '%s' failed to checkpoint %s";
+    private static final String MSG_SUCCESS_CHECKPOINT = "Consumer group '%s' of topic '%s' checkpointed %s in %s mode";
     private Set<Tuple<String, String>> nameAndConsumerGroups = Sets.newConcurrentHashSet();
 
     public ServiceBusTopicTemplate(ServiceBusTopicClientFactory clientFactory) {
@@ -81,7 +84,8 @@ public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicC
 
         public TopicMessageHandler(Consumer<Message<U>> consumer, Class<U> payloadType,
                 ISubscriptionClient subscriptionClient) {
-            super(consumer, payloadType);
+            super(consumer, payloadType, ServiceBusTopicTemplate.this.getCheckpointConfig(), ServiceBusTopicTemplate
+                    .this.getMessageConverter());
             this.subscriptionClient = subscriptionClient;
         }
 
@@ -93,6 +97,18 @@ public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicC
         @Override
         protected CompletableFuture<Void> failure(UUID uuid) {
             return subscriptionClient.abandonAsync(uuid);
+        }
+
+        @Override
+        protected String buildCheckpointFailMessage(Message<?> message) {
+            return String.format(MSG_FAIL_CHECKPOINT, subscriptionClient.getSubscriptionName(),
+                    subscriptionClient.getTopicName(), message);
+        }
+
+        @Override
+        protected String buildCheckpointSuccessMessage(Message<?> message) {
+            return String.format(MSG_SUCCESS_CHECKPOINT, subscriptionClient.getSubscriptionName(),
+                    subscriptionClient.getTopicName(), message, getCheckpointConfig().getCheckpointMode());
         }
     }
 }

@@ -13,8 +13,8 @@ import com.microsoft.azure.servicebus.IMessageHandler;
 import com.microsoft.azure.servicebus.IQueueClient;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
+import com.microsoft.azure.spring.integration.servicebus.ServiceBusMessageHandler;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
-import com.microsoft.azure.spring.integration.servicebus.ServiceBusTemplate;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusQueueClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueTemplate;
 import org.springframework.messaging.Message;
@@ -55,8 +55,7 @@ public class ServiceBusQueueTestOperation extends ServiceBusQueueTemplate {
     protected void internalSubscribe(String name, Consumer<Message<?>> consumer, Class<?> payloadType) {
         IQueueClient queueClient = this.senderFactory.getOrCreateClient(name);
 
-        ServiceBusTemplate.ServiceBusMessageHandler handler =
-                new QueueMessageHandler(consumer, payloadType, queueClient);
+        ServiceBusMessageHandler handler = new QueueMessageHandler(consumer, payloadType, queueClient);
 
         try {
             queueClient.registerMessageHandler(handler);

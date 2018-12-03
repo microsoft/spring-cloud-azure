@@ -9,6 +9,7 @@ package com.microsoft.azure.spring.integration.servicebus.queue;
 import com.google.common.collect.Sets;
 import com.microsoft.azure.servicebus.IQueueClient;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
+import com.microsoft.azure.spring.integration.servicebus.ServiceBusMessageHandler;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusTemplate;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusQueueClientFactory;
@@ -30,7 +31,8 @@ import java.util.function.Consumer;
 @Slf4j
 public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueClientFactory>
         implements ServiceBusQueueOperation {
-
+    private static final String MSG_FAIL_CHECKPOINT = "Failed to checkpoint %s in queue '%s'";
+    private static final String MSG_SUCCESS_CHECKPOINT = "Checkpointed %s in queue '%s' in %s mode";
     private final Set<String> subscribedQueues = Sets.newConcurrentHashSet();
 
     public ServiceBusQueueTemplate(ServiceBusQueueClientFactory clientFactory) {
@@ -79,7 +81,8 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
         private final IQueueClient queueClient;
 
         public QueueMessageHandler(Consumer<Message<U>> consumer, Class<U> payloadType, IQueueClient queueClient) {
-            super(consumer, payloadType);
+            super(consumer, payloadType, ServiceBusQueueTemplate.this.getCheckpointConfig(), ServiceBusQueueTemplate
+                    .this.getMessageConverter());
             this.queueClient = queueClient;
         }
 
@@ -91,6 +94,17 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
         @Override
         protected CompletableFuture<Void> failure(UUID uuid) {
             return queueClient.abandonAsync(uuid);
+        }
+
+        @Override
+        protected String buildCheckpointFailMessage(Message<?> message) {
+            return String.format(MSG_FAIL_CHECKPOINT, message, queueClient.getQueueName());
+        }
+
+        @Override
+        protected String buildCheckpointSuccessMessage(Message<?> message) {
+            return String.format(MSG_SUCCESS_CHECKPOINT, message, queueClient.getQueueName(),
+                    getCheckpointConfig().getCheckpointMode());
         }
     }
 }
