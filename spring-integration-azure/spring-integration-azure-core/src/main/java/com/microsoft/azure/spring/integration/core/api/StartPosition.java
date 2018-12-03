@@ -6,6 +6,20 @@
 
 package com.microsoft.azure.spring.integration.core.api;
 
+/**
+ * Whether the consumer receives messages from the beginning or end of destination
+ *
+ * @author Warren Zhu
+ */
 public enum StartPosition {
-    EARLISET, LATEST
+
+    /**
+     * Consumer receives messages from the beginning of destination
+     */
+    EARLIEST,
+
+    /**
+     * Consumer receives messages from the end of destination
+     */
+    LATEST
 }

@@ -86,7 +86,7 @@ public class EventHubPartitionBinderTests extends
         ExtendedConsumerProperties<EventHubConsumerProperties> properties =
                 new ExtendedConsumerProperties<>(new EventHubConsumerProperties());
         properties.setHeaderMode(HeaderMode.embeddedHeaders);
-        properties.getExtension().setStartPosition(StartPosition.EARLISET);
+        properties.getExtension().setStartPosition(StartPosition.EARLIEST);
         return properties;
     }
 

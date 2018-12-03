@@ -60,7 +60,7 @@ public class EventHubTestOperation extends EventHubTemplate {
 
         processorsByNameAndGroup.get(name).putIfAbsent(group, eventProcessor);
 
-        if (getStartPosition() == StartPosition.EARLISET) {
+        if (getStartPosition() == StartPosition.EARLIEST) {
             processorsByNameAndGroup.get(name).values().forEach(c -> {
                 try {
                     c.onEvents(partitionContextSupplier.get(), eventHubsByName.get(name));

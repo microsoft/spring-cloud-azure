@@ -15,7 +15,7 @@ import com.microsoft.azure.spring.integration.core.api.StartPosition;
 public class EventHubConsumerProperties {
     /**
      * Whether the consumer receives messages from the beginning or end of event hub.
-     * If {@link StartPosition#EARLISET}, from beginning. If {@link StartPosition#LATEST}, from end.
+     * If {@link StartPosition#EARLIEST}, from beginning. If {@link StartPosition#LATEST}, from end.
      * <p>
      * Default: {@link StartPosition#LATEST}
      */
