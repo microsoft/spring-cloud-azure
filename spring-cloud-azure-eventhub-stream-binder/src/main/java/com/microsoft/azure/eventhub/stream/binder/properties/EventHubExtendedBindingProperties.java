@@ -32,7 +32,6 @@ public class EventHubExtendedBindingProperties
         return this.bindings.computeIfAbsent(channelName, key -> new EventHubBindingProperties()).getProducer();
     }
 
-
     public String getCheckpointStorageAccount() {
         return checkpointStorageAccount;
     }
