@@ -8,6 +8,7 @@ package com.microsoft.azure.spring.cloud.config;
 import com.microsoft.azure.spring.cloud.config.msi.AzureConfigMSIConnector;
 import com.microsoft.azure.spring.cloud.config.msi.ConfigMSICredentials;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -92,6 +93,7 @@ public class AzureConfigBootstrapConfigurationTest {
         contextRunner.run(context -> {
                     try {
                         context.getBean(AzureCloudConfigProperties.class);
+                        Assert.fail("When using MSI auth, empty connection string should fail.");
                     } catch (Exception e) {
                         assertThat(context).getFailure().hasCauseInstanceOf(BeanInstantiationException.class);
                         assertThat(context).getFailure().hasStackTraceContaining("Connection string cannot be empty");

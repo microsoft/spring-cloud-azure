@@ -18,6 +18,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -43,6 +44,8 @@ public class AzureConfigBootstrapConfiguration {
         AzureConfigMSIConnector msiConnector = new AzureConfigMSIConnector(msiCredentials, keyResource);
         properties.setConnectionString(msiConnector.getConnection());
         properties.validateAndInit();
+
+        Assert.hasText(properties.getConnectionString(), "Connection string cannot be empty");
 
         return properties;
     }
