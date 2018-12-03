@@ -6,7 +6,6 @@
 package com.microsoft.azure.spring.cloud.config.msi;
 
 import org.springframework.util.Assert;
-import retrofit2.http.Url;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;

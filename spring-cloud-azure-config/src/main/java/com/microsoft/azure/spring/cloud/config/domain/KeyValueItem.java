@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.util.Date;
+import java.util.Map;
 
 @NoArgsConstructor
 @Getter
@@ -29,7 +30,7 @@ public class KeyValueItem {
     @JsonProperty("content_type")
     private String contentType;
 
-    private String[] tags;
+    private Map<String, String> tags;
 
     private boolean locked;
 
