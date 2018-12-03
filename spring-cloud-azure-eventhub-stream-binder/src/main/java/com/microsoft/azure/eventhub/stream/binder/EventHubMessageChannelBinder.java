@@ -85,13 +85,13 @@ public class EventHubMessageChannelBinder extends
     }
 
     @Override
-    public EventHubConsumerProperties getExtendedConsumerProperties(String channelName) {
-        return this.bindingProperties.getExtendedConsumerProperties(channelName);
+    public EventHubConsumerProperties getExtendedConsumerProperties(String destination) {
+        return this.bindingProperties.getExtendedConsumerProperties(destination);
     }
 
     @Override
-    public EventHubProducerProperties getExtendedProducerProperties(String channelName) {
-        return this.bindingProperties.getExtendedProducerProperties(channelName);
+    public EventHubProducerProperties getExtendedProducerProperties(String destination) {
+        return this.bindingProperties.getExtendedProducerProperties(destination);
     }
 
 }

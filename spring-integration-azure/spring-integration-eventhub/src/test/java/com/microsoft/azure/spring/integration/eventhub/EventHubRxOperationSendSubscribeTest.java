@@ -59,7 +59,7 @@ public class EventHubRxOperationSendSubscribeTest extends RxSendSubscribeByGroup
     public void testSendReceiveWithBatchCheckpointMode() {
         sendSubscribeOperation
                 .setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.BATCH).build());
-        sendSubscribeOperation.setStartPosition(StartPosition.EARLISET);
+        sendSubscribeOperation.setStartPosition(StartPosition.EARLIEST);
         Arrays.stream(messages).forEach(m -> sendSubscribeOperation.sendRx(destination, m));
         sendSubscribeOperation.subscribe(destination, consumerGroup, User.class).test()
                               .assertValueCount(messages.length).assertNoErrors();

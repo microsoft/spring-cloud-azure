@@ -59,7 +59,7 @@ public class AbstractEventHubTemplate {
     private static EventProcessorOptions buildEventProcessorOptions(StartPosition startPosition) {
         EventProcessorOptions options = EventProcessorOptions.getDefaultOptions();
 
-        if (startPosition == StartPosition.EARLISET) {
+        if (startPosition == StartPosition.EARLIEST) {
             options.setInitialPositionProvider((s) -> EventPosition.fromStartOfStream());
         } else /* StartPosition.LATEST */ {
             options.setInitialPositionProvider((s) -> EventPosition.fromEndOfStream());

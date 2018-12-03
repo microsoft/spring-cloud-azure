@@ -6,8 +6,6 @@
 
 package com.microsoft.azure.eventhub.stream.binder.properties;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.stream.binder.ExtendedBindingProperties;
 
@@ -17,8 +15,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author Warren Zhu
  */
-@Getter
-@Setter
 @ConfigurationProperties("spring.cloud.stream.eventhub")
 public class EventHubExtendedBindingProperties
         implements ExtendedBindingProperties<EventHubConsumerProperties, EventHubProducerProperties> {
@@ -34,5 +30,13 @@ public class EventHubExtendedBindingProperties
     @Override
     public EventHubProducerProperties getExtendedProducerProperties(String channelName) {
         return this.bindings.computeIfAbsent(channelName, key -> new EventHubBindingProperties()).getProducer();
+    }
+
+    public String getCheckpointStorageAccount() {
+        return checkpointStorageAccount;
+    }
+
+    public void setCheckpointStorageAccount(String checkpointStorageAccount) {
+        this.checkpointStorageAccount = checkpointStorageAccount;
     }
 }
