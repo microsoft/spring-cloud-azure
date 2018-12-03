@@ -16,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ConfigAcessKeys {
     @JsonProperty("value")
     private List<ConfigAccessKey> accessKeyList;
