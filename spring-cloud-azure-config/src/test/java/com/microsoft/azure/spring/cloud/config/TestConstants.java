@@ -26,6 +26,8 @@ public class TestConstants {
     public static final String TEST_ID = "fake-conn-id";
     public static final String TEST_SECRET = "ZmFrZS1jb25uLXNlY3JldA=="; // Base64 encoded from fake-conn-secret
 
+    public static final String MSI_TOKEN = "fake_token";
+
     public static final String TEST_CONTEXT = "/foo/";
     public static final String TEST_KEY_1 = "test_key_1";
     public static final String TEST_VALUE_1 = "test_value_1";

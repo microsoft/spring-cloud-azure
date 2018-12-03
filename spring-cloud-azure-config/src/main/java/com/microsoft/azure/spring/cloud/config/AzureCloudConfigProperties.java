@@ -5,11 +5,11 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import com.microsoft.azure.spring.cloud.config.msi.AzureCloudConfigMSIProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
@@ -32,7 +32,6 @@ public class AzureCloudConfigProperties {
 
     private boolean enabled = true;
 
-    @NotEmpty
     private String connectionString;
 
     @NotEmpty
@@ -58,6 +57,8 @@ public class AzureCloudConfigProperties {
 
     private boolean failFast = true;
 
+    private AzureCloudConfigMSIProperties msi;
+
     // Values extracted from connection string
     private String endpoint;
     private String id;
@@ -76,7 +77,11 @@ public class AzureCloudConfigProperties {
     }
 
     @PostConstruct
-    private void validateAndInit() {
+    public void validateAndInit() {
+        if (!StringUtils.hasText(connectionString)) {
+            return;
+        }
+
         String[] items = connectionString.split(CONN_STRING_SPLITTER);
         for (String item : items) {
             if (!StringUtils.hasText(item)) {
@@ -92,9 +97,5 @@ public class AzureCloudConfigProperties {
                 this.secret = item.substring(SECRET_PREFIX.length());
             }
         }
-
-        Assert.hasText(this.endpoint, String.format(NON_EMPTY_MSG, "Endpoint"));
-        Assert.hasText(this.id, String.format(NON_EMPTY_MSG, "Id"));
-        Assert.hasText(this.secret, String.format(NON_EMPTY_MSG, "Secret"));
     }
 }

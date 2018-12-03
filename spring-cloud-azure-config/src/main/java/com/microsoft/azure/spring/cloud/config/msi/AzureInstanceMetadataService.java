@@ -6,7 +6,6 @@
 package com.microsoft.azure.spring.cloud.config.msi;
 
 import org.springframework.util.Assert;
-import retrofit2.http.Url;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -16,9 +15,14 @@ import java.net.URLEncoder;
 
 /**
  * Wraps functions provided by Azure Instance Metadata Service(IMDS)
+ *
+ * REST endpoint URL and parameters are defined in below document:
+ * <pre>
+ * @see <a href="https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/how-to-use-vm-token#get-a-token-using-http">Get a token using HTTP<a/>
+ * </pre>
  */
 public class AzureInstanceMetadataService {
-    private String apiVersion = "2018-02-01-preview";
+    private String apiVersion = "2018-02-01";
     private String tokenEndpoint = "http://169.254.169.254/metadata/identity/oauth2/token";
     private String objectId;
     private String clientId;
@@ -33,8 +37,7 @@ public class AzureInstanceMetadataService {
 
             if (this.objectId != null) {
                 params.append(String.format("&object_id=%s", encodeFragment(this.objectId)));
-            }
-            if (this.clientId != null) {
+            } else if (this.clientId != null) {
                 params.append(String.format("&client_id=%s", encodeFragment(this.clientId)));
             }
         } catch (UnsupportedEncodingException e) {

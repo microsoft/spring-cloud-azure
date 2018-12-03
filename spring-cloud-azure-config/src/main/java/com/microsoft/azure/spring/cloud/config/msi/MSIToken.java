@@ -24,11 +24,11 @@ class MSIToken {
     @JsonProperty(value = "expires_on")
     private String expiresOn;
 
-    String accessToken() {
+    String getAccessToken() {
         return accessToken;
     }
 
-    String tokenType() {
+    String getTokenType() {
         return tokenType;
     }
 
