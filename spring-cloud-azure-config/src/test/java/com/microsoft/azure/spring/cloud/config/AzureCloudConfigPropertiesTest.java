@@ -38,13 +38,6 @@ public class AzureCloudConfigPropertiesTest {
     }
 
     @Test
-    public void connectionStringMustBeConfigured() {
-        this.contextRunner.withPropertyValues().run(context -> {
-            assertInvalidField(context, "connectionString");
-        });
-    }
-
-    @Test
     public void endpointMustExistInConnectionString() {
         testConnStringFields(NO_ENDPOINT_CONN_STRING, "Endpoint");
     }

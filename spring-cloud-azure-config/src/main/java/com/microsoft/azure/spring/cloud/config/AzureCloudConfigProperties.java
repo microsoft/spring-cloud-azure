@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
@@ -97,5 +98,9 @@ public class AzureCloudConfigProperties {
                 this.secret = item.substring(SECRET_PREFIX.length());
             }
         }
+
+        Assert.hasText(this.endpoint, String.format(NON_EMPTY_MSG, "Endpoint"));
+        Assert.hasText(this.id, String.format(NON_EMPTY_MSG, "Id"));
+        Assert.hasText(this.secret, String.format(NON_EMPTY_MSG, "Secret"));
     }
 }

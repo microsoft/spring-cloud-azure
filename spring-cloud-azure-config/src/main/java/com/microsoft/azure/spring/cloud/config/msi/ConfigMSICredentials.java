@@ -9,7 +9,6 @@ import com.google.common.collect.ImmutableMap;
 import com.microsoft.azure.AzureEnvironment;
 import com.microsoft.azure.credentials.AzureTokenCredentials;
 import com.microsoft.azure.serializer.AzureJacksonAdapter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
