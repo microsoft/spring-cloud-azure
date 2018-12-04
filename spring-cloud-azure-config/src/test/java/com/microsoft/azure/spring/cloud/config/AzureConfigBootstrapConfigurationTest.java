@@ -10,9 +10,7 @@ import com.microsoft.azure.spring.cloud.config.msi.ConfigMSICredentials;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -20,7 +18,6 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.beans.BeanInstantiationException;
-import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
@@ -38,9 +35,6 @@ public class AzureConfigBootstrapConfigurationTest {
     private static final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
             .withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING))
             .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class));
-
-    @Rule
-    public ExpectedException expected = ExpectedException.none();
 
     @Mock
     private ConfigMSICredentials msiCredentials;

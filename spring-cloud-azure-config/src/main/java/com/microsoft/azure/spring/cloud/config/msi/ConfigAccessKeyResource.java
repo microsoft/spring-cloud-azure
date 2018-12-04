@@ -8,7 +8,7 @@ package com.microsoft.azure.spring.cloud.config.msi;
 import org.springframework.util.Assert;
 
 /**
- * Class wraps the API key resource, which is used to retrieve access key data for the Azure Config Service.
+ * Config store access key resource in ARM, which provides access key data for the Azure Config Service.
  */
 public class ConfigAccessKeyResource {
     static final String ARM_ENDPONT = "https://management.azure.com/"; // Last slash is required
