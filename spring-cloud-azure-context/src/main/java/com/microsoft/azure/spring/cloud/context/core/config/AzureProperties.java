@@ -23,10 +23,8 @@ import javax.validation.constraints.NotEmpty;
 @ConfigurationProperties("spring.cloud.azure")
 public class AzureProperties implements CredentialSupplier {
 
-    @NotEmpty
     private String credentialFilePath;
 
-    @NotEmpty
     private String resourceGroup;
 
     private Region region = Region.US;
