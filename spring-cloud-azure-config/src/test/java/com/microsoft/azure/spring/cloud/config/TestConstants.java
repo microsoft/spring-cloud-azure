@@ -33,4 +33,7 @@ public class TestConstants {
     public static final String TEST_VALUE_2 = "test_value_2";
     public static final String TEST_KEY_3 = "test_key_3";
     public static final String TEST_VALUE_3 = "test_value_3";
+
+    public static final String TEST_SLASH_KEY = "test/slash/key";
+    public static final String TEST_SLASH_VALUE = "prop value for slashed key name";
 }

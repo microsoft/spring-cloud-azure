@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
@@ -62,5 +63,21 @@ public class AzureConfigPropertySourceTest {
         assertThat(propertySource.getProperty(TEST_KEY_1)).isEqualTo(TEST_VALUE_1);
         assertThat(propertySource.getProperty(TEST_KEY_2)).isEqualTo(TEST_VALUE_2);
         assertThat(propertySource.getProperty(TEST_KEY_3)).isEqualTo(TEST_VALUE_3);
+    }
+
+    @Test
+    public void testPropertyNameSlashConvertedToDots() {
+        KeyValueItem slashedProp = createItem(TEST_CONTEXT, TEST_SLASH_KEY, TEST_SLASH_VALUE);
+        when(operations.getKeys(anyString(), any())).thenReturn(Arrays.asList(slashedProp));
+
+        propertySource.initProperties();
+
+        String expectedKeyName = TEST_SLASH_KEY.replace('/', '.');
+        String[] actualKeyNames = propertySource.getPropertyNames();
+
+        assertThat(actualKeyNames.length).isEqualTo(1);
+        assertThat(actualKeyNames[0]).isEqualTo(expectedKeyName);
+        assertThat(propertySource.getProperty(TEST_SLASH_KEY)).isNull();
+        assertThat(propertySource.getProperty(expectedKeyName)).isEqualTo(TEST_SLASH_VALUE);
     }
 }
