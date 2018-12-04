@@ -9,9 +9,10 @@ package com.microsoft.azure.spring.cloud.autoconfigure.servicebus;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotEmpty;
+import javax.annotation.PostConstruct;
 
 /**
  * @author Warren Zhu
@@ -22,6 +23,15 @@ import javax.validation.constraints.NotEmpty;
 @ConfigurationProperties("spring.cloud.azure.servicebus")
 public class AzureServiceBusProperties {
 
-    @NotEmpty
     private String namespace;
+
+    private String connectionString;
+
+    @PostConstruct
+    public void validate() {
+        if (!StringUtils.hasText(namespace) && !StringUtils.hasText(connectionString)) {
+            throw new IllegalArgumentException("Either 'spring.cloud.azure.servicebus.namespace' or " +
+                    "'spring.cloud.azure.servicebus.connection-string' should be provided");
+        }
+    }
 }
