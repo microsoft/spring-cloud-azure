@@ -58,7 +58,7 @@ public abstract class AbstractAzureMessageConverter<T> implements AzureMessageCo
         Map<String, Object> mergedHeaders = new HashMap<>();
         mergedHeaders.putAll(buildCustomHeaders(azureMessage));
         mergedHeaders.putAll(headers);
-        return (Message<U>) internalToMessage(azureMessage, new MessageHeaders(mergedHeaders), targetPayloadClass);
+        return (Message<U>) internalToMessage(azureMessage, mergedHeaders, targetPayloadClass);
     }
 
     protected abstract byte[] getPayload(T azureMessage);
@@ -92,7 +92,7 @@ public abstract class AbstractAzureMessageConverter<T> implements AzureMessageCo
         return fromByte(toPayload(payload));
     }
 
-    private <U> Message<?> internalToMessage(T azureMessage, MessageHeaders headers, Class<U> targetPayloadClass) {
+    private <U> Message<?> internalToMessage(T azureMessage, Map<String, Object> headers, Class<U> targetPayloadClass) {
         byte[] payload = getPayload(azureMessage);
 
         if (targetPayloadClass.isInstance(azureMessage)) {

@@ -13,11 +13,13 @@ import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
 import com.microsoft.azure.spring.integration.storage.queue.converter.StorageQueueMessageConverter;
 import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueClientFactory;
+import com.microsoft.azure.spring.integration.storage.queue.util.StorageQueueHelper;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.queue.CloudQueue;
 import com.microsoft.azure.storage.queue.CloudQueueMessage;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
@@ -27,8 +29,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+@Slf4j
 public class StorageQueueTemplate implements StorageQueueOperation {
     private static final int DEFAULT_VISIBILITY_TIMEOUT_IN_SECONDS = 30;
+    private static final String MSG_FAIL_CHECKPOINT = "Failed to checkpoint %s in storage queue '%s'";
+    private static final String MSG_SUCCESS_CHECKPOINT = "Checkpointed %s in storage queue '%s' in %s mode";
     private final StorageQueueClientFactory storageQueueClientFactory;
     private final String storageAccountName;
 
@@ -37,21 +42,19 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     protected StorageQueueMessageConverter messageConverter = new StorageQueueMessageConverter();
 
     @Getter
-    @Setter
     private int visibilityTimeoutInSeconds = DEFAULT_VISIBILITY_TIMEOUT_IN_SECONDS;
 
     @Getter
-    @Setter
     private Class<?> messagePayloadType = byte[].class;
 
     @Getter
-    @Setter
     private CheckpointMode checkpointMode = CheckpointMode.RECORD;
 
     public StorageQueueTemplate(@NonNull StorageQueueClientFactory storageQueueClientFactory,
             String storageAccountName) {
         this.storageQueueClientFactory = storageQueueClientFactory;
         this.storageAccountName = storageAccountName;
+        log.info("StorageQueueTemplate started with properties {}", buildProperties());
     }
 
     @Override
@@ -74,6 +77,27 @@ public class StorageQueueTemplate implements StorageQueueOperation {
         return this.receiveAsync(queueName, visibilityTimeoutInSeconds);
     }
 
+    @Override
+    public void setCheckpointMode(CheckpointMode checkpointMode) {
+        Assert.state(isValidCheckpointMode(checkpointMode),
+                "Only MANUAL or RECORD checkpoint mode is supported in StorageQueueTemplate");
+        this.checkpointMode = checkpointMode;
+        log.info("StorageQueueTemplate checkpoint mode becomes: {}", this.checkpointMode);
+    }
+
+    @Override
+    public void setMessagePayloadType(Class<?> payloadType) {
+        this.messagePayloadType = payloadType;
+        log.info("StorageQueueTemplate messagePayloadType becomes: {}", this.messagePayloadType);
+    }
+
+    @Override
+    public void setVisibilityTimeoutInSeconds(int timeout) {
+        Assert.state(timeout > 0, "VisibilityTimeoutInSeconds should be positive");
+        this.visibilityTimeoutInSeconds = timeout;
+        log.info("StorageQueueTemplate VisibilityTimeoutInSeconds becomes: {}", this.visibilityTimeoutInSeconds);
+    }
+
     private CompletableFuture<Message<?>> receiveAsync(String queueName, int visibilityTimeoutInSeconds) {
         Assert.hasText(queueName, "queueName can't be null or empty");
 
@@ -93,7 +117,7 @@ public class StorageQueueTemplate implements StorageQueueOperation {
         Checkpointer checkpointer = new AzureCheckpointer(() -> checkpoint(cloudQueue, cloudQueueMessage));
 
         if (checkpointMode == CheckpointMode.RECORD) {
-            checkpointer.success();
+            checkpointer.success().whenComplete((v, t) -> checkpointHandler(cloudQueueMessage, queueName, t));
         } else if (checkpointMode == CheckpointMode.MANUAL) {
             headers.put(AzureHeaders.CHECKPOINTER, checkpointer);
         }
@@ -112,5 +136,39 @@ public class StorageQueueTemplate implements StorageQueueOperation {
                 throw new StorageQueueRuntimeException("Failed to checkpoint message from storage queue", e);
             }
         });
+    }
+
+    private Map<String, Object> buildProperties() {
+        Map<String, Object> properties = new HashMap<>();
+
+        properties.put("storageAccount", this.storageAccountName);
+        properties.put("visibilityTimeout", this.visibilityTimeoutInSeconds);
+        properties.put("messagePayloadType", this.messagePayloadType);
+        properties.put("checkpointMode", this.checkpointMode);
+
+        return properties;
+    }
+
+    private boolean isValidCheckpointMode(CheckpointMode checkpointMode) {
+        return checkpointMode == CheckpointMode.MANUAL || checkpointMode == CheckpointMode.RECORD;
+    }
+
+    private void checkpointHandler(CloudQueueMessage message, String queueName, Throwable t) {
+        if (t != null) {
+            if (log.isWarnEnabled()) {
+                log.warn(buildCheckpointFailMessage(message, queueName), t);
+            }
+        } else if (log.isDebugEnabled()) {
+            log.debug(buildCheckpointSuccessMessage(message, queueName));
+        }
+    }
+
+    private String buildCheckpointFailMessage(CloudQueueMessage cloudQueueMessage, String queueName) {
+        return String.format(MSG_FAIL_CHECKPOINT, StorageQueueHelper.toString(cloudQueueMessage), queueName);
+    }
+
+    private String buildCheckpointSuccessMessage(CloudQueueMessage cloudQueueMessage, String queueName) {
+        return String.format(MSG_SUCCESS_CHECKPOINT, StorageQueueHelper.toString(cloudQueueMessage), queueName,
+                checkpointMode);
     }
 }

@@ -6,7 +6,7 @@
 
 package com.example;
 
-import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
+import com.microsoft.azure.spring.integration.core.DefaultMessageHandler;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +54,7 @@ public class TopicSendController {
     @Bean
     @ServiceActivator(inputChannel = OUTPUT_CHANNEL)
     public MessageHandler topicMessageSender(ServiceBusTopicOperation topicOperation) {
-        AzureMessageHandler handler = new AzureMessageHandler(TOPIC_NAME, topicOperation);
+        DefaultMessageHandler handler = new DefaultMessageHandler(TOPIC_NAME, topicOperation);
         handler.setSendCallback(new ListenableFutureCallback<Void>() {
             @Override
             public void onSuccess(Void result) {

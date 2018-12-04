@@ -2,7 +2,7 @@
 
 This code sample demonstrates how to read and write files with the Spring Resource abstraction for Azure Storage using
 the
-link:../../spring-cloud-azure-starters/spring-azure-starter-storage[Spring Cloud Azure Storage Starter].Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
+link:../../spring-cloud-azure-starters/spring-starter-azure-storage[Spring Cloud Azure Storage Starter].Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
 
 Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
 
@@ -12,7 +12,7 @@ Maven coordinates:
 ----
 <dependency>
     <groupId>com.microsoft.azure</groupId>
-    <artifactId>spring-azure-starter-storage</artifactId>
+    <artifactId>spring-starter-azure-storage</artifactId>
 </dependency>
 ----
 
@@ -21,7 +21,7 @@ Gradle coordinates:
 [source]
 ----
 dependencies {
-    compile group: 'com.microsoft.azure', name: 'spring-azure-starter-storage'
+    compile group: 'com.microsoft.azure', name: 'spring-starter-azure-storage'
 }
 ----
 

@@ -6,7 +6,7 @@
 
 package com.microsoft.azure.spring.integration.servicebus;
 
-import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
+import com.microsoft.azure.spring.integration.core.DefaultMessageHandler;
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueOperation;
 import com.microsoft.azure.spring.integration.test.support.MessageHandlerTest;
@@ -31,6 +31,9 @@ public class ServiceBusMessageHandlerTest extends MessageHandlerTest<ServiceBusQ
         this.sendOperation = mock(ServiceBusQueueOperation.class);
         when(this.sendOperation.sendAsync(eq(this.destination), isA(Message.class), isA(PartitionSupplier.class)))
                 .thenReturn(future);
-        this.handler = new AzureMessageHandler(this.destination, this.sendOperation);
+        when(this.sendOperation
+                .sendAsync(eq(this.dynamicDestination), isA(Message.class), isA(PartitionSupplier.class)))
+                .thenReturn(future);
+        this.handler = new DefaultMessageHandler(this.destination, this.sendOperation);
     }
 }

@@ -15,7 +15,7 @@ import com.microsoft.azure.spring.cloud.autoconfigure.eventhub.AzureEventHubProp
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
-import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -31,8 +31,6 @@ import javax.annotation.PostConstruct;
  */
 @Configuration
 @ConditionalOnMissingBean(Binder.class)
-@AutoConfigureBefore(TelemetryAutoConfiguration.class)
-@AutoConfigureAfter({AzureContextAutoConfiguration.class, AzureEventHubAutoConfiguration.class})
 @EnableConfigurationProperties({AzureEventHubProperties.class, EventHubExtendedBindingProperties.class})
 public class EventHubBinderConfiguration {
 

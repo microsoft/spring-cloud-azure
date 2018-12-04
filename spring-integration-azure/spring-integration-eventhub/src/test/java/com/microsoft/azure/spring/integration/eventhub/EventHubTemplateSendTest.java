@@ -8,6 +8,10 @@ package com.microsoft.azure.spring.integration.eventhub;
 
 import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.eventhubs.PartitionSender;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
+import com.microsoft.azure.spring.integration.eventhub.impl.EventHubRuntimeException;
+import com.microsoft.azure.spring.integration.eventhub.impl.EventHubTemplate;
 import com.microsoft.azure.spring.integration.test.support.SendOperationTest;
 import org.junit.Before;
 import org.junit.runner.RunWith;

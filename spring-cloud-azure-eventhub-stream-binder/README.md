@@ -83,12 +83,12 @@ Name | Description | Required | Default
  
  #### Event Hub Consumer Properties ####
 
-  It supports the following configurations with the format of `spring.cloud.stream.eventhub.bindings.<channelName>
-  .consumer`.
+  It supports the following configurations with the format of `spring.cloud.stream.eventhub.bindings.<channelName>.consumer`.
 
   **_startPosition_**
 
-  Whether the consumer receives messages from the beginning or end of event hub. if `EAELIEST`, from beginning. If `LATEST`, from end.
+  Whether the consumer receives messages from the beginning or end of event hub. if `EARLIEST`, from beginning. If 
+  `LATEST`, from end.
 
   Default: `LATEST`
 

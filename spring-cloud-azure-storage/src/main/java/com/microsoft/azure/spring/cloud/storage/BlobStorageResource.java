@@ -11,7 +11,6 @@ import com.microsoft.azure.storage.blob.CloudBlobClient;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
 
@@ -27,32 +26,34 @@ import java.net.URL;
  * @author Warren Zhu
  */
 @Slf4j
-public class BlobStorageResource extends AbstractResource implements WritableResource {
-
+public class BlobStorageResource extends AzureStorageResource {
+    private static final String MSG_FAIL_GET = "Failed to get blob or container";
+    private static final String MSG_FAIL_OPEN_OUTPUT = "Failed to open output stream of cloud blob";
+    private static final String MSG_FAIL_CHECK_EXIST = "Failed to check existence of blob or container";
+    private static final String MSG_FAIL_OPEN_INPUT = "Failed to open input stream of blob";
     private final CloudBlobClient blobClient;
     private final String location;
     private final CloudBlobContainer blobContainer;
     private final CloudBlockBlob blockBlob;
     private final boolean autoCreateFiles;
 
-    public BlobStorageResource(CloudBlobClient blobClient, String location) {
+    BlobStorageResource(CloudBlobClient blobClient, String location) {
         this(blobClient, location, false);
     }
 
-    public BlobStorageResource(CloudBlobClient blobClient, String location, boolean autoCreateFiles) {
+    BlobStorageResource(CloudBlobClient blobClient, String location, boolean autoCreateFiles) {
+        assertIsAzureStorageLocation(location);
         this.autoCreateFiles = autoCreateFiles;
-        AzureStorageUtils.isAzureStorageResource(location);
         this.blobClient = blobClient;
         this.location = location;
 
         try {
-            this.blobContainer = blobClient.getContainerReference(AzureStorageUtils.getContainerName(location));
-            this.blockBlob = blobContainer.getBlockBlobReference(AzureStorageUtils.getBlobName(location));
+            this.blobContainer = blobClient.getContainerReference(getContainerName(location));
+            this.blockBlob = blobContainer.getBlockBlobReference(getFileName(location));
         } catch (URISyntaxException | StorageException e) {
-            log.error("Failed to get cloud blob or container ", e);
-            throw new RuntimeException("Failed to get cloud blob or container", e);
+            log.error(MSG_FAIL_GET, e);
+            throw new StorageRuntimeException(MSG_FAIL_GET, e);
         }
-
     }
 
     @Override
@@ -67,8 +68,8 @@ public class BlobStorageResource extends AbstractResource implements WritableRes
             }
             return this.blockBlob.openOutputStream();
         } catch (StorageException e) {
-            log.error("Failed to open output stream of cloud blob", e);
-            throw new IOException("Failed to open output stream of cloud blob");
+            log.error(MSG_FAIL_OPEN_OUTPUT, e);
+            throw new IOException(MSG_FAIL_OPEN_OUTPUT, e);
         }
     }
 
@@ -77,8 +78,8 @@ public class BlobStorageResource extends AbstractResource implements WritableRes
         try {
             return this.blobContainer.exists() && blockBlob.exists();
         } catch (StorageException e) {
-            log.error("Failed to check existence of cloud blob or container", e);
-            return false;
+            log.error(MSG_FAIL_CHECK_EXIST, e);
+            throw new StorageRuntimeException(MSG_FAIL_CHECK_EXIST, e);
         }
     }
 
@@ -120,20 +121,25 @@ public class BlobStorageResource extends AbstractResource implements WritableRes
 
     @Override
     public String getDescription() {
-        return String.format("Azure storage account block blob resource [container='%s', blob='%s']",
-                this.blobContainer.getName(), this.blockBlob.getName());
+        return String
+                .format("Azure storage account blob resource [container='%s', blob='%s']", this.blobContainer.getName(),
+                        this.blockBlob.getName());
     }
 
     @Override
     public InputStream getInputStream() throws IOException {
-
         try {
             assertExisted();
             return this.blockBlob.openInputStream();
         } catch (StorageException e) {
-            log.error("Failed to open input stream of cloud blob", e);
-            throw new IOException("Failed to open input stream of cloud blob");
+            log.error(MSG_FAIL_OPEN_INPUT, e);
+            throw new IOException(MSG_FAIL_OPEN_INPUT);
         }
+    }
+
+    @Override
+    StorageType getStorageType() {
+        return StorageType.BLOB;
     }
 
     private void assertExisted() throws FileNotFoundException {
