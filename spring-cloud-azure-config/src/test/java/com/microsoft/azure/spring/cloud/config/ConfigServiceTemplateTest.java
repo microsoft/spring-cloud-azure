@@ -12,7 +12,6 @@ import com.microsoft.azure.spring.cloud.config.mock.MockCloseableHttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.message.BasicStatusLine;
 import org.junit.Before;
