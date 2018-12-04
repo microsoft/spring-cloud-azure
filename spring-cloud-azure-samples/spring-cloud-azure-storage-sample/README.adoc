@@ -63,8 +63,9 @@ spring.cloud.azure.resource-group=[resource-group]
 
 spring.cloud.azure.storage.account=[account-name]
 
-# Change into your containerName and blobName
-blob=blob://containerName/blobName
+# Change into your containerName, blobName and fileName
+blob=azure-blob://containerName/blobName
+file=azure-file://containerName/fileName
 ....
 
 6. Start the `StorageApplication` Spring Boot app.
@@ -76,13 +77,15 @@ $ mvn spring-boot:run
 7. Send a POST request to update file contents:
 +
 ```
-$ curl -d 'new message' -H 'Content-Type: text/plain' localhost:8080
+$ curl -d 'new message' -H 'Content-Type: text/plain' localhost:8080/blob
+$ curl -d 'new message' -H 'Content-Type: text/plain' localhost:8080/file
 ```
 +
 Verify by sending a GET request
 +
 ```
-$ curl -XGET http://localhost:8080/
+$ curl -XGET http://localhost:8080/blob
+$ curl -XGET http://localhost:8080/file
 ```
 
 8. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
