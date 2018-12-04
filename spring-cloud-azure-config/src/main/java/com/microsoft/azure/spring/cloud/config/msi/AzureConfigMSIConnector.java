@@ -19,6 +19,9 @@ import java.util.Optional;
 
 import static com.microsoft.azure.spring.cloud.config.msi.ConfigAccessKeyResource.ARM_ENDPONT;
 
+/**
+ * Get connection string for configured config store from ARM with MSI access token.
+ */
 public class AzureConfigMSIConnector {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigMSIConnector.class);
     private static final String CONN_STRING = "Endpoint=https://%s.azconfig.io;Id=%s;Secret=%s";
