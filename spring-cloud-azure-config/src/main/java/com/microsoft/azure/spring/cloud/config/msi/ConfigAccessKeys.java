@@ -27,6 +27,7 @@ public class ConfigAccessKeys {
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 class ConfigAccessKey {
+    private String connectionString;
     private String id;
     private String value;
     private boolean readOnly;

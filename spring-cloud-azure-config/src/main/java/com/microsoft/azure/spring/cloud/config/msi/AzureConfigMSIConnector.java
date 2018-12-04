@@ -65,28 +65,20 @@ public class AzureConfigMSIConnector {
             }
 
             ConfigAccessKeys result = mapper.readValue(response.getEntity().getContent(), ConfigAccessKeys.class);
-            return buildConnectionString(configStoreName, result);
+            return getConnString(configStoreName, result);
         } catch (Exception e) {
             throw new IllegalStateException(String.format("Failed to retrieve access key " +
                     "for configuration store %s.", configStoreName), e);
         }
     }
 
-    private static String buildConnectionString(String configStoreName, ConfigAccessKeys result) {
+    private static String getConnString(String configStoreName, ConfigAccessKeys result) {
         Optional<ConfigAccessKey> keyOptional = result.getAccessKeyList().stream().findFirst();
-        Assert.isTrue(keyOptional.isPresent(), String.format("Access key  should exist for configuration store %s",
+        Assert.isTrue(keyOptional.isPresent(), String.format("Access key should exist for configuration store %s",
                 configStoreName));
 
         ConfigAccessKey key = keyOptional.get();
-        validateAccessKey(key, configStoreName);
 
-        return String.format(CONN_STRING, configStoreName, key.getId(), key.getValue());
-    }
-
-    private static void validateAccessKey(ConfigAccessKey key, String configStoreName) {
-        Assert.hasText(key.getId(), String.format("Access key  should have non empty id for config store %s.",
-                configStoreName));
-        Assert.hasText(key.getValue(), String.format("Access key should have non empty secret value for config store %s.",
-                configStoreName));
+        return key.getConnectionString();
     }
 }
