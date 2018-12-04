@@ -11,7 +11,7 @@ import org.springframework.util.Assert;
  * Config store access key resource in ARM, which provides access key data for the Azure Config Service.
  */
 public class ConfigAccessKeyResource {
-    static final String ARM_ENDPONT = "https://management.azure.com/"; // Last slash is required
+    static final String ARM_ENDPONT = "https://management.azure.com";
     private static final String CONFIG_RESOURCE_VERSION = "2018-02-01-preview";
     private static final String RESOURCE_ID_URL = "%s/subscriptions/%s/resourceGroups/%s/providers" +
             "/Microsoft.Azconfig/configurationStores/%s/listKeys?api-version=%s";

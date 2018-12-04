@@ -24,7 +24,6 @@ import static com.microsoft.azure.spring.cloud.config.msi.ConfigAccessKeyResourc
  */
 public class AzureConfigMSIConnector {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigMSIConnector.class);
-    private static final String CONN_STRING = "Endpoint=https://%s.azconfig.io;Id=%s;Secret=%s";
 
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final CloseableHttpClient HTTP_CLIENT = HttpClients.createDefault();
