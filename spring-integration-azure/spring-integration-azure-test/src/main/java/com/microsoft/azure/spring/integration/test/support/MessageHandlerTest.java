@@ -8,7 +8,7 @@ package com.microsoft.azure.spring.integration.test.support;
 
 import com.google.common.collect.ImmutableMap;
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
-import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
+import com.microsoft.azure.spring.integration.core.DefaultMessageHandler;
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
 import com.microsoft.azure.spring.integration.core.api.SendOperation;
 import org.junit.Test;
@@ -31,8 +31,9 @@ public abstract class MessageHandlerTest<O extends SendOperation> {
 
     protected O sendOperation;
 
-    protected AzureMessageHandler handler;
+    protected DefaultMessageHandler handler;
     protected String destination = "dest";
+    protected String dynamicDestination = "dynamicName";
     protected CompletableFuture<Void> future = new CompletableFuture<>();
     private Message<?> message =
             new GenericMessage<>("testPayload", ImmutableMap.of("key1", "value1", "key2", "value2"));
@@ -51,12 +52,11 @@ public abstract class MessageHandlerTest<O extends SendOperation> {
     @Test
     @SuppressWarnings("unchecked")
     public void testSendDynamicTopic() {
-        String dynamicEventHubName = "dynamicName";
         Message<?> dynamicMessage =
-                new GenericMessage<>(payload, ImmutableMap.of(AzureHeaders.NAME, dynamicEventHubName));
+                new GenericMessage<>(payload, ImmutableMap.of(AzureHeaders.NAME, dynamicDestination));
         this.handler.handleMessage(dynamicMessage);
         verify(this.sendOperation, times(1))
-                .sendAsync(eq(dynamicEventHubName), isA(Message.class), isA(PartitionSupplier.class));
+                .sendAsync(eq(dynamicDestination), isA(Message.class), isA(PartitionSupplier.class));
     }
 
     @Test

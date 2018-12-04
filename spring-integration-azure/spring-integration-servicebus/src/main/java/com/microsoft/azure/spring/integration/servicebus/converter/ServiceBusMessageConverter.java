@@ -8,6 +8,7 @@ package com.microsoft.azure.spring.integration.servicebus.converter;
 
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.Message;
+import com.microsoft.azure.spring.integration.core.AzureHeaders;
 import com.microsoft.azure.spring.integration.core.converter.AbstractAzureMessageConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.MessageHeaders;
@@ -15,6 +16,7 @@ import org.springframework.util.InvalidMimeTypeException;
 import org.springframework.util.MimeType;
 import org.springframework.util.StringUtils;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -66,10 +68,10 @@ public class ServiceBusMessageConverter extends AbstractAzureMessageConverter<IM
     }
 
     @Override
-    protected MessageHeaders buildCustomHeaders(IMessage serviceBusMessage) {
+    protected Map<String, Object> buildCustomHeaders(IMessage serviceBusMessage) {
         Map<String, Object> headers = new HashMap<>();
 
-        headers.put(MessageHeaders.ID, UUID.fromString(serviceBusMessage.getMessageId()));
+        headers.put(AzureHeaders.RAW_ID, UUID.fromString(serviceBusMessage.getMessageId()));
 
         try {
             MimeType mimeType = MimeType.valueOf(serviceBusMessage.getContentType());
@@ -82,6 +84,6 @@ public class ServiceBusMessageConverter extends AbstractAzureMessageConverter<IM
             headers.put(MessageHeaders.REPLY_CHANNEL, serviceBusMessage.getReplyTo());
         }
 
-        return new MessageHeaders(headers);
+        return Collections.unmodifiableMap(headers);
     }
 }

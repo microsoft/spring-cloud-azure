@@ -27,10 +27,12 @@ import org.springframework.util.Assert;
 import org.springframework.util.MimeTypeUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -59,6 +61,9 @@ public class ServiceBusPartitionBinderTests extends
     public void setUp() {
         when(this.clientFactory.getOrCreateSubscriptionClient(anyString(), anyString()))
                 .thenReturn(this.subscriptionClient);
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        future.complete(null);
+        when(this.subscriptionClient.completeAsync(any())).thenReturn(future);
         this.binder = new ServiceBusTopicTestBinder(new ServiceBusTopicTestOperation(this.clientFactory));
     }
 

@@ -16,6 +16,5 @@ import lombok.Setter;
 @Setter
 public class ServiceBusProducerProperties {
     private boolean sync = false;
-
     private long sendTimeout = 10000;
 }

@@ -13,6 +13,7 @@ import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import com.microsoft.azure.spring.integration.eventhub.support.EventHubTestOperation;
 import com.microsoft.azure.spring.integration.test.support.SendSubscribeByGroupOperationTest;
 import com.microsoft.azure.spring.integration.test.support.pojo.User;
@@ -66,7 +67,7 @@ public class EventHubOperationSendSubscribeTest extends SendSubscribeByGroupOper
     public void testSendReceiveWithBatchCheckpointMode() {
         sendSubscribeOperation
                 .setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.BATCH).build());
-        sendSubscribeOperation.setStartPosition(StartPosition.EARLISET);
+        sendSubscribeOperation.setStartPosition(StartPosition.EARLIEST);
         messages.forEach(m -> sendSubscribeOperation.sendAsync(destination, m));
         sendSubscribeOperation.subscribe(destination, consumerGroup, this::batchCheckpointHandler, User.class);
         verifyCheckpointBatchSuccessCalled(1);

@@ -6,13 +6,12 @@
 
 package com.microsoft.azure.spring.integration.servicebus;
 
-import com.microsoft.azure.servicebus.ExceptionPhase;
 import com.microsoft.azure.servicebus.IMessage;
-import com.microsoft.azure.servicebus.IMessageHandler;
 import com.microsoft.azure.servicebus.MessageHandlerOptions;
-import com.microsoft.azure.spring.integration.core.AzureCheckpointer;
-import com.microsoft.azure.spring.integration.core.AzureHeaders;
-import com.microsoft.azure.spring.integration.core.api.*;
+import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
+import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
+import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
+import com.microsoft.azure.spring.integration.core.api.SendOperation;
 import com.microsoft.azure.spring.integration.servicebus.converter.ServiceBusMessageConverter;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusSenderFactory;
 import lombok.Getter;
@@ -20,16 +19,11 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 /**
  * Azure service bus template to support send {@link Message} asynchronously
@@ -41,7 +35,6 @@ public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements Se
     protected final T senderFactory;
     protected final MessageHandlerOptions options = new MessageHandlerOptions(1, false, Duration.ofMinutes(5));
 
-    @Setter
     @Getter
     protected CheckpointConfig checkpointConfig =
             CheckpointConfig.builder().checkpointMode(CheckpointMode.RECORD).build();
@@ -52,6 +45,7 @@ public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements Se
 
     public ServiceBusTemplate(@NonNull T senderFactory) {
         this.senderFactory = senderFactory;
+        log.info("Started ServiceBusTemplate with properties: {}", checkpointConfig);
     }
 
     @Override
@@ -66,6 +60,13 @@ public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements Se
         }
 
         return this.senderFactory.getOrCreateSender(destination).sendAsync(serviceBusMessage);
+    }
+
+    public void setCheckpointConfig(CheckpointConfig checkpointConfig) {
+        Assert.state(isValidCheckpointConfig(checkpointConfig),
+                "Only MANUAL or RECORD checkpoint mode is supported in ServiceBusTemplate");
+        this.checkpointConfig = checkpointConfig;
+        log.info("ServiceBusTemplate checkpoint config becomes: {}", this.checkpointConfig);
     }
 
     private String getPartitionKey(PartitionSupplier partitionSupplier) {
@@ -84,43 +85,8 @@ public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements Se
         return "";
     }
 
-    protected abstract class ServiceBusMessageHandler<U> implements IMessageHandler {
-        private final Consumer<Message<U>> consumer;
-        private final Class<U> payloadType;
-
-        public ServiceBusMessageHandler(@NonNull Consumer<Message<U>> consumer, @NonNull Class<U> payloadType) {
-            this.consumer = consumer;
-            this.payloadType = payloadType;
-        }
-
-        @Override
-        public CompletableFuture<Void> onMessageAsync(IMessage serviceBusMessage) {
-            Map<String, Object> headers = new HashMap<>();
-
-            Checkpointer checkpointer = new AzureCheckpointer(() -> this.success(serviceBusMessage.getLockToken()),
-                    () -> this.failure(serviceBusMessage.getLockToken()));
-            if (checkpointConfig.getCheckpointMode() == CheckpointMode.MANUAL) {
-                headers.put(AzureHeaders.CHECKPOINTER, checkpointer);
-            }
-
-            Message<U> message =
-                    messageConverter.toMessage(serviceBusMessage, new MessageHeaders(headers), payloadType);
-            consumer.accept(message);
-
-            if (checkpointConfig.getCheckpointMode() == CheckpointMode.RECORD) {
-                return checkpointer.success();
-            }
-            return CompletableFuture.completedFuture(null);
-        }
-
-        @Override
-        public void notifyException(Throwable exception, ExceptionPhase phase) {
-            log.error(String.format("Exception encountered in phase %s", phase), exception);
-        }
-
-        protected abstract CompletableFuture<Void> success(UUID uuid);
-
-        protected abstract CompletableFuture<Void> failure(UUID uuid);
+    private static boolean isValidCheckpointConfig(CheckpointConfig checkpointConfig) {
+        return checkpointConfig.getCheckpointMode() == CheckpointMode.MANUAL ||
+                checkpointConfig.getCheckpointMode() == CheckpointMode.RECORD;
     }
-
 }

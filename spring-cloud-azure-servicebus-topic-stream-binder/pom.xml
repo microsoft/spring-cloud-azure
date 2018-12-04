@@ -26,7 +26,7 @@
 
         <dependency>
             <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-cloud-azure-starter-servicebus</artifactId>
+            <artifactId>spring-cloud-starter-azure-servicebus</artifactId>
         </dependency>
         <dependency>
             <groupId>com.microsoft.azure</groupId>

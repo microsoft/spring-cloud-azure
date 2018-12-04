@@ -6,8 +6,8 @@
 
 package com.example;
 
-import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
-import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
+import com.microsoft.azure.spring.integration.core.DefaultMessageHandler;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.MessagingGateway;
@@ -51,7 +51,7 @@ public class SendController {
     @Bean
     @ServiceActivator(inputChannel = OUTPUT_CHANNEL)
     public MessageHandler messageSender(EventHubOperation queueOperation) {
-        AzureMessageHandler handler = new AzureMessageHandler(EVENTHUB_NAME, queueOperation);
+        DefaultMessageHandler handler = new DefaultMessageHandler(EVENTHUB_NAME, queueOperation);
         handler.setSendCallback(new ListenableFutureCallback<Void>() {
             @Override
             public void onSuccess(Void result) {

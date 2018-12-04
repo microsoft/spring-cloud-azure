@@ -6,9 +6,9 @@
 
 package com.microsoft.azure.spring.integration.eventhub.outbound;
 
-import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
+import com.microsoft.azure.spring.integration.core.DefaultMessageHandler;
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
-import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import com.microsoft.azure.spring.integration.test.support.MessageHandlerTest;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -31,7 +31,10 @@ public class EventHubMessageHandlerTest extends MessageHandlerTest<EventHubOpera
         this.sendOperation = mock(EventHubOperation.class);
         when(this.sendOperation.sendAsync(eq(this.destination), isA(Message.class), isA(PartitionSupplier.class)))
                 .thenReturn(future);
-        this.handler = new AzureMessageHandler(this.destination, this.sendOperation);
+        when(this.sendOperation
+                .sendAsync(eq(this.dynamicDestination), isA(Message.class), isA(PartitionSupplier.class)))
+                .thenReturn(future);
+        this.handler = new DefaultMessageHandler(this.destination, this.sendOperation);
     }
 
 }

@@ -7,7 +7,6 @@
 package com.microsoft.azure.spring.cloud.storage;
 
 import com.microsoft.azure.storage.CloudStorageAccount;
-import com.microsoft.azure.storage.blob.CloudBlobClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
@@ -19,7 +18,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 /**
- * A {@link ProtocolResolver} implementation for the {@code blob://} protocol.
+ * A {@link ProtocolResolver} implementation for the {@code azure-blob://} or {@code azure-file://} protocol.
  *
  * @author Warren Zhu
  */
@@ -27,18 +26,11 @@ import org.springframework.core.io.ResourceLoader;
 public class AzureStorageProtocolResolver implements ProtocolResolver, BeanFactoryPostProcessor, ResourceLoaderAware {
 
     private ConfigurableListableBeanFactory beanFactory;
-    private CloudBlobClient blobClient;
+    private CloudStorageAccount cloudStorageAccount;
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
-    }
-
-    private CloudBlobClient getBlobClient() {
-        if (this.blobClient == null) {
-            this.blobClient = this.beanFactory.getBean(CloudStorageAccount.class).createCloudBlobClient();
-        }
-        return this.blobClient;
     }
 
     @Override
@@ -46,17 +38,26 @@ public class AzureStorageProtocolResolver implements ProtocolResolver, BeanFacto
         if (DefaultResourceLoader.class.isAssignableFrom(resourceLoader.getClass())) {
             ((DefaultResourceLoader) resourceLoader).addProtocolResolver(this);
         } else {
-            log.warn("The provided delegate resource loader is not an implementation " +
-                    "of DefaultResourceLoader. Custom Protocol using blob:// prefix will not be enabled.");
+            log.warn("Custom Protocol using azure-blob:// or azure-file:// prefix will not be enabled.");
         }
     }
 
     @Override
     public Resource resolve(String location, ResourceLoader resourceLoader) {
-        if (AzureStorageUtils.isAzureStorageResource(location)) {
-            return new BlobStorageResource(getBlobClient(), location, true);
+        if (AzureStorageUtils.isAzureStorageResource(location, StorageType.BLOB)) {
+            return new BlobStorageResource(getCloudStorageAccount().createCloudBlobClient(), location, true);
+        } else if (AzureStorageUtils.isAzureStorageResource(location, StorageType.FILE)) {
+            return new FileStorageResource(getCloudStorageAccount().createCloudFileClient(), location, true);
         }
 
         return null;
+    }
+
+    private CloudStorageAccount getCloudStorageAccount() {
+        if (cloudStorageAccount == null) {
+            this.cloudStorageAccount = this.beanFactory.getBean(CloudStorageAccount.class);
+        }
+
+        return cloudStorageAccount;
     }
 }

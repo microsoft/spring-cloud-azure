@@ -62,4 +62,12 @@ public abstract class AbstractInboundChannelAdapter extends MessageProducerSuppo
         return this.subscribeByGroupOperation != null && StringUtils.hasText(consumerGroup);
     }
 
+    protected Map<String, Object> buildPropertiesMap() {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("consumerGroup", consumerGroup);
+        properties.put("destination", destination);
+
+        return properties;
+    }
+
 }

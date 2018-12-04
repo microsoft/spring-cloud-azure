@@ -10,10 +10,10 @@ import com.microsoft.azure.eventhub.stream.binder.properties.EventHubConsumerPro
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubExtendedBindingProperties;
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubProducerProperties;
 import com.microsoft.azure.eventhub.stream.binder.provisioning.EventHubChannelProvisioner;
-import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
+import com.microsoft.azure.spring.integration.core.DefaultMessageHandler;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
-import com.microsoft.azure.spring.integration.eventhub.EventHubOperation;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import com.microsoft.azure.spring.integration.eventhub.inbound.EventHubInboundChannelAdapter;
 import lombok.Setter;
 import org.springframework.cloud.stream.binder.*;
@@ -50,7 +50,7 @@ public class EventHubMessageChannelBinder extends
     @Override
     protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
             ExtendedProducerProperties<EventHubProducerProperties> producerProperties, MessageChannel errorChannel) {
-        AzureMessageHandler handler = new AzureMessageHandler(destination.getName(), this.eventHubOperation);
+        DefaultMessageHandler handler = new DefaultMessageHandler(destination.getName(), this.eventHubOperation);
         handler.setBeanFactory(getBeanFactory());
         handler.setSync(producerProperties.getExtension().isSync());
         handler.setSendTimeout(producerProperties.getExtension().getSendTimeout());
@@ -69,7 +69,8 @@ public class EventHubMessageChannelBinder extends
             ExtendedConsumerProperties<EventHubConsumerProperties> properties) {
         this.eventHubOperation.setStartPosition(properties.getExtension().getStartPosition());
         CheckpointConfig checkpointConfig =
-                CheckpointConfig.builder().checkpointMode(properties.getExtension().getCheckpointMode()).build();
+                CheckpointConfig.builder().checkpointMode(properties.getExtension().getCheckpointMode())
+                                .checkpointCount(properties.getExtension().getCheckpointCount()).build();
         this.eventHubOperation.setCheckpointConfig(checkpointConfig);
 
         boolean anonymous = !StringUtils.hasText(group);
@@ -84,13 +85,13 @@ public class EventHubMessageChannelBinder extends
     }
 
     @Override
-    public EventHubConsumerProperties getExtendedConsumerProperties(String channelName) {
-        return this.bindingProperties.getExtendedConsumerProperties(channelName);
+    public EventHubConsumerProperties getExtendedConsumerProperties(String destination) {
+        return this.bindingProperties.getExtendedConsumerProperties(destination);
     }
 
     @Override
-    public EventHubProducerProperties getExtendedProducerProperties(String channelName) {
-        return this.bindingProperties.getExtendedProducerProperties(channelName);
+    public EventHubProducerProperties getExtendedProducerProperties(String destination) {
+        return this.bindingProperties.getExtendedProducerProperties(destination);
     }
 
 }

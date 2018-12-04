@@ -30,6 +30,7 @@
         <module>spring-cloud-azure-servicebus-topic-binder-sample</module>
         <module>spring-cloud-azure-storage-queue-operation-sample</module>
         <module>spring-cloud-azure-storage-queue-integration-sample</module>
+        <module>azure-messaging-sample</module>
     </modules>
 
     <build>

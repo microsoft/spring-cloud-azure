@@ -6,7 +6,7 @@
 
 package com.example;
 
-import com.microsoft.azure.spring.integration.core.AzureMessageHandler;
+import com.microsoft.azure.spring.integration.core.DefaultMessageHandler;
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueOperation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,7 +54,7 @@ public class QueueSendController {
     @Bean
     @ServiceActivator(inputChannel = OUTPUT_CHANNEL)
     public MessageHandler queueMessageSender(ServiceBusQueueOperation queueOperation) {
-        AzureMessageHandler handler = new AzureMessageHandler(QUEUE_NAME, queueOperation);
+        DefaultMessageHandler handler = new DefaultMessageHandler(QUEUE_NAME, queueOperation);
         handler.setSendCallback(new ListenableFutureCallback<Void>() {
             @Override
             public void onSuccess(Void result) {
