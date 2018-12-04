@@ -7,20 +7,14 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.servicebus;
 
 import com.microsoft.azure.servicebus.TopicClient;
-import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
-import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.integration.servicebus.factory.DefaultServiceBusTopicClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicTemplate;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -32,11 +26,8 @@ import javax.annotation.PostConstruct;
  * @author Warren Zhu
  */
 @Configuration
-@AutoConfigureBefore(TelemetryAutoConfiguration.class)
-@AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnClass(TopicClient.class)
-@ConditionalOnProperty(value = "spring.cloud.azure.servicebus.topic.enabled", matchIfMissing = true)
-@EnableConfigurationProperties(AzureServiceBusProperties.class)
+@ConditionalOnProperty(value = "spring.cloud.azure.servicebus.enabled", matchIfMissing = true)
 public class AzureServiceBusTopicAutoConfiguration {
     private static final String SERVICE_BUS_TOPIC = "ServiceBusTopic";
 
@@ -47,9 +38,8 @@ public class AzureServiceBusTopicAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ServiceBusTopicClientFactory topicClientFactory(ResourceManagerProvider resourceManagerProvider,
-            AzureServiceBusProperties serviceBusProperties) {
-        return new DefaultServiceBusTopicClientFactory(resourceManagerProvider, serviceBusProperties.getNamespace());
+    public ServiceBusTopicClientFactory topicClientFactory(AzureServiceBusProperties serviceBusProperties) {
+        return new DefaultServiceBusTopicClientFactory(serviceBusProperties.getConnectionString());
     }
 
     @Bean

@@ -6,16 +6,17 @@
 
 package com.microsoft.azure.spring.integration.servicebus.factory;
 
+import com.microsoft.azure.management.servicebus.ServiceBusNamespace;
 import com.microsoft.azure.servicebus.IMessageSender;
 import com.microsoft.azure.servicebus.IQueueClient;
 import com.microsoft.azure.servicebus.QueueClient;
 import com.microsoft.azure.servicebus.ReceiveMode;
 import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
-import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
+import org.springframework.util.StringUtils;
 
 import java.util.function.Function;
 
@@ -30,15 +31,19 @@ public class DefaultServiceBusQueueClientFactory extends AbstractServiceBusSende
 
     private final Function<String, IQueueClient> queueClientCreator = Memoizer.memoize(this::createQueueClient);
 
-    public DefaultServiceBusQueueClientFactory(ResourceManagerProvider resourceManagerProvider, String namespace) {
-        super(resourceManagerProvider, namespace);
+    public DefaultServiceBusQueueClientFactory(String connectionString) {
+        super(connectionString);
     }
 
     private IQueueClient createQueueClient(String destination) {
-        resourceManagerProvider.getServiceBusQueueManager().getOrCreate(Tuple.of(serviceBusNamespace, destination));
+        if (resourceManagerProvider != null && StringUtils.hasText(namespace)) {
+            ServiceBusNamespace serviceBusNamespace =
+                    resourceManagerProvider.getServiceBusNamespaceManager().getOrCreate(namespace);
+            resourceManagerProvider.getServiceBusQueueManager().getOrCreate(Tuple.of(serviceBusNamespace, destination));
+        }
+
         try {
-            return new QueueClient(new ConnectionStringBuilder(connectionStringCreator.apply(namespace), destination),
-                    ReceiveMode.PEEKLOCK);
+            return new QueueClient(new ConnectionStringBuilder(connectionString, destination), ReceiveMode.PEEKLOCK);
         } catch (InterruptedException | ServiceBusException e) {
             throw new ServiceBusRuntimeException("Failed to create service bus queue client", e);
         }
