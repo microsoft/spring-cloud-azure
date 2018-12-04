@@ -59,7 +59,7 @@ public class AzureConfigMSIConnector {
                         throw new IllegalStateException(String.format("No permission to access configuration store %s",
                                 configStoreName));
                     default:
-                        throw new IllegalStateException(String.format("Failed to retrieve API key and secret " +
+                        throw new IllegalStateException(String.format("Failed to retrieve access key " +
                                 "for configuration store %s.", configStoreName));
                 }
             }
@@ -67,14 +67,14 @@ public class AzureConfigMSIConnector {
             ConfigAccessKeys result = mapper.readValue(response.getEntity().getContent(), ConfigAccessKeys.class);
             return buildConnectionString(configStoreName, result);
         } catch (Exception e) {
-            throw new IllegalStateException(String.format("Failed to retrieve API key and secret " +
+            throw new IllegalStateException(String.format("Failed to retrieve access key " +
                     "for configuration store %s.", configStoreName), e);
         }
     }
 
     private static String buildConnectionString(String configStoreName, ConfigAccessKeys result) {
         Optional<ConfigAccessKey> keyOptional = result.getAccessKeyList().stream().findFirst();
-        Assert.isTrue(keyOptional.isPresent(), String.format("API key should exist for configuration store %s",
+        Assert.isTrue(keyOptional.isPresent(), String.format("Access key  should exist for configuration store %s",
                 configStoreName));
 
         ConfigAccessKey key = keyOptional.get();
@@ -84,9 +84,9 @@ public class AzureConfigMSIConnector {
     }
 
     private static void validateAccessKey(ConfigAccessKey key, String configStoreName) {
-        Assert.hasText(key.getId(), String.format("API key should have non empty id for config store %s.",
+        Assert.hasText(key.getId(), String.format("Access key  should have non empty id for config store %s.",
                 configStoreName));
-        Assert.hasText(key.getValue(), String.format("API key should have non empty secret value for config store %s.",
+        Assert.hasText(key.getValue(), String.format("Access key should have non empty secret value for config store %s.",
                 configStoreName));
     }
 }
