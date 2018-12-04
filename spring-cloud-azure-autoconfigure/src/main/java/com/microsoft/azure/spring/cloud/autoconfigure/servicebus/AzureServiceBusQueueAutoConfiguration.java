@@ -8,15 +8,18 @@ package com.microsoft.azure.spring.cloud.autoconfigure.servicebus;
 
 import com.microsoft.azure.servicebus.QueueClient;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.integration.servicebus.factory.DefaultServiceBusQueueClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusQueueClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueOperation;
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueTemplate;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 
@@ -37,9 +40,25 @@ public class AzureServiceBusQueueAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean({ResourceManagerProvider.class, ServiceBusQueueClientFactory.class})
     public ServiceBusQueueClientFactory queueClientFactory(AzureServiceBusProperties serviceBusProperties) {
         return new DefaultServiceBusQueueClientFactory(serviceBusProperties.getConnectionString());
+    }
+
+    @Bean
+    @ConditionalOnBean(ResourceManagerProvider.class)
+    @ConditionalOnMissingBean
+    public ServiceBusQueueClientFactory queueClientFactory(ResourceManagerProvider
+            resourceManagerProvider,
+            AzureServiceBusProperties serviceBusProperties) {
+        DefaultServiceBusQueueClientFactory clientFactory =
+                new DefaultServiceBusQueueClientFactory(serviceBusProperties.getConnectionString());
+        if (StringUtils.hasText(serviceBusProperties.getNamespace())) {
+            clientFactory.setNamespace(serviceBusProperties.getNamespace());
+        }
+        clientFactory.setResourceManagerProvider(resourceManagerProvider);
+
+        return clientFactory;
     }
 
     @Bean
