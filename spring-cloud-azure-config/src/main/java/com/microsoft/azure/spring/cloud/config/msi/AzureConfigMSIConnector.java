@@ -61,7 +61,7 @@ public class AzureConfigMSIConnector {
                 }
             }
 
-            ConfigAcessKeys result = mapper.readValue(response.getEntity().getContent(), ConfigAcessKeys.class);
+            ConfigAccessKeys result = mapper.readValue(response.getEntity().getContent(), ConfigAccessKeys.class);
             return buildConnectionString(configStoreName, result);
         } catch (Exception e) {
             throw new IllegalStateException(String.format("Failed to retrieve API key and secret " +
@@ -69,7 +69,7 @@ public class AzureConfigMSIConnector {
         }
     }
 
-    private static String buildConnectionString(String configStoreName, ConfigAcessKeys result) {
+    private static String buildConnectionString(String configStoreName, ConfigAccessKeys result) {
         Optional<ConfigAccessKey> keyOptional = result.getAccessKeyList().stream().findFirst();
         Assert.isTrue(keyOptional.isPresent(), String.format("API key should exist for configuration store %s",
                 configStoreName));
