@@ -20,6 +20,7 @@ import org.springframework.cloud.stream.provisioning.ProvisioningException;
 import org.springframework.cloud.stream.provisioning.ProvisioningProvider;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 /**
  * @author Warren Zhu
@@ -28,11 +29,14 @@ public class ServiceBusTopicChannelProvisioner implements
         ProvisioningProvider<ExtendedConsumerProperties<ServiceBusConsumerProperties>,
                 ExtendedProducerProperties<ServiceBusProducerProperties>> {
 
-    private final ResourceManagerProvider resourceManagerProvider;
-    private final String namespace;
+    private ResourceManagerProvider resourceManagerProvider;
+    private String namespace;
+
+    public ServiceBusTopicChannelProvisioner() {
+    }
 
     public ServiceBusTopicChannelProvisioner(@NonNull ResourceManagerProvider resourceManagerProvider,
-            String namespace) {
+            @NonNull String namespace) {
         Assert.hasText(namespace, "The namespace can't be null or empty");
         this.resourceManagerProvider = resourceManagerProvider;
         this.namespace = namespace;
@@ -41,9 +45,11 @@ public class ServiceBusTopicChannelProvisioner implements
     @Override
     public ProducerDestination provisionProducerDestination(String name,
             ExtendedProducerProperties<ServiceBusProducerProperties> properties) throws ProvisioningException {
-        ServiceBusNamespace namespace =
-                this.resourceManagerProvider.getServiceBusNamespaceManager().getOrCreate(this.namespace);
-        this.resourceManagerProvider.getServiceBusTopicManager().getOrCreate(Tuple.of(namespace, name));
+        if (resourceManagerProvider != null && StringUtils.hasText(namespace)) {
+            ServiceBusNamespace namespace =
+                    this.resourceManagerProvider.getServiceBusNamespaceManager().getOrCreate(this.namespace);
+            this.resourceManagerProvider.getServiceBusTopicManager().getOrCreate(Tuple.of(namespace, name));
+        }
 
         return new ServiceBusTopicProducerDestination(name);
     }
@@ -51,15 +57,18 @@ public class ServiceBusTopicChannelProvisioner implements
     @Override
     public ConsumerDestination provisionConsumerDestination(String name, String group,
             ExtendedConsumerProperties<ServiceBusConsumerProperties> properties) throws ProvisioningException {
-        ServiceBusNamespace namespace =
-                this.resourceManagerProvider.getServiceBusNamespaceManager().getOrCreate(this.namespace);
-        Topic topic = this.resourceManagerProvider.getServiceBusTopicManager().getOrCreate(Tuple.of(namespace, name));
-        if (topic == null) {
-            throw new ProvisioningException(
-                    String.format("Event hub with name '%s' in namespace '%s' not existed", name, namespace));
-        }
+        if (resourceManagerProvider != null && StringUtils.hasText(namespace)) {
+            ServiceBusNamespace namespace =
+                    this.resourceManagerProvider.getServiceBusNamespaceManager().getOrCreate(this.namespace);
+            Topic topic =
+                    this.resourceManagerProvider.getServiceBusTopicManager().getOrCreate(Tuple.of(namespace, name));
+            if (topic == null) {
+                throw new ProvisioningException(
+                        String.format("Event hub with name '%s' in namespace '%s' not existed", name, namespace));
+            }
 
-        this.resourceManagerProvider.getServiceBusTopicSubscriptionManager().getOrCreate(Tuple.of(topic, group));
+            this.resourceManagerProvider.getServiceBusTopicSubscriptionManager().getOrCreate(Tuple.of(topic, group));
+        }
         return new ServiceBusTopicConsumerDestination(name);
     }
 }
