@@ -8,15 +8,12 @@ package com.microsoft.azure.spring.cloud.autoconfigure.servicebus;
 
 import com.microsoft.azure.management.servicebus.AuthorizationKeys;
 import com.microsoft.azure.management.servicebus.ServiceBusNamespace;
+import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
-import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManager;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureResourceManagerProvider;
-import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -33,7 +30,7 @@ import javax.annotation.PostConstruct;
  * @author Warren Zhu
  */
 @Configuration
-@ConditionalOnClass(ServiceBusNamespace.class)
+@ConditionalOnClass(IMessage.class)
 @ConditionalOnProperty(value = "spring.cloud.azure.servicebus.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(AzureServiceBusProperties.class)
 @Slf4j
@@ -46,7 +43,7 @@ public class AzureServiceBusAutoConfiguration {
                                          .map(com.microsoft.azure.management.servicebus.AuthorizationRule::getKeys)
                                          .map(AuthorizationKeys::primaryConnectionString)
                                          .map(s -> new ConnectionStringBuilder(s, namespace).toString()).orElseThrow(
-                        () -> new ServiceBusRuntimeException(
+                        () -> new RuntimeException(
                                 String.format("Service bus namespace '%s' key is empty", namespace), null));
     }
 
