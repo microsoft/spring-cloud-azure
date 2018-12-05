@@ -20,11 +20,11 @@ public class ConfigAccessKeyResource {
     private final String resourceGroupName;
     private final String configStoreName;
 
-    public ConfigAccessKeyResource(AzureCloudConfigMSIProperties msiProperties) {
-        Assert.notNull(msiProperties, "MSI configuration should not be null.");
-        this.subscriptionId = msiProperties.getSubscriptionId();
-        this.resourceGroupName = msiProperties.getResourceGroup();
-        this.configStoreName = msiProperties.getConfigStore();
+    public ConfigAccessKeyResource(AzureCloudConfigARMProperties armProperties) {
+        Assert.notNull(armProperties, "Azure resource management(ARM) configuration should not be null.");
+        this.subscriptionId = armProperties.getSubscriptionId();
+        this.resourceGroupName = armProperties.getResourceGroup();
+        this.configStoreName = armProperties.getConfigStore();
     }
 
     public String getResourceIdUrl() {

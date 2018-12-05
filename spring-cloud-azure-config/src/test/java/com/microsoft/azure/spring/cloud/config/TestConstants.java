@@ -17,9 +17,9 @@ public class TestConstants {
     public static final String DEFAULT_CONTEXT_PROP = "spring.cloud.azure.config.default-context";
     public static final String PREFIX_PROP = "spring.cloud.azure.config.prefix";
     public static final String SEPARATOR_PROP = "spring.cloud.azure.config.profile-separator";
-    public static final String SUBSCRIPTION_ID_PROP = "spring.cloud.azure.config.msi.subscription-id";
-    public static final String RESOURCE_GROUP_PROP = "spring.cloud.azure.config.msi.resource-group-name";
-    public static final String CONFIG_STORE_PROP = "spring.cloud.azure.config.msi.config-store-name";
+    public static final String SUBSCRIPTION_ID_PROP = "spring.cloud.azure.config.arm.subscription-id";
+    public static final String RESOURCE_GROUP_PROP = "spring.cloud.azure.config.arm.resource-group-name";
+    public static final String CONFIG_STORE_PROP = "spring.cloud.azure.config.arm.config-store-name";
 
     public static final String TEST_CONN_STRING =
             "Endpoint=https://fake.test.config.io;Id=fake-conn-id;Secret=ZmFrZS1jb25uLXNlY3JldA==";

@@ -5,6 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import com.microsoft.azure.spring.cloud.config.msi.AzureCloudConfigARMProperties;
 import com.microsoft.azure.spring.cloud.config.msi.AzureCloudConfigMSIProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -59,6 +60,8 @@ public class AzureCloudConfigProperties {
     private boolean failFast = true;
 
     private AzureCloudConfigMSIProperties msi;
+
+    private AzureCloudConfigARMProperties arm;
 
     // Values extracted from connection string
     private String endpoint;

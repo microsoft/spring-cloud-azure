@@ -3,9 +3,13 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config.msi;
+package com.microsoft.azure.spring.cloud.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.azure.spring.cloud.config.msi.ConfigAccessKey;
+import com.microsoft.azure.spring.cloud.config.msi.ConfigAccessKeyResource;
+import com.microsoft.azure.spring.cloud.config.msi.ConfigAccessKeys;
+import com.microsoft.azure.spring.cloud.config.msi.ConfigMSICredentials;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -13,16 +17,13 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
-
-import java.util.Optional;
 
 import static com.microsoft.azure.spring.cloud.config.msi.ConfigAccessKeyResource.ARM_ENDPONT;
 
 /**
  * Get connection string for configured config store from ARM with MSI access token.
  */
-public class AzureConfigMSIConnector {
+class AzureConfigMSIConnector {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigMSIConnector.class);
 
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -30,12 +31,12 @@ public class AzureConfigMSIConnector {
     private final ConfigMSICredentials msiCredentials;
     private final ConfigAccessKeyResource keyResource;
 
-    public AzureConfigMSIConnector(ConfigMSICredentials credentials, ConfigAccessKeyResource keyResource) {
+    AzureConfigMSIConnector(ConfigMSICredentials credentials, ConfigAccessKeyResource keyResource) {
         this.msiCredentials = credentials;
         this.keyResource = keyResource;
     }
 
-    public String getConnection() {
+    String getConnectionString() {
         String msiToken = msiCredentials.getToken(ARM_ENDPONT);
         String resourceId = keyResource.getResourceIdUrl();
 
@@ -72,11 +73,9 @@ public class AzureConfigMSIConnector {
     }
 
     private static String getConnString(String configStoreName, ConfigAccessKeys result) {
-        Optional<ConfigAccessKey> keyOptional = result.getAccessKeyList().stream().findFirst();
-        Assert.isTrue(keyOptional.isPresent(), String.format("Access key should exist for configuration store %s",
-                configStoreName));
-
-        ConfigAccessKey key = keyOptional.get();
+        ConfigAccessKey key = result.getAccessKeyList().stream().findFirst()
+                .orElseThrow(() -> new IllegalStateException(String.format("Access key should exist for " +
+                                "configuration store %s", configStoreName)));
 
         return key.getConnectionString();
     }
