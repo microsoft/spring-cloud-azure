@@ -9,14 +9,10 @@ package com.microsoft.azure.servicebus.stream.binder.config;
 import com.microsoft.azure.servicebus.stream.binder.ServiceBusTopicMessageChannelBinder;
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusExtendedBindingProperties;
 import com.microsoft.azure.servicebus.stream.binder.provisioning.ServiceBusTopicChannelProvisioner;
-import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.servicebus.AzureServiceBusProperties;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -31,8 +27,6 @@ import javax.annotation.PostConstruct;
  */
 @Configuration
 @ConditionalOnMissingBean(Binder.class)
-@AutoConfigureBefore(TelemetryAutoConfiguration.class)
-@AutoConfigureAfter({AzureContextAutoConfiguration.class, TelemetryAutoConfiguration.class})
 @EnableConfigurationProperties({AzureServiceBusProperties.class, ServiceBusExtendedBindingProperties.class})
 public class ServiceBusTopicBinderConfiguration {
 

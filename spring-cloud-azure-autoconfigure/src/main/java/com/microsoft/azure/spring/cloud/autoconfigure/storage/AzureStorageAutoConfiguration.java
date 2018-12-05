@@ -7,8 +7,6 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 
 import com.microsoft.azure.management.storage.StorageAccount;
-import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
@@ -17,8 +15,6 @@ import com.microsoft.azure.spring.cloud.storage.AzureStorageProtocolResolver;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.blob.CloudBlobClient;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -38,8 +34,6 @@ import java.security.InvalidKeyException;
  */
 @Slf4j
 @Configuration
-@AutoConfigureBefore(TelemetryAutoConfiguration.class)
-@AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnClass({CloudBlobClient.class, AzureStorageProtocolResolver.class})
 @ConditionalOnProperty(name = "spring.cloud.azure.storage.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(AzureStorageProperties.class)

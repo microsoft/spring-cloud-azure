@@ -7,9 +7,7 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.telemetry;
 
 import com.microsoft.applicationinsights.TelemetryClient;
-import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -19,7 +17,6 @@ import org.springframework.context.annotation.PropertySource;
 
 @Slf4j
 @Configuration
-@AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @PropertySource(value = "classpath:telemetry.config")
 @EnableConfigurationProperties(TelemetryProperties.class)
 @ConditionalOnProperty(name = "spring.cloud.azure.telemetry.enabled", matchIfMissing = true)

@@ -7,16 +7,11 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.cache;
 
 import com.microsoft.azure.management.redis.RedisCache;
-import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -34,8 +29,6 @@ import java.util.Arrays;
  * @author Warren Zhu
  */
 @Configuration
-@AutoConfigureBefore({RedisAutoConfiguration.class, TelemetryAutoConfiguration.class})
-@AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnProperty(value = "spring.cloud.azure.redis.enabled", matchIfMissing = true)
 @ConditionalOnClass(RedisOperations.class)
 @EnableConfigurationProperties(AzureRedisProperties.class)
