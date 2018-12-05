@@ -20,7 +20,7 @@ public class StorageConnectionStringBuilder {
 
     private static final String ENDPOINT_SUFFIX = "EndpointSuffix";
 
-    private static final String HTTP_PROTOCOL = "http";
+    private static final String HTTP_PROTOCOL = "https";
 
     private static final String SEPARATOR = ";";
 
