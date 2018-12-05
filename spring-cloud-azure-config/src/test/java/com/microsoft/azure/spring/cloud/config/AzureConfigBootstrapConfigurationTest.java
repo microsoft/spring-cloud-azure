@@ -76,7 +76,7 @@ public class AzureConfigBootstrapConfigurationTest {
         whenNew(AzureConfigMSIConnector.class).withAnyArguments().thenReturn(msiConnector);
         when(msiCredentials.getToken(anyString())).thenReturn(MSI_TOKEN);
 
-        when(msiConnector.getConnection()).thenReturn("");
+        when(msiConnector.getConnectionString()).thenReturn("");
 
         ApplicationContextRunner contextRunner = new ApplicationContextRunner()
                 .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class))
@@ -101,7 +101,7 @@ public class AzureConfigBootstrapConfigurationTest {
         whenNew(AzureConfigMSIConnector.class).withAnyArguments().thenReturn(msiConnector);
         when(msiCredentials.getToken(anyString())).thenReturn(MSI_TOKEN);
 
-        when(msiConnector.getConnection()).thenReturn(TEST_CONN_STRING);
+        when(msiConnector.getConnectionString()).thenReturn(TEST_CONN_STRING);
 
         ApplicationContextRunner contextRunner = new ApplicationContextRunner()
                 .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class))

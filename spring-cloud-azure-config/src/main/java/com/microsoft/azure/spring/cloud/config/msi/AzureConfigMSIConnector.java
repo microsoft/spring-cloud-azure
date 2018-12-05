@@ -3,13 +3,9 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config;
+package com.microsoft.azure.spring.cloud.config.msi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsoft.azure.spring.cloud.config.msi.ConfigAccessKey;
-import com.microsoft.azure.spring.cloud.config.msi.ConfigAccessKeyResource;
-import com.microsoft.azure.spring.cloud.config.msi.ConfigAccessKeys;
-import com.microsoft.azure.spring.cloud.config.msi.ConfigMSICredentials;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -23,7 +19,7 @@ import static com.microsoft.azure.spring.cloud.config.msi.ConfigAccessKeyResourc
 /**
  * Get connection string for configured config store from ARM with MSI access token.
  */
-class AzureConfigMSIConnector {
+public class AzureConfigMSIConnector {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigMSIConnector.class);
 
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -31,12 +27,12 @@ class AzureConfigMSIConnector {
     private final ConfigMSICredentials msiCredentials;
     private final ConfigAccessKeyResource keyResource;
 
-    AzureConfigMSIConnector(ConfigMSICredentials credentials, ConfigAccessKeyResource keyResource) {
+    public AzureConfigMSIConnector(ConfigMSICredentials credentials, ConfigAccessKeyResource keyResource) {
         this.msiCredentials = credentials;
         this.keyResource = keyResource;
     }
 
-    String getConnectionString() {
+    public String getConnectionString() {
         String msiToken = msiCredentials.getToken(ARM_ENDPONT);
         String resourceId = keyResource.getResourceIdUrl();
 

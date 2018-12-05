@@ -12,7 +12,6 @@ import com.microsoft.azure.spring.cloud.config.msi.ConfigMSICredentials;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -38,11 +37,10 @@ public class AzureConfigBootstrapConfiguration {
         }
 
         ConfigMSICredentials msiCredentials = new ConfigMSICredentials(properties.getMsi());
-        ConfigAccessKeyResource keyResource = new ConfigAccessKeyResource(properties.getMsi());
+        ConfigAccessKeyResource keyResource = new ConfigAccessKeyResource(properties.getArm());
 
         AzureConfigMSIConnector msiConnector = new AzureConfigMSIConnector(msiCredentials, keyResource);
-        properties.setConnectionString(msiConnector.getConnection());
-        properties.validateAndInit();
+        properties.setConnectionString(msiConnector.getConnectionString());
 
         Assert.hasText(properties.getConnectionString(), "Connection string cannot be empty");
 
