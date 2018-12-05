@@ -7,7 +7,7 @@
 package com.microsoft.azure.spring.cloud.context.core.impl;
 
 import com.microsoft.azure.management.storage.StorageAccount;
-import com.microsoft.azure.spring.cloud.context.core.api.Region;
+import com.microsoft.azure.spring.cloud.context.core.api.Environment;
 import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
 
 import java.util.HashMap;
@@ -17,17 +17,17 @@ import java.util.stream.Collectors;
 
 public class StorageConnectionStringProvider {
 
-    private static final BiFunction<StorageAccount, Region, String> connectionStringProvider =
+    private static final BiFunction<StorageAccount, Environment, String> connectionStringProvider =
             Memoizer.memoize(StorageConnectionStringProvider::buildConnectionString);
 
-    private static String buildConnectionString(StorageAccount storageAccount, Region region) {
+    private static String buildConnectionString(StorageAccount storageAccount, Environment environment) {
         return storageAccount.getKeys().stream().findFirst()
-                             .map(key -> ConnectionStringBuilder.build(storageAccount.name(), key.value(), region))
+                             .map(key -> ConnectionStringBuilder.build(storageAccount.name(), key.value(), environment))
                              .orElseThrow(() -> new RuntimeException("Storage account key is empty."));
     }
 
-    public static String getConnectionString(StorageAccount storageAccount, Region region) {
-        return connectionStringProvider.apply(storageAccount, region);
+    public static String getConnectionString(StorageAccount storageAccount, Environment environment) {
+        return connectionStringProvider.apply(storageAccount, environment);
     }
 
     private static class ConnectionStringBuilder {
@@ -43,12 +43,12 @@ public class StorageConnectionStringProvider {
 
         private static final String SEPARATOR = ";";
 
-        static String build(String accountName, String accountKey, Region region) {
+        static String build(String accountName, String accountKey, Environment environment) {
             Map<String, String> map = new HashMap<>();
             map.put(DEFAULT_PROTOCOL, HTTP_PROTOCOL);
             map.put(ACCOUNT_NAME, accountName);
             map.put(ACCOUNT_KEY, accountKey);
-            map.put(ENDPOINT_SUFFIX, region.getStorageEndpoint());
+            map.put(ENDPOINT_SUFFIX, environment.getStorageEndpoint());
 
             return map.entrySet().stream().map(Object::toString).collect(Collectors.joining(SEPARATOR));
         }

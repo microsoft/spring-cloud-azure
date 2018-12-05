@@ -33,7 +33,7 @@ public class RedisCacheManager extends AzureManager<RedisCache, String> {
 
     @Override
     public RedisCache internalCreate(String name) {
-        return azure.redisCaches().define(name).withRegion(azureProperties.getLocation())
+        return azure.redisCaches().define(name).withRegion(azureProperties.getRegion())
                     .withExistingResourceGroup(azureProperties.getResourceGroup()).withBasicSku().create();
     }
 }

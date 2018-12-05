@@ -39,7 +39,7 @@ public class ServiceBusNamesapceManager extends AzureManager<ServiceBusNamespace
 
     @Override
     public ServiceBusNamespace internalCreate(String namespace) {
-        return azure.serviceBusNamespaces().define(namespace).withRegion(azureProperties.getLocation())
+        return azure.serviceBusNamespaces().define(namespace).withRegion(azureProperties.getRegion())
                     .withExistingResourceGroup(azureProperties.getResourceGroup()).create();
     }
 }
