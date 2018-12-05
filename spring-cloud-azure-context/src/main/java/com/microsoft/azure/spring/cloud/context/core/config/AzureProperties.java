@@ -7,7 +7,7 @@
 package com.microsoft.azure.spring.cloud.context.core.config;
 
 import com.microsoft.azure.spring.cloud.context.core.api.CredentialSupplier;
-import com.microsoft.azure.spring.cloud.context.core.api.Region;
+import com.microsoft.azure.spring.cloud.context.core.api.Environment;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -29,17 +29,17 @@ public class AzureProperties implements CredentialSupplier {
     @NotEmpty
     private String resourceGroup;
 
-    private Region region = Region.US;
+    private Environment environment = Environment.GLOBAL;
 
-    private String location;
+    private String region;
 
     private boolean autoCreateResources = false;
 
     @PostConstruct
     private void validate() {
         if (autoCreateResources) {
-            Assert.hasText(this.location,
-                    "When auto create resources is enabled, spring.cloud.azure.location must be provided");
+            Assert.hasText(this.region,
+                    "When auto create resources is enabled, spring.cloud.azure.region must be provided");
         }
     }
 }

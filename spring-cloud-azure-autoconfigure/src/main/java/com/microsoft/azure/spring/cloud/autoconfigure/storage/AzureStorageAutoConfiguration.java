@@ -62,7 +62,7 @@ public class AzureStorageAutoConfiguration {
         StorageAccount storageAccount = resourceManagerProvider.getStorageAccountManager().getOrCreate(accountName);
 
         String connectionString =
-                StorageConnectionStringProvider.getConnectionString(storageAccount, azureProperties.getRegion());
+                StorageConnectionStringProvider.getConnectionString(storageAccount, azureProperties.getEnvironment());
 
         try {
             return CloudStorageAccount.parse(connectionString);

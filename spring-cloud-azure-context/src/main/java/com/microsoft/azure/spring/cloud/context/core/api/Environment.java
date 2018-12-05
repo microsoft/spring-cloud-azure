@@ -11,8 +11,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum Region {
-    US("core.windows.net"),
+public enum Environment {
+    GLOBAL("core.windows.net"),
     CHINA("core.chinacloudapi.cn");
 
     private final String storageEndpoint;

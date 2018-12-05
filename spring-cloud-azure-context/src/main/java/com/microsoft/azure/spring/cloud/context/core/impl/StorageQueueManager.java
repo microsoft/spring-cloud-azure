@@ -72,7 +72,7 @@ public class StorageQueueManager extends AzureManager<CloudQueue, Tuple<String, 
     private CloudQueueClient createStorageQueueClient(String storageAccountName) {
         StorageAccount storageAccount = this.storageAccountManager.getOrCreate(storageAccountName);
         String connectionString =
-                StorageConnectionStringProvider.getConnectionString(storageAccount, azureProperties.getRegion());
+                StorageConnectionStringProvider.getConnectionString(storageAccount, azureProperties.getEnvironment());
 
         try {
             return CloudStorageAccount.parse(connectionString).createCloudQueueClient();

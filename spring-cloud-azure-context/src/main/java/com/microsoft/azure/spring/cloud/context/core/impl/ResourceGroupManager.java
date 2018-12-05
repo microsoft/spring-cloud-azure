@@ -33,6 +33,6 @@ public class ResourceGroupManager extends AzureManager<ResourceGroup, String> {
 
     @Override
     public ResourceGroup internalCreate(String key) {
-        return azure.resourceGroups().define(key).withRegion(azureProperties.getLocation()).create();
+        return azure.resourceGroups().define(key).withRegion(azureProperties.getRegion()).create();
     }
 }
