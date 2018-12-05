@@ -66,7 +66,7 @@ public class AzureEventHubAutoConfiguration {
         StorageAccount checkpointStorageAccount = resourceManagerProvider.getStorageAccountManager().getOrCreate(
                 eventHubProperties.getCheckpointStorageAccount());
         String checkpointConnectionString = StorageConnectionStringProvider
-                .getConnectionString(checkpointStorageAccount, azureProperties.getRegion());
+                .getConnectionString(checkpointStorageAccount, azureProperties.getEnvironment());
         return new DefaultEventHubClientFactory(checkpointConnectionString,
                 provider::getConnectionString);
     }

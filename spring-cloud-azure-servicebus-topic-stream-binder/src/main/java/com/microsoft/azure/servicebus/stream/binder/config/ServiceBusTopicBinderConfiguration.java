@@ -17,6 +17,7 @@ import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.stream.binder.Binder;
@@ -43,9 +44,17 @@ public class ServiceBusTopicBinderConfiguration {
     }
 
     @Bean
+    @ConditionalOnBean(ResourceManagerProvider.class)
+    @ConditionalOnMissingBean
     public ServiceBusTopicChannelProvisioner serviceBusChannelProvisioner(
-            ResourceManagerProvider resourceManagerProvider, AzureServiceBusProperties serviceBusProperties) {
+          ResourceManagerProvider resourceManagerProvider, AzureServiceBusProperties serviceBusProperties) {
         return new ServiceBusTopicChannelProvisioner(resourceManagerProvider, serviceBusProperties.getNamespace());
+    }
+
+    @Bean
+    @ConditionalOnMissingBean({ResourceManagerProvider.class, ServiceBusTopicChannelProvisioner.class})
+    public ServiceBusTopicChannelProvisioner serviceBusChannelProvisioner() {
+        return new ServiceBusTopicChannelProvisioner();
     }
 
     @Bean

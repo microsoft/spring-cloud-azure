@@ -5,7 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.context.core.impl;
 
-import com.microsoft.azure.spring.cloud.context.core.api.Region;
+import com.microsoft.azure.spring.cloud.context.core.api.Environment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,12 +24,12 @@ public class StorageConnectionStringBuilder {
 
     private static final String SEPARATOR = ";";
 
-    public static String build(String accountName, String accountKey, Region region) {
+    public static String build(String accountName, String accountKey, Environment environment) {
         Map<String, String> map = new HashMap<>();
         map.put(DEFAULT_PROTOCOL, HTTP_PROTOCOL);
         map.put(ACCOUNT_NAME, accountName);
         map.put(ACCOUNT_KEY, accountKey);
-        map.put(ENDPOINT_SUFFIX, region.getStorageEndpoint());
+        map.put(ENDPOINT_SUFFIX, environment.getStorageEndpoint());
 
         return map.entrySet().stream().map(Object::toString).collect(Collectors.joining(SEPARATOR));
     }

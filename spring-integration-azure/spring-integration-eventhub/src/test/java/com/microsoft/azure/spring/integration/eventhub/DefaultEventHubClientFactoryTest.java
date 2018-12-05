@@ -10,7 +10,7 @@ import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.eventhubs.PartitionSender;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.management.storage.StorageAccount;
-import com.microsoft.azure.spring.cloud.context.core.api.Region;
+import com.microsoft.azure.spring.cloud.context.core.api.Environment;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.impl.StorageAccountManager;
 import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStringProvider;
@@ -66,7 +66,7 @@ public class DefaultEventHubClientFactoryTest {
         when(eventHubClient.createPartitionSenderSync(eq(partitionId))).thenReturn(partitionSender);
 
         PowerMockito.mockStatic(StorageConnectionStringProvider.class);
-        when(StorageConnectionStringProvider.getConnectionString(isA(StorageAccount.class), isA(Region.class)))
+        when(StorageConnectionStringProvider.getConnectionString(isA(StorageAccount.class), isA(Environment.class)))
                 .thenReturn(connectionString);
         when(resourceManagerProvider.getStorageAccountManager()).thenReturn(storageAccountManager);
         when(storageAccountManager.getOrCreate(any())).thenReturn(storageAccount);

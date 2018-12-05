@@ -7,22 +7,19 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.servicebus;
 
 import com.microsoft.azure.servicebus.QueueClient;
-import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.integration.servicebus.factory.DefaultServiceBusQueueClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusQueueClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueOperation;
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueTemplate;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 
@@ -32,11 +29,8 @@ import javax.annotation.PostConstruct;
  * @author Warren Zhu
  */
 @Configuration
-@AutoConfigureBefore(TelemetryAutoConfiguration.class)
-@AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnClass(QueueClient.class)
-@ConditionalOnProperty(value = "spring.cloud.azure.servicebus.queue.enabled", matchIfMissing = true)
-@EnableConfigurationProperties(AzureServiceBusProperties.class)
+@ConditionalOnProperty(value = "spring.cloud.azure.servicebus.enabled", matchIfMissing = true)
 public class AzureServiceBusQueueAutoConfiguration {
     private static final String SERVICE_BUS_QUEUE = "ServiceBusQueue";
 
@@ -46,10 +40,25 @@ public class AzureServiceBusQueueAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean({ResourceManagerProvider.class, ServiceBusQueueClientFactory.class})
+    public ServiceBusQueueClientFactory queueClientFactory(AzureServiceBusProperties serviceBusProperties) {
+        return new DefaultServiceBusQueueClientFactory(serviceBusProperties.getConnectionString());
+    }
+
+    @Bean
+    @ConditionalOnBean(ResourceManagerProvider.class)
     @ConditionalOnMissingBean
-    public ServiceBusQueueClientFactory queueClientFactory(ResourceManagerProvider resourceManagerProvider,
+    public ServiceBusQueueClientFactory queueClientFactory(ResourceManagerProvider
+            resourceManagerProvider,
             AzureServiceBusProperties serviceBusProperties) {
-        return new DefaultServiceBusQueueClientFactory(resourceManagerProvider, serviceBusProperties.getNamespace());
+        DefaultServiceBusQueueClientFactory clientFactory =
+                new DefaultServiceBusQueueClientFactory(serviceBusProperties.getConnectionString());
+        if (StringUtils.hasText(serviceBusProperties.getNamespace())) {
+            clientFactory.setNamespace(serviceBusProperties.getNamespace());
+        }
+        clientFactory.setResourceManagerProvider(resourceManagerProvider);
+
+        return clientFactory;
     }
 
     @Bean
