@@ -7,7 +7,7 @@
 package com.microsoft.azure.spring.integration.core;
 
 import com.microsoft.azure.spring.integration.core.api.Checkpointer;
-import lombok.NonNull;
+import org.springframework.lang.NonNull;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
