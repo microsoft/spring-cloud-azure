@@ -9,6 +9,7 @@ package com.microsoft.azure.spring.cloud.autoconfigure.telemetry;
 import com.microsoft.applicationinsights.TelemetryClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -21,10 +22,10 @@ import org.springframework.context.annotation.PropertySource;
 @EnableConfigurationProperties(TelemetryProperties.class)
 @ConditionalOnProperty(name = "spring.cloud.azure.telemetry.enabled", matchIfMissing = true)
 @ConditionalOnClass(TelemetryClient.class)
+@ConditionalOnExpression("'${telemetry.instrumentationKey}' != '@telemetry.instrumentationKey@'")
 public class TelemetryAutoConfiguration {
 
     @Bean
-    @ConditionalOnProperty(name = "telemetry.instrumentationKey")
     public TelemetrySender telemetrySender(TelemetryProperties telemetryProperties) {
         try {
             return new TelemetrySender(telemetryProperties.getInstrumentationKey(), TelemetryCollector.getInstance());
