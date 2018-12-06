@@ -14,7 +14,6 @@ import com.microsoft.azure.spring.integration.core.DefaultMessageHandler;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
-import lombok.Setter;
 import org.springframework.cloud.stream.binder.*;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
@@ -39,7 +38,6 @@ public class ServiceBusTopicMessageChannelBinder extends
 
     private final ServiceBusTopicOperation serviceBusTopicOperation;
 
-    @Setter
     private ServiceBusExtendedBindingProperties bindingProperties = new ServiceBusExtendedBindingProperties();
 
     public ServiceBusTopicMessageChannelBinder(String[] headersToEmbed,
@@ -92,4 +90,7 @@ public class ServiceBusTopicMessageChannelBinder extends
         return this.bindingProperties.getExtendedProducerProperties(channelName);
     }
 
+    public void setBindingProperties(ServiceBusExtendedBindingProperties bindingProperties) {
+        this.bindingProperties = bindingProperties;
+    }
 }
