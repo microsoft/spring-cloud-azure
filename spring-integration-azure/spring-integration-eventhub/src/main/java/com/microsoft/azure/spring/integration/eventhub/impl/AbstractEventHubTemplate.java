@@ -18,10 +18,9 @@ import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.converter.EventHubMessageConverter;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
 
@@ -37,19 +36,14 @@ import java.util.stream.Collectors;
  *
  * @author Warren Zhu
  */
-@Slf4j
 public class AbstractEventHubTemplate {
-
+    private static final Logger log = LoggerFactory.getLogger(AbstractEventHubTemplate.class);
     private final EventHubClientFactory clientFactory;
 
-    @Getter
-    @Setter
     private EventHubMessageConverter messageConverter = new EventHubMessageConverter();
 
-    @Getter
     private StartPosition startPosition = StartPosition.LATEST;
 
-    @Getter
     private CheckpointConfig checkpointConfig = CheckpointConfig.builder().checkpointMode(CheckpointMode.BATCH).build();
 
     AbstractEventHubTemplate(EventHubClientFactory clientFactory) {
@@ -79,16 +73,6 @@ public class AbstractEventHubTemplate {
         List<EventData> eventData = messages.stream().map(m -> messageConverter.fromMessage(m, EventData.class))
                                             .collect(Collectors.toList());
         return doSend(eventHubName, partitionSupplier, eventData);
-    }
-
-    public void setCheckpointConfig(CheckpointConfig checkpointConfig){
-        log.info("EventHubTemplate checkpoint config becomes: {}", checkpointConfig);
-        this.checkpointConfig = checkpointConfig;
-    }
-
-    public void setStartPosition(StartPosition startPosition){
-        log.info("EventHubTemplate startPosition becomes: {}", startPosition);
-        this.startPosition = startPosition;
     }
 
     private CompletableFuture<Void> doSend(String eventHubName, PartitionSupplier partitionSupplier,
@@ -129,7 +113,7 @@ public class AbstractEventHubTemplate {
                           });
     }
 
-    protected Map<String, Object> buildPropertiesMap(){
+    protected Map<String, Object> buildPropertiesMap() {
         Map<String, Object> properties = new HashMap<>();
         properties.put("startPosition", this.startPosition);
         properties.put("checkpointConfig", this.getCheckpointConfig());
@@ -137,4 +121,29 @@ public class AbstractEventHubTemplate {
         return properties;
     }
 
+    public EventHubMessageConverter getMessageConverter() {
+        return messageConverter;
+    }
+
+    public void setMessageConverter(EventHubMessageConverter messageConverter) {
+        this.messageConverter = messageConverter;
+    }
+
+    public StartPosition getStartPosition() {
+        return startPosition;
+    }
+
+    public void setStartPosition(StartPosition startPosition) {
+        log.info("EventHubTemplate startPosition becomes: {}", startPosition);
+        this.startPosition = startPosition;
+    }
+
+    public CheckpointConfig getCheckpointConfig() {
+        return checkpointConfig;
+    }
+
+    public void setCheckpointConfig(CheckpointConfig checkpointConfig) {
+        log.info("EventHubTemplate checkpoint config becomes: {}", checkpointConfig);
+        this.checkpointConfig = checkpointConfig;
+    }
 }

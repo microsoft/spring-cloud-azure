@@ -14,7 +14,8 @@ import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStrin
 import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStringProvider;
 import com.microsoft.azure.spring.cloud.storage.AzureStorageProtocolResolver;
 import com.microsoft.azure.storage.CloudStorageAccount;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -33,14 +34,13 @@ import java.security.InvalidKeyException;
  *
  * @author Warren Zhu
  */
-@Slf4j
 @Configuration
 @ConditionalOnClass({CloudStorageAccount.class, AzureStorageProtocolResolver.class})
 @ConditionalOnProperty(name = "spring.cloud.azure.storage.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(AzureStorageProperties.class)
 @Import(AzureStorageProtocolResolver.class)
 public class AzureStorageAutoConfiguration {
-
+    private static final Logger log = LoggerFactory.getLogger(AzureStorageAutoConfiguration.class);
     private static final String STORAGE_BLOB = "Storage";
 
     @PostConstruct

@@ -5,8 +5,6 @@
  */
 package com.microsoft.azure.spring.cloud.autoconfigure.telemetry;
 
-import lombok.Getter;
-
 import java.util.*;
 
 /**
@@ -27,7 +25,6 @@ public class TelemetryCollector {
 
     private static final String SERVICE_NAME = "serviceName";
     private static final TelemetryCollector INSTANCE = new TelemetryCollector();
-    @Getter
     private final String name = "spring-cloud-azure";
     private Set<String> services = new HashSet<>();
     private Map<String, String> properties = new HashMap<>();
@@ -63,5 +60,9 @@ public class TelemetryCollector {
     private void buildProperties() {
         properties.put(VERSION, PROJECT_INFO);
         properties.put(INSTALLATION_ID, MacAddressHelper.getHashedMacAddress());
+    }
+
+    public String getName() {
+        return this.name;
     }
 }

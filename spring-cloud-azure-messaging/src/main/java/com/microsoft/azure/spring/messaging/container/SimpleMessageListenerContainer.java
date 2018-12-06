@@ -6,14 +6,9 @@
 
 package com.microsoft.azure.spring.messaging.container;
 
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * @author Warren Zhu
  */
-@Slf4j
-@Getter
 public class SimpleMessageListenerContainer extends AbstractListenerContainer {
 
     @Override

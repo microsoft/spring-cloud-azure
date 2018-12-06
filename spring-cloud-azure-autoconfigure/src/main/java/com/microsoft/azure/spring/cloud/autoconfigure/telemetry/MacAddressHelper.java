@@ -6,13 +6,10 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.telemetry;
 
 import com.microsoft.applicationinsights.core.dependencies.apachecommons.codec.digest.DigestUtils;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MacAddressHelper {
 
     private static final String UNKNOWN_MAC = "Unknown-Mac-Address";

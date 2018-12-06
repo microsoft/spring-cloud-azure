@@ -6,14 +6,17 @@
 
 package com.microsoft.azure.spring.cloud.context.core.api;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@Getter
-@AllArgsConstructor
 public enum Environment {
     GLOBAL("core.windows.net"),
     CHINA("core.chinacloudapi.cn");
 
     private final String storageEndpoint;
+
+    Environment(String storageEndpoint) {
+        this.storageEndpoint = storageEndpoint;
+    }
+
+    public String getStorageEndpoint() {
+        return storageEndpoint;
+    }
 }

@@ -10,14 +10,16 @@ import com.microsoft.azure.CloudException;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManager;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
 
 import java.util.concurrent.TimeUnit;
 
-@Slf4j
 public abstract class AzureManager<T, K> implements ResourceManager<T, K> {
+    private static final Logger log = LoggerFactory.getLogger(AzureManager.class);
+
     protected final AzureProperties azureProperties;
     protected final Azure azure;
 

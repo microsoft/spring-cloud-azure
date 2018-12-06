@@ -9,8 +9,8 @@ package com.microsoft.azure.spring.messaging.config;
 import com.microsoft.azure.spring.messaging.container.ListenerContainerFactory;
 import com.microsoft.azure.spring.messaging.container.MessageListenerContainer;
 import com.microsoft.azure.spring.messaging.endpoint.AzureListenerEndpoint;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -19,6 +19,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
@@ -46,9 +47,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @see MessageListenerContainer
  * @see ListenerContainerFactory
  */
-@Slf4j
 class AzureListenerEndpointRegistry
         implements DisposableBean, SmartLifecycle, ApplicationContextAware, ApplicationListener<ContextRefreshedEvent> {
+    private static final Logger log = LoggerFactory.getLogger(AzureListenerEndpointRegistry.class);
 
     private final Map<String, MessageListenerContainer> listenerContainers = new ConcurrentHashMap<>();
 

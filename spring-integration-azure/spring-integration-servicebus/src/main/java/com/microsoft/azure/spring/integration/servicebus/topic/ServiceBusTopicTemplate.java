@@ -14,7 +14,8 @@ import com.microsoft.azure.spring.integration.servicebus.ServiceBusMessageHandle
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusTemplate;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
@@ -29,9 +30,9 @@ import java.util.function.Consumer;
  *
  * @author Warren Zhu
  */
-@Slf4j
 public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicClientFactory>
         implements ServiceBusTopicOperation {
+    private static final Logger log = LoggerFactory.getLogger(ServiceBusTopicTemplate.class);
     private static final String MSG_FAIL_CHECKPOINT = "Consumer group '%s' of topic '%s' failed to checkpoint %s";
     private static final String MSG_SUCCESS_CHECKPOINT = "Consumer group '%s' of topic '%s' checkpointed %s in %s mode";
     private Set<Tuple<String, String>> nameAndConsumerGroups = Sets.newConcurrentHashSet();

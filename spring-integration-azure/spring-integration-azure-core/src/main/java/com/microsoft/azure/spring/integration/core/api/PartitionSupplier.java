@@ -6,18 +6,29 @@
 
 package com.microsoft.azure.spring.integration.core.api;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Provide partition id or key
  *
  * @author Warren Zhu
  */
-@Getter
-@Setter
 public class PartitionSupplier {
     private String partitionKey;
 
     private String partitionId;
+
+    public String getPartitionKey() {
+        return partitionKey;
+    }
+
+    public void setPartitionKey(String partitionKey) {
+        this.partitionKey = partitionKey;
+    }
+
+    public String getPartitionId() {
+        return partitionId;
+    }
+
+    public void setPartitionId(String partitionId) {
+        this.partitionId = partitionId;
+    }
 }

@@ -9,13 +9,15 @@ package com.microsoft.azure.spring.cloud.keyvault.config.auth;
 import com.microsoft.aad.adal4j.AsymmetricKeyCredential;
 import com.microsoft.aad.adal4j.AuthenticationContext;
 import com.microsoft.aad.adal4j.AuthenticationResult;
-import lombok.AllArgsConstructor;
 
 import java.util.concurrent.Future;
 
-@AllArgsConstructor
 public class CertificateAuthenticationExecutor implements AuthenticationExecutor {
     private AsymmetricKeyCredential credential;
+
+    public CertificateAuthenticationExecutor(AsymmetricKeyCredential credential) {
+        this.credential = credential;
+    }
 
     @Override
     public Future<AuthenticationResult> acquireToken(AuthenticationContext context, String resource) {
