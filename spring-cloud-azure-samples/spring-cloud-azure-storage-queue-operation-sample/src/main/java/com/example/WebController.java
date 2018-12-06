@@ -10,7 +10,8 @@ import com.microsoft.azure.spring.integration.core.AzureHeaders;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueOperation;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
@@ -24,10 +25,9 @@ import java.util.concurrent.ExecutionException;
 /**
  * @author Miao Cao
  */
-@Slf4j
 @RestController
 public class WebController {
-
+    private static final Logger log = LoggerFactory.getLogger(WebController.class);
     private static final String STORAGE_QUEUE_NAME = "example";
 
     @Autowired

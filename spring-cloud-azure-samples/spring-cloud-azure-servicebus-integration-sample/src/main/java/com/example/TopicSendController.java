@@ -8,7 +8,8 @@ package com.example;
 
 import com.microsoft.azure.spring.integration.core.DefaultMessageHandler;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.MessagingGateway;
@@ -23,10 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author Warren Zhu
  */
-@Slf4j
 @RestController
 public class TopicSendController {
-
+    private static final Logger log = LoggerFactory.getLogger(TopicSendController.class);
     private static final String OUTPUT_CHANNEL = "topic.output";
     private static final String TOPIC_NAME = "topic1";
 
