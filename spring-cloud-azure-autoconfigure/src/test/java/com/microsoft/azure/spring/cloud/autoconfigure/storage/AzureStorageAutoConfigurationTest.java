@@ -31,7 +31,7 @@ public class AzureStorageAutoConfigurationTest {
 
     @Test
     public void testWithoutStorageClient() {
-        this.contextRunner.withClassLoader(new FilteredClassLoader(CloudBlobClient.class))
+        this.contextRunner.withClassLoader(new FilteredClassLoader(CloudStorageAccount.class))
                           .run(context -> assertThat(context).doesNotHaveBean(AzureStorageProperties.class));
     }
 
