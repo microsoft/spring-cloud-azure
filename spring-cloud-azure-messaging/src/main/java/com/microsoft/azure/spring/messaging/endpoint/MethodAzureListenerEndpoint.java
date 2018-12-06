@@ -9,8 +9,6 @@ package com.microsoft.azure.spring.messaging.endpoint;
 import com.microsoft.azure.spring.messaging.container.MessageListenerContainer;
 import com.microsoft.azure.spring.messaging.listener.AzureMessageHandler;
 import com.microsoft.azure.spring.messaging.listener.DefaultAzureMessageHandler;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -29,8 +27,6 @@ import java.lang.reflect.Method;
  *
  * @author Warren Zhu
  */
-@Getter
-@Setter
 public class MethodAzureListenerEndpoint extends AbstractAzureListenerEndpoint implements BeanFactoryAware {
 
     @Nullable
@@ -73,4 +69,23 @@ public class MethodAzureListenerEndpoint extends AbstractAzureListenerEndpoint i
                     .append(this.method).append("'");
     }
 
+    public Object getBean() {
+        return bean;
+    }
+
+    public void setBean(Object bean) {
+        this.bean = bean;
+    }
+
+    public Method getMethod() {
+        return method;
+    }
+
+    public void setMethod(Method method) {
+        this.method = method;
+    }
+
+    public void setMessageHandlerMethodFactory(MessageHandlerMethodFactory messageHandlerMethodFactory) {
+        this.messageHandlerMethodFactory = messageHandlerMethodFactory;
+    }
 }

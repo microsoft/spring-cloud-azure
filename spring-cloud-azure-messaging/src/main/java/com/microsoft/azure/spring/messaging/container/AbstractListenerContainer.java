@@ -7,16 +7,13 @@
 package com.microsoft.azure.spring.messaging.container;
 
 import com.microsoft.azure.spring.messaging.listener.AzureMessageHandler;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
 
-@Slf4j
-@Getter
-@Setter
 abstract class AbstractListenerContainer implements BeanNameAware, DisposableBean, MessageListenerContainer {
+    private static final Logger log = LoggerFactory.getLogger(AbstractListenerContainer.class);
     private final Object lifecycleMonitor = new Object();
     private String destination;
     private String group;
@@ -78,4 +75,54 @@ abstract class AbstractListenerContainer implements BeanNameAware, DisposableBea
         }
     }
 
+    public String getBeanName() {
+        return beanName;
+    }
+
+    @Override
+    public void setBeanName(String beanName) {
+        this.beanName = beanName;
+    }
+
+    public Object getLifecycleMonitor() {
+        return lifecycleMonitor;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    @Override
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    @Override
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    @Override
+    public int getPhase() {
+        return phase;
+    }
+
+    @Override
+    public AzureMessageHandler getMessageHandler() {
+        return messageHandler;
+    }
+
+    @Override
+    public void setMessageHandler(AzureMessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
+    }
+
+    @Override
+    public boolean isAutoStartup() {
+        return autoStartup;
+    }
 }

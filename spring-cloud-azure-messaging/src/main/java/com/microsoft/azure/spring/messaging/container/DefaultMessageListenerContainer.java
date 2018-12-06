@@ -7,19 +7,16 @@
 package com.microsoft.azure.spring.messaging.container;
 
 import com.microsoft.azure.spring.integration.core.api.SubscribeByGroupOperation;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Warren Zhu
  */
-@Slf4j
-@Getter
-@AllArgsConstructor
 class DefaultMessageListenerContainer extends AbstractListenerContainer {
-
     private final SubscribeByGroupOperation subscribeOperation;
+
+    DefaultMessageListenerContainer(SubscribeByGroupOperation subscribeOperation) {
+        this.subscribeOperation = subscribeOperation;
+    }
 
     @Override
     protected void doStart() {

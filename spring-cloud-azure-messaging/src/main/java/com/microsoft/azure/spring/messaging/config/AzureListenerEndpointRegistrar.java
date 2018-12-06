@@ -8,8 +8,6 @@ package com.microsoft.azure.spring.messaging.config;
 
 import com.microsoft.azure.spring.messaging.container.ListenerContainerFactory;
 import com.microsoft.azure.spring.messaging.endpoint.AzureListenerEndpoint;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
@@ -26,8 +24,6 @@ import java.util.List;
  *
  * @author Warren Zhu
  */
-@Getter
-@Setter
 class AzureListenerEndpointRegistrar implements BeanFactoryAware, InitializingBean {
 
     private final List<AzureListenerEndpointDescriptor> endpointDescriptors = new ArrayList<>();
@@ -124,6 +120,30 @@ class AzureListenerEndpointRegistrar implements BeanFactoryAware, InitializingBe
      */
     public void registerEndpoint(AzureListenerEndpoint endpoint) {
         registerEndpoint(endpoint, null);
+    }
+
+    public void setContainerFactoryBeanName(String containerFactoryBeanName) {
+        this.containerFactoryBeanName = containerFactoryBeanName;
+    }
+
+    public AzureListenerEndpointRegistry getEndpointRegistry() {
+        return this.endpointRegistry;
+    }
+
+    public void setEndpointRegistry(AzureListenerEndpointRegistry endpointRegistry) {
+        this.endpointRegistry = endpointRegistry;
+    }
+
+    public MessageHandlerMethodFactory getMessageHandlerMethodFactory() {
+        return this.messageHandlerMethodFactory;
+    }
+
+    public void setMessageHandlerMethodFactory(MessageHandlerMethodFactory messageHandlerMethodFactory) {
+        this.messageHandlerMethodFactory = messageHandlerMethodFactory;
+    }
+
+    public void setContainerFactory(ListenerContainerFactory<?> containerFactory) {
+        this.containerFactory = containerFactory;
     }
 
     private static class AzureListenerEndpointDescriptor {
