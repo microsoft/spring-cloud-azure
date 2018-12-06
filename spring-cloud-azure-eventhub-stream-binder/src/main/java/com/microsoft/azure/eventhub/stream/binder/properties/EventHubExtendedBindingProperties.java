@@ -39,4 +39,12 @@ public class EventHubExtendedBindingProperties
     public void setCheckpointStorageAccount(String checkpointStorageAccount) {
         this.checkpointStorageAccount = checkpointStorageAccount;
     }
+
+    public Map<String, EventHubBindingProperties> getBindings() {
+        return bindings;
+    }
+
+    public void setBindings(Map<String, EventHubBindingProperties> bindings) {
+        this.bindings = bindings;
+    }
 }

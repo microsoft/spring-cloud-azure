@@ -7,6 +7,7 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.servicebus;
 
 import com.microsoft.azure.management.servicebus.ServiceBusNamespace;
+import com.microsoft.azure.servicebus.IMessage;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.FilteredClassLoader;
@@ -26,7 +27,7 @@ public class AzureServiceBusAutoConfigurationTest {
 
     @Test
     public void testWithoutServiceBusNamespace() {
-        this.contextRunner.withClassLoader(new FilteredClassLoader(ServiceBusNamespace.class))
+        this.contextRunner.withClassLoader(new FilteredClassLoader(IMessage.class))
                           .run(context -> assertThat(context).doesNotHaveBean(AzureServiceBusProperties.class));
     }
 
