@@ -6,8 +6,6 @@
 
 package com.microsoft.azure.servicebus.stream.binder.properties;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.stream.binder.ExtendedBindingProperties;
 
@@ -17,8 +15,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author Warren Zhu
  */
-@Getter
-@Setter
 @ConfigurationProperties("spring.cloud.stream.servicebus")
 public class ServiceBusExtendedBindingProperties
         implements ExtendedBindingProperties<ServiceBusConsumerProperties, ServiceBusProducerProperties> {
@@ -33,5 +29,9 @@ public class ServiceBusExtendedBindingProperties
     @Override
     public ServiceBusProducerProperties getExtendedProducerProperties(String channelName) {
         return this.bindings.computeIfAbsent(channelName, key -> new ServiceBusBindingProperties()).getProducer();
+    }
+
+    public Map<String, ServiceBusBindingProperties> getBindings() {
+        return bindings;
     }
 }

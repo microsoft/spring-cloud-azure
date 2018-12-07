@@ -8,17 +8,12 @@ package com.microsoft.azure.spring.cloud.context.core.config;
 
 import com.microsoft.azure.spring.cloud.context.core.api.CredentialSupplier;
 import com.microsoft.azure.spring.cloud.context.core.api.Environment;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.PostConstruct;
-import javax.validation.constraints.NotEmpty;
 
-@Getter
-@Setter
 @Validated
 @ConfigurationProperties("spring.cloud.azure")
 public class AzureProperties implements CredentialSupplier {
@@ -39,5 +34,46 @@ public class AzureProperties implements CredentialSupplier {
             Assert.hasText(this.region,
                     "When auto create resources is enabled, spring.cloud.azure.region must be provided");
         }
+    }
+
+    @Override
+    public String getCredentialFilePath() {
+        return credentialFilePath;
+    }
+
+    public void setCredentialFilePath(String credentialFilePath) {
+        this.credentialFilePath = credentialFilePath;
+    }
+
+    public String getResourceGroup() {
+        return resourceGroup;
+    }
+
+    public void setResourceGroup(String resourceGroup) {
+        this.resourceGroup = resourceGroup;
+    }
+
+    public Environment getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public boolean isAutoCreateResources() {
+        return autoCreateResources;
+    }
+
+    public void setAutoCreateResources(boolean autoCreateResources) {
+        this.autoCreateResources = autoCreateResources;
     }
 }

@@ -11,8 +11,9 @@ import com.microsoft.azure.eventprocessorhost.PartitionContext;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.eventhub.util.EventDataHelper;
-import lombok.extern.slf4j.Slf4j;
 import net.jcip.annotations.NotThreadSafe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,9 +23,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author Warren Zhu
  */
-@Slf4j
 @NotThreadSafe
 class EventHubCheckpointManager {
+    private static final Logger log = LoggerFactory.getLogger(EventHubCheckpointManager.class);
     private final CheckpointConfig checkpointConfig;
     private final ConcurrentHashMap<String, AtomicInteger> countByPartition = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, EventData> lastEventByPartition = new ConcurrentHashMap<>();

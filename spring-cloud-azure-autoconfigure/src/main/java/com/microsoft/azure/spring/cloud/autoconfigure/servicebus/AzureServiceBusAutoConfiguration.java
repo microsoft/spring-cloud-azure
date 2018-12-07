@@ -13,7 +13,8 @@ import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManager;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -33,8 +34,8 @@ import javax.annotation.PostConstruct;
 @ConditionalOnClass(IMessage.class)
 @ConditionalOnProperty(value = "spring.cloud.azure.servicebus.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(AzureServiceBusProperties.class)
-@Slf4j
 public class AzureServiceBusAutoConfiguration {
+    private static final Logger log = LoggerFactory.getLogger(AzureServiceBusAutoConfiguration.class);
     private static final String SERVICE_BUS = "ServiceBus";
 
     private static String buildConnectionString(ResourceManager<ServiceBusNamespace, String> serviceBusNamespaceManager,

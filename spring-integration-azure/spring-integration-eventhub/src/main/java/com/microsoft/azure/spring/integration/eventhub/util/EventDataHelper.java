@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class EventDataHelper {
 
-    public static String toString(EventData eventData){
+    public static String toString(EventData eventData) {
         Map<String, Object> map = new LinkedHashMap<>();
 
         map.put("body", eventData.getObject());

@@ -10,7 +10,8 @@ import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.file.CloudFile;
 import com.microsoft.azure.storage.file.CloudFileClient;
 import com.microsoft.azure.storage.file.CloudFileShare;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
 
@@ -25,8 +26,8 @@ import java.net.URL;
  *
  * @author Warren Zhu
  */
-@Slf4j
 public class FileStorageResource extends AzureStorageResource {
+    private static final Logger log = LoggerFactory.getLogger(FileStorageResource.class);
     private static final String MSG_FAIL_GET = "Failed to get file or container";
     private static final String MSG_FAIL_OPEN_OUTPUT = "Failed to open output stream of file";
     private static final String MSG_FAIL_CHECK_EXIST = "Failed to check existence of file or container";

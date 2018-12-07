@@ -13,8 +13,9 @@ import com.microsoft.azure.spring.integration.servicebus.ServiceBusMessageHandle
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusTemplate;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusQueueClientFactory;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
 
@@ -28,9 +29,9 @@ import java.util.function.Consumer;
  *
  * @author Warren Zhu
  */
-@Slf4j
 public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueClientFactory>
         implements ServiceBusQueueOperation {
+    private static final Logger log = LoggerFactory.getLogger(ServiceBusQueueTemplate.class);
     private static final String MSG_FAIL_CHECKPOINT = "Failed to checkpoint %s in queue '%s'";
     private static final String MSG_SUCCESS_CHECKPOINT = "Checkpointed %s in queue '%s' in %s mode";
     private final Set<String> subscribedQueues = Sets.newConcurrentHashSet();

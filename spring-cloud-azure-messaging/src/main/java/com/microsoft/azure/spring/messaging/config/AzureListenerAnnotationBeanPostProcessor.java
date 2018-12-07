@@ -11,8 +11,8 @@ import com.microsoft.azure.spring.messaging.annotation.AzureMessageListeners;
 import com.microsoft.azure.spring.messaging.annotation.EnableAzureMessaging;
 import com.microsoft.azure.spring.messaging.container.ListenerContainerFactory;
 import com.microsoft.azure.spring.messaging.endpoint.MethodAzureListenerEndpoint;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopInfrastructureBean;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.aop.support.AopUtils;
@@ -62,7 +62,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @see AzureListenerEndpointRegistry
  * @see MethodAzureListenerEndpoint
  */
-@Slf4j
 public class AzureListenerAnnotationBeanPostProcessor
         implements MergedBeanDefinitionPostProcessor, Ordered, BeanFactoryAware, SmartInitializingSingleton {
 
@@ -70,16 +69,14 @@ public class AzureListenerAnnotationBeanPostProcessor
      * The bean name of the default {@link ListenerContainerFactory}.
      */
     public static final String DEFAULT_AZURE_LISTENER_CONTAINER_FACTORY_BEAN_NAME = "azureListenerContainerFactory";
-
     public static final String DEFAULT_AZURE_LISTENER_ENDPOINT_REGISTRY_BEAN_NAME = "azureListenerEndpointRegistry";
-
+    private static final Logger log = LoggerFactory.getLogger(AzureListenerAnnotationBeanPostProcessor.class);
     private final MessageHandlerMethodFactoryAdapter messageHandlerMethodFactory =
             new MessageHandlerMethodFactoryAdapter();
     private final AzureListenerEndpointRegistrar registrar = new AzureListenerEndpointRegistrar();
     private final AtomicInteger counter = new AtomicInteger();
     private final Set<Class<?>> nonAnnotatedClasses = Collections.newSetFromMap(new ConcurrentHashMap<>(64));
 
-    @Setter
     private String containerFactoryBeanName = DEFAULT_AZURE_LISTENER_CONTAINER_FACTORY_BEAN_NAME;
     @Nullable
     private AzureListenerEndpointRegistry endpointRegistry;
@@ -87,6 +84,10 @@ public class AzureListenerAnnotationBeanPostProcessor
     private BeanFactory beanFactory;
     @Nullable
     private StringValueResolver embeddedValueResolver;
+
+    public void setContainerFactoryBeanName(String containerFactoryBeanName) {
+        this.containerFactoryBeanName = containerFactoryBeanName;
+    }
 
     @Override
     public int getOrder() {

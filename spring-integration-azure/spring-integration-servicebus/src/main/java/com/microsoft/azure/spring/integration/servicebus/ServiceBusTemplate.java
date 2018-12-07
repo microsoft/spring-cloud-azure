@@ -14,9 +14,8 @@ import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
 import com.microsoft.azure.spring.integration.core.api.SendOperation;
 import com.microsoft.azure.spring.integration.servicebus.converter.ServiceBusMessageConverter;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusSenderFactory;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
@@ -30,17 +29,14 @@ import java.util.concurrent.CompletableFuture;
  *
  * @author Warren Zhu
  */
-@Slf4j
 public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements SendOperation {
+    private static final Logger log = LoggerFactory.getLogger(ServiceBusTemplate.class);
     protected final T senderFactory;
     protected final MessageHandlerOptions options = new MessageHandlerOptions(1, false, Duration.ofMinutes(5));
 
-    @Getter
     protected CheckpointConfig checkpointConfig =
             CheckpointConfig.builder().checkpointMode(CheckpointMode.RECORD).build();
 
-    @Getter
-    @Setter
     protected ServiceBusMessageConverter messageConverter = new ServiceBusMessageConverter();
 
     public ServiceBusTemplate(@NonNull T senderFactory) {
@@ -88,5 +84,13 @@ public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements Se
     private static boolean isValidCheckpointConfig(CheckpointConfig checkpointConfig) {
         return checkpointConfig.getCheckpointMode() == CheckpointMode.MANUAL ||
                 checkpointConfig.getCheckpointMode() == CheckpointMode.RECORD;
+    }
+
+    public CheckpointConfig getCheckpointConfig() {
+        return checkpointConfig;
+    }
+
+    public ServiceBusMessageConverter getMessageConverter() {
+        return messageConverter;
     }
 }
