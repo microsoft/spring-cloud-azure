@@ -46,4 +46,9 @@ public class TelemetryAutoConfigurationTest {
         this.contextRunner.withClassLoader(new FilteredClassLoader(TelemetryClient.class))
                           .run(context -> assertThat(context).doesNotHaveBean(TelemetryProperties.class));
     }
+
+    @Test
+    public void testWithoutTelemetryKey(){
+        this.contextRunner.run(context -> assertThat(context).doesNotHaveBean(TelemetryProperties.class));
+    }
 }
