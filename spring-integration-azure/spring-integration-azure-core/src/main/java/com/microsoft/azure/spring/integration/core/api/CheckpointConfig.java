@@ -31,6 +31,11 @@ public class CheckpointConfig {
         return checkpointCount;
     }
 
+    @Override
+    public String toString() {
+        return "CheckpointConfig{" + "checkpointMode=" + checkpointMode + ", checkpointCount=" + checkpointCount + '}';
+    }
+
     public static CheckpointConfigBuilder builder(){
         return new CheckpointConfigBuilder();
     }
