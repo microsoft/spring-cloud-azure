@@ -37,27 +37,26 @@ public class AzureCloudFoundryEnvironmentPostProcessor implements EnvironmentPos
     private static final int order = ConfigFileApplicationListener.DEFAULT_ORDER - 1;
 
     @SuppressWarnings("unchecked")
-    private static Properties retrieveCfProperties(Map<String, Object> vcapMap, String azureServiceName,
-            String cfServiceName, Map<String, String> fieldsToMap) {
+    private static Properties retrieveCfProperties(Map<String, Object> vcapMap, AzureCfService azureCfService) {
         Properties properties = new Properties();
 
         try {
-            List<Object> serviceBindings = (List<Object>) vcapMap.get(cfServiceName);
+            List<Object> serviceBindings = (List<Object>) vcapMap.get(azureCfService.getCfServiceName());
 
             if (serviceBindings == null) {
                 return properties;
             }
 
             if (serviceBindings.size() != 1) {
-                log.warn("The service " + cfServiceName + " has to be bound to a " +
+                log.warn("The service " + azureCfService.getCfServiceName() + " has to be bound to a " +
                         "Cloud Foundry application once and only once.");
                 return properties;
             }
 
             Map<String, Object> serviceBinding = (Map<String, Object>) serviceBindings.get(0);
             Map<String, String> credentialsMap = (Map<String, String>) serviceBinding.get("credentials");
-            String prefix = SPRING_CLOUD_AZURE_PROPERTY_PREFIX + azureServiceName + ".";
-            fieldsToMap.forEach(
+            String prefix = SPRING_CLOUD_AZURE_PROPERTY_PREFIX + azureCfService.getAzureServiceName() + ".";
+            azureCfService.getCfPropNameToAzure().forEach(
                     (cfPropKey, azurePropKey) -> properties.put(prefix + azurePropKey, credentialsMap.get(cfPropKey)));
         } catch (ClassCastException e) {
             log.warn("Unexpected format of CF (VCAP) properties", e);
@@ -69,15 +68,14 @@ public class AzureCloudFoundryEnvironmentPostProcessor implements EnvironmentPos
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         if (!StringUtils.isEmpty(environment.getProperty(VCAP_SERVICES_ENVVAR))) {
-            Map<String, Object> vcapMap = this.parser.parseMap(environment.getProperty(VCAP_SERVICES_ENVVAR));
+            Map<String, Object> vcapMap = parser.parseMap(environment.getProperty(VCAP_SERVICES_ENVVAR));
 
             Properties azureCfServiceProperties = new Properties();
 
             Set<AzureCfService> servicesToMap = new HashSet<>(Arrays.asList(AzureCfService.values()));
 
             servicesToMap.forEach(service -> azureCfServiceProperties
-                    .putAll(retrieveCfProperties(vcapMap, service.getAzureServiceName(), service.getCfServiceName(),
-                            service.getCfPropNameToAzure())));
+                    .putAll(retrieveCfProperties(vcapMap, service)));
 
             environment.getPropertySources()
                        .addFirst(new PropertiesPropertySource("azureCf", azureCfServiceProperties));
