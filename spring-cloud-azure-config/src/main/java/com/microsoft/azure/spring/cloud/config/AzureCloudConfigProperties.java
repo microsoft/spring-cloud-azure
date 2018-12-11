@@ -5,6 +5,8 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import com.microsoft.azure.spring.cloud.config.msi.AzureCloudConfigARMProperties;
+import com.microsoft.azure.spring.cloud.config.msi.AzureCloudConfigMSIProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -32,7 +34,6 @@ public class AzureCloudConfigProperties {
 
     private boolean enabled = true;
 
-    @NotEmpty
     private String connectionString;
 
     @NotEmpty
@@ -60,6 +61,10 @@ public class AzureCloudConfigProperties {
 
     private Watch watch = new Watch();
 
+    private AzureCloudConfigMSIProperties msi;
+
+    private AzureCloudConfigARMProperties arm;
+
     // Values extracted from connection string
     private String endpoint;
     private String id;
@@ -78,7 +83,11 @@ public class AzureCloudConfigProperties {
     }
 
     @PostConstruct
-    private void validateAndInit() {
+    public void validateAndInit() {
+        if (!StringUtils.hasText(connectionString)) {
+            return;
+        }
+
         String[] items = connectionString.split(CONN_STRING_SPLITTER);
         for (String item : items) {
             if (!StringUtils.hasText(item)) {

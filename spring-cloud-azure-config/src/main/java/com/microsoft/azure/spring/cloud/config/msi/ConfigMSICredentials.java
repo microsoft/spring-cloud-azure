@@ -20,9 +20,11 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 /**
  * Managed Service Identity token based credentials for use with a REST Service Client.
@@ -43,12 +45,13 @@ public class ConfigMSICredentials extends AzureTokenCredentials {
     private final Lock lock = new ReentrantLock();
     private final ConcurrentHashMap<String, MSIToken> cache = new ConcurrentHashMap<>();
     private final String resource;
+    private final AzureCloudConfigMSIProperties msiProperties;
     private AzureInstanceMetadataService metadataService;
     private ImmutableMap<String, String> tokenReqHeaders = ImmutableMap.of();
     private MSIType msiType;
 
-    public ConfigMSICredentials() {
-        this(AzureEnvironment.AZURE);
+    public ConfigMSICredentials(AzureCloudConfigMSIProperties msiProperties) {
+        this(AzureEnvironment.AZURE, msiProperties);
     }
 
     /**
@@ -56,9 +59,10 @@ public class ConfigMSICredentials extends AzureTokenCredentials {
      *
      * @param environment the Azure environment to use
      */
-    public ConfigMSICredentials(AzureEnvironment environment) {
+    public ConfigMSICredentials(AzureEnvironment environment, AzureCloudConfigMSIProperties msiProperties) {
         super(environment, null); /* retrieving MSI token does not require tenant */
         this.resource = environment.managementEndpoint();
+        this.msiProperties = msiProperties;
         this.msiType = checkMSIType();
         this.metadataService = getMetadataService(msiType);
         setHeader(msiType);
@@ -72,19 +76,19 @@ public class ConfigMSICredentials extends AzureTokenCredentials {
     private String getTokenFromIMDSEndpoint(String resource) {
         MSIToken token = cache.get(resource);
         if (token != null && !token.isExpired()) {
-            return token.accessToken();
+            return token.getAccessToken();
         }
         lock.lock();
         try {
             token = cache.get(resource);
             if (token != null && !token.isExpired()) {
-                return token.accessToken();
+                return token.getAccessToken();
             }
 
             token = retrieveTokenFromIDMSWithRetry(resource);
             cache.put(resource, token);
 
-            return token.accessToken();
+            return token.getAccessToken();
         } finally {
             lock.unlock();
         }
@@ -99,6 +103,11 @@ public class ConfigMSICredentials extends AzureTokenCredentials {
         int retry = 0;
         while (retry < MAX_RETRY) {
             try {
+                LOGGER.debug("Acquiring token for resource {} from {} with headers [{}].", resource,
+                        httpGet.getURI(),
+                        Arrays.asList(httpGet.getAllHeaders())
+                                .stream().map(header -> header.getName() + ":" + header.getValue())
+                                .collect(Collectors.joining(";")));
                 response = HTTP_CLIENT.execute(httpGet);
                 return ADAPTER.deserialize(toString(response), MSIToken.class);
             } catch (Exception e) {
@@ -170,12 +179,22 @@ public class ConfigMSICredentials extends AzureTokenCredentials {
     }
 
     private AzureInstanceMetadataService getMetadataService(MSIType type) {
+        AzureInstanceMetadataService metadataService = new AzureInstanceMetadataService();
+        if (msiProperties != null && StringUtils.hasText(msiProperties.getClientId())) {
+            metadataService.withClientId(msiProperties.getClientId());
+        } else if (msiProperties != null && StringUtils.hasText(msiProperties.getObjectId())) {
+            metadataService.withObjectId(msiProperties.getObjectId());
+        }
+
         switch (type) {
             case APP_SERVICE:
-                return new AzureInstanceMetadataService().withTokenEndpoint(System.getenv("MSI_ENDPOINT"));
+                metadataService.withTokenEndpoint(System.getenv("MSI_ENDPOINT"));
+                break;
             default:
-                return new AzureInstanceMetadataService();
+                break;
         }
+
+        return metadataService;
     }
 
     private void setHeader(MSIType type) {
