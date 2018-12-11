@@ -30,8 +30,6 @@ public class AzureCloudFoundryEnvironmentPostProcessor implements EnvironmentPos
 
     private static final String VCAP_SERVICES_ENVVAR = "VCAP_SERVICES";
 
-    private static final String SPRING_CLOUD_AZURE_PROPERTY_PREFIX = "spring.cloud.azure.";
-
     private static final JsonParser parser = JsonParserFactory.getJsonParser();
 
     private static final int order = ConfigFileApplicationListener.DEFAULT_ORDER - 1;
@@ -55,9 +53,8 @@ public class AzureCloudFoundryEnvironmentPostProcessor implements EnvironmentPos
 
             Map<String, Object> serviceBinding = (Map<String, Object>) serviceBindings.get(0);
             Map<String, String> credentialsMap = (Map<String, String>) serviceBinding.get("credentials");
-            String prefix = SPRING_CLOUD_AZURE_PROPERTY_PREFIX + azureCfService.getAzureServiceName() + ".";
-            azureCfService.getCfPropNameToAzure().forEach(
-                    (cfPropKey, azurePropKey) -> properties.put(prefix + azurePropKey, credentialsMap.get(cfPropKey)));
+            azureCfService.getCfToAzureProperties().forEach(
+                    (cfPropKey, azurePropKey) -> properties.put(azurePropKey, credentialsMap.get(cfPropKey)));
         } catch (ClassCastException e) {
             log.warn("Unexpected format of CF (VCAP) properties", e);
         }
@@ -74,8 +71,7 @@ public class AzureCloudFoundryEnvironmentPostProcessor implements EnvironmentPos
 
             Set<AzureCfService> servicesToMap = new HashSet<>(Arrays.asList(AzureCfService.values()));
 
-            servicesToMap.forEach(service -> azureCfServiceProperties
-                    .putAll(retrieveCfProperties(vcapMap, service)));
+            servicesToMap.forEach(service -> azureCfServiceProperties.putAll(retrieveCfProperties(vcapMap, service)));
 
             environment.getPropertySources()
                        .addFirst(new PropertiesPropertySource("azureCf", azureCfServiceProperties));
