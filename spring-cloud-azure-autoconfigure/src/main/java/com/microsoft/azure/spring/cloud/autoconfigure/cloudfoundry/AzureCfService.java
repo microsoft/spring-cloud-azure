@@ -12,10 +12,10 @@ import java.util.Map;
 
 enum AzureCfService {
 
-    SERVICEBUS("servicebus", "azure-servicebus", ImmutableMap.of("ConnectionString", "connection-string")),
+    SERVICEBUS("servicebus", "azure-servicebus", ImmutableMap.of("connectionString", "connection-string")),
     EVENTHUB("eventhub", "azure-eventhub", ImmutableMap.of("ConnectionString", "connection-string")),
     STORAGE("storage", "azure-storage",
-            ImmutableMap.of("StorageAccountName", "storage-account", "AccessKey", "access-key"));
+            ImmutableMap.of("storageAccountName", "account", "accessKey", "access-key"));
 
     /**
      * Name of the Azure Cloud Foundry service in the VCAP_SERVICES JSON.
@@ -33,7 +33,7 @@ enum AzureCfService {
      */
     private Map<String, String> cfPropNameToAzure;
 
-    AzureCfService(String cfServiceName, String azureServiceName, Map<String, String> cfPropNameToAzure) {
+    AzureCfService(String azureServiceName, String cfServiceName, Map<String, String> cfPropNameToAzure) {
         this.cfServiceName = cfServiceName;
         this.azureServiceName = azureServiceName;
         this.cfPropNameToAzure = cfPropNameToAzure;

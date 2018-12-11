@@ -1,0 +1,39 @@
+{
+  "azure-storage": [
+   {
+    "credentials": {
+     "accessKey": "fakekey==",
+     "storageAccountName": "fake"
+    },
+    "label": "azure-storage",
+    "name": "mystorage",
+    "plan": "general-purpose-storage-account",
+    "provider": null,
+    "syslog_drain_url": null,
+    "tags": [
+     "Azure",
+     "Storage"
+    ],
+    "volume_mounts": []
+   }
+  ],
+  "azure-servicebus": [
+     {
+      "credentials": {
+       "connectionString": "Endpoint=sb://fake.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=fakekey=",
+       "primaryKey": "fakekey="
+      },
+      "label": "azure-servicebus",
+      "name": "mysb",
+      "plan": "standard",
+      "provider": null,
+      "syslog_drain_url": null,
+      "tags": [
+       "Azure",
+       "Service",
+       "Bus"
+      ],
+      "volume_mounts": []
+     }
+    ]
+}
