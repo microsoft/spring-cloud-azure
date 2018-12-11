@@ -58,6 +58,8 @@ public class AzureCloudConfigProperties {
 
     private boolean failFast = true;
 
+    private Watch watch = new Watch();
+
     // Values extracted from connection string
     private String endpoint;
     private String id;
@@ -96,5 +98,29 @@ public class AzureCloudConfigProperties {
         Assert.hasText(this.endpoint, String.format(NON_EMPTY_MSG, "Endpoint"));
         Assert.hasText(this.id, String.format(NON_EMPTY_MSG, "Id"));
         Assert.hasText(this.secret, String.format(NON_EMPTY_MSG, "Secret"));
+    }
+
+    class Watch {
+        private boolean enabled = true;
+        private int delay = 1000; /* milli-seconds */
+
+        public Watch() {
+        }
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public int getDelay() {
+            return delay;
+        }
+
+        public void setDelay(int delay) {
+            this.delay = delay;
+        }
     }
 }
