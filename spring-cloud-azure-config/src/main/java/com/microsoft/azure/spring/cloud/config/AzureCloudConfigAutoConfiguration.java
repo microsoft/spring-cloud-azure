@@ -16,12 +16,12 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @Configuration
+@ConditionalOnClass(RefreshEndpoint.class)
+@ConditionalOnProperty(name = AzureCloudConfigProperties.CONFIG_PREFIX + ".watch.enabled", matchIfMissing = true)
 public class AzureCloudConfigAutoConfiguration {
     public static final String WATCH_TASK_SCHEDULER_NAME = "azureConfigWatchTaskScheduler";
 
     @Bean
-    @ConditionalOnClass(RefreshEndpoint.class)
-    @ConditionalOnProperty(name = AzureCloudConfigProperties.CONFIG_PREFIX + ".watch.enabled", matchIfMissing = true)
     public AzureCloudConfigWatch getConfigWatch(ConfigServiceOperations operations,
                                                 AzureCloudConfigProperties properties,
                                                 @Qualifier(WATCH_TASK_SCHEDULER_NAME) TaskScheduler scheduler) {
@@ -30,8 +30,6 @@ public class AzureCloudConfigAutoConfiguration {
 
     @Bean(name = WATCH_TASK_SCHEDULER_NAME)
     @ConditionalOnMissingBean
-    @ConditionalOnClass(RefreshEndpoint.class)
-    @ConditionalOnProperty(name = AzureCloudConfigProperties.CONFIG_PREFIX + ".watch.enabled", matchIfMissing = true)
     public TaskScheduler getTaskScheduler() {
         return new ThreadPoolTaskScheduler();
     }
