@@ -88,6 +88,42 @@ public class AzureConfigPropertySourceLocatorTest {
     }
 
     @Test
+    public void nullApplicationNameCreateDefaultContextOnly() {
+        when(environment.getActiveProfiles()).thenReturn(new String[]{});
+        when(environment.getProperty("spring.application.name")).thenReturn(null);
+        properties.setName(null);
+        locator = new AzureConfigPropertySourceLocator(operations, properties);
+
+        PropertySource<?> source = locator.locate(environment);
+        assertThat(source).isInstanceOf(CompositePropertySource.class);
+
+        Collection<PropertySource<?>> sources = ((CompositePropertySource) source).getPropertySources();
+        // Default context, null application name, empty active profile,
+        // should construct composite Property Source: [/application/]
+        String[] expectedPrefixes = new String[]{"/application/"};
+        assertThat(sources.size()).isEqualTo(1);
+        assertThat(sources.stream().map(s -> s.getName()).toArray()).containsExactly(expectedPrefixes);
+    }
+
+    @Test
+    public void emptyApplicationNameCreateDefaultContextOnly() {
+        when(environment.getActiveProfiles()).thenReturn(new String[]{});
+        when(environment.getProperty("spring.application.name")).thenReturn("");
+        properties.setName("");
+        locator = new AzureConfigPropertySourceLocator(operations, properties);
+
+        PropertySource<?> source = locator.locate(environment);
+        assertThat(source).isInstanceOf(CompositePropertySource.class);
+
+        Collection<PropertySource<?>> sources = ((CompositePropertySource) source).getPropertySources();
+        // Default context, empty application name, empty active profile,
+        // should construct composite Property Source: [/application/]
+        String[] expectedPrefixes = new String[]{"/application/"};
+        assertThat(sources.size()).isEqualTo(1);
+        assertThat(sources.stream().map(s -> s.getName()).toArray()).containsExactly(expectedPrefixes);
+    }
+
+    @Test
     public void defaultFailFastThrowException() {
         final String failureMsg = "Failed to load data from Azure Config Service.";
         expected.expect(RuntimeException.class);

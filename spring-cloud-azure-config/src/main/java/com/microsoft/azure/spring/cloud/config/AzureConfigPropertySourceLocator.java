@@ -65,7 +65,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         for (String sourceContext : this.contexts) {
             try {
                 composite.addPropertySource(create(sourceContext));
-                log.debug("PropertySource context {} is added.", sourceContext);
+                log.debug("PropertySource context [{}] is added.", sourceContext);
             } catch (Exception e) {
                 if (properties.isFailFast()) {
                     log.error("Fail fast is set and there was an error reading configuration from Azure Config " +
@@ -82,6 +82,10 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
     private List<String> generateContexts(String applicationName, List<String> profiles) {
         List<String> result = new ArrayList<>();
+        if (!StringUtils.hasText(applicationName)) {
+            return result; // Ignore null or empty application name
+        }
+
         String prefix = this.properties.getPrefix();
 
         String prefixedContext = propWithAppName(prefix, applicationName);
