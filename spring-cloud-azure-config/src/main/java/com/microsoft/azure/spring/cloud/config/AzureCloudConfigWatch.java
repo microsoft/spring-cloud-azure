@@ -17,7 +17,9 @@ import org.springframework.util.StringUtils;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -25,7 +27,7 @@ import java.util.stream.Collectors;
 public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, SmartLifecycle {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureCloudConfigWatch.class);
     private final ConfigServiceOperations configOperations;
-    private final LinkedHashMap<String, String> keyNameEtagMap = new LinkedHashMap<>();
+    private final ConcurrentHashMap<String, String> keyNameEtagMap = new ConcurrentHashMap<>();
     private final TaskScheduler taskScheduler;
     private final AtomicBoolean running = new AtomicBoolean(false);
     private ApplicationEventPublisher publisher;
@@ -86,7 +88,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
             String prefix = StringUtils.hasText(properties.getPrefix()) ? properties.getPrefix() + "*" : "*";
             List<KeyValueItem> keyValueItems = configOperations.getKeys(prefix, properties.getLabel());
 
-            if (keyValueItems == null || keyValueItems.isEmpty()) {
+            if (keyValueItems.isEmpty()) {
                 return;
             }
 
@@ -100,12 +102,12 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
             }
 
             Optional<String> changedKey = newKeyEtagMap.entrySet().stream()
-                    .filter(e -> mapNotInclude(keyNameEtagMap, e.getKey(), e.getValue()))
+                    .filter(e -> !mapInclude(keyNameEtagMap, e.getKey(), e.getValue()))
                     .map(e -> e.getKey())
                     .findFirst();
 
             if (!firstTime && changedKey.isPresent()) {
-                LOGGER.trace("Some key matching {} is updated, will send refresh event.", prefix);
+                LOGGER.trace("Some keys matching {} is updated, will send refresh event.", prefix);
                 keyNameEtagMap.clear();
                 keyNameEtagMap.putAll(newKeyEtagMap);
                 RefreshEventData eventData = new RefreshEventData(prefix);
@@ -114,15 +116,15 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
         }
     }
 
-    private boolean mapNotInclude(LinkedHashMap<String, String> map, String key, String value) {
-        return !map.containsKey(key) || (map.get(key) != null && !map.get(key).equals(value));
+    private boolean mapInclude(Map<String, String> map, String key, String value) {
+        return map.containsKey(key) && (map.get(key) != null && map.get(key).equals(value));
     }
 
     /**
      * For each refresh, multiple etags can change, but even one etag is changed, refresh is required.
      */
     class RefreshEventData {
-        private static final String MSG_TEMPLATE = "Some key matching %s has been updated since last check.";
+        private static final String MSG_TEMPLATE = "Some keys matching %s has been updated since last check.";
         private final String message;
 
         public RefreshEventData(String prefix) {
