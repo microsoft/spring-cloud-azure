@@ -9,7 +9,9 @@ package com.microsoft.azure.spring.cloud.autoconfigure.cloudfoundry;
 import com.microsoft.azure.spring.cloud.autoconfigure.servicebus.AzureServiceBusProperties;
 import com.microsoft.azure.spring.cloud.autoconfigure.storage.AzureStorageProperties;
 import org.junit.Test;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.assertj.AssertableApplicationContext;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.core.io.ClassPathResource;
 
@@ -33,19 +35,36 @@ public class AzureCloudFoundryEnvironmentPostProcessorTests {
         String vcapFileContents =
                 new String(Files.readAllBytes(new ClassPathResource("VCAP_SERVICES").getFile().toPath()));
         this.contextRunner.withSystemProperties("VCAP_SERVICES=" + vcapFileContents).run(context -> {
-            AzureServiceBusProperties serviceBusProperties = context.getBean(AzureServiceBusProperties.class);
-            assertThat(serviceBusProperties.getConnectionString()).isEqualTo(
-                    "Endpoint=sb://fake.servicebus.windows.net/;" +
-                            "SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=fakekey=");
+            assertServicebus(context);
 
-            AzureStorageProperties storageProperties = context.getBean(AzureStorageProperties.class);
-            assertThat(storageProperties.getAccount()).isEqualTo("fake");
-            assertThat(storageProperties.getAccessKey()).isEqualTo("fakekey==");
+            assertStorage(context);
 
+            assertRedis(context);
         });
     }
 
-    @EnableConfigurationProperties({AzureServiceBusProperties.class, AzureStorageProperties.class})
+    private void assertRedis(AssertableApplicationContext context) {
+        RedisProperties redisProperties = context.getBean(RedisProperties.class);
+        assertThat(redisProperties.getHost()).isEqualTo("fake.redis.cache.windows.net");
+        assertThat(redisProperties.getPassword()).isEqualTo("fakepwd=");
+        assertThat(redisProperties.getPort()).isEqualTo(6379);
+    }
+
+    private void assertStorage(AssertableApplicationContext context) {
+        AzureStorageProperties storageProperties = context.getBean(AzureStorageProperties.class);
+        assertThat(storageProperties.getAccount()).isEqualTo("fake");
+        assertThat(storageProperties.getAccessKey()).isEqualTo("fakekey==");
+    }
+
+    private void assertServicebus(AssertableApplicationContext context) {
+        AzureServiceBusProperties serviceBusProperties = context.getBean(AzureServiceBusProperties.class);
+        assertThat(serviceBusProperties.getConnectionString()).isEqualTo(
+                "Endpoint=sb://fake.servicebus.windows.net/;" +
+                        "SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=fakekey=");
+    }
+
+    @EnableConfigurationProperties({AzureServiceBusProperties.class, AzureStorageProperties.class,
+            RedisProperties.class})
     static class AzureCfEnvPPTestConfiguration {
 
     }
