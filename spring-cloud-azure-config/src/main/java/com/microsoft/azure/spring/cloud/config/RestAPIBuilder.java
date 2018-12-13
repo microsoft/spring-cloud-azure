@@ -62,7 +62,7 @@ public class RestAPIBuilder {
             this.addParam("key", prefix);
         }
 
-        label = label == null ? "%00" : label; // label=%00 matches null label
+        label = StringUtils.hasText(label) ? label.trim() : "%00"; // label=%00 matches null label
         if (StringUtils.hasText(label)) {
             this.addParam("label", label);
         }

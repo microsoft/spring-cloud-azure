@@ -66,6 +66,18 @@ public class RestAPIBuilderTest {
     }
 
     @Test
+    public void emptyLabelValueQueriedAsEmptyLabel() {
+        final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT);
+
+        String apiPath = builder.buildKVApi(null, "");
+        Assert.assertTrue("Empty label should have query param %00.", apiPath.endsWith(NULL_LABEL_QUERY));
+
+        apiPath = builder.buildKVApi(null, "  ");
+        Assert.assertTrue("Whitespace consisted label should have query param %00.",
+                apiPath.endsWith(NULL_LABEL_QUERY));
+    }
+
+    @Test
     public void bothKeyAndLabelCanBeConfigured() throws URISyntaxException {
         final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT);
         String apiPath = builder.buildKVApi(FAKE_KEY, FAKE_LABEL);
