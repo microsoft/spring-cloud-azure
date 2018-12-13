@@ -90,6 +90,16 @@ public class ServiceBusTopicMessageChannelBinder extends
         return this.bindingProperties.getExtendedProducerProperties(channelName);
     }
 
+    @Override
+    public String getDefaultsPrefix() {
+        return this.bindingProperties.getDefaultsPrefix();
+    }
+
+    @Override
+    public Class<? extends BinderSpecificPropertiesProvider> getExtendedPropertiesEntryClass() {
+        return this.bindingProperties.getExtendedPropertiesEntryClass();
+    }
+
     public void setBindingProperties(ServiceBusExtendedBindingProperties bindingProperties) {
         this.bindingProperties = bindingProperties;
     }
