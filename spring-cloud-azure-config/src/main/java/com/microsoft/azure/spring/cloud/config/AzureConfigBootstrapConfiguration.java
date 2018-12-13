@@ -73,5 +73,4 @@ public class AzureConfigBootstrapConfiguration {
     public void collectTelemetry() {
         TelemetryCollector.getInstance().addService(AZURE_CONFIG_STORE);
     }
-
 }
