@@ -48,9 +48,8 @@ public class AzureServiceBusQueueAutoConfiguration {
     @Bean
     @ConditionalOnBean(ResourceManagerProvider.class)
     @ConditionalOnMissingBean
-    public ServiceBusQueueClientFactory queueClientFactory(ResourceManagerProvider
-            resourceManagerProvider,
-            AzureServiceBusProperties serviceBusProperties) {
+    public ServiceBusQueueClientFactory queueClientFactoryWithResourceManagerProvider(
+            ResourceManagerProvider resourceManagerProvider, AzureServiceBusProperties serviceBusProperties) {
         DefaultServiceBusQueueClientFactory clientFactory =
                 new DefaultServiceBusQueueClientFactory(serviceBusProperties.getConnectionString());
         if (StringUtils.hasText(serviceBusProperties.getNamespace())) {
