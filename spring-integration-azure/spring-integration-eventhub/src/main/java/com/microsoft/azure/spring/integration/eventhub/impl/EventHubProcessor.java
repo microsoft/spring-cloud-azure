@@ -62,7 +62,7 @@ public class EventHubProcessor implements IEventProcessor {
     @Override
     public void onEvents(PartitionContext context, Iterable<EventData> events) throws Exception {
         Map<String, Object> headers = new HashMap<>();
-        headers.put(AzureHeaders.PARTITION_ID, context.getPartitionId());
+        headers.put(AzureHeaders.RAW_PARTITION_ID, context.getPartitionId());
 
         for (EventData e : events) {
             Checkpointer checkpointer = new AzureCheckpointer(() -> context.checkpoint(e));
