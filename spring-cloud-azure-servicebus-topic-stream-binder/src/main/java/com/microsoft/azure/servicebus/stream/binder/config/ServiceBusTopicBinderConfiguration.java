@@ -41,13 +41,13 @@ public class ServiceBusTopicBinderConfiguration {
     @ConditionalOnBean(ResourceManagerProvider.class)
     @ConditionalOnMissingBean
     public ServiceBusTopicChannelProvisioner serviceBusChannelProvisioner(
-          ResourceManagerProvider resourceManagerProvider, AzureServiceBusProperties serviceBusProperties) {
+            ResourceManagerProvider resourceManagerProvider, AzureServiceBusProperties serviceBusProperties) {
         return new ServiceBusTopicChannelProvisioner(resourceManagerProvider, serviceBusProperties.getNamespace());
     }
 
     @Bean
     @ConditionalOnMissingBean({ResourceManagerProvider.class, ServiceBusTopicChannelProvisioner.class})
-    public ServiceBusTopicChannelProvisioner serviceBusChannelProvisioner() {
+    public ServiceBusTopicChannelProvisioner serviceBusChannelProvisionerWithResourceManagerProvider() {
         return new ServiceBusTopicChannelProvisioner();
     }
 
