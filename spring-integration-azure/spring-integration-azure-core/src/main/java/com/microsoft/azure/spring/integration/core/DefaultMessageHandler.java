@@ -8,10 +8,8 @@ package com.microsoft.azure.spring.integration.core;
 
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
 import com.microsoft.azure.spring.integration.core.api.SendOperation;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.common.LiteralExpression;
@@ -19,6 +17,7 @@ import org.springframework.integration.MessageTimeoutException;
 import org.springframework.integration.expression.ExpressionUtils;
 import org.springframework.integration.expression.ValueExpression;
 import org.springframework.integration.handler.AbstractMessageHandler;
+import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.util.Assert;
@@ -40,10 +39,8 @@ import java.util.concurrent.TimeoutException;
  *
  * @author Warren Zhu
  */
-@Getter
-@Setter
-@Slf4j
 public class DefaultMessageHandler extends AbstractMessageHandler {
+    private static final Logger log = LoggerFactory.getLogger(DefaultMessageHandler.class);
     private static final long DEFAULT_SEND_TIMEOUT = 10000;
     private final String destination;
     private final SendOperation sendOperation;
@@ -141,6 +138,10 @@ public class DefaultMessageHandler extends AbstractMessageHandler {
         setPartitionKeyExpression(new LiteralExpression(partitionKey));
     }
 
+    public void setPartitionKeyExpression(Expression partitionKeyExpression) {
+        this.partitionKeyExpression = partitionKeyExpression;
+    }
+
     public void setPartitionKeyExpressionString(String partitionKeyExpression) {
         setPartitionKeyExpression(EXPRESSION_PARSER.parseExpression(partitionKeyExpression));
     }
@@ -178,5 +179,13 @@ public class DefaultMessageHandler extends AbstractMessageHandler {
         properties.put("destination", destination);
 
         return properties;
+    }
+
+    public void setSendCallback(ListenableFutureCallback<Void> callback) {
+        this.sendCallback = callback;
+    }
+
+    public Expression getSendTimeoutExpression() {
+        return sendTimeoutExpression;
     }
 }

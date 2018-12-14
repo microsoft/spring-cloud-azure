@@ -6,13 +6,9 @@
 
 package com.microsoft.azure.spring.integration.eventhub.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HostnameHelper {
 
     private static final String UNKNOWN_HOST_NAME = "Unknown-HostName";

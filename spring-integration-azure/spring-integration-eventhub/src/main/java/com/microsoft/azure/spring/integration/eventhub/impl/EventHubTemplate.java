@@ -9,7 +9,8 @@ package com.microsoft.azure.spring.integration.eventhub.impl;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.Message;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,8 +22,8 @@ import java.util.function.Consumer;
  *
  * @author Warren Zhu
  */
-@Slf4j
 public class EventHubTemplate extends AbstractEventHubTemplate implements EventHubOperation {
+    private static final Logger log = LoggerFactory.getLogger(EventHubTemplate.class);
 
     // Use this concurrent map as set since no concurrent set which has putIfAbsent
     private final ConcurrentMap<Tuple<String, String>, Boolean> subscribedNameAndGroup = new ConcurrentHashMap<>();

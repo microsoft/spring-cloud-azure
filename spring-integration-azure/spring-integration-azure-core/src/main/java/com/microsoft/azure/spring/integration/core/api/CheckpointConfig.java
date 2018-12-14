@@ -6,22 +6,57 @@
 
 package com.microsoft.azure.spring.integration.core.api;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
-
 /**
  * Checkpoint related config
  *
  * @author Warren Zhu
  */
-@Getter
-@Builder
-@ToString
 public class CheckpointConfig {
     private final CheckpointMode checkpointMode;
     /**
      * The count of message to trigger checkpoint. Only used when {@link CheckpointMode#PARTITION_COUNT}
      */
     private final int checkpointCount;
+
+    public CheckpointConfig(CheckpointMode checkpointMode, int checkpointCount) {
+        this.checkpointMode = checkpointMode;
+        this.checkpointCount = checkpointCount;
+    }
+
+    public CheckpointMode getCheckpointMode() {
+        return checkpointMode;
+    }
+
+    public int getCheckpointCount() {
+        return checkpointCount;
+    }
+
+    @Override
+    public String toString() {
+        return "CheckpointConfig{" + "checkpointMode=" + checkpointMode + ", checkpointCount=" + checkpointCount + '}';
+    }
+
+    public static CheckpointConfigBuilder builder(){
+        return new CheckpointConfigBuilder();
+    }
+
+    public static class CheckpointConfigBuilder {
+        private CheckpointMode checkpointMode;
+        private int checkpointCount;
+
+        public CheckpointConfigBuilder checkpointMode(CheckpointMode checkpointMode) {
+            this.checkpointMode = checkpointMode;
+            return this;
+        }
+
+        public CheckpointConfigBuilder checkpointCount(int checkpointCount) {
+            this.checkpointCount = checkpointCount;
+            return this;
+        }
+
+        public CheckpointConfig build() {
+            return new CheckpointConfig(checkpointMode, checkpointCount);
+        }
+    }
+
 }

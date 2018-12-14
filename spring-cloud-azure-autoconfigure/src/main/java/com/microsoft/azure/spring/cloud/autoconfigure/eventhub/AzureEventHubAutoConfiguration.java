@@ -9,8 +9,6 @@ package com.microsoft.azure.spring.cloud.autoconfigure.eventhub;
 import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
 import com.microsoft.azure.management.storage.StorageAccount;
-import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
@@ -20,8 +18,6 @@ import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import com.microsoft.azure.spring.integration.eventhub.factory.DefaultEventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.factory.EventHubConnectionStringProvider;
 import com.microsoft.azure.spring.integration.eventhub.impl.EventHubTemplate;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -37,8 +33,6 @@ import javax.annotation.PostConstruct;
  * @author Warren Zhu
  */
 @Configuration
-@AutoConfigureBefore(TelemetryAutoConfiguration.class)
-@AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnClass(EventHubClient.class)
 @ConditionalOnProperty(prefix = "spring.cloud.azure.eventhub", value = {"namespace", "checkpoint-storage-account"})
 @EnableConfigurationProperties(AzureEventHubProperties.class)

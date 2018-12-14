@@ -6,7 +6,6 @@
 
 package com.microsoft.azure.spring.messaging.listener;
 
-import lombok.Getter;
 import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessagingException;
@@ -18,22 +17,12 @@ import org.springframework.util.Assert;
  * @see Message
  * @see InvocableHandlerMethod
  */
-@Getter
 public class DefaultAzureMessageHandler implements AzureMessageHandler {
 
     @Nullable
     private InvocableHandlerMethod handlerMethod;
 
     private Class<?> messagePayloadType;
-
-    /**
-     * Set the {@link InvocableHandlerMethod} to use to invoke the method
-     * processing an incoming {@link Message}.
-     */
-    public void setHandlerMethod(InvocableHandlerMethod handlerMethod) {
-        this.handlerMethod = handlerMethod;
-        this.messagePayloadType = resolveMessagePayloadType(this.handlerMethod);
-    }
 
     private String createMessagingErrorMessage(String description) {
         InvocableHandlerMethod handlerMethod = getHandlerMethod();
@@ -65,5 +54,23 @@ public class DefaultAzureMessageHandler implements AzureMessageHandler {
 
         //TODO: handle parameter of type Message<T>
         return parameterTypes[0];
+    }
+
+    public InvocableHandlerMethod getHandlerMethod() {
+        return handlerMethod;
+    }
+
+    /**
+     * Set the {@link InvocableHandlerMethod} to use to invoke the method
+     * processing an incoming {@link Message}.
+     */
+    public void setHandlerMethod(InvocableHandlerMethod handlerMethod) {
+        this.handlerMethod = handlerMethod;
+        this.messagePayloadType = resolveMessagePayloadType(this.handlerMethod);
+    }
+
+    @Override
+    public Class<?> getMessagePayloadType() {
+        return messagePayloadType;
     }
 }

@@ -35,12 +35,12 @@ public class StorageApplicationIT {
             throws Exception {
         String content = UUID.randomUUID().toString();
 
-        mvc.perform(post("/")
+        mvc.perform(post("/blob")
                 .contentType(MediaType.APPLICATION_JSON).content(content))
            .andExpect(status().isOk())
            .andExpect(content().string("file was updated"));
 
-        mvc.perform(get("/")
+        mvc.perform(get("/blob")
                 .contentType(MediaType.APPLICATION_JSON))
            .andExpect(status().isOk())
            .andExpect(content().string(content));

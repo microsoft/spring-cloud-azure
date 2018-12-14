@@ -34,7 +34,7 @@ public class EventHubKafkaBinderApplicationIT {
     private MockMvc mvc;
 
     @Rule
-    OutputCapture capture = new OutputCapture();
+    public OutputCapture capture = new OutputCapture();
 
     @Test
     public void testSendAndReceiveMessage() throws Exception {

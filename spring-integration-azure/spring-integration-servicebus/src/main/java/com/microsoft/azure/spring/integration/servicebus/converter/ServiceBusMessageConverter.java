@@ -10,7 +10,8 @@ import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.Message;
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
 import com.microsoft.azure.spring.integration.core.converter.AbstractAzureMessageConverter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.util.InvalidMimeTypeException;
 import org.springframework.util.MimeType;
@@ -27,8 +28,8 @@ import java.util.UUID;
  *
  * @author Warren Zhu
  */
-@Slf4j
 public class ServiceBusMessageConverter extends AbstractAzureMessageConverter<IMessage> {
+    private static final Logger log = LoggerFactory.getLogger(ServiceBusMessageConverter.class);
 
     @Override
     protected byte[] getPayload(IMessage azureMessage) {

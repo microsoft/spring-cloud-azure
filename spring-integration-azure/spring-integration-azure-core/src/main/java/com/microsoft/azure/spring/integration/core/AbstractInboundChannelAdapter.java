@@ -9,7 +9,6 @@ package com.microsoft.azure.spring.integration.core;
 import com.microsoft.azure.spring.integration.core.api.ListenerMode;
 import com.microsoft.azure.spring.integration.core.api.SubscribeByGroupOperation;
 import com.microsoft.azure.spring.integration.core.api.SubscribeOperation;
-import lombok.Getter;
 import org.springframework.integration.endpoint.MessageProducerSupport;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
@@ -18,7 +17,6 @@ import org.springframework.util.StringUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
 public abstract class AbstractInboundChannelAdapter extends MessageProducerSupport {
     private final String destination;
     private final ListenerMode listenerMode = ListenerMode.RECORD;

@@ -10,9 +10,8 @@ import com.microsoft.azure.eventhub.stream.binder.properties.EventHubConsumerPro
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubProducerProperties;
 import com.microsoft.azure.eventprocessorhost.PartitionContext;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
-import com.microsoft.azure.spring.integration.eventhub.support.EventHubTestOperation;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
-import org.assertj.core.api.Assertions;
+import com.microsoft.azure.spring.integration.eventhub.support.EventHubTestOperation;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -24,15 +23,16 @@ import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.util.Assert;
 import org.springframework.util.MimeTypeUtils;
 
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -122,45 +122,45 @@ public class EventHubPartitionBinderTests extends
 
     // Same logic as super.testSendAndReceiveNoOriginalContentType() except one line commented below
     @Override
+    @SuppressWarnings("rawtypes")
     public void testSendAndReceiveNoOriginalContentType() throws Exception {
-        Binder binder = this.getBinder();
-        BindingProperties producerBindingProperties =
-                this.createProducerBindingProperties(this.createProducerProperties());
-        DirectChannel moduleOutputChannel = this.createBindableChannel("output", producerBindingProperties);
-        BindingProperties inputBindingProperties =
-                this.createConsumerBindingProperties(this.createConsumerProperties());
-        DirectChannel moduleInputChannel = this.createBindableChannel("input", inputBindingProperties);
+        Binder binder = getBinder();
+
+        BindingProperties producerBindingProperties = createProducerBindingProperties(createProducerProperties());
+        DirectChannel moduleOutputChannel = createBindableChannel("output", producerBindingProperties);
+        BindingProperties inputBindingProperties = createConsumerBindingProperties(createConsumerProperties());
+        DirectChannel moduleInputChannel = createBindableChannel("input", inputBindingProperties);
         Binding<MessageChannel> producerBinding =
-                binder.bindProducer(String.format("bar%s0", this.getDestinationNameDelimiter()), moduleOutputChannel,
+                binder.bindProducer(String.format("bar%s0", getDestinationNameDelimiter()), moduleOutputChannel,
                         producerBindingProperties.getProducer());
         Binding<MessageChannel> consumerBinding =
-                binder.bindConsumer(String.format("bar%s0", this.getDestinationNameDelimiter()),
-                        "testSendAndReceiveNoOriginalContentType", moduleInputChannel, this.createConsumerProperties());
-        this.binderBindUnbindLatency();
-        Message<?> message =
-                MessageBuilder.withPayload("foo").setHeader("contentType", MimeTypeUtils.TEXT_PLAIN).build();
-        // Comment line below since event hub operation is event driven mode
-        // but subscriber is not ready in the downstream
-        // moduleOutputChannel.send(message);
+                binder.bindConsumer(String.format("bar%s0", getDestinationNameDelimiter()),
+                        "testSendAndReceiveNoOriginalContentType", moduleInputChannel, createConsumerProperties());
+        binderBindUnbindLatency();
 
-        final CountDownLatch latch = new CountDownLatch(1);
-        final AtomicReference<Message<byte[]>> inboundMessageRef = new AtomicReference<>();
+        Message<?> message =
+                MessageBuilder.withPayload("foo").setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.TEXT_PLAIN)
+                              .build();
+
+        // Comment line below since service bus topic operation is event driven mode
+        // but subscriber is not ready in the downstream
+        //moduleOutputChannel.send(message);
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<Message<String>> inboundMessageRef = new AtomicReference<Message<String>>();
         moduleInputChannel.subscribe(message1 -> {
             try {
-                inboundMessageRef.set((Message<byte[]>) message1);
+                inboundMessageRef.set((Message<String>) message1);
             } finally {
                 latch.countDown();
             }
-
         });
+
         moduleOutputChannel.send(message);
-        Assert.isTrue(latch.await(5L, TimeUnit.SECONDS), "Failed to receive message");
-        Assertions.assertThat(inboundMessageRef.get()).isNotNull();
-        Assertions.assertThat(
-                new String(((Message<byte[]>) inboundMessageRef.get()).getPayload(), StandardCharsets.UTF_8))
-                  .isEqualTo("foo");
-        Assertions.assertThat(inboundMessageRef.get().getHeaders().get("contentType").toString())
-                  .isEqualTo("text/plain");
+        Assert.isTrue(latch.await(5, TimeUnit.SECONDS), "Failed to receive message");
+        assertThat(inboundMessageRef.get()).isNotNull();
+        assertThat(inboundMessageRef.get().getPayload()).isEqualTo("foo");
+        assertThat(inboundMessageRef.get().getHeaders().get(MessageHeaders.CONTENT_TYPE).toString())
+                .isEqualTo(MimeTypeUtils.TEXT_PLAIN_VALUE);
         producerBinding.unbind();
         consumerBinding.unbind();
     }

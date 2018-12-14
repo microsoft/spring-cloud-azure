@@ -10,7 +10,8 @@ import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.blob.CloudBlobClient;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
 
@@ -25,8 +26,8 @@ import java.net.URL;
  *
  * @author Warren Zhu
  */
-@Slf4j
 public class BlobStorageResource extends AzureStorageResource {
+    private static final Logger log = LoggerFactory.getLogger(BlobStorageResource.class);
     private static final String MSG_FAIL_GET = "Failed to get blob or container";
     private static final String MSG_FAIL_OPEN_OUTPUT = "Failed to open output stream of cloud blob";
     private static final String MSG_FAIL_CHECK_EXIST = "Failed to check existence of blob or container";

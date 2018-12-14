@@ -15,7 +15,6 @@ import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import com.microsoft.azure.spring.integration.eventhub.inbound.EventHubInboundChannelAdapter;
-import lombok.Setter;
 import org.springframework.cloud.stream.binder.*;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
@@ -38,7 +37,6 @@ public class EventHubMessageChannelBinder extends
 
     private final EventHubOperation eventHubOperation;
 
-    @Setter
     private EventHubExtendedBindingProperties bindingProperties = new EventHubExtendedBindingProperties();
 
     public EventHubMessageChannelBinder(String[] headersToEmbed, EventHubChannelProvisioner provisioningProvider,
@@ -94,4 +92,17 @@ public class EventHubMessageChannelBinder extends
         return this.bindingProperties.getExtendedProducerProperties(destination);
     }
 
+    @Override
+    public String getDefaultsPrefix() {
+        return this.bindingProperties.getDefaultsPrefix();
+    }
+
+    @Override
+    public Class<? extends BinderSpecificPropertiesProvider> getExtendedPropertiesEntryClass() {
+        return this.bindingProperties.getExtendedPropertiesEntryClass();
+    }
+
+    public void setBindingProperties(EventHubExtendedBindingProperties bindingProperties) {
+        this.bindingProperties = bindingProperties;
+    }
 }

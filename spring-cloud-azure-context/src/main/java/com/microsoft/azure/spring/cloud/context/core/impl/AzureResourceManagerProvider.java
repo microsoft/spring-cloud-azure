@@ -23,7 +23,7 @@ import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.azure.spring.cloud.context.core.util.TypeMap;
 import com.microsoft.azure.storage.queue.CloudQueue;
-import lombok.NonNull;
+import org.springframework.lang.NonNull;
 
 public class AzureResourceManagerProvider implements ResourceManagerProvider {
     private TypeMap resourceManagerByType = new TypeMap();

@@ -9,8 +9,6 @@ package com.microsoft.azure.spring.messaging.container;
 import com.microsoft.azure.spring.integration.core.api.SubscribeByGroupOperation;
 import com.microsoft.azure.spring.messaging.endpoint.AbstractAzureListenerEndpoint;
 import com.microsoft.azure.spring.messaging.endpoint.AzureListenerEndpoint;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 /**
  * Base {@link ListenerContainerFactory} for Spring's base container implementation.
@@ -19,12 +17,14 @@ import lombok.Getter;
  * @author Warren Zhu
  * @see AbstractAzureListenerEndpoint
  */
-@Getter
-@AllArgsConstructor
 abstract class AbstractAzureListenerContainerFactory<C extends AbstractListenerContainer>
         implements ListenerContainerFactory<C> {
 
     private final SubscribeByGroupOperation subscribeOperation;
+
+    protected AbstractAzureListenerContainerFactory(SubscribeByGroupOperation subscribeOperation) {
+        this.subscribeOperation = subscribeOperation;
+    }
 
     @Override
     public C createListenerContainer(AzureListenerEndpoint endpoint) {
@@ -45,6 +45,10 @@ abstract class AbstractAzureListenerContainerFactory<C extends AbstractListenerC
      * configuration if necessary.
      */
     protected void initializeContainer(C instance) {
+    }
+
+    public SubscribeByGroupOperation getSubscribeOperation() {
+        return subscribeOperation;
     }
 
 }
