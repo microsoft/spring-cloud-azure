@@ -49,7 +49,7 @@ public class TelemetrySender {
     }
 
     private void sendEvent() {
-        collector.getProperties().forEach((m) -> {
+        this.collector.getProperties().forEach((m) -> {
             log.info("Sending telemetry event with properties {}", m);
             this.client.trackEvent(collector.getName(), m, null);
             this.client.flush();
