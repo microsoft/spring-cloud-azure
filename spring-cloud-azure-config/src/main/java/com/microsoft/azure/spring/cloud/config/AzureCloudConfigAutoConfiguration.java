@@ -16,22 +16,26 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @Configuration
-@ConditionalOnClass(RefreshEndpoint.class)
-@ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = {"enabled", "watch.enabled"},
-        matchIfMissing = true)
+@ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "enabled", matchIfMissing = true)
 public class AzureCloudConfigAutoConfiguration {
     public static final String WATCH_TASK_SCHEDULER_NAME = "azureConfigWatchTaskScheduler";
 
-    @Bean
-    public AzureCloudConfigWatch getConfigWatch(ConfigServiceOperations operations,
-                                                AzureCloudConfigProperties properties,
-                                                @Qualifier(WATCH_TASK_SCHEDULER_NAME) TaskScheduler scheduler) {
-        return new AzureCloudConfigWatch(operations, properties, scheduler);
-    }
+    @Configuration
+    @ConditionalOnClass(RefreshEndpoint.class)
+    @ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "watch.enabled",
+            matchIfMissing = true)
+    static class CloudWatchAutoConfiguration {
+        @Bean
+        public AzureCloudConfigWatch getConfigWatch(ConfigServiceOperations operations,
+                                                    AzureCloudConfigProperties properties,
+                                                    @Qualifier(WATCH_TASK_SCHEDULER_NAME) TaskScheduler scheduler) {
+            return new AzureCloudConfigWatch(operations, properties, scheduler);
+        }
 
-    @Bean(name = WATCH_TASK_SCHEDULER_NAME)
-    @ConditionalOnMissingBean
-    public TaskScheduler getTaskScheduler() {
-        return new ThreadPoolTaskScheduler();
+        @Bean(name = WATCH_TASK_SCHEDULER_NAME)
+        @ConditionalOnMissingBean
+        public TaskScheduler getTaskScheduler() {
+            return new ThreadPoolTaskScheduler();
+        }
     }
 }
