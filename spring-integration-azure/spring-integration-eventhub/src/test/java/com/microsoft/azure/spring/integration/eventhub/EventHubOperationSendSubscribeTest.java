@@ -83,8 +83,8 @@ public class EventHubOperationSendSubscribeTest extends SendSubscribeByGroupOper
     }
 
     private void partitionIdHandler(Message<?> message) {
-        assertTrue(message.getHeaders().containsKey(AzureHeaders.PARTITION_ID));
-        String partitionId = message.getHeaders().get(AzureHeaders.PARTITION_ID, String.class);
+        assertTrue(message.getHeaders().containsKey(AzureHeaders.RAW_PARTITION_ID));
+        String partitionId = message.getHeaders().get(AzureHeaders.RAW_PARTITION_ID, String.class);
         assertNotNull(partitionId);
         assertEquals(this.partitionId, partitionId);
     }

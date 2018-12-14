@@ -167,7 +167,7 @@ public class DefaultMessageHandler extends AbstractMessageHandler {
 
         if (message.getHeaders().containsKey(AzureHeaders.PARTITION_ID)) {
             partitionSupplier
-                    .setPartitionId(message.getHeaders().get(AzureHeaders.PARTITION_ID, Integer.class).toString());
+                    .setPartitionId(message.getHeaders().get(AzureHeaders.PARTITION_ID, String.class));
         }
         return partitionSupplier;
     }
