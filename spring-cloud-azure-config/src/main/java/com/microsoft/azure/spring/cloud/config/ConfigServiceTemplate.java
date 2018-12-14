@@ -7,6 +7,7 @@ package com.microsoft.azure.spring.cloud.config;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -25,7 +26,7 @@ import org.springframework.lang.Nullable;
 @AllArgsConstructor
 public class ConfigServiceTemplate implements ConfigServiceOperations {
     public static final String LOAD_FAILURE_MSG = "Failed to load keys from Azure Config Service.";
-    public static final String LOAD_FAILURE_VERBOSE_MSG = LOAD_FAILURE_MSG + " With status code: %s, reason: %s";
+    public static final String LOAD_FAILURE_VERBOSE_MSG = LOAD_FAILURE_MSG + " With status code: %s, response: %s";
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -49,9 +50,11 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
                         KeyValueResponse.class);
 
                 return kvResponse.getItems();
+            } else if (statusCode == HttpStatus.SC_NOT_FOUND) {
+                log.warn("No configuration data found in Azure Config Service for request uri {}.", requestUri);
+                return Collections.EMPTY_LIST;
             } else {
-                throw new IllegalStateException(String.format(LOAD_FAILURE_VERBOSE_MSG, statusCode,
-                        response.getStatusLine().getReasonPhrase()));
+                throw new IllegalStateException(String.format(LOAD_FAILURE_VERBOSE_MSG, statusCode, response));
             }
         }
         catch (IOException | URISyntaxException e) {

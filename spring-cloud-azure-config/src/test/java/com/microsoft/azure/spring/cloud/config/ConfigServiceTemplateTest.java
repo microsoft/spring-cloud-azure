@@ -55,6 +55,9 @@ public class ConfigServiceTemplateTest {
     private static final StatusLine OK_STATUS = new BasicStatusLine(VERSION, HttpStatus.SC_OK, null);
     private static final BasicHttpEntity OK_ENTITY = new BasicHttpEntity();
 
+    private static final StatusLine NOT_FOUND_STATUS =
+            new BasicStatusLine(VERSION, HttpStatus.SC_NOT_FOUND, null);
+
     private static final String FAIL_REASON = "Failed to process the request.";
     private static final StatusLine FAIL_STATUS = new BasicStatusLine(VERSION, HttpStatus.SC_BAD_REQUEST, FAIL_REASON);
 
@@ -85,7 +88,7 @@ public class ConfigServiceTemplateTest {
     @Test
     public void searchFailureShouldThrowException() throws IOException, URISyntaxException {
         String failureMsg = String.format(LOAD_FAILURE_VERBOSE_MSG, FAIL_STATUS.getStatusCode(),
-                FAIL_STATUS.getReasonPhrase());
+                new MockCloseableHttpResponse(FAIL_STATUS, null));
 
         expected.expect(IllegalStateException.class);
         expected.expectMessage(failureMsg);
@@ -95,5 +98,16 @@ public class ConfigServiceTemplateTest {
 
         template = new ConfigServiceTemplate(configClient, TEST_ENDPOINT, TEST_ID, TEST_SECRET);
         template.getKeys(TEST_CONTEXT, null);
+    }
+
+    @Test
+    public void notFoundReturnEmptyList() throws Exception {
+        when(configClient.execute(any(), any(), any(), any()))
+                .thenReturn(new MockCloseableHttpResponse(NOT_FOUND_STATUS, null));
+        template = new ConfigServiceTemplate(configClient, TEST_ENDPOINT, TEST_ID, TEST_SECRET);
+
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, null);
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(0);
     }
 }
