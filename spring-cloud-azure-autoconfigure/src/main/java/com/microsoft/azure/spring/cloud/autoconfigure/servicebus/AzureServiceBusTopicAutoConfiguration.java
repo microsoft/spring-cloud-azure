@@ -33,6 +33,7 @@ import javax.annotation.PostConstruct;
 @ConditionalOnProperty(value = "spring.cloud.azure.servicebus.enabled", matchIfMissing = true)
 public class AzureServiceBusTopicAutoConfiguration {
     private static final String SERVICE_BUS_TOPIC = "ServiceBusTopic";
+    private static final String NAMESPACE = "Namespace";
 
     @PostConstruct
     public void collectTelemetry() {
@@ -42,7 +43,10 @@ public class AzureServiceBusTopicAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean({ResourceManagerProvider.class, ServiceBusTopicClientFactory.class})
     public ServiceBusTopicClientFactory topicClientFactory(AzureServiceBusProperties serviceBusProperties) {
-        return new DefaultServiceBusTopicClientFactory(serviceBusProperties.getConnectionString());
+        String connectionString = serviceBusProperties.getConnectionString();
+        TelemetryCollector.getInstance().addProperty(SERVICE_BUS_TOPIC, NAMESPACE, ServiceBusUtils.getNamespace
+                (connectionString));
+        return new DefaultServiceBusTopicClientFactory(connectionString);
     }
 
     @Bean
