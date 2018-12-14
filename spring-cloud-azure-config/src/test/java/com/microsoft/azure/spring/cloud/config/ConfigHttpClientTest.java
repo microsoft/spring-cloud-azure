@@ -35,9 +35,9 @@ import static org.mockito.Mockito.when;
 
 @PrepareForTest(ConfigHttpClient.class)
 public class ConfigHttpClientTest {
-    private static final String DATE_FORMAT = "EEE, d MMM yyyy hh:mm:ss z";
+    private static final String DATE_FORMAT = "EEE, d MMM yyyy HH:mm:ss z";
     private static final SimpleDateFormat GMT_DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT);
-    private static final String TEST_DATE = "Mon, 19 Nov 2018 12:00:00 GMT";
+    private static final String TEST_DATE = "Mon, 19 Nov 2018 18:00:00 GMT"; // Hour after 12 to test (0-23) hour format
     private static final String TEST_USER_AGENT = ConfigHttpClient.USER_AGENT;
 
     private static final Map<String, String> REQ_HEADERS = new HashMap<>();
@@ -53,7 +53,7 @@ public class ConfigHttpClientTest {
         REQ_HEADERS.put("x-ms-date", TEST_DATE);
         REQ_HEADERS.put("x-ms-content-sha256", "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=");
         REQ_HEADERS.put("Authorization", "HMAC-SHA256 Credential=fake-conn-id, SignedHeaders=x-ms-date;host;" +
-                "x-ms-content-sha256, Signature=P1SJR6iQjGgDmoV8/utXdwFyj69nYpd1OLkH1B9xjl8=");
+                "x-ms-content-sha256, Signature=llHdHiBSvwRQjCOTz77g59hksBqxtEo3aERgxIWS4Ns=");
         REQ_HEADERS.put(HttpHeaders.USER_AGENT, TEST_USER_AGENT);
     }
 
