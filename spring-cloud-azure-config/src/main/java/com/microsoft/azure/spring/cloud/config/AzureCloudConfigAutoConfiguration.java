@@ -17,7 +17,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @Configuration
 @ConditionalOnClass(RefreshEndpoint.class)
-@ConditionalOnProperty(name = AzureCloudConfigProperties.CONFIG_PREFIX + ".watch.enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = {"enabled", "watch.enabled"},
+        matchIfMissing = true)
 public class AzureCloudConfigAutoConfiguration {
     public static final String WATCH_TASK_SCHEDULER_NAME = "azureConfigWatchTaskScheduler";
 
