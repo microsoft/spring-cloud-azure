@@ -18,13 +18,16 @@ public class StorageConnectionStringProvider {
             Memoizer.memoize(StorageConnectionStringProvider::buildConnectionString);
 
     private static String buildConnectionString(StorageAccount storageAccount, Environment environment) {
-        return storageAccount.getKeys().stream().findFirst()
-                             .map(key -> StorageConnectionStringBuilder.build(storageAccount.name(), key.value(),
-                                     environment))
+        return storageAccount.getKeys().stream().findFirst().map(key -> StorageConnectionStringBuilder
+                .build(storageAccount.name(), key.value(), environment))
                              .orElseThrow(() -> new RuntimeException("Storage account key is empty."));
     }
 
     public static String getConnectionString(StorageAccount storageAccount, Environment environment) {
         return connectionStringProvider.apply(storageAccount, environment);
+    }
+
+    public static String getConnectionString(String storageAccount, String accessKey, Environment environment) {
+        return StorageConnectionStringBuilder.build(storageAccount, accessKey, environment);
     }
 }

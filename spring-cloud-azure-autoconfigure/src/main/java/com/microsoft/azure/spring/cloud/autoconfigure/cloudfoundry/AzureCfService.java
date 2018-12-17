@@ -14,10 +14,12 @@ import java.util.stream.Collectors;
 enum AzureCfService {
 
     SERVICEBUS("servicebus", "azure-servicebus", ImmutableMap.of("connectionString", "connection-string")),
-    EVENTHUB("eventhub", "azure-eventhub", ImmutableMap.of("connectionString", "connection-string")),
+    EVENTHUB("eventhub", "azure-eventhubs", ImmutableMap.of("connectionString", "connection-string")),
     STORAGE("storage", "azure-storage", ImmutableMap.of("storageAccountName", "account", "accessKey", "access-key")),
-    REDIS("spring.redis", "azure-rediscache", ImmutableMap.of("host", "host", "password", "password", "port", "port")
-            , false);
+    STORAGE_EVENTHUB("eventhub", "azure-storage",
+            ImmutableMap.of("storageAccountName", "checkpoint-storage-account", "accessKey", "checkpoint-access-key")),
+    REDIS("spring.redis", "azure-rediscache", ImmutableMap.of("host", "host", "password", "password", "port", "port"),
+            false);
 
     private static final String SPRING_CLOUD_AZURE_PROPERTY_PREFIX = "spring.cloud.azure.";
 
