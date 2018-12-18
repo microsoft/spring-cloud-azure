@@ -18,9 +18,7 @@ import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import com.microsoft.azure.spring.integration.eventhub.factory.DefaultEventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.factory.EventHubConnectionStringProvider;
 import com.microsoft.azure.spring.integration.eventhub.impl.EventHubTemplate;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -42,8 +40,8 @@ import javax.annotation.PostConstruct;
 public class AzureEventHubAutoConfiguration {
     private static final String EVENT_HUB = "EventHub";
 
-    @Autowired
-    private BeanFactory beanFactory;
+    @Autowired(required = false)
+    private ResourceManagerProvider resourceManagerProvider;
 
     @PostConstruct
     public void collectTelemetry() {
@@ -58,11 +56,9 @@ public class AzureEventHubAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnBean(ResourceManagerProvider.class)
     public EventHubConnectionStringProvider eventHubConnectionStringProvider(
             AzureEventHubProperties eventHubProperties) {
-        if (beanFactory.containsBean("resourceManagerProvider")) {
-            ResourceManagerProvider resourceManagerProvider = beanFactory.getBean(ResourceManagerProvider.class);
+        if (resourceManagerProvider != null) {
             EventHubNamespace namespace = resourceManagerProvider.getEventHubNamespaceManager()
                                                                  .getOrCreate(eventHubProperties.getNamespace());
             return new EventHubConnectionStringProvider(namespace);
@@ -75,21 +71,18 @@ public class AzureEventHubAutoConfiguration {
     @ConditionalOnMissingBean
     public EventHubClientFactory clientFactory(EventHubConnectionStringProvider connectionStringProvider,
             AzureEventHubProperties eventHubProperties, AzureProperties azureProperties) {
-
-        if (beanFactory.containsBean("resourceManagerProvider")) {
-            ResourceManagerProvider resourceManagerProvider = beanFactory.getBean(ResourceManagerProvider.class);
+        String checkpointConnectionString;
+        if (resourceManagerProvider != null) {
             StorageAccount checkpointStorageAccount = resourceManagerProvider.getStorageAccountManager().getOrCreate(
                     eventHubProperties.getCheckpointStorageAccount());
-            String checkpointConnectionString = StorageConnectionStringProvider
+            checkpointConnectionString = StorageConnectionStringProvider
                     .getConnectionString(checkpointStorageAccount, azureProperties.getEnvironment());
-
-            return new DefaultEventHubClientFactory(connectionStringProvider, checkpointConnectionString);
         } else {
-            String checkpointConnectionString = StorageConnectionStringProvider
+            checkpointConnectionString = StorageConnectionStringProvider
                     .getConnectionString(eventHubProperties.getCheckpointStorageAccount(),
                             eventHubProperties.getCheckpointAccessKey(), azureProperties.getEnvironment());
-            return new DefaultEventHubClientFactory(connectionStringProvider, checkpointConnectionString);
         }
 
+        return new DefaultEventHubClientFactory(connectionStringProvider, checkpointConnectionString);
     }
 }

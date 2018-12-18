@@ -26,8 +26,8 @@ public class TelemetryCollector {
     private static final String SERVICE_NAME = "serviceName";
     private static final TelemetryCollector INSTANCE = new TelemetryCollector();
     private final String name = "spring-cloud-azure";
-    private Set<String> services = new HashSet<>();
-    private Map<String, String> properties = new HashMap<>();
+    private final Map<String, String> commonProperties = new HashMap<>();
+    private final Map<String, Map<String, String>> propertiesByService = new HashMap<>();
 
     private TelemetryCollector() {
         this.buildProperties();
@@ -38,19 +38,25 @@ public class TelemetryCollector {
     }
 
     public void addService(String service) {
-        this.services.add(service);
+        this.propertiesByService.putIfAbsent(service, new HashMap<>());
+        this.propertiesByService.get(service).put(SERVICE_NAME, service);
     }
 
     public void setSubscription(String subscriptionId) {
-        this.properties.put(SUBSCRIPTION_ID, subscriptionId);
+        this.commonProperties.put(SUBSCRIPTION_ID, subscriptionId);
+    }
+
+    public void addProperty(String service, String key, String value){
+        this.propertiesByService.putIfAbsent(service, new HashMap<>());
+        this.propertiesByService.get(service).put(key, value);
     }
 
     public Collection<Map<String, String>> getProperties() {
         List<Map<String, String>> metrics = new LinkedList<>();
 
-        for (String service : this.services) {
-            Map<String, String> properties = new HashMap<>(this.properties);
-            properties.put(SERVICE_NAME, service);
+        for (Map<String, String> serviceProperty : this.propertiesByService.values()) {
+            Map<String, String> properties = new HashMap<>(this.commonProperties);
+            properties.putAll(serviceProperty);
             metrics.add(properties);
         }
 
@@ -58,8 +64,8 @@ public class TelemetryCollector {
     }
 
     private void buildProperties() {
-        properties.put(VERSION, PROJECT_INFO);
-        properties.put(INSTALLATION_ID, MacAddressHelper.getHashedMacAddress());
+        commonProperties.put(VERSION, PROJECT_INFO);
+        commonProperties.put(INSTALLATION_ID, MacAddressHelper.getHashedMacAddress());
     }
 
     public String getName() {

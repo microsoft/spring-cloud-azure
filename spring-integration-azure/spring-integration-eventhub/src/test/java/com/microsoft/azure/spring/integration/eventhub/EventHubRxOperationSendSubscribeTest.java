@@ -56,6 +56,7 @@ public class EventHubRxOperationSendSubscribeTest extends RxSendSubscribeByGroup
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testSendReceiveWithBatchCheckpointMode() {
         sendSubscribeOperation
                 .setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.BATCH).build());

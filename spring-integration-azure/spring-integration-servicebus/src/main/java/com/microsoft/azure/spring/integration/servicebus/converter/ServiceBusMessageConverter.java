@@ -74,11 +74,14 @@ public class ServiceBusMessageConverter extends AbstractAzureMessageConverter<IM
 
         headers.put(AzureHeaders.RAW_ID, UUID.fromString(serviceBusMessage.getMessageId()));
 
-        try {
-            MimeType mimeType = MimeType.valueOf(serviceBusMessage.getContentType());
-            headers.put(MessageHeaders.CONTENT_TYPE, mimeType.toString());
-        } catch (InvalidMimeTypeException e){
-            log.warn("Invalid mimeType '{}' from service bus message.");
+        if (StringUtils.hasText(serviceBusMessage.getContentType())) {
+            String contentType = serviceBusMessage.getContentType();
+            try {
+                MimeType mimeType = MimeType.valueOf(contentType);
+                headers.put(MessageHeaders.CONTENT_TYPE, mimeType.toString());
+            } catch (InvalidMimeTypeException e) {
+                log.warn("Invalid mimeType '{}' from service bus message.", contentType);
+            }
         }
 
         if (StringUtils.hasText(serviceBusMessage.getReplyTo())) {
