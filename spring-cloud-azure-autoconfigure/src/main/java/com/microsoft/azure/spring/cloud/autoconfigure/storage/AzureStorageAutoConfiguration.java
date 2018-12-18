@@ -41,20 +41,21 @@ import java.security.InvalidKeyException;
 @Import(AzureStorageProtocolResolver.class)
 public class AzureStorageAutoConfiguration {
     private static final Logger log = LoggerFactory.getLogger(AzureStorageAutoConfiguration.class);
-    private static final String STORAGE_BLOB = "Storage";
+    private static final String STORAGE = "Storage";
+    private static final String ACCOUNT_NAME = "accountName";
 
     @Autowired
     private BeanFactory beanFactory;
 
     @PostConstruct
     public void collectTelemetry() {
-        TelemetryCollector.getInstance().addService(STORAGE_BLOB);
+        TelemetryCollector.getInstance().addService(STORAGE);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public CloudStorageAccount storageAccount(AzureStorageProperties storageProperties, AzureProperties
-            azureProperties) {
+    public CloudStorageAccount storageAccount(AzureStorageProperties storageProperties,
+            AzureProperties azureProperties) {
 
         String connectionString;
 
@@ -71,6 +72,7 @@ public class AzureStorageAutoConfiguration {
             connectionString = StorageConnectionStringProvider
                     .getConnectionString(storageProperties.getAccount(), storageProperties.getAccessKey(),
                             azureProperties.getEnvironment());
+            TelemetryCollector.getInstance().addProperty(STORAGE, ACCOUNT_NAME, storageProperties.getAccount());
         }
 
         try {
