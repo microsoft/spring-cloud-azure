@@ -6,6 +6,7 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.cloudfoundry;
 
+import com.microsoft.azure.spring.cloud.autoconfigure.eventhub.AzureEventHubProperties;
 import com.microsoft.azure.spring.cloud.autoconfigure.servicebus.AzureServiceBusProperties;
 import com.microsoft.azure.spring.cloud.autoconfigure.storage.AzureStorageProperties;
 import org.junit.Test;
@@ -40,6 +41,8 @@ public class AzureCloudFoundryEnvironmentPostProcessorTests {
             assertStorage(context);
 
             assertRedis(context);
+
+            assertEventhub(context);
         });
     }
 
@@ -56,6 +59,15 @@ public class AzureCloudFoundryEnvironmentPostProcessorTests {
         assertThat(storageProperties.getAccessKey()).isEqualTo("fakekey==");
     }
 
+    private void assertEventhub(AssertableApplicationContext context) {
+        AzureEventHubProperties eventHubProperties = context.getBean(AzureEventHubProperties.class);
+        assertThat(eventHubProperties.getCheckpointStorageAccount()).isEqualTo("fake");
+        assertThat(eventHubProperties.getCheckpointAccessKey()).isEqualTo("fakekey==");
+        assertThat(eventHubProperties.getConnectionString()).isEqualTo(
+                "Endpoint=sb://fake.servicebus.windows.net/;" +
+                        "SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=fakelongstring=");
+    }
+
     private void assertServicebus(AssertableApplicationContext context) {
         AzureServiceBusProperties serviceBusProperties = context.getBean(AzureServiceBusProperties.class);
         assertThat(serviceBusProperties.getConnectionString()).isEqualTo(
@@ -64,7 +76,7 @@ public class AzureCloudFoundryEnvironmentPostProcessorTests {
     }
 
     @EnableConfigurationProperties({AzureServiceBusProperties.class, AzureStorageProperties.class,
-            RedisProperties.class})
+            RedisProperties.class, AzureEventHubProperties.class})
     static class AzureCfEnvPPTestConfiguration {
 
     }
