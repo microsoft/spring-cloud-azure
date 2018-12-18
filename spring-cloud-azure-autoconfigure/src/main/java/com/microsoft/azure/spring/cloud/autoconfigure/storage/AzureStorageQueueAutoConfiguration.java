@@ -45,9 +45,8 @@ public class AzureStorageQueueAutoConfiguration {
     StorageQueueClientFactory storageQueueClientFactory(CloudStorageAccount cloudStorageAccount) {
         DefaultStorageQueueClientFactory clientFactory = new DefaultStorageQueueClientFactory(cloudStorageAccount);
 
-        if(resourceManagerProvider != null){
-            clientFactory.setStorageQueueManager(resourceManagerProvider
-                    .getStorageQueueManager());
+        if (resourceManagerProvider != null) {
+            clientFactory.setStorageQueueManager(resourceManagerProvider.getStorageQueueManager());
         }
 
         return clientFactory;
@@ -58,5 +57,4 @@ public class AzureStorageQueueAutoConfiguration {
     StorageQueueOperation storageQueueOperation(StorageQueueClientFactory storageQueueClientFactory) {
         return new StorageQueueTemplate(storageQueueClientFactory);
     }
-
 }

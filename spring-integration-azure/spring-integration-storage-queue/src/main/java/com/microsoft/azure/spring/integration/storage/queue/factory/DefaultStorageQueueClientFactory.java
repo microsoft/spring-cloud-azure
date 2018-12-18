@@ -21,12 +21,11 @@ import java.util.function.Function;
 
 public class DefaultStorageQueueClientFactory implements StorageQueueClientFactory {
     private static final Logger log = LoggerFactory.getLogger(DefaultStorageQueueClientFactory.class);
+    private final CloudStorageAccount cloudStorageAccount;
     private ResourceManager<CloudQueue, Tuple<CloudStorageAccount, String>> storageQueueManager;
     private final Function<String, CloudQueue> cloudQueueCreator = Memoizer.memoize(this::createCloudQueue);
-    private final CloudStorageAccount cloudStorageAccount;
 
-    public DefaultStorageQueueClientFactory(
-            @NonNull CloudStorageAccount cloudStorageAccount) {
+    public DefaultStorageQueueClientFactory(@NonNull CloudStorageAccount cloudStorageAccount) {
         this.cloudStorageAccount = cloudStorageAccount;
     }
 
@@ -35,8 +34,8 @@ public class DefaultStorageQueueClientFactory implements StorageQueueClientFacto
         return this.cloudQueueCreator.apply(queueName);
     }
 
-    private CloudQueue createCloudQueue(String queueName){
-        if(storageQueueManager != null) {
+    private CloudQueue createCloudQueue(String queueName) {
+        if (storageQueueManager != null) {
             storageQueueManager.getOrCreate(Tuple.of(this.cloudStorageAccount, queueName));
         }
 
