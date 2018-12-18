@@ -21,6 +21,7 @@ public class RestAPIBuilderTest {
     private static final String FAKE_ENDPOINT = "https://fake.config.store.io";
     private static final String FAKE_KEY = "fake_key";
     private static final String FAKE_LABEL = "fake_label";
+    private static final String FAKE_PATH_QUERY = "/kv?fake-param=fake-value";
     private static final String KEY_PARAM = "key";
     private static final String LABEL_PARAM = "label";
     private static final String KV_API = RestAPIBuilder.KEY_VALUE_API;
@@ -91,6 +92,16 @@ public class RestAPIBuilderTest {
 
         Assert.assertEquals("Only one label param exists.", 1, labelParams.size());
         Assert.assertEquals("Label param is created as expected.", FAKE_LABEL, labelParams.get(0).getValue());
+    }
+
+    @Test
+    public void userCanConfigureWholePath() {
+        RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT).withPath(FAKE_PATH_QUERY);
+        String actualPath = builder.buildKVApi();
+        String expectedPath = FAKE_ENDPOINT + FAKE_PATH_QUERY;
+
+        Assert.assertEquals("API path should be constructed from endpoint and path query.",
+                expectedPath, actualPath);
     }
 
     private List<NameValuePair> getParamsFrom(URIBuilder builder, String paramName) {
