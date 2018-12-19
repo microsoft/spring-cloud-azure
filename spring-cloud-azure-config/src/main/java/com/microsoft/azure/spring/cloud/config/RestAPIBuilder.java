@@ -70,6 +70,14 @@ public class RestAPIBuilder {
         return buildRequestUri();
     }
 
+    /**
+     * User is responsible to configure the required endpoint, path and params ahead
+     * @return valid full path of target REST API
+     */
+    public String buildKVApi() {
+        return buildRequestUri();
+    }
+
     private String buildRequestUri() {
         Assert.hasText(endpoint, "Endpoint should not be empty or null");
         Assert.hasText(path, "Request path should not be empty or null");
@@ -78,9 +86,11 @@ public class RestAPIBuilder {
         builder.append(endpoint);
         builder.append(path);
 
-        if (params != null && params.size() > 0) {
+        if (params != null && !params.isEmpty()) {
             // append query params, example: "?param1=value1&param2=value2"
-            builder.append("?");
+            if (!path.contains("?")) {
+                builder.append("?");
+            }
 
             String queryParams = String.join("&", params.entrySet().stream()
                     .map(p -> p.getKey() + "=" + p.getValue())
