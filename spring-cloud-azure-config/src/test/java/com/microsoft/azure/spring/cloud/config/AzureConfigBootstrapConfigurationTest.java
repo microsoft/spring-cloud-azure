@@ -17,9 +17,10 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.beans.BeanInstantiationException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+
+import java.util.Map;
 
 import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.propPair;
@@ -89,7 +90,7 @@ public class AzureConfigBootstrapConfigurationTest {
                         context.getBean(AzureCloudConfigProperties.class);
                         Assert.fail("When using MSI auth, empty connection string should fail.");
                     } catch (Exception e) {
-                        assertThat(context).getFailure().hasCauseInstanceOf(BeanInstantiationException.class);
+                        assertThat(context).getFailure().hasCauseInstanceOf(IllegalArgumentException.class);
                         assertThat(context).getFailure().hasStackTraceContaining("Connection string cannot be empty");
                     }
                 });
@@ -112,7 +113,8 @@ public class AzureConfigBootstrapConfigurationTest {
         contextRunner.run(context -> {
             assertThat(context.getBean(AzureCloudConfigProperties.class)).isNotNull();
             AzureCloudConfigProperties properties = context.getBean(AzureCloudConfigProperties.class);
-            assertThat(properties.getConnectionString()).isEqualTo(TEST_CONN_STRING);
+            ConfigStore store = properties.getStores().get(0);
+            assertThat(store.getConnectionString()).isEqualTo(TEST_CONN_STRING);
         });
     }
 }

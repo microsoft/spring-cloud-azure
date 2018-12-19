@@ -12,12 +12,16 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
 
 @Validated
 @Getter
@@ -25,16 +29,10 @@ import javax.validation.constraints.Pattern;
 @ConfigurationProperties(prefix = AzureCloudConfigProperties.CONFIG_PREFIX)
 public class AzureCloudConfigProperties {
     public static final String CONFIG_PREFIX = "spring.cloud.azure.config";
-    private static final String CONN_STRING_SPLITTER = ";";
-    private static final String ENDPOINT_PREFIX = "endpoint=";
-    private static final String ID_PREFIX = "id=";
-    private static final String SECRET_PREFIX = "secret=";
-    public static final String NON_EMPTY_MSG = "%s property should not be null or empty in the connection string of " +
-            "Azure Config Service.";
 
     private boolean enabled = true;
 
-    private String connectionString;
+    private List<ConfigStore> stores = new ArrayList<>();
 
     @NotEmpty
     private String defaultContext = "application";
@@ -42,15 +40,6 @@ public class AzureCloudConfigProperties {
     // Alternative to Spring application name, if not configured, fallback to default Spring application name
     @Nullable
     private String name;
-
-    // Prefix for all properties, can be empty
-    @Nullable
-    @Pattern(regexp = "(/[a-zA-Z0-9.\\-_]+)*")
-    private String prefix;
-
-    // Label value in the Azure Config Service, can be empty
-    @Nullable
-    private String label;
 
     // Profile separator for the key name, e.g., /foo-app_dev/db.connection.key
     @NotEmpty
@@ -65,48 +54,16 @@ public class AzureCloudConfigProperties {
 
     private AzureCloudConfigARMProperties arm;
 
-    // Values extracted from connection string
-    private String endpoint;
-    private String id;
-    private String secret;
-
-    public String getEndpoint() {
-        return endpoint;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getSecret() {
-        return secret;
-    }
+    // Initialized from the loaded properties
+    private Map<String, ConnectionString> storeMap = new HashMap<>();
 
     @PostConstruct
     public void validateAndInit() {
-        if (!StringUtils.hasText(connectionString)) {
+        if (stores.isEmpty()) {
             return;
         }
 
-        String[] items = connectionString.split(CONN_STRING_SPLITTER);
-        for (String item : items) {
-            if (!StringUtils.hasText(item)) {
-                continue;
-            }
-
-            String lowerCasedItem = item.toLowerCase();
-            if (lowerCasedItem.startsWith(ENDPOINT_PREFIX)) {
-                this.endpoint = item.substring(ENDPOINT_PREFIX.length());
-            } else if (lowerCasedItem.startsWith(ID_PREFIX)) {
-                this.id = item.substring(ID_PREFIX.length());
-            } else if (lowerCasedItem.startsWith(SECRET_PREFIX)) {
-                this.secret = item.substring(SECRET_PREFIX.length());
-            }
-        }
-
-        Assert.hasText(this.endpoint, String.format(NON_EMPTY_MSG, "Endpoint"));
-        Assert.hasText(this.id, String.format(NON_EMPTY_MSG, "Id"));
-        Assert.hasText(this.secret, String.format(NON_EMPTY_MSG, "Secret"));
+        stores.forEach(store -> storeMap.put(store.getName(), ConnectionString.of(store.getConnectionString())));
     }
 
     class Watch {
@@ -131,5 +88,97 @@ public class AzureCloudConfigProperties {
         public void setDelay(int delay) {
             this.delay = delay;
         }
+    }
+}
+
+class ConfigStore {
+    private String name; // Config store name
+    @Nullable
+    @Pattern(regexp = "(/[a-zA-Z0-9.\\-_]+)*")
+    private String prefix;
+    private String connectionString;
+    // Label value in the Azure Config Service, can be empty
+    @Nullable
+    private String label;
+
+    public ConfigStore() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public String getConnectionString() {
+        return connectionString;
+    }
+
+    public void setConnectionString(String connectionString) {
+        this.connectionString = connectionString;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+}
+
+class ConnectionString {
+    private static final String CONN_STRING_REGEXP = "Endpoint=(.*?);Id=(.*?);Secret=(.*?)";
+    public static final String ENDPOINT_ERR_MSG = String.format("Connection string does not follow format %s.",
+            CONN_STRING_REGEXP);
+    private static final java.util.regex.Pattern CONN_STRING_PATTERN =
+            java.util.regex.Pattern.compile(CONN_STRING_REGEXP);
+
+    private String endpoint;
+    private String id;
+    private String secret;
+
+    public ConnectionString(String endpoint, String id, String secret) {
+        this.endpoint = endpoint;
+        this.id = id;
+        this.secret = secret;
+    }
+
+    static ConnectionString of(String connectionString) {
+        Assert.hasText(connectionString, String.format("Connection string cannot be empty."));
+
+        Matcher matcher = CONN_STRING_PATTERN.matcher(connectionString);
+        if (!matcher.find()) {
+            throw new IllegalStateException(String.format("Connection string does not follow format %s.",
+                    CONN_STRING_REGEXP));
+        }
+
+        String endpoint = matcher.group(1);
+        String id = matcher.group(2);
+        String secret = matcher.group(3);
+
+        return new ConnectionString(endpoint, id, secret);
+    }
+
+    public String getEndpoint() {
+        return endpoint;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getSecret() {
+        return secret;
     }
 }

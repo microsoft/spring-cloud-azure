@@ -17,12 +17,15 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     private final String context;
     private final AzureCloudConfigProperties configProperties;
     private Map<String, Object> properties = new LinkedHashMap<>();
+    // TODO (wp) multi stores is not supported yet
+    private ConfigStore configStore;
 
     public AzureConfigPropertySource(String context, AzureCloudConfigProperties configProperties,
                                      ConfigServiceOperations operations) {
         super(context, operations);
         this.configProperties = configProperties;
         this.context = context;
+        this.configStore = configProperties.getStores().get(0);
     }
 
     @Override
@@ -37,7 +40,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     }
 
     public void initProperties() {
-        String label = configProperties.getLabel();
+        String label = this.configStore.getLabel();
         // * for wildcard match
         List<KeyValueItem> items = source.getKeys(context + "*", label);
 

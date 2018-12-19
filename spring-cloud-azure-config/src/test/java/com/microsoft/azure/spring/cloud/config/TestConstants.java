@@ -13,11 +13,14 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TestConstants {
-    public static final String CONN_STRING_PROP = "spring.cloud.azure.config.connection-string";
+    // Store specific configuration
+    public static final String TEST_STORE_NAME = "store1";
+    public static final String CONN_STRING_PROP = "spring.cloud.azure.config.stores[0].connection-string";
+    public static final String PREFIX_PROP = "spring.cloud.azure.config.stores[0].prefix";
+
     public static final String DEFAULT_CONTEXT_PROP = "spring.cloud.azure.config.default-context";
     public static final String CONFIG_ENABLED_PROP = "spring.cloud.azure.config.enabled";
     public static final String WATCH_ENABLED_PROP = "spring.cloud.azure.config.watch.enabled";
-    public static final String PREFIX_PROP = "spring.cloud.azure.config.prefix";
     public static final String SEPARATOR_PROP = "spring.cloud.azure.config.profile-separator";
     public static final String SUBSCRIPTION_ID_PROP = "spring.cloud.azure.config.arm.subscription-id";
     public static final String RESOURCE_GROUP_PROP = "spring.cloud.azure.config.arm.resource-group-name";

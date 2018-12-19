@@ -14,10 +14,7 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
@@ -29,11 +26,14 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private final AzureCloudConfigProperties properties;
     private List<String> contexts = new ArrayList<>();
     private final String profileSeparator;
+    // TODO (wp) multi stores is not supported yet
+    private ConfigStore configStore;
 
     public AzureConfigPropertySourceLocator(ConfigServiceOperations operations, AzureCloudConfigProperties properties) {
         this.operations = operations;
         this.properties = properties;
         this.profileSeparator = properties.getProfileSeparator();
+        this.configStore = properties.getStores().get(0);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
             return result; // Ignore null or empty application name
         }
 
-        String prefix = this.properties.getPrefix();
+        String prefix = this.configStore.getPrefix();
 
         String prefixedContext = propWithAppName(prefix, applicationName);
         result.add(prefixedContext + PATH_SPLITTER);

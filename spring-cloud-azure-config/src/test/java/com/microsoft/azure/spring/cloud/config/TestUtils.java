@@ -9,6 +9,8 @@ import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * Utility methods which can be used across different test classes
  */
@@ -24,5 +26,14 @@ public class TestUtils {
         item.setValue(value);
 
         return item;
+    }
+
+    static void addStore(AzureCloudConfigProperties properties, String storeName, String connectionString) {
+        List<ConfigStore> stores = properties.getStores();
+        ConfigStore store = new ConfigStore();
+        store.setConnectionString(connectionString);
+        store.setName(storeName);
+        stores.add(store);
+        properties.setStores(stores);
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.core.env.PropertySource;
 import java.util.Collection;
 
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -48,7 +49,7 @@ public class AzureConfigPropertySourceLocatorTest {
         when(environment.getActiveProfiles()).thenReturn(new String[]{PROFILE_NAME_1, PROFILE_NAME_2});
 
         properties = new AzureCloudConfigProperties();
-        properties.setConnectionString(TEST_CONN_STRING);
+        TestUtils.addStore(properties, TEST_STORE_NAME, TEST_CONN_STRING);
         properties.setName(APPLICATION_NAME);
 
         locator = new AzureConfigPropertySourceLocator(operations, properties);
@@ -70,7 +71,7 @@ public class AzureConfigPropertySourceLocatorTest {
 
     @Test
     public void compositeSourceIsCreatedForPrefixedConfig() {
-        properties.setPrefix(PREFIX);
+        properties.getStores().get(0).setPrefix(PREFIX);
         locator = new AzureConfigPropertySourceLocator(operations, properties);
 
         PropertySource<?> source = locator.locate(environment);

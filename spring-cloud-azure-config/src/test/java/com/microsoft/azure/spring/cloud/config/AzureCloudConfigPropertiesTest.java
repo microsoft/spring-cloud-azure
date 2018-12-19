@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Arrays;
 
-import static com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties.NON_EMPTY_MSG;
+import static com.microsoft.azure.spring.cloud.config.ConnectionString.ENDPOINT_ERR_MSG;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.propPair;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,22 +39,22 @@ public class AzureCloudConfigPropertiesTest {
 
     @Test
     public void endpointMustExistInConnectionString() {
-        testConnStringFields(NO_ENDPOINT_CONN_STRING, "Endpoint");
+        testConnStringFields(NO_ENDPOINT_CONN_STRING);
     }
 
     @Test
     public void idMustExistInConnectionString() {
-        testConnStringFields(NO_ID_CONN_STRING, "Id");
+        testConnStringFields(NO_ID_CONN_STRING);
     }
 
     @Test
     public void secretMustExistInConnectionString() {
-        testConnStringFields(NO_SECRET_CONN_STRING, "Secret");
+        testConnStringFields(NO_SECRET_CONN_STRING);
     }
 
-    private void testConnStringFields(String connString, String fieldName) {
+    private void testConnStringFields(String connString) {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, connString)).run(context -> {
-            assertThat(context).getFailure().hasStackTraceContaining(String.format(NON_EMPTY_MSG, fieldName));
+            assertThat(context).getFailure().hasStackTraceContaining(ENDPOINT_ERR_MSG);
         });
     }
 

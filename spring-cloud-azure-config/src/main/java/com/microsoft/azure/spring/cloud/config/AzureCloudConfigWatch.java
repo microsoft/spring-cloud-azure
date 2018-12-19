@@ -34,12 +34,15 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
     private ScheduledFuture<?> watchFuture;
     private AzureCloudConfigProperties properties;
     private boolean firstTime = true;
+    // TODO (wp) multi stores is not supported yet
+    private ConfigStore configStore;
 
     public AzureCloudConfigWatch(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
                                  TaskScheduler scheduler) {
         this.configOperations = operations;
         this.properties = properties;
         this.taskScheduler = scheduler;
+        this.configStore = properties.getStores().get(0);
     }
 
     @Override
@@ -85,8 +88,8 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
 
     public void watchConfigKeyValues() {
         if (this.running.get()) {
-            String prefix = StringUtils.hasText(properties.getPrefix()) ? properties.getPrefix() + "*" : "*";
-            List<KeyValueItem> keyValueItems = configOperations.getKeys(prefix, properties.getLabel());
+            String prefix = StringUtils.hasText(configStore.getPrefix()) ? configStore.getPrefix() + "*" : "*";
+            List<KeyValueItem> keyValueItems = configOperations.getKeys(prefix, configStore.getLabel());
 
             if (keyValueItems.isEmpty()) {
                 return;
