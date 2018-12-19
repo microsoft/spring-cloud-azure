@@ -162,4 +162,8 @@ public class MockCloseableHttpResponse implements CloseableHttpResponse {
     public void setParams(HttpParams params) {
 
     }
+
+    public String toString() {
+        return statusLine.getReasonPhrase();
+    }
 }
