@@ -12,9 +12,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.createItem;
@@ -37,7 +35,7 @@ public class AzureConfigPropertySourceTest {
 
     @BeforeClass
     public static void init() {
-        TEST_PROPS.setConnectionString(TEST_CONN_STRING);
+        TestUtils.addStore(TEST_PROPS, TEST_STORE_NAME, TEST_CONN_STRING);
 
         TEST_ITEMS.add(item1);
         TEST_ITEMS.add(item2);

@@ -17,10 +17,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
+import java.util.Map;
 
 @Configuration
 @EnableConfigurationProperties(AzureCloudConfigProperties.class)
@@ -28,11 +27,12 @@ import javax.annotation.PostConstruct;
 @ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "enabled", matchIfMissing = true)
 public class AzureConfigBootstrapConfiguration {
     private static final String AZURE_CONFIG_STORE = "AzureConfigService";
+    private static final String MSI_STORE = "ConfigLoadedFromMSI";
 
     @Bean
     @Primary
     public AzureCloudConfigProperties initProperties(AzureCloudConfigProperties properties) {
-        if (StringUtils.hasText(properties.getConnectionString())) {
+        if (!properties.getStoreMap().isEmpty()) {
             return properties;
         }
 
@@ -40,9 +40,10 @@ public class AzureConfigBootstrapConfiguration {
         ConfigAccessKeyResource keyResource = new ConfigAccessKeyResource(properties.getArm());
 
         AzureConfigMSIConnector msiConnector = new AzureConfigMSIConnector(msiCredentials, keyResource);
-        properties.setConnectionString(msiConnector.getConnectionString());
-
-        Assert.hasText(properties.getConnectionString(), "Connection string cannot be empty");
+        ConfigStore store = new ConfigStore();
+        store.setConnectionString(msiConnector.getConnectionString());
+        store.setName(MSI_STORE);
+        properties.getStores().add(store);
 
         return properties;
     }
@@ -60,7 +61,10 @@ public class AzureConfigBootstrapConfiguration {
     @Bean
     public ConfigServiceOperations azureConfigOperations(ConfigHttpClient client,
                                                          AzureCloudConfigProperties properties) {
-        return new ConfigServiceTemplate(client, properties.getEndpoint(), properties.getId(), properties.getSecret());
+        Map<String, ConnectionString> storeMap = properties.getStoreMap();
+        // TODO (wp) multi stores is not supported here
+        ConnectionString connString = storeMap.get(storeMap.keySet().iterator().next());
+        return new ConfigServiceTemplate(client, connString.getEndpoint(), connString.getId(), connString.getSecret());
     }
 
     @Bean
