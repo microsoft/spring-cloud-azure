@@ -48,24 +48,36 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
     public List<KeyValueItem> getKeys(@Nullable String prefix, @Nullable String label) {
         String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildKVApi(prefix, label);
         List<KeyValueItem> result = new ArrayList<>();
-        CloseableHttpResponse response = getRawResponse(requestUri);
 
-        while (response != null) {
-            try {
-                KeyValueResponse kvResponse = mapper.readValue(response.getEntity().getContent(),
-                        KeyValueResponse.class);
-                result.addAll(kvResponse.getItems());
-            } catch (IOException e) {
-                throw new IllegalStateException(LOAD_FAILURE_MSG, e);
+        CloseableHttpResponse response = null;
+        try {
+            response = getRawResponse(requestUri);
+            while (response != null) {
+                try {
+                    KeyValueResponse kvResponse = mapper.readValue(response.getEntity().getContent(),
+                            KeyValueResponse.class);
+                    result.addAll(kvResponse.getItems());
+                } catch (IOException e) {
+                    throw new IllegalStateException(LOAD_FAILURE_MSG, e);
+                }
+
+                String nextLink = getNextLink(response);
+                if (!StringUtils.hasText(nextLink)) {
+                    break;
+                }
+
+                String nextRequestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).withPath(nextLink)
+                        .buildKVApi();
+                response = getRawResponse(nextRequestUri);
             }
-
-            String nextLink = getNextLink(response);
-            if (!StringUtils.hasText(nextLink)) {
-                break;
+        } finally {
+            if (response != null) {
+                try {
+                    response.close();
+                } catch (IOException e) {
+                    log.warn("Response was not closed successfully.", e);
+                }
             }
-
-            String nextRequestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).withPath(nextLink).buildKVApi();
-            response = getRawResponse(nextRequestUri);
         }
 
         return result;
@@ -76,7 +88,8 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         Date date = new Date();
 
         log.debug("Loading key-value items from Azure Config service at [{}].", requestUri);
-        try (CloseableHttpResponse response = configClient.execute(httpGet, date, credential, secret)) {
+        try {
+            CloseableHttpResponse response = configClient.execute(httpGet, date, credential, secret);
             int statusCode = response.getStatusLine().getStatusCode();
 
             if (statusCode == HttpStatus.SC_OK) {
