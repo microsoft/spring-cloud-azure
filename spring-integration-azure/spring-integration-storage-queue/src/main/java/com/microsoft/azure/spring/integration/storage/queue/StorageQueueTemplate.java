@@ -34,7 +34,6 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     private static final String MSG_FAIL_CHECKPOINT = "Failed to checkpoint %s in storage queue '%s'";
     private static final String MSG_SUCCESS_CHECKPOINT = "Checkpointed %s in storage queue '%s' in %s mode";
     private final StorageQueueClientFactory storageQueueClientFactory;
-    private final String storageAccountName;
 
     protected StorageQueueMessageConverter messageConverter = new StorageQueueMessageConverter();
 
@@ -44,10 +43,8 @@ public class StorageQueueTemplate implements StorageQueueOperation {
 
     private CheckpointMode checkpointMode = CheckpointMode.RECORD;
 
-    public StorageQueueTemplate(@NonNull StorageQueueClientFactory storageQueueClientFactory,
-            String storageAccountName) {
+    public StorageQueueTemplate(@NonNull StorageQueueClientFactory storageQueueClientFactory) {
         this.storageQueueClientFactory = storageQueueClientFactory;
-        this.storageAccountName = storageAccountName;
         log.info("StorageQueueTemplate started with properties {}", buildProperties());
     }
 
@@ -56,7 +53,7 @@ public class StorageQueueTemplate implements StorageQueueOperation {
             PartitionSupplier partitionSupplier) {
         Assert.hasText(queueName, "queueName can't be null or empty");
         CloudQueueMessage cloudQueueMessage = messageConverter.fromMessage(message, CloudQueueMessage.class);
-        CloudQueue cloudQueue = storageQueueClientFactory.getOrCreateQueueClient(storageAccountName, queueName);
+        CloudQueue cloudQueue = storageQueueClientFactory.getOrCreateQueueClient(queueName);
         return CompletableFuture.runAsync(() -> {
             try {
                 cloudQueue.addMessage(cloudQueueMessage);
@@ -99,7 +96,7 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     }
 
     private Message<?> receiveMessage(String queueName, int visibilityTimeoutInSeconds) {
-        CloudQueue cloudQueue = storageQueueClientFactory.getOrCreateQueueClient(storageAccountName, queueName);
+        CloudQueue cloudQueue = storageQueueClientFactory.getOrCreateQueueClient(queueName);
         CloudQueueMessage cloudQueueMessage;
         try {
             cloudQueueMessage = cloudQueue.retrieveMessage(visibilityTimeoutInSeconds, null, null);
@@ -135,7 +132,6 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     private Map<String, Object> buildProperties() {
         Map<String, Object> properties = new HashMap<>();
 
-        properties.put("storageAccount", this.storageAccountName);
         properties.put("visibilityTimeout", this.visibilityTimeoutInSeconds);
         properties.put("messagePayloadType", this.messagePayloadType);
         properties.put("checkpointMode", this.checkpointMode);

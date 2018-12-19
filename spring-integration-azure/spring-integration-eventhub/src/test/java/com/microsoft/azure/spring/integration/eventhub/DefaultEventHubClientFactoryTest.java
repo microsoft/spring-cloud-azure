@@ -13,7 +13,7 @@ import com.microsoft.azure.management.storage.StorageAccount;
 import com.microsoft.azure.spring.cloud.context.core.api.Environment;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.impl.StorageAccountManager;
-import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStringProvider;
+import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.factory.DefaultEventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.factory.EventHubConnectionStringProvider;

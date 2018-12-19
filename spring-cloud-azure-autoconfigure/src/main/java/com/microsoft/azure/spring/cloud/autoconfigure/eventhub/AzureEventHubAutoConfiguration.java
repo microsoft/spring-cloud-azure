@@ -12,8 +12,7 @@ import com.microsoft.azure.management.storage.StorageAccount;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
-import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStringBuilder;
-import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStringProvider;
+import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import com.microsoft.azure.spring.integration.eventhub.factory.DefaultEventHubClientFactory;
@@ -79,8 +78,8 @@ public class AzureEventHubAutoConfiguration {
             checkpointConnectionString = StorageConnectionStringProvider
                     .getConnectionString(checkpointStorageAccount, azureProperties.getEnvironment());
         } else {
-            checkpointConnectionString = StorageConnectionStringBuilder
-                    .build(eventHubProperties.getCheckpointStorageAccount(),
+            checkpointConnectionString = StorageConnectionStringProvider
+                    .getConnectionString(eventHubProperties.getCheckpointStorageAccount(),
                             eventHubProperties.getCheckpointAccessKey(), azureProperties.getEnvironment());
         }
 

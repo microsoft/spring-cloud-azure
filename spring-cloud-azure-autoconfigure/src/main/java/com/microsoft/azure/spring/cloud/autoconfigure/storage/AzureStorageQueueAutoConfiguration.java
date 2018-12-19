@@ -12,7 +12,9 @@ import com.microsoft.azure.spring.integration.storage.queue.StorageQueueOperatio
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueTemplate;
 import com.microsoft.azure.spring.integration.storage.queue.factory.DefaultStorageQueueClientFactory;
 import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueClientFactory;
+import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.queue.CloudQueueClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -30,6 +32,9 @@ public class AzureStorageQueueAutoConfiguration {
 
     private static final String STORAGE_QUEUE = "StorageQueue";
 
+    @Autowired(required = false)
+    private ResourceManagerProvider resourceManagerProvider;
+
     @PostConstruct
     public void collectTelemetry() {
         TelemetryCollector.getInstance().addService(STORAGE_QUEUE);
@@ -37,15 +42,19 @@ public class AzureStorageQueueAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    StorageQueueClientFactory storageQueueClientFactory(ResourceManagerProvider resourceManagerProvider) {
-        return new DefaultStorageQueueClientFactory(resourceManagerProvider.getStorageQueueManager());
+    StorageQueueClientFactory storageQueueClientFactory(CloudStorageAccount cloudStorageAccount) {
+        DefaultStorageQueueClientFactory clientFactory = new DefaultStorageQueueClientFactory(cloudStorageAccount);
+
+        if (resourceManagerProvider != null) {
+            clientFactory.setStorageQueueManager(resourceManagerProvider.getStorageQueueManager());
+        }
+
+        return clientFactory;
     }
 
     @Bean
     @ConditionalOnMissingBean
-    StorageQueueOperation storageQueueOperation(StorageQueueClientFactory storageQueueClientFactory,
-            AzureStorageProperties azureStorageProperties) {
-        return new StorageQueueTemplate(storageQueueClientFactory, azureStorageProperties.getAccount());
+    StorageQueueOperation storageQueueOperation(StorageQueueClientFactory storageQueueClientFactory) {
+        return new StorageQueueTemplate(storageQueueClientFactory);
     }
-
 }

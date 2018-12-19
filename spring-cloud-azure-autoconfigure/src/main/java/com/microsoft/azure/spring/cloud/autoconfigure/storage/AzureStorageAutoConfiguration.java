@@ -10,13 +10,13 @@ import com.microsoft.azure.management.storage.StorageAccount;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
-import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStringBuilder;
-import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStringProvider;
+import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
 import com.microsoft.azure.spring.cloud.storage.AzureStorageProtocolResolver;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -41,24 +41,39 @@ import java.security.InvalidKeyException;
 @Import(AzureStorageProtocolResolver.class)
 public class AzureStorageAutoConfiguration {
     private static final Logger log = LoggerFactory.getLogger(AzureStorageAutoConfiguration.class);
-    private static final String STORAGE_BLOB = "Storage";
+    private static final String STORAGE = "Storage";
+    private static final String ACCOUNT_NAME = "accountName";
+
+    @Autowired
+    private BeanFactory beanFactory;
 
     @PostConstruct
     public void collectTelemetry() {
-        TelemetryCollector.getInstance().addService(STORAGE_BLOB);
+        TelemetryCollector.getInstance().addService(STORAGE);
     }
 
     @Bean
-    @ConditionalOnBean(ResourceManagerProvider.class)
     @ConditionalOnMissingBean
-    public CloudStorageAccount storage(ResourceManagerProvider resourceManagerProvider,
-            AzureStorageProperties storageProperties, AzureProperties azureProperties) {
-        String accountName = storageProperties.getAccount();
+    public CloudStorageAccount storageAccount(AzureStorageProperties storageProperties,
+            AzureProperties azureProperties) {
 
-        StorageAccount storageAccount = resourceManagerProvider.getStorageAccountManager().getOrCreate(accountName);
+        String connectionString;
 
-        String connectionString =
-                StorageConnectionStringProvider.getConnectionString(storageAccount, azureProperties.getEnvironment());
+        if (beanFactory.containsBean("resourceManagerProvider")) {
+            ResourceManagerProvider resourceManagerProvider = beanFactory.getBean(ResourceManagerProvider.class);
+            String accountName = storageProperties.getAccount();
+
+            StorageAccount storageAccount = resourceManagerProvider.getStorageAccountManager().getOrCreate(accountName);
+
+            connectionString = StorageConnectionStringProvider
+                    .getConnectionString(storageAccount, azureProperties.getEnvironment());
+
+        } else {
+            connectionString = StorageConnectionStringProvider
+                    .getConnectionString(storageProperties.getAccount(), storageProperties.getAccessKey(),
+                            azureProperties.getEnvironment());
+            TelemetryCollector.getInstance().addProperty(STORAGE, ACCOUNT_NAME, storageProperties.getAccount());
+        }
 
         try {
             return CloudStorageAccount.parse(connectionString);
@@ -66,20 +81,5 @@ public class AzureStorageAutoConfiguration {
             log.error("Failed to parse storage connection string" + connectionString, e);
             throw new RuntimeException("Failed to parse storage connection string" + connectionString, e);
         }
-    }
-
-    @Bean
-    @ConditionalOnMissingBean({ResourceManagerProvider.class, CloudStorageAccount.class})
-    public CloudStorageAccount storage(AzureStorageProperties storageProperties, AzureProperties azureProperties){
-        String connectionString = StorageConnectionStringBuilder.build
-                (storageProperties.getAccount(), storageProperties.getAccessKey(), azureProperties.getEnvironment());
-
-        try {
-            return CloudStorageAccount.parse(connectionString);
-        } catch (URISyntaxException | InvalidKeyException e) {
-            log.error("Failed to parse storage connection string" + connectionString, e);
-            throw new RuntimeException("Failed to parse storage connection string" + connectionString, e);
-        }
-
     }
 }

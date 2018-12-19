@@ -49,9 +49,9 @@ public class StorageQueueTemplateReceiveTest {
 
     @Before
     public void setup() throws StorageException {
-        when(this.mockClientFactory.getOrCreateQueueClient(any(), eq(destination))).thenReturn(this.mockClient);
+        when(this.mockClientFactory.getOrCreateQueueClient(eq(destination))).thenReturn(this.mockClient);
         when(this.mockClient.retrieveMessage(anyInt(), eq(null), eq(null))).thenReturn(this.cloudQueueMessage);
-        this.operation = new StorageQueueTemplate(this.mockClientFactory, "");
+        this.operation = new StorageQueueTemplate(this.mockClientFactory);
     }
 
     @Test
