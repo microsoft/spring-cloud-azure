@@ -86,7 +86,7 @@ public class RestAPIBuilder {
         builder.append(endpoint);
         builder.append(path);
 
-        if (params != null && params.size() > 0) {
+        if (params != null && !params.isEmpty()) {
             // append query params, example: "?param1=value1&param2=value2"
             if (!path.contains("?")) {
                 builder.append("?");
