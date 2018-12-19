@@ -98,8 +98,7 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
                 throw new IllegalStateException(String.format(LOAD_FAILURE_VERBOSE_MSG, statusCode,
                         response.getStatusLine().getReasonPhrase()));
             }
-        }
-        catch (IOException | URISyntaxException e) {
+        } catch (IOException | URISyntaxException e) {
             log.error(LOAD_FAILURE_MSG, e);
             // TODO (wp) wrap exception as config service specific exception in order to provide fail-fast etc.
             // features?
