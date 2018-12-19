@@ -23,6 +23,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
@@ -93,8 +94,12 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         }
     }
 
-    private static String getNextLink(CloseableHttpResponse response) {
-        // Extract next link path and query from response header
+    /**
+     * Extract next link path and query from {@code response} header
+     * @param response which response to extract link header from
+     * @return matched next link header, return empty string if not found
+     */
+    private static String getNextLink(@NonNull CloseableHttpResponse response) {
         Header linkHeader = response.getFirstHeader(LINK_HEADER);
         if (linkHeader == null || !StringUtils.hasText(linkHeader.getValue())) {
             return "";
