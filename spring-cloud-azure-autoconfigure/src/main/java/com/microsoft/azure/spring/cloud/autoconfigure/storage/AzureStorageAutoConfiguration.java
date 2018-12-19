@@ -8,6 +8,7 @@ package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 
 import com.microsoft.azure.management.storage.StorageAccount;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
+import com.microsoft.azure.spring.cloud.context.core.api.Environment;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
 import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
@@ -15,7 +16,6 @@ import com.microsoft.azure.spring.cloud.storage.AzureStorageProtocolResolver;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -43,9 +43,13 @@ public class AzureStorageAutoConfiguration {
     private static final Logger log = LoggerFactory.getLogger(AzureStorageAutoConfiguration.class);
     private static final String STORAGE = "Storage";
     private static final String ACCOUNT_NAME = "accountName";
+    private static final Environment defaultEnv = Environment.GLOBAL;
 
-    @Autowired
-    private BeanFactory beanFactory;
+    @Autowired(required = false)
+    private ResourceManagerProvider resourceManagerProvider;
+
+    @Autowired(required = false)
+    private AzureProperties azureProperties;
 
     @PostConstruct
     public void collectTelemetry() {
@@ -54,24 +58,21 @@ public class AzureStorageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public CloudStorageAccount storageAccount(AzureStorageProperties storageProperties,
-            AzureProperties azureProperties) {
+    public CloudStorageAccount storageAccount(AzureStorageProperties storageProperties) {
 
         String connectionString;
 
-        if (beanFactory.containsBean("resourceManagerProvider")) {
-            ResourceManagerProvider resourceManagerProvider = beanFactory.getBean(ResourceManagerProvider.class);
+        if (resourceManagerProvider != null) {
             String accountName = storageProperties.getAccount();
 
             StorageAccount storageAccount = resourceManagerProvider.getStorageAccountManager().getOrCreate(accountName);
 
-            connectionString = StorageConnectionStringProvider
-                    .getConnectionString(storageAccount, azureProperties.getEnvironment());
+            connectionString = StorageConnectionStringProvider.getConnectionString(storageAccount, getEnvironment());
 
         } else {
             connectionString = StorageConnectionStringProvider
                     .getConnectionString(storageProperties.getAccount(), storageProperties.getAccessKey(),
-                            azureProperties.getEnvironment());
+                            getEnvironment());
             TelemetryCollector.getInstance().addProperty(STORAGE, ACCOUNT_NAME, storageProperties.getAccount());
         }
 
@@ -81,5 +82,13 @@ public class AzureStorageAutoConfiguration {
             log.error("Failed to parse storage connection string" + connectionString, e);
             throw new RuntimeException("Failed to parse storage connection string" + connectionString, e);
         }
+    }
+
+    private Environment getEnvironment() {
+        if (this.azureProperties != null) {
+            return this.azureProperties.getEnvironment();
+        }
+
+        return defaultEnv;
     }
 }
