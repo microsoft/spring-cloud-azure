@@ -63,10 +63,7 @@ public class AzureCloudConfigProperties {
             return;
         }
 
-        stores.forEach(store -> storeMap.put(store.getName(),
-                ConnectionString.of(store.getConnectionString())));
-
-        Assert.notEmpty(stores, "No config store has been configured under spring.cloud.config.stores");
+        stores.forEach(store -> storeMap.put(store.getName(), ConnectionString.of(store.getConnectionString())));
     }
 
     class Watch {
