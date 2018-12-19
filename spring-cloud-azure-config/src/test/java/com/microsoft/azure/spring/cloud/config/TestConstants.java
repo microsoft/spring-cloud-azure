@@ -15,6 +15,8 @@ import lombok.NoArgsConstructor;
 public class TestConstants {
     public static final String CONN_STRING_PROP = "spring.cloud.azure.config.connection-string";
     public static final String DEFAULT_CONTEXT_PROP = "spring.cloud.azure.config.default-context";
+    public static final String CONFIG_ENABLED_PROP = "spring.cloud.azure.config.enabled";
+    public static final String WATCH_ENABLED_PROP = "spring.cloud.azure.config.watch.enabled";
     public static final String PREFIX_PROP = "spring.cloud.azure.config.prefix";
     public static final String SEPARATOR_PROP = "spring.cloud.azure.config.profile-separator";
     public static final String SUBSCRIPTION_ID_PROP = "spring.cloud.azure.config.arm.subscription-id";

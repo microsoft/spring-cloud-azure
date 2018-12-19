@@ -10,14 +10,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @SpringBootApplication
+@EnableConfigurationProperties(TestProperties.class)
 public class AzureConfigApplication implements CommandLineRunner {
-    @Value("${azure.config.test}")
+    @Value("${config.background-color}")
     private String remoteValue;
-
-    @Value("${azure.local.test.value}")
-    private String localValue;
 
     public static void main(String[] args) {
         SpringApplication.run(AzureConfigApplication.class, args);
@@ -26,8 +25,5 @@ public class AzureConfigApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         System.out.println("remoteValue: " + remoteValue);
-        System.out.println("localValue: " + localValue);
-
-        System.exit(0);
     }
 }
