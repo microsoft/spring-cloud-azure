@@ -9,15 +9,12 @@ package com.microsoft.azure.eventhub.stream.binder.config;
 import com.microsoft.azure.eventhub.stream.binder.EventHubMessageChannelBinder;
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubExtendedBindingProperties;
 import com.microsoft.azure.eventhub.stream.binder.provisioning.EventHubChannelProvisioner;
-import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
-import com.microsoft.azure.spring.cloud.autoconfigure.eventhub.AzureEventHubAutoConfiguration;
+import com.microsoft.azure.eventhub.stream.binder.provisioning.EventHubChannelResourceManagerProvisioner;
 import com.microsoft.azure.spring.cloud.autoconfigure.eventhub.AzureEventHubProperties;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.stream.binder.Binder;
@@ -36,18 +33,27 @@ public class EventHubBinderConfiguration {
 
     private static final String EVENT_HUB_BINDER = "EventHubBinder";
 
+    @Autowired(required = false)
+    private ResourceManagerProvider resourceManagerProvider;
+
     @PostConstruct
     public void collectTelemetry() {
         TelemetryCollector.getInstance().addService(EVENT_HUB_BINDER);
     }
 
     @Bean
-    public EventHubChannelProvisioner eventHubChannelProvisioner(ResourceManagerProvider resourceManagerProvider,
-            AzureEventHubProperties eventHubProperties) {
-        return new EventHubChannelProvisioner(resourceManagerProvider, eventHubProperties.getNamespace());
+    @ConditionalOnMissingBean
+    public EventHubChannelProvisioner eventHubChannelProvisioner(AzureEventHubProperties eventHubProperties) {
+        if (resourceManagerProvider != null) {
+            return new EventHubChannelResourceManagerProvisioner(resourceManagerProvider,
+                    eventHubProperties.getNamespace());
+        }
+
+        return new EventHubChannelProvisioner();
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public EventHubMessageChannelBinder eventHubBinder(EventHubChannelProvisioner eventHubChannelProvisioner,
             EventHubOperation eventHubOperation, EventHubExtendedBindingProperties bindingProperties) {
         EventHubMessageChannelBinder binder =
