@@ -11,6 +11,7 @@ import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusExtende
 import com.microsoft.azure.servicebus.stream.binder.provisioning.ServiceBusTopicChannelProvisioner;
 import com.microsoft.azure.servicebus.stream.binder.provisioning.ServiceBusTopicChannelResourceManagerProvisioner;
 import com.microsoft.azure.spring.cloud.autoconfigure.servicebus.AzureServiceBusProperties;
+import com.microsoft.azure.spring.cloud.autoconfigure.servicebus.ServiceBusUtils;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
@@ -33,6 +34,7 @@ import javax.annotation.PostConstruct;
 public class ServiceBusTopicBinderConfiguration {
 
     private static final String SERVICE_BUS_TOPIC_BINDER = "ServiceBusTopicBinder";
+    private static final String NAMESPACE = "Namespace";
 
     @Autowired(required = false)
     private ResourceManagerProvider resourceManagerProvider;
@@ -50,6 +52,9 @@ public class ServiceBusTopicBinderConfiguration {
         if (this.resourceManagerProvider != null) {
             return new ServiceBusTopicChannelResourceManagerProvisioner(resourceManagerProvider,
                     serviceBusProperties.getNamespace());
+        } else {
+            TelemetryCollector.getInstance().addProperty(SERVICE_BUS_TOPIC_BINDER, NAMESPACE,
+                    ServiceBusUtils.getNamespace(serviceBusProperties.getConnectionString()));
         }
         return new ServiceBusTopicChannelProvisioner();
     }
