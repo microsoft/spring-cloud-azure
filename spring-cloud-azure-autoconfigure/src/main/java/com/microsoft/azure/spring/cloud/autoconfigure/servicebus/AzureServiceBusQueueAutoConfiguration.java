@@ -13,13 +13,12 @@ import com.microsoft.azure.spring.integration.servicebus.factory.DefaultServiceB
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusQueueClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueOperation;
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueTemplate;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 
@@ -35,31 +34,28 @@ public class AzureServiceBusQueueAutoConfiguration {
     private static final String SERVICE_BUS_QUEUE = "ServiceBusQueue";
     private static final String NAMESPACE = "Namespace";
 
+    @Autowired(required = false)
+    private ResourceManagerProvider resourceManagerProvider;
+
     @PostConstruct
     public void collectTelemetry() {
         TelemetryCollector.getInstance().addService(SERVICE_BUS_QUEUE);
     }
 
     @Bean
-    @ConditionalOnMissingBean({ResourceManagerProvider.class, ServiceBusQueueClientFactory.class})
+    @ConditionalOnMissingBean
     public ServiceBusQueueClientFactory queueClientFactory(AzureServiceBusProperties serviceBusProperties) {
         String connectionString = serviceBusProperties.getConnectionString();
-        TelemetryCollector.getInstance().addProperty(SERVICE_BUS_QUEUE, NAMESPACE, ServiceBusUtils.getNamespace
-                (connectionString));
-        return new DefaultServiceBusQueueClientFactory(connectionString);
-    }
-
-    @Bean
-    @ConditionalOnBean(ResourceManagerProvider.class)
-    @ConditionalOnMissingBean
-    public ServiceBusQueueClientFactory queueClientFactoryWithResourceManagerProvider(
-            ResourceManagerProvider resourceManagerProvider, AzureServiceBusProperties serviceBusProperties) {
         DefaultServiceBusQueueClientFactory clientFactory =
                 new DefaultServiceBusQueueClientFactory(serviceBusProperties.getConnectionString());
-        if (StringUtils.hasText(serviceBusProperties.getNamespace())) {
+
+        if (resourceManagerProvider != null) {
+            clientFactory.setResourceManagerProvider(resourceManagerProvider);
             clientFactory.setNamespace(serviceBusProperties.getNamespace());
+        } else {
+            TelemetryCollector.getInstance().addProperty(SERVICE_BUS_QUEUE, NAMESPACE,
+                    ServiceBusUtils.getNamespace(connectionString));
         }
-        clientFactory.setResourceManagerProvider(resourceManagerProvider);
 
         return clientFactory;
     }
