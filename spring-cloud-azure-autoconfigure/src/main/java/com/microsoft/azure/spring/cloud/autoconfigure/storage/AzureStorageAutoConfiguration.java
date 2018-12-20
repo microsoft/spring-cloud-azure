@@ -8,9 +8,8 @@ package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 
 import com.microsoft.azure.management.storage.StorageAccount;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
-import com.microsoft.azure.spring.cloud.context.core.api.Environment;
+import com.microsoft.azure.spring.cloud.context.core.api.EnvironmentProvider;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
-import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
 import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
 import com.microsoft.azure.spring.cloud.storage.AzureStorageProtocolResolver;
 import com.microsoft.azure.storage.CloudStorageAccount;
@@ -35,21 +34,16 @@ import java.security.InvalidKeyException;
  * @author Warren Zhu
  */
 @Configuration
-@ConditionalOnClass({CloudStorageAccount.class, AzureStorageProtocolResolver.class})
+@ConditionalOnClass(CloudStorageAccount.class)
 @ConditionalOnProperty(name = "spring.cloud.azure.storage.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(AzureStorageProperties.class)
-@Import(AzureStorageProtocolResolver.class)
 public class AzureStorageAutoConfiguration {
     private static final Logger log = LoggerFactory.getLogger(AzureStorageAutoConfiguration.class);
     private static final String STORAGE = "Storage";
     private static final String ACCOUNT_NAME = "accountName";
-    private static final Environment defaultEnv = Environment.GLOBAL;
 
     @Autowired(required = false)
     private ResourceManagerProvider resourceManagerProvider;
-
-    @Autowired(required = false)
-    private AzureProperties azureProperties;
 
     @PostConstruct
     public void collectTelemetry() {
@@ -58,7 +52,8 @@ public class AzureStorageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public CloudStorageAccount storageAccount(AzureStorageProperties storageProperties) {
+    public CloudStorageAccount storageAccount(AzureStorageProperties storageProperties,
+            EnvironmentProvider environmentProvider) {
 
         String connectionString;
 
@@ -67,12 +62,13 @@ public class AzureStorageAutoConfiguration {
 
             StorageAccount storageAccount = resourceManagerProvider.getStorageAccountManager().getOrCreate(accountName);
 
-            connectionString = StorageConnectionStringProvider.getConnectionString(storageAccount, getEnvironment());
+            connectionString = StorageConnectionStringProvider
+                    .getConnectionString(storageAccount, environmentProvider.getEnvironment());
 
         } else {
             connectionString = StorageConnectionStringProvider
                     .getConnectionString(storageProperties.getAccount(), storageProperties.getAccessKey(),
-                            getEnvironment());
+                            environmentProvider.getEnvironment());
             TelemetryCollector.getInstance().addProperty(STORAGE, ACCOUNT_NAME, storageProperties.getAccount());
         }
 
@@ -84,11 +80,9 @@ public class AzureStorageAutoConfiguration {
         }
     }
 
-    private Environment getEnvironment() {
-        if (this.azureProperties != null) {
-            return this.azureProperties.getEnvironment();
-        }
-
-        return defaultEnv;
+    @Configuration
+    @ConditionalOnClass(AzureStorageProtocolResolver.class)
+    @Import(AzureStorageProtocolResolver.class)
+    class StorageResourceConfiguration {
     }
 }
