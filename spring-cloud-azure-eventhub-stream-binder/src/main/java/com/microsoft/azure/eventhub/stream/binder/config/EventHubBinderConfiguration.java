@@ -11,6 +11,7 @@ import com.microsoft.azure.eventhub.stream.binder.properties.EventHubExtendedBin
 import com.microsoft.azure.eventhub.stream.binder.provisioning.EventHubChannelProvisioner;
 import com.microsoft.azure.eventhub.stream.binder.provisioning.EventHubChannelResourceManagerProvisioner;
 import com.microsoft.azure.spring.cloud.autoconfigure.eventhub.AzureEventHubProperties;
+import com.microsoft.azure.spring.cloud.autoconfigure.eventhub.EventHubUtils;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
@@ -32,6 +33,7 @@ import javax.annotation.PostConstruct;
 public class EventHubBinderConfiguration {
 
     private static final String EVENT_HUB_BINDER = "EventHubBinder";
+    private static final String NAMESPACE = "Namespace";
 
     @Autowired(required = false)
     private ResourceManagerProvider resourceManagerProvider;
@@ -47,6 +49,9 @@ public class EventHubBinderConfiguration {
         if (resourceManagerProvider != null) {
             return new EventHubChannelResourceManagerProvisioner(resourceManagerProvider,
                     eventHubProperties.getNamespace());
+        } else {
+            TelemetryCollector.getInstance().addProperty(EVENT_HUB_BINDER, NAMESPACE,
+                    EventHubUtils.getNamespace(eventHubProperties.getConnectionString()));
         }
 
         return new EventHubChannelProvisioner();
