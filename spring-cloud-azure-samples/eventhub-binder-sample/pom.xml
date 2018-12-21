@@ -10,7 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>spring-cloud-azure-eventhub-binder-sample</artifactId>
+    <artifactId>eventhub-binder-sample</artifactId>
     <name>Spring Cloud Azure Event Hub Binder Sample</name>
     <dependencies>
         <dependency>

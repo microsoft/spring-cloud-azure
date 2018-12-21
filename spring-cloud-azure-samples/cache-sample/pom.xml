@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>spring-cloud-azure-cache-sample</artifactId>
+    <artifactId>cache-sample</artifactId>
     <name>Spring Cloud Azure Cache Sample</name>
     <dependencies>
         <dependency>
