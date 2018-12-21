@@ -16,12 +16,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
-import java.util.Iterator;
+import java.util.Optional;
 
+/**
+ * Resource manager for config store in Azure Configuration Service
+ */
 public class ConfigResourceManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigResourceManager.class);
     private static final String AZ_CONFIG_RESOURCE_TYPE = "Microsoft.Azconfig/configurationStores";
-    private Azure.Authenticated authenticated;
+    private final Azure.Authenticated authenticated;
 
     public ConfigResourceManager(ConfigMSICredentials credentials) {
         Assert.notNull(credentials, "Credential token should not be null.");
@@ -30,6 +33,7 @@ public class ConfigResourceManager {
 
     /**
      * Search Azure Config Store which matches name {@code configStoreName}
+     *
      * @param configStoreName name of the Config Store to be searched
      * @return Tuple containing SubscriptionId and Resource Group Name information for {@code configStoreName},
      * return null if resource not found.
@@ -40,31 +44,30 @@ public class ConfigResourceManager {
 
         LOGGER.debug("Search config name {} from Azure Configuration Service.", configStoreName);
         Subscriptions subscriptions = this.authenticated.subscriptions();
-        Iterator<Subscription> subsIterator = subscriptions.list().iterator();
-        while (subsIterator.hasNext()) {
-            Subscription subscription = subsIterator.next();
+
+        for (Subscription subscription : subscriptions.list()){
             Azure subsAzure = this.authenticated.withSubscription(subscription.subscriptionId());
-
             GenericResources genericResources = subsAzure.genericResources();
-            Iterator<GenericResource> genericResourceIterator = genericResources.list().iterator();
-            while (genericResourceIterator.hasNext()) {
-                GenericResource genericResource = genericResourceIterator.next();
 
-                if (configStoreName.equals(genericResource.name())
-                        && AZ_CONFIG_RESOURCE_TYPE.equals(genericResource.type())) {
-                    // Found the resource
-                    LOGGER.debug("Found resource with SubscriptionId=[{}], ResourceGroup=[{}] for config store " +
-                            "[{}].", subscription.subscriptionId(), genericResource.resourceGroupName(),
-                            configStoreName);
-                    Tuple<String, String> resourceInfo = Tuple.of(subscription.subscriptionId(),
-                            genericResource.resourceGroupName());
+            Optional<Tuple<String, String>> resourceTuple = genericResources.list().stream()
+                            .filter(resource -> isConfigStoreResource(configStoreName, resource))
+                            .map(resource -> Tuple.of(subscription.subscriptionId(), resource.resourceGroupName()))
+                            .findFirst();
 
-                    return resourceInfo;
-                }
+            if (resourceTuple.isPresent()) {
+                // Found the resource
+                LOGGER.debug("Found resource with SubscriptionId=[{}], ResourceGroup=[{}] for config store " +
+                                "[{}].", resourceTuple.get().getFirst(), resourceTuple.get().getSecond(),
+                        configStoreName);
+                return resourceTuple.get();
             }
         }
 
         LOGGER.debug("No config store with name {} exists.", configStoreName);
         return null;
+    }
+
+    private boolean isConfigStoreResource(String expectedStoreName, GenericResource resource) {
+        return expectedStoreName.equals(resource.name()) && AZ_CONFIG_RESOURCE_TYPE.equals(resource.type());
     }
 }

@@ -57,57 +57,21 @@ public class ConfigResourceManagerTest {
     public void configStoreCanBeSearchedIfExist() {
         String expectedStoreName = TEST_STORE_NAME_2;
         // Data hierarchy: Subscriptions -> [Subscription, ...]
-        // Subscription -> Azure -> GenericResources -> [GenericResource, ...]
         // Test data: Three resources under three different subscriptions and resource groups
-        Subscription subscription1 = mock(Subscription.class);
-        GenericResource resource1 = mock(GenericResource.class);
-        Azure azure1 = mock(Azure.class);
-        GenericResources genericResources1 = mock(GenericResources.class);
-
-        Subscription subscription2 = mock(Subscription.class);
-        GenericResource resource2 = mock(GenericResource.class);
-        Azure azure2 = mock(Azure.class);
-        GenericResources genericResources2 = mock(GenericResources.class);
-
-        Subscription subscription3 = mock(Subscription.class);
-        GenericResource resource3 = mock(GenericResource.class);
-        Azure azure3 = mock(Azure.class);
-        GenericResources genericResources3 = mock(GenericResources.class);
-
-        when(subscription1.subscriptionId()).thenReturn(TEST_SUBSCRIPTION_1);
-        when(subscription2.subscriptionId()).thenReturn(TEST_SUBSCRIPTION_2);
-        when(subscription3.subscriptionId()).thenReturn(TEST_SUBSCRIPTION_3);
-
-        // Only one resource has correct resource type
-        when(resource1.type()).thenReturn(TEST_NON_CONFIG_TYPE);
-        when(resource2.type()).thenReturn(TEST_NON_CONFIG_TYPE);
-        when(resource3.type()).thenReturn(TEST_CONFIG_TYPE);
-
+        Subscription subscription1 = initSubscription(TEST_SUBSCRIPTION_1, TEST_NON_CONFIG_TYPE, TEST_STORE_NAME_1,
+                TEST_RESOURCE_GROUP_1);
         // Two resource has correct store name, but only the third one has correct resource type as configured above
-        when(resource1.name()).thenReturn(TEST_STORE_NAME_1);
-        when(resource2.name()).thenReturn(expectedStoreName);
-        when(resource3.name()).thenReturn(expectedStoreName);
-
-        when(resource1.resourceGroupName()).thenReturn(TEST_RESOURCE_GROUP_1);
-        when(resource2.resourceGroupName()).thenReturn(TEST_RESOURCE_GROUP_2);
-        when(resource3.resourceGroupName()).thenReturn(TEST_RESOURCE_GROUP_3);
+        Subscription subscription2 = initSubscription(TEST_SUBSCRIPTION_2, TEST_NON_CONFIG_TYPE, expectedStoreName,
+                TEST_RESOURCE_GROUP_2);
+        // Only one resource has correct resource type
+        Subscription subscription3 = initSubscription(TEST_SUBSCRIPTION_3, TEST_CONFIG_TYPE, expectedStoreName,
+                TEST_RESOURCE_GROUP_3);
 
         PagedList<Subscription> subsList = new TestPagedList<>();
         subsList.addAll(Arrays.asList(subscription1, subscription2, subscription3));
 
-        when(genericResources1.list()).thenReturn(TestPagedList.of(resource1));
-        when(genericResources2.list()).thenReturn(TestPagedList.of(resource2));
-        when(genericResources3.list()).thenReturn(TestPagedList.of(resource3));
-
         when(subscriptions.list()).thenReturn(subsList);
-        when(azure1.genericResources()).thenReturn(genericResources1);
-        when(azure2.genericResources()).thenReturn(genericResources2);
-        when(azure3.genericResources()).thenReturn(genericResources3);
-
         when(authenticated.subscriptions()).thenReturn(subscriptions);
-        when(authenticated.withSubscription(subscription1.subscriptionId())).thenReturn(azure1);
-        when(authenticated.withSubscription(subscription2.subscriptionId())).thenReturn(azure2);
-        when(authenticated.withSubscription(subscription3.subscriptionId())).thenReturn(azure3);
 
         PowerMockito.mockStatic(Azure.class);
         when(Azure.authenticate(any(AzureTokenCredentials.class))).thenReturn(authenticated);
@@ -118,6 +82,27 @@ public class ConfigResourceManagerTest {
         assertThat(resourceInfo).isNotNull();
         assertThat(resourceInfo.getFirst()).isEqualTo(TEST_SUBSCRIPTION_3);
         assertThat(resourceInfo.getSecond()).isEqualTo(TEST_RESOURCE_GROUP_3);
+    }
+
+    private Subscription initSubscription(String subscriptionId, String resourceType, String resourceName,
+                                          String resourceGroup) {
+        // Data hierarchy: Subscription -> Azure -> GenericResources -> [GenericResource, ...]
+        Subscription subscription = mock(Subscription.class);
+        Azure azure = mock(Azure.class);
+        GenericResources genericResources = mock(GenericResources.class);
+        GenericResource resource = mock(GenericResource.class);
+
+        when(subscription.subscriptionId()).thenReturn(subscriptionId);
+        when(resource.type()).thenReturn(resourceType);
+        when(resource.name()).thenReturn(resourceName);
+        when(resource.resourceGroupName()).thenReturn(resourceGroup);
+
+        when(genericResources.list()).thenReturn(TestPagedList.of(resource));
+        when(azure.genericResources()).thenReturn(genericResources);
+
+        when(authenticated.withSubscription(subscription.subscriptionId())).thenReturn(azure);
+
+        return subscription;
     }
 
     static class TestPagedList<E> extends PagedList<E> {
