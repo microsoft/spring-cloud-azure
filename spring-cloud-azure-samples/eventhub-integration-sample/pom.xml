@@ -10,8 +10,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>spring-cloud-azure-servicebus-topic-binder-sample</artifactId>
-    <name>Spring Cloud Azure Service Bus Topic Binder Sample</name>
+    <artifactId>eventhub-integration-sample</artifactId>
+    <name>Spring Cloud Azure Event Hub Integration Sample</name>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -19,9 +19,8 @@
         </dependency>
         <dependency>
             <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-cloud-azure-servicebus-topic-stream-binder</artifactId>
+            <artifactId>spring-cloud-starter-azure-eventhub</artifactId>
         </dependency>
-
     </dependencies>
 
 </project>
