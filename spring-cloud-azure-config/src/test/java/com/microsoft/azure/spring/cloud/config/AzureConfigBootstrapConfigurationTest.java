@@ -77,8 +77,8 @@ public class AzureConfigBootstrapConfigurationTest {
     public void msiEmptyConnectionStringShouldFail() throws Exception {
         whenNew(ConfigMSICredentials.class).withAnyArguments().thenReturn(msiCredentials);
         whenNew(AzureConfigMSIConnector.class).withAnyArguments().thenReturn(msiConnector);
+        
         when(msiCredentials.getToken(anyString())).thenReturn(MSI_TOKEN);
-
         when(msiConnector.getConnectionString()).thenReturn("");
 
         ApplicationContextRunner contextRunner = new ApplicationContextRunner()
@@ -101,8 +101,8 @@ public class AzureConfigBootstrapConfigurationTest {
     public void msiNonEmptyConnectionStringShouldPass() throws Exception {
         whenNew(ConfigMSICredentials.class).withAnyArguments().thenReturn(msiCredentials);
         whenNew(AzureConfigMSIConnector.class).withAnyArguments().thenReturn(msiConnector);
-        when(msiCredentials.getToken(anyString())).thenReturn(MSI_TOKEN);
 
+        when(msiCredentials.getToken(anyString())).thenReturn(MSI_TOKEN);
         when(msiConnector.getConnectionString()).thenReturn(TEST_CONN_STRING);
 
         ApplicationContextRunner contextRunner = new ApplicationContextRunner()
@@ -114,6 +114,7 @@ public class AzureConfigBootstrapConfigurationTest {
             assertThat(context.getBean(ConnectionStringPool.class)).isNotNull();
             ConnectionStringPool pool = context.getBean(ConnectionStringPool.class);
             ConnectionString connString = pool.get(TEST_STORE_NAME);
+
             assertThat(connString).isNotNull();
             assertThat(connString.getEndpoint()).isEqualTo("fake.test.config.io");
             assertThat(connString.getId()).isEqualTo("fake-conn-id");

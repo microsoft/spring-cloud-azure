@@ -22,7 +22,7 @@ public class AzureCloudConfigAutoConfigurationTest {
     private static final TaskScheduler TEST_SCHEDULER = new ThreadPoolTaskScheduler();
     private static final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
             .withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
-                    propPair(STORE_NAME_PROP, TestConstants.TEST_STORE_NAME))
+                    propPair(STORE_NAME_PROP, TEST_STORE_NAME))
             .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class,
                     AzureCloudConfigAutoConfiguration.class));
 
