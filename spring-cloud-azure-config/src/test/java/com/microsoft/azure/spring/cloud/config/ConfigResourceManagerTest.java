@@ -60,7 +60,7 @@ public class ConfigResourceManagerTest {
         // Test data: Three resources under three different subscriptions and resource groups
         Subscription subscription1 = initSubscription(TEST_SUBSCRIPTION_1, TEST_NON_CONFIG_TYPE, TEST_STORE_NAME_1,
                 TEST_RESOURCE_GROUP_1);
-        // Two resource has correct store name, but only the third one has correct resource type as configured above
+        // Two resource has correct store name, but only the third one has correct resource type
         Subscription subscription2 = initSubscription(TEST_SUBSCRIPTION_2, TEST_NON_CONFIG_TYPE, expectedStoreName,
                 TEST_RESOURCE_GROUP_2);
         // Only one resource has correct resource type
