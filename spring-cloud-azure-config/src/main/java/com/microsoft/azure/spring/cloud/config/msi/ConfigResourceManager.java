@@ -53,6 +53,9 @@ public class ConfigResourceManager {
                 if (configStoreName.equals(genericResource.name())
                         && AZ_CONFIG_RESOURCE_TYPE.equals(genericResource.type())) {
                     // Found the resource
+                    LOGGER.debug("Found resource with SubscriptionId=[{}], ResourceGroup=[{}] for config store " +
+                            "[{}].", subscription.subscriptionId(), genericResource.resourceGroupName(),
+                            configStoreName);
                     Tuple<String, String> resourceInfo = Tuple.of(subscription.subscriptionId(),
                             genericResource.resourceGroupName());
 
