@@ -7,6 +7,8 @@ package com.microsoft.azure.spring.cloud.config;
 
 import com.microsoft.azure.spring.cloud.config.msi.AzureConfigMSIConnector;
 import com.microsoft.azure.spring.cloud.config.msi.ConfigMSICredentials;
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,10 +19,9 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.BeanInstantiationException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-
-import java.util.Map;
 
 import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.propPair;
@@ -34,7 +35,8 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 @PowerMockIgnore({"javax.net.ssl.*"})
 public class AzureConfigBootstrapConfigurationTest {
     private static final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING))
+            .withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
+                    propPair(STORE_NAME_PROP, TEST_STORE_NAME))
             .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class));
 
     @Mock
@@ -75,22 +77,21 @@ public class AzureConfigBootstrapConfigurationTest {
     public void msiEmptyConnectionStringShouldFail() throws Exception {
         whenNew(ConfigMSICredentials.class).withAnyArguments().thenReturn(msiCredentials);
         whenNew(AzureConfigMSIConnector.class).withAnyArguments().thenReturn(msiConnector);
-        when(msiCredentials.getToken(anyString())).thenReturn(MSI_TOKEN);
 
+        when(msiCredentials.getToken(anyString())).thenReturn(MSI_TOKEN);
         when(msiConnector.getConnectionString()).thenReturn("");
 
         ApplicationContextRunner contextRunner = new ApplicationContextRunner()
                 .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class))
-                .withPropertyValues(propPair(SUBSCRIPTION_ID_PROP, TEST_SUBSCRIPTION_ID),
-                        propPair(RESOURCE_GROUP_PROP, TEST_RESOURCE_GROUP),
-                        propPair(CONFIG_STORE_PROP, TEST_CONFIG_STORE));
+                .withPropertyValues(propPair(MSI_ENABLED_PROP, "true"),
+                        propPair(STORE_NAME_PROP, TestConstants.TEST_STORE_NAME));
 
         contextRunner.run(context -> {
                     try {
                         context.getBean(AzureCloudConfigProperties.class);
                         Assert.fail("When using MSI auth, empty connection string should fail.");
                     } catch (Exception e) {
-                        assertThat(context).getFailure().hasCauseInstanceOf(IllegalArgumentException.class);
+                        assertThat(context).getFailure().hasCauseInstanceOf(BeanInstantiationException.class);
                         assertThat(context).getFailure().hasStackTraceContaining("Connection string cannot be empty");
                     }
                 });
@@ -100,21 +101,24 @@ public class AzureConfigBootstrapConfigurationTest {
     public void msiNonEmptyConnectionStringShouldPass() throws Exception {
         whenNew(ConfigMSICredentials.class).withAnyArguments().thenReturn(msiCredentials);
         whenNew(AzureConfigMSIConnector.class).withAnyArguments().thenReturn(msiConnector);
-        when(msiCredentials.getToken(anyString())).thenReturn(MSI_TOKEN);
 
+        when(msiCredentials.getToken(anyString())).thenReturn(MSI_TOKEN);
         when(msiConnector.getConnectionString()).thenReturn(TEST_CONN_STRING);
 
         ApplicationContextRunner contextRunner = new ApplicationContextRunner()
                 .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class))
-                .withPropertyValues(propPair(SUBSCRIPTION_ID_PROP, TEST_SUBSCRIPTION_ID),
-                        propPair(RESOURCE_GROUP_PROP, TEST_RESOURCE_GROUP),
-                        propPair(CONFIG_STORE_PROP, TEST_CONFIG_STORE));
+                .withPropertyValues(propPair(MSI_ENABLED_PROP, "true"),
+                        propPair(STORE_NAME_PROP, TEST_STORE_NAME));
 
         contextRunner.run(context -> {
-            assertThat(context.getBean(AzureCloudConfigProperties.class)).isNotNull();
-            AzureCloudConfigProperties properties = context.getBean(AzureCloudConfigProperties.class);
-            ConfigStore store = properties.getStores().get(0);
-            assertThat(store.getConnectionString()).isEqualTo(TEST_CONN_STRING);
+            assertThat(context.getBean(ConnectionStringPool.class)).isNotNull();
+            ConnectionStringPool pool = context.getBean(ConnectionStringPool.class);
+            ConnectionString connString = pool.get(TEST_STORE_NAME);
+
+            assertThat(connString).isNotNull();
+            assertThat(connString.getEndpoint()).isEqualTo("https://fake.test.config.io");
+            assertThat(connString.getId()).isEqualTo("fake-conn-id");
+            assertThat(connString.getSecret()).isEqualTo("ZmFrZS1jb25uLXNlY3JldA==");
         });
     }
 }

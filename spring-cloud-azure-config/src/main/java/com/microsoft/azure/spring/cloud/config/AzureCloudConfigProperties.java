@@ -5,7 +5,6 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import com.microsoft.azure.spring.cloud.config.msi.AzureCloudConfigARMProperties;
 import com.microsoft.azure.spring.cloud.config.msi.AzureCloudConfigMSIProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,10 +17,7 @@ import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
 
 @Validated
 @Getter
@@ -48,22 +44,16 @@ public class AzureCloudConfigProperties {
 
     private boolean failFast = true;
 
+    // Whether enable MSI or not
+    private boolean msiEnabled = false;
+
     private Watch watch = new Watch();
 
     private AzureCloudConfigMSIProperties msi;
 
-    private AzureCloudConfigARMProperties arm;
-
-    // Initialized from the loaded properties
-    private Map<String, ConnectionString> storeMap = new HashMap<>();
-
     @PostConstruct
     public void validateAndInit() {
-        if (stores.isEmpty()) {
-            return;
-        }
-
-        stores.forEach(store -> storeMap.put(store.getName(), ConnectionString.of(store.getConnectionString())));
+        Assert.notEmpty(this.stores, "At least one config store has to be configured.");
     }
 
     class Watch {
@@ -92,11 +82,15 @@ public class AzureCloudConfigProperties {
 }
 
 class ConfigStore {
+    @NotEmpty
     private String name; // Config store name
+
     @Nullable
     @Pattern(regexp = "(/[a-zA-Z0-9.\\-_]+)*")
     private String prefix;
+
     private String connectionString;
+
     // Label value in the Azure Config Service, can be empty
     @Nullable
     private String label;
@@ -134,51 +128,5 @@ class ConfigStore {
 
     public void setLabel(String label) {
         this.label = label;
-    }
-}
-
-class ConnectionString {
-    private static final String CONN_STRING_REGEXP = "Endpoint=(.*?);Id=(.*?);Secret=(.*?)";
-    public static final String ENDPOINT_ERR_MSG = String.format("Connection string does not follow format %s.",
-            CONN_STRING_REGEXP);
-    private static final java.util.regex.Pattern CONN_STRING_PATTERN =
-            java.util.regex.Pattern.compile(CONN_STRING_REGEXP);
-
-    private String endpoint;
-    private String id;
-    private String secret;
-
-    public ConnectionString(String endpoint, String id, String secret) {
-        this.endpoint = endpoint;
-        this.id = id;
-        this.secret = secret;
-    }
-
-    static ConnectionString of(String connectionString) {
-        Assert.hasText(connectionString, String.format("Connection string cannot be empty."));
-
-        Matcher matcher = CONN_STRING_PATTERN.matcher(connectionString);
-        if (!matcher.find()) {
-            throw new IllegalStateException(String.format("Connection string does not follow format %s.",
-                    CONN_STRING_REGEXP));
-        }
-
-        String endpoint = matcher.group(1);
-        String id = matcher.group(2);
-        String secret = matcher.group(3);
-
-        return new ConnectionString(endpoint, id, secret);
-    }
-
-    public String getEndpoint() {
-        return endpoint;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getSecret() {
-        return secret;
     }
 }

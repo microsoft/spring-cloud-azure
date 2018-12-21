@@ -20,23 +20,17 @@ public class ConfigAccessKeyResource {
     private final String resourceGroupName;
     private final String configStoreName;
 
-    public ConfigAccessKeyResource(AzureCloudConfigARMProperties armProperties) {
-        Assert.notNull(armProperties, "Azure resource management(ARM) configuration should not be null.");
-        this.subscriptionId = armProperties.getSubscriptionId();
-        this.resourceGroupName = armProperties.getResourceGroup();
-        this.configStoreName = armProperties.getConfigStore();
-    }
-
-    public String getResourceIdUrl() {
+    public ConfigAccessKeyResource(String subscriptionId, String resourceGroupName, String configStoreName) {
         Assert.hasText(subscriptionId, "Subscription id should not be null or empty.");
         Assert.hasText(resourceGroupName, "Resource group name should not be null or empty.");
         Assert.hasText(configStoreName, "Config store name should not be null or empty.");
-
-        return String.format(RESOURCE_ID_URL, ARM_ENDPONT, subscriptionId, resourceGroupName,
-                configStoreName, CONFIG_RESOURCE_VERSION);
+        this.subscriptionId = subscriptionId;
+        this.resourceGroupName = resourceGroupName;
+        this.configStoreName = configStoreName;
     }
 
-    public String getConfigStoreName() {
-        return configStoreName;
+    public String getResourceIdUrl() {
+        return String.format(RESOURCE_ID_URL, ARM_ENDPONT, subscriptionId, resourceGroupName,
+                configStoreName, CONFIG_RESOURCE_VERSION);
     }
 }
