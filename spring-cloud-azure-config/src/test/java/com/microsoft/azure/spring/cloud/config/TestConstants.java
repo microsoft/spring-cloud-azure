@@ -16,6 +16,7 @@ public class TestConstants {
     // Store specific configuration
     public static final String TEST_STORE_NAME = "store1";
     public static final String CONN_STRING_PROP = "spring.cloud.azure.config.stores[0].connection-string";
+    public static final String STORE_NAME_PROP = "spring.cloud.azure.config.stores[0].name";
     public static final String PREFIX_PROP = "spring.cloud.azure.config.stores[0].prefix";
 
     public static final String DEFAULT_CONTEXT_PROP = "spring.cloud.azure.config.default-context";
@@ -25,6 +26,7 @@ public class TestConstants {
     public static final String SUBSCRIPTION_ID_PROP = "spring.cloud.azure.config.arm.subscription-id";
     public static final String RESOURCE_GROUP_PROP = "spring.cloud.azure.config.arm.resource-group-name";
     public static final String CONFIG_STORE_PROP = "spring.cloud.azure.config.arm.config-store-name";
+    public static final String MSI_ENABLED_PROP = "spring.cloud.azure.config.msi-enabled";
 
     public static final String TEST_CONN_STRING =
             "Endpoint=https://fake.test.config.io;Id=fake-conn-id;Secret=ZmFrZS1jb25uLXNlY3JldA==";
@@ -50,4 +52,18 @@ public class TestConstants {
 
     public static final String TEST_SLASH_KEY = "test/slash/key";
     public static final String TEST_SLASH_VALUE = "prop value for slashed key name";
+
+    public static final String TEST_SUBSCRIPTION_1 = "fake-subscription-id-1";
+    public static final String TEST_SUBSCRIPTION_2 = "fake-subscription-id-2";
+    public static final String TEST_SUBSCRIPTION_3 = "fake-subscription-id-3";
+
+    public static final String TEST_RESOURCE_GROUP_1 = "fake-resource-group-1";
+    public static final String TEST_RESOURCE_GROUP_2 = "fake-resource-group-2";
+    public static final String TEST_RESOURCE_GROUP_3 = "fake-resource-group-3";
+
+    public static final String TEST_CONFIG_TYPE = "Microsoft.Azconfig/configurationStores";
+    public static final String TEST_NON_CONFIG_TYPE = "Incorrect.Resource.Type.1";
+
+    public static final String TEST_STORE_NAME_1 = "fake-config-store-1";
+    public static final String TEST_STORE_NAME_2 = "fake-config-store-2";
 }
