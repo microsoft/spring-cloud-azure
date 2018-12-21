@@ -42,7 +42,7 @@ public class ConfigResourceManager {
     public Tuple<String, String> findStore(String configStoreName) {
         Assert.hasText(configStoreName, "Config store name should not be null or empty.");
 
-        LOGGER.debug("Search config name {} from Azure Configuration Service.", configStoreName);
+        LOGGER.debug("Search config store name {} from Azure Configuration Service.", configStoreName);
         Subscriptions subscriptions = this.authenticated.subscriptions();
 
         for (Subscription subscription : subscriptions.list()){

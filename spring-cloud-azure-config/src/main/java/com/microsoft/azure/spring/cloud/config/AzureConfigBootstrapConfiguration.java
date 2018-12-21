@@ -7,8 +7,9 @@ package com.microsoft.azure.spring.cloud.config;
 
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.config.msi.AzureConfigMSIConnector;
-import com.microsoft.azure.spring.cloud.config.msi.ConfigAccessKeyResource;
 import com.microsoft.azure.spring.cloud.config.msi.ConfigMSICredentials;
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -16,10 +17,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
+import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
-import java.util.Map;
+import java.util.List;
 
 @Configuration
 @EnableConfigurationProperties(AzureCloudConfigProperties.class)
@@ -27,25 +28,30 @@ import java.util.Map;
 @ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "enabled", matchIfMissing = true)
 public class AzureConfigBootstrapConfiguration {
     private static final String AZURE_CONFIG_STORE = "AzureConfigService";
-    private static final String MSI_STORE = "ConfigLoadedFromMSI";
 
     @Bean
-    @Primary
-    public AzureCloudConfigProperties initProperties(AzureCloudConfigProperties properties) {
-        if (!properties.getStoreMap().isEmpty()) {
-            return properties;
+    public ConnectionStringPool initConnectionString(AzureCloudConfigProperties properties) {
+        ConnectionStringPool pool = new ConnectionStringPool();
+        List<ConfigStore> stores = properties.getStores();
+
+        if (!properties.isMsiEnabled()) {
+            // Initialize connection string pool directly if MSI not enabled.
+            stores.forEach(store -> pool.put(store.getName(), ConnectionString.of(store.getConnectionString())));
+        } else {
+            // Try load connection string from ARM if MSI enabled
+            ConfigMSICredentials msiCredentials = new ConfigMSICredentials(properties.getMsi());
+
+            stores.stream().forEach(store -> {
+                AzureConfigMSIConnector msiConnector = new AzureConfigMSIConnector(msiCredentials, store.getName());
+
+                String connectionString = msiConnector.getConnectionString();
+                Assert.hasText(connectionString, "Connection string cannot be empty");
+
+                pool.put(store.getName(), ConnectionString.of(connectionString));
+            });
         }
 
-        ConfigMSICredentials msiCredentials = new ConfigMSICredentials(properties.getMsi());
-        ConfigAccessKeyResource keyResource = new ConfigAccessKeyResource(properties.getArm());
-
-        AzureConfigMSIConnector msiConnector = new AzureConfigMSIConnector(msiCredentials, keyResource);
-        ConfigStore store = new ConfigStore();
-        store.setConnectionString(msiConnector.getConnectionString());
-        store.setName(MSI_STORE);
-        properties.getStores().add(store);
-
-        return properties;
+        return pool;
     }
 
     @Bean
@@ -59,11 +65,9 @@ public class AzureConfigBootstrapConfiguration {
     }
 
     @Bean
-    public ConfigServiceOperations azureConfigOperations(ConfigHttpClient client,
-                                                         AzureCloudConfigProperties properties) {
-        Map<String, ConnectionString> storeMap = properties.getStoreMap();
+    public ConfigServiceOperations azureConfigOperations(ConfigHttpClient client, ConnectionStringPool pool) {
         // TODO (wp) multi stores is not supported here
-        ConnectionString connString = storeMap.get(storeMap.keySet().iterator().next());
+        ConnectionString connString = pool.get(pool.getAll().keySet().iterator().next());
         return new ConfigServiceTemplate(client, connString.getEndpoint(), connString.getId(), connString.getSecret());
     }
 

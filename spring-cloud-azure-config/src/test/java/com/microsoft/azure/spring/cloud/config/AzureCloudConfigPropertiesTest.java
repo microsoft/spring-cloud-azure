@@ -7,22 +7,23 @@ package com.microsoft.azure.spring.cloud.config;
 
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.context.properties.ConfigurationPropertiesBindException;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.context.properties.bind.BindException;
 import org.springframework.boot.test.context.assertj.AssertableApplicationContext;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Arrays;
 
-import static com.microsoft.azure.spring.cloud.config.ConnectionString.ENDPOINT_ERR_MSG;
+import static com.microsoft.azure.spring.cloud.config.resource.ConnectionString.ENDPOINT_ERR_MSG;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.propPair;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AzureCloudConfigPropertiesTest {
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations.of(PropertiesTestConfiguration.class));
+            .withPropertyValues(propPair(STORE_NAME_PROP, TestConstants.TEST_STORE_NAME))
+            .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class));
     private static final String NO_ENDPOINT_CONN_STRING = "Id=fake-conn-id;Secret=ZmFrZS1jb25uLXNlY3JldA==";
     private static final String NO_ID_CONN_STRING =
             "Endpoint=https://fake.test.config.io;Secret=ZmFrZS1jb25uLXNlY3JldA==";
@@ -87,7 +88,7 @@ public class AzureCloudConfigPropertiesTest {
     }
 
     private void assertInvalidField(AssertableApplicationContext context, String fieldName) {
-        assertThat(context).getFailure().hasCauseInstanceOf(BindException.class);
+        assertThat(context).getFailure().hasCauseInstanceOf(ConfigurationPropertiesBindException.class);
         assertThat(context).getFailure()
                 .hasStackTraceContaining(String.format("field '%s': rejected value", fieldName));
     }
