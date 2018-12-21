@@ -66,9 +66,7 @@ public class AzureConfigBootstrapConfiguration {
 
     @Bean
     public ConfigServiceOperations azureConfigOperations(ConfigHttpClient client, ConnectionStringPool pool) {
-        // TODO (wp) multi stores is not supported here
-        ConnectionString connString = pool.get(pool.getAll().keySet().iterator().next());
-        return new ConfigServiceTemplate(client, connString.getEndpoint(), connString.getId(), connString.getSecret());
+        return new ConfigServiceTemplate(client, pool);
     }
 
     @Bean

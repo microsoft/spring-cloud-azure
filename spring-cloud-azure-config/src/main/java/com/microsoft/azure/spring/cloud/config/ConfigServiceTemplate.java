@@ -7,16 +7,15 @@ package com.microsoft.azure.spring.cloud.config;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Collections;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueResponse;
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
@@ -41,18 +40,17 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     private final ConfigHttpClient configClient;
-    private final String storeEndpoint;
-    private final String credential;
-    private final String secret;
+    private final ConnectionStringPool connectionStringPool;
 
     @Override
-    public List<KeyValueItem> getKeys(@Nullable String prefix, @Nullable String label) {
+    public List<KeyValueItem> getKeys(@Nullable String prefix, @Nullable String label, @NonNull ConfigStore store) {
+        String storeEndpoint = connectionStringPool.get(store.getName()).getEndpoint();
         String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildKVApi(prefix, label);
         List<KeyValueItem> result = new ArrayList<>();
 
         CloseableHttpResponse response = null;
         try {
-            response = getRawResponse(requestUri);
+            response = getRawResponse(requestUri, store);
             while (response != null) {
                 try {
                     KeyValueResponse kvResponse = mapper.readValue(response.getEntity().getContent(),
@@ -69,7 +67,7 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
 
                 String nextRequestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).withPath(nextLink)
                         .buildKVApi();
-                response = getRawResponse(nextRequestUri);
+                response = getRawResponse(nextRequestUri, store);
             }
         } finally {
             if (response != null) {
@@ -84,13 +82,15 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         return result;
     }
 
-    private CloseableHttpResponse getRawResponse(String requestUri) {
+    private CloseableHttpResponse getRawResponse(String requestUri, @NonNull ConfigStore store) {
+        ConnectionString connString = connectionStringPool.get(store.getName());
         HttpGet httpGet = new HttpGet(requestUri);
         Date date = new Date();
 
         log.debug("Loading key-value items from Azure Config service at [{}].", requestUri);
         try {
-            CloseableHttpResponse response = configClient.execute(httpGet, date, credential, secret);
+            CloseableHttpResponse response = configClient.execute(httpGet, date, connString.getId(),
+                    connString.getSecret());
             int statusCode = response.getStatusLine().getStatusCode();
 
             if (statusCode == HttpStatus.SC_OK) {

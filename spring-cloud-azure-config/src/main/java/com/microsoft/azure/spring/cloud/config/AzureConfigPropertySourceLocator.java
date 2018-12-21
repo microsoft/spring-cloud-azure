@@ -24,16 +24,14 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
     private final ConfigServiceOperations operations;
     private final AzureCloudConfigProperties properties;
-    private List<String> contexts = new ArrayList<>();
     private final String profileSeparator;
-    // TODO (wp) multi stores is not supported yet
-    private ConfigStore configStore;
+    private final List<ConfigStore> configStores;
 
     public AzureConfigPropertySourceLocator(ConfigServiceOperations operations, AzureCloudConfigProperties properties) {
         this.operations = operations;
         this.properties = properties;
         this.profileSeparator = properties.getProfileSeparator();
-        this.configStore = properties.getStores().get(0);
+        this.configStores = properties.getStores();
     }
 
     @Override
@@ -51,20 +49,30 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
         List<String> profiles = Arrays.asList(env.getActiveProfiles());
 
+        CompositePropertySource composite = new CompositePropertySource(PROPERTY_SOURCE_NAME);
+        for (ConfigStore configStore : configStores) {
+            addPropertySource(composite, configStore, applicationName, profiles);
+        }
+
+        return composite;
+    }
+
+    private void addPropertySource(CompositePropertySource composite, ConfigStore store, String applicationName,
+                                   List<String> profiles) {
         /* Generate which contexts(key prefixes) will be used for key-value items search
            If key prefix is empty, default context is: application, current application name is: foo,
            active profile is: dev, profileSeparator is: _
            Will generate these contexts: /application/, /application_dev/, /foo/, /foo_dev/
-         */
-        this.contexts.addAll(generateContexts(this.properties.getDefaultContext(), profiles));
-        this.contexts.addAll(generateContexts(applicationName, profiles));
+        */
+        List<String> contexts = new ArrayList<>();
+        contexts.addAll(generateContexts(this.properties.getDefaultContext(), profiles, store));
+        contexts.addAll(generateContexts(applicationName, profiles, store));
 
-        CompositePropertySource composite = new CompositePropertySource(PROPERTY_SOURCE_NAME);
-        // Reverse in order to add Profile specific properties earlier
-        Collections.reverse(this.contexts);
-        for (String sourceContext : this.contexts) {
+        // Reverse in order to add Profile specific properties earlier, and last profile comes first
+        Collections.reverse(contexts);
+        for (String sourceContext : contexts) {
             try {
-                composite.addPropertySource(create(sourceContext));
+                composite.addPropertySource(create(sourceContext, store));
                 log.debug("PropertySource context [{}] is added.", sourceContext);
             } catch (Exception e) {
                 if (properties.isFailFast()) {
@@ -76,17 +84,15 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
                 }
             }
         }
-
-        return composite;
     }
 
-    private List<String> generateContexts(String applicationName, List<String> profiles) {
+    private List<String> generateContexts(String applicationName, List<String> profiles, ConfigStore configStore) {
         List<String> result = new ArrayList<>();
         if (!StringUtils.hasText(applicationName)) {
             return result; // Ignore null or empty application name
         }
 
-        String prefix = this.configStore.getPrefix();
+        String prefix = configStore.getPrefix();
 
         String prefixedContext = propWithAppName(prefix, applicationName);
         result.add(prefixedContext + PATH_SPLITTER);
@@ -108,8 +114,8 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         return context + this.profileSeparator + profile + PATH_SPLITTER;
     }
 
-    private AzureConfigPropertySource create(String context) {
-        AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, properties, operations);
+    private AzureConfigPropertySource create(String context, ConfigStore store) {
+        AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, operations, store);
         propertySource.initProperties();
 
         return propertySource;

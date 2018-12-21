@@ -15,17 +15,13 @@ import java.util.Set;
 
 public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigServiceOperations> {
     private final String context;
-    private final AzureCloudConfigProperties configProperties;
     private Map<String, Object> properties = new LinkedHashMap<>();
-    // TODO (wp) multi stores is not supported yet
     private ConfigStore configStore;
 
-    public AzureConfigPropertySource(String context, AzureCloudConfigProperties configProperties,
-                                     ConfigServiceOperations operations) {
+    public AzureConfigPropertySource(String context, ConfigServiceOperations operations, ConfigStore configStore) {
         super(context, operations);
-        this.configProperties = configProperties;
         this.context = context;
-        this.configStore = configProperties.getStores().get(0);
+        this.configStore = configStore;
     }
 
     @Override
@@ -42,7 +38,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     public void initProperties() {
         String label = this.configStore.getLabel();
         // * for wildcard match
-        List<KeyValueItem> items = source.getKeys(context + "*", label);
+        List<KeyValueItem> items = source.getKeys(context + "*", label, configStore);
 
         for (KeyValueItem item : items) {
             String key = item.getKey().trim().substring(context.length()).replace('/', '.');

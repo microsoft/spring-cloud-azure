@@ -34,15 +34,14 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
     private ScheduledFuture<?> watchFuture;
     private AzureCloudConfigProperties properties;
     private boolean firstTime = true;
-    // TODO (wp) multi stores is not supported yet
-    private ConfigStore configStore;
+    private List<ConfigStore> configStores;
 
     public AzureCloudConfigWatch(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
                                  TaskScheduler scheduler) {
         this.configOperations = operations;
         this.properties = properties;
         this.taskScheduler = scheduler;
-        this.configStore = properties.getStores().get(0);
+        this.configStores = properties.getStores();
     }
 
     @Override
@@ -88,33 +87,37 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
 
     public void watchConfigKeyValues() {
         if (this.running.get()) {
-            String prefix = StringUtils.hasText(configStore.getPrefix()) ? configStore.getPrefix() + "*" : "*";
-            List<KeyValueItem> keyValueItems = configOperations.getKeys(prefix, configStore.getLabel());
+            for (ConfigStore configStore : configStores) {
+                String prefix = StringUtils.hasText(configStore.getPrefix()) ? configStore.getPrefix() + "*" : "*";
+                List<KeyValueItem> keyValueItems = configOperations.getKeys(prefix, configStore.getLabel(),
+                        configStore);
 
-            if (keyValueItems.isEmpty()) {
-                return;
-            }
+                if (keyValueItems.isEmpty()) {
+                    return;
+                }
 
-            LinkedHashMap<String, String> newKeyEtagMap = keyValueItems.stream()
-                    .collect(Collectors.toMap(KeyValueItem::getKey, KeyValueItem::getEtag,
-                            (v1, v2) -> v1, LinkedHashMap::new));
-            if (firstTime) {
-                keyNameEtagMap.putAll(newKeyEtagMap);
-                firstTime = false;
-                return;
-            }
+                LinkedHashMap<String, String> newKeyEtagMap = keyValueItems.stream()
+                        .collect(Collectors.toMap(KeyValueItem::getKey, KeyValueItem::getEtag,
+                                (v1, v2) -> v1, LinkedHashMap::new));
+                if (firstTime) {
+                    keyNameEtagMap.putAll(newKeyEtagMap);
+                    firstTime = false;
+                    return;
+                }
 
-            Optional<String> changedKey = newKeyEtagMap.entrySet().stream()
-                    .filter(e -> !mapInclude(keyNameEtagMap, e.getKey(), e.getValue()))
-                    .map(e -> e.getKey())
-                    .findFirst();
+                Optional<String> changedKey = newKeyEtagMap.entrySet().stream()
+                        .filter(e -> !mapInclude(keyNameEtagMap, e.getKey(), e.getValue()))
+                        .map(e -> e.getKey())
+                        .findFirst();
 
-            if (!firstTime && changedKey.isPresent()) {
-                LOGGER.trace("Some keys matching {} is updated, will send refresh event.", prefix);
-                keyNameEtagMap.clear();
-                keyNameEtagMap.putAll(newKeyEtagMap);
-                RefreshEventData eventData = new RefreshEventData(prefix);
-                publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
+                if (!firstTime && changedKey.isPresent()) {
+                    LOGGER.trace("Some keys matching {} is updated, will send refresh event.", prefix);
+                    keyNameEtagMap.clear();
+                    keyNameEtagMap.putAll(newKeyEtagMap);
+                    RefreshEventData eventData = new RefreshEventData(prefix);
+                    publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
+                    break; // Break early once a change is found
+                }
             }
         }
     }

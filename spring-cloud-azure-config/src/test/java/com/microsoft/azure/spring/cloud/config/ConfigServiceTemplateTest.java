@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueResponse;
 import com.microsoft.azure.spring.cloud.config.mock.MockCloseableHttpResponse;
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.ProtocolVersion;
@@ -50,6 +52,8 @@ public class ConfigServiceTemplateTest {
 
     private ConfigServiceTemplate template;
 
+    private static final ConnectionStringPool pool = new ConnectionStringPool();
+    private static final ConfigStore configStore = new ConfigStore();
     public static final List<KeyValueItem> TEST_ITEMS = new ArrayList<>();
     private static final KeyValueItem item1 = createItem(TEST_CONTEXT, TEST_KEY_1, TEST_VALUE_1);
     private static final KeyValueItem item2 = createItem(TEST_CONTEXT, TEST_KEY_2, TEST_VALUE_2);
@@ -70,6 +74,9 @@ public class ConfigServiceTemplateTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
+        pool.put(TEST_STORE_NAME, ConnectionString.of(TEST_CONN_STRING));
+        configStore.setName(TEST_STORE_NAME);
+        configStore.setConnectionString(TEST_CONN_STRING);
 
         TEST_ITEMS.add(item1);
         TEST_ITEMS.add(item2);
@@ -82,9 +89,9 @@ public class ConfigServiceTemplateTest {
     public void testKeysCanBeSearched() throws IOException, URISyntaxException {
         when(configClient.execute(any(), any(), any(), any()))
                 .thenReturn(new MockCloseableHttpResponse(OK_STATUS, okEntity));
-        template = new ConfigServiceTemplate(configClient, TEST_ENDPOINT, TEST_ID, TEST_SECRET);
+        template = new ConfigServiceTemplate(configClient, pool);
 
-        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, null);
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, null, configStore);
         assertThat(result.size()).isEqualTo(TEST_ITEMS.size());
         assertThat(result).containsExactlyInAnyOrder(TEST_ITEMS.stream().toArray(KeyValueItem[]::new));
     }
@@ -100,17 +107,17 @@ public class ConfigServiceTemplateTest {
         when(configClient.execute(any(), any(), any(), any()))
                 .thenReturn(new MockCloseableHttpResponse(FAIL_STATUS, null));
 
-        template = new ConfigServiceTemplate(configClient, TEST_ENDPOINT, TEST_ID, TEST_SECRET);
-        template.getKeys(TEST_CONTEXT, null);
+        template = new ConfigServiceTemplate(configClient, pool);
+        template.getKeys(TEST_CONTEXT, null, configStore);
     }
 
     @Test
     public void notFoundReturnEmptyList() throws Exception {
         when(configClient.execute(any(), any(), any(), any()))
                 .thenReturn(new MockCloseableHttpResponse(NOT_FOUND_STATUS, null));
-        template = new ConfigServiceTemplate(configClient, TEST_ENDPOINT, TEST_ID, TEST_SECRET);
+        template = new ConfigServiceTemplate(configClient, pool);
 
-        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, null);
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, null, configStore);
         assertThat(result).isNotNull();
         assertThat(result.size()).isEqualTo(0);
     }
@@ -133,8 +140,8 @@ public class ConfigServiceTemplateTest {
         when(secondResponse.getEntity()).thenReturn(secondEntity);
 
         when(configClient.execute(any(), any(), any(), any())).thenReturn(firstResponse).thenReturn(secondResponse);
-        template = new ConfigServiceTemplate(configClient, TEST_ENDPOINT, TEST_ID, TEST_SECRET);
-        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, null);
+        template = new ConfigServiceTemplate(configClient, pool);
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, null, configStore);
 
         verify(configClient, times(2)).execute(any(), any(), any(), any());
         assertThat(result).isNotEmpty();
@@ -151,8 +158,8 @@ public class ConfigServiceTemplateTest {
         when(response.getEntity()).thenReturn(httpEntity);
 
         when(configClient.execute(any(), any(), any(), any())).thenReturn(response);
-        template = new ConfigServiceTemplate(configClient, TEST_ENDPOINT, TEST_ID, TEST_SECRET);
-        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, null);
+        template = new ConfigServiceTemplate(configClient, pool);
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, null, configStore);
 
         verify(configClient, times(1)).execute(any(), any(), any(), any());
         assertThat(result).isNotEmpty();
@@ -170,8 +177,8 @@ public class ConfigServiceTemplateTest {
         when(response.getEntity()).thenReturn(httpEntity);
 
         when(configClient.execute(any(), any(), any(), any())).thenReturn(response);
-        template = new ConfigServiceTemplate(configClient, TEST_ENDPOINT, TEST_ID, TEST_SECRET);
-        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, null);
+        template = new ConfigServiceTemplate(configClient, pool);
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, null, configStore);
 
         verify(configClient, times(1)).execute(any(), any(), any(), any());
         assertThat(result).isNotEmpty();
