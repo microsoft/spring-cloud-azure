@@ -33,8 +33,7 @@ public class ConnectionString {
 
         Matcher matcher = CONN_STRING_PATTERN.matcher(connectionString);
         if (!matcher.find()) {
-            throw new IllegalStateException(String.format("Connection string does not follow format %s.",
-                    CONN_STRING_REGEXP));
+            throw new IllegalStateException(ENDPOINT_ERR_MSG);
         }
 
         String endpoint = matcher.group(1);
