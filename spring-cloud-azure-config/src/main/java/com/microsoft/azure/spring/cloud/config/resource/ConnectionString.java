@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ConnectionString {
-    private static final String CONN_STRING_REGEXP = "Endpoint=https://([^;]+);Id=([^;]+);Secret=([^;]+)";
+    private static final String CONN_STRING_REGEXP = "Endpoint=([^;]+);Id=([^;]+);Secret=([^;]+)";
     public static final String ENDPOINT_ERR_MSG = String.format("Connection string does not follow format %s.",
             CONN_STRING_REGEXP);
     private static final Pattern CONN_STRING_PATTERN = Pattern.compile(CONN_STRING_REGEXP);

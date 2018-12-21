@@ -71,7 +71,7 @@ public class ConnectiongStringTest {
 
     private void assertConnStringFieldsValid(ConnectionString connString) {
         assertThat(connString).isNotNull();
-        assertThat(connString.getEndpoint()).isEqualTo("fake.test.config.io");
+        assertThat(connString.getEndpoint()).isEqualTo("https://fake.test.config.io");
         assertThat(connString.getId()).isEqualTo("fake-conn-id");
         assertThat(connString.getSecret()).isEqualTo("ZmFrZS1jb25uLXNlY3JldA==");
     }

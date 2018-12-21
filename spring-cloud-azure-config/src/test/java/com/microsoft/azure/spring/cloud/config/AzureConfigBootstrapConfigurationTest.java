@@ -77,7 +77,7 @@ public class AzureConfigBootstrapConfigurationTest {
     public void msiEmptyConnectionStringShouldFail() throws Exception {
         whenNew(ConfigMSICredentials.class).withAnyArguments().thenReturn(msiCredentials);
         whenNew(AzureConfigMSIConnector.class).withAnyArguments().thenReturn(msiConnector);
-        
+
         when(msiCredentials.getToken(anyString())).thenReturn(MSI_TOKEN);
         when(msiConnector.getConnectionString()).thenReturn("");
 
