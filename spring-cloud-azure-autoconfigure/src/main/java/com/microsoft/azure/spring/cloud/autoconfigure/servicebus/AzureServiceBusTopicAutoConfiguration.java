@@ -13,13 +13,12 @@ import com.microsoft.azure.spring.integration.servicebus.factory.DefaultServiceB
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicTemplate;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 
@@ -35,33 +34,30 @@ public class AzureServiceBusTopicAutoConfiguration {
     private static final String SERVICE_BUS_TOPIC = "ServiceBusTopic";
     private static final String NAMESPACE = "Namespace";
 
+    @Autowired(required = false)
+    private ResourceManagerProvider resourceManagerProvider;
+
     @PostConstruct
     public void collectTelemetry() {
         TelemetryCollector.getInstance().addService(SERVICE_BUS_TOPIC);
     }
 
     @Bean
-    @ConditionalOnMissingBean({ResourceManagerProvider.class, ServiceBusTopicClientFactory.class})
+    @ConditionalOnMissingBean
     public ServiceBusTopicClientFactory topicClientFactory(AzureServiceBusProperties serviceBusProperties) {
         String connectionString = serviceBusProperties.getConnectionString();
-        TelemetryCollector.getInstance().addProperty(SERVICE_BUS_TOPIC, NAMESPACE, ServiceBusUtils.getNamespace
-                (connectionString));
-        return new DefaultServiceBusTopicClientFactory(connectionString);
-    }
-
-    @Bean
-    @ConditionalOnBean(ResourceManagerProvider.class)
-    @ConditionalOnMissingBean
-    public ServiceBusTopicClientFactory topicClientFactoryWithResourceManagerProvider(
-            ResourceManagerProvider resourceManagerProvider, AzureServiceBusProperties serviceBusProperties) {
         DefaultServiceBusTopicClientFactory clientFactory =
                 new DefaultServiceBusTopicClientFactory(serviceBusProperties.getConnectionString());
-        if (StringUtils.hasText(serviceBusProperties.getNamespace())) {
-            clientFactory.setNamespace(serviceBusProperties.getNamespace());
-        }
-        clientFactory.setResourceManagerProvider(resourceManagerProvider);
 
-        return clientFactory;
+        if (resourceManagerProvider != null) {
+            clientFactory.setNamespace(serviceBusProperties.getNamespace());
+            clientFactory.setResourceManagerProvider(resourceManagerProvider);
+        } else {
+            TelemetryCollector.getInstance().addProperty(SERVICE_BUS_TOPIC, NAMESPACE,
+                    ServiceBusUtils.getNamespace(connectionString));
+        }
+
+        return new DefaultServiceBusTopicClientFactory(connectionString);
     }
 
     @Bean
