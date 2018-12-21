@@ -97,6 +97,11 @@
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
+                <artifactId>spring-cloud-azure-servicebus-queue-stream-binder</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-azure-keyvault-config</artifactId>
                 <version>${project.version}</version>
             </dependency>
