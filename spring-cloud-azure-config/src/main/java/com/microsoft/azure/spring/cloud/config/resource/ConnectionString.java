@@ -18,11 +18,11 @@ public class ConnectionString {
     public static final String NON_EMPTY_MSG = "%s property should not be null or empty in the connection string of " +
             "Azure Config Service.";
 
-    private String endpoint;
-    private String id;
-    private String secret;
+    private final String endpoint;
+    private final String id;
+    private final String secret;
 
-    public ConnectionString(String endpoint, String id, String secret) {
+    private ConnectionString(String endpoint, String id, String secret) {
         this.endpoint = endpoint;
         this.id = id;
         this.secret = secret;
