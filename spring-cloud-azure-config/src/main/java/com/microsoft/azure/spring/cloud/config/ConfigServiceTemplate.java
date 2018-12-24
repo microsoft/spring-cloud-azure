@@ -5,15 +5,6 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.Collections;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueResponse;
@@ -23,10 +14,17 @@ import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @AllArgsConstructor
