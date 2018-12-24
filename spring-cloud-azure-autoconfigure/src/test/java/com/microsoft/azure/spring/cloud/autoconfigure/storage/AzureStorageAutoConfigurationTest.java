@@ -25,8 +25,7 @@ public class AzureStorageAutoConfigurationTest {
 
     @Test
     public void testAzureStorageDisabled() {
-        this.contextRunner.withPropertyValues("spring.cloud.azure.storage.enabled=false")
-                          .run(context -> assertThat(context).doesNotHaveBean(AzureStorageProperties.class));
+        this.contextRunner.run(context -> assertThat(context).doesNotHaveBean(AzureStorageProperties.class));
     }
 
     @Test
