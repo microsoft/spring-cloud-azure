@@ -9,6 +9,7 @@ package com.microsoft.azure.spring.cloud.context.core.impl;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.storage.StorageAccount;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
+import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
 import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.azure.storage.CloudStorageAccount;
@@ -20,19 +21,14 @@ import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.util.function.Function;
 
-public class StorageQueueManager extends AzureManager<CloudQueue, Tuple<String, String>> {
-    private final StorageAccountManager storageAccountManager;
-    private final Function<String, CloudQueueClient> queueClientCreator =
-            Memoizer.memoize(this::createStorageQueueClient);
+public class StorageQueueManager extends AzureManager<CloudQueue, Tuple<CloudStorageAccount, String>> {
 
-    public StorageQueueManager(Azure azure, AzureProperties azureProperties,
-            StorageAccountManager storageAccountManager) {
+    public StorageQueueManager(Azure azure, AzureProperties azureProperties) {
         super(azure, azureProperties);
-        this.storageAccountManager = storageAccountManager;
     }
 
     @Override
-    String getResourceName(Tuple<String, String> key) {
+    String getResourceName(Tuple<CloudStorageAccount, String> key) {
         return key.getSecond();
     }
 
@@ -42,8 +38,8 @@ public class StorageQueueManager extends AzureManager<CloudQueue, Tuple<String, 
     }
 
     @Override
-    public CloudQueue internalGet(Tuple<String, String> key) {
-        CloudQueueClient queueClient = this.queueClientCreator.apply(key.getFirst());
+    public CloudQueue internalGet(Tuple<CloudStorageAccount, String> key) {
+        CloudQueueClient queueClient = key.getFirst().createCloudQueueClient();
 
         try {
             CloudQueue cloudQueue = queueClient.getQueueReference(key.getSecond());
@@ -57,8 +53,8 @@ public class StorageQueueManager extends AzureManager<CloudQueue, Tuple<String, 
     }
 
     @Override
-    public CloudQueue internalCreate(Tuple<String, String> key) {
-        CloudQueueClient queueClient = this.queueClientCreator.apply(key.getFirst());
+    public CloudQueue internalCreate(Tuple<CloudStorageAccount, String> key) {
+        CloudQueueClient queueClient = key.getFirst().createCloudQueueClient();
 
         try {
             CloudQueue cloudQueue = queueClient.getQueueReference(key.getSecond());
@@ -68,17 +64,4 @@ public class StorageQueueManager extends AzureManager<CloudQueue, Tuple<String, 
             throw new RuntimeException("Failed to build queue client", e);
         }
     }
-
-    private CloudQueueClient createStorageQueueClient(String storageAccountName) {
-        StorageAccount storageAccount = this.storageAccountManager.getOrCreate(storageAccountName);
-        String connectionString =
-                StorageConnectionStringProvider.getConnectionString(storageAccount, azureProperties.getRegion());
-
-        try {
-            return CloudStorageAccount.parse(connectionString).createCloudQueueClient();
-        } catch (URISyntaxException | InvalidKeyException e) {
-            throw new RuntimeException("Failed to build queue client", e);
-        }
-    }
-
 }

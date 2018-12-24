@@ -7,7 +7,8 @@
 package com.microsoft.azure.spring.cloud.storage;
 
 import com.microsoft.azure.storage.CloudStorageAccount;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -22,9 +23,8 @@ import org.springframework.core.io.ResourceLoader;
  *
  * @author Warren Zhu
  */
-@Slf4j
 public class AzureStorageProtocolResolver implements ProtocolResolver, BeanFactoryPostProcessor, ResourceLoaderAware {
-
+    private static final Logger log = LoggerFactory.getLogger(AzureStorageProtocolResolver.class);
     private ConfigurableListableBeanFactory beanFactory;
     private CloudStorageAccount cloudStorageAccount;
 

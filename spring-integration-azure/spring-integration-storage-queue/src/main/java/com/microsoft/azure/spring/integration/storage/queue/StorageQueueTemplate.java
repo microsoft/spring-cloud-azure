@@ -17,9 +17,8 @@ import com.microsoft.azure.spring.integration.storage.queue.util.StorageQueueHel
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.queue.CloudQueue;
 import com.microsoft.azure.storage.queue.CloudQueueMessage;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
@@ -29,31 +28,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-@Slf4j
 public class StorageQueueTemplate implements StorageQueueOperation {
+    private static final Logger log = LoggerFactory.getLogger(StorageQueueTemplate.class);
     private static final int DEFAULT_VISIBILITY_TIMEOUT_IN_SECONDS = 30;
     private static final String MSG_FAIL_CHECKPOINT = "Failed to checkpoint %s in storage queue '%s'";
     private static final String MSG_SUCCESS_CHECKPOINT = "Checkpointed %s in storage queue '%s' in %s mode";
     private final StorageQueueClientFactory storageQueueClientFactory;
-    private final String storageAccountName;
 
-    @Getter
-    @Setter
     protected StorageQueueMessageConverter messageConverter = new StorageQueueMessageConverter();
 
-    @Getter
     private int visibilityTimeoutInSeconds = DEFAULT_VISIBILITY_TIMEOUT_IN_SECONDS;
 
-    @Getter
     private Class<?> messagePayloadType = byte[].class;
 
-    @Getter
     private CheckpointMode checkpointMode = CheckpointMode.RECORD;
 
-    public StorageQueueTemplate(@NonNull StorageQueueClientFactory storageQueueClientFactory,
-            String storageAccountName) {
+    public StorageQueueTemplate(@NonNull StorageQueueClientFactory storageQueueClientFactory) {
         this.storageQueueClientFactory = storageQueueClientFactory;
-        this.storageAccountName = storageAccountName;
         log.info("StorageQueueTemplate started with properties {}", buildProperties());
     }
 
@@ -62,7 +53,7 @@ public class StorageQueueTemplate implements StorageQueueOperation {
             PartitionSupplier partitionSupplier) {
         Assert.hasText(queueName, "queueName can't be null or empty");
         CloudQueueMessage cloudQueueMessage = messageConverter.fromMessage(message, CloudQueueMessage.class);
-        CloudQueue cloudQueue = storageQueueClientFactory.getOrCreateQueueClient(storageAccountName, queueName);
+        CloudQueue cloudQueue = storageQueueClientFactory.getOrCreateQueueClient(queueName);
         return CompletableFuture.runAsync(() -> {
             try {
                 cloudQueue.addMessage(cloudQueueMessage);
@@ -105,7 +96,7 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     }
 
     private Message<?> receiveMessage(String queueName, int visibilityTimeoutInSeconds) {
-        CloudQueue cloudQueue = storageQueueClientFactory.getOrCreateQueueClient(storageAccountName, queueName);
+        CloudQueue cloudQueue = storageQueueClientFactory.getOrCreateQueueClient(queueName);
         CloudQueueMessage cloudQueueMessage;
         try {
             cloudQueueMessage = cloudQueue.retrieveMessage(visibilityTimeoutInSeconds, null, null);
@@ -141,7 +132,6 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     private Map<String, Object> buildProperties() {
         Map<String, Object> properties = new HashMap<>();
 
-        properties.put("storageAccount", this.storageAccountName);
         properties.put("visibilityTimeout", this.visibilityTimeoutInSeconds);
         properties.put("messagePayloadType", this.messagePayloadType);
         properties.put("checkpointMode", this.checkpointMode);
@@ -170,5 +160,25 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     private String buildCheckpointSuccessMessage(CloudQueueMessage cloudQueueMessage, String queueName) {
         return String.format(MSG_SUCCESS_CHECKPOINT, StorageQueueHelper.toString(cloudQueueMessage), queueName,
                 checkpointMode);
+    }
+
+    public StorageQueueMessageConverter getMessageConverter() {
+        return messageConverter;
+    }
+
+    public void setMessageConverter(StorageQueueMessageConverter messageConverter) {
+        this.messageConverter = messageConverter;
+    }
+
+    public int getVisibilityTimeoutInSeconds() {
+        return visibilityTimeoutInSeconds;
+    }
+
+    public Class<?> getMessagePayloadType() {
+        return messagePayloadType;
+    }
+
+    public CheckpointMode getCheckpointMode() {
+        return checkpointMode;
     }
 }

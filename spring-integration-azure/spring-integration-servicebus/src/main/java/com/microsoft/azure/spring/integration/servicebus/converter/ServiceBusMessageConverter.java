@@ -10,7 +10,8 @@ import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.Message;
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
 import com.microsoft.azure.spring.integration.core.converter.AbstractAzureMessageConverter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.util.InvalidMimeTypeException;
 import org.springframework.util.MimeType;
@@ -27,8 +28,8 @@ import java.util.UUID;
  *
  * @author Warren Zhu
  */
-@Slf4j
 public class ServiceBusMessageConverter extends AbstractAzureMessageConverter<IMessage> {
+    private static final Logger log = LoggerFactory.getLogger(ServiceBusMessageConverter.class);
 
     @Override
     protected byte[] getPayload(IMessage azureMessage) {
@@ -73,11 +74,14 @@ public class ServiceBusMessageConverter extends AbstractAzureMessageConverter<IM
 
         headers.put(AzureHeaders.RAW_ID, UUID.fromString(serviceBusMessage.getMessageId()));
 
-        try {
-            MimeType mimeType = MimeType.valueOf(serviceBusMessage.getContentType());
-            headers.put(MessageHeaders.CONTENT_TYPE, mimeType.toString());
-        } catch (InvalidMimeTypeException e){
-            log.warn("Invalid mimeType '{}' from service bus message.");
+        if (StringUtils.hasText(serviceBusMessage.getContentType())) {
+            String contentType = serviceBusMessage.getContentType();
+            try {
+                MimeType mimeType = MimeType.valueOf(contentType);
+                headers.put(MessageHeaders.CONTENT_TYPE, mimeType.toString());
+            } catch (InvalidMimeTypeException e) {
+                log.warn("Invalid mimeType '{}' from service bus message.", contentType);
+            }
         }
 
         if (StringUtils.hasText(serviceBusMessage.getReplyTo())) {

@@ -13,5 +13,5 @@ import com.microsoft.azure.storage.queue.CloudQueue;
  */
 public interface StorageQueueClientFactory {
 
-    CloudQueue getOrCreateQueueClient(String storageAccountName, String queueName);
+    CloudQueue getOrCreateQueueClient(String queueName);
 }

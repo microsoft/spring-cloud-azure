@@ -16,7 +16,8 @@ import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.eventhub.converter.EventHubMessageConverter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 
@@ -31,8 +32,8 @@ import java.util.function.Consumer;
  *
  * @author Warren Zhu
  */
-@Slf4j
 public class EventHubProcessor implements IEventProcessor {
+    private static final Logger log = LoggerFactory.getLogger(EventHubProcessor.class);
     private final Consumer<Message<?>> consumer;
     private final Class<?> payloadType;
     private final CheckpointConfig checkpointConfig;
@@ -61,7 +62,7 @@ public class EventHubProcessor implements IEventProcessor {
     @Override
     public void onEvents(PartitionContext context, Iterable<EventData> events) throws Exception {
         Map<String, Object> headers = new HashMap<>();
-        headers.put(AzureHeaders.PARTITION_ID, context.getPartitionId());
+        headers.put(AzureHeaders.RAW_PARTITION_ID, context.getPartitionId());
 
         for (EventData e : events) {
             Checkpointer checkpointer = new AzureCheckpointer(() -> context.checkpoint(e));

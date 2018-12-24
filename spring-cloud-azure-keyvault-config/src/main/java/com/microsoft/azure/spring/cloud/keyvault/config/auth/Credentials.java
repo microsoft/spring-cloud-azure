@@ -6,8 +6,6 @@
 
 package com.microsoft.azure.spring.cloud.keyvault.config.auth;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.core.io.Resource;
 import org.springframework.validation.annotation.Validated;
 
@@ -21,8 +19,6 @@ import javax.validation.constraints.NotEmpty;
  * - MSI support
  * - Extract to autoconfigure package and reuse by other services
  */
-@Getter
-@Setter
 @Validated
 public class Credentials {
 
@@ -32,4 +28,28 @@ public class Credentials {
     private String clientSecret;
 
     private Resource clientCertificate;
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getClientSecret() {
+        return clientSecret;
+    }
+
+    public void setClientSecret(String clientSecret) {
+        this.clientSecret = clientSecret;
+    }
+
+    public Resource getClientCertificate() {
+        return clientCertificate;
+    }
+
+    public void setClientCertificate(Resource clientCertificate) {
+        this.clientCertificate = clientCertificate;
+    }
 }

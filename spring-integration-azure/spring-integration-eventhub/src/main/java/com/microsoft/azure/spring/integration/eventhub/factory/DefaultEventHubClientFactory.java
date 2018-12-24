@@ -13,11 +13,13 @@ import com.microsoft.azure.eventhubs.impl.EventHubClientImpl;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
-import com.microsoft.azure.spring.integration.eventhub.impl.EventHubRuntimeException;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
+import com.microsoft.azure.spring.integration.eventhub.impl.EventHubRuntimeException;
 import com.microsoft.azure.spring.integration.eventhub.util.HostnameHelper;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
@@ -33,8 +35,8 @@ import java.util.function.Function;
  *
  * @author Warren Zhu
  */
-@Slf4j
 public class DefaultEventHubClientFactory implements EventHubClientFactory, DisposableBean {
+    private static final Logger log = LoggerFactory.getLogger(DefaultEventHubClientFactory.class);
     private static final String PROJECT_VERSION =
             DefaultEventHubClientFactory.class.getPackage().getImplementationVersion();
     private static final String USER_AGENT = "spring-cloud-azure/" + PROJECT_VERSION;
@@ -47,16 +49,16 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
     private final Map<Tuple<String, String>, EventProcessorHost> processorHostMap = new ConcurrentHashMap<>();
     private final BiFunction<EventHubClient, String, PartitionSender> partitionSenderCreator =
             Memoizer.memoize(partitionSenderMap, this::createPartitionSender);
-    private final Function<String, String> connectionStringProvider;
+    private final String checkpointStorageConnectionString;
+    private final EventHubConnectionStringProvider connectionStringProvider;
     // Memoized functional client creator
     private final Function<String, EventHubClient> eventHubClientCreator =
             Memoizer.memoize(clientsByName, this::createEventHubClient);
-    private final String checkpointStorageConnectionString;
     private final BiFunction<String, String, EventProcessorHost> processorHostCreator =
             Memoizer.memoize(processorHostMap, this::createEventProcessorHost);
 
-    public DefaultEventHubClientFactory(String checkpointConnectionString,
-            Function<String, String> connectionStringProvider) {
+    public DefaultEventHubClientFactory(@NonNull EventHubConnectionStringProvider connectionStringProvider,
+            String checkpointConnectionString) {
         Assert.hasText(checkpointConnectionString, "checkpointConnectionString can't be null or empty");
         this.connectionStringProvider = connectionStringProvider;
         this.checkpointStorageConnectionString = checkpointConnectionString;
@@ -65,8 +67,8 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
 
     private EventHubClient createEventHubClient(String eventHubName) {
         try {
-            return EventHubClient
-                    .createSync(connectionStringProvider.apply(eventHubName), Executors.newSingleThreadExecutor());
+            return EventHubClient.createSync(this.connectionStringProvider.getConnectionString(eventHubName),
+                    Executors.newSingleThreadExecutor());
         } catch (EventHubException | IOException e) {
             throw new EventHubRuntimeException("Error when creating event hub client", e);
         }
@@ -82,7 +84,8 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
 
     private EventProcessorHost createEventProcessorHost(String name, String consumerGroup) {
         return new EventProcessorHost(EventProcessorHost.createHostName(HostnameHelper.getHostname()), name,
-                consumerGroup, connectionStringProvider.apply(name), checkpointStorageConnectionString, name);
+                consumerGroup, connectionStringProvider.getConnectionString(name), checkpointStorageConnectionString,
+                name);
     }
 
     private <K, V> void close(Map<K, V> map, Function<V, CompletableFuture<Void>> close) {

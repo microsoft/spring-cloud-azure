@@ -10,12 +10,13 @@ import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.eventhubs.PartitionSender;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.management.storage.StorageAccount;
-import com.microsoft.azure.spring.cloud.context.core.api.Region;
+import com.microsoft.azure.spring.cloud.context.core.api.Environment;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.impl.StorageAccountManager;
-import com.microsoft.azure.spring.cloud.context.core.impl.StorageConnectionStringProvider;
+import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.factory.DefaultEventHubClientFactory;
+import com.microsoft.azure.spring.integration.eventhub.factory.EventHubConnectionStringProvider;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -52,6 +53,9 @@ public class DefaultEventHubClientFactoryTest {
     @Mock
     StorageAccount storageAccount;
 
+    @Mock
+    EventHubConnectionStringProvider connectionStringProvider;
+
     private EventHubClientFactory clientFactory;
     private String checkpointStorageAccount = "sa";
     private String eventHubName = "eventHub";
@@ -64,15 +68,19 @@ public class DefaultEventHubClientFactoryTest {
         PowerMockito.mockStatic(EventHubClient.class);
         when(EventHubClient.createSync(eq(connectionString), any())).thenReturn(eventHubClient);
         when(eventHubClient.createPartitionSenderSync(eq(partitionId))).thenReturn(partitionSender);
+        when(connectionStringProvider.getConnectionString(eq(eventHubName))).thenReturn(connectionString);
 
         PowerMockito.mockStatic(StorageConnectionStringProvider.class);
-        when(StorageConnectionStringProvider.getConnectionString(isA(StorageAccount.class), isA(Region.class)))
+        when(StorageConnectionStringProvider.getConnectionString(isA(StorageAccount.class), isA(Environment.class)))
+                .thenReturn(connectionString);
+        when(StorageConnectionStringProvider.getConnectionString(isA(StorageAccount.class), isA(Environment.class)))
                 .thenReturn(connectionString);
         when(resourceManagerProvider.getStorageAccountManager()).thenReturn(storageAccountManager);
         when(storageAccountManager.getOrCreate(any())).thenReturn(storageAccount);
         PowerMockito.whenNew(EventProcessorHost.class).withAnyArguments().thenReturn(eventProcessorHost);
-        this.clientFactory = new DefaultEventHubClientFactory(checkpointStorageAccount,
-                (s) -> connectionString);
+
+        this.clientFactory = new DefaultEventHubClientFactory(connectionStringProvider,
+                connectionString);
     }
 
     @Test

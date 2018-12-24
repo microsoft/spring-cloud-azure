@@ -9,6 +9,7 @@ package com.microsoft.azure.spring.cloud.autoconfigure.eventhub;
 import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
+import com.microsoft.azure.spring.integration.eventhub.factory.EventHubConnectionStringProvider;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.FilteredClassLoader;
@@ -39,15 +40,15 @@ public class AzureEventHubAutoConfigurationTest {
     @Test(expected = IllegalStateException.class)
     public void testAzureEventHubPropertiesNamespaceIllegal() {
         this.contextRunner.withPropertyValues("spring.cloud.azure.eventhub.namespace=")
-                .withPropertyValues("spring.cloud.azure.eventhub.checkpoint-storage-account=")
-                .run(context -> context.getBean(AzureEventHubProperties.class));
+                          .withPropertyValues("spring.cloud.azure.eventhub.checkpoint-storage-account=")
+                          .run(context -> context.getBean(AzureEventHubProperties.class));
     }
 
     @Test(expected = IllegalStateException.class)
     public void testAzureEventHubPropertiesStorageAccountIllegal() {
         this.contextRunner.withPropertyValues("spring.cloud.azure.eventhub.namespace=nsl")
-                .withPropertyValues("spring.cloud.azure.eventhub.checkpoint-storage-account=1")
-                .run(context -> context.getBean(AzureEventHubProperties.class));
+                          .withPropertyValues("spring.cloud.azure.eventhub.checkpoint-storage-account=1")
+                          .run(context -> context.getBean(AzureEventHubProperties.class));
     }
 
     @Test
@@ -68,6 +69,11 @@ public class AzureEventHubAutoConfigurationTest {
         @Bean
         EventHubClientFactory clientFactory() {
             return mock(EventHubClientFactory.class);
+        }
+
+        @Bean
+        EventHubConnectionStringProvider connectionStringProvider() {
+            return mock(EventHubConnectionStringProvider.class);
         }
     }
 }

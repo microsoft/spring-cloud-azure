@@ -8,8 +8,6 @@ package com.microsoft.azure.spring.messaging.endpoint;
 
 import com.microsoft.azure.spring.messaging.container.MessageListenerContainer;
 import com.microsoft.azure.spring.messaging.listener.AzureMessageHandler;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.lang.Nullable;
 
 /**
@@ -18,8 +16,6 @@ import org.springframework.lang.Nullable;
  *
  * @author Warren Zhu
  */
-@Getter
-@Setter
 public class SimpleAzureListenerEndpoint extends AbstractAzureListenerEndpoint {
 
     @Nullable
@@ -28,5 +24,13 @@ public class SimpleAzureListenerEndpoint extends AbstractAzureListenerEndpoint {
     @Override
     protected AzureMessageHandler createMessageHandler(MessageListenerContainer container) {
         return this.azureMessageHandler;
+    }
+
+    public AzureMessageHandler getAzureMessageHandler() {
+        return azureMessageHandler;
+    }
+
+    public void setAzureMessageHandler(AzureMessageHandler azureMessageHandler) {
+        this.azureMessageHandler = azureMessageHandler;
     }
 }

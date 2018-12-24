@@ -6,15 +6,28 @@
 
 package com.microsoft.azure.servicebus.stream.binder.properties;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
 
 /**
  * @author Warren Zhu
  */
-@Getter
-@Setter
-public class ServiceBusBindingProperties {
+public class ServiceBusBindingProperties implements BinderSpecificPropertiesProvider {
     private ServiceBusConsumerProperties consumer = new ServiceBusConsumerProperties();
     private ServiceBusProducerProperties producer = new ServiceBusProducerProperties();
+
+    public ServiceBusConsumerProperties getConsumer() {
+        return consumer;
+    }
+
+    public void setConsumer(ServiceBusConsumerProperties consumer) {
+        this.consumer = consumer;
+    }
+
+    public ServiceBusProducerProperties getProducer() {
+        return producer;
+    }
+
+    public void setProducer(ServiceBusProducerProperties producer) {
+        this.producer = producer;
+    }
 }

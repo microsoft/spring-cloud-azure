@@ -8,8 +8,6 @@ package com.microsoft.azure.spring.messaging.endpoint;
 
 import com.microsoft.azure.spring.messaging.container.MessageListenerContainer;
 import com.microsoft.azure.spring.messaging.listener.AzureMessageHandler;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.lang.Nullable;
 
 /**
@@ -18,8 +16,6 @@ import org.springframework.lang.Nullable;
  * @author Warren Zhu
  * @see MethodAzureListenerEndpoint
  */
-@Getter
-@Setter
 public abstract class AbstractAzureListenerEndpoint implements AzureListenerEndpoint {
 
     private String id = "";
@@ -66,4 +62,36 @@ public abstract class AbstractAzureListenerEndpoint implements AzureListenerEndp
         return getEndpointDescription().toString();
     }
 
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setConcurrency(String concurrency) {
+        this.concurrency = concurrency;
+    }
+
+    public String getConcurrency() {
+        return concurrency;
+    }
 }

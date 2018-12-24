@@ -8,6 +8,7 @@ package com.microsoft.azure.eventhub.stream.binder;
 
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubConsumerProperties;
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubProducerProperties;
+import com.microsoft.azure.eventhub.stream.binder.provisioning.EventHubChannelProvisioner;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import org.springframework.cloud.stream.binder.AbstractTestBinder;
 import org.springframework.cloud.stream.binder.BinderHeaders;
@@ -25,7 +26,7 @@ public class EventHubTestBinder extends
 
     EventHubTestBinder(EventHubOperation eventHubOperation) {
         EventHubMessageChannelBinder binder = new EventHubMessageChannelBinder(BinderHeaders.STANDARD_HEADERS,
-                new EventHubTestChannelProvisioner(null, "namespace"), eventHubOperation);
+                new EventHubChannelProvisioner(), eventHubOperation);
         GenericApplicationContext context = new GenericApplicationContext();
         binder.setApplicationContext(context);
         this.setBinder(binder);

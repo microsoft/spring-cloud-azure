@@ -7,39 +7,73 @@
 package com.microsoft.azure.spring.cloud.context.core.config;
 
 import com.microsoft.azure.spring.cloud.context.core.api.CredentialSupplier;
-import com.microsoft.azure.spring.cloud.context.core.api.Region;
-import lombok.Getter;
-import lombok.Setter;
+import com.microsoft.azure.spring.cloud.context.core.api.Environment;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.PostConstruct;
-import javax.validation.constraints.NotEmpty;
 
-@Getter
-@Setter
 @Validated
 @ConfigurationProperties("spring.cloud.azure")
 public class AzureProperties implements CredentialSupplier {
 
-    @NotEmpty
     private String credentialFilePath;
 
-    @NotEmpty
     private String resourceGroup;
 
-    private Region region = Region.US;
+    private Environment environment = Environment.GLOBAL;
 
-    private String location;
+    private String region;
 
     private boolean autoCreateResources = false;
 
     @PostConstruct
     private void validate() {
         if (autoCreateResources) {
-            Assert.hasText(this.location,
-                    "When auto create resources is enabled, spring.cloud.azure.location must be provided");
+            Assert.hasText(this.region,
+                    "When auto create resources is enabled, spring.cloud.azure.region must be provided");
         }
+    }
+
+    @Override
+    public String getCredentialFilePath() {
+        return credentialFilePath;
+    }
+
+    public void setCredentialFilePath(String credentialFilePath) {
+        this.credentialFilePath = credentialFilePath;
+    }
+
+    public String getResourceGroup() {
+        return resourceGroup;
+    }
+
+    public void setResourceGroup(String resourceGroup) {
+        this.resourceGroup = resourceGroup;
+    }
+
+    public Environment getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public boolean isAutoCreateResources() {
+        return autoCreateResources;
+    }
+
+    public void setAutoCreateResources(boolean autoCreateResources) {
+        this.autoCreateResources = autoCreateResources;
     }
 }

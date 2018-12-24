@@ -15,8 +15,8 @@ import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.servicebus.converter.ServiceBusMessageConverter;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 
@@ -26,13 +26,20 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-@Slf4j
-@AllArgsConstructor
 public abstract class ServiceBusMessageHandler<U> implements IMessageHandler {
+    private static final Logger log = LoggerFactory.getLogger(ServiceBusMessageHandler.class);
     private final Consumer<Message<U>> consumer;
     private final Class<U> payloadType;
     private final CheckpointConfig checkpointConfig;
     private final ServiceBusMessageConverter messageConverter;
+
+    public ServiceBusMessageHandler(Consumer<Message<U>> consumer, Class<U> payloadType,
+            CheckpointConfig checkpointConfig, ServiceBusMessageConverter messageConverter) {
+        this.consumer = consumer;
+        this.payloadType = payloadType;
+        this.checkpointConfig = checkpointConfig;
+        this.messageConverter = messageConverter;
+    }
 
     @Override
     public CompletableFuture<Void> onMessageAsync(IMessage serviceBusMessage) {

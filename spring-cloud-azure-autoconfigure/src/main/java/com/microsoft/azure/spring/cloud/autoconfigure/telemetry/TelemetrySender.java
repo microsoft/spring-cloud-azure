@@ -6,7 +6,8 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.telemetry;
 
 import com.microsoft.applicationinsights.TelemetryClient;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 
@@ -14,8 +15,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-@Slf4j
 public class TelemetrySender {
+    private static final Logger log = LoggerFactory.getLogger(TelemetrySender.class);
 
     private static final int INSTRUMENTATION_KEY_LENGTH = 36;
 
@@ -48,7 +49,7 @@ public class TelemetrySender {
     }
 
     private void sendEvent() {
-        collector.getProperties().forEach((m) -> {
+        this.collector.getProperties().forEach((m) -> {
             log.info("Sending telemetry event with properties {}", m);
             this.client.trackEvent(collector.getName(), m, null);
             this.client.flush();
