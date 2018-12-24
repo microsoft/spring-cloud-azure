@@ -7,11 +7,9 @@ package com.microsoft.azure.spring.cloud.config.msi;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ConfigAccessKeys {
     @JsonProperty("value")
@@ -26,7 +24,6 @@ public class ConfigAccessKeys {
     }
 }
 
-@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 class ConfigAccessKey {
     private String connectionString;

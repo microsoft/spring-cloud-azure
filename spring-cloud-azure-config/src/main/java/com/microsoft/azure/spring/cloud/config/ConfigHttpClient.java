@@ -5,15 +5,6 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.URISyntaxException;
-import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.codec.digest.HmacUtils;
@@ -25,9 +16,18 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static org.apache.commons.codec.digest.HmacAlgorithms.HMAC_SHA_256;
 import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA_256;
@@ -42,8 +42,8 @@ import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA_256;
  * CloseableHttpResponse response = ConfigHttpClient.execute(httpGet, "my-credential", "my-secret");
  * <p/>
  */
-@Slf4j
 public class ConfigHttpClient {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigHttpClient.class);
     private static final String DATE_FORMAT = "EEE, d MMM yyyy HH:mm:ss z";
     private static final SimpleDateFormat GMT_DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT);
     public static final String USER_AGENT = String.format("AzconfigClient/%s/SpringCloud",
@@ -144,7 +144,7 @@ public class ConfigHttpClient {
             try {
                 inputStream.close();
             } catch (IOException e) {
-                log.trace("Failed to close the input stream.", e);
+                LOGGER.trace("Failed to close the input stream.", e);
             }
         }
     }

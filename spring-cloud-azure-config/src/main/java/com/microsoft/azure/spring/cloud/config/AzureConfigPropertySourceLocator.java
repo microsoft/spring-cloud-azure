@@ -5,7 +5,8 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -16,8 +17,8 @@ import org.springframework.util.StringUtils;
 
 import java.util.*;
 
-@Slf4j
 public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigPropertySourceLocator.class);
     private static final String SPRING_APP_NAME_PROP = "spring.application.name";
     private static final String PROPERTY_SOURCE_NAME = "azure-config-store";
     private static final String PATH_SPLITTER = "/";
@@ -73,14 +74,14 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         for (String sourceContext : contexts) {
             try {
                 composite.addPropertySource(create(sourceContext, store));
-                log.debug("PropertySource context [{}] is added.", sourceContext);
+                LOGGER.debug("PropertySource context [{}] is added.", sourceContext);
             } catch (Exception e) {
                 if (properties.isFailFast()) {
-                    log.error("Fail fast is set and there was an error reading configuration from Azure Config " +
+                    LOGGER.error("Fail fast is set and there was an error reading configuration from Azure Config " +
                             "Service for " + sourceContext, e);
                     ReflectionUtils.rethrowRuntimeException(e);
                 } else {
-                    log.warn("Unable to load configuration from Azure Config Service for " + sourceContext, e);
+                    LOGGER.warn("Unable to load configuration from Azure Config Service for " + sourceContext, e);
                 }
             }
         }

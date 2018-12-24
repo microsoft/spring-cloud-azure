@@ -10,12 +10,12 @@ import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueResponse;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
@@ -28,9 +28,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Slf4j
-@AllArgsConstructor
 public class ConfigServiceTemplate implements ConfigServiceOperations {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigServiceTemplate.class);
     private static final String LINK_HEADER = "link";
     private static final String NEXT_PAGE_LINK = "<(.*?)>; rel=\"next\".*";
     private static final Pattern PAGE_LINK_PATTERN = Pattern.compile(NEXT_PAGE_LINK);
@@ -42,6 +41,11 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
 
     private final ConfigHttpClient configClient;
     private final ConnectionStringPool connectionStringPool;
+
+    public ConfigServiceTemplate(ConfigHttpClient httpClient, ConnectionStringPool connectionStringPool) {
+        this.configClient = httpClient;
+        this.connectionStringPool = connectionStringPool;
+    }
 
     @Override
     public List<KeyValueItem> getKeys(@Nullable String prefix, @Nullable String label, @NonNull ConfigStore store) {
@@ -76,7 +80,7 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
                 try {
                     response.close();
                 } catch (IOException e) {
-                    log.warn("Response was not closed successfully.", e);
+                    LOGGER.warn("Response was not closed successfully.", e);
                 }
             }
         }
@@ -88,7 +92,7 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         HttpGet httpGet = new HttpGet(requestUri);
         Date date = new Date();
 
-        log.debug("Loading key-value items from Azure Config service at [{}].", requestUri);
+        LOGGER.debug("Loading key-value items from Azure Config service at [{}].", requestUri);
         try {
             CloseableHttpResponse response = configClient.execute(httpGet, date, connString.getId(),
                     connString.getSecret());
@@ -97,13 +101,13 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
             if (statusCode == HttpStatus.SC_OK) {
                 return response;
             } else if (statusCode == HttpStatus.SC_NOT_FOUND) {
-                log.warn("No configuration data found in Azure Config Service for request uri {}.", requestUri);
+                LOGGER.warn("No configuration data found in Azure Config Service for request uri {}.", requestUri);
                 return null;
             } else {
                 throw new IllegalStateException(String.format(LOAD_FAILURE_VERBOSE_MSG, statusCode, response));
             }
         } catch (IOException | URISyntaxException e) {
-            log.error(LOAD_FAILURE_MSG, e);
+            LOGGER.error(LOAD_FAILURE_MSG, e);
             // TODO (wp) wrap exception as config service specific exception in order to provide fail-fast etc.
             // features?
             throw new IllegalStateException(LOAD_FAILURE_MSG, e);
