@@ -44,13 +44,14 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
 
     @Override
     public List<KeyValueItem> getKeys(@Nullable String prefix, @Nullable String label, @NonNull ConfigStore store) {
-        String storeEndpoint = connectionStringPool.get(store.getName()).getEndpoint();
+        ConnectionString connString = connectionStringPool.get(store.getName());
+        String storeEndpoint = connString.getEndpoint();
         String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildKVApi(prefix, label);
         List<KeyValueItem> result = new ArrayList<>();
 
         CloseableHttpResponse response = null;
         try {
-            response = getRawResponse(requestUri, store);
+            response = getRawResponse(requestUri, connString);
             while (response != null) {
                 try {
                     KeyValueResponse kvResponse = mapper.readValue(response.getEntity().getContent(),
@@ -67,7 +68,7 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
 
                 String nextRequestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).withPath(nextLink)
                         .buildKVApi();
-                response = getRawResponse(nextRequestUri, store);
+                response = getRawResponse(nextRequestUri, connString);
             }
         } finally {
             if (response != null) {
@@ -82,8 +83,7 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         return result;
     }
 
-    private CloseableHttpResponse getRawResponse(String requestUri, @NonNull ConfigStore store) {
-        ConnectionString connString = connectionStringPool.get(store.getName());
+    private CloseableHttpResponse getRawResponse(String requestUri, @NonNull ConnectionString connString) {
         HttpGet httpGet = new HttpGet(requestUri);
         Date date = new Date();
 
