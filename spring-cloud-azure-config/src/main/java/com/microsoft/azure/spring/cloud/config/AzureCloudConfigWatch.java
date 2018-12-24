@@ -32,9 +32,9 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
     private final AtomicBoolean running = new AtomicBoolean(false);
     private ApplicationEventPublisher publisher;
     private ScheduledFuture<?> watchFuture;
-    private AzureCloudConfigProperties properties;
+    private final AzureCloudConfigProperties properties;
     private boolean firstTime = true;
-    private List<ConfigStore> configStores;
+    private final List<ConfigStore> configStores;
 
     public AzureCloudConfigWatch(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
                                  TaskScheduler scheduler) {
@@ -86,38 +86,39 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
     }
 
     public void watchConfigKeyValues() {
-        if (this.running.get()) {
-            for (ConfigStore configStore : configStores) {
-                String prefix = StringUtils.hasText(configStore.getPrefix()) ? configStore.getPrefix() + "*" : "*";
-                List<KeyValueItem> keyValueItems = configOperations.getKeys(prefix, configStore.getLabel(),
-                        configStore);
+        if (!this.running.get()) {
+            return;
+        }
 
-                if (keyValueItems.isEmpty()) {
-                    return;
-                }
+        for (ConfigStore configStore : configStores) {
+            String prefix = StringUtils.hasText(configStore.getPrefix()) ? configStore.getPrefix() + "*" : "*";
+            List<KeyValueItem> keyValueItems = configOperations.getKeys(prefix, configStore.getLabel(), configStore);
 
-                LinkedHashMap<String, String> newKeyEtagMap = keyValueItems.stream()
-                        .collect(Collectors.toMap(KeyValueItem::getKey, KeyValueItem::getEtag,
-                                (v1, v2) -> v1, LinkedHashMap::new));
-                if (firstTime) {
-                    keyNameEtagMap.putAll(newKeyEtagMap);
-                    firstTime = false;
-                    return;
-                }
+            if (keyValueItems.isEmpty()) {
+                return;
+            }
 
-                Optional<String> changedKey = newKeyEtagMap.entrySet().stream()
-                        .filter(e -> !mapInclude(keyNameEtagMap, e.getKey(), e.getValue()))
-                        .map(e -> e.getKey())
-                        .findFirst();
+            LinkedHashMap<String, String> newKeyEtagMap = keyValueItems.stream()
+                    .collect(Collectors.toMap(KeyValueItem::getKey, KeyValueItem::getEtag,
+                            (v1, v2) -> v1, LinkedHashMap::new));
+            if (firstTime) {
+                keyNameEtagMap.putAll(newKeyEtagMap);
+                firstTime = false;
+                return;
+            }
 
-                if (!firstTime && changedKey.isPresent()) {
-                    LOGGER.trace("Some keys matching {} is updated, will send refresh event.", prefix);
-                    keyNameEtagMap.clear();
-                    keyNameEtagMap.putAll(newKeyEtagMap);
-                    RefreshEventData eventData = new RefreshEventData(prefix);
-                    publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
-                    break; // Break early once a change is found
-                }
+            Optional<String> changedKey = newKeyEtagMap.entrySet().stream()
+                    .filter(e -> !mapInclude(keyNameEtagMap, e.getKey(), e.getValue()))
+                    .map(e -> e.getKey())
+                    .findFirst();
+
+            if (changedKey.isPresent()) {
+                LOGGER.trace("Some keys matching {} is updated, will send refresh event.", prefix);
+                keyNameEtagMap.clear();
+                keyNameEtagMap.putAll(newKeyEtagMap);
+                RefreshEventData eventData = new RefreshEventData(prefix);
+                publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
+                break; // Break early once a change is found
             }
         }
     }

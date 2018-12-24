@@ -16,7 +16,7 @@ import java.util.Set;
 public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigServiceOperations> {
     private final String context;
     private Map<String, Object> properties = new LinkedHashMap<>();
-    private ConfigStore configStore;
+    private final ConfigStore configStore;
 
     public AzureConfigPropertySource(String context, ConfigServiceOperations operations, ConfigStore configStore) {
         super(context, operations);
