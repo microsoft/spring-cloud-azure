@@ -35,7 +35,7 @@ import java.security.InvalidKeyException;
  */
 @Configuration
 @ConditionalOnClass(CloudStorageAccount.class)
-@ConditionalOnProperty(name = "spring.cloud.azure.storage.enabled", matchIfMissing = true)
+@ConditionalOnProperty(name = "spring.cloud.azure.storage.account")
 @EnableConfigurationProperties(AzureStorageProperties.class)
 public class AzureStorageAutoConfiguration {
     private static final Logger log = LoggerFactory.getLogger(AzureStorageAutoConfiguration.class);
