@@ -32,17 +32,16 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
     private final AtomicBoolean running = new AtomicBoolean(false);
     private ApplicationEventPublisher publisher;
     private ScheduledFuture<?> watchFuture;
-    private AzureCloudConfigProperties properties;
+    private final AzureCloudConfigProperties properties;
     private boolean firstTime = true;
-    // TODO (wp) multi stores is not supported yet
-    private ConfigStore configStore;
+    private final List<ConfigStore> configStores;
 
     public AzureCloudConfigWatch(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
                                  TaskScheduler scheduler) {
         this.configOperations = operations;
         this.properties = properties;
         this.taskScheduler = scheduler;
-        this.configStore = properties.getStores().get(0);
+        this.configStores = properties.getStores();
     }
 
     @Override
@@ -87,9 +86,13 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
     }
 
     public void watchConfigKeyValues() {
-        if (this.running.get()) {
+        if (!this.running.get()) {
+            return;
+        }
+
+        for (ConfigStore configStore : configStores) {
             String prefix = StringUtils.hasText(configStore.getPrefix()) ? configStore.getPrefix() + "*" : "*";
-            List<KeyValueItem> keyValueItems = configOperations.getKeys(prefix, configStore.getLabel());
+            List<KeyValueItem> keyValueItems = configOperations.getKeys(prefix, configStore.getLabel(), configStore);
 
             if (keyValueItems.isEmpty()) {
                 return;
@@ -109,12 +112,13 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
                     .map(e -> e.getKey())
                     .findFirst();
 
-            if (!firstTime && changedKey.isPresent()) {
+            if (changedKey.isPresent()) {
                 LOGGER.trace("Some keys matching {} is updated, will send refresh event.", prefix);
                 keyNameEtagMap.clear();
                 keyNameEtagMap.putAll(newKeyEtagMap);
                 RefreshEventData eventData = new RefreshEventData(prefix);
                 publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
+                break; // Break early once a change is found
             }
         }
     }

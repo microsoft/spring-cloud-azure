@@ -8,6 +8,8 @@ package com.microsoft.azure.spring.cloud.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueResponse;
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
@@ -39,18 +41,18 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     private final ConfigHttpClient configClient;
-    private final String storeEndpoint;
-    private final String credential;
-    private final String secret;
+    private final ConnectionStringPool connectionStringPool;
 
     @Override
-    public List<KeyValueItem> getKeys(@Nullable String prefix, @Nullable String label) {
+    public List<KeyValueItem> getKeys(@Nullable String prefix, @Nullable String label, @NonNull ConfigStore store) {
+        ConnectionString connString = connectionStringPool.get(store.getName());
+        String storeEndpoint = connString.getEndpoint();
         String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildKVApi(prefix, label);
         List<KeyValueItem> result = new ArrayList<>();
 
         CloseableHttpResponse response = null;
         try {
-            response = getRawResponse(requestUri);
+            response = getRawResponse(requestUri, connString);
             while (response != null) {
                 try {
                     KeyValueResponse kvResponse = mapper.readValue(response.getEntity().getContent(),
@@ -67,7 +69,7 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
 
                 String nextRequestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).withPath(nextLink)
                         .buildKVApi();
-                response = getRawResponse(nextRequestUri);
+                response = getRawResponse(nextRequestUri, connString);
             }
         } finally {
             if (response != null) {
@@ -82,13 +84,14 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         return result;
     }
 
-    private CloseableHttpResponse getRawResponse(String requestUri) {
+    private CloseableHttpResponse getRawResponse(String requestUri, @NonNull ConnectionString connString) {
         HttpGet httpGet = new HttpGet(requestUri);
         Date date = new Date();
 
         log.debug("Loading key-value items from Azure Config service at [{}].", requestUri);
         try {
-            CloseableHttpResponse response = configClient.execute(httpGet, date, credential, secret);
+            CloseableHttpResponse response = configClient.execute(httpGet, date, connString.getId(),
+                    connString.getSecret());
             int statusCode = response.getStatusLine().getStatusCode();
 
             if (statusCode == HttpStatus.SC_OK) {

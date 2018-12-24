@@ -6,6 +6,7 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
@@ -19,7 +20,8 @@ public interface ConfigServiceOperations {
      *
      * @param prefix key name prefix of which keys will be loaded, is {@link Nullable}.
      * @param label
+     * @param store the config store from which to get keys
      * @return all key-value items {@link List<KeyValueItem>} which match given condition.
      */
-    List<KeyValueItem> getKeys(@Nullable String prefix, @Nullable String label);
+    List<KeyValueItem> getKeys(@Nullable String prefix, @Nullable String label, @NonNull ConfigStore store);
 }

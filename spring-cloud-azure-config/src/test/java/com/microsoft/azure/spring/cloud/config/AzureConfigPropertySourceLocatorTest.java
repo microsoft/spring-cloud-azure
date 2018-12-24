@@ -130,7 +130,7 @@ public class AzureConfigPropertySourceLocatorTest {
         expected.expect(RuntimeException.class);
         expected.expectMessage(failureMsg);
 
-        when(operations.getKeys(any(), any())).thenThrow(new IllegalStateException(failureMsg));
+        when(operations.getKeys(any(), any(), any())).thenThrow(new IllegalStateException(failureMsg));
         assertThat(properties.isFailFast()).isTrue();
         locator.locate(environment);
     }
@@ -139,8 +139,8 @@ public class AzureConfigPropertySourceLocatorTest {
     public void notFailFastShouldPass() {
         properties.setFailFast(false);
         locator = new AzureConfigPropertySourceLocator(operations, properties);
-        when(operations.getKeys(eq("/foo/*"), any())).thenThrow(new IllegalStateException());
-        when(operations.getKeys(eq("/application/*"), any())).thenThrow(new IllegalStateException());
+        when(operations.getKeys(eq("/foo/*"), any(), any())).thenThrow(new IllegalStateException());
+        when(operations.getKeys(eq("/application/*"), any(), any())).thenThrow(new IllegalStateException());
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
