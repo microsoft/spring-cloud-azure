@@ -7,13 +7,11 @@ package com.microsoft.azure.spring.cloud.config.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
-@ToString
-@EqualsAndHashCode
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KeyValueItem {
     private String etag;
@@ -96,5 +94,31 @@ public class KeyValueItem {
 
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
+    }
+
+    @Override
+    public String toString() {
+        return "KeyValueItem(etag=" + this.getEtag() + ", key=" + this.getKey() + ", value=" + this.getValue() +
+                ", label=" + this.getLabel() + ", contentType=" + this.getContentType() + ", tags=" + this.getTags() +
+                ", locked=" + this.isLocked() + ", lastModified=" + this.getLastModified() + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        KeyValueItem item = (KeyValueItem) o;
+        return Objects.equals(etag, item.etag) && Objects.equals(key, item.key);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(etag, key);
     }
 }

@@ -5,14 +5,13 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
 /**
  * Test constants which can be shared across different test classes
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TestConstants {
+    private TestConstants() {
+    }
+
     // Store specific configuration
     public static final String TEST_STORE_NAME = "store1";
     public static final String CONN_STRING_PROP = "spring.cloud.azure.config.stores[0].connection-string";

@@ -6,16 +6,15 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
 import java.util.List;
 
 /**
  * Utility methods which can be used across different test classes
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TestUtils {
+    private TestUtils() {
+    }
+
     static String propPair(String propName, String propValue) {
         return String.format("%s=%s", propName, propValue);
     }
