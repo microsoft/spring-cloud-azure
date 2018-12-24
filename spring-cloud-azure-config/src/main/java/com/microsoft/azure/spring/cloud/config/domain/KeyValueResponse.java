@@ -6,7 +6,6 @@
 package com.microsoft.azure.spring.cloud.config.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
@@ -14,7 +13,6 @@ import java.util.List;
 /**
  * Response which stores key-value items, and other attributes, like next page token.
  */
-@NoArgsConstructor
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KeyValueResponse {
