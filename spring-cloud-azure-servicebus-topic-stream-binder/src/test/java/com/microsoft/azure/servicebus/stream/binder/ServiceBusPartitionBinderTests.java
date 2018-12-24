@@ -26,6 +26,7 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.util.Assert;
 import org.springframework.util.MimeTypeUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -154,12 +155,12 @@ public class ServiceBusPartitionBinderTests extends
 
         // Comment line below since service bus topic operation is event driven mode
         // but subscriber is not ready in the downstream
-        //moduleOutputChannel.send(message);
+        // moduleOutputChannel.send(message);
         CountDownLatch latch = new CountDownLatch(1);
-        AtomicReference<Message<String>> inboundMessageRef = new AtomicReference<Message<String>>();
+        AtomicReference<Message<byte[]>> inboundMessageRef = new AtomicReference<Message<byte[]>>();
         moduleInputChannel.subscribe(message1 -> {
             try {
-                inboundMessageRef.set((Message<String>) message1);
+                inboundMessageRef.set((Message<byte[]>) message1);
             } finally {
                 latch.countDown();
             }
@@ -168,7 +169,7 @@ public class ServiceBusPartitionBinderTests extends
         moduleOutputChannel.send(message);
         Assert.isTrue(latch.await(5, TimeUnit.SECONDS), "Failed to receive message");
         assertThat(inboundMessageRef.get()).isNotNull();
-        assertThat(inboundMessageRef.get().getPayload()).isEqualTo("foo");
+        assertThat(new String(inboundMessageRef.get().getPayload(), StandardCharsets.UTF_8)).isEqualTo("foo");
         assertThat(inboundMessageRef.get().getHeaders().get(MessageHeaders.CONTENT_TYPE).toString())
                 .isEqualTo(MimeTypeUtils.TEXT_PLAIN_VALUE);
         producerBinding.unbind();

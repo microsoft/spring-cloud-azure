@@ -92,16 +92,6 @@ public class EventHubMessageChannelBinder extends
         return this.bindingProperties.getExtendedProducerProperties(destination);
     }
 
-    @Override
-    public String getDefaultsPrefix() {
-        return this.bindingProperties.getDefaultsPrefix();
-    }
-
-    @Override
-    public Class<? extends BinderSpecificPropertiesProvider> getExtendedPropertiesEntryClass() {
-        return this.bindingProperties.getExtendedPropertiesEntryClass();
-    }
-
     public void setBindingProperties(EventHubExtendedBindingProperties bindingProperties) {
         this.bindingProperties = bindingProperties;
     }

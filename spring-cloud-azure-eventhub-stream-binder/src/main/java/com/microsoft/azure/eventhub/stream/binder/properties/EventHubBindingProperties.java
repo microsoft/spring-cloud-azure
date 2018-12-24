@@ -6,12 +6,10 @@
 
 package com.microsoft.azure.eventhub.stream.binder.properties;
 
-import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
-
 /**
  * @author Warren Zhu
  */
-public class EventHubBindingProperties implements BinderSpecificPropertiesProvider {
+public class EventHubBindingProperties {
     private EventHubConsumerProperties consumer = new EventHubConsumerProperties();
     private EventHubProducerProperties producer = new EventHubProducerProperties();
 
