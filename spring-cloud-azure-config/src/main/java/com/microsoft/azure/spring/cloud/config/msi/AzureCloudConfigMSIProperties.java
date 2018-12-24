@@ -5,8 +5,6 @@
  */
 package com.microsoft.azure.spring.cloud.config.msi;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.lang.Nullable;
 
 /**
@@ -15,12 +13,28 @@ import org.springframework.lang.Nullable;
  * @see <a href="https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/how-to-use-vm-token#get-a-token-using-http">Get a token using HTTP<a/>
  * </pre>
  */
-@Getter
-@Setter
 public class AzureCloudConfigMSIProperties {
     @Nullable
     private String objectId; // Optional: object_id of the managed identity
 
     @Nullable
     private String clientId; // Optional: client_id of the managed identity
+
+    @Nullable
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(@Nullable String objectId) {
+        this.objectId = objectId;
+    }
+
+    @Nullable
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(@Nullable String clientId) {
+        this.clientId = clientId;
+    }
 }

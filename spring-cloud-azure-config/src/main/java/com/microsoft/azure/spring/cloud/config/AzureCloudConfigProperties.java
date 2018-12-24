@@ -6,8 +6,6 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import com.microsoft.azure.spring.cloud.config.msi.AzureCloudConfigMSIProperties;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
@@ -20,8 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Validated
-@Getter
-@Setter
 @ConfigurationProperties(prefix = AzureCloudConfigProperties.CONFIG_PREFIX)
 public class AzureCloudConfigProperties {
     public static final String CONFIG_PREFIX = "spring.cloud.azure.config";
@@ -50,6 +46,79 @@ public class AzureCloudConfigProperties {
     private Watch watch = new Watch();
 
     private AzureCloudConfigMSIProperties msi;
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public List<ConfigStore> getStores() {
+        return stores;
+    }
+
+    public void setStores(List<ConfigStore> stores) {
+        this.stores = stores;
+    }
+
+    public String getDefaultContext() {
+        return defaultContext;
+    }
+
+    public void setDefaultContext(String defaultContext) {
+        this.defaultContext = defaultContext;
+    }
+
+    @Nullable
+    public String getName() {
+        return name;
+    }
+
+    public void setName(@Nullable String name) {
+        this.name = name;
+    }
+
+    public String getProfileSeparator() {
+        return profileSeparator;
+    }
+
+    public void setProfileSeparator(String profileSeparator) {
+        this.profileSeparator = profileSeparator;
+    }
+
+    public boolean isFailFast() {
+        return failFast;
+    }
+
+    public void setFailFast(boolean failFast) {
+        this.failFast = failFast;
+    }
+
+    public boolean isMsiEnabled() {
+        return msiEnabled;
+    }
+
+    public void setMsiEnabled(boolean msiEnabled) {
+        this.msiEnabled = msiEnabled;
+    }
+
+    public Watch getWatch() {
+        return watch;
+    }
+
+    public void setWatch(Watch watch) {
+        this.watch = watch;
+    }
+
+    public AzureCloudConfigMSIProperties getMsi() {
+        return msi;
+    }
+
+    public void setMsi(AzureCloudConfigMSIProperties msi) {
+        this.msi = msi;
+    }
 
     @PostConstruct
     public void validateAndInit() {
