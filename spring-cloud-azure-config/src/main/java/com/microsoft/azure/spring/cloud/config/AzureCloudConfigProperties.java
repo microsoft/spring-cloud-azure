@@ -21,6 +21,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = AzureCloudConfigProperties.CONFIG_PREFIX)
 public class AzureCloudConfigProperties {
     public static final String CONFIG_PREFIX = "spring.cloud.azure.config";
+    public static final String LABEL_SEPARATOR = ",";
 
     private boolean enabled = true;
 
@@ -160,7 +161,7 @@ class ConfigStore {
 
     private String connectionString;
 
-    // Label value in the Azure Config Service, can be empty
+    // Label values separated by comma in the Azure Config Service, can be empty
     @Nullable
     private String label;
 

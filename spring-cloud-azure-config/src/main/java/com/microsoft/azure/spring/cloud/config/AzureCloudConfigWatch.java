@@ -92,7 +92,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
 
         for (ConfigStore configStore : configStores) {
             String prefix = StringUtils.hasText(configStore.getPrefix()) ? configStore.getPrefix() + "*" : "*";
-            List<KeyValueItem> keyValueItems = configOperations.getKeys(prefix, configStore.getLabel(), configStore);
+            List<KeyValueItem> keyValueItems = configOperations.getKeys(prefix, configStore);
 
             if (keyValueItems.isEmpty()) {
                 return;

@@ -22,11 +22,13 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import static com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties.LABEL_SEPARATOR;
 
 public class ConfigServiceTemplate implements ConfigServiceOperations {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigServiceTemplate.class);
@@ -41,6 +43,7 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
 
     private final ConfigHttpClient configClient;
     private final ConnectionStringPool connectionStringPool;
+    private final Map<String, List<String>> storeLabelsMap = new ConcurrentHashMap<>();
 
     public ConfigServiceTemplate(ConfigHttpClient httpClient, ConnectionStringPool connectionStringPool) {
         this.configClient = httpClient;
@@ -48,10 +51,12 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
     }
 
     @Override
-    public List<KeyValueItem> getKeys(@Nullable String prefix, @Nullable String label, @NonNull ConfigStore store) {
+    public List<KeyValueItem> getKeys(@Nullable String prefix, @NonNull ConfigStore store) {
         ConnectionString connString = connectionStringPool.get(store.getName());
         String storeEndpoint = connString.getEndpoint();
-        String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildKVApi(prefix, label);
+        List<String> labels = storeLabelsMap.computeIfAbsent(store.getName(), (k) -> getLabels(store));
+
+        String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildKVApi(prefix, getLabels(store));
         List<KeyValueItem> result = new ArrayList<>();
 
         CloseableHttpResponse response = null;
@@ -61,7 +66,10 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
                 try {
                     KeyValueResponse kvResponse = mapper.readValue(response.getEntity().getContent(),
                             KeyValueResponse.class);
-                    result.addAll(kvResponse.getItems());
+
+                    List<KeyValueItem> items = kvResponse.getItems();
+                    sortByLabel(items, labels);
+                    result.addAll(items);
                 } catch (IOException e) {
                     throw new IllegalStateException(LOAD_FAILURE_MSG, e);
                 }
@@ -86,6 +94,22 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         }
 
         return result;
+    }
+
+    private void sortByLabel(List<KeyValueItem> items, List<String> labels) {
+        if (items == null || items.isEmpty() || labels == null || labels.isEmpty()) {
+            return;
+        }
+
+        Map<String, Integer> labelIndex = new HashMap<>();
+        Collections.sort(items, new Comparator<KeyValueItem>() {
+            @Override
+            public int compare(KeyValueItem o1, KeyValueItem o2) {
+                Integer o1Index = labelIndex.computeIfAbsent(o1.getLabel(), (t) -> labels.indexOf(t));
+                Integer o2Index = labelIndex.computeIfAbsent(o2.getLabel(), (t) -> labels.indexOf(t));
+                return o1Index - o2Index;
+            }
+        });
     }
 
     private CloseableHttpResponse getRawResponse(String requestUri, @NonNull ConnectionString connString) {
@@ -127,5 +151,17 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
 
         Matcher linkMatcher = PAGE_LINK_PATTERN.matcher(linkHeader.getValue());
         return linkMatcher.matches() ? linkMatcher.group(1) : "";
+    }
+
+    private static List<String> getLabels(ConfigStore store) {
+        if (store == null || !StringUtils.hasText(store.getLabel())) {
+            return Collections.EMPTY_LIST;
+        }
+
+        return Arrays.stream(store.getLabel().split(LABEL_SEPARATOR))
+                .filter(label -> StringUtils.hasText(label))
+                .map(label -> label.trim())
+                .distinct()
+                .collect(Collectors.toList());
     }
 }

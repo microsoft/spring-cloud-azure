@@ -5,7 +5,6 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -14,13 +13,16 @@ import org.junit.rules.ExpectedException;
 import org.springframework.util.StringUtils;
 
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class RestAPIBuilderTest {
     private static final String FAKE_ENDPOINT = "https://fake.config.store.io";
     private static final String FAKE_KEY = "fake_key";
-    private static final String FAKE_LABEL = "fake_label";
+    private static final List<String> FAKE_LABEL = Arrays.asList("fake_label");
+    private static final List<String> MULTI_FAKE_LABELS = Arrays.asList(" fake_label_1 ", "fake_label_2 ", "  ");
     private static final String FAKE_PATH_QUERY = "/kv?fake-param=fake-value";
     private static final String KEY_PARAM = "key";
     private static final String LABEL_PARAM = "label";
@@ -67,13 +69,18 @@ public class RestAPIBuilderTest {
     }
 
     @Test
-    public void emptyLabelValueQueriedAsEmptyLabel() {
+    public void nullLabelValueQueriedAsEmptyLabel() {
         final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT);
 
-        String apiPath = builder.buildKVApi(null, "");
+        String apiPath = builder.buildKVApi(null, Collections.EMPTY_LIST);
         Assert.assertTrue("Empty label should have query param %00.", apiPath.endsWith(NULL_LABEL_QUERY));
+    }
 
-        apiPath = builder.buildKVApi(null, "  ");
+    @Test
+    public void emptyStringLabelValueQueriedAsEmptyLabel() {
+        final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT);
+
+        String apiPath = builder.buildKVApi(null, Arrays.asList("   ", "  "));
         Assert.assertTrue("Whitespace consisted label should have query param %00.",
                 apiPath.endsWith(NULL_LABEL_QUERY));
     }
@@ -84,14 +91,31 @@ public class RestAPIBuilderTest {
         String apiPath = builder.buildKVApi(FAKE_KEY, FAKE_LABEL);
         URIBuilder uriBuilder = new URIBuilder(apiPath);
 
-        List<NameValuePair> keyParams = getParamsFrom(uriBuilder, KEY_PARAM);
-        List<NameValuePair> labelParams = getParamsFrom(uriBuilder, LABEL_PARAM);
+        List<String> keyParams = getParamValuesFrom(uriBuilder, KEY_PARAM);
+        List<String> labelParams = getParamValuesFrom(uriBuilder, LABEL_PARAM);
 
         Assert.assertEquals("Only one key param exists.", 1, keyParams.size());
-        Assert.assertEquals("Key param is created as expected.", FAKE_KEY, keyParams.get(0).getValue());
+        Assert.assertEquals("Key param is created as expected.", FAKE_KEY, keyParams.get(0));
 
         Assert.assertEquals("Only one label param exists.", 1, labelParams.size());
-        Assert.assertEquals("Label param is created as expected.", FAKE_LABEL, labelParams.get(0).getValue());
+        Assert.assertEquals("Label param is created as expected.", FAKE_LABEL.get(0), labelParams.get(0));
+    }
+
+    @Test
+    public void multiLabelsCanBeConfigured() throws URISyntaxException {
+        final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT);
+        String apiPath = builder.buildKVApi(FAKE_KEY, MULTI_FAKE_LABELS);
+        URIBuilder uriBuilder = new URIBuilder(apiPath);
+
+        List<String> keyParams = getParamValuesFrom(uriBuilder, KEY_PARAM);
+        List<String> labelParams = getParamValuesFrom(uriBuilder, LABEL_PARAM);
+
+        Assert.assertEquals("Only one key param exists.", 1, keyParams.size());
+        Assert.assertEquals("Key param is created as expected.", FAKE_KEY, keyParams.get(0));
+
+        Assert.assertEquals("Only one label param exists.", 1, labelParams.size());
+        String expectedLabelParam = "fake_label_1,fake_label_2";
+        Assert.assertEquals("The label param values are expected.", expectedLabelParam, labelParams.get(0));
     }
 
     @Test
@@ -104,8 +128,9 @@ public class RestAPIBuilderTest {
                 expectedPath, actualPath);
     }
 
-    private List<NameValuePair> getParamsFrom(URIBuilder builder, String paramName) {
+    private List<String> getParamValuesFrom(URIBuilder builder, String paramName) {
         return builder.getQueryParams().stream()
-                .filter(pair -> pair.getName().equals(paramName)).collect(Collectors.toList());
+                .filter(pair -> pair.getName().equals(paramName))
+                .map(pair -> pair.getValue()).collect(Collectors.toList());
     }
 }

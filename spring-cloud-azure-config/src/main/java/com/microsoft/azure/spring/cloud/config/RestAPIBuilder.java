@@ -5,19 +5,23 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This class is used to build REST API uris for different service rest endpoints.
  */
 public class RestAPIBuilder {
     public static final String KEY_VALUE_API = "/kv";
+    private static final String NULL_LABEL = "%00"; // label=%00 matches null label
+    private static final String KEY_PARAM = "key";
+    private static final String LABEL_PARAM = "label";
 
     private String endpoint;
     private String path;
@@ -53,18 +57,25 @@ public class RestAPIBuilder {
      * </p>
      *
      * @param prefix is {@link Nullable}, key name prefix to be searched
-     * @param label  is {@link Nullable}, key label value to be searched
+     * @param labels is {@link Nullable}, {@link java.util.List} of key label values to be searched
      * @return valid full path of target REST API
      */
-    public String buildKVApi(@Nullable String prefix, @Nullable String label) {
+    public String buildKVApi(@Nullable String prefix, @Nullable List<String> labels) {
         this.withPath(KEY_VALUE_API);
         if (StringUtils.hasText(prefix)) {
-            this.addParam("key", prefix);
+            this.addParam(KEY_PARAM, prefix);
         }
 
-        label = StringUtils.hasText(label) ? label.trim() : "%00"; // label=%00 matches null label
+        String label = NULL_LABEL;
+        if (labels != null) {
+            labels = labels.stream().filter(l -> StringUtils.hasText(l))
+                    .map(l -> l.trim()).distinct().collect(Collectors.toList());
+
+            label = labels.isEmpty() ? NULL_LABEL : String.join(",", labels);
+        }
+
         if (StringUtils.hasText(label)) {
-            this.addParam("label", label);
+            this.addParam(LABEL_PARAM, label);
         }
 
         return buildRequestUri();
