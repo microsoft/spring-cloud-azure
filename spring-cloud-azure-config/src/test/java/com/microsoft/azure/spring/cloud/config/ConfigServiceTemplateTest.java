@@ -12,11 +12,10 @@ import com.microsoft.azure.spring.cloud.config.domain.KeyValueResponse;
 import com.microsoft.azure.spring.cloud.config.mock.MockCloseableHttpResponse;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpStatus;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.StatusLine;
+import org.apache.http.*;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicStatusLine;
@@ -26,18 +25,19 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.nio.charset.Charset;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import static com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties.LABEL_SEPARATOR;
 import static com.microsoft.azure.spring.cloud.config.ConfigServiceTemplate.LOAD_FAILURE_VERBOSE_MSG;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_KEY_3;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_VALUE_3;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.createItem;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -52,16 +52,17 @@ public class ConfigServiceTemplateTest {
 
     private ConfigServiceTemplate template;
 
-    private static final ConnectionStringPool pool = new ConnectionStringPool();
-    private static final ConfigStore configStore = new ConfigStore();
-    public static final List<KeyValueItem> TEST_ITEMS = new ArrayList<>();
-    private static final KeyValueItem item1 = createItem(TEST_CONTEXT, TEST_KEY_1, TEST_VALUE_1);
-    private static final KeyValueItem item2 = createItem(TEST_CONTEXT, TEST_KEY_2, TEST_VALUE_2);
-    private static final KeyValueItem item3 = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3);
+    private ConnectionStringPool pool;
+    private ConfigStore configStore;
+    public  List<KeyValueItem> testItems;
+    private HttpEntity okEntity;
+
+    private static final KeyValueItem item1 = createItem(TEST_CONTEXT, TEST_KEY_1, TEST_VALUE_1, TEST_LABEL_1);
+    private static final KeyValueItem item2 = createItem(TEST_CONTEXT, TEST_KEY_2, TEST_VALUE_2, TEST_LABEL_2);
+    private static final KeyValueItem item3 = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3, TEST_LABEL_3);
 
     private static final ProtocolVersion VERSION = new ProtocolVersion("HTTP", 1, 1);
     private static final StatusLine OK_STATUS = new BasicStatusLine(VERSION, HttpStatus.SC_OK, null);
-    private static HttpEntity okEntity;
 
     private static final StatusLine NOT_FOUND_STATUS =
             new BasicStatusLine(VERSION, HttpStatus.SC_NOT_FOUND, null);
@@ -74,15 +75,17 @@ public class ConfigServiceTemplateTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
+        pool = new ConnectionStringPool();
+        configStore = new ConfigStore();
+        testItems = new ArrayList<>();
+
         pool.put(TEST_STORE_NAME, ConnectionString.of(TEST_CONN_STRING));
         configStore.setName(TEST_STORE_NAME);
         configStore.setConnectionString(TEST_CONN_STRING);
 
-        TEST_ITEMS.add(item1);
-        TEST_ITEMS.add(item2);
-        TEST_ITEMS.add(item3);
+        testItems.addAll(Arrays.asList(item1, item2, item3));
 
-        okEntity = buildEntity(TEST_ITEMS);
+        okEntity = buildEntity(testItems);
     }
 
     @Test
@@ -91,9 +94,48 @@ public class ConfigServiceTemplateTest {
                 .thenReturn(new MockCloseableHttpResponse(OK_STATUS, okEntity));
         template = new ConfigServiceTemplate(configClient, pool);
 
-        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, null, configStore);
-        assertThat(result.size()).isEqualTo(TEST_ITEMS.size());
-        assertThat(result).containsExactlyInAnyOrder(TEST_ITEMS.stream().toArray(KeyValueItem[]::new));
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore);
+        assertThat(result.size()).isEqualTo(testItems.size());
+        assertThat(result).containsExactlyInAnyOrder(testItems.stream().toArray(KeyValueItem[]::new));
+    }
+
+    @Test
+    public void testMultiLabelsCanBeSearchedAndOrdered() throws IOException, URISyntaxException {
+        prepareConfigClient();
+
+        template = new ConfigServiceTemplate(configClient, pool);
+        // Label order should be kept in the searched result
+        configStore.setLabel(TEST_LABEL_2 + LABEL_SEPARATOR + TEST_LABEL_1);
+
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore);
+        List<KeyValueItem> expectedResult = Arrays.asList(item2, item1);
+        assertThat(result.size()).isEqualTo(expectedResult.size());
+        assertThat(result).containsExactly(expectedResult.stream().toArray(KeyValueItem[]::new));
+    }
+
+    private void prepareConfigClient() throws IOException, URISyntaxException {
+        when(configClient.execute(any(), any(), any(), any())).thenAnswer(new Answer<CloseableHttpResponse>() {
+            @Override
+            public CloseableHttpResponse answer(InvocationOnMock invocation) throws Throwable {
+                // Extract label params from the request argument and filter result from the given testItems
+                Object[] args = invocation.getArguments();
+                HttpUriRequest request = (HttpUriRequest) args[0];
+                List<NameValuePair> params = URLEncodedUtils.parse(request.getURI(), Charset.defaultCharset());
+                Optional<NameValuePair> labelParam = params.stream()
+                        .filter(p -> LABEL_PARAM.equals(p.getName())).findFirst();
+
+                if (!labelParam.isPresent()) {
+                    return null;
+                }
+
+                String labelValue = labelParam.get().getValue();
+                List<String> labels = Arrays.asList(labelValue.split(LABEL_SEPARATOR));
+                List<KeyValueItem> result = testItems.stream().filter(item -> labels.contains(item.getLabel()))
+                        .collect(Collectors.toList());
+
+                return new MockCloseableHttpResponse(OK_STATUS, buildEntity(result));
+            }
+        });
     }
 
     @Test
@@ -108,7 +150,7 @@ public class ConfigServiceTemplateTest {
                 .thenReturn(new MockCloseableHttpResponse(FAIL_STATUS, null));
 
         template = new ConfigServiceTemplate(configClient, pool);
-        template.getKeys(TEST_CONTEXT, null, configStore);
+        template.getKeys(TEST_CONTEXT, configStore);
     }
 
     @Test
@@ -117,7 +159,7 @@ public class ConfigServiceTemplateTest {
                 .thenReturn(new MockCloseableHttpResponse(NOT_FOUND_STATUS, null));
         template = new ConfigServiceTemplate(configClient, pool);
 
-        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, null, configStore);
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore);
         assertThat(result).isNotNull();
         assertThat(result.size()).isEqualTo(0);
     }
@@ -141,7 +183,7 @@ public class ConfigServiceTemplateTest {
 
         when(configClient.execute(any(), any(), any(), any())).thenReturn(firstResponse).thenReturn(secondResponse);
         template = new ConfigServiceTemplate(configClient, pool);
-        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, null, configStore);
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore);
 
         verify(configClient, times(2)).execute(any(), any(), any(), any());
         assertThat(result).isNotEmpty();
@@ -159,7 +201,7 @@ public class ConfigServiceTemplateTest {
 
         when(configClient.execute(any(), any(), any(), any())).thenReturn(response);
         template = new ConfigServiceTemplate(configClient, pool);
-        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, null, configStore);
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore);
 
         verify(configClient, times(1)).execute(any(), any(), any(), any());
         assertThat(result).isNotEmpty();
@@ -178,7 +220,7 @@ public class ConfigServiceTemplateTest {
 
         when(configClient.execute(any(), any(), any(), any())).thenReturn(response);
         template = new ConfigServiceTemplate(configClient, pool);
-        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, null, configStore);
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore);
 
         verify(configClient, times(1)).execute(any(), any(), any(), any());
         assertThat(result).isNotEmpty();

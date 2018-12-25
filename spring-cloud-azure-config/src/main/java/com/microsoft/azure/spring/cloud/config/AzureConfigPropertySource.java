@@ -38,7 +38,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     public void initProperties() {
         String label = this.configStore.getLabel();
         // * for wildcard match
-        List<KeyValueItem> items = source.getKeys(context + "*", label, configStore);
+        List<KeyValueItem> items = source.getKeys(context + "*", configStore);
 
         for (KeyValueItem item : items) {
             String key = item.getKey().trim().substring(context.length()).replace('/', '.');

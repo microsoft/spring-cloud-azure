@@ -24,9 +24,9 @@ import static org.mockito.Mockito.when;
 public class AzureConfigPropertySourceTest {
     private static final AzureCloudConfigProperties TEST_PROPS = new AzureCloudConfigProperties();
     public static final List<KeyValueItem> TEST_ITEMS = new ArrayList<>();
-    private static final KeyValueItem item1 = createItem(TEST_CONTEXT, TEST_KEY_1, TEST_VALUE_1);
-    private static final KeyValueItem item2 = createItem(TEST_CONTEXT, TEST_KEY_2, TEST_VALUE_2);
-    private static final KeyValueItem item3 = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3);
+    private static final KeyValueItem item1 = createItem(TEST_CONTEXT, TEST_KEY_1, TEST_VALUE_1, TEST_LABEL_1);
+    private static final KeyValueItem item2 = createItem(TEST_CONTEXT, TEST_KEY_2, TEST_VALUE_2, TEST_LABEL_2);
+    private static final KeyValueItem item3 = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3, TEST_LABEL_3);
 
     private AzureConfigPropertySource propertySource;
 
@@ -46,7 +46,7 @@ public class AzureConfigPropertySourceTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         propertySource = new AzureConfigPropertySource(TEST_CONTEXT, operations, TEST_PROPS.getStores().get(0));
-        when(operations.getKeys(anyString(), any(), any())).thenReturn(TEST_ITEMS);
+        when(operations.getKeys(anyString(), any())).thenReturn(TEST_ITEMS);
     }
 
     @Test
@@ -65,8 +65,8 @@ public class AzureConfigPropertySourceTest {
 
     @Test
     public void testPropertyNameSlashConvertedToDots() {
-        KeyValueItem slashedProp = createItem(TEST_CONTEXT, TEST_SLASH_KEY, TEST_SLASH_VALUE);
-        when(operations.getKeys(anyString(), any(), any())).thenReturn(Arrays.asList(slashedProp));
+        KeyValueItem slashedProp = createItem(TEST_CONTEXT, TEST_SLASH_KEY, TEST_SLASH_VALUE, null);
+        when(operations.getKeys(anyString(), any())).thenReturn(Arrays.asList(slashedProp));
 
         propertySource.initProperties();
 
