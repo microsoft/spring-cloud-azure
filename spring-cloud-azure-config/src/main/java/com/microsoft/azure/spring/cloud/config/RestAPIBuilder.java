@@ -67,7 +67,7 @@ public class RestAPIBuilder {
         }
 
         String label = NULL_LABEL;
-        if (labels != null) {
+        if (labels != null && !labels.isEmpty()) {
             labels = labels.stream().filter(l -> StringUtils.hasText(l))
                     .map(l -> l.trim()).distinct().collect(Collectors.toList());
 
