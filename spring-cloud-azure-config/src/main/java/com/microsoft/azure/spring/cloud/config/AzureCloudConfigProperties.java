@@ -128,18 +128,24 @@ public class AzureCloudConfigProperties {
 
     @PostConstruct
     public void validateAndInit() {
+        Assert.notEmpty(this.stores, "At least one config store has to be configured.");
+
         if (!msiEnabled) {
-            Assert.notEmpty(this.stores, "At least one config store has to be configured.");
+            int uniqueStoreSize = this.stores.stream().map(s -> s.getConnectionString()).distinct()
+                    .collect(Collectors.toList()).size();
+            Assert.isTrue(this.stores.size() == uniqueStoreSize,
+                    "Duplicate connection string exists.");
+
             this.stores.forEach(store -> {
                 Assert.isTrue(StringUtils.hasText(store.getConnectionString()),
                         "Connection string cannot be empty.");
                 store.validateAndInit();
             });
+        } else {
+            int uniqueStoreSize = this.stores.stream().map(s -> s.getName()).distinct()
+                    .collect(Collectors.toList()).size();
+            Assert.isTrue(this.stores.size() == uniqueStoreSize, "Duplicate store name exists.");
         }
-
-        int uniqueStoreSize = this.stores.stream().map(s -> s.getConnectionString()).distinct()
-                .collect(Collectors.toList()).size();
-        Assert.isTrue(this.stores.size() == uniqueStoreSize, "Duplicate connection string exists.");
     }
 
     class Watch {
