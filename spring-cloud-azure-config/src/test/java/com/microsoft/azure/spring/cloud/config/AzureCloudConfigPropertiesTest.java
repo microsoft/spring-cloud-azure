@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AzureCloudConfigPropertiesTest {
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withPropertyValues(propPair(STORE_NAME_PROP, TestConstants.TEST_STORE_NAME))
             .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class));
     private static final String NO_ENDPOINT_CONN_STRING = "Id=fake-conn-id;Secret=ZmFrZS1jb25uLXNlY3JldA==";
     private static final String NO_ID_CONN_STRING =
@@ -30,6 +29,7 @@ public class AzureCloudConfigPropertiesTest {
     private static final String NO_SECRET_CONN_STRING = "Endpoint=https://fake.test.config.io;Id=fake-conn-id;";
     private static final String[] ILLEGAL_PREFIXES = {"/ config", "config"};
     private static final String[] ILLEGAL_PROFILE_SEPARATOR = {"/", "\\", "."};
+    private static final String ILLEGAL_LABELS = "*,my-label";
 
     @Test
     public void validInputShouldCreatePropertiesBean() {
@@ -84,6 +84,47 @@ public class AzureCloudConfigPropertiesTest {
                     propPair(SEPARATOR_PROP, separator)).run(context -> {
                         assertInvalidField(context, "profileSeparator");
             });
+        });
+    }
+
+    @Test
+    public void asteriskShouldNotBeIncludedInTheLabels() {
+        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
+                propPair(LABEL_PROP, ILLEGAL_LABELS)).run(context -> {
+            assertThat(context).getFailure()
+                    .hasStackTraceContaining("Label must not contain asterisk(*)");
+        });
+    }
+
+    @Test
+    public void storeNameCanBeInitIfConnectionStringConfigured() {
+        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
+                propPair(STORE_NAME_PROP, "")).run(context -> {
+            AzureCloudConfigProperties properties = context.getBean(AzureCloudConfigProperties.class);
+            assertThat(properties.getStores()).isNotNull();
+            assertThat(properties.getStores().size()).isEqualTo(1);
+            assertThat(properties.getStores().get(0).getName()).isEqualTo("fake");
+        });
+    }
+
+    @Test
+    public void duplicateConnectionStringIsNotAllowed() {
+        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
+                propPair(CONN_STRING_PROP_NEW, TEST_CONN_STRING)).run(context -> {
+            assertThat(context).getFailure()
+                    .hasStackTraceContaining("Duplicate connection string exists");
+        });
+    }
+
+    @Test
+    public void msiNotEnabledValidStoreHasToBeConfigured() {
+        this.contextRunner.withPropertyValues(propPair(MSI_ENABLED_PROP, "false")).run(context -> {
+            assertThat(context).getFailure().hasStackTraceContaining("At least one config store has to be configured");
+        });
+
+        this.contextRunner.withPropertyValues(propPair(MSI_ENABLED_PROP, "false"),
+                propPair(STORE_NAME_PROP, TEST_STORE_NAME)).run(context -> {
+            assertThat(context).getFailure().hasStackTraceContaining("Connection string cannot be empty");
         });
     }
 
