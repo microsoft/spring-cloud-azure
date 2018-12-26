@@ -111,8 +111,7 @@ public class AzureCloudConfigPropertiesTest {
     public void duplicateConnectionStringIsNotAllowed() {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                 propPair(CONN_STRING_PROP_NEW, TEST_CONN_STRING)).run(context -> {
-            assertThat(context).getFailure()
-                    .hasStackTraceContaining("Duplicate connection string exists");
+            assertThat(context).getFailure().hasStackTraceContaining("Duplicate store name exists");
         });
     }
 
