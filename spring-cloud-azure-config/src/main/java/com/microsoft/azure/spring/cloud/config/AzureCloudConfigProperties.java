@@ -6,16 +6,21 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import com.microsoft.azure.spring.cloud.config.msi.AzureCloudConfigMSIProperties;
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Validated
 @ConfigurationProperties(prefix = AzureCloudConfigProperties.CONFIG_PREFIX)
@@ -124,6 +129,16 @@ public class AzureCloudConfigProperties {
     @PostConstruct
     public void validateAndInit() {
         Assert.notEmpty(this.stores, "At least one config store has to be configured.");
+
+        if (!msiEnabled) {
+            this.stores.forEach(store -> { Assert.isTrue(StringUtils.hasText(store.getConnectionString()),
+                        "Connection string cannot be empty.");
+                store.validateAndInit();
+            });
+        }
+
+        int uniqueStoreSize = this.stores.stream().map(s -> s.getName()).distinct().collect(Collectors.toList()).size();
+        Assert.isTrue(this.stores.size() == uniqueStoreSize, "Duplicate store name exists.");
     }
 
     class Watch {
@@ -152,7 +167,6 @@ public class AzureCloudConfigProperties {
 }
 
 class ConfigStore {
-    @NotEmpty
     private String name; // Config store name
 
     @Nullable
@@ -198,5 +212,22 @@ class ConfigStore {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    @PostConstruct
+    public void validateAndInit() {
+        if (StringUtils.hasText(label)) {
+            Assert.isTrue(!label.contains("*"), "Label must not contain asterisk(*).");
+        }
+
+        if (!StringUtils.hasText(name) && StringUtils.hasText(connectionString)) {
+            String endpoint = ConnectionString.of(connectionString).getEndpoint();
+            try {
+                URI uri = new URI(endpoint);
+                this.name = uri.getHost().split("\\.")[0];
+            } catch (URISyntaxException e) {
+                throw new IllegalStateException("Endpoint in connection string is not a valid URI.", e);
+            }
+        }
     }
 }

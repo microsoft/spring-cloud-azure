@@ -97,7 +97,7 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
     }
 
     private void sortByLabel(List<KeyValueItem> items, List<String> labels) {
-        if (items == null || items.isEmpty() || labels == null || labels.isEmpty()) {
+        if (items == null || items.size() <= 1 || labels == null || labels.size() <= 1) {
             return;
         }
 

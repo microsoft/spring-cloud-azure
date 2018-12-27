@@ -15,7 +15,9 @@ public class TestConstants {
     // Store specific configuration
     public static final String TEST_STORE_NAME = "store1";
     public static final String CONN_STRING_PROP = "spring.cloud.azure.config.stores[0].connection-string";
+    public static final String CONN_STRING_PROP_NEW = "spring.cloud.azure.config.stores[1].connection-string";
     public static final String STORE_NAME_PROP = "spring.cloud.azure.config.stores[0].name";
+    public static final String LABEL_PROP = "spring.cloud.azure.config.stores[0].label";
     public static final String PREFIX_PROP = "spring.cloud.azure.config.stores[0].prefix";
 
     public static final String DEFAULT_CONTEXT_PROP = "spring.cloud.azure.config.default-context";

@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -137,7 +137,7 @@ public class ConfigHttpClient {
     private static String copyInputStream(InputStream inputStream) throws IOException {
         try {
             StringWriter writer = new StringWriter();
-            IOUtils.copy(inputStream, writer, Charset.defaultCharset());
+            IOUtils.copy(inputStream, writer, StandardCharsets.UTF_8);
 
             return writer.toString();
         } finally {
