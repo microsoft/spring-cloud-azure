@@ -8,6 +8,7 @@ package com.microsoft.azure.spring.cloud.config;
 import com.microsoft.azure.spring.cloud.config.msi.AzureCloudConfigMSIProperties;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -49,8 +50,10 @@ public class AzureCloudConfigProperties {
     // Whether enable MSI or not
     private boolean msiEnabled = false;
 
+    @NestedConfigurationProperty
     private Watch watch = new Watch();
 
+    @NestedConfigurationProperty
     private AzureCloudConfigMSIProperties msi;
 
     public boolean isEnabled() {
