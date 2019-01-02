@@ -8,12 +8,12 @@ package com.microsoft.azure.spring.cloud.config;
 import com.microsoft.azure.Page;
 import com.microsoft.azure.PagedList;
 import com.microsoft.azure.credentials.AzureTokenCredentials;
+import com.microsoft.azure.credentials.MSICredentials;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.resources.GenericResource;
 import com.microsoft.azure.management.resources.GenericResources;
 import com.microsoft.azure.management.resources.Subscription;
 import com.microsoft.azure.management.resources.Subscriptions;
-import com.microsoft.azure.spring.cloud.config.msi.ConfigMSICredentials;
 import com.microsoft.azure.spring.cloud.config.msi.ConfigResourceManager;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.rest.RestException;
@@ -43,7 +43,7 @@ public class ConfigResourceManagerTest {
     private Azure.Authenticated authenticated;
 
     @Mock
-    private ConfigMSICredentials msiCredentials;
+    private MSICredentials msiCredentials;
 
     @Mock
     private Subscriptions subscriptions;

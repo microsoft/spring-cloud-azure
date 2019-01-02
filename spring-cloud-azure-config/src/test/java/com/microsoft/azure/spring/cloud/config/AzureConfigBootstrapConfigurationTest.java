@@ -5,8 +5,8 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import com.microsoft.azure.credentials.MSICredentials;
 import com.microsoft.azure.spring.cloud.config.msi.AzureConfigMSIConnector;
-import com.microsoft.azure.spring.cloud.config.msi.ConfigMSICredentials;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -40,7 +40,7 @@ public class AzureConfigBootstrapConfigurationTest {
             .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class));
 
     @Mock
-    private ConfigMSICredentials msiCredentials;
+    private MSICredentials msiCredentials;
 
     @Mock
     private AzureConfigMSIConnector msiConnector;
@@ -75,7 +75,7 @@ public class AzureConfigBootstrapConfigurationTest {
 
     @Test
     public void msiEmptyConnectionStringShouldFail() throws Exception {
-        whenNew(ConfigMSICredentials.class).withAnyArguments().thenReturn(msiCredentials);
+        whenNew(MSICredentials.class).withAnyArguments().thenReturn(msiCredentials);
         whenNew(AzureConfigMSIConnector.class).withAnyArguments().thenReturn(msiConnector);
 
         when(msiCredentials.getToken(anyString())).thenReturn(MSI_TOKEN);
@@ -99,7 +99,7 @@ public class AzureConfigBootstrapConfigurationTest {
 
     @Test
     public void msiNonEmptyConnectionStringShouldPass() throws Exception {
-        whenNew(ConfigMSICredentials.class).withAnyArguments().thenReturn(msiCredentials);
+        whenNew(MSICredentials.class).withAnyArguments().thenReturn(msiCredentials);
         whenNew(AzureConfigMSIConnector.class).withAnyArguments().thenReturn(msiConnector);
 
         when(msiCredentials.getToken(anyString())).thenReturn(MSI_TOKEN);
