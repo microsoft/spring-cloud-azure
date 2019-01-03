@@ -50,7 +50,6 @@ public class AzureCloudConfigProperties {
     // Whether enable MSI or not
     private boolean msiEnabled = false;
 
-    @NestedConfigurationProperty
     private Watch watch = new Watch();
 
     @NestedConfigurationProperty
