@@ -3,8 +3,8 @@
 This sample describes how to use [spring-cloud-starter-azure-config](../../spring-cloud-azure-starters/spring-cloud-starter-azure-config/) to load configuration properties from Azure Configuration Service to Spring Environment.
 
 ## Prerequisite
-	- Java 8
-	- Maven 3
+ - Java 8
+ - Maven 3
 
 ## How to run
 

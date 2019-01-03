@@ -4,7 +4,7 @@ This project allows Spring Application to load properties from Azure Configurati
 
 ## Samples 
 
-Please use this [sample](../spring-cloud-azure-samples/azure-config-sample/) as a reference for how to use this starter. 
+Please use this [sample](../../spring-cloud-azure-samples/azure-config-sample/) as a reference for how to use this starter. 
 
 ### Dependency Management
 
@@ -28,7 +28,7 @@ dependencies {
 Name | Description | Required | Default 
 ---|---|---|---
 spring.cloud.azure.config.stores | List of configuration stores from which to load configuration properties | Yes | true
-spring.cloud.azure.config.enabled | Whether enable spring-cloud-azure-config or not, boolean | No | true
+spring.cloud.azure.config.enabled | Whether enable spring-cloud-azure-config or not | No | true
 spring.cloud.azure.config.default-context | Default context path to load properties from | No | application
 spring.cloud.azure.config.name | Alternative to Spring application name, if not configured, fallback to default Spring application name | No | ${spring.application.name}
 spring.cloud.azure.config.profile-separator | Profile separator for the key name, e.g., /foo-app_dev/db.connection.key, must follow format `^[a-zA-Z0-9_@]+$` | No | `_`
