@@ -4,6 +4,5 @@ spring:
   cloud:
     azure:
       config:
-        msi-enabled: true
         stores:
-          - name: {msi-enabled-store-name}
+          - connection-string: [configuration-store-string]
