@@ -26,6 +26,7 @@
         <module>eventhub-kafka-sample</module>
         <module>servicebus-operation-sample</module>
         <module>servicebus-integration-sample</module>
+        <module>servicebus-queue-binder-sample</module>
         <module>servicebus-topic-binder-sample</module>
         <module>storage-queue-operation-sample</module>
         <module>storage-queue-integration-sample</module>
