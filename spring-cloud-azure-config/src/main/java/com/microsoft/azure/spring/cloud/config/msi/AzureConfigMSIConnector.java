@@ -6,6 +6,7 @@
 package com.microsoft.azure.spring.cloud.config.msi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.azure.credentials.AzureTokenCredentials;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -14,6 +15,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 import static com.microsoft.azure.spring.cloud.config.msi.ConfigAccessKeyResource.ARM_ENDPONT;
 
@@ -24,16 +27,22 @@ public class AzureConfigMSIConnector {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigMSIConnector.class);
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final CloseableHttpClient HTTP_CLIENT = HttpClients.createDefault();
-    private final ConfigMSICredentials msiCredentials;
+    private final AzureTokenCredentials msiCredentials;
     private final String configStoreName;
 
-    public AzureConfigMSIConnector(ConfigMSICredentials credentials, String configStoreName) {
+    public AzureConfigMSIConnector(AzureTokenCredentials credentials, String configStoreName) {
         this.msiCredentials = credentials;
         this.configStoreName = configStoreName;
     }
 
     public String getConnectionString() {
-        String msiToken = msiCredentials.getToken(ARM_ENDPONT);
+        String msiToken;
+        try {
+            msiToken = msiCredentials.getToken(ARM_ENDPONT);
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to retrieve access token for " + ARM_ENDPONT, e);
+        }
+
         ConfigAccessKeyResource keyResource = getKeyResource();
         String resourceId = keyResource.getResourceIdUrl();
 
