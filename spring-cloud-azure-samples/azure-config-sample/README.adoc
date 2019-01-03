@@ -2,8 +2,6 @@
 
 This sample describes how to use spring-cloud-starter-azure-config to load configuration properties from Azure Configuration Service to Spring Environment.
 
-For better readability of the bootstrap configuration file, in this sample, yaml format is used, but using .properties format will also work, i.e., rename bootstrap.yaml to bootstrap.properties and change the property names accordingly.
-
 == Prerequisite
 	- Java 8
 	- Maven 3
@@ -48,34 +46,50 @@ $ mvn -Dspring.application.name=foo spring-boot:run
 $ mvn -Dspring.application.name=foo -Dspring.profiles.active=dev spring-boot:run
 ....
 
+== Supported properties
+[frame="topbot",options="header,footer"]
+|======================
+|Property key |Description
+|spring.cloud.azure.config.stores        |Required `true`,List of configuration stores from which to load configuration properties
+|spring.cloud.azure.config.enabled        |Required `false`, whether enable spring-cloud-azure-config or not, boolean, default value: `true`
+|spring.cloud.azure.config.default-context        |Required `false`, default context path to load properties from, default value: `application`
+|spring.cloud.azure.config.name        |Required `false`, alternative to Spring application name, if not configured, fallback to default Spring application name, default value: `${spring.application.name}`
+|spring.cloud.azure.config.profile-separator        |Required `false`, profile separator for the key name, e.g., /foo-app_dev/db.connection.key, must follow format `^[a-zA-Z0-9_@]+$`, default value: `_`
+|spring.cloud.azure.config.fail-fast        |Required `false`,whether throw RuntimeException or not when exception occurs, default value: `true`
+|spring.cloud.azure.config.msi-enabled       |Required `false`, whether load connection string from https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-overview[Azure Resource Manager] with https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview[managed service identity] token or not, default value: `false`
+|spring.cloud.azure.config.watch.enabled        |Required `false`, whether enable watch feature or not, default value: `true`
+|spring.cloud.azure.config.watch.delay        |Required `false`, delay in milli-seconds between each watch schedule, default value: `1000ms`
+|spring.cloud.azure.config.msi.client-id        |Required `false`, client id of the managed identity, default value: `null`
+|spring.cloud.azure.config.msi.object-id        |Required `false`, object id of the managed identity, default value: `null`
+|======================
+
+`spring.cloud.azure.config.stores` is a List of stores, for each store should follow below format:
+[frame="topbot",options="header,footer"]
+|======================
+|Property key |Description
+|spring.cloud.azure.config.stores[0].name |Required when `spring.cloud.azure.config.msi-enabled` is true, default value: `null`
+|spring.cloud.azure.config.stores[0].prefix |Required `false`, the prefix of the key name in the configuration store, e.g., /my-prefix/application/key.name, default value: `null`
+|spring.cloud.azure.config.stores[0].connection-string |Required when `spring.cloud.azure.config.msi-enabled` is false, otherwise, can be loaded automatically on Azure Virtual Machine or App Service, default value: `null`
+|spring.cloud.azure.config.stores[0].label |Required `false`, comma separated list of label values, default value: `null`
+|======================
+
 == Advanced usage
 
 === Load from multiple configuration stores
-If the application needs to load configuration properties from multiple stores, following configuration sample describes how the bootstrap.yaml(or .properties) can be configured.
+If the application needs to load configuration properties from multiple stores, following configuration sample describes how the bootstrap.properties(or .yaml) can be configured.
 ....
-spring:
-  cloud:
-    azure:
-      config:
-        stores:
-          - connection-string: {first-store-connection-string}
-            prefix: {my-prefix}
-            label: {my-label}
-          - connection-string: {second-store-connection-string}
+spring.cloud.azure.config.stores[0].connection-string=[first-store-connection-string]
+spring.cloud.azure.config.stores[0].prefix=[my-prefix]
+spring.cloud.azure.config.stores[0].label=[my-label]
+spring.cloud.azure.config.stores[1].connection-string=[second-store-connection-string]
 ....
 If duplicate keys exists for multiple stores, the last configuration store has the highest priority.
 
 === Load from multiple labels
 If the application needs to load property values from multiple labels in the same configuration store, following configuration can be used:
 ....
-spring:
-  cloud:
-    azure:
-      config:
-        stores:
-          - connection-string: {first-store-connection-string}
-            prefix: {my-prefix}
-            label: {my-label1}, {my-label2}
+spring.cloud.azure.config.stores[0].connection-string=[first-store-connection-string]
+spring.cloud.azure.config.stores[0].label=[my-label1], [my-label2]
 ....
 Multiple labels can be separated with comma, if duplicate keys exists for multiple labels, the last label has highest priority.
 
@@ -84,47 +98,33 @@ Watch feature allows the application to load the latest property value from conf
 
 By default, the watch feature is enabled. It can be disabled with below configuration:
 ....
-spring:
-  cloud:
-    azure:
-      config:
-        watch:
-          enabled: false
+spring.cloud.azure.config.watch.enabled=false
 ....
 
-Change the value of current used property key in the configuration store, e.g., /application/config.message, log similar with below will be printed on the console.
+Change property key in the configuration store on Azure Portal, e.g., /application/config.message, log similar with below will be printed on the console.
 ....
 INFO 17496 --- [TaskScheduler-1] o.s.c.e.event.RefreshEventListener       : Refresh keys changed: [config.message]
 ....
-Refresh http://localhost:8080 should get the updated value.
+Refresh browser http://localhost:8080 should get the updated value.
 
 === Failfast
 Failfast feature decides whether throw RuntimeException or not when exception happens. By default, failfast is enabled, it can be disabled with below configuration:
 ....
-spring:
-  cloud:
-    azure:
-      config:
-        fail-fast: false
+spring.cloud.azure.config.fail-fast=false
 ....
 
 === Use Azure Managed Identity to load the connection string
-A https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview[managed service identity] allows application to access https://azure.microsoft.com/en-us/services/active-directory/[Azure Active Directory] protected resource on https://azure.microsoft.com/en-us/[Azure].
+https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview[Managed service identity] allows application to access https://azure.microsoft.com/en-us/services/active-directory/[Azure Active Directory] protected resource on https://azure.microsoft.com/en-us/[Azure].
 
 In this library, managed service identity is used to retrieve the connection string of the configuration store, the connection string is not required if running the Spring Boot application on Azure with managed service identity enabled.
 
-Follow below steps to enabled managed service identity feature:
+Follow below steps to enable managed service identity feature:
 
 1. https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview#how-can-i-use-managed-identities-for-azure-resources[Enable managed identities service] for virtual machine or App Service, on which the application will be deployed
 
-2. Configure bootstrap.yaml(or .properties) in the Spring Boot application as following:
+2. Configure bootstrap.properties(or .yaml) in the Spring Boot application as following:
 ....
-spring:
-  cloud:
-    azure:
-      config:
-        msi-enabled: true
-        stores:
-          - name: {msi-enabled-store-name}
+spring.cloud.azure.config.msi-enabled=true
+spring.cloud.azure.config.stores[0].name=[msi-enabled-store-name]
 ....
-The configuration store name must be configured when msi-enabled is true, the connection string will be loaded automatically.
+The configuration store name must be configured when msi-enabled is true, the connection string for the configuration store will be loaded automatically.
