@@ -50,7 +50,7 @@ $ mvn -Dspring.application.name=foo -Dspring.profiles.active=dev spring-boot:run
 [frame="topbot",options="header,footer"]
 |======================
 |Property key |Description
-|spring.cloud.azure.config.stores        |Required `true`,List of configuration stores from which to load configuration properties
+|spring.cloud.azure.config.stores        |Required `true`, list of configuration stores from which to load configuration properties
 |spring.cloud.azure.config.enabled        |Required `false`, whether enable spring-cloud-azure-config or not, boolean, default value: `true`
 |spring.cloud.azure.config.default-context        |Required `false`, default context path to load properties from, default value: `application`
 |spring.cloud.azure.config.name        |Required `false`, alternative to Spring application name, if not configured, fallback to default Spring application name, default value: `${spring.application.name}`
