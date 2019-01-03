@@ -19,7 +19,7 @@ This binder implementation has no partition support even service bus topic suppo
 
 ## Samples 
 
-Please use this [sample](../spring-cloud-azure-samples/spring-cloud-azure-servicebus-topic-binder-sample/) as a reference
+Please use this [sample](../spring-cloud-azure-samples/servicebus-topic-binder-sample/) as a reference
 for how to use this binder in your projects. 
 
 ## Feature List 
@@ -59,7 +59,7 @@ spring.cloud.azure.servicebus.namespace | Service Bus Namespace. Auto creating i
 
 #### Serivce Bus Topic Producer Properties ####
 
-It supports the following configurations with the format of `spring.cloud.stream.servicebus.bindings.<channelName>.producer`.
+It supports the following configurations with the format of `spring.cloud.stream.servicebus.topic.bindings.<channelName>.producer`.
 
 **_sync_**
 
@@ -76,7 +76,7 @@ Default: `10000`
  
 #### Service Bus Topic Consumer Properties ####
 
-It supports the following configurations with the format of `spring.cloud.stream.servicebus.bindings.<channelName>.consumer`.
+It supports the following configurations with the format of `spring.cloud.stream.servicebus.topic.bindings.<channelName>.consumer`.
 
 **_checkpointMode_**
 

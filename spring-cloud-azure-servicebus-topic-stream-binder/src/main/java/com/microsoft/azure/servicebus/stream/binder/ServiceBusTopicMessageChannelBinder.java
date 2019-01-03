@@ -6,9 +6,9 @@
 
 package com.microsoft.azure.servicebus.stream.binder;
 
-import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusConsumerProperties;
+import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusTopicConsumerProperties;
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusExtendedBindingProperties;
-import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusProducerProperties;
+import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusTopicProducerProperties;
 import com.microsoft.azure.servicebus.stream.binder.provisioning.ServiceBusTopicChannelProvisioner;
 import com.microsoft.azure.spring.integration.core.DefaultMessageHandler;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
@@ -31,10 +31,10 @@ import java.util.UUID;
  * @author Warren Zhu
  */
 public class ServiceBusTopicMessageChannelBinder extends
-        AbstractMessageChannelBinder<ExtendedConsumerProperties<ServiceBusConsumerProperties>,
-                ExtendedProducerProperties<ServiceBusProducerProperties>, ServiceBusTopicChannelProvisioner>
+        AbstractMessageChannelBinder<ExtendedConsumerProperties<ServiceBusTopicConsumerProperties>,
+                ExtendedProducerProperties<ServiceBusTopicProducerProperties>, ServiceBusTopicChannelProvisioner>
         implements
-        ExtendedPropertiesBinder<MessageChannel, ServiceBusConsumerProperties, ServiceBusProducerProperties> {
+        ExtendedPropertiesBinder<MessageChannel, ServiceBusTopicConsumerProperties, ServiceBusTopicProducerProperties> {
 
     private final ServiceBusTopicOperation serviceBusTopicOperation;
 
@@ -49,7 +49,8 @@ public class ServiceBusTopicMessageChannelBinder extends
 
     @Override
     protected MessageHandler createProducerMessageHandler(ProducerDestination destination,
-            ExtendedProducerProperties<ServiceBusProducerProperties> producerProperties, MessageChannel errorChannel) {
+            ExtendedProducerProperties<ServiceBusTopicProducerProperties> producerProperties,
+            MessageChannel errorChannel) {
         DefaultMessageHandler handler = new DefaultMessageHandler(destination.getName(), this.serviceBusTopicOperation);
         handler.setBeanFactory(getBeanFactory());
         handler.setSync(producerProperties.getExtension().isSync());
@@ -66,7 +67,7 @@ public class ServiceBusTopicMessageChannelBinder extends
 
     @Override
     protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group,
-            ExtendedConsumerProperties<ServiceBusConsumerProperties> properties) {
+            ExtendedConsumerProperties<ServiceBusTopicConsumerProperties> properties) {
         CheckpointConfig checkpointConfig =
                 CheckpointConfig.builder().checkpointMode(properties.getExtension().getCheckpointMode()).build();
         this.serviceBusTopicOperation.setCheckpointConfig(checkpointConfig);
@@ -81,12 +82,12 @@ public class ServiceBusTopicMessageChannelBinder extends
     }
 
     @Override
-    public ServiceBusConsumerProperties getExtendedConsumerProperties(String channelName) {
+    public ServiceBusTopicConsumerProperties getExtendedConsumerProperties(String channelName) {
         return this.bindingProperties.getExtendedConsumerProperties(channelName);
     }
 
     @Override
-    public ServiceBusProducerProperties getExtendedProducerProperties(String channelName) {
+    public ServiceBusTopicProducerProperties getExtendedProducerProperties(String channelName) {
         return this.bindingProperties.getExtendedProducerProperties(channelName);
     }
 
