@@ -5,9 +5,13 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import com.microsoft.azure.AzureEnvironment;
+import com.microsoft.azure.credentials.AppServiceMSICredentials;
+import com.microsoft.azure.credentials.AzureTokenCredentials;
+import com.microsoft.azure.credentials.MSICredentials;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
+import com.microsoft.azure.spring.cloud.config.msi.AzureCloudConfigMSIProperties;
 import com.microsoft.azure.spring.cloud.config.msi.AzureConfigMSIConnector;
-import com.microsoft.azure.spring.cloud.config.msi.ConfigMSICredentials;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -18,6 +22,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -28,9 +33,12 @@ import java.util.List;
 @ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "enabled", matchIfMissing = true)
 public class AzureConfigBootstrapConfiguration {
     private static final String AZURE_CONFIG_STORE = "AzureConfigService";
+    private static final String ENV_MSI_ENDPOINT = "MSI_ENDPOINT";
+    private static final String ENV_MSI_SECRET = "MSI_SECRET";
 
     @Bean
-    public ConnectionStringPool initConnectionString(AzureCloudConfigProperties properties) {
+    public ConnectionStringPool initConnectionString(AzureCloudConfigProperties properties,
+                                                     AzureTokenCredentials credentials) {
         ConnectionStringPool pool = new ConnectionStringPool();
         List<ConfigStore> stores = properties.getStores();
 
@@ -39,10 +47,8 @@ public class AzureConfigBootstrapConfiguration {
             stores.forEach(store -> pool.put(store.getName(), ConnectionString.of(store.getConnectionString())));
         } else {
             // Try load connection string from ARM if MSI enabled
-            ConfigMSICredentials msiCredentials = new ConfigMSICredentials(properties.getMsi());
-
             stores.stream().forEach(store -> {
-                AzureConfigMSIConnector msiConnector = new AzureConfigMSIConnector(msiCredentials, store.getName());
+                AzureConfigMSIConnector msiConnector = new AzureConfigMSIConnector(credentials, store.getName());
 
                 String connectionString = msiConnector.getConnectionString();
                 Assert.hasText(connectionString, "Connection string cannot be empty");
@@ -52,6 +58,24 @@ public class AzureConfigBootstrapConfiguration {
         }
 
         return pool;
+    }
+
+    @Bean
+    public AzureTokenCredentials tokenCredentials(AzureCloudConfigProperties properties) {
+        if (StringUtils.hasText(System.getenv(ENV_MSI_ENDPOINT))
+                && StringUtils.hasText(System.getenv(ENV_MSI_SECRET))) {
+            return new AppServiceMSICredentials(AzureEnvironment.AZURE);
+        }
+
+        AzureCloudConfigMSIProperties msiProps = properties.getMsi();
+        MSICredentials credentials = new MSICredentials();
+        if (msiProps != null && msiProps.getClientId() != null) {
+            credentials.withClientId(msiProps.getClientId());
+        } else if (msiProps != null && msiProps.getObjectId() != null) {
+            credentials.withObjectId(msiProps.getObjectId());
+        }
+
+        return credentials;
     }
 
     @Bean

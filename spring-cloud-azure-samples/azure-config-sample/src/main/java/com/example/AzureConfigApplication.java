@@ -6,24 +6,14 @@
 
 package com.example;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @SpringBootApplication
-@EnableConfigurationProperties(TestProperties.class)
-public class AzureConfigApplication implements CommandLineRunner {
-    @Value("${config.background-color}")
-    private String remoteValue;
-
+@EnableConfigurationProperties(MessageProperties.class)
+public class AzureConfigApplication {
     public static void main(String[] args) {
         SpringApplication.run(AzureConfigApplication.class, args);
-    }
-
-    @Override
-    public void run(String... args) throws Exception {
-        System.out.println("remoteValue: " + remoteValue);
     }
 }
