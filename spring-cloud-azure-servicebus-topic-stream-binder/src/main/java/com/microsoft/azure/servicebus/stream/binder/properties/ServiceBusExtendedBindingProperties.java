@@ -17,20 +17,20 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @ConfigurationProperties("spring.cloud.stream.servicebus")
 public class ServiceBusExtendedBindingProperties
-        implements ExtendedBindingProperties<ServiceBusConsumerProperties, ServiceBusProducerProperties> {
-    private final Map<String, ServiceBusBindingProperties> bindings = new ConcurrentHashMap<>();
+        implements ExtendedBindingProperties<ServiceBusTopicConsumerProperties, ServiceBusTopicProducerProperties> {
+    private final Map<String, ServiceBusTopicBindingProperties> bindings = new ConcurrentHashMap<>();
 
     @Override
-    public ServiceBusConsumerProperties getExtendedConsumerProperties(String channelName) {
-        return this.bindings.computeIfAbsent(channelName, key -> new ServiceBusBindingProperties()).getConsumer();
+    public ServiceBusTopicConsumerProperties getExtendedConsumerProperties(String channelName) {
+        return this.bindings.computeIfAbsent(channelName, key -> new ServiceBusTopicBindingProperties()).getConsumer();
     }
 
     @Override
-    public ServiceBusProducerProperties getExtendedProducerProperties(String channelName) {
-        return this.bindings.computeIfAbsent(channelName, key -> new ServiceBusBindingProperties()).getProducer();
+    public ServiceBusTopicProducerProperties getExtendedProducerProperties(String channelName) {
+        return this.bindings.computeIfAbsent(channelName, key -> new ServiceBusTopicBindingProperties()).getProducer();
     }
 
-    public Map<String, ServiceBusBindingProperties> getBindings() {
+    public Map<String, ServiceBusTopicBindingProperties> getBindings() {
         return bindings;
     }
 }

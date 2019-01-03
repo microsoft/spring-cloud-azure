@@ -11,7 +11,7 @@ import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 /**
  * @author Warren Zhu
  */
-public class ServiceBusConsumerProperties {
+public class ServiceBusTopicConsumerProperties {
     private CheckpointMode checkpointMode = CheckpointMode.RECORD;
 
     public CheckpointMode getCheckpointMode() {
