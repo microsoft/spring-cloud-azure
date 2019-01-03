@@ -67,7 +67,7 @@ public class ConfigResourceManager {
             }
         }
 
-        LOGGER.debug("No config store with name [{}] exists.", configStoreName);
+        LOGGER.debug("Cannot find config store with name [{}].", configStoreName);
         return null;
     }
 
