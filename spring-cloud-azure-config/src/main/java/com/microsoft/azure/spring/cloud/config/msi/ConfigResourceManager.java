@@ -5,6 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.config.msi;
 
+import com.microsoft.azure.credentials.AzureTokenCredentials;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.resources.GenericResource;
 import com.microsoft.azure.management.resources.GenericResources;
@@ -26,7 +27,7 @@ public class ConfigResourceManager {
     private static final String AZ_CONFIG_RESOURCE_TYPE = "Microsoft.Azconfig/configurationStores";
     private final Azure.Authenticated authenticated;
 
-    public ConfigResourceManager(ConfigMSICredentials credentials) {
+    public ConfigResourceManager(AzureTokenCredentials credentials) {
         Assert.notNull(credentials, "Credential token should not be null.");
         this.authenticated = Azure.authenticate(credentials);
     }
@@ -45,7 +46,10 @@ public class ConfigResourceManager {
         LOGGER.debug("Search config store name {} from Azure Configuration Service.", configStoreName);
         Subscriptions subscriptions = this.authenticated.subscriptions();
 
+        LOGGER.debug("Subscriptions size: [{}].", subscriptions.list().size());
+
         for (Subscription subscription : subscriptions.list()){
+            LOGGER.debug("Search from subscription: [{}].", subscription.subscriptionId());
             Azure subsAzure = this.authenticated.withSubscription(subscription.subscriptionId());
             GenericResources genericResources = subsAzure.genericResources();
 
@@ -63,11 +67,12 @@ public class ConfigResourceManager {
             }
         }
 
-        LOGGER.debug("No config store with name {} exists.", configStoreName);
+        LOGGER.debug("Cannot find config store with name [{}].", configStoreName);
         return null;
     }
 
     private boolean isConfigStoreResource(String expectedStoreName, GenericResource resource) {
+        LOGGER.debug("Check resource name [{}] matches with [{}].", resource.name(), expectedStoreName);
         return expectedStoreName.equals(resource.name()) && AZ_CONFIG_RESOURCE_TYPE.equals(resource.type());
     }
 }
