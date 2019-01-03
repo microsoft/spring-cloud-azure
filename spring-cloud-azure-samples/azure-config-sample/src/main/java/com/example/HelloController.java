@@ -5,14 +5,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HelloController {
-    private final TestProperties properties;
+    private final MessageProperties properties;
 
-    public HelloController(TestProperties properties) {
+    public HelloController(MessageProperties properties) {
         this.properties = properties;
     }
 
     @GetMapping
-    public String getColor() {
-        return "Configured color: " + this.properties.getBackgroundColor();
+    public String getMessage() {
+        return "Message: " + properties.getMessage();
     }
 }

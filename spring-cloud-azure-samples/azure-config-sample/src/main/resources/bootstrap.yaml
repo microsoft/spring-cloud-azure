@@ -1,0 +1,9 @@
+# Use default application name and no profile configured
+# Keys starting with /application/ will be matched
+spring:
+  cloud:
+    azure:
+      config:
+        msi-enabled: true
+        stores:
+          - name: {msi-enabled-store-name}
