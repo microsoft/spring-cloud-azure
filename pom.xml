@@ -26,6 +26,7 @@
         <module>spring-cloud-azure-messaging</module>
         <module>spring-cloud-azure-samples</module>
         <module>spring-cloud-azure-servicebus-topic-stream-binder</module>
+        <module>spring-cloud-azure-servicebus-queue-stream-binder</module>
         <module>spring-cloud-azure-starters</module>
         <module>spring-cloud-azure-storage</module>
         <module>spring-integration-azure</module>
