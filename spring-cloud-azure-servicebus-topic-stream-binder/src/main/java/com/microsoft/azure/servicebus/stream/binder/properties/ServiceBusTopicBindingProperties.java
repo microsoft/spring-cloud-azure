@@ -6,10 +6,12 @@
 
 package com.microsoft.azure.servicebus.stream.binder.properties;
 
+import org.springframework.cloud.stream.binder.BinderSpecificPropertiesProvider;
+
 /**
  * @author Warren Zhu
  */
-public class ServiceBusTopicBindingProperties {
+public class ServiceBusTopicBindingProperties implements BinderSpecificPropertiesProvider {
     private ServiceBusTopicConsumerProperties consumer = new ServiceBusTopicConsumerProperties();
     private ServiceBusTopicProducerProperties producer = new ServiceBusTopicProducerProperties();
 
