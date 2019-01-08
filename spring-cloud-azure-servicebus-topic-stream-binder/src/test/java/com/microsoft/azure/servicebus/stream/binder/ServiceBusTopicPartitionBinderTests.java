@@ -7,8 +7,8 @@
 package com.microsoft.azure.servicebus.stream.binder;
 
 import com.microsoft.azure.servicebus.SubscriptionClient;
-import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusConsumerProperties;
-import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusProducerProperties;
+import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusTopicConsumerProperties;
+import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusTopicProducerProperties;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.topic.support.ServiceBusTopicTestOperation;
 import org.junit.Before;
@@ -42,9 +42,10 @@ import static org.mockito.Mockito.when;
  * @author Warren Zhu
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ServiceBusPartitionBinderTests extends
-        PartitionCapableBinderTests<ServiceBusTopicTestBinder, ExtendedConsumerProperties<ServiceBusConsumerProperties>,
-                ExtendedProducerProperties<ServiceBusProducerProperties>> {
+public class ServiceBusTopicPartitionBinderTests extends
+        PartitionCapableBinderTests<ServiceBusTopicTestBinder,
+                ExtendedConsumerProperties<ServiceBusTopicConsumerProperties>,
+                ExtendedProducerProperties<ServiceBusTopicProducerProperties>> {
     @Mock
     ServiceBusTopicClientFactory clientFactory;
 
@@ -83,17 +84,17 @@ public class ServiceBusPartitionBinderTests extends
     }
 
     @Override
-    protected ExtendedConsumerProperties<ServiceBusConsumerProperties> createConsumerProperties() {
-        ExtendedConsumerProperties<ServiceBusConsumerProperties> properties =
-                new ExtendedConsumerProperties<>(new ServiceBusConsumerProperties());
+    protected ExtendedConsumerProperties<ServiceBusTopicConsumerProperties> createConsumerProperties() {
+        ExtendedConsumerProperties<ServiceBusTopicConsumerProperties> properties =
+                new ExtendedConsumerProperties<>(new ServiceBusTopicConsumerProperties());
         properties.setHeaderMode(HeaderMode.embeddedHeaders);
         return properties;
     }
 
     @Override
-    protected ExtendedProducerProperties<ServiceBusProducerProperties> createProducerProperties() {
-        ExtendedProducerProperties<ServiceBusProducerProperties> properties =
-                new ExtendedProducerProperties<>(new ServiceBusProducerProperties());
+    protected ExtendedProducerProperties<ServiceBusTopicProducerProperties> createProducerProperties() {
+        ExtendedProducerProperties<ServiceBusTopicProducerProperties> properties =
+                new ExtendedProducerProperties<>(new ServiceBusTopicProducerProperties());
         properties.setHeaderMode(HeaderMode.embeddedHeaders);
         return properties;
     }

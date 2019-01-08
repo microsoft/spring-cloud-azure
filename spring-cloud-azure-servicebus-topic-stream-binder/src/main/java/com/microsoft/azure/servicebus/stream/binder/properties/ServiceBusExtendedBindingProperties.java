@@ -16,20 +16,20 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author Warren Zhu
  */
-@ConfigurationProperties("spring.cloud.stream.servicebus")
+@ConfigurationProperties("spring.cloud.stream.servicebus.topic")
 public class ServiceBusExtendedBindingProperties
-        implements ExtendedBindingProperties<ServiceBusConsumerProperties, ServiceBusProducerProperties> {
-    private static final String DEFAULTS_PREFIX = "spring.cloud.stream.servicebus.default";
-    private final Map<String, ServiceBusBindingProperties> bindings = new ConcurrentHashMap<>();
+        implements ExtendedBindingProperties<ServiceBusTopicConsumerProperties, ServiceBusTopicProducerProperties> {
+    private static final String DEFAULTS_PREFIX = "spring.cloud.stream.servicebus.topic.default";
+    private final Map<String, ServiceBusTopicBindingProperties> bindings = new ConcurrentHashMap<>();
 
     @Override
-    public ServiceBusConsumerProperties getExtendedConsumerProperties(String channelName) {
-        return this.bindings.computeIfAbsent(channelName, key -> new ServiceBusBindingProperties()).getConsumer();
+    public ServiceBusTopicConsumerProperties getExtendedConsumerProperties(String channelName) {
+        return this.bindings.computeIfAbsent(channelName, key -> new ServiceBusTopicBindingProperties()).getConsumer();
     }
 
     @Override
-    public ServiceBusProducerProperties getExtendedProducerProperties(String channelName) {
-        return this.bindings.computeIfAbsent(channelName, key -> new ServiceBusBindingProperties()).getProducer();
+    public ServiceBusTopicProducerProperties getExtendedProducerProperties(String channelName) {
+        return this.bindings.computeIfAbsent(channelName, key -> new ServiceBusTopicBindingProperties()).getProducer();
     }
 
     @Override
@@ -39,10 +39,10 @@ public class ServiceBusExtendedBindingProperties
 
     @Override
     public Class<? extends BinderSpecificPropertiesProvider> getExtendedPropertiesEntryClass() {
-        return ServiceBusBindingProperties.class;
+        return ServiceBusTopicBindingProperties.class;
     }
 
-    public Map<String, ServiceBusBindingProperties> getBindings() {
+    public Map<String, ServiceBusTopicBindingProperties> getBindings() {
         return bindings;
     }
 }

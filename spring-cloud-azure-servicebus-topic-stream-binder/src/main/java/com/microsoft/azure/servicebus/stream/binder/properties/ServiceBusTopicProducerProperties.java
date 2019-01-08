@@ -9,7 +9,7 @@ package com.microsoft.azure.servicebus.stream.binder.properties;
 /**
  * @author Warren Zhu
  */
-public class ServiceBusProducerProperties {
+public class ServiceBusTopicProducerProperties {
     private boolean sync = false;
     private long sendTimeout = 10000;
 
