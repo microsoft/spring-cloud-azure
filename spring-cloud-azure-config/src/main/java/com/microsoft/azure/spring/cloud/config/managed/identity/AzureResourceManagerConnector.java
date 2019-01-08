@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config.msi;
+package com.microsoft.azure.spring.cloud.config.managed.identity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.credentials.AzureTokenCredentials;
@@ -18,27 +18,27 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static com.microsoft.azure.spring.cloud.config.msi.ConfigAccessKeyResource.ARM_ENDPONT;
+import static com.microsoft.azure.spring.cloud.config.managed.identity.ConfigAccessKeyResource.ARM_ENDPONT;
 
 /**
- * Get connection string for given Azure Configuration Service config store from ARM with MSI access token.
+ * Get connection string for given Azure Configuration Service config store from ARM with managed identity access token.
  */
-public class AzureConfigMSIConnector {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigMSIConnector.class);
+public class AzureResourceManagerConnector {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AzureResourceManagerConnector.class);
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final CloseableHttpClient HTTP_CLIENT = HttpClients.createDefault();
-    private final AzureTokenCredentials msiCredentials;
+    private final AzureTokenCredentials tokenCredentials;
     private final String configStoreName;
 
-    public AzureConfigMSIConnector(AzureTokenCredentials credentials, String configStoreName) {
-        this.msiCredentials = credentials;
+    public AzureResourceManagerConnector(AzureTokenCredentials credentials, String configStoreName) {
+        this.tokenCredentials = credentials;
         this.configStoreName = configStoreName;
     }
 
     public String getConnectionString() {
-        String msiToken;
+        String accessToken;
         try {
-            msiToken = msiCredentials.getToken(ARM_ENDPONT);
+            accessToken = tokenCredentials.getToken(ARM_ENDPONT);
         } catch (IOException e) {
             throw new IllegalStateException("Failed to retrieve access token for " + ARM_ENDPONT, e);
         }
@@ -47,7 +47,7 @@ public class AzureConfigMSIConnector {
         String resourceId = keyResource.getResourceIdUrl();
 
         HttpPost post = new HttpPost(resourceId);
-        post.setHeader("Authorization", "Bearer " + msiToken);
+        post.setHeader("Authorization", "Bearer " + accessToken);
 
         LOGGER.debug("Acquiring connection string from endpoint {}.", post.getURI());
         try (CloseableHttpResponse response = HTTP_CLIENT.execute(post)) {
@@ -85,7 +85,7 @@ public class AzureConfigMSIConnector {
     }
 
     private ConfigAccessKeyResource getKeyResource() {
-        Tuple<String, String> resourceInfo = new ConfigResourceManager(msiCredentials).findStore(configStoreName);
+        Tuple<String, String> resourceInfo = new ConfigResourceManager(tokenCredentials).findStore(configStoreName);
         if (resourceInfo == null) {
             throw new IllegalStateException(String.format("No configure store with name %s found, access key " +
                     "cannot be retrieved.", configStoreName));
