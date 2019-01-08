@@ -45,11 +45,11 @@ resources feature in link:src/main/resources/application.properties[application.
 ....
 spring.cloud.azure.auto-create-resources=true
 
-# Default region is US. Provide your own if in another region
-# Example region is China, US
-# spring.cloud.azure.region=[region]
-# Example location is westUS, northchina
-spring.cloud.azure.location=[location]
+# Default environment is GLOBAL. Provide your own if in another environment
+# Example environment is China, GLOBAL
+# spring.cloud.azure.environment=[environment]
+# Example region is westUS, northchina
+spring.cloud.azure.region=[region]
 ....
 
 5. Update link:src/main/resources/application.properties[application.properties]
