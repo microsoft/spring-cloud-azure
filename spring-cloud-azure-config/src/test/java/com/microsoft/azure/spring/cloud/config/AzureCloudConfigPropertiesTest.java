@@ -115,18 +115,6 @@ public class AzureCloudConfigPropertiesTest {
         });
     }
 
-    @Test
-    public void msiNotEnabledValidStoreHasToBeConfigured() {
-        this.contextRunner.withPropertyValues(propPair(MSI_ENABLED_PROP, "false")).run(context -> {
-            assertThat(context).getFailure().hasStackTraceContaining("At least one config store has to be configured");
-        });
-
-        this.contextRunner.withPropertyValues(propPair(MSI_ENABLED_PROP, "false"),
-                propPair(STORE_NAME_PROP, TEST_STORE_NAME)).run(context -> {
-            assertThat(context).getFailure().hasStackTraceContaining("Connection string cannot be empty");
-        });
-    }
-
     private void assertInvalidField(AssertableApplicationContext context, String fieldName) {
         assertThat(context).getFailure().hasCauseInstanceOf(ConfigurationPropertiesBindException.class);
         assertThat(context).getFailure()
