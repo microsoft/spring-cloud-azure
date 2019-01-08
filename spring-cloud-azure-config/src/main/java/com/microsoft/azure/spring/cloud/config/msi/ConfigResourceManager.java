@@ -73,6 +73,6 @@ public class ConfigResourceManager {
 
     private boolean isConfigStoreResource(String expectedStoreName, GenericResource resource) {
         LOGGER.debug("Check resource name [{}] matches with [{}].", resource.name(), expectedStoreName);
-        return expectedStoreName.equals(resource.name()) && AZ_CONFIG_RESOURCE_TYPE.equals(resource.type());
+        return expectedStoreName.equalsIgnoreCase(resource.name()) && AZ_CONFIG_RESOURCE_TYPE.equals(resource.type());
     }
 }
