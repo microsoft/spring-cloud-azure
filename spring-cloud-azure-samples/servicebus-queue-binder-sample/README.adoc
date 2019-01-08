@@ -6,7 +6,20 @@ Service Bus to a `sink` which simply logs the message.
 
 Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
 
-== How to run
+== Connection string based usage
+
+1. Create Azure Service Bus namespace and queue. Please see https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-create-namespace-portal[how to create]. 
+
+2. Update link:src/main/resources/application.properties[application.properties]
+
++
+....
+# Fill service bus namespace connection string copied from portal
+spring.cloud.azure.servicebus.connection-string=[servicebus-namespace-connection-string]
+....
+
+== Credential file based usage
+
 
 1.  Create Azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how
 to create credential file]
@@ -21,18 +34,15 @@ Make sure `my.azureauth` is encoded with UTF-8.
 
 2. Put credential file under `src/main/resources/`.
 
-3. Create Azure Service Bus Namespace, and create service bus queue and queue.
+3. Create Azure Service Bus namespace and queue.
 Please see https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-create-namespace-portal[how to create]. Or enable auto create
 resources feature in link:src/main/resources/application.properties[application.properties]:
 +
 ....
 spring.cloud.azure.auto-create-resources=true
 
-# Default region is US. Provide your own if in another region
-# Example region is China, US
+# Example region is westUS, northchina
 # spring.cloud.azure.region=[region]
-# Example location is westUS, northchina
-spring.cloud.azure.location=[location]
 ....
 
 4. Update link:src/main/resources/application.properties[application.properties] file
@@ -43,12 +53,17 @@ spring.cloud.azure.credential-file-path=[credential-file-path]
 spring.cloud.azure.resource-group=[resource-group]
 
 spring.cloud.azure.servicebus.namespace=[servicebus-namespace]
+....
 
+== How to run
+
+4. Update stream binding related properties in link:src/main/resources/application.properties[application.properties] file
++
+....
 # For example here, the destination name of input and output should be the same.
 spring.cloud.stream.bindings.input.destination=[servicebus-queue-name]
 spring.cloud.stream.bindings.output.destination=[servicebus-queue-name-same-as-above]
 ....
-+
 
 5. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
 
