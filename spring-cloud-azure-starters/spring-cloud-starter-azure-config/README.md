@@ -34,8 +34,8 @@ spring.cloud.azure.config.name | Alternative to Spring application name, if not 
 spring.cloud.azure.config.profile-separator | Profile separator for the key name, e.g., /foo-app_dev/db.connection.key, must follow format `^[a-zA-Z0-9_@]+$` | No | `_`
 spring.cloud.azure.config.fail-fast | Whether throw RuntimeException or not when exception occurs | No |  true
 spring.cloud.azure.config.msi-enabled | Whether load connection string from [Azure Resource Manager](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-overview) with [managed service identity](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview) token or not | No | false
-spring.cloud.azure.config.watch.enabled | Whether enable watch feature or not | No | true
-spring.cloud.azure.config.watch.delay | Delay in milli-seconds between each watch schedule | No | 1000ms
+spring.cloud.azure.config.watch.enabled | Whether enable watch feature or not | No | false
+spring.cloud.azure.config.watch.delay | Polling interval in milli-seconds between each scheduled polling | No | 5000
 spring.cloud.azure.config.msi.client-id | Client id of the managed identity | No | null
 spring.cloud.azure.config.msi.object-id | Object id of the managed identity | No | null
 
