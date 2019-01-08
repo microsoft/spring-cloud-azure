@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  */
 public class RestAPIBuilder {
     public static final String KEY_VALUE_API = "/kv";
-    private static final String NULL_LABEL = "%00"; // label=%00 matches null label
+    public static final String NULL_LABEL = "%00"; // label=%00 matches null label
     private static final String KEY_PARAM = "key";
     private static final String LABEL_PARAM = "label";
 

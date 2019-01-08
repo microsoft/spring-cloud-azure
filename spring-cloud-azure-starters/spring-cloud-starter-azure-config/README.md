@@ -13,13 +13,14 @@ Please use this [sample](../../spring-cloud-azure-samples/azure-config-sample/) 
 <dependency>
     <groupId>com.microsoft.azure</groupId>
     <artifactId>spring-cloud-starter-azure-config</artifactId>
+    <version>{starter-version}</version>
 </dependency>
 
 ```
 **Gradle Coordinates** 
 ```
 dependencies {
-    compile group: 'com.microsoft.azure', name: 'spring-cloud-starter-azure-config'
+    compile group: 'com.microsoft.azure', name: 'spring-cloud-starter-azure-config', version: '{starter-version}'
 }
 ```
 
@@ -47,7 +48,7 @@ Name | Description | Required | Default
 spring.cloud.azure.config.stores[0].name | Required when `spring.cloud.azure.config.msi-enabled` is true, name of the configuration store | Conditional | null
 spring.cloud.azure.config.stores[0].prefix | The prefix of the key name in the configuration store, e.g., /my-prefix/application/key.name | No |  null
 spring.cloud.azure.config.stores[0].connection-string | Required when `spring.cloud.azure.config.msi-enabled` is false, otherwise, can be loaded automatically on Azure Virtual Machine or App Service | Conditional | null
-spring.cloud.azure.config.stores[0].label | Comma separated list of label values | No |  null
+spring.cloud.azure.config.stores[0].label | Comma separated list of label values, by default will query empty labeled value. If you want to specify *empty*(null) label explicitly, use `%00`, e.g., spring.cloud.azure.config.stores[0].label=%00,v0 | No |  null
 
 
 ## Advanced usage
@@ -82,7 +83,7 @@ Change property key in the configuration store on Azure Portal, e.g., /applicati
 ```
 INFO 17496 --- [TaskScheduler-1] o.s.c.e.event.RefreshEventListener       : Refresh keys changed: [config.message]
 ```
-Refresh browser http://localhost:8080 should get the updated value.
+The application now will be using the updated properties. By default, `@ConfigurationProperties` annotated beans will be automatically refreshed. Use `@RefreshScope` on beans which are required to be refreshed when properties are changed.
 
 ### Failfast
 Failfast feature decides whether throw RuntimeException or not when exception happens. By default, failfast is enabled, it can be disabled with below configuration:
