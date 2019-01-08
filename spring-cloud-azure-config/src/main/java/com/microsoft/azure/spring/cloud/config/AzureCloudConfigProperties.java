@@ -119,8 +119,8 @@ public class AzureCloudConfigProperties {
     }
 
     class Watch {
-        private boolean enabled = true;
-        private int delay = 1000; /* milli-seconds */
+        private boolean enabled = false;
+        private int delay = 5000; /* milli-seconds */
 
         public Watch() {
         }

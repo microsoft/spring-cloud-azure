@@ -33,9 +33,8 @@ spring.cloud.azure.config.default-context | Default context path to load propert
 spring.cloud.azure.config.name | Alternative to Spring application name, if not configured, fallback to default Spring application name | No | ${spring.application.name}
 spring.cloud.azure.config.profile-separator | Profile separator for the key name, e.g., /foo-app_dev/db.connection.key, must follow format `^[a-zA-Z0-9_@]+$` | No | `_`
 spring.cloud.azure.config.fail-fast | Whether throw RuntimeException or not when exception occurs | No |  true
-spring.cloud.azure.config.watch.enabled | Whether enable watch feature or not | No | true
-spring.cloud.azure.config.watch.delay | Delay in milli-seconds between each watch schedule | No | 1000ms
-
+spring.cloud.azure.config.watch.enabled | Whether enable watch feature or not | No | false
+spring.cloud.azure.config.watch.delay | Polling interval in milli-seconds between each scheduled polling | No | 5000
 
 `spring.cloud.azure.config.stores` is a List of stores, for each store should follow below format:
 
