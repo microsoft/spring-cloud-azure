@@ -16,8 +16,8 @@ Running this sample will be charged by Azure. You can check the usage and bill a
 
 +
 ....
-# Fill service bus namespace connection string copied from portal
-spring.cloud.azure.servicebus.connection-string=[servicebus-namespace-connection-string]
+# Fill event hub namespace connection string copied from portal
+spring.cloud.azure.eventhub.connection-string=[eventhub-namespace-connection-string]
 
 # Fill checkpoint storage account name and accese key
 spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-account]
