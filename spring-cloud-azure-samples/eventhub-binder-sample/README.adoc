@@ -6,9 +6,27 @@ Event Hub to a `sink` which simply logs the message.
 
 Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
 
-== How to run
+== Connection string based usage
 
-1.  Create Azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how
+1. Create https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create[Azure Event Hubs]. Please note `Basic` tier is unsupported. 
+
+2. Create https://docs.microsoft.com/en-us/azure/storage/[Azure Storage] for checkpoint use.
+
+3. Update link:src/main/resources/application.properties[application.properties]
+
++
+....
+# Fill service bus namespace connection string copied from portal
+spring.cloud.azure.servicebus.connection-string=[servicebus-namespace-connection-string]
+
+# Fill checkpoint storage account name and accese key
+spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-account]
+spring.cloud.azure.eventhub.checkpoint-access-key=[checkpoint-accesskey]
+....
+
+== Credential file based usage
+
+1. Create Azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how
 to create credential file]
 +
 ....
@@ -21,7 +39,7 @@ Make sure `my.azureauth` is encoded with UTF-8.
 
 2. Put credential file under `src/main/resources/`.
 
-3. You can manually create https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create[Azure Event Hubs]. Please note `Basic` tier is unsupported. Or enable auto create
+3. Create https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create[Azure Event Hubs] and https://docs.microsoft.com/en-us/azure/storage/[Azure Storage]. Please note event hub `Basic` tier is unsupported. Or enable auto create
 resources feature in link:src/main/resources/application.properties[application.properties]:
 +
 ....
@@ -34,7 +52,7 @@ spring.cloud.azure.auto-create-resources=true
 spring.cloud.azure.location=[location]
 ....
 
-4. Update link:src/main/resources/application.properties[application.properties]
+4. Update credential file based properties in link:src/main/resources/application.properties[application.properties]
 +
 ....
 # Enter 'my.azureauth' here if following step 1 and 2
@@ -43,7 +61,13 @@ spring.cloud.azure.resource-group=[resource-group]
 
 spring.cloud.azure.eventhub.namespace=[eventhub-namespace]
 spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-account]
+....
 
+== How to run
+5. Update stream binding related properties in link:src/main/resources/application.properties[application.properties]
+
++
+....
 spring.cloud.stream.bindings.input.destination=[eventhub-name]
 spring.cloud.stream.bindings.input.group=[consumer-group]
 spring.cloud.stream.bindings.output.destination=[eventhub-name]
