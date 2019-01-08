@@ -82,6 +82,14 @@ public class ConfigResourceManagerTest {
         assertThat(resourceInfo).isNotNull();
         assertThat(resourceInfo.getFirst()).isEqualTo(TEST_SUBSCRIPTION_3);
         assertThat(resourceInfo.getSecond()).isEqualTo(TEST_RESOURCE_GROUP_3);
+
+        // Test store name is not case sensitive
+        String upperCasedStoreName = expectedStoreName.toUpperCase();
+        assertThat(upperCasedStoreName).isNotEqualTo(expectedStoreName);
+        Tuple<String, String> upperCasedResourceInfo = resourceManager.findStore(upperCasedStoreName);
+        assertThat(upperCasedResourceInfo).isNotNull();
+        assertThat(upperCasedResourceInfo.getFirst()).isEqualTo(TEST_SUBSCRIPTION_3);
+        assertThat(upperCasedResourceInfo.getSecond()).isEqualTo(TEST_RESOURCE_GROUP_3);
     }
 
     private Subscription initSubscription(String subscriptionId, String resourceType, String resourceName,
