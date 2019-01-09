@@ -17,8 +17,7 @@ import org.springframework.core.env.PropertySource;
 
 import java.util.Collection;
 
-import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -63,8 +62,8 @@ public class AzureConfigPropertySourceLocatorTest {
         Collection<PropertySource<?>> sources = ((CompositePropertySource) source).getPropertySources();
         // Application name: foo and active profile: dev,prod, should construct below composite Property Source:
         // [/foo_prod/, /foo_dev/, /foo/, /application_prod/, /application_dev/, /application/]
-        String[] expectedPrefixes = new String[]{"/foo_prod/", "/foo_dev/", "/foo/", "/application_prod/",
-                "/application_dev/", "/application/"};
+        String[] expectedPrefixes = new String[]{"/foo_prod/store1", "/foo_dev/store1", "/foo/store1",
+                "/application_prod/store1", "/application_dev/store1", "/application/store1"};
         assertThat(sources.size()).isEqualTo(6);
         assertThat(sources.stream().map(s -> s.getName()).toArray()).containsExactly(expectedPrefixes);
     }
@@ -82,8 +81,9 @@ public class AzureConfigPropertySourceLocatorTest {
         // should construct below composite Property Source:
         // [/config/foo_prod/, /config/foo_dev/, /config/foo/, /config/application_prod/,
         // /config/application_dev/, /config/application/]
-        String[] expectedPrefixes = new String[]{"/config/foo_prod/", "/config/foo_dev/", "/config/foo/",
-                "/config/application_prod/", "/config/application_dev/", "/config/application/"};
+        String[] expectedPrefixes = new String[]{"/config/foo_prod/store1", "/config/foo_dev/store1",
+                "/config/foo/store1", "/config/application_prod/store1", "/config/application_dev/store1",
+                "/config/application/store1"};
         assertThat(sources.size()).isEqualTo(6);
         assertThat(sources.stream().map(s -> s.getName()).toArray()).containsExactly(expectedPrefixes);
     }
@@ -101,7 +101,7 @@ public class AzureConfigPropertySourceLocatorTest {
         Collection<PropertySource<?>> sources = ((CompositePropertySource) source).getPropertySources();
         // Default context, null application name, empty active profile,
         // should construct composite Property Source: [/application/]
-        String[] expectedPrefixes = new String[]{"/application/"};
+        String[] expectedPrefixes = new String[]{"/application/store1"};
         assertThat(sources.size()).isEqualTo(1);
         assertThat(sources.stream().map(s -> s.getName()).toArray()).containsExactly(expectedPrefixes);
     }
@@ -119,7 +119,7 @@ public class AzureConfigPropertySourceLocatorTest {
         Collection<PropertySource<?>> sources = ((CompositePropertySource) source).getPropertySources();
         // Default context, empty application name, empty active profile,
         // should construct composite Property Source: [/application/]
-        String[] expectedPrefixes = new String[]{"/application/"};
+        String[] expectedPrefixes = new String[]{"/application/store1"};
         assertThat(sources.size()).isEqualTo(1);
         assertThat(sources.stream().map(s -> s.getName()).toArray()).containsExactly(expectedPrefixes);
     }
@@ -146,8 +146,28 @@ public class AzureConfigPropertySourceLocatorTest {
         assertThat(source).isInstanceOf(CompositePropertySource.class);
 
         Collection<PropertySource<?>> sources = ((CompositePropertySource) source).getPropertySources();
-        String[] expectedPrefixes = new String[]{"/foo_prod/", "/foo_dev/", "/application_prod/", "/application_dev/"};
+        String[] expectedPrefixes = new String[]{"/foo_prod/store1", "/foo_dev/store1", "/application_prod/store1",
+                "/application_dev/store1"};
         assertThat(sources.size()).isEqualTo(4);
+        assertThat(sources.stream().map(s -> s.getName()).toArray()).containsExactly(expectedPrefixes);
+    }
+
+    @Test
+    public void multiplePropertySourcesExistForMultiStores() {
+        when(environment.getActiveProfiles()).thenReturn(new String[]{});
+
+        properties = new AzureCloudConfigProperties();
+        TestUtils.addStore(properties, TEST_STORE_NAME_1, TEST_CONN_STRING);
+        TestUtils.addStore(properties, TEST_STORE_NAME_2, TEST_CONN_STRING_2);
+        locator = new AzureConfigPropertySourceLocator(operations, properties);
+
+        PropertySource<?> source = locator.locate(environment);
+        assertThat(source).isInstanceOf(CompositePropertySource.class);
+
+        Collection<PropertySource<?>> sources = ((CompositePropertySource) source).getPropertySources();
+        String[] expectedPrefixes = new String[]{"/application/" + TEST_STORE_NAME_1,
+                "/application/" + TEST_STORE_NAME_2};
+        assertThat(sources.size()).isEqualTo(2);
         assertThat(sources.stream().map(s -> s.getName()).toArray()).containsExactly(expectedPrefixes);
     }
 }

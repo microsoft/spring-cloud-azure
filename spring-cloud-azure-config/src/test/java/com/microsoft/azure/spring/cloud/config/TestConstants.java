@@ -28,6 +28,8 @@ public class TestConstants {
 
     public static final String TEST_CONN_STRING =
             "Endpoint=https://fake.test.config.io;Id=fake-conn-id;Secret=ZmFrZS1jb25uLXNlY3JldA==";
+    public static final String TEST_CONN_STRING_2 =
+            "Endpoint=https://fake2.test.config.io;Id=fake-conn-id;Secret=ZmFrZS1jb25uLXNlY3JldA==";
 
     public static final String LABEL_PARAM = "label";
     public static final String TEST_ENDPOINT = "https://fake.test.config.io";
