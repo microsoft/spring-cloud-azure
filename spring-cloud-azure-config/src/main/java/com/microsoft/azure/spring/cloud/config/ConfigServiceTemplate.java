@@ -35,6 +35,8 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
     private static final String LINK_HEADER = "link";
     private static final String NEXT_PAGE_LINK = "<(.*?)>; rel=\"next\".*";
     private static final Pattern PAGE_LINK_PATTERN = Pattern.compile(NEXT_PAGE_LINK);
+    private static final int TOO_MANY_REQ_CODE = 429;
+    private static final String RETRY_AFTER_MS_HEADER = "retry-after-ms";
 
     public static final String LOAD_FAILURE_MSG = "Failed to load keys from Azure Config Service.";
     public static final String LOAD_FAILURE_VERBOSE_MSG = LOAD_FAILURE_MSG + " With status code: %s, response: %s";
@@ -61,8 +63,12 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
 
         CloseableHttpResponse response = null;
         try {
-            response = getRawResponse(requestUri, connString);
-            while (response != null) {
+            while ((response = getRawResponse(requestUri, connString)) != null) {
+                if (needRetry(response)) {
+                    sleep(response);
+                    continue;
+                }
+
                 try {
                     KeyValueResponse kvResponse = mapper.readValue(response.getEntity().getContent(),
                             KeyValueResponse.class);
@@ -79,9 +85,7 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
                     break;
                 }
 
-                String nextRequestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).withPath(nextLink)
-                        .buildKVApi();
-                response = getRawResponse(nextRequestUri, connString);
+                requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).withPath(nextLink).buildKVApi();
             }
         } finally {
             if (response != null) {
@@ -94,6 +98,25 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         }
 
         return result;
+    }
+
+    private boolean needRetry(@NonNull CloseableHttpResponse response) {
+        return response.getStatusLine().getStatusCode() == TOO_MANY_REQ_CODE;
+    }
+
+    private void sleep(@NonNull CloseableHttpResponse response) {
+        Header retryHeader = response.getFirstHeader(RETRY_AFTER_MS_HEADER);
+        if (retryHeader == null || Long.valueOf(retryHeader.getValue()) <= 0) {
+            return;
+        }
+
+        long sleepMillSecs = Long.valueOf(retryHeader.getValue());
+        try {
+            LOGGER.debug("Will sleep {} milli-seconds as received too many requests response.", sleepMillSecs);
+            Thread.sleep(sleepMillSecs);
+        } catch (InterruptedException e) {
+            throw new IllegalStateException("Failed to sleep for too many requests response.", e);
+        }
     }
 
     private void sortByLabel(List<KeyValueItem> items, List<String> labels) {
@@ -122,7 +145,7 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
                     connString.getSecret());
             int statusCode = response.getStatusLine().getStatusCode();
 
-            if (statusCode == HttpStatus.SC_OK) {
+            if (statusCode == HttpStatus.SC_OK || statusCode == TOO_MANY_REQ_CODE) {
                 return response;
             } else if (statusCode == HttpStatus.SC_NOT_FOUND) {
                 LOGGER.warn("No configuration data found in Azure Config Service for request uri {}.", requestUri);
