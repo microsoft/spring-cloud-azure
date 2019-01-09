@@ -19,7 +19,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     private final ConfigStore configStore;
 
     public AzureConfigPropertySource(String context, ConfigServiceOperations operations, ConfigStore configStore) {
-        super(context, operations);
+        super(context + configStore.getName(), operations);
         this.context = context;
         this.configStore = configStore;
     }
