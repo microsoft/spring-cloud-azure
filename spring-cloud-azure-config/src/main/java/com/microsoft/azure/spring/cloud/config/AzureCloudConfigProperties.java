@@ -5,7 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import com.microsoft.azure.spring.cloud.config.msi.AzureCloudConfigMSIProperties;
+import com.microsoft.azure.spring.cloud.config.managed.identity.AzureManagedIdentityProperties;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
@@ -40,6 +40,9 @@ public class AzureCloudConfigProperties {
     @Nullable
     private String name;
 
+    @NestedConfigurationProperty
+    private AzureManagedIdentityProperties managedIdentity;
+
     // Profile separator for the key name, e.g., /foo-app_dev/db.connection.key
     @NotEmpty
     @Pattern(regexp = "^[a-zA-Z0-9_@]+$")
@@ -47,13 +50,7 @@ public class AzureCloudConfigProperties {
 
     private boolean failFast = true;
 
-    // Whether enable MSI or not
-    private boolean msiEnabled = false;
-
     private Watch watch = new Watch();
-
-    @NestedConfigurationProperty
-    private AzureCloudConfigMSIProperties msi;
 
     public boolean isEnabled() {
         return enabled;
@@ -88,6 +85,14 @@ public class AzureCloudConfigProperties {
         this.name = name;
     }
 
+    public AzureManagedIdentityProperties getManagedIdentity() {
+        return managedIdentity;
+    }
+
+    public void setManagedIdentity(AzureManagedIdentityProperties managedIdentity) {
+        this.managedIdentity = managedIdentity;
+    }
+
     public String getProfileSeparator() {
         return profileSeparator;
     }
@@ -104,14 +109,6 @@ public class AzureCloudConfigProperties {
         this.failFast = failFast;
     }
 
-    public boolean isMsiEnabled() {
-        return msiEnabled;
-    }
-
-    public void setMsiEnabled(boolean msiEnabled) {
-        this.msiEnabled = msiEnabled;
-    }
-
     public Watch getWatch() {
         return watch;
     }
@@ -120,24 +117,15 @@ public class AzureCloudConfigProperties {
         this.watch = watch;
     }
 
-    public AzureCloudConfigMSIProperties getMsi() {
-        return msi;
-    }
-
-    public void setMsi(AzureCloudConfigMSIProperties msi) {
-        this.msi = msi;
-    }
-
     @PostConstruct
     public void validateAndInit() {
         Assert.notEmpty(this.stores, "At least one config store has to be configured.");
 
-        if (!msiEnabled) {
-            this.stores.forEach(store -> { Assert.isTrue(StringUtils.hasText(store.getConnectionString()),
-                        "Connection string cannot be empty.");
-                store.validateAndInit();
-            });
-        }
+        this.stores.forEach(store -> { Assert.isTrue(StringUtils.hasText(store.getName()) ||
+                        StringUtils.hasText(store.getConnectionString()),
+                    "Either configuration store name or connection string should be configured.");
+            store.validateAndInit();
+        });
 
         int uniqueStoreSize = this.stores.stream().map(s -> s.getName()).distinct().collect(Collectors.toList()).size();
         Assert.isTrue(this.stores.size() == uniqueStoreSize, "Duplicate store name exists.");
@@ -222,7 +210,7 @@ class ConfigStore {
             Assert.isTrue(!label.contains("*"), "Label must not contain asterisk(*).");
         }
 
-        if (!StringUtils.hasText(name) && StringUtils.hasText(connectionString)) {
+        if (StringUtils.hasText(connectionString)) {
             String endpoint = ConnectionString.of(connectionString).getEndpoint();
             try {
                 URI uri = new URI(endpoint);

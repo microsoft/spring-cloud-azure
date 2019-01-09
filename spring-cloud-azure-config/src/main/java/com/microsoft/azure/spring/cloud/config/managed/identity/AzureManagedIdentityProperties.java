@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config.msi;
+package com.microsoft.azure.spring.cloud.config.managed.identity;
 
 import org.springframework.lang.Nullable;
 
@@ -13,7 +13,7 @@ import org.springframework.lang.Nullable;
  * @see <a href="https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/how-to-use-vm-token#get-a-token-using-http">Get a token using HTTP<a/>
  * </pre>
  */
-public class AzureCloudConfigMSIProperties {
+public class AzureManagedIdentityProperties {
     @Nullable
     private String objectId; // Optional: object_id of the managed identity
 
