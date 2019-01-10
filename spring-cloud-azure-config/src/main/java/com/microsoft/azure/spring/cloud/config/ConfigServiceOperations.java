@@ -19,8 +19,9 @@ public interface ConfigServiceOperations {
      * Find all key-value items which key name is prefixed with {@code prefix}, and has {@code label} if provided.
      *
      * @param prefix key name prefix of which keys will be loaded, is {@link Nullable}.
-     * @param store the configuration for the config store from which to get keys
+     * @param storeName the name for the config store from which to get keys
+     * @param label the label for the keys
      * @return all key-value items {@link List<KeyValueItem>} which match given condition.
      */
-    List<KeyValueItem> getKeys(@Nullable String prefix, @NonNull ConfigStore store);
+    List<KeyValueItem> getKeys(@Nullable String prefix, @NonNull String storeName, @Nullable String label);
 }

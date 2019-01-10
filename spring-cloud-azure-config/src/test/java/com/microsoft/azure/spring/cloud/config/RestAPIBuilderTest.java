@@ -38,7 +38,7 @@ public class RestAPIBuilderTest {
 
         expected.expect(IllegalArgumentException.class);
         expected.expectMessage("Endpoint should not be empty or null");
-        builder.buildKVApi(null, null);
+        builder.buildKVApi(null, Collections.EMPTY_LIST);
     }
 
     @Test
@@ -47,13 +47,13 @@ public class RestAPIBuilderTest {
 
         expected.expect(IllegalArgumentException.class);
         expected.expectMessage("Endpoint should not be empty or null");
-        builder.buildKVApi(null, null);
+        builder.buildKVApi(null, Collections.EMPTY_LIST);
     }
 
     @Test
     public void kvAPIShouldInitPath() throws URISyntaxException {
         final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT).withPath(null);
-        String apiPath = builder.buildKVApi(null, null);
+        String apiPath = builder.buildKVApi(null, Collections.EMPTY_LIST);
         URIBuilder uriBuilder = new URIBuilder(apiPath);
 
         Assert.assertTrue("KV API path is not empty", StringUtils.hasText(KV_API));
@@ -63,7 +63,7 @@ public class RestAPIBuilderTest {
     @Test
     public void nullLabelCanBeQueried() {
         final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT);
-        String apiPath = builder.buildKVApi(null, null);
+        String apiPath = builder.buildKVApi(null, Collections.EMPTY_LIST);
 
         Assert.assertTrue("Null label should have query param %00.", apiPath.endsWith(NULL_LABEL_QUERY));
     }

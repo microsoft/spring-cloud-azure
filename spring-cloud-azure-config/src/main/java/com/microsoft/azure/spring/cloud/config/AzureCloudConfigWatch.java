@@ -15,10 +15,7 @@ import org.springframework.context.SmartLifecycle;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.util.StringUtils;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,13 +24,13 @@ import java.util.stream.Collectors;
 public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, SmartLifecycle {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureCloudConfigWatch.class);
     private final ConfigServiceOperations configOperations;
-    private final ConcurrentHashMap<String, String> keyNameEtagMap = new ConcurrentHashMap<>();
+    private final Map<String, Set<String>> storeEtagSetMap = new ConcurrentHashMap<>();
     private final TaskScheduler taskScheduler;
     private final AtomicBoolean running = new AtomicBoolean(false);
     private ApplicationEventPublisher publisher;
     private ScheduledFuture<?> watchFuture;
     private final AzureCloudConfigProperties properties;
-    private boolean firstTime = true;
+    private final Map<String, Boolean> firstTimeMap = new ConcurrentHashMap<>();
     private final List<ConfigStore> configStores;
 
     public AzureCloudConfigWatch(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
@@ -91,40 +88,39 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
         }
 
         for (ConfigStore configStore : configStores) {
-            String prefix = StringUtils.hasText(configStore.getPrefix()) ? configStore.getPrefix() + "*" : "*";
-            List<KeyValueItem> keyValueItems = configOperations.getKeys(prefix, configStore);
-
-            if (keyValueItems.isEmpty()) {
-                return;
-            }
-
-            LinkedHashMap<String, String> newKeyEtagMap = keyValueItems.stream()
-                    .collect(Collectors.toMap(KeyValueItem::getKey, KeyValueItem::getEtag,
-                            (v1, v2) -> v1, LinkedHashMap::new));
-            if (firstTime) {
-                keyNameEtagMap.putAll(newKeyEtagMap);
-                firstTime = false;
-                return;
-            }
-
-            Optional<String> changedKey = newKeyEtagMap.entrySet().stream()
-                    .filter(e -> !mapInclude(keyNameEtagMap, e.getKey(), e.getValue()))
-                    .map(e -> e.getKey())
-                    .findFirst();
-
-            if (changedKey.isPresent()) {
-                LOGGER.trace("Some keys matching {} is updated, will send refresh event.", prefix);
-                keyNameEtagMap.clear();
-                keyNameEtagMap.putAll(newKeyEtagMap);
-                RefreshEventData eventData = new RefreshEventData(prefix);
-                publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
-                break; // Break early once a change is found
+            if (needRefresh(configStore)) {
+                break;
             }
         }
     }
 
-    private boolean mapInclude(Map<String, String> map, String key, String value) {
-        return map.containsKey(key) && (map.get(key) != null && map.get(key).equals(value));
+    private boolean needRefresh(ConfigStore store) {
+        String prefix = StringUtils.hasText(store.getPrefix()) ? store.getPrefix() + "*" : "*";
+        Set<String> etagSet = new HashSet<>();
+        for (String label : store.getLabels()) {
+            List<KeyValueItem> keyValueItems = configOperations.getKeys(prefix, store.getName(), label);
+
+            etagSet.addAll(keyValueItems.stream().map(item -> item.getEtag()).collect(Collectors.toSet()));
+        }
+
+        if (firstTimeMap.get(store.getName()) == null) {
+            storeEtagSetMap.put(store.getName(), etagSet);
+            firstTimeMap.put(store.getName(), false);
+            return false;
+        }
+
+        Optional<String> changedKey = storeEtagSetMap.get(store.getName()).stream()
+                .filter(etag -> !etagSet.contains(etag)).findFirst();
+
+        if (changedKey.isPresent()) {
+            LOGGER.trace("Some keys matching {} is updated, will send refresh event.", prefix);
+            storeEtagSetMap.put(store.getName(), etagSet);
+            RefreshEventData eventData = new RefreshEventData(prefix);
+            publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
+            return true; // Break early once a change is found
+        }
+
+        return false;
     }
 
     /**

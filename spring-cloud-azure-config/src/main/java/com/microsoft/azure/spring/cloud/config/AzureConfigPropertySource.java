@@ -16,12 +16,17 @@ import java.util.Set;
 public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigServiceOperations> {
     private final String context;
     private Map<String, Object> properties = new LinkedHashMap<>();
-    private final ConfigStore configStore;
+    private final String storeName;
+    private final String label;
 
-    public AzureConfigPropertySource(String context, ConfigServiceOperations operations, ConfigStore configStore) {
-        super(context + configStore.getName(), operations);
+    public AzureConfigPropertySource(String context, ConfigServiceOperations operations, String storeName,
+                                     String label) {
+        // The context alone does not uniquely define a PropertySource, append storeName and label to uniquely
+        // define a PropertySource
+        super(context + storeName + "/" + label, operations);
         this.context = context;
-        this.configStore = configStore;
+        this.storeName = storeName;
+        this.label = label;
     }
 
     @Override
@@ -37,7 +42,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
 
     public void initProperties() {
         // * for wildcard match
-        List<KeyValueItem> items = source.getKeys(context + "*", configStore);
+        List<KeyValueItem> items = source.getKeys(context + "*", storeName, label);
 
         for (KeyValueItem item : items) {
             String key = item.getKey().trim().substring(context.length()).replace('/', '.');

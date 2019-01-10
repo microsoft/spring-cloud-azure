@@ -55,7 +55,7 @@ public class AzureConfigCloudWatchTest {
     @Test
     public void firstCallShouldNotPublishEvent() {
         List<KeyValueItem> mockResponse = initialResponse();
-        when(configOperations.getKeys(any(), any())).thenReturn(mockResponse);
+        when(configOperations.getKeys(any(), any(), any())).thenReturn(mockResponse);
         watch.start();
         watch.watchConfigKeyValues();
         verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
@@ -64,12 +64,12 @@ public class AzureConfigCloudWatchTest {
     @Test
     public void updatedEtagShouldPublishEvent() throws InterruptedException {
         List<KeyValueItem> mockResponse = initialResponse();
-        when(configOperations.getKeys(any(), any())).thenReturn(mockResponse);
+        when(configOperations.getKeys(any(), any(), any())).thenReturn(mockResponse);
         watch.start();
         watch.watchConfigKeyValues();
 
         List<KeyValueItem> updatedResponse = updatedResponse();
-        when(configOperations.getKeys(any(), any())).thenReturn(updatedResponse);
+        when(configOperations.getKeys(any(), any(), any())).thenReturn(updatedResponse);
         Thread.sleep(properties.getWatch().getDelay() * 2);
         verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
     }

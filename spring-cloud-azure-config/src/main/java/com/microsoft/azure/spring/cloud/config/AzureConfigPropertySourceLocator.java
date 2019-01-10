@@ -15,7 +15,10 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigPropertySourceLocator.class);
@@ -74,7 +77,8 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         Collections.reverse(contexts);
         for (String sourceContext : contexts) {
             try {
-                composite.addPropertySource(create(sourceContext, store));
+                List<AzureConfigPropertySource> sourceList = create(sourceContext, store);
+                sourceList.forEach(s -> composite.addPropertySource(s));
                 LOGGER.debug("PropertySource context [{}] is added.", sourceContext);
             } catch (Exception e) {
                 if (properties.isFailFast()) {
@@ -116,10 +120,17 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         return context + this.profileSeparator + profile + PATH_SPLITTER;
     }
 
-    private AzureConfigPropertySource create(String context, ConfigStore store) {
-        AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, operations, store);
-        propertySource.initProperties();
+    private List<AzureConfigPropertySource> create(String context, ConfigStore store) {
+        List<AzureConfigPropertySource> sourceList = new ArrayList<>();
 
-        return propertySource;
+        for (String label : store.getLabels()) {
+            AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, operations,
+                    store.getName(), label);
+
+            propertySource.initProperties();
+            sourceList.add(propertySource);
+        }
+
+        return sourceList;
     }
 }
