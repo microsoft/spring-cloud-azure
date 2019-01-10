@@ -6,7 +6,19 @@ and https://github.com/Microsoft/spring-cloud-azure/blob/master/spring-integrati
 
 Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
 
-== How to run
+== Connection string based usage
+
+1. Create Azure Service Bus namespace, queue and topic. Please see https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-create-namespace-portal[how to create]. 
+
+2. Update link:src/main/resources/application.properties[application.properties]
+
++
+....
+# Fill service bus namespace connection string copied from portal
+spring.cloud.azure.servicebus.connection-string=[servicebus-namespace-connection-string]
+....
+
+== Credential file based usage
 
 1.  Create Azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how
 to create credential file]
@@ -21,18 +33,31 @@ Make sure `my.azureauth` is encoded with UTF-8.
 
 2. Put credential file under `src/main/resources/`.
 
-3. Create Azure Service Bus Namespace, and create service bus queue and topic. Please see https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-create-namespace-portal[how to create].
+3. Create Azure Service Bus namespace, queue and topic.
+Please see https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-create-namespace-portal[how to create]. Or enable auto create
+resources feature in link:src/main/resources/application.properties[application.properties]:
++
+....
+spring.cloud.azure.auto-create-resources=true
+
+# Default environment is GLOBAL. Provide your own if in another environment
+# Example environment is China, GLOBAL
+# spring.cloud.azure.environment=[environment]
+# Example region is westUS, northchina
+spring.cloud.azure.region=[region]
+....
 
 4. Update link:src/main/resources/application.properties[application.properties] file
 +
 ....
 # Enter 'my.azureauth' here if following step 1 and 2
-spring.cloud.azure.credential-file-path=[credential-file]
+spring.cloud.azure.credential-file-path=[credential-file-path]
 spring.cloud.azure.resource-group=[resource-group]
 
 spring.cloud.azure.servicebus.namespace=[servicebus-namespace]
 ....
-+
+
+== How to run
 
 5. Update queue name in link:src/main/java/com/example/QueueController.java#L31[QueueController], topic name and
 subscription in
