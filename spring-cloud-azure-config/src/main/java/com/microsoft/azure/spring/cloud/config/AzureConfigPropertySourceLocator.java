@@ -51,6 +51,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         List<String> profiles = Arrays.asList(env.getActiveProfiles());
 
         CompositePropertySource composite = new CompositePropertySource(PROPERTY_SOURCE_NAME);
+        Collections.reverse(configStores); // Last store has highest precedence
         for (ConfigStore configStore : configStores) {
             addPropertySource(composite, configStore, applicationName, profiles);
         }
