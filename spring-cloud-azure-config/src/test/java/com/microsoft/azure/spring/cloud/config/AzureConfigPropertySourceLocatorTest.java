@@ -165,8 +165,8 @@ public class AzureConfigPropertySourceLocatorTest {
         assertThat(source).isInstanceOf(CompositePropertySource.class);
 
         Collection<PropertySource<?>> sources = ((CompositePropertySource) source).getPropertySources();
-        String[] expectedPrefixes = new String[]{"/application/" + TEST_STORE_NAME_1,
-                "/application/" + TEST_STORE_NAME_2};
+        String[] expectedPrefixes = new String[]{"/application/" + TEST_STORE_NAME_2,
+                "/application/" + TEST_STORE_NAME_1};
         assertThat(sources.size()).isEqualTo(2);
         assertThat(sources.stream().map(s -> s.getName()).toArray()).containsExactly(expectedPrefixes);
     }
