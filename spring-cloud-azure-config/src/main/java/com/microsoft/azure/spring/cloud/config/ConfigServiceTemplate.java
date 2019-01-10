@@ -128,11 +128,19 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         Collections.sort(items, new Comparator<KeyValueItem>() {
             @Override
             public int compare(KeyValueItem o1, KeyValueItem o2) {
-                Integer o1Index = labelIndex.computeIfAbsent(o1.getLabel(), (t) -> labels.indexOf(t));
-                Integer o2Index = labelIndex.computeIfAbsent(o2.getLabel(), (t) -> labels.indexOf(t));
+                Integer o1Index = labelIndex.computeIfAbsent(getLabelValue(o1), (t) -> labels.indexOf(t));
+                Integer o2Index = labelIndex.computeIfAbsent(getLabelValue(o2), (t) -> labels.indexOf(t));
                 return o1Index - o2Index;
             }
         });
+    }
+
+    private String getLabelValue(KeyValueItem item) {
+        if (StringUtils.hasText(item.getLabel())) {
+            return item.getLabel();
+        }
+
+        return RestAPIBuilder.NULL_LABEL;
     }
 
     private CloseableHttpResponse getRawResponse(String requestUri, @NonNull ConnectionString connString) {
