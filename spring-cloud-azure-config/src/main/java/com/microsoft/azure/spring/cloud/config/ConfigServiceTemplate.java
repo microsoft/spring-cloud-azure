@@ -64,8 +64,8 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         CloseableHttpResponse response = null;
         try {
             while ((response = getRawResponse(requestUri, connString)) != null) {
-                if (needRetry(response)) {
-                    sleep(response);
+                if (isThrottled(response)) {
+                    throttleOnResponse(response);
                     continue;
                 }
 
@@ -100,11 +100,11 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         return result;
     }
 
-    private boolean needRetry(@NonNull CloseableHttpResponse response) {
+    private boolean isThrottled(@NonNull CloseableHttpResponse response) {
         return response.getStatusLine().getStatusCode() == TOO_MANY_REQ_CODE;
     }
 
-    private void sleep(@NonNull CloseableHttpResponse response) {
+    private void throttleOnResponse(@NonNull CloseableHttpResponse response) {
         Header retryHeader = response.getFirstHeader(RETRY_AFTER_MS_HEADER);
         if (retryHeader == null || Long.valueOf(retryHeader.getValue()) <= 0) {
             return;
