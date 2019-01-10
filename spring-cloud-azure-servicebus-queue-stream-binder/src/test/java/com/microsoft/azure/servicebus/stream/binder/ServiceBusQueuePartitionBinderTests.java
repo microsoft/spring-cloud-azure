@@ -162,10 +162,10 @@ public class ServiceBusQueuePartitionBinderTests extends
         // but subscriber is not ready in the downstream
         //moduleOutputChannel.send(message);
         CountDownLatch latch = new CountDownLatch(1);
-        AtomicReference<Message<String>> inboundMessageRef = new AtomicReference<Message<String>>();
+        AtomicReference<Message<byte[]>> inboundMessageRef = new AtomicReference<>();
         moduleInputChannel.subscribe(message1 -> {
             try {
-                inboundMessageRef.set((Message<String>) message1);
+                inboundMessageRef.set((Message<byte[]>) message1);
             } finally {
                 latch.countDown();
             }
@@ -174,7 +174,7 @@ public class ServiceBusQueuePartitionBinderTests extends
         moduleOutputChannel.send(message);
         Assert.isTrue(latch.await(5, TimeUnit.SECONDS), "Failed to receive message");
         assertThat(inboundMessageRef.get()).isNotNull();
-        assertThat(inboundMessageRef.get().getPayload()).isEqualTo("foo");
+        assertThat(inboundMessageRef.get().getPayload()).isEqualTo("foo".getBytes());
         assertThat(inboundMessageRef.get().getHeaders().get(MessageHeaders.CONTENT_TYPE).toString())
                 .isEqualTo(MimeTypeUtils.TEXT_PLAIN_VALUE);
         producerBinding.unbind();
