@@ -67,6 +67,10 @@ public class ConfigServiceTemplateTest {
     private static final StatusLine NOT_FOUND_STATUS =
             new BasicStatusLine(VERSION, HttpStatus.SC_NOT_FOUND, null);
 
+    private static final StatusLine TOO_MANY_REQ_STATUS = new BasicStatusLine(VERSION, 429, null);
+    private static final String RETRY_AFTER_MS_HEADER = "retry-after-ms";
+    private static final String LINK_HEADER = "link";
+
     private static final String FAIL_REASON = "Failed to process the request.";
     private static final StatusLine FAIL_STATUS = new BasicStatusLine(VERSION, HttpStatus.SC_BAD_REQUEST, FAIL_REASON);
 
@@ -170,14 +174,14 @@ public class ConfigServiceTemplateTest {
         String firstLinkHeader = "</kv?after=fake-after>; rel=\"next\", </kv?before=fake-before>; rel=\"prev\"";
         CloseableHttpResponse firstResponse = mock(CloseableHttpResponse.class);
         HttpEntity firstEntity = buildEntity(Arrays.asList(item1, item2));
-        when(firstResponse.getFirstHeader("link")).thenReturn(new BasicHeader("link", firstLinkHeader));
+        when(firstResponse.getFirstHeader(LINK_HEADER)).thenReturn(new BasicHeader(LINK_HEADER, firstLinkHeader));
         when(firstResponse.getStatusLine()).thenReturn(OK_STATUS);
         when(firstResponse.getEntity()).thenReturn(firstEntity);
 
         // Initialize second page request response
         CloseableHttpResponse secondResponse = mock(CloseableHttpResponse.class);
         HttpEntity secondEntity = buildEntity(Arrays.asList(item3));
-        when(secondResponse.getFirstHeader("link")).thenReturn(new BasicHeader("link", null));
+        when(secondResponse.getFirstHeader(LINK_HEADER)).thenReturn(new BasicHeader(LINK_HEADER, null));
         when(secondResponse.getStatusLine()).thenReturn(OK_STATUS);
         when(secondResponse.getEntity()).thenReturn(secondEntity);
 
@@ -189,6 +193,36 @@ public class ConfigServiceTemplateTest {
         assertThat(result).isNotEmpty();
         assertThat(result.size()).isEqualTo(3);
         assertThat(result).containsExactlyInAnyOrder(item1, item2, item3);
+    }
+
+    @Test
+    public void tooManyRequestsCanBeRetried() throws Exception {
+        // Initialize first too many requests request response
+        String retryMilliSecs = "5000";
+        CloseableHttpResponse firstResponse = mock(CloseableHttpResponse.class);
+        when(firstResponse.getFirstHeader(RETRY_AFTER_MS_HEADER))
+                .thenReturn(new BasicHeader(RETRY_AFTER_MS_HEADER, retryMilliSecs));
+        when(firstResponse.getStatusLine()).thenReturn(TOO_MANY_REQ_STATUS);
+
+        // Initialize second valid request response
+        CloseableHttpResponse secondResponse = mock(CloseableHttpResponse.class);
+        HttpEntity entity = buildEntity(Arrays.asList(item1, item2));
+        when(secondResponse.getFirstHeader(LINK_HEADER)).thenReturn(new BasicHeader(LINK_HEADER, null));
+        when(secondResponse.getStatusLine()).thenReturn(OK_STATUS);
+        when(secondResponse.getEntity()).thenReturn(entity);
+
+        when(configClient.execute(any(), any(), any(), any())).thenReturn(firstResponse).thenReturn(secondResponse);
+        template = new ConfigServiceTemplate(configClient, pool);
+
+        long start = System.currentTimeMillis();
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore);
+        long end = System.currentTimeMillis();
+
+        verify(configClient, times(2)).execute(any(), any(), any(), any());
+        assertThat(result).isNotEmpty();
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result).containsExactlyInAnyOrder(item1, item2);
+        assertThat(end - start).isGreaterThan(Long.valueOf(retryMilliSecs));
     }
 
     @Test
