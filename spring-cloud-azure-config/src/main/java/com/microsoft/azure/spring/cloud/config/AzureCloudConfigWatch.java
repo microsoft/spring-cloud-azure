@@ -109,10 +109,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
             return false;
         }
 
-        Optional<String> changedKey = storeEtagSetMap.get(store.getName()).stream()
-                .filter(etag -> !etagSet.contains(etag)).findFirst();
-
-        if (changedKey.isPresent()) {
+        if (isEtagChanged(etagSet, storeEtagSetMap.get(store.getName()))) {
             LOGGER.trace("Some keys matching {} is updated, will send refresh event.", prefix);
             storeEtagSetMap.put(store.getName(), etagSet);
             RefreshEventData eventData = new RefreshEventData(prefix);
@@ -121,6 +118,16 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
         }
 
         return false;
+    }
+
+    private boolean isEtagChanged(Set<String> newEtagSet, Set<String> prevEtagSet) {
+        if (newEtagSet.size() != prevEtagSet.size()) {
+            return true;
+        }
+
+        Optional<String> changedKey = prevEtagSet.stream()
+                .filter(etag -> !newEtagSet.contains(etag)).findFirst();
+        return changedKey.isPresent();
     }
 
     /**
