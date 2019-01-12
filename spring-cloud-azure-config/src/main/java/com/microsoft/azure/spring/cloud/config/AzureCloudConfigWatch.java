@@ -96,12 +96,10 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
 
     private boolean needRefresh(ConfigStore store) {
         String prefix = StringUtils.hasText(store.getPrefix()) ? store.getPrefix() + "*" : "*";
-        Set<String> etagSet = new HashSet<>();
-        for (String label : store.getLabels()) {
-            List<KeyValueItem> keyValueItems = configOperations.getKeys(prefix, store.getName(), label);
 
-            etagSet.addAll(keyValueItems.stream().map(item -> item.getEtag()).collect(Collectors.toSet()));
-        }
+        Set<String> etagSet = new HashSet<>();
+        List<KeyValueItem> keyValueItems = configOperations.getKeys(prefix, store);
+        etagSet.addAll(keyValueItems.stream().map(item -> item.getEtag()).collect(Collectors.toSet()));
 
         if (firstTimeMap.get(store.getName()) == null) {
             storeEtagSetMap.put(store.getName(), etagSet);

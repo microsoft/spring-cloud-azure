@@ -108,7 +108,7 @@ public class ConfigServiceTemplateTest {
         prepareConfigClient();
 
         template = new ConfigServiceTemplate(configClient, pool);
-        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore.getName(), TEST_LABEL_2);
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore.getName(), Arrays.asList(TEST_LABEL_2));
         List<KeyValueItem> expectedResult = Arrays.asList(item2);
         assertThat(result.size()).isEqualTo(expectedResult.size());
         assertThat(result).containsExactly(expectedResult.stream().toArray(KeyValueItem[]::new));

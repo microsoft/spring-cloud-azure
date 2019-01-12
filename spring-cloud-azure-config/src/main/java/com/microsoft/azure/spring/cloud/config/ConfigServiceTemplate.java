@@ -50,13 +50,13 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
     }
 
     @Override
-    public List<KeyValueItem> getKeys(@Nullable String prefix, @NonNull String storeName, @Nullable String label) {
+    public List<KeyValueItem> getKeys(String prefix, String storeName, List<String> labels) {
         Assert.hasText(storeName, "Config store name should not be null or empty.");
 
         ConnectionString connString = connectionStringPool.get(storeName);
         String storeEndpoint = connString.getEndpoint();
 
-        String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildKVApi(prefix, label);
+        String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildKVApi(prefix, labels);
         List<KeyValueItem> result = new ArrayList<>();
 
         CloseableHttpResponse response = null;
@@ -71,7 +71,9 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
                     KeyValueResponse kvResponse = mapper.readValue(response.getEntity().getContent(),
                             KeyValueResponse.class);
 
-                    result.addAll(kvResponse.getItems());
+                    List<KeyValueItem> items = kvResponse.getItems();
+                    sortByLabel(items, labels);
+                    result.addAll(items);
                 } catch (IOException e) {
                     throw new IllegalStateException(LOAD_FAILURE_MSG, e);
                 }
@@ -94,6 +96,13 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         }
 
         return result;
+    }
+
+    @Override
+    public List<KeyValueItem> getKeys(@Nullable String prefix, @NonNull ConfigStore store) {
+        Assert.notNull(store, "Config store should not be null or empty.");
+
+        return getKeys(prefix, store.getName(), store.getLabels());
     }
 
     private boolean isThrottled(@NonNull CloseableHttpResponse response) {

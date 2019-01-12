@@ -8,10 +8,7 @@ package com.microsoft.azure.spring.cloud.config;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 import org.springframework.core.env.EnumerablePropertySource;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigServiceOperations> {
     private final String context;
@@ -42,7 +39,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
 
     public void initProperties() {
         // * for wildcard match
-        List<KeyValueItem> items = source.getKeys(context + "*", storeName, label);
+        List<KeyValueItem> items = source.getKeys(context + "*", storeName, Arrays.asList(label));
 
         for (KeyValueItem item : items) {
             String key = item.getKey().trim().substring(context.length()).replace('/', '.');
