@@ -14,7 +14,7 @@ import com.microsoft.azure.management.resources.GenericResource;
 import com.microsoft.azure.management.resources.GenericResources;
 import com.microsoft.azure.management.resources.Subscription;
 import com.microsoft.azure.management.resources.Subscriptions;
-import com.microsoft.azure.spring.cloud.config.msi.ConfigResourceManager;
+import com.microsoft.azure.spring.cloud.config.managed.identity.ConfigResourceManager;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.rest.RestException;
 import org.junit.Before;

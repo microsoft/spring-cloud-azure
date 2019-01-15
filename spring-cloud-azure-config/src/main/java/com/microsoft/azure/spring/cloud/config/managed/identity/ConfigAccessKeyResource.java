@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config.msi;
+package com.microsoft.azure.spring.cloud.config.managed.identity;
 
 import org.springframework.util.Assert;
 
