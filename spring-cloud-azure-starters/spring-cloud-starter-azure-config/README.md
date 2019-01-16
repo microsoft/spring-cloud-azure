@@ -48,6 +48,7 @@ spring.cloud.azure.config.stores[0].name | Name of the configuration store, requ
 spring.cloud.azure.config.stores[0].prefix | The prefix of the key name in the configuration store, e.g., /my-prefix/application/key.name | No |  null
 spring.cloud.azure.config.stores[0].connection-string | Required when `name` is empty, otherwise, can be loaded automatically on Azure Virtual Machine or App Service | Conditional | null
 spring.cloud.azure.config.stores[0].label | Comma separated list of label values, by default will query empty labeled value. If you want to specify *empty*(null) label explicitly, use `%00`, e.g., spring.cloud.azure.config.stores[0].label=%00,v0 | No |  null
+spring.cloud.azure.config.stores[0].watched-key | The single watched key(or key pattern) used to indicate configuration change, has to be configured when the watch feature is enabled.  | Conditional |  null
 
 
 ## Advanced usage
@@ -73,12 +74,13 @@ Multiple labels can be separated with comma, if duplicate keys exists for multip
 ### Watch configuration change
 Watch feature allows the application to load the latest property value from configuration store automatically, without restarting the application.
 
-By default, the watch feature is enabled. It can be disabled with below configuration:
+By default, the watch feature is disabled. It can be enabled with below configuration:
 ```
 spring.cloud.azure.config.watch.enabled=false
+spring.cloud.azure.config.stores[0].watched-key=[my.watched.key]
 ```
 
-Change property key in the configuration store on Azure Portal, e.g., /application/config.message, log similar with below will be printed on the console.
+Change certain property key and the watched key value in the configuration store on Azure Portal, e.g., /application/config.message and my.watched.key, log similar with below will be printed on the console.
 ```
 INFO 17496 --- [TaskScheduler-1] o.s.c.e.event.RefreshEventListener       : Refresh keys changed: [config.message]
 ```
