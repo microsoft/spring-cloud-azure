@@ -124,7 +124,7 @@ public class AzureCloudConfigProperties {
         this.stores.forEach(store -> { Assert.isTrue(StringUtils.hasText(store.getName()) ||
                         StringUtils.hasText(store.getConnectionString()),
                     "Either configuration store name or connection string should be configured.");
-            Assert.isTrue(!watch.enabled || store.watchKeyIsValid(),
+            Assert.isTrue(!watch.enabled || store.watchedKeyIsValid(),
                     "Watched key should not be empty or equals asterisk(*) when watch is enabled.");
             store.validateAndInit();
         });
@@ -233,7 +233,7 @@ class ConfigStore {
         }
     }
 
-    public boolean watchKeyIsValid() {
+    public boolean watchedKeyIsValid() {
         return StringUtils.hasText(watchedKey) && !watchedKey.trim().equals("*");
     }
 }

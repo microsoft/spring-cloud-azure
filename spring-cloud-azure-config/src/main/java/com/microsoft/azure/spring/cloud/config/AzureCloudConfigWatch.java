@@ -90,8 +90,8 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
         }
 
         for (ConfigStore configStore : configStores) {
-            String watchKey = configStore.getWatchedKey().trim();
-            List<KeyValueItem> keyValueItems = configOperations.getKeys(watchKey, configStore);
+            String watchedKey = configStore.getWatchedKey().trim();
+            List<KeyValueItem> keyValueItems = configOperations.getKeys(watchedKey, configStore);
 
             if (keyValueItems.isEmpty()) {
                 return;
@@ -113,10 +113,10 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
 
             if (changedKey.isPresent()) {
                 LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
-                        configStore.getName(), watchKey);
+                        configStore.getName(), watchedKey);
                 keyNameEtagMap.clear();
                 keyNameEtagMap.putAll(newKeyEtagMap);
-                RefreshEventData eventData = new RefreshEventData(watchKey);
+                RefreshEventData eventData = new RefreshEventData(watchedKey);
                 publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
                 break; // Break early once a change is found
             }
