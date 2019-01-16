@@ -19,6 +19,7 @@ public class TestConstants {
     public static final String STORE_NAME_PROP = "spring.cloud.azure.config.stores[0].name";
     public static final String LABEL_PROP = "spring.cloud.azure.config.stores[0].label";
     public static final String PREFIX_PROP = "spring.cloud.azure.config.stores[0].prefix";
+    public static final String WATCHED_KEY_PROP = "spring.cloud.azure.config.stores[0].watched-key";
 
     public static final String DEFAULT_CONTEXT_PROP = "spring.cloud.azure.config.default-context";
     public static final String CONFIG_ENABLED_PROP = "spring.cloud.azure.config.enabled";
@@ -48,6 +49,7 @@ public class TestConstants {
     public static final String TEST_KEY_3 = "test_key_3";
     public static final String TEST_VALUE_3 = "test_value_3";
     public static final String TEST_LABEL_3 = "test_label_3";
+    public static final String TEST_WATCH_KEY = "my.watched.key";
 
     public static final String TEST_SLASH_KEY = "test/slash/key";
     public static final String TEST_SLASH_VALUE = "prop value for slashed key name";

@@ -13,7 +13,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.util.StringUtils;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -91,8 +90,8 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
         }
 
         for (ConfigStore configStore : configStores) {
-            String prefix = StringUtils.hasText(configStore.getPrefix()) ? configStore.getPrefix() + "*" : "*";
-            List<KeyValueItem> keyValueItems = configOperations.getKeys(prefix, configStore);
+            String watchKey = configStore.getWatchedKey().trim();
+            List<KeyValueItem> keyValueItems = configOperations.getKeys(watchKey, configStore);
 
             if (keyValueItems.isEmpty()) {
                 return;
@@ -113,10 +112,11 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
                     .findFirst();
 
             if (changedKey.isPresent()) {
-                LOGGER.trace("Some keys matching {} is updated, will send refresh event.", prefix);
+                LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
+                        configStore.getName(), watchKey);
                 keyNameEtagMap.clear();
                 keyNameEtagMap.putAll(newKeyEtagMap);
-                RefreshEventData eventData = new RefreshEventData(prefix);
+                RefreshEventData eventData = new RefreshEventData(watchKey);
                 publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
                 break; // Break early once a change is found
             }

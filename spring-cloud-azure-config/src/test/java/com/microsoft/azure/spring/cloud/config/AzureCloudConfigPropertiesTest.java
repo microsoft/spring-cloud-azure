@@ -115,6 +115,25 @@ public class AzureCloudConfigPropertiesTest {
         });
     }
 
+    @Test
+    public void watchKeyShouldBeConfiguredWhenWatchEnabled() {
+        this.contextRunner.withPropertyValues(propPair(WATCH_ENABLED_PROP, "true"),
+                propPair(CONN_STRING_PROP, TEST_CONN_STRING)).run(context -> {
+            assertThat(context).getFailure().hasStackTraceContaining(
+                    "Watched key should not be empty or equals asterisk(*) when watch is enabled");
+        });
+    }
+
+    @Test
+    public void watchKeyCannotBeSingleAsterisk() {
+        this.contextRunner.withPropertyValues(propPair(WATCH_ENABLED_PROP, "true"),
+                propPair(CONN_STRING_PROP, TEST_CONN_STRING),
+                propPair(WATCHED_KEY_PROP, "*")).run(context -> {
+            assertThat(context).getFailure().hasStackTraceContaining(
+                    "Watched key should not be empty or equals asterisk(*) when watch is enabled");
+        });
+    }
+
     private void assertInvalidField(AssertableApplicationContext context, String fieldName) {
         assertThat(context).getFailure().hasCauseInstanceOf(ConfigurationPropertiesBindException.class);
         assertThat(context).getFailure()

@@ -21,6 +21,7 @@ import java.util.List;
 
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_WATCH_KEY;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -42,7 +43,13 @@ public class AzureConfigCloudWatchTest {
         MockitoAnnotations.initMocks(this);
         scheduler = new ThreadPoolTaskScheduler();
         ((ThreadPoolTaskScheduler) scheduler).initialize();
-        TestUtils.addStore(properties, TEST_STORE_NAME, TEST_CONN_STRING);
+
+        ConfigStore store = new ConfigStore();
+        store.setName(TEST_STORE_NAME);
+        store.setConnectionString(TEST_CONN_STRING);
+        store.setWatchedKey(TEST_WATCH_KEY);
+        properties.setStores(Arrays.asList(store));
+
         watch = new AzureCloudConfigWatch(configOperations, properties, scheduler);
         watch.setApplicationEventPublisher(eventPublisher);
     }

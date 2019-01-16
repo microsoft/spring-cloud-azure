@@ -56,7 +56,8 @@ public class AzureCloudConfigAutoConfigurationTest {
     @Test
     public void configEnabledWatchEnabledShouldCreateWatch() {
         contextRunner.withPropertyValues(propPair(CONFIG_ENABLED_PROP, "true"),
-                propPair(WATCH_ENABLED_PROP, "true")).run(context -> {
+                propPair(WATCH_ENABLED_PROP, "true"),
+                propPair(WATCHED_KEY_PROP, TEST_WATCH_KEY)).run(context -> {
             assertThat(context).hasSingleBean(AzureCloudConfigWatch.class);
             assertThat(context).hasBean(WATCH_TASK_SCHEDULER_NAME);
             assertThat(context).hasSingleBean(TaskScheduler.class);
@@ -66,7 +67,8 @@ public class AzureCloudConfigAutoConfigurationTest {
     @Test
     public void taskSchedulerCanBeCustomizedByUser() {
         contextRunner.withPropertyValues(propPair(CONFIG_ENABLED_PROP, "true"),
-                propPair(WATCH_ENABLED_PROP, "true"))
+                propPair(WATCH_ENABLED_PROP, "true"),
+                propPair(WATCHED_KEY_PROP, TEST_WATCH_KEY))
                 .withUserConfiguration(TestConfiguration.class).run(context -> {
             assertThat(context).hasSingleBean(AzureCloudConfigWatch.class);
             assertThat(context).hasBean(WATCH_TASK_SCHEDULER_NAME);
