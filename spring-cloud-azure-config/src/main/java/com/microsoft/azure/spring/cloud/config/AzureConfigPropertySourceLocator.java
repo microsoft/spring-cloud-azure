@@ -78,7 +78,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         for (String sourceContext : contexts) {
             try {
                 List<AzureConfigPropertySource> sourceList = create(sourceContext, store);
-                sourceList.forEach(s -> composite.addPropertySource(s));
+                sourceList.forEach(composite::addPropertySource);
                 LOGGER.debug("PropertySource context [{}] is added.", sourceContext);
             } catch (Exception e) {
                 if (properties.isFailFast()) {
