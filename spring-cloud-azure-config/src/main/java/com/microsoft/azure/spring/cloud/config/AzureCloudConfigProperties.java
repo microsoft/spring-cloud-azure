@@ -248,17 +248,12 @@ class ConfigStore {
         }
 
         List<String> labels =  Arrays.stream(this.getLabel().split(LABEL_SEPARATOR))
-                .filter(label -> StringUtils.hasText(label))
-                .map(label -> label.trim())
+                .filter(StringUtils::hasText)
+                .map(String::trim)
                 .distinct()
                 .collect(Collectors.toList());
 
         Collections.reverse(labels);
         return labels.isEmpty() ? EMPTY_LABEL_ONLY : labels;
-    }
-
-    public static boolean labelEquals(String fromLabel, String toLabel) {
-        return (EMPTY_LABEL.equals(fromLabel) && toLabel == null) || (fromLabel == null && toLabel == null) ||
-                (fromLabel != null && fromLabel.equals(toLabel));
     }
 }
