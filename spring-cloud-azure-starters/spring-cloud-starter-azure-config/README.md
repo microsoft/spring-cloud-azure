@@ -76,7 +76,7 @@ Watch feature allows the application to load the latest property value from conf
 
 By default, the watch feature is disabled. It can be enabled with below configuration:
 ```
-spring.cloud.azure.config.watch.enabled=false
+spring.cloud.azure.config.watch.enabled=true
 spring.cloud.azure.config.stores[0].watched-key=[my.watched.key]
 ```
 
