@@ -24,7 +24,6 @@ public class TestConstants {
     public static final String CONFIG_ENABLED_PROP = "spring.cloud.azure.config.enabled";
     public static final String WATCH_ENABLED_PROP = "spring.cloud.azure.config.watch.enabled";
     public static final String SEPARATOR_PROP = "spring.cloud.azure.config.profile-separator";
-    public static final String MSI_ENABLED_PROP = "spring.cloud.azure.config.msi-enabled";
 
     public static final String TEST_CONN_STRING =
             "Endpoint=https://fake.test.config.io;Id=fake-conn-id;Secret=ZmFrZS1jb25uLXNlY3JldA==";
@@ -37,7 +36,7 @@ public class TestConstants {
     public static final String TEST_ID = "fake-conn-id";
     public static final String TEST_SECRET = "ZmFrZS1jb25uLXNlY3JldA=="; // Base64 encoded from fake-conn-secret
 
-    public static final String MSI_TOKEN = "fake_token";
+    public static final String TEST_ACCESS_TOKEN = "fake_token";
 
     public static final String TEST_DEFAULT_CONTEXT = "/application/";
     public static final String TEST_CONTEXT = "/foo/";

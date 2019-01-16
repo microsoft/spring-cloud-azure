@@ -34,20 +34,19 @@ spring.cloud.azure.config.default-context | Default context path to load propert
 spring.cloud.azure.config.name | Alternative to Spring application name, if not configured, fallback to default Spring application name | No | ${spring.application.name}
 spring.cloud.azure.config.profile-separator | Profile separator for the key name, e.g., /foo-app_dev/db.connection.key, must follow format `^[a-zA-Z0-9_@]+$` | No | `_`
 spring.cloud.azure.config.fail-fast | Whether throw RuntimeException or not when exception occurs | No |  true
-spring.cloud.azure.config.msi-enabled | Whether load connection string from [Azure Resource Manager](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-overview) with [managed service identity](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview) token or not | No | false
-spring.cloud.azure.config.watch.enabled | Whether enable watch feature or not | No | false
+spring.cloud.azure.config.watch.enabled | Whether enable watch feature or not | No | true
 spring.cloud.azure.config.watch.delay | Polling interval in milli-seconds between each scheduled polling | No | 5000
-spring.cloud.azure.config.msi.client-id | Client id of the managed identity | No | null
-spring.cloud.azure.config.msi.object-id | Object id of the managed identity | No | null
+spring.cloud.azure.config.managed-identity.client-id | Client id of the user assigned managed identity, only required when choosing to use user assigned managed identity on Azure | No | null
+spring.cloud.azure.config.managed-identity.object-id | Object id of the user assigned managed identity, only required when choosing to use user assigned managed identity on Azure | No | null
 
 
 `spring.cloud.azure.config.stores` is a List of stores, for each store should follow below format:
 
 Name | Description | Required | Default 
 ---|---|---|---
-spring.cloud.azure.config.stores[0].name | Required when `spring.cloud.azure.config.msi-enabled` is true, name of the configuration store | Conditional | null
+spring.cloud.azure.config.stores[0].name | Name of the configuration store, required when `connection-string` is empty. If `connection-string` is empty and application is deployed on Azure VM or App Service with managed identity enabled, will try to load `connection-string` from Azure Resource Management. | Conditional | null
 spring.cloud.azure.config.stores[0].prefix | The prefix of the key name in the configuration store, e.g., /my-prefix/application/key.name | No |  null
-spring.cloud.azure.config.stores[0].connection-string | Required when `spring.cloud.azure.config.msi-enabled` is false, otherwise, can be loaded automatically on Azure Virtual Machine or App Service | Conditional | null
+spring.cloud.azure.config.stores[0].connection-string | Required when `name` is empty, otherwise, can be loaded automatically on Azure Virtual Machine or App Service | Conditional | null
 spring.cloud.azure.config.stores[0].label | Comma separated list of label values, by default will query empty labeled value. If you want to specify *empty*(null) label explicitly, use `%00`, e.g., spring.cloud.azure.config.stores[0].label=%00,v0 | No |  null
 
 
@@ -100,9 +99,10 @@ Follow below steps to enable managed service identity feature:
 
 1. [Enable managed identities service](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview#how-can-i-use-managed-identities-for-azure-resources) for virtual machine or App Service, on which the application will be deployed
 
-2. Configure bootstrap.properties(or .yaml) in the Spring Boot application as following:
+2. Configure the [Azure RBAC](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal) to allow application running on VM or App Service to access the configuration store. 
+ 
+3. Configure bootstrap.properties(or .yaml) in the Spring Boot application as following:
 ```
-spring.cloud.azure.config.msi-enabled=true
-spring.cloud.azure.config.stores[0].name=[msi-enabled-store-name]
+spring.cloud.azure.config.stores[0].name=[config-store-name]
 ```
-The configuration store name must be configured when msi-enabled is true, the connection string for the configuration store will be loaded automatically.
+The configuration store name must be configured when `connection-string` is empty, the connection string for the configuration store will be loaded automatically.
