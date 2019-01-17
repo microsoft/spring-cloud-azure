@@ -51,6 +51,7 @@ public class TestConstants {
     public static final String TEST_VALUE_3 = "test_value_3";
     public static final String TEST_LABEL_3 = "test_label_3";
     public static final String TEST_WATCH_KEY = "my.watched.key";
+    public static final String TEST_ETAG = "fake-etag";
 
     public static final String LIST_KEY_1 = "test.list[0].key";
     public static final String LIST_KEY_2 = "test.list[1].key";

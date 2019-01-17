@@ -24,7 +24,6 @@ import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.createItem;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 public class AzureConfigPropertySourceLocatorTest {
@@ -144,7 +143,7 @@ public class AzureConfigPropertySourceLocatorTest {
         expected.expect(RuntimeException.class);
         expected.expectMessage(failureMsg);
 
-        when(operations.getKeys(any(), any(), any())).thenThrow(new IllegalStateException(failureMsg));
+        when(operations.getKeys(any(), any())).thenThrow(new IllegalStateException(failureMsg));
         assertThat(properties.isFailFast()).isTrue();
         locator.locate(environment);
     }
@@ -153,17 +152,10 @@ public class AzureConfigPropertySourceLocatorTest {
     public void notFailFastShouldPass() {
         properties.setFailFast(false);
         locator = new AzureConfigPropertySourceLocator(operations, properties);
-        when(operations.getKeys(eq("/foo/*"), any(), any())).thenThrow(new IllegalStateException());
-        when(operations.getKeys(eq("/application/*"), any(), any())).thenThrow(new IllegalStateException());
+        when(operations.getKeys(any(), any())).thenThrow(new IllegalStateException());
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
-
-        Collection<PropertySource<?>> sources = ((CompositePropertySource) source).getPropertySources();
-        String[] expectedSourceNames = new String[]{"/foo_prod/store1/%00", "/foo_dev/store1/%00",
-                "/application_prod/store1/%00", "/application_dev/store1/%00"};
-        assertThat(sources.size()).isEqualTo(4);
-        assertThat(sources.stream().map(s -> s.getName()).toArray()).containsExactly(expectedSourceNames);
     }
 
     @Test

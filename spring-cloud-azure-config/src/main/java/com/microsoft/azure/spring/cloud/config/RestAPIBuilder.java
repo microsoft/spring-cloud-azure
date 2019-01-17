@@ -5,13 +5,12 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import org.springframework.lang.Nullable;
+import com.microsoft.azure.spring.cloud.config.domain.QueryOptions;
+import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -20,9 +19,11 @@ import java.util.stream.Collectors;
  */
 public class RestAPIBuilder {
     public static final String KEY_VALUE_API = "/kv";
+    public static final String REVISIONS_API = "/revisions";
     public static final String NULL_LABEL = "%00"; // label=%00 matches null label
     private static final String KEY_PARAM = "key";
     private static final String LABEL_PARAM = "label";
+    private static final String FIELDS_PARAM = "fields";
 
     private String endpoint;
     private String path;
@@ -47,7 +48,7 @@ public class RestAPIBuilder {
     }
 
     /**
-     * Build REST API for kv request, depending on prefix and label is empty or not, different URIs will be built.
+     * Build REST API for kv request, depending on the query options, the URI built can be different.
      *
      * <p>
      * e.g.,
@@ -57,34 +58,41 @@ public class RestAPIBuilder {
      *   https://host.domain.io/kv?key=abc*&label=prod
      * </p>
      *
-     * @param prefix is {@link Nullable}, key name prefix to be searched
-     * @param labels is {@link Nullable}, {@link java.util.List} of key label values to be searched
+     * @param options is {@link NonNull}, query options used to build the KV API
      * @return valid full path of target REST API
      */
-    public String buildKVApi(@Nullable String prefix, @Nullable List<String> labels) {
+    public String buildKVApi(@NonNull QueryOptions options) {
         this.withPath(KEY_VALUE_API);
-        if (StringUtils.hasText(prefix)) {
-            this.addParam(KEY_PARAM, prefix);
+        this.buildParams(options);
+
+        return buildRequestUri();
+    }
+
+    public String buildRevisionsApi(@NonNull QueryOptions options) {
+        this.withPath(REVISIONS_API);
+        this.buildParams(options);
+
+        return buildRequestUri();
+    }
+
+    private void buildParams(QueryOptions options) {
+        String keyNames = options.getKeyNames();
+        if (StringUtils.hasText(keyNames)) {
+            this.addParam(KEY_PARAM, keyNames);
         }
 
         String label = NULL_LABEL;
-        if (labels != null && !labels.isEmpty()) {
-            labels = labels.stream().filter(l -> StringUtils.hasText(l))
-                    .map(l -> l.trim()).distinct().collect(Collectors.toList());
-
-            label = labels.isEmpty() ? NULL_LABEL : String.join(",", labels);
+        if (StringUtils.hasText(options.getLabels())) {
+            label = options.getLabels();
         }
 
         if (StringUtils.hasText(label)) {
             this.addParam(LABEL_PARAM, label);
         }
 
-        return buildRequestUri();
-    }
-
-    public String buildKVApi(@Nullable String prefix, @Nullable String label) {
-        List<String> labels = StringUtils.hasText(label) ? Arrays.asList(label) : null;
-        return buildKVApi(prefix, labels);
+        if (options.getFields() != null) {
+            this.addParam(FIELDS_PARAM, options.getFieldsString());
+        }
     }
 
     /**

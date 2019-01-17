@@ -5,6 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
@@ -12,13 +13,12 @@ import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
+import org.springframework.lang.NonNull;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigPropertySourceLocator.class);
@@ -30,6 +30,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private final AzureCloudConfigProperties properties;
     private final String profileSeparator;
     private final List<ConfigStore> configStores;
+    private final Map<String, List<String>> storeContextsMap = new ConcurrentHashMap<>();
 
     public AzureConfigPropertySourceLocator(ConfigServiceOperations operations, AzureCloudConfigProperties properties) {
         this.operations = operations;
@@ -56,14 +57,18 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         CompositePropertySource composite = new CompositePropertySource(PROPERTY_SOURCE_NAME);
         Collections.reverse(configStores); // Last store has highest precedence
         for (ConfigStore configStore : configStores) {
-            addPropertySource(composite, configStore, applicationName, profiles);
+            addPropertySource(composite, configStore, applicationName, profiles, storeContextsMap);
         }
 
         return composite;
     }
 
+    public Map<String, List<String>> getStoreContextsMap() {
+        return this.storeContextsMap;
+    }
+
     private void addPropertySource(CompositePropertySource composite, ConfigStore store, String applicationName,
-                                   List<String> profiles) {
+                                   List<String> profiles, Map<String, List<String>> storeContextsMap) {
         /* Generate which contexts(key prefixes) will be used for key-value items search
            If key prefix is empty, default context is: application, current application name is: foo,
            active profile is: dev, profileSeparator is: _
@@ -77,7 +82,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         Collections.reverse(contexts);
         for (String sourceContext : contexts) {
             try {
-                List<AzureConfigPropertySource> sourceList = create(sourceContext, store);
+                List<AzureConfigPropertySource> sourceList = create(sourceContext, store, storeContextsMap);
                 sourceList.forEach(composite::addPropertySource);
                 LOGGER.debug("PropertySource context [{}] is added.", sourceContext);
             } catch (Exception e) {
@@ -120,7 +125,8 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         return context + this.profileSeparator + profile + PATH_SPLITTER;
     }
 
-    private List<AzureConfigPropertySource> create(String context, ConfigStore store) {
+    private List<AzureConfigPropertySource> create(String context, ConfigStore store, Map<String,
+            List<String>> storeContextsMap) {
         List<AzureConfigPropertySource> sourceList = new ArrayList<>();
 
         for (String label : store.getLabels()) {
@@ -129,8 +135,31 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
             propertySource.initProperties();
             sourceList.add(propertySource);
+            putStoreContext(store.getName(), context, storeContextsMap);
         }
 
         return sourceList;
+    }
+
+    /**
+     * Put certain context to the store contexts map
+     * @param storeName the name of the configuration store
+     * @param context the context text for the PropertySource, e.g., "/application"
+     * @param storeContextsMap the Map storing the storeName -> List of contexts map
+     */
+    private void putStoreContext(String storeName, String context,
+                                 @NonNull Map<String, List<String>> storeContextsMap) {
+        if (!StringUtils.hasText(context) || !StringUtils.hasText(storeName)) {
+            return;
+        }
+
+        List<String> contexts = storeContextsMap.get(storeName);
+        if (contexts == null) {
+            contexts = Lists.newArrayList(context);
+        } else {
+            contexts.add(context);
+        }
+
+        storeContextsMap.put(storeName, contexts);
     }
 }

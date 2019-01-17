@@ -17,19 +17,19 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConnectionStringPool {
     private Map<String, ConnectionString> connectionStringMap = new ConcurrentHashMap<>();
 
-    public void put(String storeName, ConnectionString connectionString) {
-        Assert.hasText(storeName, "Config store name cannot be null or empty.");
+    public void put(String endpoint, ConnectionString connectionString) {
+        Assert.hasText(endpoint, "Config store endpoint cannot be null or empty.");
         Assert.notNull(connectionString, "Connection string should not be null.");
-        this.connectionStringMap.put(storeName, connectionString);
+        this.connectionStringMap.put(endpoint, connectionString);
     }
 
-    public void put(String storeName, String connectionString) {
-        this.put(storeName, ConnectionString.of(connectionString));
+    public void put(String endpoint, String connectionString) {
+        this.put(endpoint, ConnectionString.of(connectionString));
     }
 
     @Nullable
-    public ConnectionString get(String storeName) {
-        return this.connectionStringMap.get(storeName);
+    public ConnectionString get(String endpoint) {
+        return this.connectionStringMap.get(endpoint);
     }
 
     public Map<String, ConnectionString> getAll() {

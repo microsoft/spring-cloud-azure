@@ -28,8 +28,9 @@ public class AzureCloudConfigAutoConfiguration {
         @Bean
         public AzureCloudConfigWatch getConfigWatch(ConfigServiceOperations operations,
                                                     AzureCloudConfigProperties properties,
-                                                    @Qualifier(WATCH_TASK_SCHEDULER_NAME) TaskScheduler scheduler) {
-            return new AzureCloudConfigWatch(operations, properties, scheduler);
+                                                    @Qualifier(WATCH_TASK_SCHEDULER_NAME) TaskScheduler scheduler,
+                                                    AzureConfigPropertySourceLocator sourceLocator) {
+            return new AzureCloudConfigWatch(operations, properties, scheduler, sourceLocator.getStoreContextsMap());
         }
 
         @Bean(name = WATCH_TASK_SCHEDULER_NAME)

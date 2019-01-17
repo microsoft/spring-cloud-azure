@@ -77,14 +77,17 @@ Watch feature allows the application to load the latest property value from conf
 By default, the watch feature is disabled. It can be enabled with below configuration:
 ```
 spring.cloud.azure.config.watch.enabled=true
-spring.cloud.azure.config.stores[0].watched-key=[my.watched.key]
 ```
 
-Change certain property key and the watched key value in the configuration store on Azure Portal, e.g., /application/config.message and my.watched.key, log similar with below will be printed on the console.
+Change certain property key in the configuration store on Azure Portal, e.g., /application/config.message, log similar with below will be printed on the console.
 ```
 INFO 17496 --- [TaskScheduler-1] o.s.c.e.event.RefreshEventListener       : Refresh keys changed: [config.message]
 ```
 The application now will be using the updated properties. By default, `@ConfigurationProperties` annotated beans will be automatically refreshed. Use `@RefreshScope` on beans which are required to be refreshed when properties are changed.
+By default all the keys in the configuration store matching configured conditions will be watched, to watch certain key change only, configure the watch-key property for each configuration store.
+```
+spring.cloud.azure.config.stores[0].watched-key=[my-watched-key]
+```
 
 ### Failfast
 Failfast feature decides whether throw RuntimeException or not when exception happens. By default, failfast is enabled, it can be disabled with below configuration:

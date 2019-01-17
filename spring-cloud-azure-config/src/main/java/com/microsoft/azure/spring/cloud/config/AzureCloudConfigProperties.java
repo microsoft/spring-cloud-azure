@@ -130,8 +130,6 @@ public class AzureCloudConfigProperties {
         this.stores.forEach(store -> { Assert.isTrue(StringUtils.hasText(store.getName()) ||
                         StringUtils.hasText(store.getConnectionString()),
                     "Either configuration store name or connection string should be configured.");
-            Assert.isTrue(!watch.enabled || store.watchedKeyIsValid(),
-                    "Watched key should not be empty or equals asterisk(*) when watch is enabled.");
             store.validateAndInit();
         });
 
@@ -178,13 +176,15 @@ class ConfigStore {
     @Nullable
     private String label;
 
-    private String watchedKey; /* The single signal key to be watched, won't take effect if watch not enabled */
+    // The keys to be watched, won't take effect if watch not enabled
+    @NotEmpty
+    private String watchedKey = "*";
 
     public ConfigStore() {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -238,10 +238,6 @@ class ConfigStore {
                 throw new IllegalStateException("Endpoint in connection string is not a valid URI.", e);
             }
         }
-    }
-
-    public boolean watchedKeyIsValid() {
-        return StringUtils.hasText(watchedKey) && !watchedKey.trim().equals("*");
     }
 
     /**

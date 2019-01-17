@@ -16,12 +16,13 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_WATCH_KEY;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -50,7 +51,11 @@ public class AzureConfigCloudWatchTest {
         store.setWatchedKey(TEST_WATCH_KEY);
         properties.setStores(Arrays.asList(store));
 
-        watch = new AzureCloudConfigWatch(configOperations, properties, scheduler);
+        properties.getWatch().setDelay(Duration.ofSeconds(1));
+
+        Map<String, List<String>> contextsMap = new ConcurrentHashMap<>();
+        contextsMap.put(TEST_STORE_NAME, Arrays.asList(TEST_ETAG));
+        watch = new AzureCloudConfigWatch(configOperations, properties, scheduler, contextsMap);
         watch.setApplicationEventPublisher(eventPublisher);
     }
 
@@ -62,7 +67,7 @@ public class AzureConfigCloudWatchTest {
     @Test
     public void firstCallShouldNotPublishEvent() {
         List<KeyValueItem> mockResponse = initialResponse();
-        when(configOperations.getKeys(any(), any(), any())).thenReturn(mockResponse);
+        when(configOperations.getRevisions(any(), any())).thenReturn(mockResponse);
         watch.start();
         watch.watchConfigKeyValues();
         verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
@@ -71,20 +76,18 @@ public class AzureConfigCloudWatchTest {
     @Test
     public void updatedEtagShouldPublishEvent() throws InterruptedException {
         List<KeyValueItem> mockResponse = initialResponse();
-        when(configOperations.getKeys(any(), any(), any())).thenReturn(mockResponse);
+        when(configOperations.getRevisions(any(), any())).thenReturn(mockResponse);
         watch.start();
         watch.watchConfigKeyValues();
 
         List<KeyValueItem> updatedResponse = updatedResponse();
-        when(configOperations.getKeys(any(), any())).thenReturn(updatedResponse);
+        when(configOperations.getRevisions(any(), any())).thenReturn(updatedResponse);
         Thread.sleep(properties.getWatch().getDelay().getSeconds() * 1000 * 2);
         verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
     }
 
     private List<KeyValueItem> initialResponse() {
         KeyValueItem item = new KeyValueItem();
-        item.setKey("fake-key");
-        item.setValue("fake-value");
         item.setEtag("fake-etag");
 
         return Arrays.asList(item);
@@ -92,8 +95,6 @@ public class AzureConfigCloudWatchTest {
 
     private List<KeyValueItem> updatedResponse() {
         KeyValueItem item = new KeyValueItem();
-        item.setKey("fake-key");
-        item.setValue("fake-value-updated");
         item.setEtag("fake-etag-updated");
 
         return Arrays.asList(item);

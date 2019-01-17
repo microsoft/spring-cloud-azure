@@ -6,8 +6,8 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
+import com.microsoft.azure.spring.cloud.config.domain.QueryOptions;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -16,23 +16,20 @@ import java.util.List;
  */
 public interface ConfigServiceOperations {
     /**
-     * Find all key-value items which key name is prefixed with {@code prefix} for given {@code store}.
+     * Find all key-value items which key name is prefixed with {@code keyPattern} for given {@code store}.
      *
-     * @param prefix key name pattern of which keys will be loaded, is {@link Nullable}.
-     * @param store the config store from which to get keys
+     * @param storeName the store name against which to query
+     * @param queryOptions the options used to query the keys
      * @return all key-value items {@link List<KeyValueItem>} which match given condition, result is sorted by the
-     * order of the labels defined in {@code store}
+     * order of the labels defined in {@code queryOptions}
      */
-    List<KeyValueItem> getKeys(@Nullable String prefix, @NonNull ConfigStore store);
+    List<KeyValueItem> getKeys(@NonNull String storeName, @NonNull QueryOptions queryOptions);
 
     /**
-     * Find all key-value items which key name is prefixed with {@code prefix} for config store {@code storeName}
-     * and {@code labels}
-     *
-     * @param prefix key name prefix of which keys will be loaded, is {@link Nullable}.
-     * @param storeName the name for the config store from which to get keys
-     * @param labels the List of {@code labels} for the keys
-     * @return all key-value items {@link List<KeyValueItem>} which match given condition.
+     * List chronological/historical representation of KeyValue resource(s)
+     * @param storeName the store name against which to query
+     * @param queryOptions the options used to query the keys
+     * @return all key-value items {@link List<KeyValueItem>} which match given condition
      */
-    List<KeyValueItem> getKeys(@Nullable String prefix, @NonNull String storeName, @Nullable List<String> labels);
+    List<KeyValueItem> getRevisions(@NonNull String storeName, @NonNull QueryOptions queryOptions);
 }

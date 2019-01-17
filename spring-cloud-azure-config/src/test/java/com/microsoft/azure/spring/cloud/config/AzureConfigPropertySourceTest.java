@@ -12,13 +12,14 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.createItem;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 public class AzureConfigPropertySourceTest {
@@ -46,7 +47,7 @@ public class AzureConfigPropertySourceTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         propertySource = new AzureConfigPropertySource(TEST_CONTEXT, operations, null, null);
-        when(operations.getKeys(anyString(), any(), any())).thenReturn(TEST_ITEMS);
+        when(operations.getKeys(any(), any())).thenReturn(TEST_ITEMS);
     }
 
     @Test
@@ -66,7 +67,7 @@ public class AzureConfigPropertySourceTest {
     @Test
     public void testPropertyNameSlashConvertedToDots() {
         KeyValueItem slashedProp = createItem(TEST_CONTEXT, TEST_SLASH_KEY, TEST_SLASH_VALUE, null);
-        when(operations.getKeys(anyString(), any(), any())).thenReturn(Arrays.asList(slashedProp));
+        when(operations.getKeys(any(), any())).thenReturn(Arrays.asList(slashedProp));
 
         propertySource.initProperties();
 

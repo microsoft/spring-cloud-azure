@@ -5,15 +5,8 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
-import com.microsoft.azure.spring.cloud.config.domain.KeyValueResponse;
+import com.microsoft.azure.spring.cloud.config.domain.*;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
 import org.apache.http.Header;
@@ -22,11 +15,15 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ConfigServiceTemplate implements ConfigServiceOperations {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigServiceTemplate.class);
@@ -35,6 +32,7 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
     private static final Pattern PAGE_LINK_PATTERN = Pattern.compile(NEXT_PAGE_LINK);
     private static final int TOO_MANY_REQ_CODE = 429;
     private static final String RETRY_AFTER_MS_HEADER = "retry-after-ms";
+    private static final String RANGE_HEADER = "Range";
 
     public static final String LOAD_FAILURE_MSG = "Failed to load keys from Azure Config Service.";
     public static final String LOAD_FAILURE_VERBOSE_MSG = LOAD_FAILURE_MSG + " With status code: %s, response: %s";
@@ -50,18 +48,40 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
     }
 
     @Override
-    public List<KeyValueItem> getKeys(String prefix, String storeName, List<String> labels) {
+    public List<KeyValueItem> getKeys(@NonNull String storeName, @NonNull QueryOptions options) {
         Assert.hasText(storeName, "Config store name should not be null or empty.");
+        Assert.notNull(options, "The query options should not be null.");
 
         ConnectionString connString = connectionStringPool.get(storeName);
         String storeEndpoint = connString.getEndpoint();
 
-        String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildKVApi(prefix, labels);
+        String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildKVApi(options);
+
+        return getKeys(requestUri, options, storeName);
+    }
+
+    @Override
+    public List<KeyValueItem> getRevisions(@NonNull String storeName, @NonNull QueryOptions options) {
+        Assert.hasText(storeName, "Config store name should not be null or empty.");
+        Assert.notNull(options, "Query options should not be null or empty.");
+
+        ConnectionString connString = connectionStringPool.get(storeName);
+        String storeEndpoint = connString.getEndpoint();
+
+        String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildRevisionsApi(options);
+
+        return getKeys(requestUri, options, storeName);
+
+    }
+
+    private List<KeyValueItem> getKeys(String requestUri, QueryOptions options, String storeName) {
+        ConnectionString connString = connectionStringPool.get(storeName);
+        String storeEndpoint = connString.getEndpoint();
         List<KeyValueItem> result = new ArrayList<>();
 
         CloseableHttpResponse response = null;
         try {
-            while ((response = getRawResponse(requestUri, connString)) != null) {
+            while ((response = getRawResponse(requestUri, connString, options)) != null) {
                 if (isThrottled(response)) {
                     throttleOnResponse(response);
                     continue;
@@ -72,10 +92,19 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
                             KeyValueResponse.class);
 
                     List<KeyValueItem> items = kvResponse.getItems();
-                    sortByLabel(items, labels);
+                    if (options.getSortField() != null && options.getSortField().equals(QueryField.LABEL)) {
+                        sortByLabel(items, options.getLabelList());
+                    }
+
                     result.addAll(items);
                 } catch (IOException e) {
                     throw new IllegalStateException(LOAD_FAILURE_MSG, e);
+                }
+
+                Range range = options.getRange();
+                if (range != null && range.getStartItem() == range.getEndItem()) {
+                    // Do not query any more if range start is same with range end
+                    break;
                 }
 
                 String nextLink = getNextLink(response);
@@ -96,13 +125,6 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         }
 
         return result;
-    }
-
-    @Override
-    public List<KeyValueItem> getKeys(@Nullable String prefix, @NonNull ConfigStore store) {
-        Assert.notNull(store, "Config store should not be null or empty.");
-
-        return getKeys(prefix, store.getName(), store.getLabels());
     }
 
     private boolean isThrottled(@NonNull CloseableHttpResponse response) {
@@ -148,8 +170,10 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         return RestAPIBuilder.NULL_LABEL;
     }
 
-    private CloseableHttpResponse getRawResponse(String requestUri, @NonNull ConnectionString connString) {
+    private CloseableHttpResponse getRawResponse(String requestUri, @NonNull ConnectionString connString,
+                                                 QueryOptions options) {
         HttpGet httpGet = new HttpGet(requestUri);
+        setRequestHeader(httpGet, options);
         Date date = new Date();
 
         LOGGER.debug("Loading key-value items from Azure Config service at [{}].", requestUri);
@@ -158,7 +182,8 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
                     connString.getSecret());
             int statusCode = response.getStatusLine().getStatusCode();
 
-            if (statusCode == HttpStatus.SC_OK || statusCode == TOO_MANY_REQ_CODE) {
+            if (statusCode == HttpStatus.SC_OK  || statusCode == HttpStatus.SC_PARTIAL_CONTENT
+                    || statusCode == TOO_MANY_REQ_CODE) {
                 return response;
             } else if (statusCode == HttpStatus.SC_NOT_FOUND) {
                 LOGGER.warn("No configuration data found in Azure Config Service for request uri {}.", requestUri);
@@ -187,5 +212,11 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
 
         Matcher linkMatcher = PAGE_LINK_PATTERN.matcher(linkHeader.getValue());
         return linkMatcher.matches() ? linkMatcher.group(1) : "";
+    }
+
+    private void setRequestHeader(HttpGet httpGet, QueryOptions options) {
+        if (options.getRange() != null) {
+            httpGet.setHeader(RANGE_HEADER, options.getRange().toString());
+        }
     }
 }
