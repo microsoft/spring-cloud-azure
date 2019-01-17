@@ -19,9 +19,15 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties.LABEL_SEPARATOR;
+import static com.microsoft.azure.spring.cloud.config.Constants.EMPTY_LABEL;
 
 @Validated
 @ConfigurationProperties(prefix = AzureCloudConfigProperties.CONFIG_PREFIX)
@@ -135,7 +141,7 @@ public class AzureCloudConfigProperties {
 
     class Watch {
         private boolean enabled = false;
-        private int delay = 5000; /* milli-seconds */
+        private Duration delay = Duration.ofSeconds(30);
 
         public Watch() {
         }
@@ -148,17 +154,18 @@ public class AzureCloudConfigProperties {
             this.enabled = enabled;
         }
 
-        public int getDelay() {
+        public Duration getDelay() {
             return delay;
         }
 
-        public void setDelay(int delay) {
+        public void setDelay(Duration delay) {
             this.delay = delay;
         }
     }
 }
 
 class ConfigStore {
+    private static final List<String> EMPTY_LABEL_ONLY = Arrays.asList(EMPTY_LABEL);
     private String name; // Config store name
 
     @Nullable
@@ -235,5 +242,23 @@ class ConfigStore {
 
     public boolean watchedKeyIsValid() {
         return StringUtils.hasText(watchedKey) && !watchedKey.trim().equals("*");
+    }
+
+    /**
+     * @return List of reversed label values, which are split by the separator, the latter label has higher priority
+     */
+    public List<String> getLabels() {
+        if (!StringUtils.hasText(this.getLabel())) {
+            return EMPTY_LABEL_ONLY;
+        }
+
+        List<String> labels =  Arrays.stream(this.getLabel().split(LABEL_SEPARATOR))
+                .filter(StringUtils::hasText)
+                .map(String::trim)
+                .distinct()
+                .collect(Collectors.toList());
+
+        Collections.reverse(labels);
+        return labels.isEmpty() ? EMPTY_LABEL_ONLY : labels;
     }
 }

@@ -5,6 +5,12 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueResponse;
@@ -16,19 +22,11 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import static com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties.LABEL_SEPARATOR;
 
 public class ConfigServiceTemplate implements ConfigServiceOperations {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigServiceTemplate.class);
@@ -45,7 +43,6 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
 
     private final ConfigHttpClient configClient;
     private final ConnectionStringPool connectionStringPool;
-    private final Map<String, List<String>> storeLabelsMap = new ConcurrentHashMap<>();
 
     public ConfigServiceTemplate(ConfigHttpClient httpClient, ConnectionStringPool connectionStringPool) {
         this.configClient = httpClient;
@@ -53,12 +50,13 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
     }
 
     @Override
-    public List<KeyValueItem> getKeys(@Nullable String prefix, @NonNull ConfigStore store) {
-        ConnectionString connString = connectionStringPool.get(store.getName());
-        String storeEndpoint = connString.getEndpoint();
-        List<String> labels = storeLabelsMap.computeIfAbsent(store.getName(), (k) -> getLabels(store));
+    public List<KeyValueItem> getKeys(String prefix, String storeName, List<String> labels) {
+        Assert.hasText(storeName, "Config store name should not be null or empty.");
 
-        String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildKVApi(prefix, getLabels(store));
+        ConnectionString connString = connectionStringPool.get(storeName);
+        String storeEndpoint = connString.getEndpoint();
+
+        String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildKVApi(prefix, labels);
         List<KeyValueItem> result = new ArrayList<>();
 
         CloseableHttpResponse response = null;
@@ -98,6 +96,13 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         }
 
         return result;
+    }
+
+    @Override
+    public List<KeyValueItem> getKeys(@Nullable String prefix, @NonNull ConfigStore store) {
+        Assert.notNull(store, "Config store should not be null or empty.");
+
+        return getKeys(prefix, store.getName(), store.getLabels());
     }
 
     private boolean isThrottled(@NonNull CloseableHttpResponse response) {
@@ -182,17 +187,5 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
 
         Matcher linkMatcher = PAGE_LINK_PATTERN.matcher(linkHeader.getValue());
         return linkMatcher.matches() ? linkMatcher.group(1) : "";
-    }
-
-    private static List<String> getLabels(ConfigStore store) {
-        if (store == null || !StringUtils.hasText(store.getLabel())) {
-            return Collections.EMPTY_LIST;
-        }
-
-        return Arrays.stream(store.getLabel().split(LABEL_SEPARATOR))
-                .filter(label -> StringUtils.hasText(label))
-                .map(label -> label.trim())
-                .distinct()
-                .collect(Collectors.toList());
     }
 }

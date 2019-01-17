@@ -98,21 +98,18 @@ public class ConfigServiceTemplateTest {
                 .thenReturn(new MockCloseableHttpResponse(OK_STATUS, okEntity));
         template = new ConfigServiceTemplate(configClient, pool);
 
-        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore);
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore.getName(), null);
         assertThat(result.size()).isEqualTo(testItems.size());
         assertThat(result).containsExactlyInAnyOrder(testItems.stream().toArray(KeyValueItem[]::new));
     }
 
     @Test
-    public void testMultiLabelsCanBeSearchedAndOrdered() throws IOException, URISyntaxException {
+    public void testSpecificLabelCanBeSearched() throws IOException, URISyntaxException {
         prepareConfigClient();
 
         template = new ConfigServiceTemplate(configClient, pool);
-        // Label order should be kept in the searched result
-        configStore.setLabel(TEST_LABEL_2 + LABEL_SEPARATOR + TEST_LABEL_1);
-
-        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore);
-        List<KeyValueItem> expectedResult = Arrays.asList(item2, item1);
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore.getName(), Arrays.asList(TEST_LABEL_2));
+        List<KeyValueItem> expectedResult = Arrays.asList(item2);
         assertThat(result.size()).isEqualTo(expectedResult.size());
         assertThat(result).containsExactly(expectedResult.stream().toArray(KeyValueItem[]::new));
     }
@@ -154,7 +151,7 @@ public class ConfigServiceTemplateTest {
                 .thenReturn(new MockCloseableHttpResponse(FAIL_STATUS, null));
 
         template = new ConfigServiceTemplate(configClient, pool);
-        template.getKeys(TEST_CONTEXT, configStore);
+        template.getKeys(TEST_CONTEXT, configStore.getName(), null);
     }
 
     @Test
@@ -163,7 +160,7 @@ public class ConfigServiceTemplateTest {
                 .thenReturn(new MockCloseableHttpResponse(NOT_FOUND_STATUS, null));
         template = new ConfigServiceTemplate(configClient, pool);
 
-        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore);
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore.getName(), null);
         assertThat(result).isNotNull();
         assertThat(result.size()).isEqualTo(0);
     }
@@ -187,7 +184,7 @@ public class ConfigServiceTemplateTest {
 
         when(configClient.execute(any(), any(), any(), any())).thenReturn(firstResponse).thenReturn(secondResponse);
         template = new ConfigServiceTemplate(configClient, pool);
-        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore);
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore.getName(), null);
 
         verify(configClient, times(2)).execute(any(), any(), any(), any());
         assertThat(result).isNotEmpty();
@@ -215,7 +212,7 @@ public class ConfigServiceTemplateTest {
         template = new ConfigServiceTemplate(configClient, pool);
 
         long start = System.currentTimeMillis();
-        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore);
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore.getName(), null);
         long end = System.currentTimeMillis();
 
         verify(configClient, times(2)).execute(any(), any(), any(), any());
@@ -235,7 +232,7 @@ public class ConfigServiceTemplateTest {
 
         when(configClient.execute(any(), any(), any(), any())).thenReturn(response);
         template = new ConfigServiceTemplate(configClient, pool);
-        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore);
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore.getName(), null);
 
         verify(configClient, times(1)).execute(any(), any(), any(), any());
         assertThat(result).isNotEmpty();
@@ -254,7 +251,7 @@ public class ConfigServiceTemplateTest {
 
         when(configClient.execute(any(), any(), any(), any())).thenReturn(response);
         template = new ConfigServiceTemplate(configClient, pool);
-        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore);
+        List<KeyValueItem> result = template.getKeys(TEST_CONTEXT, configStore.getName(), null);
 
         verify(configClient, times(1)).execute(any(), any(), any(), any());
         assertThat(result).isNotEmpty();
