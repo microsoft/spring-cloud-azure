@@ -29,10 +29,16 @@ public class TestUtils {
     }
 
     static void addStore(AzureCloudConfigProperties properties, String storeName, String connectionString) {
+        addStore(properties, storeName, connectionString, null);
+    }
+
+    static void addStore(AzureCloudConfigProperties properties, String storeName, String connectionString,
+                         String label) {
         List<ConfigStore> stores = properties.getStores();
         ConfigStore store = new ConfigStore();
         store.setConnectionString(connectionString);
         store.setName(storeName);
+        store.setLabel(label);
         stores.add(store);
         properties.setStores(stores);
     }

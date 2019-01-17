@@ -9,6 +9,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +80,11 @@ public class RestAPIBuilder {
         }
 
         return buildRequestUri();
+    }
+
+    public String buildKVApi(@Nullable String prefix, @Nullable String label) {
+        List<String> labels = StringUtils.hasText(label) ? Arrays.asList(label) : null;
+        return buildKVApi(prefix, labels);
     }
 
     /**

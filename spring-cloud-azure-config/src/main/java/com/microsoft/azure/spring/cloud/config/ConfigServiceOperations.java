@@ -16,11 +16,23 @@ import java.util.List;
  */
 public interface ConfigServiceOperations {
     /**
-     * Find all key-value items which key name is prefixed with {@code prefix}, and has {@code label} if provided.
+     * Find all key-value items which key name is prefixed with {@code prefix} for given {@code store}.
      *
      * @param prefix key name prefix of which keys will be loaded, is {@link Nullable}.
-     * @param store the configuration for the config store from which to get keys
-     * @return all key-value items {@link List<KeyValueItem>} which match given condition.
+     * @param store the config store from which to get keys
+     * @return all key-value items {@link List<KeyValueItem>} which match given condition, result is sorted by the
+     * order of the labels defined in {@code store}
      */
     List<KeyValueItem> getKeys(@Nullable String prefix, @NonNull ConfigStore store);
+
+    /**
+     * Find all key-value items which key name is prefixed with {@code prefix} for config store {@code storeName}
+     * and {@code labels}
+     *
+     * @param prefix key name prefix of which keys will be loaded, is {@link Nullable}.
+     * @param storeName the name for the config store from which to get keys
+     * @param labels the List of {@code labels} for the keys
+     * @return all key-value items {@link List<KeyValueItem>} which match given condition.
+     */
+    List<KeyValueItem> getKeys(@Nullable String prefix, @NonNull String storeName, @Nullable List<String> labels);
 }

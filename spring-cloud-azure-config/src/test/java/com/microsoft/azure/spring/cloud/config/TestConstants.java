@@ -38,6 +38,7 @@ public class TestConstants {
 
     public static final String TEST_ACCESS_TOKEN = "fake_token";
 
+    public static final String TEST_DEFAULT_CONTEXT = "/application/";
     public static final String TEST_CONTEXT = "/foo/";
     public static final String TEST_KEY_1 = "test_key_1";
     public static final String TEST_VALUE_1 = "test_value_1";
@@ -48,6 +49,9 @@ public class TestConstants {
     public static final String TEST_KEY_3 = "test_key_3";
     public static final String TEST_VALUE_3 = "test_value_3";
     public static final String TEST_LABEL_3 = "test_label_3";
+
+    public static final String LIST_KEY_1 = "test.list[0].key";
+    public static final String LIST_KEY_2 = "test.list[1].key";
 
     public static final String TEST_SLASH_KEY = "test/slash/key";
     public static final String TEST_SLASH_VALUE = "prop value for slashed key name";
