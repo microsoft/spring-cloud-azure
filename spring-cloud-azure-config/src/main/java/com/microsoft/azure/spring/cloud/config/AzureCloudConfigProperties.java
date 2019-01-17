@@ -19,6 +19,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -133,7 +134,7 @@ public class AzureCloudConfigProperties {
 
     class Watch {
         private boolean enabled = false;
-        private int delay = 5000; /* milli-seconds */
+        private Duration delay = Duration.ofSeconds(30);
 
         public Watch() {
         }
@@ -146,11 +147,11 @@ public class AzureCloudConfigProperties {
             this.enabled = enabled;
         }
 
-        public int getDelay() {
+        public Duration getDelay() {
             return delay;
         }
 
-        public void setDelay(int delay) {
+        public void setDelay(Duration delay) {
             this.delay = delay;
         }
     }

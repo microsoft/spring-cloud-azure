@@ -35,7 +35,7 @@ spring.cloud.azure.config.name | Alternative to Spring application name, if not 
 spring.cloud.azure.config.profile-separator | Profile separator for the key name, e.g., /foo-app_dev/db.connection.key, must follow format `^[a-zA-Z0-9_@]+$` | No | `_`
 spring.cloud.azure.config.fail-fast | Whether throw RuntimeException or not when exception occurs | No |  true
 spring.cloud.azure.config.watch.enabled | Whether enable watch feature or not | No | true
-spring.cloud.azure.config.watch.delay | Polling interval in milli-seconds between each scheduled polling | No | 5000
+spring.cloud.azure.config.watch.delay | Polling interval of type [Duration](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-conversion-duration) between each scheduled polling | No | 30s
 spring.cloud.azure.config.managed-identity.client-id | Client id of the user assigned managed identity, only required when choosing to use user assigned managed identity on Azure | No | null
 spring.cloud.azure.config.managed-identity.object-id | Object id of the user assigned managed identity, only required when choosing to use user assigned managed identity on Azure | No | null
 

@@ -70,7 +70,7 @@ public class AzureConfigCloudWatchTest {
 
         List<KeyValueItem> updatedResponse = updatedResponse();
         when(configOperations.getKeys(any(), any())).thenReturn(updatedResponse);
-        Thread.sleep(properties.getWatch().getDelay() * 2);
+        Thread.sleep(properties.getWatch().getDelay().getSeconds() * 1000 * 2);
         verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
     }
 
