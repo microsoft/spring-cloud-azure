@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
  */
 public class QueryOptions {
     private List<QueryField> fields = new ArrayList<>();
-    private List<String> keyNames;
-    private List<String> labels;
+    private List<String> keyNames = new ArrayList<>();
+    private List<String> labels = new ArrayList<>();
     private Range range;
     private QueryField sortField;
 
