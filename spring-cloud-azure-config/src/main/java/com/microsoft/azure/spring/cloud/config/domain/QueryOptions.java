@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
  */
 public class QueryOptions {
     private List<QueryField> fields = new ArrayList<>();
-    private String keyNames;
-    private String labels;
+    private List<String> keyNames;
+    private List<String> labels;
     private Range range;
     private QueryField sortField;
 
@@ -27,19 +27,22 @@ public class QueryOptions {
     }
 
     public String getFieldsString() {
-        return fields.stream().map(QueryField::toString).collect(Collectors.joining(","));
+        if (fields != null) {
+            return fields.stream().map(QueryField::toString).collect(Collectors.joining(","));
+        }
+        return "";
     }
 
     public String getKeyNames() {
-        return keyNames;
+        return keyNames != null ? String.join(",", keyNames) : "";
     }
 
     public String getLabels() {
-        return labels;
+        return labels != null ? String.join(",", labels) : "";
     }
 
     public List<String> getLabelList() {
-        return StringUtils.hasText(labels) ? Arrays.asList(labels.split(",")) : new ArrayList<>();
+        return labels != null ?  labels : new ArrayList<>();
     }
 
     public Range getRange() {
@@ -61,29 +64,34 @@ public class QueryOptions {
     }
 
     public QueryOptions withKeyNames(String keyName) {
-        this.keyNames = keyName;
+        if (StringUtils.hasText(keyName)) {
+            this.withKeyNames(Arrays.asList(keyName.split(",")));
+        }
         return this;
     }
 
     public QueryOptions withKeyNames(List<String> keyNames) {
-        this.keyNames = String.join(",", keyNames);
+        if (keyNames != null) {
+            this.keyNames = keyNames.stream().filter(name -> StringUtils.hasText(name))
+                    .map(name -> name.trim()).collect(Collectors.toList());
+        }
+
         return this;
     }
 
     public QueryOptions withLabels(String labels) {
-        if (!StringUtils.hasText(labels)) {
-            return this;
+        if (StringUtils.hasText(labels)) {
+            this.withLabels(Arrays.asList(labels.split(",")));
         }
-        return this.withLabels(Arrays.asList(labels.split(",")));
+        return this;
     }
 
     public QueryOptions withLabels(List<String> labels) {
-        if (labels == null || labels.isEmpty()) {
-            return this;
+        if (labels != null) {
+            this.labels = labels.stream().filter(label -> StringUtils.hasText(label))
+                    .map(label -> label.trim()).collect(Collectors.toList());
         }
 
-        this.labels = labels.stream().filter(l -> StringUtils.hasText(l))
-                .map(l -> l.trim()).collect(Collectors.joining(","));
         return this;
     }
 

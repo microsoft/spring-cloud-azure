@@ -90,7 +90,7 @@ public class RestAPIBuilder {
             this.addParam(LABEL_PARAM, label);
         }
 
-        if (options.getFields() != null) {
+        if (StringUtils.hasText(options.getFieldsString())) {
             this.addParam(FIELDS_PARAM, options.getFieldsString());
         }
     }
