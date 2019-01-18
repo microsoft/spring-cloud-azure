@@ -30,8 +30,7 @@ public class AzureRedisAutoConfigurationTest {
     private static final int PORT = 6379;
     private static final boolean IS_SSL = true;
     private ApplicationContextRunner contextRunner =
-            new ApplicationContextRunner().withConfiguration(AutoConfigurations.of(AzureRedisAutoConfiguration.class))
-                                          .withUserConfiguration(TestConfiguration.class);
+            new ApplicationContextRunner().withConfiguration(AutoConfigurations.of(AzureRedisAutoConfiguration.class));
 
     @Test
     public void testAzureRedisDisabled() {
@@ -46,14 +45,16 @@ public class AzureRedisAutoConfigurationTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testAzureRedisPropertiesIllegal(){
-            this.contextRunner.withPropertyValues("spring.cloud.azure.redis.name=")
-                    .run(context -> context.getBean(AzureRedisProperties.class));
+    public void testAzureRedisPropertiesIllegal() {
+        this.contextRunner.withUserConfiguration(TestConfiguration.class)
+                          .withPropertyValues("spring.cloud.azure.redis.name=")
+                          .run(context -> context.getBean(AzureRedisProperties.class));
     }
 
     @Test
     public void testAzureRedisPropertiesConfigured() {
-        this.contextRunner.withPropertyValues("spring.cloud.azure.redis.name=redis").run(context -> {
+        this.contextRunner.withUserConfiguration(TestConfiguration.class).
+                withPropertyValues("spring.cloud.azure.redis.name=redis").run(context -> {
             assertThat(context).hasSingleBean(AzureRedisProperties.class);
             assertThat(context.getBean(AzureRedisProperties.class).getName()).isEqualTo("redis");
             assertThat(context).hasSingleBean(RedisProperties.class);
