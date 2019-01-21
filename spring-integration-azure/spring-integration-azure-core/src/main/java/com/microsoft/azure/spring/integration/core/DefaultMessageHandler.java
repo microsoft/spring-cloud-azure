@@ -84,7 +84,7 @@ public class DefaultMessageHandler extends AbstractMessageHandler {
         future.handle((t, ex) -> {
             if (ex != null) {
                 if (log.isWarnEnabled()) {
-                    log.warn("{} sent failed in async mode", message);
+                    log.warn("{} sent failed in async mode due to {}", message, ex.getMessage());
                 }
                 if (this.sendCallback != null) {
                     this.sendCallback.onFailure(ex);
