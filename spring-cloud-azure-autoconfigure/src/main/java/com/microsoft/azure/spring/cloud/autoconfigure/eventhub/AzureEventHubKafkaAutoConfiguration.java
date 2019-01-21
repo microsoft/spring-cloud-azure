@@ -9,8 +9,10 @@ package com.microsoft.azure.spring.cloud.autoconfigure.eventhub;
 import com.microsoft.azure.management.eventhub.AuthorizationRule;
 import com.microsoft.azure.management.eventhub.EventHubAuthorizationKey;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
+import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
@@ -29,6 +31,7 @@ import java.util.Arrays;
  * @author Warren Zhu
  */
 @Configuration
+@AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @ConditionalOnClass(KafkaTemplate.class)
 @ConditionalOnProperty(prefix = "spring.cloud.azure.eventhub", value = "namespace")
 @EnableConfigurationProperties(AzureEventHubProperties.class)
