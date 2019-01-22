@@ -48,6 +48,7 @@ spring.cloud.azure.config.stores[0].name | Name of the configuration store, requ
 spring.cloud.azure.config.stores[0].prefix | The prefix of the key name in the configuration store, e.g., /my-prefix/application/key.name | No |  null
 spring.cloud.azure.config.stores[0].connection-string | Required when `name` is empty, otherwise, can be loaded automatically on Azure Virtual Machine or App Service | Conditional | null
 spring.cloud.azure.config.stores[0].label | Comma separated list of label values, by default will query empty labeled value. If you want to specify *empty*(null) label explicitly, use `%00`, e.g., spring.cloud.azure.config.stores[0].label=%00,v0 | No |  null
+spring.cloud.azure.config.stores[0].watched-key | The single watched key(or by default *) used to indicate configuration change.  | No | *
 
 
 ## Advanced usage
@@ -73,16 +74,20 @@ Multiple labels can be separated with comma, if duplicate keys exists for multip
 ### Watch configuration change
 Watch feature allows the application to load the latest property value from configuration store automatically, without restarting the application.
 
-By default, the watch feature is enabled. It can be disabled with below configuration:
+By default, the watch feature is disabled. It can be enabled with below configuration:
 ```
-spring.cloud.azure.config.watch.enabled=false
+spring.cloud.azure.config.watch.enabled=true
 ```
 
-Change property key in the configuration store on Azure Portal, e.g., /application/config.message, log similar with below will be printed on the console.
+Change certain property key in the configuration store on Azure Portal, e.g., /application/config.message, log similar with below will be printed on the console.
 ```
 INFO 17496 --- [TaskScheduler-1] o.s.c.e.event.RefreshEventListener       : Refresh keys changed: [config.message]
 ```
 The application now will be using the updated properties. By default, `@ConfigurationProperties` annotated beans will be automatically refreshed. Use `@RefreshScope` on beans which are required to be refreshed when properties are changed.
+By default, all the keys in a configuration store matching configured application name and prefix will be watched. To prevent configuration changes are picked up in the middle of an update of multiple keys, you are recommended to use the watched-key property to watch a specific key that signals the completion of your update so all configuration changes can be refreshed together.
+```
+spring.cloud.azure.config.stores[0].watched-key=[my-watched-key]
+```
 
 ### Failfast
 Failfast feature decides whether throw RuntimeException or not when exception happens. By default, failfast is enabled, it can be disabled with below configuration:

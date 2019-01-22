@@ -5,6 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import com.microsoft.azure.spring.cloud.config.domain.QueryOptions;
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -14,7 +15,6 @@ import org.springframework.util.StringUtils;
 
 import java.net.URISyntaxException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +38,7 @@ public class RestAPIBuilderTest {
 
         expected.expect(IllegalArgumentException.class);
         expected.expectMessage("Endpoint should not be empty or null");
-        builder.buildKVApi(null, Collections.EMPTY_LIST);
+        builder.buildKVApi(new QueryOptions());
     }
 
     @Test
@@ -47,13 +47,13 @@ public class RestAPIBuilderTest {
 
         expected.expect(IllegalArgumentException.class);
         expected.expectMessage("Endpoint should not be empty or null");
-        builder.buildKVApi(null, Collections.EMPTY_LIST);
+        builder.buildKVApi(new QueryOptions());
     }
 
     @Test
     public void kvAPIShouldInitPath() throws URISyntaxException {
         final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT).withPath(null);
-        String apiPath = builder.buildKVApi(null, Collections.EMPTY_LIST);
+        String apiPath = builder.buildKVApi(new QueryOptions());
         URIBuilder uriBuilder = new URIBuilder(apiPath);
 
         Assert.assertTrue("KV API path is not empty", StringUtils.hasText(KV_API));
@@ -63,7 +63,7 @@ public class RestAPIBuilderTest {
     @Test
     public void nullLabelCanBeQueried() {
         final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT);
-        String apiPath = builder.buildKVApi(null, Collections.EMPTY_LIST);
+        String apiPath = builder.buildKVApi(new QueryOptions());
 
         Assert.assertTrue("Null label should have query param %00.", apiPath.endsWith(NULL_LABEL_QUERY));
     }
@@ -72,15 +72,16 @@ public class RestAPIBuilderTest {
     public void nullLabelValueQueriedAsEmptyLabel() {
         final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT);
 
-        String apiPath = builder.buildKVApi(null, Collections.EMPTY_LIST);
+        String apiPath = builder.buildKVApi(new QueryOptions());
         Assert.assertTrue("Empty label should have query param %00.", apiPath.endsWith(NULL_LABEL_QUERY));
     }
 
     @Test
     public void emptyStringLabelValueQueriedAsEmptyLabel() {
         final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT);
+        final QueryOptions options = new QueryOptions().withLabels(Arrays.asList("   ", "  "));
 
-        String apiPath = builder.buildKVApi(null, Arrays.asList("   ", "  "));
+        String apiPath = builder.buildKVApi(options);
         Assert.assertTrue("Whitespace consisted label should have query param %00.",
                 apiPath.endsWith(NULL_LABEL_QUERY));
     }
@@ -88,7 +89,9 @@ public class RestAPIBuilderTest {
     @Test
     public void bothKeyAndLabelCanBeConfigured() throws URISyntaxException {
         final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT);
-        String apiPath = builder.buildKVApi(FAKE_KEY, FAKE_LABEL);
+        final QueryOptions options = new QueryOptions().withKeyNames(FAKE_KEY).withLabels(FAKE_LABEL);
+
+        String apiPath = builder.buildKVApi(options);
         URIBuilder uriBuilder = new URIBuilder(apiPath);
 
         List<String> keyParams = getParamValuesFrom(uriBuilder, KEY_PARAM);
@@ -104,7 +107,9 @@ public class RestAPIBuilderTest {
     @Test
     public void multiLabelsCanBeConfigured() throws URISyntaxException {
         final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT);
-        String apiPath = builder.buildKVApi(FAKE_KEY, MULTI_FAKE_LABELS);
+        final QueryOptions options = new QueryOptions().withKeyNames(FAKE_KEY).withLabels(MULTI_FAKE_LABELS);
+
+        String apiPath = builder.buildKVApi(options);
         URIBuilder uriBuilder = new URIBuilder(apiPath);
 
         List<String> keyParams = getParamValuesFrom(uriBuilder, KEY_PARAM);

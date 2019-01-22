@@ -176,11 +176,15 @@ class ConfigStore {
     @Nullable
     private String label;
 
+    // The keys to be watched, won't take effect if watch not enabled
+    @NotEmpty
+    private String watchedKey = "*";
+
     public ConfigStore() {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -211,6 +215,14 @@ class ConfigStore {
         this.label = label;
     }
 
+    public String getWatchedKey() {
+        return watchedKey;
+    }
+
+    public void setWatchedKey(String watchedKey) {
+        this.watchedKey = watchedKey;
+    }
+
     @PostConstruct
     public void validateAndInit() {
         if (StringUtils.hasText(label)) {
@@ -226,6 +238,19 @@ class ConfigStore {
                 throw new IllegalStateException("Endpoint in connection string is not a valid URI.", e);
             }
         }
+
+        Assert.isTrue(watchedKeyValid(this.watchedKey), "Watched key can only be a single asterisk(*) or " +
+                "a specific key without asterisk(*)");
+    }
+
+    private boolean watchedKeyValid(String watchedKey) {
+        if (!StringUtils.hasText(watchedKey)) {
+            return false;
+        }
+
+        String trimmedKey = watchedKey.trim();
+        // Watched key can either be single asterisk(*) or a specific key without asterisk(*)
+        return trimmedKey.equals("*") || !trimmedKey.contains("*");
     }
 
     /**
