@@ -71,7 +71,6 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildRevisionsApi(options);
 
         return getKeys(requestUri, options, storeName);
-
     }
 
     private List<KeyValueItem> getKeys(String requestUri, QueryOptions options, String storeName) {

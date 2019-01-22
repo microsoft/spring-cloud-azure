@@ -163,17 +163,9 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
     }
 
     private String genKey(@Nullable String prefix, @NonNull String context, @Nullable String watchedKey) {
-        String result = context;
-        if (prefix != null) {
-            result = prefix + context;
-        }
+        String trimmedWatchedKey = StringUtils.hasText(watchedKey) ? watchedKey.trim() : "*";
+        String trimmedPrefix = StringUtils.hasText(prefix) ? prefix.trim() : "";
 
-        if (StringUtils.hasText(watchedKey)) {
-            result = result + watchedKey;
-        } else {
-            result = result + "*";
-        }
-
-        return result;
+        return String.format("%s%s%s", trimmedPrefix, context, trimmedWatchedKey);
     }
 }
