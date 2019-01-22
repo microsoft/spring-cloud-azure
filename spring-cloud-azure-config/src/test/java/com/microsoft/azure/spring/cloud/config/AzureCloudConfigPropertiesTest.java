@@ -97,6 +97,15 @@ public class AzureCloudConfigPropertiesTest {
     }
 
     @Test
+    public void watchedKeyCanNotBeKeyPattern() {
+        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
+                propPair(WATCHED_KEY_PROP, TEST_WATCH_KEY_PATTERN)).run(context -> {
+           assertThat(context).getFailure().hasStackTraceContaining("Watched key can only be a single asterisk(*) " +
+            "or a specific key without asterisk(*)");
+        });
+    }
+
+    @Test
     public void storeNameCanBeInitIfConnectionStringConfigured() {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                 propPair(STORE_NAME_PROP, "")).run(context -> {

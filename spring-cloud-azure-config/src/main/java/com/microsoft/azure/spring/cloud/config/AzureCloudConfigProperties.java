@@ -238,6 +238,19 @@ class ConfigStore {
                 throw new IllegalStateException("Endpoint in connection string is not a valid URI.", e);
             }
         }
+
+        Assert.isTrue(watchedKeyValid(this.watchedKey), "Watched key can only be a single asterisk(*) or " +
+                "a specific key without asterisk(*)");
+    }
+
+    private boolean watchedKeyValid(String watchedKey) {
+        if (!StringUtils.hasText(watchedKey)) {
+            return false;
+        }
+
+        String trimmedKey = watchedKey.trim();
+        // Watched key can either be single asterisk(*) or a specific key without asterisk(*)
+        return trimmedKey.equals("*") || !trimmedKey.contains("*");
     }
 
     /**
