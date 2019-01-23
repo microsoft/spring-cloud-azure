@@ -21,7 +21,8 @@
     <properties>
         <powermock.version>1.7.1</powermock.version>
         <mockito.version>2.8.9</mockito.version>
-        <spring.cloud.version>Greenwich.RC1</spring.cloud.version>
+        <spring.cloud.version>Greenwich.RC2</spring.cloud.version>
+        <spring-cloud-stream.version>Fishtown.RELEASE</spring-cloud-stream.version>
         <spring.boot.version>2.1.0.RC1</spring.boot.version>
         <lombok.version>1.16.20</lombok.version>
         <commons.io.version>2.6</commons.io.version>
@@ -37,6 +38,14 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-stream-dependencies</artifactId>
+                <version>${spring-cloud-stream.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
