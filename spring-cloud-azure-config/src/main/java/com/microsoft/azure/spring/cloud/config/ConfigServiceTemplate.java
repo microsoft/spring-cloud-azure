@@ -133,7 +133,8 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
     private void throttleOnResponse(@NonNull CloseableHttpResponse response) {
         Header retryHeader = response.getFirstHeader(RETRY_AFTER_MS_HEADER);
         if (retryHeader == null || Long.valueOf(retryHeader.getValue()) <= 0) {
-            return;
+            throw new IllegalStateException(RETRY_AFTER_MS_HEADER + " header is missing or with illegal value for " +
+                    "status code " + TOO_MANY_REQ_CODE);
         }
 
         long sleepMillSecs = Long.valueOf(retryHeader.getValue());
