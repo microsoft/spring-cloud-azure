@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>spring-cloud-starter-azure-eventhub-kafka</artifactId>
+    <artifactId>spring-cloud-starter-azure-eventhubs-kafka</artifactId>
 
     <properties>
         <main.basedir>${basedir}/../..</main.basedir>

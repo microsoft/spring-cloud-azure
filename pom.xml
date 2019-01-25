@@ -21,7 +21,7 @@
         <module>spring-cloud-azure-autoconfigure</module>
         <module>spring-cloud-azure-context</module>
         <module>spring-cloud-azure-dependencies</module>
-        <module>spring-cloud-azure-eventhub-stream-binder</module>
+        <module>spring-cloud-azure-eventhubs-stream-binder</module>
         <module>spring-cloud-azure-keyvault-config</module>
         <module>spring-cloud-azure-messaging</module>
         <module>spring-cloud-azure-samples</module>

@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>spring-integration-eventhub</artifactId>
+    <artifactId>spring-integration-eventhubs</artifactId>
 
     <properties>
         <main.basedir>${basedir}/../..</main.basedir>

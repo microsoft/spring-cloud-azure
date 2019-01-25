@@ -14,7 +14,7 @@
     <name>Spring Integration Azure</name>
 
     <modules>
-        <module>spring-integration-eventhub</module>
+        <module>spring-integration-eventhubs</module>
         <module>spring-integration-azure-core</module>
         <module>spring-integration-servicebus</module>
         <module>spring-integration-storage-queue</module>

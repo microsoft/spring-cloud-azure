@@ -68,7 +68,7 @@
         <!-- Event Hub -->
         <dependency>
             <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-integration-eventhub</artifactId>
+            <artifactId>spring-integration-eventhubs</artifactId>
             <optional>true</optional>
         </dependency>
 
