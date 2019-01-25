@@ -75,7 +75,7 @@
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
-                <artifactId>spring-integration-eventhub</artifactId>
+                <artifactId>spring-integration-eventhubs</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -95,7 +95,7 @@
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
-                <artifactId>spring-cloud-azure-eventhub-stream-binder</artifactId>
+                <artifactId>spring-cloud-azure-eventhubs-stream-binder</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -175,12 +175,12 @@
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
-                <artifactId>spring-cloud-starter-azure-eventhub</artifactId>
+                <artifactId>spring-cloud-starter-azure-eventhubs</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
-                <artifactId>spring-cloud-starter-azure-eventhub-kafka</artifactId>
+                <artifactId>spring-cloud-starter-azure-eventhubs-kafka</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
