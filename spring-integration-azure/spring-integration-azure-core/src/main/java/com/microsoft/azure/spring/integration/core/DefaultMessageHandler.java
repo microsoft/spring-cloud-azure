@@ -58,7 +58,7 @@ public class DefaultMessageHandler extends AbstractMessageHandler {
     }
 
     @Override
-    protected void onInit() throws Exception {
+    protected void onInit() {
         super.onInit();
         this.evaluationContext = ExpressionUtils.createStandardEvaluationContext(getBeanFactory());
         log.info("Started DefaultMessageHandler with properties: {}", buildPropertiesMap());
