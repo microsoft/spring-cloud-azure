@@ -68,7 +68,7 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
     private EventHubClient createEventHubClient(String eventHubName) {
         try {
             return EventHubClient.createSync(this.connectionStringProvider.getConnectionString(eventHubName),
-                    Executors.newSingleThreadExecutor());
+                    Executors.newSingleThreadScheduledExecutor());
         } catch (EventHubException | IOException e) {
             throw new EventHubRuntimeException("Error when creating event hub client", e);
         }
