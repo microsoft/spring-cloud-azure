@@ -28,7 +28,7 @@
         <google.guava.version>20.0</google.guava.version>
         <azure.applicationinsights.version>2.0.1</azure.applicationinsights.version>
         <azure.sdk.version>1.14.0</azure.sdk.version>
-        <azure.eventhubs.eph.version>1.0.0</azure.eventhubs.eph.version>
+        <azure.eventhubs.eph.version>2.4.0</azure.eventhubs.eph.version>
         <azure.keyvault.version>1.0.0</azure.keyvault.version>
         <azure.client.version>1.6.0</azure.client.version>
         <azure.servicebus.version>1.2.5</azure.servicebus.version>
