@@ -27,6 +27,14 @@ public class AzureCloudConfigAutoConfigurationTest {
                     AzureCloudConfigAutoConfiguration.class));
 
     @Test
+    public void watchEnabledNotConfiguredShouldNotCreateWatch() {
+        contextRunner.withPropertyValues(propPair(CONFIG_ENABLED_PROP, "true")).run(context -> {
+            assertThat(context).doesNotHaveBean(AzureCloudConfigWatch.class);
+            assertThat(context).doesNotHaveBean(WATCH_TASK_SCHEDULER_NAME);
+        });
+    }
+
+    @Test
     public void configNotEnabledWatchNotEnabledShouldNotCreateWatch() {
         contextRunner.withPropertyValues(propPair(CONFIG_ENABLED_PROP, "false"),
                 propPair(WATCH_ENABLED_PROP, "false")).run(context -> {
