@@ -150,6 +150,13 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
      * Composite watched key names separated by comma, the key names is made up of: prefix, context and key name pattern
      * e.g., prefix: /config, context: /application, watched key: my.watch.key
      *      will return: /config/application/my.watch.key
+     *
+     * The returned watched key will be one key pattern, one or multiple specific keys
+     * e.g., 1) *
+     *       2) /application/abc*
+     *       3) /application/abc
+     *       4) /application/abc,xyz
+     *
      * @param store the {@code store} for which to composite watched key names
      * @param storeContextsMap map storing store name and List of context key-value pair
      * @return the full name of the key mapping to the configuration store
@@ -159,7 +166,15 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
         String watchedKey = store.getWatchedKey().trim();
         List<String> contexts = storeContextsMap.get(store.getName());
 
-        return contexts.stream().map(ctx -> genKey(prefix, ctx, watchedKey)).collect(Collectors.joining(","));
+        String watchedKeys = contexts.stream().map(ctx -> genKey(prefix, ctx, watchedKey))
+                .collect(Collectors.joining(","));
+
+        if (watchedKeys.contains(",") && watchedKeys.contains("*")) {
+            // Multi keys including one or more key patterns is not supported by API, will watch all keys(*) instead
+            watchedKeys = "*";
+        }
+
+        return watchedKeys;
     }
 
     private String genKey(@Nullable String prefix, @NonNull String context, @Nullable String watchedKey) {
