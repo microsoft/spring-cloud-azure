@@ -22,8 +22,7 @@ public class AzureCloudConfigAutoConfiguration {
 
     @Configuration
     @ConditionalOnClass(RefreshEndpoint.class)
-    @ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "watch.enabled",
-            matchIfMissing = true)
+    @ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "watch.enabled")
     static class CloudWatchAutoConfiguration {
         @Bean
         public AzureCloudConfigWatch getConfigWatch(ConfigServiceOperations operations,
