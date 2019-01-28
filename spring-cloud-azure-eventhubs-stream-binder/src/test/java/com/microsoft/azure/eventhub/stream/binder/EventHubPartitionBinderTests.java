@@ -4,13 +4,14 @@
  * license information.
  */
 
-package com.microsoft.azure.servicebus.stream.binder;
+package com.microsoft.azure.eventhub.stream.binder;
 
-import com.microsoft.azure.servicebus.QueueClient;
-import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusQueueConsumerProperties;
-import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusQueueProducerProperties;
-import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusQueueClientFactory;
-import com.microsoft.azure.spring.integration.servicebus.queue.support.ServiceBusQueueTestOperation;
+import com.microsoft.azure.eventhub.stream.binder.properties.EventHubConsumerProperties;
+import com.microsoft.azure.eventhub.stream.binder.properties.EventHubProducerProperties;
+import com.microsoft.azure.eventprocessorhost.PartitionContext;
+import com.microsoft.azure.spring.integration.core.api.StartPosition;
+import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
+import com.microsoft.azure.spring.integration.eventhub.support.EventHubTestOperation;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -32,8 +33,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
@@ -42,17 +41,17 @@ import static org.mockito.Mockito.when;
  * @author Warren Zhu
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ServiceBusQueuePartitionBinderTests extends
-        PartitionCapableBinderTests<ServiceBusQueueTestBinder,
-                ExtendedConsumerProperties<ServiceBusQueueConsumerProperties>,
-                ExtendedProducerProperties<ServiceBusQueueProducerProperties>> {
-    @Mock
-    ServiceBusQueueClientFactory clientFactory;
+public class EventHubPartitionBinderTests extends
+        PartitionCapableBinderTests<EventHubTestBinder, ExtendedConsumerProperties<EventHubConsumerProperties>,
+                ExtendedProducerProperties<EventHubProducerProperties>> {
 
     @Mock
-    QueueClient queueClient;
+    EventHubClientFactory clientFactory;
 
-    private ServiceBusQueueTestBinder binder;
+    @Mock
+    PartitionContext context;
+
+    private EventHubTestBinder binder;
 
     @BeforeClass
     public static void enableTests() {
@@ -60,12 +59,11 @@ public class ServiceBusQueuePartitionBinderTests extends
 
     @Before
     public void setUp() {
-        when(this.clientFactory.getOrCreateClient(anyString()))
-                .thenReturn(this.queueClient);
         CompletableFuture<Void> future = new CompletableFuture<>();
         future.complete(null);
-        when(this.queueClient.completeAsync(any())).thenReturn(future);
-        this.binder = new ServiceBusQueueTestBinder(new ServiceBusQueueTestOperation(this.clientFactory));
+        when(this.context.getPartitionId()).thenReturn("1");
+        when(this.context.checkpoint()).thenReturn(future);
+        this.binder = new EventHubTestBinder(new EventHubTestOperation(clientFactory, () -> context));
     }
 
     @Override
@@ -75,26 +73,27 @@ public class ServiceBusQueuePartitionBinderTests extends
 
     @Override
     protected String getClassUnderTestName() {
-        return ServiceBusQueueTestBinder.class.getSimpleName();
+        return EventHubTestBinder.class.getSimpleName();
     }
 
     @Override
-    protected ServiceBusQueueTestBinder getBinder() throws Exception {
+    protected EventHubTestBinder getBinder() throws Exception {
         return this.binder;
     }
 
     @Override
-    protected ExtendedConsumerProperties<ServiceBusQueueConsumerProperties> createConsumerProperties() {
-        ExtendedConsumerProperties<ServiceBusQueueConsumerProperties> properties =
-                new ExtendedConsumerProperties<>(new ServiceBusQueueConsumerProperties());
+    protected ExtendedConsumerProperties<EventHubConsumerProperties> createConsumerProperties() {
+        ExtendedConsumerProperties<EventHubConsumerProperties> properties =
+                new ExtendedConsumerProperties<>(new EventHubConsumerProperties());
         properties.setHeaderMode(HeaderMode.embeddedHeaders);
+        properties.getExtension().setStartPosition(StartPosition.EARLIEST);
         return properties;
     }
 
     @Override
-    protected ExtendedProducerProperties<ServiceBusQueueProducerProperties> createProducerProperties() {
-        ExtendedProducerProperties<ServiceBusQueueProducerProperties> properties =
-                new ExtendedProducerProperties<>(new ServiceBusQueueProducerProperties());
+    protected ExtendedProducerProperties<EventHubProducerProperties> createProducerProperties() {
+        ExtendedProducerProperties<EventHubProducerProperties> properties =
+                new ExtendedProducerProperties<>(new EventHubProducerProperties());
         properties.setHeaderMode(HeaderMode.embeddedHeaders);
         return properties;
     }
@@ -110,16 +109,6 @@ public class ServiceBusQueuePartitionBinderTests extends
     }
 
     @Override
-    public void testOneRequiredGroup() {
-        // Required group test rely on unimplemented start position of consumer properties
-    }
-
-    @Override
-    public void testTwoRequiredGroups() {
-        // Required group test rely on unimplemented start position of consumer properties
-    }
-
-    @Override
     public void testPartitionedModuleJava() {
         // Partitioned consumer mode unsupported yet
         // since event hub processor can't only process certain partition
@@ -129,11 +118,6 @@ public class ServiceBusQueuePartitionBinderTests extends
     public void testPartitionedModuleSpEL() {
         // Partitioned consumer mode unsupported
         // since event hub processor can't only process certain partition
-    }
-
-    @Override
-    public void testAnonymousGroup() {
-        // service bus queue binder not support anonymous group
     }
 
     // Same logic as super.testSendAndReceiveNoOriginalContentType() except one line commented below

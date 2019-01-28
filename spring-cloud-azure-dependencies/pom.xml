@@ -21,15 +21,14 @@
     <properties>
         <powermock.version>1.7.1</powermock.version>
         <mockito.version>2.8.9</mockito.version>
-        <spring.cloud.version>Greenwich.RC1</spring.cloud.version>
-        <spring.boot.version>2.1.0.RC1</spring.boot.version>
-        <lombok.version>1.16.20</lombok.version>
+        <spring.cloud.version>Greenwich.RELEASE</spring.cloud.version>
+        <spring.boot.version>2.1.2.RELEASE</spring.boot.version>
         <commons.io.version>2.6</commons.io.version>
         <hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
         <google.guava.version>20.0</google.guava.version>
         <azure.applicationinsights.version>2.0.1</azure.applicationinsights.version>
         <azure.sdk.version>1.14.0</azure.sdk.version>
-        <azure.eventhubs.eph.version>1.0.0</azure.eventhubs.eph.version>
+        <azure.eventhubs.eph.version>2.4.0</azure.eventhubs.eph.version>
         <azure.keyvault.version>1.0.0</azure.keyvault.version>
         <azure.client.version>1.6.0</azure.client.version>
         <azure.servicebus.version>1.2.5</azure.servicebus.version>
@@ -76,7 +75,7 @@
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
-                <artifactId>spring-integration-eventhub</artifactId>
+                <artifactId>spring-integration-eventhubs</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -96,7 +95,7 @@
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
-                <artifactId>spring-cloud-azure-eventhub-stream-binder</artifactId>
+                <artifactId>spring-cloud-azure-eventhubs-stream-binder</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -176,12 +175,12 @@
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
-                <artifactId>spring-cloud-starter-azure-eventhub</artifactId>
+                <artifactId>spring-cloud-starter-azure-eventhubs</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
-                <artifactId>spring-cloud-starter-azure-eventhub-kafka</artifactId>
+                <artifactId>spring-cloud-starter-azure-eventhubs-kafka</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
