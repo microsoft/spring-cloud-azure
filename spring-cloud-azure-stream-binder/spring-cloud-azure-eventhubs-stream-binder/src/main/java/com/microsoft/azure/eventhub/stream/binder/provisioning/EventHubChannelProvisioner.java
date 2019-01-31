@@ -8,18 +8,12 @@ package com.microsoft.azure.eventhub.stream.binder.provisioning;
 
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubConsumerProperties;
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubProducerProperties;
-import com.microsoft.azure.management.eventhub.EventHub;
-import com.microsoft.azure.management.eventhub.EventHubNamespace;
-import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
-import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.cloud.stream.provisioning.ProvisioningException;
 import org.springframework.cloud.stream.provisioning.ProvisioningProvider;
-import org.springframework.lang.NonNull;
-import org.springframework.util.Assert;
 
 /**
  * @author Warren Zhu

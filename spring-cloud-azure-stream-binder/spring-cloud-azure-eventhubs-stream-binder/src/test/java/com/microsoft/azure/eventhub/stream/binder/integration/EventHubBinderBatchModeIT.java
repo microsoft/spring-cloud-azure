@@ -6,8 +6,6 @@
 
 package com.microsoft.azure.eventhub.stream.binder.integration;
 
-import com.microsoft.azure.spring.integration.core.AzureHeaders;
-import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,6 @@ import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.cloud.stream.messaging.Source;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -27,15 +24,15 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = EventHubBinderManualModeIT.TestConfig.class)
+@SpringBootTest(classes = EventHubBinderBatchModeIT.TestConfig.class)
 @TestPropertySource(locations = "classpath:application-test.properties",
-        properties = "spring.cloud.stream.eventhub.bindings.input.consumer.checkpoint-mode=MANUAL")
-public class EventHubBinderManualModeIT {
+        properties = "spring.cloud.stream.eventhub.bindings.input.consumer.checkpoint-mode=BATCH")
+public class EventHubBinderBatchModeIT {
+
+    private static String message = UUID.randomUUID().toString();
 
     @Autowired
     Source source;
-
-    private static String message = UUID.randomUUID().toString();
 
     @Test
     public void testSendAndReceiveMessage() {
@@ -47,14 +44,9 @@ public class EventHubBinderManualModeIT {
     public static class TestConfig {
 
         @StreamListener(Sink.INPUT)
-        public void handleMessage(String message, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
-            assertThat(message.equals(EventHubBinderManualModeIT.message)).isTrue();
-            checkpointer.success().handle((r, ex) -> {
-                assertThat(ex == null).isTrue();
-                return null;
-            });
+        public void handleMessage(String message) {
+            assertThat(message.equals(EventHubBinderBatchModeIT.message)).isTrue();
         }
-
 
     }
 }

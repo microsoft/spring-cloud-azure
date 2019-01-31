@@ -29,10 +29,9 @@ import static org.assertj.core.api.Assertions.assertThat;
         properties = "spring.cloud.stream.eventhub.bindings.input.producer.sync=true")
 public class EventHubBinderSyncModeIT {
 
+    private static String message = UUID.randomUUID().toString();
     @Autowired
     Source source;
-
-    private static String message = UUID.randomUUID().toString();
 
     @Test
     public void testSendAndReceiveMessage() {

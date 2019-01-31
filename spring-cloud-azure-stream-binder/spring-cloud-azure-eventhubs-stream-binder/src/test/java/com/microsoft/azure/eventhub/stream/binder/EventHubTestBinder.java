@@ -25,8 +25,9 @@ public class EventHubTestBinder extends
                 ExtendedProducerProperties<EventHubProducerProperties>> {
 
     EventHubTestBinder(EventHubOperation eventHubOperation) {
-        EventHubMessageChannelBinder binder = new EventHubMessageChannelBinder(BinderHeaders.STANDARD_HEADERS,
-                new EventHubChannelProvisioner(), eventHubOperation);
+        EventHubMessageChannelBinder binder =
+                new EventHubMessageChannelBinder(BinderHeaders.STANDARD_HEADERS, new EventHubChannelProvisioner(),
+                        eventHubOperation);
         GenericApplicationContext context = new GenericApplicationContext();
         binder.setApplicationContext(context);
         this.setBinder(binder);

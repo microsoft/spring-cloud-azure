@@ -24,15 +24,14 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = EventHubBinderBatchModeIT.TestConfig.class)
+@SpringBootTest(classes = EventHubBinderRecordModeIT.TestConfig.class)
 @TestPropertySource(locations = "classpath:application-test.properties",
-        properties = "spring.cloud.stream.eventhub.bindings.input.consumer.checkpoint-mode=BATCH")
-public class EventHubBinderBatchModeIT {
-
-    @Autowired
-    Source source;
+        properties = "spring.cloud.stream.eventhub.bindings.input.consumer.checkpoint-mode=RECORD")
+public class EventHubBinderRecordModeIT {
 
     private static String message = UUID.randomUUID().toString();
+    @Autowired
+    Source source;
 
     @Test
     public void testSendAndReceiveMessage() {
@@ -45,7 +44,7 @@ public class EventHubBinderBatchModeIT {
 
         @StreamListener(Sink.INPUT)
         public void handleMessage(String message) {
-            assertThat(message.equals(EventHubBinderBatchModeIT.message)).isTrue();
+            assertThat(message.equals(EventHubBinderRecordModeIT.message)).isTrue();
         }
 
     }
