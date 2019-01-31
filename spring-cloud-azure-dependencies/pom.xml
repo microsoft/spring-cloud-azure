@@ -95,6 +95,11 @@
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
+                <artifactId>spring-cloud-azure-servicebus-stream-binder-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-azure-eventhubs-stream-binder</artifactId>
                 <version>${project.version}</version>
             </dependency>
