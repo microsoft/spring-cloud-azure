@@ -7,6 +7,8 @@
 package com.microsoft.azure.servicebus.stream.binder;
 
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusConsumerProperties;
+import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusExtendedBindingProperties;
+import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusQueueExtendedBindingProperties;
 import com.microsoft.azure.servicebus.stream.binder.provisioning.ServiceBusChannelProvisioner;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.SendOperation;
@@ -20,7 +22,8 @@ import org.springframework.lang.NonNull;
 /**
  * @author Warren Zhu
  */
-public class ServiceBusQueueMessageChannelBinder extends ServiceBusMessageChannelBinder {
+public class ServiceBusQueueMessageChannelBinder extends
+        ServiceBusMessageChannelBinder<ServiceBusQueueExtendedBindingProperties> {
 
     private final ServiceBusQueueOperation serviceBusQueueOperation;
 
@@ -29,6 +32,7 @@ public class ServiceBusQueueMessageChannelBinder extends ServiceBusMessageChanne
             @NonNull ServiceBusQueueOperation serviceBusQueueOperation) {
         super(headersToEmbed, provisioningProvider);
         this.serviceBusQueueOperation = serviceBusQueueOperation;
+        this.bindingProperties = new ServiceBusQueueExtendedBindingProperties();
     }
 
     @Override

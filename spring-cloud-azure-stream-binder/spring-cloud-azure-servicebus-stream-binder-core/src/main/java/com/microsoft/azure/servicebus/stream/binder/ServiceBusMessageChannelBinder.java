@@ -22,13 +22,13 @@ import org.springframework.messaging.MessageHandler;
 /**
  * @author Warren Zhu
  */
-public abstract class ServiceBusMessageChannelBinder extends
+public abstract class ServiceBusMessageChannelBinder<T extends ServiceBusExtendedBindingProperties> extends
         AbstractMessageChannelBinder<ExtendedConsumerProperties<ServiceBusConsumerProperties>,
                 ExtendedProducerProperties<ServiceBusProducerProperties>, ServiceBusChannelProvisioner>
         implements
         ExtendedPropertiesBinder<MessageChannel, ServiceBusConsumerProperties, ServiceBusProducerProperties> {
 
-    private ServiceBusExtendedBindingProperties bindingProperties = new ServiceBusExtendedBindingProperties();
+    protected T bindingProperties;
 
     public ServiceBusMessageChannelBinder(String[] headersToEmbed, ServiceBusChannelProvisioner provisioningProvider) {
         super(headersToEmbed, provisioningProvider);
@@ -71,7 +71,7 @@ public abstract class ServiceBusMessageChannelBinder extends
         return this.bindingProperties.getExtendedPropertiesEntryClass();
     }
 
-    public void setBindingProperties(ServiceBusExtendedBindingProperties bindingProperties) {
+    public void setBindingProperties(T bindingProperties) {
         this.bindingProperties = bindingProperties;
     }
 

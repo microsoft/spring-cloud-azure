@@ -15,9 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author Warren Zhu
  */
-public class ServiceBusExtendedBindingProperties
+public abstract class ServiceBusExtendedBindingProperties
         implements ExtendedBindingProperties<ServiceBusConsumerProperties, ServiceBusProducerProperties> {
-    private static final String DEFAULTS_PREFIX = "spring.cloud.stream.servicebus.default";
     private final Map<String, ServiceBusBindingProperties> bindings = new ConcurrentHashMap<>();
 
     @Override
@@ -28,11 +27,6 @@ public class ServiceBusExtendedBindingProperties
     @Override
     public ServiceBusProducerProperties getExtendedProducerProperties(String channelName) {
         return this.bindings.computeIfAbsent(channelName, key -> new ServiceBusBindingProperties()).getProducer();
-    }
-
-    @Override
-    public String getDefaultsPrefix() {
-        return DEFAULTS_PREFIX;
     }
 
     @Override

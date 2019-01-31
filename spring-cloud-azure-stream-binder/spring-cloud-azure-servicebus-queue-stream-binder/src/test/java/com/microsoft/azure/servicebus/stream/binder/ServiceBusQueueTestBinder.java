@@ -20,7 +20,8 @@ import org.springframework.context.support.GenericApplicationContext;
  * @author Warren Zhu
  */
 public class ServiceBusQueueTestBinder extends
-        AbstractTestBinder<ServiceBusMessageChannelBinder, ExtendedConsumerProperties<ServiceBusConsumerProperties>,
+        AbstractTestBinder<ServiceBusQueueMessageChannelBinder,
+                ExtendedConsumerProperties<ServiceBusConsumerProperties>,
                 ExtendedProducerProperties<ServiceBusProducerProperties>> {
 
     ServiceBusQueueTestBinder(ServiceBusQueueOperation operation) {
