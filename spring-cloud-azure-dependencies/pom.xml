@@ -115,6 +115,11 @@
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
+                <artifactId>spring-cloud-azure-config</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-azure-messaging</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -186,6 +191,11 @@
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-starter-azure-storage-queue</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>spring-cloud-starter-azure-config</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
