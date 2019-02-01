@@ -13,7 +13,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConfigurationProperties("spring.cloud.stream.servicebus.queue")
 public class ServiceBusQueueExtendedBindingProperties extends ServiceBusExtendedBindingProperties {
-    private static final String DEFAULTS_PREFIX = "spring.cloud.stream.servicebus.default";
+    private static final String DEFAULTS_PREFIX = "spring.cloud.stream.servicebus.queue.default";
 
     @Override
     public String getDefaultsPrefix() {
