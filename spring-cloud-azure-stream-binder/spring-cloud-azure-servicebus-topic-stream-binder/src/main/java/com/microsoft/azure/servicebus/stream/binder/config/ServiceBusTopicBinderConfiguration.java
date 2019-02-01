@@ -31,7 +31,7 @@ import javax.annotation.PostConstruct;
  */
 @Configuration
 @ConditionalOnMissingBean(Binder.class)
-@EnableConfigurationProperties({AzureServiceBusProperties.class, ServiceBusExtendedBindingProperties.class})
+@EnableConfigurationProperties({AzureServiceBusProperties.class, ServiceBusTopicExtendedBindingProperties.class})
 public class ServiceBusTopicBinderConfiguration {
 
     private static final String SERVICE_BUS_TOPIC_BINDER = "ServiceBusTopicBinder";
