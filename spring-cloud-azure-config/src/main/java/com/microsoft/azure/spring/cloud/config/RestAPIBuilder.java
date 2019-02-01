@@ -23,7 +23,7 @@ public class RestAPIBuilder {
     public static final String NULL_LABEL = "%00"; // label=%00 matches null label
     private static final String KEY_PARAM = "key";
     private static final String LABEL_PARAM = "label";
-    private static final String FIELDS_PARAM = "fields";
+    private static final String SELECT_PARAM = "$select";
 
     private String endpoint;
     private String path;
@@ -91,7 +91,7 @@ public class RestAPIBuilder {
         }
 
         if (StringUtils.hasText(options.getFieldsString())) {
-            this.addParam(FIELDS_PARAM, options.getFieldsString());
+            this.addParam(SELECT_PARAM, options.getFieldsString());
         }
     }
 
