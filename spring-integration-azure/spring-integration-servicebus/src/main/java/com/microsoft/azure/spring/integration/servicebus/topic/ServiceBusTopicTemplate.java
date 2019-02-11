@@ -10,6 +10,7 @@ import com.google.common.collect.Sets;
 import com.microsoft.azure.servicebus.ISubscriptionClient;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
+import com.microsoft.azure.spring.integration.servicebus.ServiceBusClientConfig;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusMessageHandler;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusTemplate;
@@ -70,14 +71,22 @@ public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicC
             Class<?> payloadType) {
         ISubscriptionClient subscriptionClient = this.senderFactory.getOrCreateSubscriptionClient(name, consumerGroup);
 
+        String threadPrefix = String.format("%s-%s-handler", name, consumerGroup);
+
         try {
+            subscriptionClient.setPrefetchCount(this.clientConfig.getPrefetchCount());
             subscriptionClient
                     .registerMessageHandler(new TopicMessageHandler(consumer, payloadType, subscriptionClient),
-                            options);
+                            buildHandlerOptions(), buildHandlerExectutors(threadPrefix));
         } catch (ServiceBusException | InterruptedException e) {
             log.error("Failed to register topic message handler", e);
             throw new ServiceBusRuntimeException("Failed to register topic message handler", e);
         }
+    }
+
+    @Override
+    public void setClientConfig(@NonNull ServiceBusClientConfig clientConfig) {
+        this.clientConfig = clientConfig;
     }
 
     protected class TopicMessageHandler<U> extends ServiceBusMessageHandler<U> {
