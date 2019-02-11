@@ -12,6 +12,9 @@ import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
  * @author Warren Zhu
  */
 public class ServiceBusConsumerProperties {
+    private int prefetchCount = 1;
+    private int concurrency = 1;
+
     private CheckpointMode checkpointMode = CheckpointMode.RECORD;
 
     public CheckpointMode getCheckpointMode() {
@@ -20,5 +23,34 @@ public class ServiceBusConsumerProperties {
 
     public void setCheckpointMode(CheckpointMode checkpointMode) {
         this.checkpointMode = checkpointMode;
+    }
+
+    /**
+     * Prefetch count of underlying service bus client.
+     *
+     * <p>
+     * Default : 1
+     */
+    public int getPrefetchCount() {
+        return prefetchCount;
+    }
+
+    public void setPrefetchCount(int prefetchCount) {
+        this.prefetchCount = prefetchCount;
+    }
+
+    /**
+     * Controls the max concurrent calls of service bus message handler and
+     * the size of fixed thread pool that handles user's business logic
+     *
+     * <p>
+     * Default : 1
+     */
+    public int getConcurrency() {
+        return concurrency;
+    }
+
+    public void setConcurrency(int concurrency) {
+        this.concurrency = concurrency;
     }
 }
