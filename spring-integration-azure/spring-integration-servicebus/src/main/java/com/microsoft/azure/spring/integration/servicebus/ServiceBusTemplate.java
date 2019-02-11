@@ -6,6 +6,7 @@
 
 package com.microsoft.azure.spring.integration.servicebus;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.MessageHandlerOptions;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
@@ -23,6 +24,9 @@ import org.springframework.util.StringUtils;
 
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * Azure service bus template to support send {@link Message} asynchronously
@@ -32,7 +36,8 @@ import java.util.concurrent.CompletableFuture;
 public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements SendOperation {
     private static final Logger log = LoggerFactory.getLogger(ServiceBusTemplate.class);
     protected final T senderFactory;
-    protected final MessageHandlerOptions options = new MessageHandlerOptions(1, false, Duration.ofMinutes(5));
+
+    protected ServiceBusClientConfig clientConfig = ServiceBusClientConfig.builder().build();
 
     protected CheckpointConfig checkpointConfig =
             CheckpointConfig.builder().checkpointMode(CheckpointMode.RECORD).build();
@@ -63,6 +68,16 @@ public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements Se
                 "Only MANUAL or RECORD checkpoint mode is supported in ServiceBusTemplate");
         this.checkpointConfig = checkpointConfig;
         log.info("ServiceBusTemplate checkpoint config becomes: {}", this.checkpointConfig);
+    }
+
+    protected MessageHandlerOptions buildHandlerOptions(){
+        return new MessageHandlerOptions(this.clientConfig.getConcurrency(), false, Duration.ofMinutes(5));
+    }
+
+    protected ExecutorService buildHandlerExectutors(String threadPrefix){
+        ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat
+                (threadPrefix + "-%d").build();
+        return Executors.newFixedThreadPool(this.clientConfig.getConcurrency(), threadFactory);
     }
 
     private String getPartitionKey(PartitionSupplier partitionSupplier) {
