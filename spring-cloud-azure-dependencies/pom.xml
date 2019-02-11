@@ -31,7 +31,7 @@
         <azure.eventhubs.eph.version>2.4.0</azure.eventhubs.eph.version>
         <azure.keyvault.version>1.0.0</azure.keyvault.version>
         <azure.client.version>1.6.0</azure.client.version>
-        <azure.servicebus.version>1.2.5</azure.servicebus.version>
+        <azure.servicebus.version>1.2.8</azure.servicebus.version>
     </properties>
 
     <dependencyManagement>
