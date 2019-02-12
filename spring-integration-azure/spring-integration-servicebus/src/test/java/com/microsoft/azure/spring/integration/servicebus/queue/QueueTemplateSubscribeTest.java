@@ -16,6 +16,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.concurrent.ExecutorService;
+
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -51,7 +53,8 @@ public class QueueTemplateSubscribeTest extends SubscribeOperationTest<ServiceBu
     @Override
     protected void verifySubscriberRegistered(int times) {
         try {
-            verify(this.queueClient, times(times)).registerMessageHandler(isA(IMessageHandler.class), any());
+            verify(this.queueClient, times(times)).registerMessageHandler(isA(IMessageHandler.class), any(), any
+                    (ExecutorService.class));
         } catch (InterruptedException | ServiceBusException e) {
             fail("Exception should not throw" + e);
         }
@@ -63,7 +66,8 @@ public class QueueTemplateSubscribeTest extends SubscribeOperationTest<ServiceBu
 
     private void whenRegisterMessageHandler(QueueClient queueClient) {
         try {
-            doNothing().when(queueClient).registerMessageHandler(isA(IMessageHandler.class), any());
+            doNothing().when(queueClient).registerMessageHandler(isA(IMessageHandler.class), any(), any(ExecutorService
+                    .class));
         } catch (InterruptedException | ServiceBusException e) {
             fail("Exception should not throw" + e);
         }

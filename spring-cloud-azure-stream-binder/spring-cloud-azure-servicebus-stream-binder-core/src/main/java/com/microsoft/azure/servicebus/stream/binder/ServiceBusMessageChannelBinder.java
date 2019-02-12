@@ -11,7 +11,9 @@ import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusExtende
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusProducerProperties;
 import com.microsoft.azure.servicebus.stream.binder.provisioning.ServiceBusChannelProvisioner;
 import com.microsoft.azure.spring.integration.core.DefaultMessageHandler;
+import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.SendOperation;
+import com.microsoft.azure.spring.integration.servicebus.ServiceBusClientConfig;
 import org.springframework.cloud.stream.binder.*;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.integration.expression.FunctionExpression;
@@ -73,6 +75,18 @@ public abstract class ServiceBusMessageChannelBinder<T extends ServiceBusExtende
 
     public void setBindingProperties(T bindingProperties) {
         this.bindingProperties = bindingProperties;
+    }
+
+    protected CheckpointConfig buildCheckpointConfig(
+            ExtendedConsumerProperties<ServiceBusConsumerProperties> properties) {
+        return CheckpointConfig.builder().checkpointMode(properties.getExtension().getCheckpointMode()).build();
+    }
+
+    protected ServiceBusClientConfig buildClientConfig(
+            ExtendedConsumerProperties<ServiceBusConsumerProperties> properties) {
+        ServiceBusConsumerProperties consumerProperties = properties.getExtension();
+        return ServiceBusClientConfig.builder().setPrefetchCount(consumerProperties.getPrefetchCount())
+                                     .setConcurrency(consumerProperties.getConcurrency()).build();
     }
 
     abstract SendOperation getSendOperation();

@@ -9,6 +9,7 @@ package com.microsoft.azure.spring.integration.servicebus.queue;
 import com.google.common.collect.Sets;
 import com.microsoft.azure.servicebus.IQueueClient;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
+import com.microsoft.azure.spring.integration.servicebus.ServiceBusClientConfig;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusMessageHandler;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusTemplate;
@@ -70,12 +71,21 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
 
         IQueueClient queueClient = this.senderFactory.getOrCreateClient(name);
 
+        String threadPrefix = String.format("%s-handler", name);
+
         try {
-            queueClient.registerMessageHandler(new QueueMessageHandler(consumer, payloadType, queueClient), options);
+            queueClient.setPrefetchCount(this.clientConfig.getPrefetchCount());
+            queueClient.registerMessageHandler(new QueueMessageHandler(consumer, payloadType, queueClient),
+                    buildHandlerOptions(), buildHandlerExectutors(threadPrefix));
         } catch (ServiceBusException | InterruptedException e) {
             log.error("Failed to register queue message handler", e);
             throw new ServiceBusRuntimeException("Failed to register queue message handler", e);
         }
+    }
+
+    @Override
+    public void setClientConfig(@NonNull ServiceBusClientConfig clientConfig) {
+        this.clientConfig = clientConfig;
     }
 
     protected class QueueMessageHandler<U> extends ServiceBusMessageHandler<U> {

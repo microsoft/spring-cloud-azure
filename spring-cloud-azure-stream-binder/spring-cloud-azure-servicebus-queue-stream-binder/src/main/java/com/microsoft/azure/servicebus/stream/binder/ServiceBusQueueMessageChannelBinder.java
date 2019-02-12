@@ -7,11 +7,11 @@
 package com.microsoft.azure.servicebus.stream.binder;
 
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusConsumerProperties;
-import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusExtendedBindingProperties;
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusQueueExtendedBindingProperties;
 import com.microsoft.azure.servicebus.stream.binder.provisioning.ServiceBusChannelProvisioner;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.SendOperation;
+import com.microsoft.azure.spring.integration.servicebus.ServiceBusClientConfig;
 import com.microsoft.azure.spring.integration.servicebus.inbound.ServiceBusQueueInboundChannelAdapter;
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueOperation;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
@@ -38,9 +38,8 @@ public class ServiceBusQueueMessageChannelBinder extends
     @Override
     protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group,
             ExtendedConsumerProperties<ServiceBusConsumerProperties> properties) {
-        CheckpointConfig checkpointConfig =
-                CheckpointConfig.builder().checkpointMode(properties.getExtension().getCheckpointMode()).build();
-        this.serviceBusQueueOperation.setCheckpointConfig(checkpointConfig);
+        this.serviceBusQueueOperation.setCheckpointConfig(buildCheckpointConfig(properties));
+        this.serviceBusQueueOperation.setClientConfig(buildClientConfig(properties));
         ServiceBusQueueInboundChannelAdapter inboundAdapter =
                 new ServiceBusQueueInboundChannelAdapter(destination.getName(), this.serviceBusQueueOperation);
         inboundAdapter.setBeanFactory(getBeanFactory());

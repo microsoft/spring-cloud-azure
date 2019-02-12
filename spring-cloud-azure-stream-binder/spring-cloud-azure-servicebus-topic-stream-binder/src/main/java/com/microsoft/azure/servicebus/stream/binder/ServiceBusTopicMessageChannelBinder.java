@@ -40,9 +40,9 @@ public class ServiceBusTopicMessageChannelBinder extends
     @Override
     protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group,
             ExtendedConsumerProperties<ServiceBusConsumerProperties> properties) {
-        CheckpointConfig checkpointConfig =
-                CheckpointConfig.builder().checkpointMode(properties.getExtension().getCheckpointMode()).build();
-        this.serviceBusTopicOperation.setCheckpointConfig(checkpointConfig);
+
+        this.serviceBusTopicOperation.setCheckpointConfig(buildCheckpointConfig(properties));
+        this.serviceBusTopicOperation.setClientConfig(buildClientConfig(properties));
         boolean anonymous = !StringUtils.hasText(group);
         if (anonymous) {
             group = "anonymous." + UUID.randomUUID().toString();
