@@ -160,13 +160,10 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         }
 
         Map<String, Integer> labelIndex = new HashMap<>();
-        Collections.sort(items, new Comparator<KeyValueItem>() {
-            @Override
-            public int compare(KeyValueItem o1, KeyValueItem o2) {
-                Integer o1Index = labelIndex.computeIfAbsent(getLabelValue(o1), (t) -> labels.indexOf(t));
-                Integer o2Index = labelIndex.computeIfAbsent(getLabelValue(o2), (t) -> labels.indexOf(t));
-                return o1Index - o2Index;
-            }
+        items.sort((o1, o2) -> {
+            Integer o1Index = labelIndex.computeIfAbsent(getLabelValue(o1), (t) -> labels.indexOf(t));
+            Integer o2Index = labelIndex.computeIfAbsent(getLabelValue(o2), (t) -> labels.indexOf(t));
+            return o1Index - o2Index;
         });
     }
 
