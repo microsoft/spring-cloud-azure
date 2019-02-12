@@ -185,6 +185,9 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
             if (statusCode == HttpStatus.SC_OK  || statusCode == HttpStatus.SC_PARTIAL_CONTENT
                     || statusCode == TOO_MANY_REQ_CODE) {
                 return response;
+            } else if (statusCode == HttpStatus.SC_REQUESTED_RANGE_NOT_SATISFIABLE) {
+                LOGGER.warn("The range {} is not satisfiable for request uri {}.", options.getRange(), requestUri);
+                return null;
             } else if (statusCode == HttpStatus.SC_NOT_FOUND) {
                 LOGGER.warn("No configuration data found in Azure Config Service for request uri {}.", requestUri);
                 return null;
