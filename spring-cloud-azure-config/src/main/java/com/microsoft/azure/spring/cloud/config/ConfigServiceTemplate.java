@@ -100,9 +100,7 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
                     throw new IllegalStateException(LOAD_FAILURE_MSG, e);
                 }
 
-                Range range = options.getRange();
-                if (range != null && range.getStartItem() == range.getEndItem()) {
-                    // Do not query any more if range start is same with range end
+                if (itemsReachedRange(result, options.getRange())) {
                     break;
                 }
 
@@ -124,6 +122,16 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         }
 
         return result;
+    }
+
+    private boolean itemsReachedRange(List<KeyValueItem> items, Range range) {
+        if (range == null) {
+            return false;
+        }
+
+        int maxSize = range.getEndItem() - range.getStartItem() + 1;
+        int itemsSize = items == null ? 0 : items.size();
+        return itemsSize >= maxSize;
     }
 
     private boolean isThrottled(@NonNull CloseableHttpResponse response) {
@@ -185,6 +193,9 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
             if (statusCode == HttpStatus.SC_OK  || statusCode == HttpStatus.SC_PARTIAL_CONTENT
                     || statusCode == TOO_MANY_REQ_CODE) {
                 return response;
+            } else if (statusCode == HttpStatus.SC_REQUESTED_RANGE_NOT_SATISFIABLE) {
+                LOGGER.warn("The range {} is not satisfiable for request uri {}.", options.getRange(), requestUri);
+                return null;
             } else if (statusCode == HttpStatus.SC_NOT_FOUND) {
                 LOGGER.warn("No configuration data found in Azure Config Service for request uri {}.", requestUri);
                 return null;
