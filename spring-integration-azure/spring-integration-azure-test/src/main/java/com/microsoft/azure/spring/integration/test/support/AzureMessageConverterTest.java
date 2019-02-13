@@ -54,6 +54,7 @@ public abstract class AzureMessageConverterTest<T> {
         T azureMessage = converter.fromMessage(message, targetClass);
         Message<U> convertedMessage = converter.toMessage(azureMessage, payloadClass);
         assertMessagePayloadEquals(convertedMessage.getPayload(), payload);
+        assertMessageHeadersEqual(azureMessage, convertedMessage);
     }
 
     private <U> void assertMessagePayloadEquals(U convertedPayload, U payload) {

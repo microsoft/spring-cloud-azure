@@ -72,7 +72,9 @@ public class ServiceBusMessageConverter extends AbstractAzureMessageConverter<IM
     protected Map<String, Object> buildCustomHeaders(IMessage serviceBusMessage) {
         Map<String, Object> headers = new HashMap<>();
 
-        headers.put(AzureHeaders.RAW_ID, UUID.fromString(serviceBusMessage.getMessageId()));
+        if (StringUtils.hasText(serviceBusMessage.getMessageId())) {
+            headers.put(AzureHeaders.RAW_ID, serviceBusMessage.getMessageId());
+        }
 
         if (StringUtils.hasText(serviceBusMessage.getContentType())) {
             String contentType = serviceBusMessage.getContentType();
