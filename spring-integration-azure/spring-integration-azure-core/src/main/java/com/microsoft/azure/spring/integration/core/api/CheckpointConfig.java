@@ -6,6 +6,8 @@
 
 package com.microsoft.azure.spring.integration.core.api;
 
+import java.time.Duration;
+
 /**
  * Checkpoint related config
  *
@@ -18,9 +20,19 @@ public class CheckpointConfig {
      */
     private final int checkpointCount;
 
-    public CheckpointConfig(CheckpointMode checkpointMode, int checkpointCount) {
+    /**
+     * The time interval to trigger checkpoint. Only used when {@link CheckpointMode#TIME}
+     */
+    private final Duration checkpointInterval;
+
+    public CheckpointConfig(CheckpointMode checkpointMode, int checkpointCount, Duration checkpointInterval) {
         this.checkpointMode = checkpointMode;
         this.checkpointCount = checkpointCount;
+        this.checkpointInterval = checkpointInterval;
+    }
+
+    public static CheckpointConfigBuilder builder() {
+        return new CheckpointConfigBuilder();
     }
 
     public CheckpointMode getCheckpointMode() {
@@ -31,18 +43,20 @@ public class CheckpointConfig {
         return checkpointCount;
     }
 
-    @Override
-    public String toString() {
-        return "CheckpointConfig{" + "checkpointMode=" + checkpointMode + ", checkpointCount=" + checkpointCount + '}';
+    public Duration getCheckpointInterval() {
+        return checkpointInterval;
     }
 
-    public static CheckpointConfigBuilder builder(){
-        return new CheckpointConfigBuilder();
+    @Override
+    public String toString() {
+        return "CheckpointConfig{" + "checkpointMode=" + checkpointMode + ", checkpointCount=" + checkpointCount +
+                ", checkpointInterval=" + checkpointInterval + '}';
     }
 
     public static class CheckpointConfigBuilder {
         private CheckpointMode checkpointMode;
         private int checkpointCount;
+        private Duration checkpointInterval;
 
         public CheckpointConfigBuilder checkpointMode(CheckpointMode checkpointMode) {
             this.checkpointMode = checkpointMode;
@@ -54,8 +68,13 @@ public class CheckpointConfig {
             return this;
         }
 
+        public CheckpointConfigBuilder checkpointInterval(Duration checkpointInterval) {
+            this.checkpointInterval = checkpointInterval;
+            return this;
+        }
+
         public CheckpointConfig build() {
-            return new CheckpointConfig(checkpointMode, checkpointCount);
+            return new CheckpointConfig(checkpointMode, checkpointCount, checkpointInterval);
         }
     }
 

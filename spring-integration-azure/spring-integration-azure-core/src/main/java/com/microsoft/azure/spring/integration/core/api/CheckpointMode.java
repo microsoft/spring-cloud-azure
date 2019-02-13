@@ -34,4 +34,9 @@ public enum CheckpointMode {
      * in each partition
      */
     PARTITION_COUNT,
+
+    /**
+     * Checkpoint once for each time interval specified by {@link CheckpointConfig#getCheckpointInterval()}
+     */
+    TIME,
 }
