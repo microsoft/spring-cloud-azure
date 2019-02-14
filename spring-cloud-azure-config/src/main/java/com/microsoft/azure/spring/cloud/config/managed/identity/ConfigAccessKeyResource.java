@@ -12,9 +12,9 @@ import org.springframework.util.Assert;
  */
 public class ConfigAccessKeyResource {
     static final String ARM_ENDPONT = "https://management.azure.com";
-    private static final String CONFIG_RESOURCE_VERSION = "2018-02-01-preview";
+    private static final String CONFIG_RESOURCE_VERSION = "2019-02-01-preview";
     private static final String RESOURCE_ID_URL = "%s/subscriptions/%s/resourceGroups/%s/providers" +
-            "/Microsoft.Azconfig/configurationStores/%s/listKeys?api-version=%s";
+            "/Microsoft.AppConfiguration/configurationStores/%s/listKeys?api-version=%s";
 
     private final String subscriptionId;
     private final String resourceGroupName;

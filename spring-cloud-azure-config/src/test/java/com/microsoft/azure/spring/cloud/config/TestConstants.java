@@ -68,7 +68,7 @@ public class TestConstants {
     public static final String TEST_RESOURCE_GROUP_2 = "fake-resource-group-2";
     public static final String TEST_RESOURCE_GROUP_3 = "fake-resource-group-3";
 
-    public static final String TEST_CONFIG_TYPE = "Microsoft.Azconfig/configurationStores";
+    public static final String TEST_CONFIG_TYPE = "Microsoft.AppConfiguration/configurationStores";
     public static final String TEST_NON_CONFIG_TYPE = "Incorrect.Resource.Type.1";
 
     public static final String TEST_STORE_NAME_1 = "fake-config-store-1";

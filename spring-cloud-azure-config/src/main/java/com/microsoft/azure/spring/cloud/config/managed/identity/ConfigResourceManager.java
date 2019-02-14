@@ -24,7 +24,7 @@ import java.util.Optional;
  */
 public class ConfigResourceManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigResourceManager.class);
-    private static final String AZ_CONFIG_RESOURCE_TYPE = "Microsoft.Azconfig/configurationStores";
+    private static final String AZ_CONFIG_RESOURCE_TYPE = "Microsoft.AppConfiguration/configurationStores";
     private final Azure.Authenticated authenticated;
 
     public ConfigResourceManager(AzureTokenCredentials credentials) {
