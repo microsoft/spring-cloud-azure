@@ -19,7 +19,7 @@
 
     <modules>
         <module>cache-sample</module>
-        <module>azure-config-sample</module>
+        <module>azure-appconfiguration-sample</module>
         <module>storage-resource-sample</module>
         <module>eventhubs-operation-sample</module>
         <module>eventhubs-integration-sample</module>

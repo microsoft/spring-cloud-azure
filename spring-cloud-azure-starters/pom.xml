@@ -23,7 +23,7 @@
         <module>spring-cloud-starter-azure-eventhubs-kafka</module>
         <module>spring-cloud-starter-azure-servicebus</module>
         <module>spring-cloud-starter-azure-storage-queue</module>
-        <module>spring-cloud-starter-azure-config</module>
+        <module>spring-cloud-starter-azure-appconfiguration-config</module>
         <module>spring-cloud-starter-azure-keyvault-config</module>
     </modules>
 
