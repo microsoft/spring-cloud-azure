@@ -28,27 +28,27 @@ dependencies {
 
 Name | Description | Required | Default 
 ---|---|---|---
-spring.cloud.azure.app.configuration.stores | List of configuration stores from which to load configuration properties | Yes | true
-spring.cloud.azure.app.configuration.enabled | Whether enable spring-cloud-azure-appconfiguration-config or not | No | true
-spring.cloud.azure.app.configuration.default-context | Default context path to load properties from | No | application
-spring.cloud.azure.app.configuration.name | Alternative to Spring application name, if not configured, fallback to default Spring application name | No | ${spring.application.name}
-spring.cloud.azure.app.configuration.profile-separator | Profile separator for the key name, e.g., /foo-app_dev/db.connection.key, must follow format `^[a-zA-Z0-9_@]+$` | No | `_`
-spring.cloud.azure.app.configuration.fail-fast | Whether throw RuntimeException or not when exception occurs | No |  true
-spring.cloud.azure.app.configuration.watch.enabled | Whether enable watch feature or not | No | true
-spring.cloud.azure.app.configuration.watch.delay | Polling interval of type [Duration](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-conversion-duration) between each scheduled polling | No | 30s
-spring.cloud.azure.app.configuration.managed-identity.client-id | Client id of the user assigned managed identity, only required when choosing to use user assigned managed identity on Azure | No | null
-spring.cloud.azure.app.configuration.managed-identity.object-id | Object id of the user assigned managed identity, only required when choosing to use user assigned managed identity on Azure | No | null
+spring.cloud.azure.appconfiguration.stores | List of configuration stores from which to load configuration properties | Yes | true
+spring.cloud.azure.appconfiguration.enabled | Whether enable spring-cloud-azure-appconfiguration-config or not | No | true
+spring.cloud.azure.appconfiguration.default-context | Default context path to load properties from | No | application
+spring.cloud.azure.appconfiguration.name | Alternative to Spring application name, if not configured, fallback to default Spring application name | No | ${spring.application.name}
+spring.cloud.azure.appconfiguration.profile-separator | Profile separator for the key name, e.g., /foo-app_dev/db.connection.key, must follow format `^[a-zA-Z0-9_@]+$` | No | `_`
+spring.cloud.azure.appconfiguration.fail-fast | Whether throw RuntimeException or not when exception occurs | No |  true
+spring.cloud.azure.appconfiguration.watch.enabled | Whether enable watch feature or not | No | true
+spring.cloud.azure.appconfiguration.watch.delay | Polling interval of type [Duration](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-conversion-duration) between each scheduled polling | No | 30s
+spring.cloud.azure.appconfiguration.managed-identity.client-id | Client id of the user assigned managed identity, only required when choosing to use user assigned managed identity on Azure | No | null
+spring.cloud.azure.appconfiguration.managed-identity.object-id | Object id of the user assigned managed identity, only required when choosing to use user assigned managed identity on Azure | No | null
 
 
-`spring.cloud.azure.app.configuration.stores` is a List of stores, for each store should follow below format:
+`spring.cloud.azure.appconfiguration.stores` is a List of stores, for each store should follow below format:
 
 Name | Description | Required | Default 
 ---|---|---|---
-spring.cloud.azure.app.configuration.stores[0].name | Name of the configuration store, required when `connection-string` is empty. If `connection-string` is empty and application is deployed on Azure VM or App Service with managed identity enabled, will try to load `connection-string` from Azure Resource Management. | Conditional | null
-spring.cloud.azure.app.configuration.stores[0].prefix | The prefix of the key name in the configuration store, e.g., /my-prefix/application/key.name | No |  null
-spring.cloud.azure.app.configuration.stores[0].connection-string | Required when `name` is empty, otherwise, can be loaded automatically on Azure Virtual Machine or App Service | Conditional | null
-spring.cloud.azure.app.configuration.stores[0].label | Comma separated list of label values, by default will query empty labeled value. If you want to specify *empty*(null) label explicitly, use `%00`, e.g., spring.cloud.azure.app.configuration.stores[0].label=%00,v0 | No |  null
-spring.cloud.azure.app.configuration.stores[0].watched-key | The single watched key(or by default *) used to indicate configuration change.  | No | *
+spring.cloud.azure.appconfiguration.stores[0].name | Name of the configuration store, required when `connection-string` is empty. If `connection-string` is empty and application is deployed on Azure VM or App Service with managed identity enabled, will try to load `connection-string` from Azure Resource Management. | Conditional | null
+spring.cloud.azure.appconfiguration.stores[0].prefix | The prefix of the key name in the configuration store, e.g., /my-prefix/application/key.name | No |  null
+spring.cloud.azure.appconfiguration.stores[0].connection-string | Required when `name` is empty, otherwise, can be loaded automatically on Azure Virtual Machine or App Service | Conditional | null
+spring.cloud.azure.appconfiguration.stores[0].label | Comma separated list of label values, by default will query empty labeled value. If you want to specify *empty*(null) label explicitly, use `%00`, e.g., spring.cloud.azure.appconfiguration.stores[0].label=%00,v0 | No |  null
+spring.cloud.azure.appconfiguration.stores[0].watched-key | The single watched key(or by default *) used to indicate configuration change.  | No | *
 
 
 ## Advanced usage
@@ -56,18 +56,18 @@ spring.cloud.azure.app.configuration.stores[0].watched-key | The single watched 
 ### Load from multiple configuration stores
 If the application needs to load configuration properties from multiple stores, following configuration sample describes how the bootstrap.properties(or .yaml) can be configured.
 ```
-spring.cloud.azure.app.configuration.stores[0].connection-string=[first-store-connection-string]
-spring.cloud.azure.app.configuration.stores[0].prefix=[my-prefix]
-spring.cloud.azure.app.configuration.stores[0].label=[my-label]
-spring.cloud.azure.app.configuration.stores[1].connection-string=[second-store-connection-string]
+spring.cloud.azure.appconfiguration.stores[0].connection-string=[first-store-connection-string]
+spring.cloud.azure.appconfiguration.stores[0].prefix=[my-prefix]
+spring.cloud.azure.appconfiguration.stores[0].label=[my-label]
+spring.cloud.azure.appconfiguration.stores[1].connection-string=[second-store-connection-string]
 ```
 If duplicate keys exists for multiple stores, the last configuration store has the highest priority.
 
 ### Load from multiple labels
 If the application needs to load property values from multiple labels in the same configuration store, following configuration can be used:
 ```
-spring.cloud.azure.app.configuration.stores[0].connection-string=[first-store-connection-string]
-spring.cloud.azure.app.configuration.stores[0].label=[my-label1], [my-label2]
+spring.cloud.azure.appconfiguration.stores[0].connection-string=[first-store-connection-string]
+spring.cloud.azure.appconfiguration.stores[0].label=[my-label1], [my-label2]
 ```
 Multiple labels can be separated with comma, if duplicate keys exists for multiple labels, the last label has highest priority.
 
@@ -76,7 +76,7 @@ Watch feature allows the application to load the latest property value from conf
 
 By default, the watch feature is disabled. It can be enabled with below configuration:
 ```
-spring.cloud.azure.app.configuration.watch.enabled=true
+spring.cloud.azure.appconfiguration.watch.enabled=true
 ```
 
 Change certain property key in the configuration store on Azure Portal, e.g., /application/config.message, log similar with below will be printed on the console.
@@ -86,13 +86,13 @@ INFO 17496 --- [TaskScheduler-1] o.s.c.e.event.RefreshEventListener       : Refr
 The application now will be using the updated properties. By default, `@ConfigurationProperties` annotated beans will be automatically refreshed. Use `@RefreshScope` on beans which are required to be refreshed when properties are changed.
 By default, all the keys in a configuration store will be watched. To prevent configuration changes are picked up in the middle of an update of multiple keys, you are recommended to use the watched-key property to watch a specific key that signals the completion of your update so all configuration changes can be refreshed together.
 ```
-spring.cloud.azure.app.configuration.stores[0].watched-key=[my-watched-key]
+spring.cloud.azure.appconfiguration.stores[0].watched-key=[my-watched-key]
 ```
 
 ### Failfast
 Failfast feature decides whether throw RuntimeException or not when exception happens. By default, failfast is enabled, it can be disabled with below configuration:
 ```
-spring.cloud.azure.app.configuration.fail-fast=false
+spring.cloud.azure.appconfiguration.fail-fast=false
 ```
 
 ### Use Azure Managed Identity to load the connection string
@@ -108,6 +108,6 @@ Follow below steps to enable managed service identity feature:
  
 3. Configure bootstrap.properties(or .yaml) in the Spring Boot application as following:
 ```
-spring.cloud.azure.app.configuration.stores[0].name=[config-store-name]
+spring.cloud.azure.appconfiguration.stores[0].name=[config-store-name]
 ```
 The configuration store name must be configured when `connection-string` is empty, the connection string for the configuration store will be loaded automatically.

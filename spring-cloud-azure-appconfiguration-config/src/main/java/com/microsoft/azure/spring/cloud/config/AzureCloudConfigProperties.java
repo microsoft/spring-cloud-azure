@@ -32,7 +32,7 @@ import static com.microsoft.azure.spring.cloud.config.Constants.EMPTY_LABEL;
 @Validated
 @ConfigurationProperties(prefix = AzureCloudConfigProperties.CONFIG_PREFIX)
 public class AzureCloudConfigProperties {
-    public static final String CONFIG_PREFIX = "spring.cloud.azure.app.configuration";
+    public static final String CONFIG_PREFIX = "spring.cloud.azure.appconfiguration";
     public static final String LABEL_SEPARATOR = ",";
 
     private boolean enabled = true;
