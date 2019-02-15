@@ -3,7 +3,6 @@
 spring:
   cloud:
     azure:
-      app:
-        configuration:
+      appconfiguration:
           stores:
             - connection-string: [configuration-store-string]
