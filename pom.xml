@@ -18,8 +18,8 @@
     </parent>
 
     <modules>
+        <module>spring-cloud-azure-appconfiguration-config</module>
         <module>spring-cloud-azure-autoconfigure</module>
-        <module>spring-cloud-azure-config</module>
         <module>spring-cloud-azure-context</module>
         <module>spring-cloud-azure-dependencies</module>
         <module>spring-cloud-azure-keyvault-config</module>
