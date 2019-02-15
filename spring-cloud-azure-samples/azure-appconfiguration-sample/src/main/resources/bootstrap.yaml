@@ -4,5 +4,5 @@ spring:
   cloud:
     azure:
       appconfiguration:
-          stores:
-            - connection-string: [configuration-store-string]
+        stores:
+          - connection-string: [configuration-store-string]
