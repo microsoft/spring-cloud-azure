@@ -23,7 +23,6 @@
         <dependency>
             <groupId>com.microsoft.azure</groupId>
             <artifactId>spring-cloud-azure-stream-binder-test</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 
