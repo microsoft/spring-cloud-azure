@@ -6,6 +6,8 @@
 package com.microsoft.azure.servicebus.stream.binder.test;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Stats {
 
@@ -98,5 +100,20 @@ public class Stats {
                 .printf("%d records sent, %f records/sec (%.2f MB/sec), %.2f ms avg latency, %.2f ms max latency, %d ms 50th, %d ms 95th, %d ms 99th, %d ms 99.9th.%n",
                         count, recsPerSec, mbPerSec, totalLatency / (double) count, (double) maxLatency, percs[0],
                         percs[1], percs[2], percs[3]);
+    }
+
+    public void printTotalAsMarkdown() {
+        long elapsed = System.currentTimeMillis() - start;
+        double recsPerSec = 1000.0 * count / (double) elapsed;
+        double mbPerSec = 1000.0 * this.bytes / (double) elapsed / (1024.0 * 1024.0);
+        int[] percs = percentiles(this.latencies, index, 0.5, 0.95, 0.99, 0.999);
+
+        System.out.println(
+                "Records sent | Records/sec | MB/sec | Avg latency(ms) | Max latency(ms) | 50%(ms) | 95%" + "(ms) | " +
+                        "99%(ms) | " + "99.9%(ms)");
+        System.out.println(IntStream.range(1, 11).mapToObj((i) -> "|").collect(Collectors.joining(" -- ")));
+
+        System.out.printf("%d | %f | %.4f | %.2f | %.2f | %d | %d | %d | %d", count, recsPerSec, mbPerSec,
+                totalLatency / (double) count, (double) maxLatency, percs[0], percs[1], percs[2], percs[3]);
     }
 }
