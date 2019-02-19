@@ -52,7 +52,7 @@ public class ProducerPerformance {
         }
 
         System.out.println("Failed message count: " + failedMessage);
-        stats.printTotal();
+        stats.printTotalAsMarkdown();
     }
 
 }
