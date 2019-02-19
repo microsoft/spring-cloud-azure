@@ -7,10 +7,13 @@
 package com.microsoft.azure.servicebus.stream.binder.test;
 
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.SubscribableChannel;
 
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Consumer perf test via {@link SubscribableChannel}
@@ -22,7 +25,6 @@ public class ConsumerPerformance {
     private static final long reportingInterval = 1000L;
 
     public static void startPerfTest(SubscribableChannel channel) {
-
         AtomicLong lastReportTime = new AtomicLong(System.currentTimeMillis());
         LongAdder totalMessageRead = new LongAdder();
         AtomicLong lastMessageRead = new AtomicLong();
@@ -30,7 +32,7 @@ public class ConsumerPerformance {
         AtomicLong lastBytesRead = new AtomicLong();
         printHeader();
 
-        channel.subscribe((Message<?> message) -> {
+        MessageHandler messageHandler = (Message<?> message) -> {
             totalMessageRead.increment();
             totalBytesRead.add(((byte[]) message.getPayload()).length);
 
@@ -43,7 +45,9 @@ public class ConsumerPerformance {
                 lastBytesRead.set(totalBytesRead.longValue());
                 lastMessageRead.set(totalMessageRead.longValue());
             }
-        });
+        };
+
+        channel.subscribe(messageHandler);
     }
 
     private static void printBasicProgress(long startMs, long endMs, long bytesRead, long lastBytesRead,
@@ -53,11 +57,12 @@ public class ConsumerPerformance {
         double intervalKbRead = ((bytesRead - lastBytesRead) * 1.0) / (1024);
         double intervalKbPerSec = 1000.0 * intervalKbRead / elapsedMs;
         double intervalMessagesPerSec = ((messagesRead - lastMessagesRead) * 1.0 / elapsedMs) * 1000.0;
-        System.out.println(String.format("%s, %s, %.4f, %.4f, %d, %.4f", startMs, endMs, totalKbRead, intervalKbPerSec,
-                messagesRead, intervalMessagesPerSec));
+        System.out.println(String.format("| %.4f | %.4f | %d | %.4f", totalKbRead, intervalKbPerSec, messagesRead,
+                intervalMessagesPerSec));
     }
 
     private static void printHeader() {
-        System.out.println("start.time, end.time, data.consumed.in.KB, KB.sec, data.consumed.in.nMsg, nMsg.sec");
+        System.out.println("| Total messages (KB) | KB/sec | Total number of message | nMsg/sec");
+        System.out.println(IntStream.range(1, 6).mapToObj((i) -> "|").collect(Collectors.joining(" -- ")));
     }
 }
