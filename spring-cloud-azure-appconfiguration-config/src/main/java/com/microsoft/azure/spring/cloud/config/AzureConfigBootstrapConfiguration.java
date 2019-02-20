@@ -29,15 +29,18 @@ import org.springframework.util.StringUtils;
 import javax.annotation.PostConstruct;
 import java.util.List;
 
+import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
+
 @Configuration
 @EnableConfigurationProperties(AzureCloudConfigProperties.class)
 @ConditionalOnClass(AzureConfigPropertySourceLocator.class)
 @ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "enabled", matchIfMissing = true)
 public class AzureConfigBootstrapConfiguration {
     private static final Logger LOGGER =  LoggerFactory.getLogger(AzureConfigBootstrapConfiguration.class);
-    private static final String AZURE_CONFIG_STORE = "AzureConfigService";
     private static final String ENV_MSI_ENDPOINT = "MSI_ENDPOINT";
     private static final String ENV_MSI_SECRET = "MSI_SECRET";
+    private static final String TELEMETRY_SERVICE = "AppConfiguration";
+    private static final String TELEMETRY_KEY = "HashedStoreName";
 
     @Bean
     public ConnectionStringPool initConnectionString(AzureCloudConfigProperties properties,
@@ -60,6 +63,8 @@ public class AzureConfigBootstrapConfiguration {
 
                 pool.put(store.getName(), ConnectionString.of(connectionString));
             }
+
+            TelemetryCollector.getInstance().addProperty(TELEMETRY_SERVICE, TELEMETRY_KEY, sha256Hex(store.getName()));
         }
 
         Assert.notEmpty(pool.getAll(), "Connection string pool for the configuration stores is empty");
@@ -108,6 +113,6 @@ public class AzureConfigBootstrapConfiguration {
 
     @PostConstruct
     public void collectTelemetry() {
-        TelemetryCollector.getInstance().addService(AZURE_CONFIG_STORE);
+        TelemetryCollector.getInstance().addService(TELEMETRY_SERVICE);
     }
 }
