@@ -68,6 +68,20 @@ public class EventHubRxOperationSendSubscribeTest extends RxSendSubscribeByGroup
     }
 
     @Test
+    @SuppressWarnings("unchecked")
+    public void testSendReceiveWithPartitionCountCheckpointMode() {
+        sendSubscribeOperation
+                .setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.PARTITION_COUNT)
+                                                     .checkpointCount(1).build
+                        ());
+        sendSubscribeOperation.setStartPosition(StartPosition.EARLIEST);
+        Arrays.stream(messages).forEach(m -> sendSubscribeOperation.sendRx(destination, m));
+        sendSubscribeOperation.subscribe(destination, consumerGroup, User.class).test()
+                              .assertValueCount(messages.length).assertNoErrors();
+        verifyCheckpointSuccessCalled(messages.length);
+    }
+
+    @Test
     public void testHasPartitionIdHeader() {
         sendSubscribeOperation.subscribe(destination, consumerGroup, User.class);
         sendSubscribeOperation.sendRx(destination, userMessage);

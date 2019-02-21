@@ -15,6 +15,7 @@ import com.microsoft.azure.spring.integration.core.AzureHeaders;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.Checkpointer;
+import com.microsoft.azure.spring.integration.eventhub.checkpoint.CheckpointManager;
 import com.microsoft.azure.spring.integration.eventhub.converter.EventHubMessageConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,7 @@ public class EventHubProcessor implements IEventProcessor {
     private final Class<?> payloadType;
     private final CheckpointConfig checkpointConfig;
     private final EventHubMessageConverter messageConverter;
-    private final EventHubCheckpointManager checkpointManager;
+    private final CheckpointManager checkpointManager;
 
     public EventHubProcessor(Consumer<Message<?>> consumer, Class<?> payloadType, CheckpointConfig checkpointConfig,
             EventHubMessageConverter messageConverter) {
@@ -46,7 +47,7 @@ public class EventHubProcessor implements IEventProcessor {
         this.payloadType = payloadType;
         this.checkpointConfig = checkpointConfig;
         this.messageConverter = messageConverter;
-        this.checkpointManager = new EventHubCheckpointManager(checkpointConfig);
+        this.checkpointManager = CheckpointManager.of(checkpointConfig);
     }
 
     @Override
