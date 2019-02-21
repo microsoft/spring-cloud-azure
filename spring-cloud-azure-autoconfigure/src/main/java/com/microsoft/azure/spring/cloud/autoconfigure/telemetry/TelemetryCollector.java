@@ -5,6 +5,8 @@
  */
 package com.microsoft.azure.spring.cloud.autoconfigure.telemetry;
 
+import com.microsoft.applicationinsights.core.dependencies.apachecommons.codec.digest.DigestUtils;
+
 import java.util.*;
 
 /**
@@ -28,6 +30,7 @@ public class TelemetryCollector {
     private final String name = "spring-cloud-azure";
     private final Map<String, String> commonProperties = new HashMap<>();
     private final Map<String, Map<String, String>> propertiesByService = new HashMap<>();
+    private final Set<String> propertiesNeedHash = new HashSet<>(Arrays.asList("Namespace", "AccountName"));
 
     private TelemetryCollector() {
         this.buildProperties();
@@ -46,9 +49,12 @@ public class TelemetryCollector {
         this.commonProperties.put(SUBSCRIPTION_ID, subscriptionId);
     }
 
-    public void addProperty(String service, String key, String value){
+    public void addProperty(String service, String key, String value) {
         this.propertiesByService.putIfAbsent(service, new HashMap<>());
         this.propertiesByService.get(service).put(key, value);
+        if (propertiesNeedHash.contains(key)) {
+            this.propertiesByService.get(service).put("hashed" + key, DigestUtils.sha256Hex(value));
+        }
     }
 
     public Collection<Map<String, String>> getProperties() {

@@ -43,7 +43,7 @@ import java.security.InvalidKeyException;
 public class AzureStorageAutoConfiguration {
     private static final Logger log = LoggerFactory.getLogger(AzureStorageAutoConfiguration.class);
     private static final String STORAGE = "Storage";
-    private static final String ACCOUNT_NAME = "accountName";
+    private static final String ACCOUNT_NAME = "AccountName";
 
     @Autowired(required = false)
     private ResourceManagerProvider resourceManagerProvider;
