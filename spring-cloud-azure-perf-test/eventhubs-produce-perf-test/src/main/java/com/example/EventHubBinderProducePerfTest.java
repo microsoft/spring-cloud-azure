@@ -31,6 +31,7 @@ public class EventHubBinderProducePerfTest implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         producerPerfTests();
+        System.exit(0);
     }
 
     public void producerPerfTests() {

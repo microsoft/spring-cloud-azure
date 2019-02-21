@@ -26,7 +26,7 @@ public class ProducerPerformance {
             payload[i] = (byte) (random.nextInt(26) + 65);
         }
 
-        Stats stats = new Stats(numRecords, 5000);
+        ProducerStatistics statistics = new ProducerStatistics(numRecords, 5000);
         long startMs = System.currentTimeMillis();
 
         ThroughputThrottler throttler = new ThroughputThrottler(throughput, startMs);
@@ -41,7 +41,7 @@ public class ProducerPerformance {
 
             if (succeed) {
                 long now = System.currentTimeMillis();
-                stats.record(1, (int) (now - sendStartMs), payload.length, now);
+                statistics.record(payload.length, now - sendStartMs);
             } else {
                 failedMessage++;
             }
@@ -52,7 +52,7 @@ public class ProducerPerformance {
         }
 
         System.out.println("Failed message count: " + failedMessage);
-        stats.printTotalAsMarkdown();
+        statistics.printSummary();
     }
 
 }
