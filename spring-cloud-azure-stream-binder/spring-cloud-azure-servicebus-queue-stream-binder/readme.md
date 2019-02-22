@@ -62,12 +62,12 @@ It supports the following configurations with the format of `spring.cloud.stream
 
 **_sync_**
 
-Whether the producer should act in a synchronous manner with respect to writing records into a stream. If true, the 
+Whether the producer should act in a synchronous manner with respect to writing messages into a stream. If true, the 
 producer will wait for a response after a send operation.
 
 Default: `false`
 
-**_sendTimeout_**
+**_send-timeout_**
 
 Effective only if `sync` is set to true. The amount of time to wait for a response after a send operation, in milliseconds.
 
@@ -77,10 +77,24 @@ Default: `10000`
 
 It supports the following configurations with the format of `spring.cloud.stream.servicebus.queue.bindings.<channelName>.consumer`.
 
-**_checkpointMode_**
+**_checkpoint-mode_**
 
 The mode in which checkpoints are updated.
-If `RECORD`, checkpoints occur after each record is received by Spring Channel.
-If `MANUAL`, checkpoints occur on demand by the user via the `Checkpointer`. You can get `Checkpointer` by `Message.getHeaders.get(AzureHeaders.CHECKPOINTER)`callback.
+
+`RECORD`, checkpoints occur after each record successfully processed by user-defined message handler without any exception.
+
+`MANUAL`, checkpoints occur on demand by the user via the `Checkpointer`. You can get `Checkpointer` by `Message.getHeaders.get(AzureHeaders.CHECKPOINTER)`callback.
 
 Default: `RECORD`
+
+**_prefetch-count_**
+
+Prefetch count of underlying service bus client.
+
+Default: `1`
+
+**_concurrency_**
+
+Controls the max concurrent calls of service bus message handler and the size of fixed thread pool that handles user's business logic
+
+Default: `1`
