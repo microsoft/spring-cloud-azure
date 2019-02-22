@@ -23,10 +23,10 @@ public abstract class AbstractStatistics {
     private final LongAdder totalBytes;
     private final ScheduledExecutorService scheduler;
 
-    public AbstractStatistics(int size, long reportingInterval) {
+    public AbstractStatistics(int size, long reportingInterval, String labelPrefix) {
         this.size = size;
-        this.throughput = new Statistics("Throughput KB/sec");
-        this.numberMessagePerSec = new Statistics("nMsg/sec");
+        this.throughput = new Statistics(labelPrefix + "Throughput KB/sec");
+        this.numberMessagePerSec = new Statistics(labelPrefix + "nMsg/sec");
         this.reportingInterval = reportingInterval;
         this.totalMessages = new LongAdder();
         this.totalBytes = new LongAdder();

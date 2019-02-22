@@ -12,8 +12,8 @@ public class ProducerStatistics extends AbstractStatistics {
     private final Statistics sendLatency;
 
     ProducerStatistics(int size, long reportingInterval) {
-        super(size, reportingInterval);
-        this.sendLatency = new Statistics("Latency (ms)");
+        super(size, reportingInterval, "Produce ");
+        this.sendLatency = new Statistics("Produce Latency (ms)");
     }
 
     public void record(long messageSize, long latency) {

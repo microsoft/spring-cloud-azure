@@ -15,7 +15,7 @@ public class ConsumerStatistics extends AbstractStatistics {
     private final CountDownLatch testCompleted;
 
     public ConsumerStatistics(int size, long reportingInterval, CountDownLatch testCompleted) {
-        super(size, reportingInterval);
+        super(size, reportingInterval, "Consume ");
         this.testCompleted = testCompleted;
     }
 
