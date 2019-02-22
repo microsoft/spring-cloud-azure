@@ -70,12 +70,12 @@ Name | Description | Required | Default
  
  **_sync_**
  
- Whether the producer should act in a synchronous manner with respect to writing records into a stream. If true, the 
+ Whether the producer should act in a synchronous manner with respect to writing messages into a stream. If true, the 
  producer will wait for a response from Event Hub after a send operation.
 
  Default: `false`
 
- **_sendTimeout_**
+ **_send-timeout_**
 
  Effective only if `sync` is set to true. The amount of time to wait for a response from Event Hub after a send operation, in milliseconds.
 
@@ -85,21 +85,37 @@ Name | Description | Required | Default
 
   It supports the following configurations with the format of `spring.cloud.stream.eventhub.bindings.<channelName>.consumer`.
 
-  **_startPosition_**
+  **_start-position_**
 
   Whether the consumer receives messages from the beginning or end of event hub. if `EARLIEST`, from beginning. If 
   `LATEST`, from end.
 
   Default: `LATEST`
 
-  **_checkpointMode_**
+  **_checkpoint-mode_**
 
   The mode in which checkpoints are updated.
   
-  If `RECORD`, checkpoints occur after each record is received by Spring Channel. If you use `StorageAccount` as checkpoint store, this might become botterneck.
+  `RECORD`, checkpoints occur after each record is successfully processed by user-defined message handler without any exception. If you use `StorageAccount` as checkpoint store, this might become botterneck. 
   
-  If `BATCH`, checkpoints occur after each batch of records is received by Spring Channel. This is the default mode if you can tolerate failure during message processing. That means once your processor receives (the actual processing of the message hasn't started yet) the message, the receipt of the message will be acknowledged.
+  `BATCH`, checkpoints occur after each batch of messages successfully processed by user-defined message handler without any exception. `default` mode. You may experience reprocessing at most one batch of messages when message processing fails. Be aware that batch size could be any value.
   
-  If `MANUAL`, checkpoints occur on demand by the user via the `Checkpointer`. You can do checkpoints after the message has been successfully processed. `Message.getHeaders.get(AzureHeaders.CHECKPOINTER)`callback can get you the `Checkpointer` you need. Please be aware all messages in the corresponding Event Hub partition before this message will be considered as successfully processed.
+  `MANUAL`, checkpoints occur on demand by the user via the `Checkpointer`. You can do checkpoints after the message has been successfully processed. `Message.getHeaders.get(AzureHeaders.CHECKPOINTER)`callback can get you the `Checkpointer` you need. Please be aware all messages in the corresponding Event Hub partition before this message will be considered as successfully processed.
+  
+  `PARTITION_COUNT`, checkpoints occur after the count of messages defined by `checkpoint_count` successfully processed for each partition. You may experience reprocessing at most `checkpoint_count` of  when message processing fails.
+  
+  `Time`, checkpoints occur at fixed time inerval specified by `checkpoint_interval`. You may experience reprocessing of messages during this time interval when message processing fails.
 
   Default: `BATCH`
+
+  **_checkpoint-count_**
+
+  Effectively only when `checkpoint-mode` is `PARTITION_COUNT`. Decides the amount of message for each partition to do one checkpoint.
+
+  Default: `10`
+  
+  **_checkpoint-interval_**
+
+  Effectively only when `checkpoint-mode` is `Time`. Decides The time interval to do one checkpoint.
+
+  Default: `5s`
