@@ -9,6 +9,8 @@ package com.microsoft.azure.eventhub.stream.binder.properties;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
 
+import java.time.Duration;
+
 /**
  * @author Warren Zhu
  */
@@ -37,6 +39,15 @@ public class EventHubConsumerProperties {
      */
     private int checkpointCount = 10;
 
+    /**
+     * Effectively only when {@link CheckpointMode#TIME}.
+     * Decides the time interval to do one checkpoint
+     *
+     * <p>
+     * Default : 5s
+     */
+    private Duration checkpointInterval = Duration.ofSeconds(5);
+
     public StartPosition getStartPosition() {
         return startPosition;
     }
@@ -59,5 +70,13 @@ public class EventHubConsumerProperties {
 
     public void setCheckpointCount(int checkpointCount) {
         this.checkpointCount = checkpointCount;
+    }
+
+    public Duration getCheckpointInterval() {
+        return checkpointInterval;
+    }
+
+    public void setCheckpointInterval(Duration checkpointInterval) {
+        this.checkpointInterval = checkpointInterval;
     }
 }
