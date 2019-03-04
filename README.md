@@ -35,6 +35,12 @@ Module | Version | Sample
 -------|--- | ---
 [Spring Caching with Azure Redis Cache](spring-cloud-azure-samples/spring-cloud-azure-cache-sample) | [![Maven Central](https://img.shields.io/maven-central/v/com.microsoft.azure/spring-starter-azure-cache.svg)](https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22spring-starter-azure-cache%22) | [Sample](https://github.com/Microsoft/spring-cloud-azure/tree/release/1.1.0.RC3/spring-cloud-azure-samples/cache-sample)
 
+### [Spring Cloud Config](https://cloud.spring.io/spring-cloud-static/spring-cloud.html#customizing-bootstrap-property-sources)
+
+Module | Version | Sample
+-------|--- | ---
+[Spring Cloud Config with Azure App Configuration](spring-cloud-azure-samples/azure-appconfiguration-sample) | [![Maven Central](https://img.shields.io/maven-central/v/com.microsoft.azure/spring-cloud-starter-azure-appconfiguration-config.svg)](https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22spring-cloud-starter-azure-appconfiguration-config%22) | [Sample](https://github.com/Microsoft/spring-cloud-azure/tree/release/1.1.0.M1/spring-cloud-azure-samples/azure-appconfiguration-sample)
+
 ## Sample and Tutorial 
 
 Please use the [samples](spring-cloud-azure-samples/) as a reference for how to use Spring Cloud Azure in your projects. For more information about building Spring applications on Azure, please check [Spring on Azure tutorials](https://docs.microsoft.com/en-us/java/azure/spring-framework/?view=azure-java-stable). 
