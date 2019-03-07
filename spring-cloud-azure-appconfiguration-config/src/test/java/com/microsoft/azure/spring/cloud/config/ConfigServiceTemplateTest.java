@@ -225,7 +225,7 @@ public class ConfigServiceTemplateTest {
         assertThat(result).isNotEmpty();
         assertThat(result.size()).isEqualTo(2);
         assertThat(result).containsExactlyInAnyOrder(item1, item2);
-        assertThat(end - start).isGreaterThan(Long.valueOf(retryMilliSecs));
+        assertThat(end - start).isGreaterThanOrEqualTo(Long.valueOf(retryMilliSecs));
     }
 
     @Test
