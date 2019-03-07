@@ -5,7 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.autoconfigure.telemetry;
 
-import com.microsoft.applicationinsights.core.dependencies.apachecommons.codec.digest.DigestUtils;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.*;
 
