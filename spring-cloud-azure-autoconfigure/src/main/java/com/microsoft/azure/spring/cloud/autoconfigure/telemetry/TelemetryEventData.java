@@ -34,6 +34,26 @@ public class TelemetryEventData {
         this.data.getBaseData().setProperties(properties);
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getInstrumentationKey() {
+        return instrumentationKey;
+    }
+
+    public Tags getTags() {
+        return tags;
+    }
+
+    public EventData getData() {
+        return data;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
     private static class Tags {
 
         @JsonProperty("ai.cloud.roleInstance")
@@ -41,6 +61,14 @@ public class TelemetryEventData {
 
         @JsonProperty("ai.internal.sdkVersion")
         private final String aiInternalSdkVersion = "Java-maven-plugin";
+
+        public String getAiCloudRoleInstance() {
+            return aiCloudRoleInstance;
+        }
+
+        public String getAiInternalSdkVersion() {
+            return aiInternalSdkVersion;
+        }
     }
 
     private static class EventData {
@@ -48,6 +76,14 @@ public class TelemetryEventData {
         private final String baseType = "EventData";
 
         private final CustomData baseData = new CustomData();
+
+        public CustomData getBaseData() {
+            return baseData;
+        }
+
+        public String getBaseType() {
+            return baseType;
+        }
 
         private static class CustomData {
 
@@ -57,6 +93,18 @@ public class TelemetryEventData {
 
             private Map<String, String> properties;
 
+            public Integer getVer() {
+                return ver;
+            }
+
+            public String getName() {
+                return name;
+            }
+
+            public Map<String, String> getProperties() {
+                return properties;
+            }
+
             public void setName(String name) {
                 this.name = name;
             }
@@ -64,10 +112,6 @@ public class TelemetryEventData {
             public void setProperties(Map<String, String> properties) {
                 this.properties = properties;
             }
-        }
-
-        public CustomData getBaseData() {
-            return baseData;
         }
     }
 }
