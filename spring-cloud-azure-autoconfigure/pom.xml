@@ -24,6 +24,11 @@
             <artifactId>spring-cloud-azure-context</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+
         <!-- Storage -->
         <dependency>
             <groupId>com.microsoft.azure</groupId>
@@ -86,12 +91,6 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- Application Insights -->
-        <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>applicationinsights-core</artifactId>
-        </dependency>
-
         <!-- Redis -->
         <dependency>
             <groupId>org.springframework.data</groupId>
@@ -144,7 +143,6 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>META-INF/spring.factories</include>
-                    <include>ApplicationInsights.xml</include>
                 </includes>
             </resource>
             <resource>

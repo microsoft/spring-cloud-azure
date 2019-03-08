@@ -6,10 +6,8 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.telemetry;
 
-import com.microsoft.applicationinsights.TelemetryClient;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
-import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,12 +37,6 @@ public class TelemetryAutoConfigurationTest {
     public void testAzureTelemetryDisabled() {
         this.contextRunner.withPropertyValues("spring.cloud.azure.telemetry.enabled=false")
                           .run(context -> assertThat(context).doesNotHaveBean(TelemetrySender.class));
-    }
-
-    @Test
-    public void testWithoutTelemetryClientClass() {
-        this.contextRunner.withClassLoader(new FilteredClassLoader(TelemetryClient.class))
-                          .run(context -> assertThat(context).doesNotHaveBean(TelemetryProperties.class));
     }
 
     @Test

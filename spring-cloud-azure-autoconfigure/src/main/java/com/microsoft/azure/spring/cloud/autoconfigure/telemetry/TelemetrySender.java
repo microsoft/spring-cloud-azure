@@ -5,7 +5,6 @@
  */
 package com.microsoft.azure.spring.cloud.autoconfigure.telemetry;
 
-import com.microsoft.applicationinsights.TelemetryClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -20,28 +19,24 @@ public class TelemetrySender {
 
     private static final int INSTRUMENTATION_KEY_LENGTH = 36;
 
-    private final TelemetryClient client;
+    private final TelemetryRestClient telemetryRestClient;
 
     private final TelemetryCollector collector;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public TelemetrySender(String instrumentKey, @NonNull TelemetryCollector collector) {
-        this.client = buildTelemetryClient(instrumentKey);
+        this.telemetryRestClient = buildTelemetryRestClient(instrumentKey);
         this.collector = collector;
         this.scheduler.scheduleAtFixedRate(this::sendEvent, 0, 1, TimeUnit.HOURS);
     }
 
-    private static TelemetryClient buildTelemetryClient(String instrumentationKey) {
-        TelemetryClient client = new TelemetryClient();
-
+    private static TelemetryRestClient buildTelemetryRestClient(String instrumentationKey) {
         if (!isValid(instrumentationKey)) {
             log.warn("Telemetry instrumentationKey {} is invalid", instrumentationKey);
             throw new IllegalArgumentException("Telemetry instrumentationKey is invalid");
         }
 
-        client.getContext().setInstrumentationKey(instrumentationKey);
-
-        return client;
+        return new TelemetryRestClient(instrumentationKey);
     }
 
     private static boolean isValid(String instrumentationKey) {
@@ -51,8 +46,8 @@ public class TelemetrySender {
     private void sendEvent() {
         this.collector.getProperties().forEach((m) -> {
             log.info("Sending telemetry event with properties {}", m);
-            this.client.trackEvent(collector.getName(), m, null);
-            this.client.flush();
+
+            telemetryRestClient.send(collector.getName(), m);
         });
     }
 }
