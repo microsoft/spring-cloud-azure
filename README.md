@@ -47,6 +47,23 @@ Please use the [samples](spring-cloud-azure-samples/) as a reference for how to 
 
 You can also visit [Spring Cloud Azure Playground](https://aka.ms/springcloud) to quickly generate a new Spring Cloud applications for Azure.
 
+
+## Snapshots
+
+Snapshots built from `master` branch are available, add [maven repositories](https://maven.apache.org/settings.html#Repositories) configuration to your pom file as below. 
+```xml
+<repositories>
+  <repository>
+    <id>nexus-snapshots</id>
+    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    <snapshots>
+      <enabled>true</enabled>
+      <updatePolicy>always</updatePolicy>
+    </snapshots>
+  </repository>
+</repositories>
+```
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
