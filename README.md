@@ -49,6 +49,7 @@ You can also visit [Spring Cloud Azure Playground](https://aka.ms/springcloud) t
 
 
 ## Snapshots
+[![Nexus OSS](https://img.shields.io/nexus/snapshots/https/oss.sonatype.org/com.microsoft.azure/spring-cloud-azure-autoconfigure.svg)](https://oss.sonatype.org/content/repositories/snapshots/com/microsoft/azure/spring-cloud-azure-dependencies/)
 
 Snapshots built from `master` branch are available, add [maven repositories](https://maven.apache.org/settings.html#Repositories) configuration to your pom file as below. 
 ```xml
