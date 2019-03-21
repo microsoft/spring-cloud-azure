@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.microsoft.azure</groupId>
     <artifactId>spring-cloud-azure-dependencies</artifactId>
-    <version>1.0.0.BUILD-SNAPSHOT</version>
+    <version>1.0.0.RC3</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Azure dependencies BOM</name>
     <description>BOM for Spring Cloud Azure dependencies</description>
