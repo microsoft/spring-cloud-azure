@@ -31,6 +31,8 @@
         <azure.keyvault.version>1.0.0</azure.keyvault.version>
         <azure.client.version>1.6.0</azure.client.version>
         <azure.servicebus.version>1.2.8</azure.servicebus.version>
+
+        <spring.cloud.azure.version>1.1.0-SNAPSHOT</spring.cloud.azure.version>
     </properties>
 
     <dependencyManagement>
@@ -55,77 +57,77 @@
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-azure-autoconfigure</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-azure-context</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-integration-azure</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-integration-azure-core</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-integration-eventhubs</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-integration-servicebus</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-integration-storage-queue</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-azure-storage</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-azure-servicebus-stream-binder-core</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-azure-eventhubs-stream-binder</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-azure-servicebus-topic-stream-binder</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-azure-servicebus-queue-stream-binder</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-azure-keyvault-config</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-azure-appconfiguration-config</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-azure-messaging</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
 
             <!--Azure Java SDKs-->
@@ -165,42 +167,42 @@
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-starter-azure-cache</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-starter-azure-servicebus</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-starter-azure-storage</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-starter-azure-eventhubs</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-starter-azure-eventhubs-kafka</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-starter-azure-storage-queue</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-starter-azure-appconfiguration-config</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-cloud-starter-azure-keyvault-config</artifactId>
-                <version>${project.version}</version>
+                <version>${spring.cloud.azure.version}</version>
             </dependency>
 
             <!--Others-->
