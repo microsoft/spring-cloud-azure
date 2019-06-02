@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 public abstract class AzureMessageConverterTest<T> {
     protected String payload = "payload";
+    protected String headerProperties = "headerProperties";
     private AzureMessageConverter<T> converter;
     private Class<T> targetClass;
 
@@ -50,7 +51,7 @@ public abstract class AzureMessageConverterTest<T> {
     }
 
     private <U> void convertAndBack(U payload, Class<U> payloadClass) {
-        Message<U> message = MessageBuilder.withPayload(payload).build();
+        Message<U> message = MessageBuilder.withPayload(payload).setHeader(headerProperties, headerProperties).build();
         T azureMessage = converter.fromMessage(message, targetClass);
         Message<U> convertedMessage = converter.toMessage(azureMessage, payloadClass);
         assertMessagePayloadEquals(convertedMessage.getPayload(), payload);

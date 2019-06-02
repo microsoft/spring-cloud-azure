@@ -66,6 +66,8 @@ public class ServiceBusMessageConverter extends AbstractAzureMessageConverter<IM
         if (headers.containsKey(MessageHeaders.REPLY_CHANNEL)) {
             serviceBusMessage.setReplyTo(headers.get(MessageHeaders.REPLY_CHANNEL, String.class));
         }
+
+        headers.entrySet().forEach(e->serviceBusMessage.getProperties().put(e.getKey(), e.getValue().toString()));
     }
 
     @Override
@@ -89,6 +91,8 @@ public class ServiceBusMessageConverter extends AbstractAzureMessageConverter<IM
         if (StringUtils.hasText(serviceBusMessage.getReplyTo())) {
             headers.put(MessageHeaders.REPLY_CHANNEL, serviceBusMessage.getReplyTo());
         }
+
+        headers.putAll(serviceBusMessage.getProperties());
 
         return Collections.unmodifiableMap(headers);
     }
