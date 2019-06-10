@@ -15,6 +15,7 @@ import com.microsoft.azure.spring.integration.test.support.AzureMessageConverter
 import org.springframework.messaging.MessageHeaders;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class ServiceBusMessageConverterTest extends AzureMessageConverterTest<IMessage> {
     @Override
@@ -33,11 +34,15 @@ public class ServiceBusMessageConverterTest extends AzureMessageConverterTest<IM
     }
 
     protected void assertMessageHeadersEqual(IMessage serviceBusMessage,
-            org.springframework.messaging.Message<?> message) {
+                                             org.springframework.messaging.Message<?> message) {
         assertEquals(serviceBusMessage.getMessageId(), message.getHeaders().get(AzureHeaders.RAW_ID));
         assertEquals(serviceBusMessage.getContentType(),
                 message.getHeaders().get(MessageHeaders.CONTENT_TYPE, String.class));
         assertEquals(serviceBusMessage.getReplyTo(),
                 message.getHeaders().get(MessageHeaders.REPLY_CHANNEL, String.class));
+        assertNotNull(serviceBusMessage.getProperties().get(headerProperties));
+        assertNotNull(message.getHeaders().get(headerProperties, String.class));
+        assertEquals(serviceBusMessage.getProperties().get(headerProperties),
+                message.getHeaders().get(headerProperties, String.class));
     }
 }
