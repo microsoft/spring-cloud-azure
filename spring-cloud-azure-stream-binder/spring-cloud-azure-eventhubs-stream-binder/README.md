@@ -26,7 +26,7 @@ from most heavy-loaded consumer to achieve workload balancing.
 
 ## Samples 
 
-Please use this [sample](../spring-cloud-azure-samples/spring-cloud-azure-eventhub-binder-sample/) as a reference for how to use this binder. 
+Please use this [sample](../spring-cloud-azure-samples/eventhubs-binder-sample/) as a reference for how to use this binder. 
 
 ## Feature List 
 
