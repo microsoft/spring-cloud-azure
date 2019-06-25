@@ -6,6 +6,7 @@
 
 package com.microsoft.azure.spring.cloud.context.core.config;
 
+import com.google.common.base.Strings;
 import com.microsoft.azure.spring.cloud.context.core.api.CredentialSupplier;
 import com.microsoft.azure.spring.cloud.context.core.api.Environment;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -28,11 +29,19 @@ public class AzureProperties implements CredentialSupplier {
 
     private boolean autoCreateResources = false;
 
+    private boolean msiEnabled = false;
+
+    private String subscriptionId;
+
     @PostConstruct
     private void validate() {
         if (autoCreateResources) {
             Assert.hasText(this.region,
                     "When auto create resources is enabled, spring.cloud.azure.region must be provided");
+        }
+
+        if (msiEnabled && Strings.isNullOrEmpty(subscriptionId)) {
+            Assert.hasText(this.region, "When msi is enabled, spring.cloud.azure.subscription-id must be provided");
         }
     }
 
@@ -75,5 +84,21 @@ public class AzureProperties implements CredentialSupplier {
 
     public void setAutoCreateResources(boolean autoCreateResources) {
         this.autoCreateResources = autoCreateResources;
+    }
+
+    public boolean isMsiEnabled() {
+        return msiEnabled;
+    }
+
+    public void setMsiEnabled(boolean msiEnabled) {
+        this.msiEnabled = msiEnabled;
+    }
+
+    public String getSubscriptionId() {
+        return subscriptionId;
+    }
+
+    public void setSubscriptionId(String subscriptionId) {
+        this.subscriptionId = subscriptionId;
     }
 }

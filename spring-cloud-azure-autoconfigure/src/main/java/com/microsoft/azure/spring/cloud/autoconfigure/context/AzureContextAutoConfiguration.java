@@ -9,6 +9,7 @@ package com.microsoft.azure.spring.cloud.autoconfigure.context;
 import com.microsoft.azure.AzureEnvironment;
 import com.microsoft.azure.AzureResponseBuilder;
 import com.microsoft.azure.credentials.ApplicationTokenCredentials;
+import com.microsoft.azure.credentials.AzureTokenCredentials;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.resources.fluentcore.utils.ProviderRegistrationInterceptor;
 import com.microsoft.azure.management.resources.fluentcore.utils.ResourceManagerThrottlingInterceptor;
@@ -20,6 +21,7 @@ import com.microsoft.azure.spring.cloud.context.core.api.CredentialsProvider;
 import com.microsoft.azure.spring.cloud.context.core.impl.AzureResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.impl.DefaultCredentialsProvider;
 import com.microsoft.rest.RestClient;
+import com.microsoft.rest.credentials.TokenCredentials;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -53,7 +55,7 @@ public class AzureContextAutoConfiguration {
     @ConditionalOnMissingBean
     public Azure azure(AzureProperties azureProperties) throws IOException {
         CredentialsProvider credentialsProvider = new DefaultCredentialsProvider(azureProperties);
-        ApplicationTokenCredentials credentials = credentialsProvider.getCredentials();
+        AzureTokenCredentials credentials = credentialsProvider.getCredentials();
         TelemetryCollector.getInstance().setSubscription(credentials.defaultSubscriptionId());
         RestClient restClient = new RestClient.Builder()
                 .withBaseUrl(credentials.environment(), AzureEnvironment.Endpoint.RESOURCE_MANAGER)

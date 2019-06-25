@@ -7,6 +7,8 @@
 package com.microsoft.azure.spring.cloud.context.core.impl;
 
 import com.microsoft.azure.credentials.ApplicationTokenCredentials;
+import com.microsoft.azure.credentials.AzureTokenCredentials;
+import com.microsoft.azure.credentials.MSICredentials;
 import com.microsoft.azure.spring.cloud.context.core.api.CredentialSupplier;
 import com.microsoft.azure.spring.cloud.context.core.api.CredentialsProvider;
 import org.apache.commons.io.FileUtils;
@@ -31,7 +33,7 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
 
     private static final String TEMP_CREDENTIAL_FILE_SUFFIX = "credential";
 
-    private ApplicationTokenCredentials credentials;
+    private AzureTokenCredentials credentials;
 
     public DefaultCredentialsProvider(CredentialSupplier supplier) {
         initCredentials(supplier);
@@ -47,6 +49,12 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
     }
 
     private void initCredentials(CredentialSupplier supplier) {
+        if(supplier.isMsiEnabled()) {
+            this.credentials = new MSICredentials();
+            this.credentials.withDefaultSubscriptionId(supplier.getSubscriptionId());
+            return;
+        }
+
         try {
             DefaultResourceLoader resourceLoader = new DefaultResourceLoader();
             InputStream inputStream = resourceLoader.getResource(supplier.getCredentialFilePath()).getInputStream();
@@ -60,7 +68,7 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
     }
 
     @Override
-    public ApplicationTokenCredentials getCredentials() {
+    public AzureTokenCredentials getCredentials() {
         return this.credentials;
     }
 }

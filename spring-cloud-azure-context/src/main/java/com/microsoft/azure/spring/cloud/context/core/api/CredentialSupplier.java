@@ -20,4 +20,8 @@ public interface CredentialSupplier {
      * @return credential file path
      */
     String getCredentialFilePath();
+
+    boolean isMsiEnabled();
+
+    String getSubscriptionId();
 }
