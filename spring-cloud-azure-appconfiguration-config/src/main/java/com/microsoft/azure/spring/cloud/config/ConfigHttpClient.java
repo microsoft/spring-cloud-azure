@@ -69,6 +69,17 @@ public class ConfigHttpClient {
         return httpClient.execute(request);
     }
 
+    /**
+     * Generates a request Header with a date, client request id, and a sha256 content hash.
+     * 
+     * @param request the request that will be sent with this header and will have a hash generated for it.
+     * @param date the current date and time
+     * @param credential HMAC-SHA256 Credential
+     * @param secret Key to encode HMAC
+     * @return map of the header values and keys
+     * @throws URISyntaxException will be thrown when the request URI isn't valid
+     * @throws IOException will be thrown when request content fails to convert to UTF-8
+     */
     private static Map<String, String> buildRequestHeaders(HttpUriRequest request, Date date, String credential,
             String secret) throws URISyntaxException, IOException {
         String requestTime = GMT_DATE_FORMAT.format(date);
@@ -83,6 +94,7 @@ public class ConfigHttpClient {
         // Compose headers
         Map<String, String> headers = new HashMap<>();
         headers.put("x-ms-date", requestTime);
+        headers.put("x-ms-client-request-id", UUID.randomUUID().toString());
         headers.put("x-ms-content-sha256", contentHash);
 
         String authorization = String.format("HMAC-SHA256 Credential=%s, SignedHeaders=%s, Signature=%s",
