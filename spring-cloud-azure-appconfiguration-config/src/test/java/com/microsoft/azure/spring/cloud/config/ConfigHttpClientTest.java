@@ -142,6 +142,7 @@ public class ConfigHttpClientTest {
 
             CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
             
+            
             when(httpClient.execute(any())).thenAnswer(new Answer<CloseableHttpResponse>() {
                 @Override
                 public CloseableHttpResponse answer(InvocationOnMock invocation) throws Throwable {

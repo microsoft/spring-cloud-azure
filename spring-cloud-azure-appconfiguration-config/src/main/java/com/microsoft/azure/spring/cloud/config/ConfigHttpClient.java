@@ -79,14 +79,12 @@ public class ConfigHttpClient {
     }
 
     /**
-     * Generates request Headers; date, client request id, and a sha256 content
-     * hash.
+     * Generates a request Header with a date, client request id, and a sha256 content hash.
      * 
-     * @param request the request that will be sent with this header and will have a hash
-     * generated for it.
+     * @param request the request that will be sent with this header and will have a hash generated for it.
      * @param date the current date and time
-     * @param credential Access key ID
-     * @param secret Access key value
+     * @param credential HMAC-SHA256 Credential
+     * @param secret Key to encode HMAC
      * @return map of the header values and keys
      * @throws URISyntaxException will be thrown when the request URI isn't valid
      * @throws IOException will be thrown when request content fails to convert to UTF-8
