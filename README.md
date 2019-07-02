@@ -35,7 +35,7 @@ Module | Version | Sample
 
 Module | Version | Sample
 -------|--- | ---
-[Spring Caching with Azure Redis Cache](spring-cloud-azure-samples/spring-cloud-azure-cache-sample) | [![Maven Central](https://img.shields.io/maven-central/v/com.microsoft.azure/spring-starter-azure-cache.svg)](https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22spring-starter-azure-cache%22) | [Sample](https://github.com/Microsoft/spring-cloud-azure/tree/release/1.1.0.RC5/spring-cloud-azure-samples/cache-sample)
+[Spring Caching with Azure Redis Cache](spring-cloud-azure-samples/cache-sample) | [![Maven Central](https://img.shields.io/maven-central/v/com.microsoft.azure/spring-starter-azure-cache.svg)](https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22spring-starter-azure-cache%22) | [Sample](https://github.com/Microsoft/spring-cloud-azure/tree/release/1.1.0.RC5/spring-cloud-azure-samples/cache-sample)
 
 ### [Spring Cloud Config](https://cloud.spring.io/spring-cloud-static/spring-cloud.html#customizing-bootstrap-property-sources)
 
