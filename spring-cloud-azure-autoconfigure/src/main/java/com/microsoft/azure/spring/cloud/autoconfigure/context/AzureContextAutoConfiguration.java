@@ -14,12 +14,15 @@ import com.microsoft.azure.management.resources.fluentcore.utils.ProviderRegistr
 import com.microsoft.azure.management.resources.fluentcore.utils.ResourceManagerThrottlingInterceptor;
 import com.microsoft.azure.serializer.AzureJacksonAdapter;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
+import com.microsoft.azure.spring.cloud.context.core.api.CredentialsProvider;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
-import com.microsoft.azure.spring.cloud.context.core.api.CredentialsProvider;
 import com.microsoft.azure.spring.cloud.context.core.impl.AzureResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.impl.DefaultCredentialsProvider;
+import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringBuilder;
+import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
 import com.microsoft.rest.RestClient;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -64,6 +67,13 @@ public class AzureContextAutoConfiguration {
                 .build();
 
         return Azure.authenticate(restClient, credentials.domain()).withDefaultSubscription();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public StorageConnectionStringProvider storageConnectionStringProvider(AzureProperties azureProperties) {
+        return new StorageConnectionStringProvider(
+                new StorageConnectionStringBuilder(azureProperties.getDefaultHttpProtocol()));
     }
 
 }

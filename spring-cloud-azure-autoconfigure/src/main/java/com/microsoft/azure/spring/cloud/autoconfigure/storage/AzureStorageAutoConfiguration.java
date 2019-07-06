@@ -6,14 +6,11 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 
-import com.microsoft.azure.management.storage.StorageAccount;
-import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
-import com.microsoft.azure.spring.cloud.context.core.api.EnvironmentProvider;
-import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
-import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
-import com.microsoft.azure.spring.cloud.storage.AzureStorageProtocolResolver;
-import com.microsoft.azure.storage.CloudStorageAccount;
+import java.net.URISyntaxException;
+import java.security.InvalidKeyException;
+
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +23,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import javax.annotation.PostConstruct;
-import java.net.URISyntaxException;
-import java.security.InvalidKeyException;
+import com.microsoft.azure.management.storage.StorageAccount;
+import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
+import com.microsoft.azure.spring.cloud.context.core.api.EnvironmentProvider;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
+import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
+import com.microsoft.azure.spring.cloud.storage.AzureStorageProtocolResolver;
+import com.microsoft.azure.storage.CloudStorageAccount;
 
 /**
  * An auto-configuration for Azure Storage Account
@@ -56,7 +58,7 @@ public class AzureStorageAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public CloudStorageAccount storageAccount(AzureStorageProperties storageProperties,
-            EnvironmentProvider environmentProvider) {
+            EnvironmentProvider environmentProvider, StorageConnectionStringProvider storageConnectionStringProvider) {
 
         String connectionString;
 
@@ -65,11 +67,11 @@ public class AzureStorageAutoConfiguration {
 
             StorageAccount storageAccount = resourceManagerProvider.getStorageAccountManager().getOrCreate(accountName);
 
-            connectionString = StorageConnectionStringProvider
+            connectionString = storageConnectionStringProvider
                     .getConnectionString(storageAccount, environmentProvider.getEnvironment());
 
         } else {
-            connectionString = StorageConnectionStringProvider
+            connectionString = storageConnectionStringProvider
                     .getConnectionString(storageProperties.getAccount(), storageProperties.getAccessKey(),
                             environmentProvider.getEnvironment());
             TelemetryCollector.getInstance().addProperty(STORAGE, ACCOUNT_NAME, storageProperties.getAccount());

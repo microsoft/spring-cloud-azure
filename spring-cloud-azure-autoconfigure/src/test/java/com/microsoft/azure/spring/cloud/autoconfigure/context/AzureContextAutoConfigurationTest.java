@@ -68,6 +68,31 @@ public class AzureContextAutoConfigurationTest {
                           .withPropertyValues("spring.cloud.azure.auto-create-resources=true")
                           .run(context -> context.getBean(AzureProperties.class));
     }
+    
+    @Test
+    public void testDefaultHttpProtocolIsHttps() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
+                          .withPropertyValues("spring.cloud.azure.resourceGroup=group1")
+                          .run(context -> {
+            assertThat(context).hasSingleBean(AzureProperties.class);
+            assertThat(context.getBean(AzureProperties.class).getCredentialFilePath()).isEqualTo("credential");
+            assertThat(context.getBean(AzureProperties.class).getResourceGroup()).isEqualTo("group1");
+            assertThat(context.getBean(AzureProperties.class).getDefaultHttpProtocol()).isEqualTo("https");
+        });
+    }
+    
+    @Test
+    public void testDefaultHttpProtocolCanBeConfigured() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
+                          .withPropertyValues("spring.cloud.azure.resourceGroup=group1")
+                          .withPropertyValues("spring.cloud.azure.defaultHttpProtocol=http")
+                          .run(context -> {
+            assertThat(context).hasSingleBean(AzureProperties.class);
+            assertThat(context.getBean(AzureProperties.class).getCredentialFilePath()).isEqualTo("credential");
+            assertThat(context.getBean(AzureProperties.class).getResourceGroup()).isEqualTo("group1");
+            assertThat(context.getBean(AzureProperties.class).getDefaultHttpProtocol()).isEqualTo("http");
+        });
+    }
 
     @Configuration
     static class TestConfiguration {
