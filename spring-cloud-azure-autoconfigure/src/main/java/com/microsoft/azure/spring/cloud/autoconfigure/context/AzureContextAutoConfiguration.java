@@ -73,7 +73,7 @@ public class AzureContextAutoConfiguration {
     @ConditionalOnMissingBean
     public StorageConnectionStringProvider storageConnectionStringProvider(AzureProperties azureProperties) {
         return new StorageConnectionStringProvider(
-                new StorageConnectionStringBuilder(azureProperties.getDefaultHttpProtocol()));
+                new StorageConnectionStringBuilder(azureProperties.isSecureTransfer()));
     }
 
 }
