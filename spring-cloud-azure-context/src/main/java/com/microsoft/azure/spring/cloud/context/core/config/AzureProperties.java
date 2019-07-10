@@ -29,7 +29,7 @@ public class AzureProperties implements CredentialSupplier {
 
     private boolean autoCreateResources = false;
 
-    private boolean secureTransfer = true;
+    private String defaultHttpProtocol = "https";
 
     @PostConstruct
     private void validate() {
@@ -80,11 +80,11 @@ public class AzureProperties implements CredentialSupplier {
         this.autoCreateResources = autoCreateResources;
     }
 
-    public boolean isSecureTransfer() {
-        return secureTransfer;
+    public String getDefaultHttpProtocol() {
+        return defaultHttpProtocol;
     }
 
-    public void setSecureTransfer(boolean secureTransfer) {
-        this.secureTransfer = secureTransfer;
+    public void setDefaultHttpProtocol(String defaultHttpProtocol) {
+        this.defaultHttpProtocol = defaultHttpProtocol;
     }
 }

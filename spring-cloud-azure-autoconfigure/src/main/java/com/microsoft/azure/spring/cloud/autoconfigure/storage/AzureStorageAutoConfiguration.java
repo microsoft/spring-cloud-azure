@@ -6,13 +6,18 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 
-import java.net.URISyntaxException;
-import java.security.InvalidKeyException;
-
-import javax.annotation.PostConstruct;
-
+import com.microsoft.azure.management.storage.StorageAccount;
+import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
+import com.microsoft.azure.spring.cloud.context.core.api.EnvironmentProvider;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
+import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringBuilder;
+import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
+import com.microsoft.azure.spring.cloud.storage.AzureStorageProtocolResolver;
+import com.microsoft.azure.storage.CloudStorageAccount;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -23,14 +28,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import com.microsoft.azure.management.storage.StorageAccount;
-import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
-import com.microsoft.azure.spring.cloud.context.core.api.EnvironmentProvider;
-import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
-import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
-import com.microsoft.azure.spring.cloud.storage.AzureStorageProtocolResolver;
-import com.microsoft.azure.storage.CloudStorageAccount;
+import java.net.URISyntaxException;
+import java.security.InvalidKeyException;
+
+import javax.annotation.PostConstruct;
 
 /**
  * An auto-configuration for Azure Storage Account
@@ -49,6 +50,8 @@ public class AzureStorageAutoConfiguration {
 
     @Autowired(required = false)
     private ResourceManagerProvider resourceManagerProvider;
+    @Autowired
+    private AzureStorageProperties storageProperties;
 
     @PostConstruct
     public void collectTelemetry() {
@@ -57,9 +60,15 @@ public class AzureStorageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public CloudStorageAccount storageAccount(AzureStorageProperties storageProperties,
-            EnvironmentProvider environmentProvider, StorageConnectionStringProvider storageConnectionStringProvider) {
+    public StorageConnectionStringProvider storageConnectionStringProvider() {
+        return new StorageConnectionStringProvider(
+                new StorageConnectionStringBuilder(storageProperties.isSecureTransfer()));
+    }
 
+    @Bean
+    @ConditionalOnMissingBean
+    public CloudStorageAccount storageAccount(EnvironmentProvider environmentProvider,
+            StorageConnectionStringProvider storageConnectionStringProvider) {
         String connectionString;
 
         if (resourceManagerProvider != null) {

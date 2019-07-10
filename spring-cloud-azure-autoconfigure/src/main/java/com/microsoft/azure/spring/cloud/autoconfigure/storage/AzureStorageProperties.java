@@ -23,6 +23,8 @@ public class AzureStorageProperties {
     @Pattern(regexp = "^[a-z0-9]{3,24}$",
             message = "must be between 3 and 24 characters in length and use numbers and lower-case letters only")
     private String account;
+    
+    private boolean secureTransfer = true;
 
     /**
      * Either accessKey or credentialFilePath should be provided
@@ -43,5 +45,13 @@ public class AzureStorageProperties {
 
     public void setAccessKey(String accessKey) {
         this.accessKey = accessKey;
+    }
+
+    public boolean isSecureTransfer() {
+        return secureTransfer;
+    }
+
+    public void setSecureTransfer(boolean secureTransfer) {
+        this.secureTransfer = secureTransfer;
     }
 }

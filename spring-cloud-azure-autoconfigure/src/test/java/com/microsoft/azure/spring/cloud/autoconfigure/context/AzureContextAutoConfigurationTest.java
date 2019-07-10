@@ -69,31 +69,6 @@ public class AzureContextAutoConfigurationTest {
                           .run(context -> context.getBean(AzureProperties.class));
     }
     
-    @Test
-    public void testDefaultTransferIsSecure() {
-        this.contextRunner.withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
-                          .withPropertyValues("spring.cloud.azure.resourceGroup=group1")
-                          .run(context -> {
-            assertThat(context).hasSingleBean(AzureProperties.class);
-            assertThat(context.getBean(AzureProperties.class).getCredentialFilePath()).isEqualTo("credential");
-            assertThat(context.getBean(AzureProperties.class).getResourceGroup()).isEqualTo("group1");
-            assertThat(context.getBean(AzureProperties.class).isSecureTransfer()).isEqualTo(true);
-        });
-    }
-    
-    @Test
-    public void testSecureTransferCanBeDisabled() {
-        this.contextRunner.withPropertyValues("spring.cloud.azure.credentialFilePath=credential")
-                          .withPropertyValues("spring.cloud.azure.resourceGroup=group1")
-                          .withPropertyValues("spring.cloud.azure.secureTransfer=false")
-                          .run(context -> {
-            assertThat(context).hasSingleBean(AzureProperties.class);
-            assertThat(context.getBean(AzureProperties.class).getCredentialFilePath()).isEqualTo("credential");
-            assertThat(context.getBean(AzureProperties.class).getResourceGroup()).isEqualTo("group1");
-            assertThat(context.getBean(AzureProperties.class).isSecureTransfer()).isEqualTo(false);
-        });
-    }
-
     @Configuration
     static class TestConfiguration {
 

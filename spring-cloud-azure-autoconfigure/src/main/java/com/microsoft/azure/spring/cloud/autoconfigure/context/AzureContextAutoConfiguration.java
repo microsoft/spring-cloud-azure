@@ -19,8 +19,6 @@ import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider
 import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
 import com.microsoft.azure.spring.cloud.context.core.impl.AzureResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.impl.DefaultCredentialsProvider;
-import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringBuilder;
-import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
 import com.microsoft.rest.RestClient;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -67,13 +65,6 @@ public class AzureContextAutoConfiguration {
                 .build();
 
         return Azure.authenticate(restClient, credentials.domain()).withDefaultSubscription();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public StorageConnectionStringProvider storageConnectionStringProvider(AzureProperties azureProperties) {
-        return new StorageConnectionStringProvider(
-                new StorageConnectionStringBuilder(azureProperties.isSecureTransfer()));
     }
 
 }
