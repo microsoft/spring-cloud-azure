@@ -9,7 +9,8 @@ com.microsoft.azure.spring.cloud.autoconfigure.servicebus.AzureServiceBusAutoCon
 com.microsoft.azure.spring.cloud.autoconfigure.servicebus.AzureServiceBusQueueAutoConfiguration,\
 com.microsoft.azure.spring.cloud.autoconfigure.servicebus.AzureServiceBusTopicAutoConfiguration,\
 com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration,\
-com.microsoft.azure.spring.cloud.autoconfigure.storage.AzureStorageQueueAutoConfiguration
+com.microsoft.azure.spring.cloud.autoconfigure.storage.AzureStorageQueueAutoConfiguration,\
+com.microsoft.azure.spring.cloud.autoconfigure.jms.ServiceBusJMSAutoConfiguration
 
 org.springframework.boot.env.EnvironmentPostProcessor=\
 com.microsoft.azure.spring.cloud.autoconfigure.cloudfoundry.AzureCloudFoundryEnvironmentPostProcessor

@@ -25,6 +25,7 @@
         <module>spring-cloud-starter-azure-storage-queue</module>
         <module>spring-cloud-starter-azure-appconfiguration-config</module>
         <module>spring-cloud-starter-azure-keyvault-config</module>
+        <module>spring-jms-starter-azure-servicebus</module>
     </modules>
 
 </project>
