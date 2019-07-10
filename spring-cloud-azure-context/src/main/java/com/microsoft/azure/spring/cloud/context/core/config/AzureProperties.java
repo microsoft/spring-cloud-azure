@@ -8,7 +8,6 @@ package com.microsoft.azure.spring.cloud.context.core.config;
 
 import com.microsoft.azure.spring.cloud.context.core.api.CredentialSupplier;
 import com.microsoft.azure.spring.cloud.context.core.api.Environment;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
@@ -28,8 +27,6 @@ public class AzureProperties implements CredentialSupplier {
     private String region;
 
     private boolean autoCreateResources = false;
-
-    private String defaultHttpProtocol = "https";
 
     @PostConstruct
     private void validate() {
@@ -78,13 +75,5 @@ public class AzureProperties implements CredentialSupplier {
 
     public void setAutoCreateResources(boolean autoCreateResources) {
         this.autoCreateResources = autoCreateResources;
-    }
-
-    public String getDefaultHttpProtocol() {
-        return defaultHttpProtocol;
-    }
-
-    public void setDefaultHttpProtocol(String defaultHttpProtocol) {
-        this.defaultHttpProtocol = defaultHttpProtocol;
     }
 }

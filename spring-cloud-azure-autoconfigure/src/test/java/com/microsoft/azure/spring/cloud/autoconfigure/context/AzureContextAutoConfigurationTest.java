@@ -68,7 +68,7 @@ public class AzureContextAutoConfigurationTest {
                           .withPropertyValues("spring.cloud.azure.auto-create-resources=true")
                           .run(context -> context.getBean(AzureProperties.class));
     }
-    
+
     @Configuration
     static class TestConfiguration {
 
