@@ -19,6 +19,7 @@ import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import com.microsoft.azure.spring.integration.eventhub.factory.DefaultEventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.factory.EventHubConnectionStringProvider;
 import com.microsoft.azure.spring.integration.eventhub.impl.EventHubTemplate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -77,15 +78,16 @@ public class AzureEventHubAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public EventHubClientFactory clientFactory(EventHubConnectionStringProvider connectionStringProvider,
-            AzureEventHubProperties eventHubProperties, EnvironmentProvider environmentProvider) {
+            AzureEventHubProperties eventHubProperties, EnvironmentProvider environmentProvider, 
+            StorageConnectionStringProvider storageConnectionStringProvider) {
         String checkpointConnectionString;
         if (resourceManagerProvider != null) {
             StorageAccount checkpointStorageAccount = resourceManagerProvider.getStorageAccountManager().getOrCreate(
                     eventHubProperties.getCheckpointStorageAccount());
-            checkpointConnectionString = StorageConnectionStringProvider
+            checkpointConnectionString = storageConnectionStringProvider
                     .getConnectionString(checkpointStorageAccount, environmentProvider.getEnvironment());
         } else {
-            checkpointConnectionString = StorageConnectionStringProvider
+            checkpointConnectionString = storageConnectionStringProvider
                     .getConnectionString(eventHubProperties.getCheckpointStorageAccount(),
                             eventHubProperties.getCheckpointAccessKey(), environmentProvider.getEnvironment());
         }
