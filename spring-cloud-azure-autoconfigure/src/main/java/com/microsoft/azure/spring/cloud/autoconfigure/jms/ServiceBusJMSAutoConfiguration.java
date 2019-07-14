@@ -6,7 +6,6 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.jms;
 
-import com.microsoft.azure.spring.cloud.autoconfigure.servicebus.AzureServiceBusProperties;
 import org.apache.qpid.jms.JmsConnectionFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -20,25 +19,28 @@ import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.jms.core.JmsTemplate;
 
 import javax.jms.ConnectionFactory;
+import java.util.Hashtable;
 
 @Configuration
 @ConditionalOnClass(JmsConnectionFactory.class)
-@ConditionalOnProperty(value = "spring.cloud.azure.servicebus.enabled", matchIfMissing = true)
-@EnableConfigurationProperties(AzureServiceBusProperties.class)
+@ConditionalOnProperty(value = "spring.cloud.azure.servicebus.jms.enabled", matchIfMissing = true)
+@EnableConfigurationProperties(AzureServiceBusJMSProperties.class)
 public class ServiceBusJMSAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ConnectionFactory jmsConnectionFactory(AzureServiceBusProperties serviceBusProperties) {
-        String connectionString = serviceBusProperties.getConnectionString();
-        String clientId = serviceBusProperties.getNamespace();
+    public ConnectionFactory jmsConnectionFactory(AzureServiceBusJMSProperties serviceBusJMSProperties) {
+        String connectionString = serviceBusJMSProperties.getConnectionString();
+        String clientId = serviceBusJMSProperties.getClientId();
+        String idleTimeout = serviceBusJMSProperties.getIdleTimeout();
 
         ConnectionStringResolver csr = new ConnectionStringResolver(connectionString);
-        String host = csr.getHost();
-        String sasKeyName = csr.getSasKeyName();
-        String sasKey = csr.getSasKey();
+        Hashtable hashtable = csr.getResolvedKeysAndValues();
+        String host = (String) hashtable.get("host");
+        String sasKeyName = (String) hashtable.get("SharedAccessKeyName");
+        String sasKey = (String) hashtable.get("SharedAccessKey");
 
-        String remoteUri = String.format("amqps://%s?amqp.idleTimeout=3600000", host);
+        String remoteUri = String.format("amqps://%s?amqp.idleTimeout=%s", host, idleTimeout);
         JmsConnectionFactory jmsConnectionFactory = new JmsConnectionFactory(remoteUri);
         jmsConnectionFactory.setRemoteURI(remoteUri);
         jmsConnectionFactory.setClientID(clientId);
@@ -50,16 +52,16 @@ public class ServiceBusJMSAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public JmsTemplate jmsTemplate(ConnectionFactory jmsConnectionFactory) {
-        JmsTemplate returnValue = new JmsTemplate();
-        returnValue.setConnectionFactory(jmsConnectionFactory);
-        return returnValue;
+        JmsTemplate jmsTemplate = new JmsTemplate();
+        jmsTemplate.setConnectionFactory(jmsConnectionFactory);
+        return jmsTemplate;
     }
 
     @Bean
     @ConditionalOnMissingBean
     public JmsListenerContainerFactory jmsListenerContainerFactory(ConnectionFactory connectionFactory) {
-        DefaultJmsListenerContainerFactory returnValue = new DefaultJmsListenerContainerFactory();
-        returnValue.setConnectionFactory(connectionFactory);
-        return returnValue;
+        DefaultJmsListenerContainerFactory jmsListenerContainerFactory = new DefaultJmsListenerContainerFactory();
+        jmsListenerContainerFactory.setConnectionFactory(connectionFactory);
+        return jmsListenerContainerFactory;
     }
 }

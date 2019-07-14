@@ -13,64 +13,37 @@ Running this sample will be charged by Azure. You can check the usage and bill a
 +
 ....
 # Fill service bus namespace connection string copied from portal
-spring.cloud.azure.servicebus.connection-string=[servicebus-namespace-connection-string]
+spring.cloud.azure.servicebus.jms.connection-string=[servicebus-namespace-connection-string]
+
+# Client ID is an optional
+spring.cloud.azure.servicebus.jms.client-id=[client-id]
+
+# Idle Timeout is required
+spring.cloud.azure.servicebus.jms.idle-timeout=[idle-timeout]
 ....
 
-== Credential file based usage
-
-1.  Create Azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how
-to create credential file]
-+
-....
-$  az login
-$  az account set --subscription <name or id>
-$  az ad sp create-for-rbac --sdk-auth > my.azureauth
-....
-+
-Make sure `my.azureauth` is encoded with UTF-8.
-
-2. Put credential file under `src/main/resources/`.
-
-3. Create Azure Service Bus namespace, queue and topic.
-Please see https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-create-namespace-portal[how to create]. Or enable auto create
-resources feature in link:src/main/resources/application.properties[application.properties]:
-+
-....
-spring.cloud.azure.auto-create-resources=true
-
-# Example region is westUS, northchina
-spring.cloud.azure.region=[region]
-....
-
-4. Update link:src/main/resources/application.properties[application.properties] file
-+
-....
-# Enter 'my.azureauth' here if following step 1 and 2
-spring.cloud.azure.credential-file-path=[credential-file-path]
-spring.cloud.azure.resource-group=[resource-group]
-
-spring.cloud.azure.servicebus.namespace=[servicebus-namespace]
-....
 
 == How to run
 
-5. Update queue name in link:src/main/java/com/example/ServiceBusJMSApplication.java#L30[ServiceBusJMSApplication] and
-link:src/main/java/com/example/ReceiveController.java#L32[ReceiveController].
-This is an example for Spring JMS Queue for Azure, if you want to use Topic, you can define your topic name as the same way as using the queue.
+1. Update queue name in link:src/main/java/com/example/ServiceBusJMSApplication.java#L15[ServiceBusJMSApplication] and
+link:src/main/java/com/example/ReceiveController.java#L13[ReceiveController].
+....
+This is an example for Spring JMS Queue for Azure, if you want to use Spring JMS Topic, it's the same way.
+....
 
-6. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
+2. Update message content that you want to send in link:src/main/java/com/example/ServiceBusJMSApplication.java#L19[ServiceBusJMSApplication]
+....
+Example: Assign CONTENT to "hello"
+....
 
-7. Send a message to service bus queue
-Run ServiceBusJMSApplication.java,
-Execute jmsTemplate.convertAndSend([Your Queue Name], new EmailController([Target Email Address], [Message])).
+3. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
 
-8. Verify in your app's logs that a similar message was posted:
+4. Verify in your app's logs that a similar message was posted:
 +
 ....
-Sending message 1.
-Received <Email{to=[Target Email Address], body=[Message]}>
+New message received: 'hello'
 ....
 
-9. Send a message to service bus topic is similar to step [7].
+5. Send a message to service bus topic is similar to sending to service bus queue.
 
-10. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
+6. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
