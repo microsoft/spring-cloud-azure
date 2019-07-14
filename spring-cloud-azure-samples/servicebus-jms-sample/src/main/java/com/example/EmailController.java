@@ -2,42 +2,40 @@ package com.example;
 
 import java.io.Serializable;
 
-// Add Serializable
 public class EmailController implements Serializable {
 
-    // Serializer ID
     private static final long serialVersionUID = -295422703255886286L;
 
-    private String to;      // destination
-    private String body;    // content
+    private String destination;
+    private String content;
 
     public EmailController() {
     }
 
-    public EmailController(String to, String body) {
-        this.to = to;
-        this.body = body;
+    public EmailController(String destination, String content) {
+        this.destination = destination;
+        this.content = content;
     }
 
-    public String getTo() {
-        return to;
+    public String getDestination() {
+        return destination;
     }
 
-    public void setTo(String to) {
-        this.to = to;
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 
-    public String getBody() {
-        return body;
+    public String getContent() {
+        return content;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     @Override
     public String toString() {
-        return String.format("Email{to=%s, body=%s}", getTo(), getBody());
+        return String.format("Email{destination=%s, content=%s}", getDestination(), getContent());
     }
 
 }

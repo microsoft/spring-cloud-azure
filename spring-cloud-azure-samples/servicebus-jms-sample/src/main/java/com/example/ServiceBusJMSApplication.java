@@ -11,30 +11,26 @@ import org.springframework.jms.core.JmsTemplate;
 @SpringBootApplication
 @EnableJms
 public class ServiceBusJMSApplication {
-    // Number of messages to send
-    private static int totalSend = 10;
-    // log4j logger
+
+    private static final String QUEUE_NAME = "que001";
+
+    private static final String DESTINATION = "user@example.com";
+
+    private static final String CONTENT = "hello";
+
     private static final Logger logger = LoggerFactory.getLogger(ServiceBusJMSApplication.class);
 
     public static void main(String[] args) {
-        // Launch the application
+
         ConfigurableApplicationContext context = SpringApplication.run(ServiceBusJMSApplication.class, args);
 
         JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
 
         logger.info("Sending message");
 
-        // Send messages to the queue
-        for (int i = 0; i < totalSend; i++) {
-            System.out.printf("Sending message %d.\n", i + 1);
-            jmsTemplate.convertAndSend("que001", new EmailController("info@example.com", "Hello"));
-        }
+        System.out.printf("Sending message.\n");
 
-//        // Send messages to the topic
-//        for (int i = 0; i < totalSend; i++) {
-//            System.out.printf("Sending message %d.\n", i + 1);
-//            jmsTemplate.convertAndSend("testtopic", new Email("info@example.com", "Hello"));
-//        }
+        jmsTemplate.convertAndSend(QUEUE_NAME, new EmailController(DESTINATION, CONTENT));
 
     }
 
