@@ -15,7 +15,7 @@ Running this sample will be charged by Azure. You can check the usage and bill a
 # Fill service bus namespace connection string copied from portal
 spring.cloud.azure.servicebus.jms.connection-string=[servicebus-namespace-connection-string]
 
-# Client ID is an optional
+# Client ID is optional
 spring.cloud.azure.servicebus.jms.client-id=[client-id]
 
 # Idle Timeout is required
@@ -24,26 +24,27 @@ spring.cloud.azure.servicebus.jms.idle-timeout=[idle-timeout]
 
 
 == How to run
-
-1. Update queue name in link:src/main/java/com/example/ServiceBusJMSApplication.java#L15[ServiceBusJMSApplication] and
+3. Update queue name in link:src/main/java/com/example/ServiceBusJMSApplication.java#L15[ServiceBusJMSApplication] and
 link:src/main/java/com/example/ReceiveController.java#L13[ReceiveController].
++
 ....
 This is an example for Spring JMS Queue for Azure, if you want to use Spring JMS Topic, it's the same way.
 ....
 
-2. Update message content that you want to send in link:src/main/java/com/example/ServiceBusJMSApplication.java#L19[ServiceBusJMSApplication]
+4. Update message content that you want to send in link:src/main/java/com/example/ServiceBusJMSApplication.java#L19[ServiceBusJMSApplication].
++
 ....
 Example: Assign CONTENT to "hello"
 ....
 
-3. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
+5. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
 
-4. Verify in your app's logs that a similar message was posted:
+6. Verify in your app's logs that a similar message was posted:
 +
 ....
 New message received: 'hello'
 ....
 
-5. Send a message to service bus topic is similar to sending to service bus queue.
+7. Send a message to service bus topic is similar to sending to service bus queue.
 
-6. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
+8. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
