@@ -6,12 +6,9 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.jms;
 
-//import com.microsoft.azure.spring.cloud.autoconfigure.servicebus.AzureServiceBusAutoConfiguration;
-//import org.apache.qpid.jms.JmsConnectionFactory;
 import org.apache.qpid.jms.JmsConnectionFactory;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
-//import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
