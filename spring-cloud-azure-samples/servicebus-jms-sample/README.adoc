@@ -24,8 +24,8 @@ spring.cloud.azure.servicebus.jms.idle-timeout=[idle-timeout]
 
 
 == How to run
-3. Update queue name in link:src/main/java/com/example/ServiceBusJMSApplication.java#L15[ServiceBusJMSApplication] and
-link:src/main/java/com/example/ReceiveController.java#L13[ReceiveController].
+3. Update queue name in link:src/main/java/com/example/ServiceBusJMSApplication.java#L21[ServiceBusJMSApplication] and
+link:src/main/java/com/example/ReceiveController.java#L17[ReceiveController].
 +
 ....
 This is an example for Spring JMS Queue for Azure, if you want to use Spring JMS Topic, it's the same way.
