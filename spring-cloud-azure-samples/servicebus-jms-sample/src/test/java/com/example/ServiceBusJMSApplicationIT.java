@@ -4,18 +4,18 @@
  * license information.
  */
 
-package com.example;
+//package com.example;
 
-import org.junit.Assert;
-import org.junit.Test;
-
-public class ServiceBusJMSApplicationIT {
-
-    @Test
-    public void testJMSSendAndReceiveMessage() {
-
-        Assert.assertEquals(ReceiveController.getContent(), ServiceBusJMSApplication.getContent());
-
-    }
-
-}
+//import org.junit.Assert;
+//import org.junit.Test;
+//
+//public class ServiceBusJMSApplicationIT {
+//
+//    @Test
+//    public void testJMSSendAndReceiveMessage() {
+//
+//        Assert.assertEquals(ReceiveController.getContent(), ServiceBusJMSApplication.getContent());
+//
+//    }
+//
+//}

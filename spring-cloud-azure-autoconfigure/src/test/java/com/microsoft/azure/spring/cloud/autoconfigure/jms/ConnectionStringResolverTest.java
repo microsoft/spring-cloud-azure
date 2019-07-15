@@ -16,13 +16,13 @@ public class ConnectionStringResolverTest {
     public void testConnectionStringResolver(){
         String connectionString = "Endpoint=sb://host/;SharedAccessKeyName=sasKeyName;SharedAccessKey=sasKey";
 
-        ConnectionStringResolver csr = new ConnectionStringResolver(connectionString);
+        ServiceBusKey serviceBusKey = ConnectionStringResolver.getServiceBusKey(connectionString);
+        String host = serviceBusKey.getHost();
+        String sasKeyName = serviceBusKey.getSharedAccessKeyName();
+        String sasKey = serviceBusKey.getSharedAccessKey();
 
-        HashMap<String, String> hashMap = csr.getResolvedKeysAndValues();
-
-        Assert.assertEquals("sb://host/", hashMap.get("Endpoint"));
-        Assert.assertEquals("host", hashMap.get("host"));
-        Assert.assertEquals("sasKeyName", hashMap.get("SharedAccessKeyName"));
-        Assert.assertEquals("sasKey", hashMap.get("SharedAccessKey"));
+        Assert.assertEquals("host", host);
+        Assert.assertEquals("sasKeyName", sasKeyName);
+        Assert.assertEquals("sasKey", sasKey);
     }
 }

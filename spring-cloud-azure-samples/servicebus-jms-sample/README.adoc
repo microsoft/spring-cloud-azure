@@ -15,7 +15,7 @@ Running this sample will be charged by Azure. You can check the usage and bill a
 # Fill service bus namespace connection string copied from portal
 spring.cloud.azure.servicebus.jms.connection-string=[servicebus-namespace-connection-string]
 
-# Client ID is optional
+# Client ID is required
 spring.cloud.azure.servicebus.jms.client-id=[client-id]
 
 # Idle Timeout is required
@@ -24,14 +24,14 @@ spring.cloud.azure.servicebus.jms.idle-timeout=[idle-timeout]
 
 
 == How to run
-3. Update queue name in link:src/main/java/com/example/ServiceBusJMSApplication.java#L21[ServiceBusJMSApplication] and
+3. Update queue name in link:src/main/java/com/example/ServiceBusJMSApplication.java#L22[ServiceBusJMSApplication] and
 link:src/main/java/com/example/ReceiveController.java#L17[ReceiveController].
 +
 ....
 This is an example for Spring JMS Queue for Azure, if you want to use Spring JMS Topic, it's the same way.
 ....
 
-4. Update message content that you want to send in link:src/main/java/com/example/ServiceBusJMSApplication.java#L19[ServiceBusJMSApplication].
+4. Update message content that you want to send in link:src/main/java/com/example/ServiceBusJMSApplication.java#L26[ServiceBusJMSApplication].
 +
 ....
 Example: Assign CONTENT to "hello"
