@@ -9,15 +9,10 @@ package com.microsoft.azure.spring.cloud.autoconfigure.jms;
 import java.util.HashMap;
 
 public class ConnectionStringResolver {
-    private HashMap<String, String> hashMap;
 
-    ConnectionStringResolver(String connectionString) {
-        resolve(connectionString);
-    }
-
-    private void resolve(String connectionString) {
+    public static ServiceBusKey getServiceBusKey(String connectionString) {
         String[] segments = connectionString.split(";");
-        hashMap = new HashMap<>();
+        HashMap<String, String> hashMap = new HashMap<>();
 
         for (String segment : segments) {
             int indexOfEqualSign = segment.indexOf("=");
@@ -26,15 +21,29 @@ public class ConnectionStringResolver {
             hashMap.put(key, value);
         }
 
-        final String ENDPOINT_KEY = "Endpoint";
-        final String HOST_KEY = "host";
-        String endpoint = hashMap.get(ENDPOINT_KEY);
+        final String endpointKey = "Endpoint";
+        final String hostKey = "host";
+        String endpoint = hashMap.get(endpointKey);
         String[] segmentsOfEndpoint = endpoint.split("/");
         String host = segmentsOfEndpoint[segmentsOfEndpoint.length - 1];
-        hashMap.put(HOST_KEY, host);
+        hashMap.put(hostKey, host);
+
+        ServiceBusKey serviceBusKey = new ServiceBusKey();
+        for (String key : hashMap.keySet()) {
+            String value = hashMap.get(key);
+            if(key.equals("host")) {
+                serviceBusKey.setHost(value);
+            }
+            if(key.equals("SharedAccessKeyName")) {
+                serviceBusKey.setSharedAccessKeyName(value);
+            }
+            if(key.equals("SharedAccessKey")) {
+                serviceBusKey.setSharedAccessKey(value);
+            }
+        }
+
+        return serviceBusKey;
+
     }
 
-    public HashMap<String, String> getResolvedKeysAndValues() {
-        return hashMap;
-    }
 }

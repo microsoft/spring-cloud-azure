@@ -20,7 +20,7 @@ public class AzureServiceBusJMSProperties {
 
     private String clientId;
 
-    private int idleTimeout;
+    private int idleTimeout = 3600000;
 
     public String getConnectionString() {
         return connectionString;

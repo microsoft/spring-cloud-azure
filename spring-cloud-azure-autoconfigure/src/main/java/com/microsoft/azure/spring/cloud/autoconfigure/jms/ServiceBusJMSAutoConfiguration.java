@@ -27,6 +27,8 @@ import java.util.HashMap;
 @EnableConfigurationProperties(AzureServiceBusJMSProperties.class)
 public class ServiceBusJMSAutoConfiguration {
 
+    private static final String remoteUriFormat = "amqps://%s?amqp.idleTimeout=%d";
+
     @Bean
     @ConditionalOnMissingBean
     public ConnectionFactory jmsConnectionFactory(AzureServiceBusJMSProperties serviceBusJMSProperties) {
@@ -34,14 +36,12 @@ public class ServiceBusJMSAutoConfiguration {
         String clientId = serviceBusJMSProperties.getClientId();
         int idleTimeout = serviceBusJMSProperties.getIdleTimeout();
 
-        ConnectionStringResolver csr = new ConnectionStringResolver(connectionString);
+        ServiceBusKey serviceBusKey = ConnectionStringResolver.getServiceBusKey(connectionString);
+        String host = serviceBusKey.getHost();
+        String sasKeyName = serviceBusKey.getSharedAccessKeyName();
+        String sasKey = serviceBusKey.getSharedAccessKey();
 
-        HashMap<String, String> hashMap = csr.getResolvedKeysAndValues();
-        String host = hashMap.get("host");
-        String sasKeyName = hashMap.get("SharedAccessKeyName");
-        String sasKey = hashMap.get("SharedAccessKey");
-
-        String remoteUri = String.format("amqps://%s?amqp.idleTimeout=%d", host, idleTimeout);
+        String remoteUri = String.format(remoteUriFormat, host, idleTimeout);
         JmsConnectionFactory jmsConnectionFactory = new JmsConnectionFactory(remoteUri);
         jmsConnectionFactory.setRemoteURI(remoteUri);
         jmsConnectionFactory.setClientID(clientId);
