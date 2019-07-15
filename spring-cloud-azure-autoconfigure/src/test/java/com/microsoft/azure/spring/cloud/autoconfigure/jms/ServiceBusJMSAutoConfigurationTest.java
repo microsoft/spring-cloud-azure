@@ -46,4 +46,5 @@ public class ServiceBusJMSAutoConfigurationTest {
 //            assertThat(context.getBean(AzureServiceBusJMSProperties.class).getIdleTimeout()).isEqualTo("it1");
 //        });
 //    }
+
 }
