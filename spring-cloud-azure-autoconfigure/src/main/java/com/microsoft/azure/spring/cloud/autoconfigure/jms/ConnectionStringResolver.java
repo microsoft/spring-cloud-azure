@@ -26,10 +26,12 @@ public class ConnectionStringResolver {
             hashMap.put(key, value);
         }
 
-        String endpoint = hashMap.get("Endpoint");
+        final String ENDPOINT_KEY = "Endpoint";
+        final String HOST_KEY = "host";
+        String endpoint = hashMap.get(ENDPOINT_KEY);
         String[] segmentsOfEndpoint = endpoint.split("/");
         String host = segmentsOfEndpoint[segmentsOfEndpoint.length - 1];
-        hashMap.put("host", host);
+        hashMap.put(HOST_KEY, host);
     }
 
     public HashMap<String, String> getResolvedKeysAndValues() {
