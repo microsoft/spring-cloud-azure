@@ -8,7 +8,8 @@ package com.microsoft.azure.spring.cloud.autoconfigure.jms;
 
 import org.junit.Assert;
 import org.junit.Test;
-import java.util.Hashtable;
+
+import java.util.HashMap;
 
 public class ConnectionStringResolverTest {
     @Test
@@ -17,11 +18,11 @@ public class ConnectionStringResolverTest {
 
         ConnectionStringResolver csr = new ConnectionStringResolver(connectionString);
 
-        Hashtable hashtable = csr.getResolvedKeysAndValues();
+        HashMap<String, String> hashMap = csr.getResolvedKeysAndValues();
 
-        Assert.assertEquals("sb://host/", (String) hashtable.get("Endpoint"));
-        Assert.assertEquals("host", (String) hashtable.get("host"));
-        Assert.assertEquals("sasKeyName", (String) hashtable.get("SharedAccessKeyName"));
-        Assert.assertEquals("sasKey", (String) hashtable.get("SharedAccessKey"));
+        Assert.assertEquals("sb://host/", hashMap.get("Endpoint"));
+        Assert.assertEquals("host", hashMap.get("host"));
+        Assert.assertEquals("sasKeyName", hashMap.get("SharedAccessKeyName"));
+        Assert.assertEquals("sasKey", hashMap.get("SharedAccessKey"));
     }
 }

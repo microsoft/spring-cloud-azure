@@ -6,10 +6,10 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.jms;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 
 public class ConnectionStringResolver {
-    private Hashtable hashtable;
+    private HashMap<String, String> hashMap;
 
     ConnectionStringResolver(String connectionString) {
         resolve(connectionString);
@@ -17,22 +17,22 @@ public class ConnectionStringResolver {
 
     private void resolve(String connectionString) {
         String[] segments = connectionString.split(";");
-        hashtable = new Hashtable();
+        hashMap = new HashMap<>();
 
         for (String segment : segments) {
             int indexOfEqualSign = segment.indexOf("=");
             String key = segment.substring(0, indexOfEqualSign);
             String value = segment.substring(indexOfEqualSign + 1);
-            hashtable.put(key, value);
+            hashMap.put(key, value);
         }
 
-        String endpoint = (String) hashtable.get("Endpoint");
+        String endpoint = hashMap.get("Endpoint");
         String[] segmentsOfEndpoint = endpoint.split("/");
         String host = segmentsOfEndpoint[segmentsOfEndpoint.length - 1];
-        hashtable.put("host", host);
+        hashMap.put("host", host);
     }
 
-    public Hashtable getResolvedKeysAndValues() {
-        return hashtable;
+    public HashMap<String, String> getResolvedKeysAndValues() {
+        return hashMap;
     }
 }

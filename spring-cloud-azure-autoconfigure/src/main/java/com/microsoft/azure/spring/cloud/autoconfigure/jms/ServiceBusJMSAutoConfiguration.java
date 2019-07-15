@@ -19,7 +19,7 @@ import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.jms.core.JmsTemplate;
 
 import javax.jms.ConnectionFactory;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 @Configuration
 @ConditionalOnClass(JmsConnectionFactory.class)
@@ -32,15 +32,16 @@ public class ServiceBusJMSAutoConfiguration {
     public ConnectionFactory jmsConnectionFactory(AzureServiceBusJMSProperties serviceBusJMSProperties) {
         String connectionString = serviceBusJMSProperties.getConnectionString();
         String clientId = serviceBusJMSProperties.getClientId();
-        String idleTimeout = serviceBusJMSProperties.getIdleTimeout();
+        int idleTimeout = serviceBusJMSProperties.getIdleTimeout();
 
         ConnectionStringResolver csr = new ConnectionStringResolver(connectionString);
-        Hashtable hashtable = csr.getResolvedKeysAndValues();
-        String host = (String) hashtable.get("host");
-        String sasKeyName = (String) hashtable.get("SharedAccessKeyName");
-        String sasKey = (String) hashtable.get("SharedAccessKey");
 
-        String remoteUri = String.format("amqps://%s?amqp.idleTimeout=%s", host, idleTimeout);
+        HashMap<String, String> hashMap = csr.getResolvedKeysAndValues();
+        String host = hashMap.get("host");
+        String sasKeyName = hashMap.get("SharedAccessKeyName");
+        String sasKey = hashMap.get("SharedAccessKey");
+
+        String remoteUri = String.format("amqps://%s?amqp.idleTimeout=%d", host, idleTimeout);
         JmsConnectionFactory jmsConnectionFactory = new JmsConnectionFactory(remoteUri);
         jmsConnectionFactory.setRemoteURI(remoteUri);
         jmsConnectionFactory.setClientID(clientId);

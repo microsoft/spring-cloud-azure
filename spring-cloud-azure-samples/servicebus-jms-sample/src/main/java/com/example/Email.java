@@ -8,24 +8,19 @@ package com.example;
 
 import java.io.Serializable;
 
-public class EmailController implements Serializable {
+public class Email implements Serializable {
 
     private static final long serialVersionUID = -295422703255886286L;
 
     private String destination;
     private String content;
 
-    public EmailController() {
+    public Email(String destination, String content) {
+        setDestination(destination);
+        setContent(content);
     }
 
-    public EmailController(String destination, String content) {
-        this.destination = destination;
-        this.content = content;
-    }
-
-    public String getDestination() {
-        return destination;
-    }
+    public String getDestination() { return destination; }
 
     public void setDestination(String destination) {
         this.destination = destination;

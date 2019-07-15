@@ -36,7 +36,7 @@ public class ServiceBusJMSApplication {
 
         System.out.printf("Sending message.\n");
 
-        jmsTemplate.convertAndSend(QUEUE_NAME, new EmailController(DESTINATION, CONTENT));
+        jmsTemplate.convertAndSend(QUEUE_NAME, new Email(DESTINATION, CONTENT));
 
     }
 
