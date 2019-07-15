@@ -20,7 +20,7 @@ public class AzureServiceBusJMSProperties {
 
     private String clientId;
 
-    private String idleTimeout;
+    private int idleTimeout;
 
     public String getConnectionString() {
         return connectionString;
@@ -38,19 +38,27 @@ public class AzureServiceBusJMSProperties {
         this.clientId = clientId;
     }
 
-    public String getIdleTimeout() {
+    public int getIdleTimeout() {
         return idleTimeout;
     }
 
-    public void setIdleTimeout(String idleTimeout) {
+    public void setIdleTimeout(int idleTimeout) {
         this.idleTimeout = idleTimeout;
     }
 
     @PostConstruct
     public void validate() {
-        if (!StringUtils.hasText(connectionString) || !StringUtils.hasText(idleTimeout)) {
-            throw new IllegalArgumentException("Both 'spring.cloud.azure.servicebus.jms.connection-string' and " +
-                    "'spring.cloud.azure.servicebus.jms.idle-timeout' should be provided");
+        if (!StringUtils.hasText(connectionString)) {
+            throw new IllegalArgumentException("'spring.cloud.azure.servicebus.jms.connection-string' " +
+                    "should be provided");
+        }
+        if (!StringUtils.hasText(clientId)) {
+            throw new IllegalArgumentException("'spring.cloud.azure.servicebus.jms.client-id' " +
+                    "should be provided");
+        }
+        if (!StringUtils.hasText(idleTimeout + "")) {
+            throw new IllegalArgumentException("'spring.cloud.azure.servicebus.jms.idle-timeout' " +
+                    "should be provided");
         }
     }
 }

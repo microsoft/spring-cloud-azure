@@ -21,7 +21,7 @@ public class ReceiveController {
     private static String content;
 
     @JmsListener(destination = QUEUE_NAME, containerFactory = "jmsListenerContainerFactory")
-    public void receiveMessage(EmailController email) {
+    public void receiveMessage(Email email) {
 
         logger.info("Receiving message from queue: {}", email);
 

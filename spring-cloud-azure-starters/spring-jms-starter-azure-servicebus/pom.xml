@@ -38,16 +38,6 @@
             <artifactId>qpid-jms-client</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-integration-servicebus</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>azure-servicebus</artifactId>
-        </dependency>
-
     </dependencies>
 
 </project>
