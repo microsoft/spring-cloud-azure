@@ -19,6 +19,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -95,7 +96,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
         }
 
         for (ConfigStore configStore : configStores) {
-            if (needRefresh(configStore)) {
+            if (needRefresh(configStore) || needRefreshFeatureFlag(configStore)) {
                 break;
             }
         }
@@ -107,24 +108,53 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
                 .withLabels(store.getLabels()).withFields(QueryField.ETAG).withRange(0, 0);
 
         List<KeyValueItem> keyValueItems = configOperations.getRevisions(store.getName(), options);
+        
         if (keyValueItems.isEmpty()) {
             return false;
         }
 
         String etag = keyValueItems.get(0).getEtag();
-        if (firstTimeMap.get(store.getName()) == null) {
-            storeEtagMap.put(store.getName(), etag);
-            firstTimeMap.put(store.getName(), false);
+        if (firstTimeMap.get(store.getName() + "configuration") == null) {
+            storeEtagMap.put(store.getName() + "configuration", etag);
+            firstTimeMap.put(store.getName() + "configuration", false);
             return false;
         }
 
-        if (!etag.equals(storeEtagMap.get(store.getName()))) {
+        if (!etag.equals(storeEtagMap.get(store.getName() + "configuration"))) {
             LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
                     store.getName(), watchedKeyNames);
-            storeEtagMap.put(store.getName(), etag);
+            storeEtagMap.put(store.getName() + "configuration", etag);
             RefreshEventData eventData = new RefreshEventData(watchedKeyNames);
             publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
             return true; // Break early once a change is found
+        }
+
+        return false;
+    }
+    
+    private boolean needRefreshFeatureFlag(ConfigStore store) {
+        List<String> queries = new ArrayList<String>();
+        queries.add("*appconfig*");
+        QueryOptions options = new QueryOptions().withKeyNames(queries).withLabels(store.getLabels())
+                .withFields(QueryField.ETAG).withRange(0, 0);
+        List<KeyValueItem> featureItems = configOperations.getRevisions(store.getName(), options);
+        
+        if (featureItems.isEmpty()) {
+            return false;
+        }
+
+        String etag = featureItems.get(0).getEtag();
+        if (firstTimeMap.get(store.getName() + "feature") == null) {
+            storeEtagMap.put(store.getName() + "feature", etag);
+            firstTimeMap.put(store.getName() + "feature", false);
+            return false;
+        }
+
+        if (!etag.equals(storeEtagMap.get(store.getName() + "feature"))) {
+            storeEtagMap.put(store.getName() + "feature", etag);
+            RefreshEventData eventData = new RefreshEventData("*appconfig*");
+            publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
+            return true;
         }
 
         return false;
