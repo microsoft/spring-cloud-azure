@@ -9,8 +9,6 @@ package com.microsoft.azure.spring.cloud.autoconfigure.jms;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.HashMap;
-
 public class ConnectionStringResolverTest {
     @Test
     public void testConnectionStringResolver(){
