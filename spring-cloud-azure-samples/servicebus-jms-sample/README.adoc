@@ -31,20 +31,19 @@ link:src/main/java/com/example/ReceiveController.java#L17[ReceiveController].
 This is an example for Spring JMS Queue for Azure, if you want to use Spring JMS Topic, it's the same way.
 ....
 
-4. Update message content that you want to send in link:src/main/java/com/example/ServiceBusJMSApplication.java#L26[ServiceBusJMSApplication].
+4. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
+
+5.  Send a POST request
 +
 ....
-Example: Assign CONTENT to "hello"
+$ curl -X POST localhost:8080/messages?message=user1
 ....
-
-5. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
 
 6. Verify in your app's logs that a similar message was posted:
 +
 ....
-New message received: 'hello'
+Sending message
+Receiving message from: user1
 ....
 
-7. Send a message to service bus topic is similar to sending to service bus queue.
-
-8. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
+7. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
