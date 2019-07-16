@@ -20,22 +20,22 @@
 //
 //    private static String content;
 //
+////    @JmsListener(destination = QUEUE_NAME, containerFactory = "jmsListenerContainerFactory")
+////    public void receiveMessage(Email email) {
+////
+////        logger.info("Receiving message from queue: {}", email);
+////
+////    }
+//
 //    @JmsListener(destination = QUEUE_NAME, containerFactory = "jmsListenerContainerFactory")
-//    public void receiveMessage(Email email) {
+//    public void receiveMessage(User user) {
 //
-//        logger.info("Receiving message from queue: {}", email);
+//        logger.info("Receiving message from user: {}", user.getName());
 //
-//        content = email.getContent();
-//
-//        System.out.printf("New message received: '%s'", email.getContent());
-//
-//    }
-//
-//    public static String getContent() {
-//        return content;
 //    }
 //
 //}
+
 
 package com.example;
 
@@ -54,7 +54,7 @@ public class ReceiveController {
     @JmsListener(destination = QUEUE_NAME, containerFactory = "jmsListenerContainerFactory")
     public void receiveMessage(User user) {
 
-        logger.info("New message received from user: {}", user.getName());
+        logger.info("Receiving message from user: {}", user.getName());
 
     }
 

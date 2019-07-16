@@ -10,6 +10,12 @@ import java.util.HashMap;
 
 public class ConnectionStringResolver {
 
+    private static final String endpointKey = "Endpoint";
+    private static final String hostKey = "host";
+    private static final String sasKeyName = "SharedAccessKeyName";
+    private static final String sasKey = "SharedAccessKey";
+
+
     public static ServiceBusKey getServiceBusKey(String connectionString) {
         String[] segments = connectionString.split(";");
         HashMap<String, String> hashMap = new HashMap<>();
@@ -21,8 +27,6 @@ public class ConnectionStringResolver {
             hashMap.put(key, value);
         }
 
-        final String endpointKey = "Endpoint";
-        final String hostKey = "host";
         String endpoint = hashMap.get(endpointKey);
         String[] segmentsOfEndpoint = endpoint.split("/");
         String host = segmentsOfEndpoint[segmentsOfEndpoint.length - 1];
@@ -31,13 +35,13 @@ public class ConnectionStringResolver {
         ServiceBusKey serviceBusKey = new ServiceBusKey();
         for (String key : hashMap.keySet()) {
             String value = hashMap.get(key);
-            if(key.equals("host")) {
+            if(key.equals(hostKey)) {
                 serviceBusKey.setHost(value);
             }
-            if(key.equals("SharedAccessKeyName")) {
+            if(key.equals(sasKeyName)) {
                 serviceBusKey.setSharedAccessKeyName(value);
             }
-            if(key.equals("SharedAccessKey")) {
+            if(key.equals(sasKey)) {
                 serviceBusKey.setSharedAccessKey(value);
             }
         }
