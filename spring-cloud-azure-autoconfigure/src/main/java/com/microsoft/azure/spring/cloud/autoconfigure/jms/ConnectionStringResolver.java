@@ -31,11 +31,8 @@ public class ConnectionStringResolver {
         String host = segmentsOfEndpoint[segmentsOfEndpoint.length - 1];
         hashMap.put(hostKey, host);
 
-        ServiceBusKey serviceBusKey = new ServiceBusKey(hashMap.get(hostKey),
+        return new ServiceBusKey(hashMap.get(hostKey),
                 hashMap.get(sasKeyName), hashMap.get(sasKey));
-
-        return serviceBusKey;
-
     }
 
 }

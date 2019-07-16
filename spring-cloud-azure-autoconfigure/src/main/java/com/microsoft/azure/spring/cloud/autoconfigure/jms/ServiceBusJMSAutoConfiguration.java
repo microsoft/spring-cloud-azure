@@ -19,7 +19,6 @@ import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.jms.core.JmsTemplate;
 
 import javax.jms.ConnectionFactory;
-import java.util.HashMap;
 
 @Configuration
 @ConditionalOnClass(JmsConnectionFactory.class)
@@ -65,4 +64,5 @@ public class ServiceBusJMSAutoConfiguration {
         jmsListenerContainerFactory.setConnectionFactory(connectionFactory);
         return jmsListenerContainerFactory;
     }
+
 }
