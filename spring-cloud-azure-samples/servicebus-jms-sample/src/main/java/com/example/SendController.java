@@ -24,11 +24,14 @@ public class SendController {
     private JmsTemplate jmsTemplate;
 
     @PostMapping("/messages")
-    public void postMessage() {
+    public String postMessage(@RequestParam String message) {
+
+        jmsTemplate = ServiceBusJMSApplication.context.getBean(JmsTemplate.class);
 
         logger.info("Sending message");
 
         jmsTemplate.convertAndSend(QUEUE_NAME, new User(USER_NAME));
 
+        return message;
     }
 }
