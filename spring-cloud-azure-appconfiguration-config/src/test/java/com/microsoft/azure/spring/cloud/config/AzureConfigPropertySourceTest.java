@@ -28,6 +28,7 @@ public class AzureConfigPropertySourceTest {
     private static final KeyValueItem item1 = createItem(TEST_CONTEXT, TEST_KEY_1, TEST_VALUE_1, TEST_LABEL_1);
     private static final KeyValueItem item2 = createItem(TEST_CONTEXT, TEST_KEY_2, TEST_VALUE_2, TEST_LABEL_2);
     private static final KeyValueItem item3 = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3, TEST_LABEL_3);
+    private static final KeyValueItem featureItem = createItem(TEST_CONTEXT, FEATURE_KEY, FEATURE_VALUE, FEATURE_LABEL);
 
     private AzureConfigPropertySource propertySource;
 
@@ -41,6 +42,7 @@ public class AzureConfigPropertySourceTest {
         TEST_ITEMS.add(item1);
         TEST_ITEMS.add(item2);
         TEST_ITEMS.add(item3);
+        TEST_ITEMS.add(featureItem);
     }
 
     @Before
@@ -74,7 +76,7 @@ public class AzureConfigPropertySourceTest {
         String expectedKeyName = TEST_SLASH_KEY.replace('/', '.');
         String[] actualKeyNames = propertySource.getPropertyNames();
 
-        assertThat(actualKeyNames.length).isEqualTo(1);
+        assertThat(actualKeyNames.length).isEqualTo(2);
         assertThat(actualKeyNames[0]).isEqualTo(expectedKeyName);
         assertThat(propertySource.getProperty(TEST_SLASH_KEY)).isNull();
         assertThat(propertySource.getProperty(expectedKeyName)).isEqualTo(TEST_SLASH_VALUE);
