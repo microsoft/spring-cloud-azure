@@ -38,8 +38,8 @@ public class ServiceBusJMSAutoConfigurationTest {
     @Test
     public void testAzureServiceBusJMSPropertiesConfigured() {
 
-        String connectionString = "Endpoint=sb://host/;SharedAccessKeyName=sasKeyName;SharedAccessKey=sasKey";
-        
+        final String connectionString = "Endpoint=sb://host/;SharedAccessKeyName=sasKeyName;SharedAccessKey=sasKey";
+
         this.contextRunner = this.contextRunner.withPropertyValues(
                 "spring.cloud.azure.servicebus.jms.connection-string=" + connectionString
         );
