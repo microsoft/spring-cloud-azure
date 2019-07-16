@@ -249,12 +249,6 @@
                 <artifactId>hibernate-validator</artifactId>
                 <version>${hibernate.validator.version}</version>
             </dependency>
-            <!--Javax JMS-->
-            <dependency>
-                <groupId>javax.jms</groupId>
-                <artifactId>javax.jms-api</artifactId>
-                <version>${javax.jms-api.version}</version>
-            </dependency>
             <!--Spring JMS-->
             <dependency>
                 <groupId>org.springframework</groupId>

@@ -118,13 +118,6 @@
             <optional>true</optional>
         </dependency>
 
-        <!--Javax JMS-->
-        <dependency>
-            <groupId>javax.jms</groupId>
-            <artifactId>javax.jms-api</artifactId>
-            <optional>true</optional>
-        </dependency>
-
         <!--Spring JMS-->
         <dependency>
             <groupId>org.springframework</groupId>

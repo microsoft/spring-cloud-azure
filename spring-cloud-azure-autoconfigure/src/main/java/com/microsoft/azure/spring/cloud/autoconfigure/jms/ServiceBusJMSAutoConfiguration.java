@@ -26,7 +26,7 @@ import javax.jms.ConnectionFactory;
 @EnableConfigurationProperties(AzureServiceBusJMSProperties.class)
 public class ServiceBusJMSAutoConfiguration {
 
-    private static final String remoteUriFormat = "amqps://%s?amqp.idleTimeout=%d";
+    private static final String AMQP_URI_FORMAT = "amqps://%s?amqp.idleTimeout=%d";
 
     @Bean
     @ConditionalOnMissingBean
@@ -40,7 +40,7 @@ public class ServiceBusJMSAutoConfiguration {
         String sasKeyName = serviceBusKey.getSharedAccessKeyName();
         String sasKey = serviceBusKey.getSharedAccessKey();
 
-        String remoteUri = String.format(remoteUriFormat, host, idleTimeout);
+        String remoteUri = String.format(AMQP_URI_FORMAT, host, idleTimeout);
         JmsConnectionFactory jmsConnectionFactory = new JmsConnectionFactory(remoteUri);
         jmsConnectionFactory.setRemoteURI(remoteUri);
         jmsConnectionFactory.setClientID(clientId);
