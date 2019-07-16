@@ -15,7 +15,6 @@ public class ConnectionStringResolver {
     private static final String sasKeyName = "SharedAccessKeyName";
     private static final String sasKey = "SharedAccessKey";
 
-
     public static ServiceBusKey getServiceBusKey(String connectionString) {
         String[] segments = connectionString.split(";");
         HashMap<String, String> hashMap = new HashMap<>();
@@ -32,19 +31,8 @@ public class ConnectionStringResolver {
         String host = segmentsOfEndpoint[segmentsOfEndpoint.length - 1];
         hashMap.put(hostKey, host);
 
-        ServiceBusKey serviceBusKey = new ServiceBusKey();
-        for (String key : hashMap.keySet()) {
-            String value = hashMap.get(key);
-            if(key.equals(hostKey)) {
-                serviceBusKey.setHost(value);
-            }
-            if(key.equals(sasKeyName)) {
-                serviceBusKey.setSharedAccessKeyName(value);
-            }
-            if(key.equals(sasKey)) {
-                serviceBusKey.setSharedAccessKey(value);
-            }
-        }
+        ServiceBusKey serviceBusKey = new ServiceBusKey(hashMap.get(hostKey),
+                hashMap.get(sasKeyName), hashMap.get(sasKey));
 
         return serviceBusKey;
 
