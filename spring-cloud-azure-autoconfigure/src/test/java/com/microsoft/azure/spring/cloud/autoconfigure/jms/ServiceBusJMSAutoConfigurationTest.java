@@ -35,4 +35,32 @@ public class ServiceBusJMSAutoConfigurationTest {
         this.contextRunner.run(context -> context.getBean(AzureServiceBusJMSProperties.class));
     }
 
+    @Test
+    public void testAzureServiceBusJMSPropertiesConfigured() {
+
+        String connectionString = "Endpoint=sb://host/;SharedAccessKeyName=sasKeyName;SharedAccessKey=sasKey";
+        
+        this.contextRunner = this.contextRunner.withPropertyValues(
+                "spring.cloud.azure.servicebus.jms.connection-string=" + connectionString
+        );
+
+        this.contextRunner = this.contextRunner.withPropertyValues(
+                "spring.cloud.azure.servicebus.jms.client-id=cid"
+        );
+
+        this.contextRunner = this.contextRunner.withPropertyValues(
+                "spring.cloud.azure.servicebus.jms.idle-timeout=123"
+        );
+
+        this.contextRunner.run(
+            context -> {
+                assertThat(context).hasSingleBean(AzureServiceBusJMSProperties.class);
+                assertThat(context.getBean(AzureServiceBusJMSProperties.class).getConnectionString()).isEqualTo(
+                        connectionString);
+                assertThat(context.getBean(AzureServiceBusJMSProperties.class).getClientId()).isEqualTo("cid");
+                assertThat(context.getBean(AzureServiceBusJMSProperties.class).getIdleTimeout()).isEqualTo(123);
+            }
+        );
+    }
+
 }
