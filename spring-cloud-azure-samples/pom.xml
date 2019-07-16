@@ -32,6 +32,7 @@
         <module>storage-queue-operation-sample</module>
         <module>storage-queue-integration-sample</module>
         <module>azure-messaging-sample</module>
+        <module>servicebus-jms-sample</module>
     </modules>
 
     <build>

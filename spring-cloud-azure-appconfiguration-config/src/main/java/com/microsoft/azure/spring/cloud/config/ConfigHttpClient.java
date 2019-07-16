@@ -45,7 +45,7 @@ import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA_256;
 public class ConfigHttpClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigHttpClient.class);
     private static final String DATE_FORMAT = "EEE, d MMM yyyy HH:mm:ss z";
-    private static final SimpleDateFormat GMT_DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT);
+    private static final SimpleDateFormat GMT_DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT, Locale.US);
     public static final String USER_AGENT = String.format("AzconfigClient/%s/SpringCloud",
             ConfigHttpClient.class.getPackage().getImplementationVersion());
 

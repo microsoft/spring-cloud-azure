@@ -1,0 +1,48 @@
+= Spring Cloud Azure Service Bus JMS Code Sample
+
+This code sample demonstrates how to use Spring JMS for Azure Service Bus.
+
+Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
+
+== Connection string based usage
+
+1. Create Azure Service Bus namespace, queue and topic. Please see https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-create-namespace-portal[how to create]. 
+
+2. Update link:src/main/resources/application.properties[application.properties]
+
++
+....
+# Fill service bus namespace connection string copied from portal
+spring.cloud.azure.servicebus.jms.connection-string=[servicebus-namespace-connection-string]
+
+# Client ID is required
+spring.cloud.azure.servicebus.jms.client-id=[client-id]
+
+# Idle Timeout is required
+spring.cloud.azure.servicebus.jms.idle-timeout=[idle-timeout]
+....
+
+
+== How to run
+
+This is an example for Spring JMS Queue for Azure, if you want to use Spring JMS Topic, it's the same way.
+
+3. Update queue name in link:src/main/java/com/example/SendController.java#L20[SendController] and
+link:src/main/java/com/example/ReceiveController.java#L17[ReceiveController].
+
+4. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
+
+5.  Send a POST request
++
+....
+$ curl -X POST localhost:8080/messages?message=user1
+....
+
+6. Verify in your app's logs that a similar message was posted:
++
+....
+Sending message
+Receiving message from: user1
+....
+
+7. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
