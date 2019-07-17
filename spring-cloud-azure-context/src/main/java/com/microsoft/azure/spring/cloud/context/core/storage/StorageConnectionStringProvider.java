@@ -14,20 +14,25 @@ import java.util.function.BiFunction;
 
 public class StorageConnectionStringProvider {
 
-    private static final BiFunction<StorageAccount, Environment, String> connectionStringProvider =
-            Memoizer.memoize(StorageConnectionStringProvider::buildConnectionString);
+    private final BiFunction<StorageAccount, Environment, String> connectionStringProvider =
+            Memoizer.memoize(this::buildConnectionString);
+    private final StorageConnectionStringBuilder storageConnectionStringBuilder;
 
-    private static String buildConnectionString(StorageAccount storageAccount, Environment environment) {
-        return storageAccount.getKeys().stream().findFirst().map(key -> StorageConnectionStringBuilder
-                .build(storageAccount.name(), key.value(), environment))
-                             .orElseThrow(() -> new RuntimeException("Storage account key is empty."));
+    public StorageConnectionStringProvider(StorageConnectionStringBuilder storageConnectionStringBuilder) {
+        this.storageConnectionStringBuilder = storageConnectionStringBuilder;
     }
 
-    public static String getConnectionString(StorageAccount storageAccount, Environment environment) {
+    private String buildConnectionString(StorageAccount storageAccount, Environment environment) {
+        return storageAccount.getKeys().stream().findFirst().map(key -> storageConnectionStringBuilder
+                .build(storageAccount.name(), key.value(), environment))
+                .orElseThrow(() -> new RuntimeException("Storage account key is empty."));
+    }
+
+    public String getConnectionString(StorageAccount storageAccount, Environment environment) {
         return connectionStringProvider.apply(storageAccount, environment);
     }
 
-    public static String getConnectionString(String storageAccount, String accessKey, Environment environment) {
-        return StorageConnectionStringBuilder.build(storageAccount, accessKey, environment);
+    public String getConnectionString(String storageAccount, String accessKey, Environment environment) {
+        return storageConnectionStringBuilder.build(storageAccount, accessKey, environment);
     }
 }

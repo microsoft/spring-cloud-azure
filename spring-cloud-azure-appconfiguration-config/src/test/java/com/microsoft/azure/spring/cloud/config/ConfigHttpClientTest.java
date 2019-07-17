@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 @PrepareForTest(ConfigHttpClient.class)
 public class ConfigHttpClientTest {
     private static final String DATE_FORMAT = "EEE, d MMM yyyy HH:mm:ss z";
-    private static final SimpleDateFormat GMT_DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT);
+    private static final SimpleDateFormat GMT_DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT, Locale.US);
     private static final String TEST_USER_AGENT = ConfigHttpClient.USER_AGENT;
 
     private static final String TEST_DATE_1 = "Mon, 19 Nov 2018 00:00:00 GMT";
@@ -76,6 +76,7 @@ public class ConfigHttpClientTest {
         Map<String, String> reqHeaders4 = getReqHeaders(TEST_DATE_4, CONTENT_HASH_4, AUTH_HEADER_4);
 
         GMT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
+
         testDate1 = GMT_DATE_FORMAT.parse(TEST_DATE_1);
         testDate2 = GMT_DATE_FORMAT.parse(TEST_DATE_2);
         testDate3 = GMT_DATE_FORMAT.parse(TEST_DATE_3);
