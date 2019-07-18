@@ -55,6 +55,9 @@ public class DefaultEventHubClientFactoryTest {
 
     @Mock
     EventHubConnectionStringProvider connectionStringProvider;
+    
+    @Mock
+    StorageConnectionStringProvider storageConnectionStringProvider;
 
     private EventHubClientFactory clientFactory;
     private String checkpointStorageAccount = "sa";
@@ -71,9 +74,9 @@ public class DefaultEventHubClientFactoryTest {
         when(connectionStringProvider.getConnectionString(eq(eventHubName))).thenReturn(connectionString);
 
         PowerMockito.mockStatic(StorageConnectionStringProvider.class);
-        when(StorageConnectionStringProvider.getConnectionString(isA(StorageAccount.class), isA(Environment.class)))
+        when(storageConnectionStringProvider.getConnectionString(isA(StorageAccount.class), isA(Environment.class)))
                 .thenReturn(connectionString);
-        when(StorageConnectionStringProvider.getConnectionString(isA(StorageAccount.class), isA(Environment.class)))
+        when(storageConnectionStringProvider.getConnectionString(isA(StorageAccount.class), isA(Environment.class)))
                 .thenReturn(connectionString);
         when(resourceManagerProvider.getStorageAccountManager()).thenReturn(storageAccountManager);
         when(storageAccountManager.getOrCreate(any())).thenReturn(storageAccount);
