@@ -12,16 +12,16 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ReceiveController {
+public class QueueReceiveController {
 
     private static final String QUEUE_NAME = "que001";
 
-    private final Logger logger = LoggerFactory.getLogger(ReceiveController.class);
+    private final Logger logger = LoggerFactory.getLogger(QueueReceiveController.class);
 
     @JmsListener(destination = QUEUE_NAME, containerFactory = "jmsListenerContainerFactory")
     public void receiveMessage(User user) {
 
-        logger.info("Receiving message from: {}", user.getName());
+        logger.info("Received message from queue: {}", user.getName());
 
     }
 

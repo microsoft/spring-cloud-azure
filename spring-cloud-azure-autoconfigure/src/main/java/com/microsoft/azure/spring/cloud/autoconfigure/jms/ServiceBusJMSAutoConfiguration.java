@@ -65,4 +65,12 @@ public class ServiceBusJMSAutoConfiguration {
         return jmsListenerContainerFactory;
     }
 
+    @Bean
+    public JmsListenerContainerFactory topicJmsListenerContainerFactory(ConnectionFactory connectionFactory) {
+        DefaultJmsListenerContainerFactory jmsListenerContainerFactory = new DefaultJmsListenerContainerFactory();
+        jmsListenerContainerFactory.setConnectionFactory(connectionFactory);
+        jmsListenerContainerFactory.setSubscriptionDurable(Boolean.TRUE);
+        return jmsListenerContainerFactory;
+    }
+
 }

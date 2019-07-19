@@ -15,16 +15,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RestController
-public class SendController {
+public class QueueSendController {
 
     private static final String QUEUE_NAME = "que001";
 
-    private static final Logger logger = LoggerFactory.getLogger(SendController.class);
+    private static final Logger logger = LoggerFactory.getLogger(QueueSendController.class);
 
     @Autowired
     private JmsTemplate jmsTemplate;
 
-    @PostMapping("/messages")
+    @PostMapping("/queue")
     public String postMessage(@RequestParam String message) {
 
         logger.info("Sending message");
