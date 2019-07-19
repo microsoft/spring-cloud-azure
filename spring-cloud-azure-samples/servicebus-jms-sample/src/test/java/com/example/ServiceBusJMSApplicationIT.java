@@ -37,13 +37,40 @@ public class ServiceBusJMSApplicationIT {
     public OutputCapture capture = new OutputCapture();
 
     @Test
-    public void testSendAndReceiveMessage() throws Exception {
+    public void testQueueSendAndReceiveMessage() throws Exception {
         String message = UUID.randomUUID().toString();
 
-        mvc.perform(post("/messages?message=" + message)).andExpect(status().isOk())
+        mvc.perform(post("/queue?message=" + message)).andExpect(status().isOk())
                 .andExpect(content().string(message));
 
-        String messageReceivedLog = String.format("Receiving message from: %s", message);
+        String messageReceivedLog = String.format("Received message from queue: %s", message);
+
+        boolean messageReceived = false;
+
+        for (int i = 0; i < 100; i++) {
+            String output = capture.toString();
+            if (!messageReceived && output.contains(messageReceivedLog)) {
+                messageReceived = true;
+            }
+
+            if (messageReceived) {
+                break;
+            }
+
+            Thread.sleep(1000);
+        }
+
+        assertThat(messageReceived).isTrue();
+    }
+
+    @Test
+    public void testTopicSendAndReceiveMessage() throws Exception {
+        String message = UUID.randomUUID().toString();
+
+        mvc.perform(post("/topic?message=" + message)).andExpect(status().isOk())
+                .andExpect(content().string(message));
+
+        String messageReceivedLog = String.format("Received message from topic: %s", message);
 
         boolean messageReceived = false;
 
@@ -64,3 +91,4 @@ public class ServiceBusJMSApplicationIT {
     }
 
 }
+

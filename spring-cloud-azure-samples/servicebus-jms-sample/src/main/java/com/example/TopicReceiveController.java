@@ -20,7 +20,6 @@ public class TopicReceiveController {
 
     private final Logger logger = LoggerFactory.getLogger(TopicReceiveController.class);
 
-//    @JmsListener(destination = QUEUE_NAME, containerFactory = "jmsListenerContainerFactory")
     @JmsListener(destination = TOPIC_NAME, containerFactory = "topicJmsListenerContainerFactory",
             subscription = SUBSCRIPTION_NAME)
     public void receiveMessage(User user) {
