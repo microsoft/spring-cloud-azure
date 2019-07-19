@@ -16,11 +16,11 @@ public class FeatureFilterEvaluationContext {
     
     @JsonProperty("Name")
     @JsonAlias("name")
-    String name;
+    private String name;
     
     @JsonProperty("Parameters")
     @JsonAlias("parameters")
-    LinkedHashMap<String, Object> parameters;
+    private LinkedHashMap<String, Object> parameters;
     
     /**
      * @return the name
@@ -46,7 +46,4 @@ public class FeatureFilterEvaluationContext {
     public void setParameters(LinkedHashMap<String, Object> parameters) {
         this.parameters = parameters;
     }
-    
-    
-
 }

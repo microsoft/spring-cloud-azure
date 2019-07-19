@@ -34,7 +34,8 @@ public class FeatureSet {
         if (featureManagement == null) {
             featureManagement = new HashMap<String, Feature>();
         }
-        featureManagement.put(feature.getId(), feature);
+        if (feature != null) {
+            featureManagement.put(feature.getId(), feature);
+        }
     }
-
 }

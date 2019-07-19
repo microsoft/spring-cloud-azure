@@ -9,6 +9,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -48,6 +50,9 @@ public class FeatureManagerTest {
 
     @Mock
     private ApplicationContext context;
+    
+    @Mock
+    private FeatureSet featureManagment;
 
     /**
      * Tests the conversion that takes place when data comes from
@@ -147,6 +152,15 @@ public class FeatureManagerTest {
         when(context.getBean(Mockito.matches("AlwaysOn"))).thenReturn(new AlwaysOn());
 
         assertTrue(featureManager.isEnabled("On"));
+    }
+    
+    @Test
+    public void featureManagerNotEnabledCorrectly() {
+        when(featureManagment.getFeatureManagement()).thenReturn(null);
+        assertFalse(featureManager.isEnabled(""));
+        featureManager.setFeatureSet(null);
+        assertFalse(featureManager.isEnabled(""));
+        verify(featureManagment, times(1)).getFeatureManagement();
     }
     
     @Component

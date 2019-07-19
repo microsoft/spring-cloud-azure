@@ -33,13 +33,14 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
 
     private final String label;
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private static ObjectMapper mapper = new ObjectMapper();
+    
+    private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
 
     public AzureConfigPropertySource(String context, ConfigServiceOperations operations, String storeName,
             String label) {
         // The context alone does not uniquely define a PropertySource, append storeName
-        // and label to uniquely
-        // define a PropertySource
+        // and label to uniquely define a PropertySource
         super(context + storeName + "/" + label, operations);
         this.context = context;
         this.storeName = storeName;
@@ -73,7 +74,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
         queryOptions = new QueryOptions().withKeyNames(queries)
                 .withLabels(label);
         items = source.getKeys(storeName, queryOptions);
-        FeatureSet featureFile = new FeatureSet();
+        FeatureSet featureSet = new FeatureSet();
         for (KeyValueItem item : items) {
             FeatureManagementItem featureItem;
             try {
@@ -82,17 +83,13 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
                 feature.setEnabled(featureItem.getEnabled());
                 feature.setId(featureItem.getId());
                 feature.setEnabledFor(featureItem.getConditions().getClientFilters());
-                featureFile.addFeature(feature);
+                featureSet.addFeature(feature);
             } catch (IOException e) {
-                LOGGER.error("Unabled to parse Feature Management values from Azure.");
+                LOGGER.error("Unabled to parse Feature Management values from Azure.", e);
             }
 
         }
-        String key = "feature-management.featureManagement";
-        Object convertedValue = mapper.convertValue(featureFile, Object.class);
-        if (convertedValue instanceof LinkedHashMap<?, ?>) {
-            LinkedHashMap<?, ?> map = (LinkedHashMap<?, ?>) convertedValue;
-            properties.put(key, map);
-        }
+        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSet, LinkedHashMap.class);
+        properties.put(FEATURE_MANAGEMENT_KEY, convertedValue);
     }
 }

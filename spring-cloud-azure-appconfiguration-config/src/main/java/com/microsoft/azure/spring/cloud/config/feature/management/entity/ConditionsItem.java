@@ -29,9 +29,4 @@ public class ConditionsItem {
     public void setClientFilters(List<FeatureFilterEvaluationContext> clientFilters) {
         this.clientFilters = clientFilters;
     }
-
-    
-    
-    
-
 }

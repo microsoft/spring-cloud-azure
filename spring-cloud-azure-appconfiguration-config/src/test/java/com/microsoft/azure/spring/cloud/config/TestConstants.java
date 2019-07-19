@@ -56,7 +56,7 @@ public class TestConstants {
     public static final String TEST_ETAG = "fake-etag";
     
     public static final String FEATURE_KEY = "feature-management.featureManagement";
-    public static final String FEATURE_VALUE = "{Logging=null, FeatureManagement=null}";
+    public static final String FEATURE_VALUE = "{\"id\":\"Alpha\",\"description\":\"\",\"enabled\":true,\"conditions\":{\"client_filters\":[{\"Name\":\"TestFilter\"}]}}";
     public static final String FEATURE_LABEL = "";
 
     public static final String LIST_KEY_1 = "test.list[0].key";

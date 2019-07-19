@@ -10,13 +10,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FeatureManagementItem {
 
-    String id;
+    private String id;
 
-    //String description;
+    private Boolean enabled;
 
-    Boolean enabled;
-
-    ConditionsItem conditions;
+    private ConditionsItem conditions;
 
     /**
      * @return the id
@@ -31,20 +29,6 @@ public class FeatureManagementItem {
     public void setId(String id) {
         this.id = id;
     }
-
-    /**
-     * @return the description
-     */
-//    public String getDescription() {
-//        return description;
-//    }
-
-    /**
-     * @param description the description to set
-     */
-//    public void setDescription(String description) {
-//        this.description = description;
-//    }
 
     /**
      * @return the enabled
@@ -73,6 +57,4 @@ public class FeatureManagementItem {
     public void setConditions(ConditionsItem conditions) {
         this.conditions = conditions;
     }
-
-    
 }

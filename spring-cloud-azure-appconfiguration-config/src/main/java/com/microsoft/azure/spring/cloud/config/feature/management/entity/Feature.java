@@ -18,13 +18,10 @@ public class Feature {
     private String id;
 
     @JsonProperty("enabled")
-    private Boolean enabled = true;
+    private boolean enabled = true;
 
     @JsonAlias("EnabledFor")
     private List<FeatureFilterEvaluationContext> enabledFor;
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    private String description;
 
     /**
      * @return the id
@@ -43,14 +40,14 @@ public class Feature {
     /**
      * @return the enabled
      */
-    public Boolean getEnabled() {
+    public boolean getEnabled() {
         return enabled;
     }
 
     /**
      * @param enabled the enabled to set
      */
-    public void setEnabled(Boolean enabled) {
+    public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
@@ -66,20 +63,6 @@ public class Feature {
      */
     public void setEnabledFor(List<FeatureFilterEvaluationContext> enabledFor) {
         this.enabledFor = enabledFor;
-    }
-
-    /**
-     * @return the description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @param description the description to set
-     */
-    public void setDescription(String description) {
-        this.description = description;
     }
 
 }

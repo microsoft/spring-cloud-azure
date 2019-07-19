@@ -6,8 +6,10 @@
 package com.microsoft.azure.spring.cloud.feature.manager;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -25,6 +27,8 @@ import com.microsoft.azure.spring.cloud.feature.manager.entities.FeatureSet;
 @Configuration
 @ConfigurationProperties(prefix = "feature-management")
 public class FeatureManager {
+
+    Logger logger = LoggerFactory.getLogger(FeatureManager.class);
 
     FeatureSet featureManagement;
 
@@ -46,16 +50,26 @@ public class FeatureManager {
      */
     public Boolean isEnabled(String feature) {
         Boolean enabled = false;
+        if (featureManagement == null || featureManagement.getFeatureManagement() == null) {
+            return false;
+        }
+
         Feature featureItem = featureManagement.getFeatureManagement().get(feature);
         if (featureItem == null) {
             return false;
         }
 
-        boolean featureEnabled = featureItem.getEnabled();
-        List<FeatureFilterEvaluationContext> enabledFor = featureItem.getEnabledFor();
-        if (featureEnabled && !enabledFor.isEmpty()) {
-            for (FeatureFilterEvaluationContext filter : enabledFor) {
-                enabled = ((FeatureFilter) context.getBean(filter.getName())).evaluate(filter);
+        if (featureItem.getEnabled()) {
+            for (FeatureFilterEvaluationContext filter : featureItem.getEnabledFor()) {
+                if (filter != null && filter.getName() != null) {
+                    try {
+                        FeatureFilter featureFilter = (FeatureFilter) context.getBean(filter.getName());
+                        enabled = featureFilter.evaluate(filter);
+                    } catch (NoSuchBeanDefinitionException e) {
+                        logger.error("Was unable to find Filter " + filter.getName()
+                                + ". Does the class exist and set as an @Component? Filters not found return false.");
+                    }
+                }
                 if (enabled) {
                     return enabled;
                 }
