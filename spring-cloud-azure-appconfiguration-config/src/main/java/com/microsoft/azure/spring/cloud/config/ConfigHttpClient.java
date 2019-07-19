@@ -5,6 +5,23 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import static org.apache.commons.codec.digest.HmacAlgorithms.HMAC_SHA_256;
+import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA_256;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.UUID;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.codec.digest.HmacUtils;
@@ -21,21 +38,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static org.apache.commons.codec.digest.HmacAlgorithms.HMAC_SHA_256;
-import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA_256;
-
 /**
  * Util class to execute http request, before sending http request, valid request headers
  * will be added for each request based on given credential ID and secret.
- *
+ * 
  * How to use:
  * <p>
  * HttpGet httpGet = new HttpGet("https://my-config-store.azconfig.io/keys");
