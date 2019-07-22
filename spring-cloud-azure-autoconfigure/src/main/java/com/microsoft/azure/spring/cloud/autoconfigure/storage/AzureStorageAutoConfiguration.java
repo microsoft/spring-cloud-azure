@@ -50,8 +50,6 @@ public class AzureStorageAutoConfiguration {
 
     @Autowired(required = false)
     private ResourceManagerProvider resourceManagerProvider;
-    @Autowired
-    private AzureStorageProperties storageProperties;
 
     @PostConstruct
     public void collectTelemetry() {
@@ -60,15 +58,8 @@ public class AzureStorageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public StorageConnectionStringProvider storageConnectionStringProvider() {
-        return new StorageConnectionStringProvider(
-                new StorageConnectionStringBuilder(storageProperties.isSecureTransfer()));
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public CloudStorageAccount storageAccount(EnvironmentProvider environmentProvider,
-            StorageConnectionStringProvider storageConnectionStringProvider) {
+    public CloudStorageAccount storageAccount(AzureStorageProperties storageProperties, EnvironmentProvider
+            environmentProvider) {
         String connectionString;
 
         if (resourceManagerProvider != null) {
@@ -76,11 +67,11 @@ public class AzureStorageAutoConfiguration {
 
             StorageAccount storageAccount = resourceManagerProvider.getStorageAccountManager().getOrCreate(accountName);
 
-            connectionString = storageConnectionStringProvider
-                    .getConnectionString(storageAccount, environmentProvider.getEnvironment());
+            connectionString = StorageConnectionStringProvider
+                    .getConnectionString(storageAccount, environmentProvider.getEnvironment(), storageProperties.isSecureTransfer());
 
         } else {
-            connectionString = storageConnectionStringProvider
+            connectionString = StorageConnectionStringProvider
                     .getConnectionString(storageProperties.getAccount(), storageProperties.getAccessKey(),
                             environmentProvider.getEnvironment());
             TelemetryCollector.getInstance().addProperty(STORAGE, ACCOUNT_NAME, storageProperties.getAccount());
