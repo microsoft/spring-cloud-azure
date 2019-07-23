@@ -105,6 +105,7 @@ public class ConfigHttpClient {
         headers.put("x-ms-date", requestTime);
         headers.put("x-ms-client-request-id", UUID.randomUUID().toString());
         headers.put("x-ms-content-sha256", contentHash);
+        headers.put("correlation-context", getTracingInfo(request));
 
         String authorization = String.format("HMAC-SHA256 Credential=%s, SignedHeaders=%s, Signature=%s",
                 credential, signedHeaders, signature);
@@ -168,5 +169,39 @@ public class ConfigHttpClient {
                 LOGGER.trace("Failed to close the input stream.", e);
             }
         }
+    }
+    
+    /**
+     * Checks if Azure App Configuration Tracing is disabled, and if not gets tracing
+     * information.
+     * 
+     * @param request The http request that will be traced, used to check operation being run.
+     * @return String of the value for the correlation-context header. 
+     */
+    private static String getTracingInfo(HttpUriRequest request) {
+        String track = System.getenv(RequestTracingConstants.AZURE_APP_CONFIGURATION_TRACING_DISABLED.toString());
+        if (track != null && track.equalsIgnoreCase("false")) {
+            return "";
+        }
+        String requestTypeValue = request.getURI().getPath().startsWith("/kv") ? RequestType.STARTUP.toString()
+                : RequestType.WATCH.toString();
+        String requestType = RequestTracingConstants.REQUEST_TYPE.toString() + "=" + requestTypeValue;
+        String host = RequestTracingConstants.HOST + "=" + getHostType();
+        return requestType + "," + host;
+    }
+
+    /**
+     * Gets the current host machines type; Azure Function, Azure Web App, or None.
+     * 
+     * @return String of Host Type
+     */
+    private static String getHostType() {
+        String azureFunctionVersion = System.getenv(RequestTracingConstants.FUNCTIONS_EXTENSION_VERSION.toString());
+        String azureWebsiteVersion = System.getenv(RequestTracingConstants.WEBSITE_NODE_DEFAULT_VERSION.toString());
+        HostType hostType = azureFunctionVersion != null ? HostType.AZURE_FUNCTION
+                : azureWebsiteVersion != null
+                        ? HostType.AZURE_WEB_APP
+                        : HostType.NONE;
+        return hostType.toString();
     }
 }
