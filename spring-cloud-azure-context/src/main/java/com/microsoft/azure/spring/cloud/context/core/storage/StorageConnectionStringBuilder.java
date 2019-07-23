@@ -26,7 +26,8 @@ public class StorageConnectionStringBuilder {
 
     private static final String SEPARATOR = ";";
 
-    public static String build(String accountName, String accountKey, Environment environment, boolean isSecureTransfer) {
+    public static String build(String accountName, String accountKey, Environment environment,
+            boolean isSecureTransfer) {
         Map<String, String> map = new HashMap<>();
         map.put(DEFAULT_PROTOCOL, resolveProtocol(isSecureTransfer));
         map.put(ACCOUNT_NAME, accountName);
@@ -39,7 +40,7 @@ public class StorageConnectionStringBuilder {
     public static String build(String accountName, String accountKey, Environment environment) {
         return build(accountName, accountKey, environment, true);
     }
-    
+
     private static String resolveProtocol(boolean isSecureTransfer) {
         return isSecureTransfer ? HTTPS : HTTP;
     }
