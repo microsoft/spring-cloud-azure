@@ -1,0 +1,8 @@
+# Use default application name and no profile configured
+# Keys starting with /application/ will be matched
+spring:
+  cloud:
+    azure:
+      appconfiguration:
+        stores:
+          - connection-string: Endpoint=https://mametcal-app-config.azconfig.io;Id=0-l3-s0:ciyaOfLpGubrgUPPQjiO;Secret=mDNPFTCnjscHIuVbCS80DvkLgIIZpBEQLDsy5QzJp5M=

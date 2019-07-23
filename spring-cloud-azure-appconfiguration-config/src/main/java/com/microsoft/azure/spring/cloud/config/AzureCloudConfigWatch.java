@@ -134,7 +134,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
 
         if (!etag.equals(storeEtagMap.get(store.getName() + storeName))) {
             storeEtagMap.put(store.getName() + storeName, etag);
-            RefreshEventData eventData = new RefreshEventData("*appconfig*");
+            RefreshEventData eventData = new RefreshEventData(FEATURE_STORE_WATCH_KEY);
             publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
             return true;
         }

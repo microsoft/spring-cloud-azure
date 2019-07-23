@@ -69,10 +69,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
         }
 
         // Reading In Features
-        List<String> queries = new ArrayList<String>();
-        queries.add("*appconfig*");
-        queryOptions = new QueryOptions().withKeyNames(queries)
-                .withLabels(label);
+        queryOptions = new QueryOptions().withKeyNames("*appconfig*").withLabels(label);
         items = source.getKeys(storeName, queryOptions);
         FeatureSet featureSet = new FeatureSet();
         for (KeyValueItem item : items) {
