@@ -83,7 +83,7 @@ public class AzureConfigCloudWatchTest {
         List<KeyValueItem> updatedResponse = updatedResponse();
         when(configOperations.getRevisions(any(), any())).thenReturn(updatedResponse);
         Thread.sleep(properties.getWatch().getDelay().getSeconds() * 1000 * 2);
-        verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
+        verify(eventPublisher, times(2)).publishEvent(any(RefreshEvent.class));
     }
 
     private List<KeyValueItem> initialResponse() {

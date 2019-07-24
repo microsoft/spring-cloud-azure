@@ -5,11 +5,13 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
-import com.microsoft.azure.spring.cloud.config.domain.QueryField;
-import com.microsoft.azure.spring.cloud.config.domain.QueryOptions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+
 import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
@@ -19,15 +21,12 @@ import org.springframework.lang.Nullable;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
+import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
+import com.microsoft.azure.spring.cloud.config.domain.QueryField;
+import com.microsoft.azure.spring.cloud.config.domain.QueryOptions;
 
 public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, SmartLifecycle {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AzureCloudConfigWatch.class);
+    
     private final ConfigServiceOperations configOperations;
     private final Map<String, String> storeEtagMap = new ConcurrentHashMap<>();
     private final TaskScheduler taskScheduler;
@@ -38,6 +37,10 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
     private final Map<String, Boolean> firstTimeMap = new ConcurrentHashMap<>();
     private final List<ConfigStore> configStores;
     private final Map<String, List<String>> storeContextsMap;
+    
+    private static final String CONFIGURATION_STORE = "_configuration";
+    private static final String FEATURE_STORE = "_feature";
+    private static final String FEATURE_STORE_WATCH_KEY = "*appconfig*";
 
     public AzureCloudConfigWatch(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
                                  TaskScheduler scheduler, Map<String, List<String>> storeContextsMap) {
@@ -95,36 +98,43 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
         }
 
         for (ConfigStore configStore : configStores) {
-            if (needRefresh(configStore)) {
+            if (needRefreshConfiguration(configStore) || needRefreshFeatureFlag(configStore)) {
                 break;
             }
         }
     }
 
-    private boolean needRefresh(ConfigStore store) {
+    private boolean needRefreshConfiguration(ConfigStore store) {
         String watchedKeyNames = watchedKeyNames(store, storeContextsMap);
+        return needRefresh(store, CONFIGURATION_STORE, watchedKeyNames);
+    }
+    
+    private boolean needRefreshFeatureFlag(ConfigStore store) {
+        return needRefresh(store, FEATURE_STORE, FEATURE_STORE_WATCH_KEY);
+    }
+    
+    private boolean needRefresh(ConfigStore store, String storeName, String watchedKeyNames) {
         QueryOptions options = new QueryOptions().withKeyNames(watchedKeyNames)
                 .withLabels(store.getLabels()).withFields(QueryField.ETAG).withRange(0, 0);
 
         List<KeyValueItem> keyValueItems = configOperations.getRevisions(store.getName(), options);
+        
         if (keyValueItems.isEmpty()) {
             return false;
         }
 
         String etag = keyValueItems.get(0).getEtag();
-        if (firstTimeMap.get(store.getName()) == null) {
-            storeEtagMap.put(store.getName(), etag);
-            firstTimeMap.put(store.getName(), false);
+        if (firstTimeMap.get(store.getName() + storeName) == null) {
+            storeEtagMap.put(store.getName() + storeName, etag);
+            firstTimeMap.put(store.getName() + storeName, false);
             return false;
         }
 
-        if (!etag.equals(storeEtagMap.get(store.getName()))) {
-            LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
-                    store.getName(), watchedKeyNames);
-            storeEtagMap.put(store.getName(), etag);
-            RefreshEventData eventData = new RefreshEventData(watchedKeyNames);
+        if (!etag.equals(storeEtagMap.get(store.getName() + storeName))) {
+            storeEtagMap.put(store.getName() + storeName, etag);
+            RefreshEventData eventData = new RefreshEventData(FEATURE_STORE_WATCH_KEY);
             publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
-            return true; // Break early once a change is found
+            return true;
         }
 
         return false;
