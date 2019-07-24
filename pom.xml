@@ -22,6 +22,8 @@
         <module>spring-cloud-azure-autoconfigure</module>
         <module>spring-cloud-azure-context</module>
         <module>spring-cloud-azure-dependencies</module>
+		<module>spring-cloud-azure-feature-management</module>
+        <module>spring-cloud-azure-feature-management-web</module>
         <module>spring-cloud-azure-keyvault-config</module>
         <module>spring-cloud-azure-messaging</module>
         <module>spring-cloud-azure-samples</module>
