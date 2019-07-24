@@ -5,6 +5,23 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import static org.apache.commons.codec.digest.HmacAlgorithms.HMAC_SHA_256;
+import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA_256;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.UUID;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.codec.digest.HmacUtils;
@@ -21,25 +38,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static org.apache.commons.codec.digest.HmacAlgorithms.HMAC_SHA_256;
-import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA_256;
-
 /**
  * Util class to execute http request, before sending http request, valid request headers
  * will be added for each request based on given credential ID and secret.
- *
+ * 
  * How to use:
  * <p>
  * HttpGet httpGet = new HttpGet("https://my-config-store.azconfig.io/keys");
- * CloseableHttpResponse response = ConfigHttpClient.execute(httpGet, "my-credential", "my-secret");
+ * CloseableHttpResponse response = ConfigHttpClient.execute(httpGet, "my-credential",
+ * "my-secret");
  * <p/>
  */
 public class ConfigHttpClient {
@@ -69,6 +76,19 @@ public class ConfigHttpClient {
         return httpClient.execute(request);
     }
 
+    /**
+     * Generates request Headers; date, client request id, and a sha256 content
+     * hash.
+     * 
+     * @param request the request that will be sent with this header and will have a hash
+     * generated for it.
+     * @param date the current date and time
+     * @param credential Access key ID
+     * @param secret Access key value
+     * @return map of the header values and keys
+     * @throws URISyntaxException will be thrown when the request URI isn't valid
+     * @throws IOException will be thrown when request content fails to convert to UTF-8
+     */
     private static Map<String, String> buildRequestHeaders(HttpUriRequest request, Date date, String credential,
             String secret) throws URISyntaxException, IOException {
         String requestTime = GMT_DATE_FORMAT.format(date);
@@ -83,6 +103,7 @@ public class ConfigHttpClient {
         // Compose headers
         Map<String, String> headers = new HashMap<>();
         headers.put("x-ms-date", requestTime);
+        headers.put("x-ms-client-request-id", UUID.randomUUID().toString());
         headers.put("x-ms-content-sha256", contentHash);
 
         String authorization = String.format("HMAC-SHA256 Credential=%s, SignedHeaders=%s, Signature=%s",
@@ -117,8 +138,8 @@ public class ConfigHttpClient {
         return encodeHmac(HMAC_SHA_256, decodedKey, toSign);
     }
 
-
-    // Extract request path and query params, e.g., https://example.com/abc?param=xyz -> /abc?param=xyz
+    // Extract request path and query params, e.g., https://example.com/abc?param=xyz ->
+    // /abc?param=xyz
     private static String getRequestPath(HttpRequest request) throws URISyntaxException {
         URIBuilder uri = new URIBuilder(request.getRequestLine().getUri());
         String scheme = uri.getScheme() + "://";
