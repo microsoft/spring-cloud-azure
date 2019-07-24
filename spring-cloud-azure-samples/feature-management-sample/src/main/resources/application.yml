@@ -1,0 +1,11 @@
+feature-management:
+  featureSet:
+    FeatureManagement:
+      Beta:
+        id: Beta
+        enabled: true
+        enabledFor:
+          -
+            name: Random
+            parameters:
+              chance: 50
