@@ -11,6 +11,8 @@ import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.messaging.Sink;
+import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.Header;
 
 /**
@@ -28,5 +30,10 @@ public class SinkExample {
             }
             return null;
         });
+    }
+
+    @ServiceActivator(inputChannel = "{destination}.group.errors")
+    public void error(Message<?> message) {
+        System.out.println("Handling ERROR: " + message);
     }
 }
