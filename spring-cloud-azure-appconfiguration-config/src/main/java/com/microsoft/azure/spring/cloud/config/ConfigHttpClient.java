@@ -26,6 +26,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpRequest;
@@ -53,7 +54,8 @@ public class ConfigHttpClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigHttpClient.class);
     private static final String DATE_FORMAT = "EEE, d MMM yyyy HH:mm:ss z";
     private static final SimpleDateFormat GMT_DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT, Locale.US);
-    public static final String USER_AGENT = String.format("AzconfigClient/%s/SpringCloud",
+    private static final String PACKAGE_NAME = ConfigHttpClient.class.getPackage().getImplementationTitle();
+    public static final String USER_AGENT = String.format("%s/%s", StringUtils.remove(PACKAGE_NAME, " "), 
             ConfigHttpClient.class.getPackage().getImplementationVersion());
 
     static {
