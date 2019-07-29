@@ -28,7 +28,7 @@ import com.microsoft.azure.spring.cloud.config.domain.QueryField;
 import com.microsoft.azure.spring.cloud.config.domain.QueryOptions;
 
 public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, SmartLifecycle {
-    
+    private static final Logger LOGGER = LoggerFactory.getLogger(AzureCloudConfigWatch.class);
     
     private final ConfigServiceOperations configOperations;
     private final Map<String, String> storeEtagMap = new ConcurrentHashMap<>();
