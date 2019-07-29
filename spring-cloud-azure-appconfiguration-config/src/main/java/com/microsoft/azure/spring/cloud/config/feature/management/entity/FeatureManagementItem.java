@@ -12,7 +12,7 @@ public class FeatureManagementItem {
 
     private String id;
 
-    private Boolean enabled;
+    private boolean enabled;
 
     private ConditionsItem conditions;
 
@@ -33,14 +33,14 @@ public class FeatureManagementItem {
     /**
      * @return the enabled
      */
-    public Boolean getEnabled() {
+    public boolean getEnabled() {
         return enabled;
     }
 
     /**
      * @param enabled the enabled to set
      */
-    public void setEnabled(Boolean enabled) {
+    public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 

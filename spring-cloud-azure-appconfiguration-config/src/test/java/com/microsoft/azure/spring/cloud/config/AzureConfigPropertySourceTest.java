@@ -9,9 +9,11 @@ import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.createItem;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -47,6 +49,8 @@ public class AzureConfigPropertySourceTest {
 
     @Mock
     private ConfigServiceOperations operations;
+    
+    private AzureCloudConfigProperties azureProperties;
 
     @BeforeClass
     public static void init() {
@@ -61,13 +65,19 @@ public class AzureConfigPropertySourceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        propertySource = new AzureConfigPropertySource(TEST_CONTEXT, operations, null, null);
-        when(operations.getKeys(any(), any())).thenReturn(TEST_ITEMS).thenReturn(FEATURE_ITEMS);;
+        azureProperties = new AzureCloudConfigProperties();
+        azureProperties.setFailFast(true);
+        propertySource = new AzureConfigPropertySource(TEST_CONTEXT, operations, null, null, azureProperties);
+        when(operations.getKeys(any(), any())).thenReturn(TEST_ITEMS).thenReturn(FEATURE_ITEMS);
     }
 
     @Test
     public void testPropCanBeInitAndQueried() {
-        propertySource.initProperties();
+        try {
+            propertySource.initProperties();
+        } catch (IOException e) {
+             fail("Failed Reading in Feature Flags");
+        }
 
         String[] keyNames = propertySource.getPropertyNames();
         String[] expectedKeyNames = TEST_ITEMS.stream()
@@ -84,9 +94,13 @@ public class AzureConfigPropertySourceTest {
     @Test
     public void testPropertyNameSlashConvertedToDots() {
         KeyValueItem slashedProp = createItem(TEST_CONTEXT, TEST_SLASH_KEY, TEST_SLASH_VALUE, null);
-        when(operations.getKeys(any(), any())).thenReturn(Arrays.asList(slashedProp));
+        when(operations.getKeys(any(), any())).thenReturn(Arrays.asList(slashedProp)).thenReturn(FEATURE_ITEMS);
 
-        propertySource.initProperties();
+        try {
+            propertySource.initProperties();
+        } catch (IOException e) {
+             fail("Failed Reading in Feature Flags");
+        }
 
         String expectedKeyName = TEST_SLASH_KEY.replace('/', '.');
         String[] actualKeyNames = propertySource.getPropertyNames();
@@ -101,7 +115,11 @@ public class AzureConfigPropertySourceTest {
     public void testFeatureFlagCanBeInitedAndQueried() {
         when(operations.getKeys(any(), any())).thenReturn(FEATURE_ITEMS);
         
-        propertySource.initProperties();
+        try {
+            propertySource.initProperties();
+        } catch (IOException e) {
+             fail("Failed Reading in Feature Flags");
+        }
         
         FeatureSet featureSet = new FeatureSet();
         Feature feature = new Feature();

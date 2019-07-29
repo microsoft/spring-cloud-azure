@@ -12,6 +12,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
@@ -26,6 +28,7 @@ import com.microsoft.azure.spring.cloud.config.domain.QueryField;
 import com.microsoft.azure.spring.cloud.config.domain.QueryOptions;
 
 public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, SmartLifecycle {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AzureCloudConfigWatch.class);
     
     private final ConfigServiceOperations configOperations;
     private final Map<String, String> storeEtagMap = new ConcurrentHashMap<>();
@@ -38,8 +41,8 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
     private final List<ConfigStore> configStores;
     private final Map<String, List<String>> storeContextsMap;
     
-    private static final String CONFIGURATION_STORE = "_configuration";
-    private static final String FEATURE_STORE = "_feature";
+    private static final String CONFIGURATION_SUFFIX = "_configuration";
+    private static final String FEATURE_SUFFIX = "_feature";
     private static final String FEATURE_STORE_WATCH_KEY = "*appconfig*";
 
     public AzureCloudConfigWatch(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
@@ -106,14 +109,14 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
 
     private boolean needRefreshConfiguration(ConfigStore store) {
         String watchedKeyNames = watchedKeyNames(store, storeContextsMap);
-        return needRefresh(store, CONFIGURATION_STORE, watchedKeyNames);
+        return needRefresh(store, CONFIGURATION_SUFFIX, watchedKeyNames);
     }
     
     private boolean needRefreshFeatureFlag(ConfigStore store) {
-        return needRefresh(store, FEATURE_STORE, FEATURE_STORE_WATCH_KEY);
+        return needRefresh(store, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY);
     }
     
-    private boolean needRefresh(ConfigStore store, String storeName, String watchedKeyNames) {
+    private boolean needRefresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
         QueryOptions options = new QueryOptions().withKeyNames(watchedKeyNames)
                 .withLabels(store.getLabels()).withFields(QueryField.ETAG).withRange(0, 0);
 
@@ -124,15 +127,17 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
         }
 
         String etag = keyValueItems.get(0).getEtag();
-        if (firstTimeMap.get(store.getName() + storeName) == null) {
-            storeEtagMap.put(store.getName() + storeName, etag);
-            firstTimeMap.put(store.getName() + storeName, false);
+        if (firstTimeMap.get(store.getName() + storeSuffix) == null) {
+            storeEtagMap.put(store.getName() + storeSuffix, etag);
+            firstTimeMap.put(store.getName() + storeSuffix, false);
             return false;
         }
 
-        if (!etag.equals(storeEtagMap.get(store.getName() + storeName))) {
-            storeEtagMap.put(store.getName() + storeName, etag);
-            RefreshEventData eventData = new RefreshEventData(FEATURE_STORE_WATCH_KEY);
+        if (!etag.equals(storeEtagMap.get(store.getName() + storeSuffix))) {
+            LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
+                    store.getName(), watchedKeyNames);
+            storeEtagMap.put(store.getName() + storeSuffix, etag);
+            RefreshEventData eventData = new RefreshEventData(watchedKeyNames);
             publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
             return true;
         }
