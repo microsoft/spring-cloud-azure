@@ -5,7 +5,6 @@
  */
 package com.microsoft.azure.spring.cloud.feature.manager;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,12 +15,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class FeatureConfig implements WebMvcConfigurer {
  
-    @Autowired
-    private FeatureHandler featureHandeler;
+    private FeatureHandler featureHandler;
+    
+    public FeatureConfig (FeatureHandler featureHandler) {
+        this.featureHandler = featureHandler;
+    }
  
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(featureHandeler)
+        registry.addInterceptor(featureHandler)
           .addPathPatterns("/**");
     }
 }

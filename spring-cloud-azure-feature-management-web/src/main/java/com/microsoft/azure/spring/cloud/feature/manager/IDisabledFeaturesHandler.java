@@ -25,6 +25,6 @@ public interface IDisabledFeaturesHandler {
      * @param response current HTTP
      * @return response to current HTTP request
      */
-    public HttpServletResponse handleDisabledFeatures(HttpServletRequest request, HttpServletResponse response);
+    HttpServletResponse handleDisabledFeatures(HttpServletRequest request, HttpServletResponse response);
 
 }

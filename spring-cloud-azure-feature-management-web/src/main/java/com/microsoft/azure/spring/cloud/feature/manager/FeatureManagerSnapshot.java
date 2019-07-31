@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Configuration;
 public class FeatureManagerSnapshot {
 
     @Autowired
-    FeatureManager featureManager;
+    private FeatureManager featureManager;
 
     @Autowired
     private HttpServletRequest request;
@@ -35,11 +35,11 @@ public class FeatureManagerSnapshot {
      * @param feature Feature being checked.
      * @return state of the feature
      */
-    public Boolean isEnabled(String feature) {
+    public boolean isEnabled(String feature) {
         if (request.getAttribute(feature) != null) {
-            return (Boolean) request.getAttribute(feature);
+            return (boolean) request.getAttribute(feature);
         }
-        Boolean enabled = featureManager.isEnabled(feature);
+        boolean enabled = featureManager.isEnabled(feature);
         request.setAttribute(feature, enabled);
         return enabled;
     }

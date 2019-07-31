@@ -14,10 +14,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class FeatureFilterEvaluationContext {
     
     @JsonProperty("Name")
-    String name;
+    private String name;
     
     @JsonProperty("Parameters")
-    LinkedHashMap<String, Object> parameters;
+    private LinkedHashMap<String, Object> parameters;
     
     /**
      * @return the name

@@ -5,14 +5,12 @@
  */
 package com.microsoft.azure.spring.cloud.feature.manager;
 
-import org.springframework.stereotype.Component;
-
 import com.microsoft.azure.spring.cloud.feature.manager.entities.FeatureFilterEvaluationContext;
 
 /**
- * A Filter for Feature Management that is attached to Features.
+ * A Filter for Feature Management that is attached to Features. The filter needs to
+ * have @Component set to be found by feature management.
  */
-@Component
 public interface FeatureFilter {
 
     /**

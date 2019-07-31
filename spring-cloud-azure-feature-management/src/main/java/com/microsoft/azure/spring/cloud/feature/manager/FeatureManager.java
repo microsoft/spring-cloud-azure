@@ -13,7 +13,8 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.spring.cloud.feature.manager.entities.Feature;
@@ -24,20 +25,28 @@ import com.microsoft.azure.spring.cloud.feature.manager.entities.FeatureSet;
  * Holds information on Feature Management properties and can check if a given feature is
  * enabled.
  */
-@Configuration
+@Component("FeatureManager")
 @ConfigurationProperties(prefix = "feature-management")
 public class FeatureManager {
 
-    Logger logger = LoggerFactory.getLogger(FeatureManager.class);
+    private static Logger logger = LoggerFactory.getLogger(FeatureManager.class);
 
-    FeatureSet featureManagement;
+    private FeatureSet featureManagement;
 
-    FeatureSet featureSet;
+    // This is used to enable mapping both different types of read in.
+    @SuppressWarnings("unused")
+    private FeatureSet featureSet;
 
     private ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
     private ApplicationContext context;
+    
+    private FeatureManagementConfigProperties properties;
+    
+    public FeatureManager(FeatureManagementConfigProperties properties) {
+        this.properties = properties;
+    }
 
     /**
      * Checks to see if the feature is enabled. If enabled it check each filter, once a
@@ -48,8 +57,8 @@ public class FeatureManager {
      * @param feature Feature being checked.
      * @return state of the feature
      */
-    public Boolean isEnabled(String feature) {
-        Boolean enabled = false;
+    public boolean isEnabled(String feature) {
+        boolean enabled = false;
         if (featureManagement == null || featureManagement.getFeatureManagement() == null) {
             return false;
         }
@@ -67,7 +76,11 @@ public class FeatureManager {
                         enabled = featureFilter.evaluate(filter);
                     } catch (NoSuchBeanDefinitionException e) {
                         logger.error("Was unable to find Filter " + filter.getName()
-                                + ". Does the class exist and set as an @Component? Filters not found return false.");
+                                + ". Does the class exist and set as an @Component?");
+                        if (properties.isFailFast()) {
+                            logger.error("Fail fast is set and a Filter was unable to be found.");
+                            ReflectionUtils.rethrowRuntimeException(e);
+                        }
                     }
                 }
                 if (enabled) {
@@ -99,5 +112,4 @@ public class FeatureManager {
     public void setFeatureSet(FeatureSet featureSet) {
         this.featureManagement = featureSet;
     }
-
 }

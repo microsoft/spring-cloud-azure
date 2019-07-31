@@ -17,7 +17,7 @@ public class Feature {
     private String id;
 
     @JsonProperty("enabled")
-    private Boolean enabled = true;
+    private boolean enabled = true;
 
     private List<FeatureFilterEvaluationContext> enabledFor;
 
@@ -38,14 +38,14 @@ public class Feature {
     /**
      * @return the enabled
      */
-    public Boolean getEnabled() {
+    public boolean getEnabled() {
         return enabled;
     }
 
     /**
      * @param enabled the enabled to set
      */
-    public void setEnabled(Boolean enabled) {
+    public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
