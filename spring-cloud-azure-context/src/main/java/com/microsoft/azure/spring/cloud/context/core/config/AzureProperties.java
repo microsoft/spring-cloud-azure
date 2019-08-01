@@ -9,7 +9,6 @@ package com.microsoft.azure.spring.cloud.context.core.config;
 import com.google.common.base.Strings;
 import com.microsoft.azure.AzureEnvironment;
 import com.microsoft.azure.spring.cloud.context.core.api.CredentialSupplier;
-import com.microsoft.azure.spring.cloud.context.core.api.Environment;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.util.Assert;

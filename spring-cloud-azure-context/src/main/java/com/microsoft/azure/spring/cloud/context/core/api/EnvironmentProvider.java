@@ -6,11 +6,13 @@
 
 package com.microsoft.azure.spring.cloud.context.core.api;
 
+import com.microsoft.azure.AzureEnvironment;
+
 /**
  * Interface to provide the {@link Environment}
  *
  * @author Warren Zhu
  */
 public interface EnvironmentProvider {
-    Environment getEnvironment();
+    AzureEnvironment getEnvironment();
 }

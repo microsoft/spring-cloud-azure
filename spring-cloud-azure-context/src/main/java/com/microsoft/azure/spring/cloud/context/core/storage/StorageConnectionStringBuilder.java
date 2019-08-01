@@ -5,7 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.context.core.storage;
 
-import com.microsoft.azure.spring.cloud.context.core.api.Environment;
+import com.microsoft.azure.AzureEnvironment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,12 +24,13 @@ class StorageConnectionStringBuilder {
 
     private static final String SEPARATOR = ";";
 
-    public static String build(String accountName, String accountKey, Environment environment) {
+    public static String build(String accountName, String accountKey, AzureEnvironment environment) {
         Map<String, String> map = new HashMap<>();
         map.put(DEFAULT_PROTOCOL, HTTP_PROTOCOL);
         map.put(ACCOUNT_NAME, accountName);
         map.put(ACCOUNT_KEY, accountKey);
-        map.put(ENDPOINT_SUFFIX, environment.getStorageEndpoint());
+        // Remove starting dot since AzureEnvironment.storageEndpointSuffix() starts with dot
+        map.put(ENDPOINT_SUFFIX, environment.storageEndpointSuffix().substring(1));
 
         return map.entrySet().stream().map(Object::toString).collect(Collectors.joining(SEPARATOR));
     }
