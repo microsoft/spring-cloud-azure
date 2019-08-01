@@ -6,16 +6,19 @@
 
 package com.microsoft.azure.spring.cloud.context.core.impl;
 
+import com.microsoft.azure.credentials.AppServiceMSICredentials;
 import com.microsoft.azure.credentials.ApplicationTokenCredentials;
 import com.microsoft.azure.credentials.AzureTokenCredentials;
 import com.microsoft.azure.credentials.MSICredentials;
-import com.microsoft.azure.spring.cloud.context.core.api.CredentialSupplier;
 import com.microsoft.azure.spring.cloud.context.core.api.CredentialsProvider;
+import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
+import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.lang.NonNull;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,14 +32,16 @@ import java.io.InputStream;
  */
 public class DefaultCredentialsProvider implements CredentialsProvider {
     private static final Logger log = LoggerFactory.getLogger(DefaultCredentialsProvider.class);
+
     private static final String TEMP_CREDENTIAL_FILE_PREFIX = "azure";
-
     private static final String TEMP_CREDENTIAL_FILE_SUFFIX = "credential";
+    private static final String ENV_MSI_ENDPOINT = "MSI_ENDPOINT";
+    private static final String ENV_MSI_SECRET = "MSI_SECRET";
 
-    private AzureTokenCredentials credentials;
+    private final AzureTokenCredentials credentials;
 
-    public DefaultCredentialsProvider(CredentialSupplier supplier) {
-        initCredentials(supplier);
+    public DefaultCredentialsProvider(AzureProperties azureProperties) {
+        this.credentials = initCredentials(azureProperties);
     }
 
     private File createTempCredentialFile(@NonNull InputStream inputStream) throws IOException {
@@ -48,23 +53,51 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
         return tempCredentialFile;
     }
 
-    private void initCredentials(CredentialSupplier supplier) {
-        if(supplier.isMsiEnabled()) {
-            this.credentials = new MSICredentials();
-            this.credentials.withDefaultSubscriptionId(supplier.getSubscriptionId());
-            return;
+    private AzureTokenCredentials initCredentials(AzureProperties azureProperties) {
+        if (azureProperties.isMsiEnabled()) {
+            AzureTokenCredentials credentials = getMSIToken(azureProperties);
+            credentials.withDefaultSubscriptionId(azureProperties.getSubscriptionId());
+            return credentials;
         }
 
         try {
             DefaultResourceLoader resourceLoader = new DefaultResourceLoader();
-            InputStream inputStream = resourceLoader.getResource(supplier.getCredentialFilePath()).getInputStream();
+            InputStream inputStream =
+                    resourceLoader.getResource(azureProperties.getCredentialFilePath()).getInputStream();
             File credentialFile = this.createTempCredentialFile(inputStream);
 
-            this.credentials = ApplicationTokenCredentials.fromFile(credentialFile);
+            return ApplicationTokenCredentials.fromFile(credentialFile);
         } catch (IOException e) {
             log.error("Credential file path not found.", e);
             throw new IllegalArgumentException("Credential file path not found", e);
         }
+    }
+
+    private boolean isAppService() {
+        return StringUtils.hasText(System.getenv(ENV_MSI_ENDPOINT)) &&
+                StringUtils.hasText(System.getenv(ENV_MSI_SECRET));
+    }
+
+    private AzureTokenCredentials getMSIToken(AzureProperties azureProperties) {
+        if (isAppService()) {
+            return new AppServiceMSICredentials(azureProperties.getEnvironment());
+        }
+
+        MSICredentials msiCredentials = new MSICredentials();
+
+        AzureManagedIdentityProperties msiProps = azureProperties.getManagedIdentity();
+
+        if (msiProps != null) {
+            if (StringUtils.hasText(msiProps.getClientId())) {
+                msiCredentials.withClientId(msiProps.getClientId());
+            }
+
+            if (StringUtils.hasText(msiProps.getObjectId())) {
+                msiCredentials.withClientId(msiProps.getObjectId());
+            }
+        }
+
+        return msiCredentials;
     }
 
     @Override

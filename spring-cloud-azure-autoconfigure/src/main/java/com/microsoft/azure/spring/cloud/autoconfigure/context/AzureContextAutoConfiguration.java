@@ -53,9 +53,7 @@ public class AzureContextAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public Azure azure(AzureProperties azureProperties) throws IOException {
-        CredentialsProvider credentialsProvider = new DefaultCredentialsProvider(azureProperties);
-        AzureTokenCredentials credentials = credentialsProvider.getCredentials();
+    public Azure azure(AzureTokenCredentials credentials) throws IOException {
         TelemetryCollector.getInstance().setSubscription(credentials.defaultSubscriptionId());
         RestClient restClient = new RestClient.Builder()
                 .withBaseUrl(credentials.environment(), AzureEnvironment.Endpoint.RESOURCE_MANAGER)
@@ -66,6 +64,13 @@ public class AzureContextAutoConfiguration {
                 .build();
 
         return Azure.authenticate(restClient, credentials.domain()).withDefaultSubscription();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public AzureTokenCredentials credentials(AzureProperties azureProperties) {
+        CredentialsProvider credentialsProvider = new DefaultCredentialsProvider(azureProperties);
+        return credentialsProvider.getCredentials();
     }
 
 }

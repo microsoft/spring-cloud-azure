@@ -10,7 +10,7 @@ import com.microsoft.azure.credentials.AppServiceMSICredentials;
 import com.microsoft.azure.credentials.AzureTokenCredentials;
 import com.microsoft.azure.credentials.MSICredentials;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
-import com.microsoft.azure.spring.cloud.config.managed.identity.AzureManagedIdentityProperties;
+import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
 import com.microsoft.azure.spring.cloud.config.managed.identity.AzureResourceManagerConnector;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;

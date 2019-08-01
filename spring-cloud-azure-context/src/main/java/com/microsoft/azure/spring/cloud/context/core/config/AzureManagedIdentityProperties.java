@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config.managed.identity;
+package com.microsoft.azure.spring.cloud.context.core.config;
 
 import org.springframework.lang.Nullable;
 

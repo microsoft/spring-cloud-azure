@@ -7,9 +7,11 @@
 package com.microsoft.azure.spring.cloud.context.core.config;
 
 import com.google.common.base.Strings;
+import com.microsoft.azure.AzureEnvironment;
 import com.microsoft.azure.spring.cloud.context.core.api.CredentialSupplier;
 import com.microsoft.azure.spring.cloud.context.core.api.Environment;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 
@@ -23,13 +25,16 @@ public class AzureProperties implements CredentialSupplier {
 
     private String resourceGroup;
 
-    private Environment environment = Environment.GLOBAL;
+    private AzureEnvironment environment = AzureEnvironment.AZURE;
 
     private String region;
 
     private boolean autoCreateResources = false;
 
     private boolean msiEnabled = false;
+
+    @NestedConfigurationProperty
+    private AzureManagedIdentityProperties managedIdentity;
 
     private String subscriptionId;
 
@@ -62,11 +67,11 @@ public class AzureProperties implements CredentialSupplier {
         this.resourceGroup = resourceGroup;
     }
 
-    public Environment getEnvironment() {
+    public AzureEnvironment getEnvironment() {
         return environment;
     }
 
-    public void setEnvironment(Environment environment) {
+    public void setEnvironment(AzureEnvironment environment) {
         this.environment = environment;
     }
 
@@ -100,5 +105,13 @@ public class AzureProperties implements CredentialSupplier {
 
     public void setSubscriptionId(String subscriptionId) {
         this.subscriptionId = subscriptionId;
+    }
+
+    public AzureManagedIdentityProperties getManagedIdentity() {
+        return managedIdentity;
+    }
+
+    public void setManagedIdentity(AzureManagedIdentityProperties managedIdentity) {
+        this.managedIdentity = managedIdentity;
     }
 }
