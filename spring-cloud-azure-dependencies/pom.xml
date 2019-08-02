@@ -74,6 +74,11 @@
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
+                <artifactId>spring-cloud-azure-feature-management-web</artifactId>
+                <version>${spring.cloud.azure.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
                 <artifactId>spring-integration-azure</artifactId>
                 <version>${spring.cloud.azure.version}</version>
             </dependency>

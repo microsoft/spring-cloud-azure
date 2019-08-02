@@ -7,6 +7,7 @@ package com.microsoft.azure.spring.cloud.feature.manager.entities;
 
 import java.util.LinkedHashMap;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -14,9 +15,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class FeatureFilterEvaluationContext {
     
     @JsonProperty("Name")
+    @JsonAlias("name")
     private String name;
     
     @JsonProperty("Parameters")
+    @JsonAlias("parameters")
     private LinkedHashMap<String, Object> parameters;
     
     /**

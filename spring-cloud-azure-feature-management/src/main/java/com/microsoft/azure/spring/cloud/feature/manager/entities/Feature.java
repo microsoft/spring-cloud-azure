@@ -5,6 +5,8 @@
  */
 package com.microsoft.azure.spring.cloud.feature.manager.entities;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -19,7 +21,11 @@ public class Feature {
     @JsonProperty("enabled")
     private boolean enabled = true;
 
+    @JsonProperty("EnabledFor")
     private List<FeatureFilterEvaluationContext> enabledFor;
+    
+    @JsonProperty("enabledFor")
+    private HashMap<Integer, HashMap<String, Object>> filterMapper;
 
     /**
      * @return the id
@@ -61,6 +67,20 @@ public class Feature {
      */
     public void setEnabledFor(List<FeatureFilterEvaluationContext> enabledFor) {
         this.enabledFor = enabledFor;
+    }
+    
+    public void setFilterMapper(HashMap<Integer, FeatureFilterEvaluationContext> filterMapper) {
+        if (filterMapper == null) {
+            return;
+        }
+        
+        if (enabledFor == null) {
+            enabledFor = new ArrayList<FeatureFilterEvaluationContext>();
+        }
+        
+        for (Integer key: filterMapper.keySet()) {
+            enabledFor.add(filterMapper.get(key));
+        }
     }
 
 }

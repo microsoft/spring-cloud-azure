@@ -16,6 +16,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.spring.cloud.feature.manager.entities.Feature;
 import com.microsoft.azure.spring.cloud.feature.manager.entities.FeatureFilterEvaluationContext;
@@ -35,6 +36,7 @@ public class FeatureManager {
 
     // This is used to enable mapping both different types of read in.
     @SuppressWarnings("unused")
+    @JsonProperty("featureSet")
     private FeatureSet featureSet;
 
     private ObjectMapper mapper = new ObjectMapper();
@@ -59,15 +61,20 @@ public class FeatureManager {
      */
     public boolean isEnabled(String feature) {
         boolean enabled = false;
-        if (featureManagement == null || featureManagement.getFeatureManagement() == null) {
+        if (featureManagement == null || featureManagement.getFeatureManagement() == null || 
+                featureManagement.getOnOff() == null) {
             return false;
         }
 
         Feature featureItem = featureManagement.getFeatureManagement().get(feature);
-        if (featureItem == null) {
+        Boolean boolFeature = featureManagement.getOnOff().get(feature);
+        
+        if (boolFeature != null) {
+            return boolFeature;
+        } else if (featureItem == null) {
             return false;
         }
-
+        
         if (featureItem.getEnabled()) {
             for (FeatureFilterEvaluationContext filter : featureItem.getEnabledFor()) {
                 if (filter != null && filter.getName() != null) {

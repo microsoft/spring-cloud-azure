@@ -84,7 +84,8 @@ public class FeatureManagerTest {
 
         set.addFeature(f);
 
-        LinkedHashMap<String, ?> convertedValue = mapper.convertValue(set, LinkedHashMap.class);
+        @SuppressWarnings("unchecked")
+        LinkedHashMap<String, Feature> convertedValue = mapper.convertValue(set, LinkedHashMap.class);
 
         featureManager.setFeatureManagement(convertedValue);
 
@@ -162,12 +163,56 @@ public class FeatureManagerTest {
     }
     
     @Test
+    public void isEnabledOnBoolean() {
+        FeatureSet featureSet = new FeatureSet();
+        HashMap<String, Boolean> features = new HashMap<String, Boolean>();
+        features.put("On", true);
+        featureSet.setOnOff(features);
+        featureManager.setFeatureSet(featureSet);
+
+        assertTrue(featureManager.isEnabled("On"));
+    }
+    
+    @Test
     public void featureManagerNotEnabledCorrectly() {
         when(featureManagment.getFeatureManagement()).thenReturn(null);
         assertFalse(featureManager.isEnabled(""));
         featureManager.setFeatureSet(null);
         assertFalse(featureManager.isEnabled(""));
         verify(featureManagment, times(1)).getFeatureManagement();
+    }
+    
+    @Test
+    public void bootstrapConfiguration() {
+        FeatureSet featureSet = new FeatureSet();
+        HashMap<String, Object> features = new HashMap<String, Object>();
+        features.put("FeatureU", false);
+        Feature featureV = new Feature();
+        HashMap<Integer, FeatureFilterEvaluationContext> filterMapper = new HashMap<Integer, FeatureFilterEvaluationContext>();
+        
+        FeatureFilterEvaluationContext enabledFor = new FeatureFilterEvaluationContext();
+        enabledFor.setName("Random");
+        
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<String, Object>();
+        parameters.put("chance", "50");
+        
+        enabledFor.setParameters(parameters);
+        filterMapper.put(0, enabledFor);
+        featureV.setFilterMapper(filterMapper);
+        features.put("FeatureV", featureV);
+        featureSet.setFeatures(features);
+        
+        assertNotNull(featureSet.getOnOff());
+        assertNotNull(featureSet.getFeatureManagement());
+        
+        
+        assertEquals(featureSet.getOnOff().get("FeatureU"), false);
+        Feature feature = featureSet.getFeatureManagement().get("FeatureV");
+        assertEquals(feature.getEnabledFor().size(), 1);
+        FeatureFilterEvaluationContext ffec = feature.getEnabledFor().get(0);
+        assertEquals(ffec.getName(), "Random");
+        assertEquals(ffec.getParameters().size(), 1);
+        assertEquals(ffec.getParameters().get("chance"), "50");
     }
     
     @Component
