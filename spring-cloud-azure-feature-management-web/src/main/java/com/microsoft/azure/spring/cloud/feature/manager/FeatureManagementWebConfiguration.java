@@ -41,5 +41,16 @@ public class FeatureManagementWebConfiguration {
     public FeatureConfig featureConfig(FeatureHandler featureHandler) {
         return new FeatureConfig(featureHandler);
     }
+    
+    @Bean
+    public FeatureHandler featureHandler(FeatureManager featureManager, FeatureManagerSnapshot snapshot, 
+            FeatureManagementConfigProperties properties) {
+        return new FeatureHandler(featureManager, snapshot, properties);
+    }
+    
+    @Bean
+    public FeatureConfig featureConfig(FeatureHandler featureHandler) {
+        return new FeatureConfig(featureHandler);
+    }
 
 }
