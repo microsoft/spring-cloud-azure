@@ -188,7 +188,8 @@ public class FeatureManagerTest {
         HashMap<String, Object> features = new HashMap<String, Object>();
         features.put("FeatureU", false);
         Feature featureV = new Feature();
-        HashMap<Integer, FeatureFilterEvaluationContext> filterMapper = new HashMap<Integer, FeatureFilterEvaluationContext>();
+        HashMap<Integer, FeatureFilterEvaluationContext> filterMapper = 
+                new HashMap<Integer, FeatureFilterEvaluationContext>();
         
         FeatureFilterEvaluationContext enabledFor = new FeatureFilterEvaluationContext();
         enabledFor.setName("Random");
