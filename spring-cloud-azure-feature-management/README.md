@@ -20,15 +20,13 @@ As an example, a Microsoft Edge browser feature filter could be designed. This f
 The Spring Configuration system is used to determine the state of feature flags. Any system can be used to have them read in, such as application.yml, spring-cloud-azure-appconfiguration-config and more.
 
 ### Feature Flag Declaration
-The feature management library supports application.yml as a feature flag source. Below we have an example of the format used to set up feature flags in a application.yml file.
+The feature management library supports application.yml or bootstrap.yml as a feature flag source. Below we have an example of the format used to set up feature flags in a application.yml file.
 
 ```
 feature-management:
   featureSet:
-    FeatureManagement:
-      FeatureT:
-        id: FeatureT
-        enabled: true
+    features:
+      FeatureT: false
       FeatureU:
         id: FeatureU
         enabled: true
@@ -45,7 +43,13 @@ feature-management:
               end: "Mon, 01 July 2019 00:00:00 GMT"
 ```
 
-The `feature-management` section of the application.yml document is used by convention to load feature flag settings. In the section above, we see thatwe have provided three different features. Features define their filters using the `enabledFor`  property. In the features filters for `FeatureT` we see enabled set to true. With this flag set and no `enabledFor` filters the feature will always be enabled. `FeatureU` which has only one feature filter `Random` which does not require any configuration so it only has the name property. `FeatureV` has no `enabled` set as it defaults to true, it also specifies a feature filter named `TimeWindow`. This is an example of a configurable feature filter. We can see in the example that the filter has a parameter's property. This is used to configure the filter. In this case, the start and end times for the feature to be active are configured.
+The `feature-management` section of the YAML document is used by convention to load feature flags. In the section above, we see that we have provided three different features. Features define their filters using the `enabledFor`  property. We can see that feature `FeatureT` is set to false with no filters set. `FeatureT` will allways return false, this can also be done for true. `FeatureU` which has only one feature filter `Random` which does not require any configuration so it only has the name property. `FeatureV` has no `enabled` set as it defaults to true, it also specifies a feature filter named `TimeWindow`. This is an example of a configurable feature filter. We can see in the example that the filter has a parameter's property. This is used to configure the filter. In this case, the start and end times for the feature to be active are configured.
+
+### Supported properties
+
+Name | Description | Required | Default 
+---|---|---|---
+spring.cloud.azure.feature.management.fail-fast | Whether throw RuntimeException or not when exception occurs | No |  true
 
 ## Consumption
 The simplest use case for feature flags is to do a conditional check for whether a feature is enabled to take different paths in code. The use cases grow when additional using spring-cloud-azure-feature-flag-web to manage web based features.
@@ -61,6 +65,8 @@ if(featureManager.isEnabled("FeatureT")) {
     // Do Something
 }
 ```
+
+`FeatureManager` can also be accessed by `@Component` classes.
 
 ### Controllers
 When using the Feature Management Web library you can require that a given feature  is enabled in order to execute. This can be done by using the `@FeatureOn` annotation.
@@ -93,7 +99,7 @@ public class DisabledFeaturesHandler implements IDisabledFeaturesHandler{
 
 ```
 
-### Routig
+### Routing
 Certain routes may expose application capabilites that are gated by features. These routes can redirected if a feature is disabled to another endpoint.
 
 ```

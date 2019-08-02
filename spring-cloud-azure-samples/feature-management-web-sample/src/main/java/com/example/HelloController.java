@@ -34,7 +34,7 @@ public class HelloController {
     TestComponent testComponent;
 
     @GetMapping("/hello")
-    @FeatureOn(feature = "Beta")
+    @FeatureOn(feature = "FeatureV")
     @ResponseBody
     public String getMessage() {
         return "Message: " + properties.getMessage();
@@ -72,7 +72,7 @@ public class HelloController {
     @GetMapping("/welcome")
     public String mainWithParam(
             @RequestParam(name = "name", required = false, defaultValue = "") String name, Model model) {
-        if (featureManager.isEnabled("Beta")) {
+        if (featureManager.isEnabled("FeatureV")) {
             model.addAttribute("message", "Beta User");
         }
         else {
