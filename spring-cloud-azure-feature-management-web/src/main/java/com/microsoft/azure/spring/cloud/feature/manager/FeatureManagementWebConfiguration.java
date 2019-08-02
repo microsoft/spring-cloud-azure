@@ -5,17 +5,19 @@
  */
 package com.microsoft.azure.spring.cloud.feature.manager;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableConfigurationProperties
+@ConditionalOnBean(FeatureManager.class)
 public class FeatureManagementWebConfiguration {
     
     @Bean
-    public FeatureManagerSnapshot featureManagerSnapshot() {
-        return new FeatureManagerSnapshot();
+    public FeatureManagerSnapshot featureManagerSnapshot(FeatureManager featureManager) {
+        return new FeatureManagerSnapshot(featureManager);
     }
     
     @Bean

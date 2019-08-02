@@ -12,24 +12,31 @@ import static org.mockito.Mockito.when;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FeatureManagerSnapshotTest {
-
-    @InjectMocks
-    FeatureManagerSnapshot featureManagerSnapshot;
 
     @Mock
     FeatureManager featureManager;
 
     @Mock
     HttpServletRequest request;
+    
+    @InjectMocks
+    FeatureManagerSnapshot featureManagerSnapshot;
+    
+    @Before
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
+    }
 
     @Test
     public void setAttribute() {

@@ -17,11 +17,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FeatureManagerSnapshot {
 
-    @Autowired
     private FeatureManager featureManager;
 
     @Autowired
     private HttpServletRequest request;
+    
+    public FeatureManagerSnapshot(FeatureManager featureManager) {
+        this.featureManager = featureManager;
+    }
 
     /**
      * Checks to see if the feature is enabled. If enabled it check each filter, once a
@@ -44,4 +47,10 @@ public class FeatureManagerSnapshot {
         return enabled;
     }
 
+    /**
+     * @param request the request to set
+     */
+    public void setRequest(HttpServletRequest request) {
+        this.request = request;
+    }
 }
