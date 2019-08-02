@@ -1,11 +1,10 @@
 feature-management:
   featureSet:
-    FeatureManagement:
-      Beta:
-        id: Beta
-        enabled: true
+    features:
+      Beta: true
+      FeatureV:
         enabledFor:
           -
             name: Random
             parameters:
-              chance: 50
+              chance: "50"

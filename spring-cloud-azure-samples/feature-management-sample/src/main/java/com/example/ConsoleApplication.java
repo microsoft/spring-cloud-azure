@@ -5,13 +5,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
 
 import com.microsoft.azure.spring.cloud.feature.manager.FeatureManager;
 
 @SpringBootApplication
-@ComponentScan({"com.microsoft.azure.spring.cloud.feature.manager","com.example"})
+@EnableAutoConfiguration
 public class ConsoleApplication implements CommandLineRunner {
 
     private static Logger LOG = LoggerFactory
