@@ -16,6 +16,9 @@ import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.impl.EventHubRuntimeException;
 import com.microsoft.azure.spring.integration.eventhub.util.HostnameHelper;
+
+import reactor.util.function.Tuples;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -56,7 +59,9 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
             Memoizer.memoize(clientsByName, this::createEventHubClient);
     private final BiFunction<String, String, EventProcessorHost> processorHostCreator =
             Memoizer.memoize(processorHostMap, this::createEventProcessorHost);
-
+    private final BiFunction<String, String, EventProcessorHost> processorHostCreatorForce =
+            Memoizer.memoizeCompute(processorHostMap, this::createEventProcessorHost);
+    
     public DefaultEventHubClientFactory(@NonNull EventHubConnectionStringProvider connectionStringProvider,
             String checkpointConnectionString) {
         Assert.hasText(checkpointConnectionString, "checkpointConnectionString can't be null or empty");
@@ -83,9 +88,12 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
     }
 
     private EventProcessorHost createEventProcessorHost(String name, String consumerGroup) {
-        return new EventProcessorHost(EventProcessorHost.createHostName(HostnameHelper.getHostname()), name,
+        EventProcessorHost  eventProcessorHost  = null;
+        eventProcessorHost =  
+           new EventProcessorHost(EventProcessorHost.createHostName(HostnameHelper.getHostname()), name,
                 consumerGroup, connectionStringProvider.getConnectionString(name), checkpointStorageConnectionString,
                 name);
+        return eventProcessorHost;
     }
 
     private <K, V> void close(Map<K, V> map, Function<V, CompletableFuture<Void>> close) {
@@ -116,5 +124,10 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
     @Override
     public EventProcessorHost getOrCreateEventProcessorHost(String name, String consumerGroup) {
         return this.processorHostCreator.apply(name, consumerGroup);
+    }
+    
+    @Override
+    public EventProcessorHost makeEventProcessorHost(String name, String consumerGroup) {
+        return processorHostCreatorForce.apply(name, consumerGroup);
     }
 }

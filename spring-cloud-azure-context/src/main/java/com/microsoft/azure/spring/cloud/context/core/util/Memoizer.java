@@ -34,4 +34,10 @@ public class Memoizer {
     public static <T, U, R> BiFunction<T, U, R> memoize(Map<Tuple<T, U>, R> map, BiFunction<T, U, R> biFunction) {
         return (t, u) -> map.computeIfAbsent(Tuple.of(t, u), (k) -> biFunction.apply(k.getFirst(), k.getSecond()));
     }
+    
+    public static <T, U, R> BiFunction<T, U, R> memoizeCompute
+      (Map<Tuple<T, U>, R> map, BiFunction<T, U, R> biFunction) {
+        return (t, u) -> map.compute(Tuple.of(t, u), (k, v) -> biFunction.apply(k.getFirst(), k.getSecond()));
+    }
+    
 }

@@ -38,6 +38,8 @@ public class EventHubTemplateSubscribeTest extends SubscribeByGroupOperationTest
         future.complete(null);
         this.subscribeByGroupOperation = new EventHubTemplate(mockClientFactory);
         when(this.mockClientFactory.getOrCreateEventProcessorHost(anyString(), anyString())).thenReturn(this.host);
+        when(this.mockClientFactory.makeEventProcessorHost(anyString(), anyString())).thenReturn(this.host);
+        
         when(this.host
                 .registerEventProcessorFactory(isA(IEventProcessorFactory.class), isA(EventProcessorOptions.class)))
                 .thenReturn(future);
@@ -46,12 +48,12 @@ public class EventHubTemplateSubscribeTest extends SubscribeByGroupOperationTest
 
     @Override
     protected void verifySubscriberCreatorCalled() {
-        verify(this.mockClientFactory, atLeastOnce()).getOrCreateEventProcessorHost(anyString(), anyString());
+        verify(this.mockClientFactory, atLeastOnce()).makeEventProcessorHost(anyString(), anyString());
     }
 
     @Override
     protected void verifySubscriberCreatorNotCalled() {
-        verify(this.mockClientFactory, never()).getOrCreateEventProcessorHost(anyString(), anyString());
+        verify(this.mockClientFactory, never()).makeEventProcessorHost(anyString(), anyString());
     }
 
     @Override

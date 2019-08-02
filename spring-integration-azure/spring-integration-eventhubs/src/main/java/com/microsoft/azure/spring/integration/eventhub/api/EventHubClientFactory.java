@@ -21,4 +21,5 @@ public interface EventHubClientFactory {
 
     EventProcessorHost getOrCreateEventProcessorHost(String name, String consumerGroup);
 
+    EventProcessorHost makeEventProcessorHost(String name, String consumerGroup);
 }

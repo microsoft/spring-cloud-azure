@@ -99,7 +99,7 @@ public class AbstractEventHubTemplate {
     }
 
     protected void register(String name, String consumerGroup, EventHubProcessor eventProcessor) {
-        EventProcessorHost host = this.clientFactory.getOrCreateEventProcessorHost(name, consumerGroup);
+        EventProcessorHost host = this.clientFactory.makeEventProcessorHost(name, consumerGroup);
         host.registerEventProcessorFactory(context -> eventProcessor, buildEventProcessorOptions(startPosition));
     }
 

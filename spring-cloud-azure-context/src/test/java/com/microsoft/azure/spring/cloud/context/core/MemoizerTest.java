@@ -66,6 +66,17 @@ public class MemoizerTest {
         verify(expensiveOperation, times(1)).compute(INPUT, INPUT2);
         Assert.assertTrue(map.size() == 1);
     }
+    
+    @Test
+    public void memoizeBiFuncWithMapCompute() {
+        Map<Tuple<String, String>, String> map = new ConcurrentHashMap<>();
+        ExpensiveBiOperation expensiveOperation = mock(ExpensiveBiOperation.class);
+        when(expensiveOperation.compute(INPUT, INPUT2)).thenReturn(OUTPUT);
+        BiFunction<String, String, String> memoized = Memoizer.memoizeCompute(map, expensiveOperation::compute);
+        Assert.assertEquals(memoized.apply(INPUT, INPUT2), OUTPUT);
+        verify(expensiveOperation, times(1)).compute(INPUT, INPUT2);
+        Assert.assertTrue(map.size() == 1);
+    }
 
     interface ExpensiveOperation {
         String compute(String input);
