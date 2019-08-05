@@ -103,13 +103,13 @@ public class FeatureHandlerTest {
 
         public void noAnnotation() {}
         
-        @FeatureOn(feature = "test")
+        @FeatureGate(feature = "test")
         public void featureOnAnnotation() {}
         
-        @FeatureOn(feature = "test", snapshot = true)
+        @FeatureGate(feature = "test", snapshot = true)
         public void featureOnAnnotationSnapshot() {}
         
-        @FeatureOn(feature = "test", redirect = "/redirected")
+        @FeatureGate(feature = "test", fallback = "/redirected")
         public void featureOnAnnotaitonRedirected() {}
 
     }

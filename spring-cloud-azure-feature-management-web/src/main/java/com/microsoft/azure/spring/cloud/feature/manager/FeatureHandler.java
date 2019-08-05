@@ -56,7 +56,7 @@ public class FeatureHandler extends HandlerInterceptorAdapter {
             method = ((HandlerMethod) handler).getMethod();
         }
         if (method != null) {
-            FeatureOn featureOn = method.getAnnotation(FeatureOn.class);
+            FeatureGate featureOn = method.getAnnotation(FeatureGate.class);
             if (featureOn != null) {
                 String feature = featureOn.feature();
                 boolean snapshot = featureOn.snapshot();
@@ -68,9 +68,9 @@ public class FeatureHandler extends HandlerInterceptorAdapter {
                     enabled = featureManagerSnapshot.isEnabled(feature);
                 }
 
-                if (!enabled && !featureOn.redirect().isEmpty()) {
+                if (!enabled && !featureOn.fallback().isEmpty()) {
                     try {
-                        response.sendRedirect(featureOn.redirect());
+                        response.sendRedirect(featureOn.fallback());
                     } catch (IOException e) {
                         logger.info("Unable to send redirect.");
                         if (properties.isFailFast()) {

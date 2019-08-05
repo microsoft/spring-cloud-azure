@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface FeatureOn {
+public @interface FeatureGate {
 
     /**
      * Name of the feature that is checked.
@@ -23,9 +23,9 @@ public @interface FeatureOn {
     public String feature();
 
     /**
-     * Endpoint to be redirected to if feature is off.
+     * Endpoint to be fall backed on if feature is off.
      */
-    public String redirect() default "";
+    public String fallback() default "";
 
     /**
      * If true, feature will return the same value during the length of the request.
