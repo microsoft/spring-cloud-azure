@@ -93,7 +93,7 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
             }
 
             if (StringUtils.hasText(msiProps.getObjectId())) {
-                msiCredentials.withClientId(msiProps.getObjectId());
+                msiCredentials.withObjectId(msiProps.getObjectId());
             }
         }
 
