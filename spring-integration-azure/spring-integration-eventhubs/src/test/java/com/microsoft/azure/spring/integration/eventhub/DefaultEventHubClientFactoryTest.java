@@ -55,6 +55,9 @@ public class DefaultEventHubClientFactoryTest {
 
     @Mock
     EventHubConnectionStringProvider connectionStringProvider;
+    
+    @Mock
+    StorageConnectionStringProvider storageConnectionStringProvider;
 
     private EventHubClientFactory clientFactory;
     private String checkpointStorageAccount = "sa";

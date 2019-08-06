@@ -7,8 +7,8 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 
 import com.microsoft.azure.storage.CloudStorageAccount;
-import com.microsoft.azure.storage.blob.CloudBlobClient;
 import org.junit.Test;
+
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -45,6 +45,27 @@ public class AzureStorageAutoConfigurationTest {
         this.contextRunner.withPropertyValues("spring.cloud.azure.storage.account=acc1").run(context -> {
             assertThat(context).hasSingleBean(AzureStorageProperties.class);
             assertThat(context.getBean(AzureStorageProperties.class).getAccount()).isEqualTo("acc1");
+        });
+    }
+    
+    @Test
+    public void testDefaultTransferIsSecure() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.storage.account=acc1")
+                          .run(context -> {
+            assertThat(context).hasSingleBean(AzureStorageProperties.class);
+            assertThat(context.getBean(AzureStorageProperties.class).getAccount()).isEqualTo("acc1");
+            assertThat(context.getBean(AzureStorageProperties.class).isSecureTransfer()).isEqualTo(true);
+        });
+    }
+    
+    @Test
+    public void testSecureTransferCanBeDisabled() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.storage.account=acc1")
+                          .withPropertyValues("spring.cloud.azure.storage.secureTransfer=false")
+                          .run(context -> {
+            assertThat(context).hasSingleBean(AzureStorageProperties.class);
+            assertThat(context.getBean(AzureStorageProperties.class).getAccount()).isEqualTo("acc1");
+            assertThat(context.getBean(AzureStorageProperties.class).isSecureTransfer()).isEqualTo(false);
         });
     }
 

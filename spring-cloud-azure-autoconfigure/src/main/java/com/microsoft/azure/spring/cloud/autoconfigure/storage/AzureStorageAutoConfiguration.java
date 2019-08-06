@@ -57,7 +57,6 @@ public class AzureStorageAutoConfiguration {
     @ConditionalOnMissingBean
     public CloudStorageAccount storageAccount(AzureStorageProperties storageProperties,
             EnvironmentProvider environmentProvider) {
-
         String connectionString;
 
         if (resourceManagerProvider != null) {
@@ -66,7 +65,8 @@ public class AzureStorageAutoConfiguration {
             StorageAccount storageAccount = resourceManagerProvider.getStorageAccountManager().getOrCreate(accountName);
 
             connectionString = StorageConnectionStringProvider
-                    .getConnectionString(storageAccount, environmentProvider.getEnvironment());
+                    .getConnectionString(storageAccount, environmentProvider.getEnvironment(),
+                            storageProperties.isSecureTransfer());
 
         } else {
             connectionString = StorageConnectionStringProvider
