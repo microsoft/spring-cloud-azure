@@ -42,6 +42,7 @@ public class AzureConfigPropertySourceTest {
     private static final KeyValueItem featureItem = createItem(TEST_CONTEXT, FEATURE_KEY, FEATURE_VALUE, FEATURE_LABEL);
     
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
+    private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
 
     private AzureConfigPropertySource propertySource;
     
@@ -59,6 +60,7 @@ public class AzureConfigPropertySourceTest {
         TEST_ITEMS.add(item1);
         TEST_ITEMS.add(item2);
         TEST_ITEMS.add(item3);
+        featureItem.setContentType(FEATURE_FLAG_CONTENT_TYPE);
         FEATURE_ITEMS.add(featureItem);
     }
 

@@ -24,6 +24,7 @@ import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature
 
 public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigServiceOperations> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigPropertySource.class);
+
     private final String context;
 
     private Map<String, Object> properties = new LinkedHashMap<>();
@@ -31,18 +32,20 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     private final String storeName;
 
     private final String label;
-    
+
     private AzureCloudConfigProperties azureProperties;
 
     private static ObjectMapper mapper = new ObjectMapper();
-    
+
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
+
+    private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
 
     public AzureConfigPropertySource(String context, ConfigServiceOperations operations, String storeName,
             String label, AzureCloudConfigProperties azureProperties) {
         // The context alone does not uniquely define a PropertySource, append storeName
         // and label to uniquely define a PropertySource
-           super(context + storeName + "/" + label, operations);
+        super(context + storeName + "/" + label, operations);
         this.context = context;
         this.storeName = storeName;
         this.label = label;
@@ -74,21 +77,29 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
         queryOptions = new QueryOptions().withKeyNames("*appconfig*").withLabels(label);
         items = source.getKeys(storeName, queryOptions);
         FeatureSet featureSet = new FeatureSet();
-        for (KeyValueItem item : items) {  
-            try {
-                FeatureManagementItem featureItem = mapper.readValue(item.getValue(), FeatureManagementItem.class);
-                Feature feature = new Feature();
-                feature.setEnabled(featureItem.getEnabled());
-                feature.setId(featureItem.getId());
-                feature.setEnabledFor(featureItem.getConditions().getClientFilters());
-                featureSet.addFeature(feature);
-            } catch (IOException e) {
-                LOGGER.error("Unabled to parse Feature Management values from Azure.", e);
+        for (KeyValueItem item : items) {
+            if (item.getContentType().equals(FEATURE_FLAG_CONTENT_TYPE)) {
+                try {
+                    FeatureManagementItem featureItem = mapper.readValue(item.getValue(), FeatureManagementItem.class);
+                    Feature feature = new Feature();
+                    feature.setEnabled(featureItem.getEnabled());
+                    feature.setId(featureItem.getId());
+                    feature.setEnabledFor(featureItem.getConditions().getClientFilters());
+                    featureSet.addFeature(feature);
+                } catch (IOException e) {
+                    LOGGER.error("Unabled to parse Feature Management values from Azure.", e);
                     if (azureProperties.isFailFast()) {
                         throw e;
                     }
-                } 
+                }
 
+            } else {
+                LOGGER.error(String.format("Found Feature Flag %s with invalid Content Type of %s", item.getKey(),
+                        item.getContentType()));
+                if (azureProperties.isFailFast()) {
+                    throw new IOException();
+                }
+            }
         }
         LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSet, LinkedHashMap.class);
         properties.put(FEATURE_MANAGEMENT_KEY, convertedValue);
