@@ -22,16 +22,16 @@ import com.microsoft.azure.spring.cloud.feature.manager.FeatureManagerSnapshot;
 public class HelloController {
     
     @Autowired
-    MessageProperties properties;
+    private MessageProperties properties;
 
     @Autowired
-    FeatureManager featureManager;
+    private FeatureManager featureManager;
     
     @Autowired
-    FeatureManagerSnapshot featureManagerSnapshot;
+    private FeatureManagerSnapshot featureManagerSnapshot;
 
     @Autowired
-    TestComponent testComponent;
+    private TestComponent testComponent;
 
     @GetMapping("/")
     @FeatureGate(feature = "FeatureV")

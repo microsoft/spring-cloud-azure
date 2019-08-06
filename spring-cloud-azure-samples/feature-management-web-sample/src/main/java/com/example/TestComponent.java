@@ -14,7 +14,7 @@ import com.microsoft.azure.spring.cloud.feature.manager.FeatureManager;
 public class TestComponent {
     
     @Autowired
-    FeatureManager featureManager;
+    private FeatureManager featureManager;
     
     public String test() {
         if(featureManager.isEnabled("Beta")) {

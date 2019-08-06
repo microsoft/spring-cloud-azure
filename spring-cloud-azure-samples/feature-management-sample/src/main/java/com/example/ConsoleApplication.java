@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License. See LICENSE in the project root for
+ * license information.
+ */
 package com.example;
 
 import org.slf4j.Logger;
@@ -18,7 +23,7 @@ public class ConsoleApplication implements CommandLineRunner {
             .getLogger(ConsoleApplication.class);
 
     @Autowired
-    FeatureManager featureManager;
+    private FeatureManager featureManager;
 
     public static void main(String[] args) {
         SpringApplication.run(ConsoleApplication.class, args);
@@ -30,8 +35,7 @@ public class ConsoleApplication implements CommandLineRunner {
 
         if (featureManager.isEnabled("Beta")) {
             System.out.println("Running Beta");
-        }
-        else {
+        } else {
             System.out.println("Running Application");
         }
     }

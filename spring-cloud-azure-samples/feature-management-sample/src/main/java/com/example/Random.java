@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License. See LICENSE in the project root for
+ * license information.
+ */
 package com.example;
 
 import org.springframework.stereotype.Component;
@@ -10,10 +15,9 @@ public class Random implements FeatureFilter{
 
     @Override
     public boolean evaluate(FeatureFilterEvaluationContext context) {
-        double rand = Math.random();
-        int c = Integer.valueOf((String) context.getParameters().get("chance"));
-        double chance = (double) c/100;
-        return rand > chance; 
+        double chance = Double.valueOf((String) context.getParameters().get("chance"));
+        return Math.random() > chance/100; 
     }
 
 }
+

@@ -13,7 +13,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @EnableAutoConfiguration
 public class FeatureManagerWebApplication {
 
-
 	public static void main(String[] args) {
 		SpringApplication.run(FeatureManagerWebApplication.class, args);
 	}
