@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.microsoft.azure.spring.cloud.feature.manager.FeatureGate;
 import com.microsoft.azure.spring.cloud.feature.manager.FeatureManager;
 import com.microsoft.azure.spring.cloud.feature.manager.FeatureManagerSnapshot;
-import com.microsoft.azure.spring.cloud.feature.manager.FeatureOn;
 
 @Controller
 @ConfigurationProperties("controller")
@@ -33,8 +33,8 @@ public class HelloController {
     @Autowired
     TestComponent testComponent;
 
-    @GetMapping("/hello")
-    @FeatureOn(feature = "FeatureV")
+    @GetMapping("/")
+    @FeatureGate(feature = "FeatureV")
     @ResponseBody
     public String getMessage() {
         return "Message: " + properties.getMessage();
@@ -45,7 +45,7 @@ public class HelloController {
     public String getRequestBased() {
         String result = "";
         for(int i = 0; i < 100; i++) {
-            result += " " + featureManagerSnapshot.isEnabled("Beta");
+            result += " " + featureManagerSnapshot.isEnabled("FeatureV");
         }
         return result;
     }
@@ -57,7 +57,7 @@ public class HelloController {
     }
 
     @GetMapping("/redirect")
-    @FeatureOn(feature = "Beta", redirect = "/redirected")
+    @FeatureGate(feature = "FeatureV", fallback = "/redirected")
     @ResponseBody
     public String getRedirect() {
         return "Redirect";

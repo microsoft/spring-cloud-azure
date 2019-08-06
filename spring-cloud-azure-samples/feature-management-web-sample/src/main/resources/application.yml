@@ -11,10 +11,9 @@ config:
   message: Hi
 feature-management:
   featureSet:
-    FeatureManagement:
-      Beta:
-        id: Beta
-        enabled: true
+    features:
+      Beta: true
+      FeatureV:
         enabledFor:
           -
             name: Random

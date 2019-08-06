@@ -73,7 +73,7 @@ When using the Feature Management Web library you can require that a given featu
 
 ```
 @GetMapping("/featureT")
-@FeatureOn(feature = "FeatureT")
+@FeatureGate(feature = "FeatureT")
 @ResponseBody
 public String featureT() {
     ...
@@ -104,7 +104,7 @@ Certain routes may expose application capabilites that are gated by features. Th
 
 ```
 @GetMapping("/featureT")
-@FeatureOn(feature = "FeatureT" redirect= "/oldEndpoint")
+@FeatureGate(feature = "FeatureT" fallback= "/oldEndpoint")
 @ResponseBody
 public String featureT() {
     ...
