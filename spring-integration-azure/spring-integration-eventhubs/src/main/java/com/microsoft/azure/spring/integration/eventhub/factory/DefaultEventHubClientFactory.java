@@ -6,6 +6,15 @@
 
 package com.microsoft.azure.spring.integration.eventhub.factory;
 
+import java.io.IOException;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.eventhubs.EventHubException;
 import com.microsoft.azure.eventhubs.PartitionSender;
@@ -18,17 +27,10 @@ import com.microsoft.azure.spring.integration.eventhub.impl.EventHubRuntimeExcep
 import com.microsoft.azure.spring.integration.eventhub.util.HostnameHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
-
-import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /**
  * Default implementation of {@link EventHubClientFactory}.
@@ -90,10 +92,10 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
 
     private <K, V> void close(Map<K, V> map, Function<V, CompletableFuture<Void>> close) {
         CompletableFuture.allOf(map.values().stream().map(close).toArray(CompletableFuture[]::new))
-                         .exceptionally((ex) -> {
-                             log.warn("Failed to clean event hub client factory", ex);
-                             return null;
-                         });
+        .exceptionally((ex) -> {
+            log.warn("Failed to clean event hub client factory", ex);
+            return null;
+        });
     }
 
     @Override
@@ -116,5 +118,15 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
     @Override
     public EventProcessorHost getOrCreateEventProcessorHost(String name, String consumerGroup) {
         return this.processorHostCreator.apply(name, consumerGroup);
+    }
+
+    @Override
+    public Optional<EventProcessorHost> getEventProcessorHost(String name, String consumerGroup) {
+        return Optional.ofNullable(this.processorHostMap.get(Tuple.of(name, consumerGroup)));
+    }
+
+    @Override
+    public EventProcessorHost removeEventProcessorHost(String name, String consumerGroup) {
+        return this.processorHostMap.remove(Tuple.of(name, consumerGroup));
     }
 }
