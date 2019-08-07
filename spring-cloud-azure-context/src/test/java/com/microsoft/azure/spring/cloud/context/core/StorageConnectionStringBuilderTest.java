@@ -5,7 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.context.core;
 
-import com.microsoft.azure.spring.cloud.context.core.api.Environment;
+import com.microsoft.azure.AzureEnvironment;
 import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringBuilder;
 import org.junit.Test;
 
@@ -21,7 +21,7 @@ public class StorageConnectionStringBuilderTest {
     private static final String PROTOCOL_FORMAT = "{0}={1};";
     private static final String ACCOUNT_NAME = "accountName";
     private static final String ACCOUNT_KEY = "accountKey";
-    private static final Environment ENVIRONMENT = Environment.GLOBAL;
+    private static final AzureEnvironment ENVIRONMENT = AzureEnvironment.AZURE;
     private static final String DEFAULT_PROTOCOL = "DefaultEndpointsProtocol";
 
     @Test

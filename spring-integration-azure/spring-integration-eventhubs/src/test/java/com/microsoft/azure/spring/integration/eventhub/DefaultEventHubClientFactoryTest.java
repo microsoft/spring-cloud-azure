@@ -6,11 +6,11 @@
 
 package com.microsoft.azure.spring.integration.eventhub;
 
+import com.microsoft.azure.AzureEnvironment;
 import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.eventhubs.PartitionSender;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.management.storage.StorageAccount;
-import com.microsoft.azure.spring.cloud.context.core.api.Environment;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.impl.StorageAccountManager;
 import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
@@ -74,16 +74,17 @@ public class DefaultEventHubClientFactoryTest {
         when(connectionStringProvider.getConnectionString(eq(eventHubName))).thenReturn(connectionString);
 
         PowerMockito.mockStatic(StorageConnectionStringProvider.class);
-        when(storageConnectionStringProvider.getConnectionString(isA(StorageAccount.class), isA(Environment.class)))
+        when(StorageConnectionStringProvider
+                .getConnectionString(isA(StorageAccount.class), isA(AzureEnvironment.class)))
                 .thenReturn(connectionString);
-        when(storageConnectionStringProvider.getConnectionString(isA(StorageAccount.class), isA(Environment.class)))
+        when(StorageConnectionStringProvider
+                .getConnectionString(isA(StorageAccount.class), isA(AzureEnvironment.class)))
                 .thenReturn(connectionString);
         when(resourceManagerProvider.getStorageAccountManager()).thenReturn(storageAccountManager);
         when(storageAccountManager.getOrCreate(any())).thenReturn(storageAccount);
         PowerMockito.whenNew(EventProcessorHost.class).withAnyArguments().thenReturn(eventProcessorHost);
 
-        this.clientFactory = new DefaultEventHubClientFactory(connectionStringProvider,
-                connectionString);
+        this.clientFactory = new DefaultEventHubClientFactory(connectionStringProvider, connectionString);
     }
 
     @Test
