@@ -16,7 +16,6 @@ import org.springframework.expression.common.LiteralExpression;
 import org.springframework.integration.MessageTimeoutException;
 import org.springframework.integration.expression.ExpressionUtils;
 import org.springframework.integration.expression.ValueExpression;
-import org.springframework.integration.handler.AbstractMessageHandler;
 import org.springframework.integration.handler.AbstractMessageProducingHandler;
 import org.springframework.integration.support.DefaultErrorMessageStrategy;
 import org.springframework.integration.support.ErrorMessageStrategy;
@@ -208,10 +207,7 @@ public class DefaultMessageHandler extends AbstractMessageProducingHandler {
     protected MessageChannel getSendFailureChannel() {
         if (this.sendFailureChannel != null) {
             return this.sendFailureChannel;
-
-        }
-
-        else if (this.sendFailureChannelName != null) {
+        } else if (this.sendFailureChannelName != null) {
             this.sendFailureChannel = getChannelResolver().resolveDestination(this.sendFailureChannelName);
             return this.sendFailureChannel;
         }
