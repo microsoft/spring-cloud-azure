@@ -32,6 +32,8 @@ public class SinkExample {
         });
     }
 
+    // Replace destination into spring.cloud.stream.bindings.input.destination
+    // Replace group into spring.cloud.stream.bindings.input.group
     @ServiceActivator(inputChannel = "{destination}.{group}.errors")
     public void error(Message<?> message) {
         System.out.println("Handling ERROR: " + message);
