@@ -32,12 +32,16 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private final String profileSeparator;
     private final List<ConfigStore> configStores;
     private final Map<String, List<String>> storeContextsMap = new ConcurrentHashMap<>();
+    
+    private PropertyCache propertyCache;
 
-    public AzureConfigPropertySourceLocator(ConfigServiceOperations operations, AzureCloudConfigProperties properties) {
+    public AzureConfigPropertySourceLocator(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
+            PropertyCache propertyCache) {
         this.operations = operations;
         this.properties = properties;
         this.profileSeparator = properties.getProfileSeparator();
         this.configStores = properties.getStores();
+        this.propertyCache = propertyCache;
     }
 
     @Override
@@ -134,7 +138,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
             AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, operations,
                     store.getName(), label, properties);
 
-            propertySource.initProperties();
+            propertySource.initProperties(propertyCache);
             sourceList.add(propertySource);
             putStoreContext(store.getName(), context, storeContextsMap);
         }

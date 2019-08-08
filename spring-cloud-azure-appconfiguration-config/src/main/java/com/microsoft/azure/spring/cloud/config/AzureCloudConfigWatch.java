@@ -5,10 +5,10 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -17,41 +17,46 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.context.SmartLifecycle;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.util.StringUtils;
 
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 import com.microsoft.azure.spring.cloud.config.domain.QueryField;
 import com.microsoft.azure.spring.cloud.config.domain.QueryOptions;
 
-public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, SmartLifecycle {
+public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureCloudConfigWatch.class);
     
     private final ConfigServiceOperations configOperations;
+
     private final Map<String, String> storeEtagMap = new ConcurrentHashMap<>();
-    private final TaskScheduler taskScheduler;
+
     private final AtomicBoolean running = new AtomicBoolean(false);
+
     private ApplicationEventPublisher publisher;
-    private ScheduledFuture<?> watchFuture;
-    private final AzureCloudConfigProperties properties;
+
     private final Map<String, Boolean> firstTimeMap = new ConcurrentHashMap<>();
+
     private final List<ConfigStore> configStores;
+
     private final Map<String, List<String>> storeContextsMap;
     
     private static final String CONFIGURATION_SUFFIX = "_configuration";
     private static final String FEATURE_SUFFIX = "_feature";
     private static final String FEATURE_STORE_WATCH_KEY = "*appconfig*";
 
+    private Duration delay;
+
+    PropertyCache propertyCache;
+
     public AzureCloudConfigWatch(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
-                                 TaskScheduler scheduler, Map<String, List<String>> storeContextsMap) {
+            Map<String, List<String>> storeContextsMap, PropertyCache propertyCache) {
         this.configOperations = operations;
-        this.properties = properties;
-        this.taskScheduler = scheduler;
         this.configStores = properties.getStores();
         this.storeContextsMap = storeContextsMap;
+        this.delay = properties.getWatch().getDelay();
+        this.propertyCache = propertyCache;
     }
 
     @Override
@@ -59,51 +64,15 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
         this.publisher = applicationEventPublisher;
     }
 
-    @Override
-    public boolean isAutoStartup() {
-        return true;
-    }
-
-    @Override
-    public void stop(Runnable callback) {
-        this.stop();
-        callback.run();
-    }
-
-    @Override
-    public void start() {
-        if (this.running.compareAndSet(false, true)) {
-            this.watchFuture = this.taskScheduler.scheduleWithFixedDelay(this::watchConfigKeyValues,
-                    this.properties.getWatch().getDelay());
-        }
-    }
-
-    @Override
-    public void stop() {
-        if (this.running.compareAndSet(true, false) && this.watchFuture != null) {
-            this.watchFuture.cancel(true);
-        }
-    }
-
-    @Override
-    public boolean isRunning() {
-        return this.running.get();
-    }
-
-    @Override
-    public int getPhase() {
-        return 0;
-    }
-
     public void watchConfigKeyValues() {
-        if (!this.running.get()) {
-            return;
-        }
-
-        for (ConfigStore configStore : configStores) {
-            if (needRefreshConfiguration(configStore) || needRefreshFeatureFlag(configStore)) {
-                break;
+        if (this.running.compareAndSet(false, true)) {
+            for (ConfigStore configStore : configStores) {
+                if (propertyCache.findNonCachedKeys(delay, configStore.getName()).size() > 0
+                        && needRefresh(configStore)) {
+                    break;
+                }
             }
+            this.running.set(false);
         }
     }
 
@@ -126,14 +95,16 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
             return false;
         }
 
+        boolean first = false;
         String etag = keyValueItems.get(0).getEtag();
         if (firstTimeMap.get(store.getName() + storeSuffix) == null) {
             storeEtagMap.put(store.getName() + storeSuffix, etag);
             firstTimeMap.put(store.getName() + storeSuffix, false);
-            return false;
+            propertyCache.updateRefreshCacheTime();
+            first = true;
         }
 
-        if (!etag.equals(storeEtagMap.get(store.getName() + storeSuffix))) {
+        if (!etag.equals(storeEtagMap.get(store.getName())) || first) {
             LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
                     store.getName(), watchedKeyNames);
             storeEtagMap.put(store.getName() + storeSuffix, etag);
@@ -141,7 +112,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
             publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
             return true;
         }
-
+        propertyCache.updateRefreshCacheTime();
         return false;
     }
 

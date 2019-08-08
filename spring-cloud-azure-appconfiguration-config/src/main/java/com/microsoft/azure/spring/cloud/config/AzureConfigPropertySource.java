@@ -42,9 +42,9 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
 
     public AzureConfigPropertySource(String context, ConfigServiceOperations operations, String storeName,
-            String label, AzureCloudConfigProperties azureProperties) {
-        // The context alone does not uniquely define a PropertySource, append storeName
-        // and label to uniquely define a PropertySource
+            String label) {
+        // The context alone does not uniquely define a PropertySource, append storeName and label to uniquely
+        // define a PropertySource
         super(context + storeName + "/" + label, operations);
         this.context = context;
         this.storeName = storeName;
@@ -63,14 +63,30 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
         return properties.get(name);
     }
 
-    public void initProperties() throws IOException {
-        // * for wildcard match
-        // Reading in Configurations
-        QueryOptions queryOptions = new QueryOptions().withKeyNames(context + "*").withLabels(label);
-        List<KeyValueItem> items = source.getKeys(storeName, queryOptions);
-        for (KeyValueItem item : items) {
-            String key = item.getKey().trim().substring(context.length()).replace('/', '.');
-            properties.put(key, item.getValue());
+    public void initProperties(PropertyCache propertyCache) {
+        if (propertyCache.getCache() == null) {
+            propertyCache.createNewCache();
+            // * for wildcard match
+            QueryOptions queryOptions = new QueryOptions().withKeyNames(context + "*").withLabels(label);
+            List<KeyValueItem> items = source.getKeys(storeName, queryOptions);
+            for (KeyValueItem item : items) {
+                String key = item.getKey().trim().substring(context.length()).replace('/', '.');
+                properties.put(key, item.getValue());
+            }
+            propertyCache.addKeyValuesToCache(items, storeName);
+        } else {
+            if (propertyCache.getRefreshKeys() != null && propertyCache.getRefreshKeys().size() > 0) {
+                QueryOptions queryOptions = new QueryOptions().withKeyNames(propertyCache.getRefreshKeys())
+                        .withLabels(label);
+                List<KeyValueItem> items = source.getKeys(storeName, queryOptions);
+                propertyCache.addKeyValuesToCache(items, storeName);
+
+            }
+            for (String key : propertyCache.getKeySet()) {
+                String cachedKey = key.trim().substring(context.length()).replace('/', '.');
+                properties.put(cachedKey, propertyCache.getCachedValue(key));
+            }
+
         }
 
         // Reading In Features
