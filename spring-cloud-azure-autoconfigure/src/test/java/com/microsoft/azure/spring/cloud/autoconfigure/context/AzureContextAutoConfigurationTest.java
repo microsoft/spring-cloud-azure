@@ -6,9 +6,10 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.context;
 
+import com.microsoft.azure.AzureEnvironment;
+import com.microsoft.azure.credentials.AzureTokenCredentials;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.spring.cloud.context.core.api.CredentialsProvider;
-import com.microsoft.azure.spring.cloud.context.core.api.Environment;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
 import org.junit.Test;
@@ -35,7 +36,7 @@ public class AzureContextAutoConfigurationTest {
             assertThat(context.getBean(AzureProperties.class).getCredentialFilePath()).isEqualTo("credential");
             assertThat(context.getBean(AzureProperties.class).getResourceGroup()).isEqualTo("group1");
             assertThat(context.getBean(AzureProperties.class).getRegion()).isEqualTo("westUS");
-            assertThat(context.getBean(AzureProperties.class).getEnvironment()).isEqualTo(Environment.GLOBAL);
+            assertThat(context.getBean(AzureProperties.class).getEnvironment()).isEqualTo(AzureEnvironment.AZURE);
         });
     }
 
@@ -85,6 +86,11 @@ public class AzureContextAutoConfigurationTest {
         @Bean
         ResourceManagerProvider resourceManagerProvider() {
             return mock(ResourceManagerProvider.class);
+        }
+
+        @Bean
+        AzureTokenCredentials credentials() {
+            return mock(AzureTokenCredentials.class);
         }
     }
 }

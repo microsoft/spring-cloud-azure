@@ -11,13 +11,11 @@ import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoCo
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.api.EnvironmentProvider;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
-import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringBuilder;
 import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
 import com.microsoft.azure.spring.cloud.storage.AzureStorageProtocolResolver;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -28,10 +26,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import javax.annotation.PostConstruct;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
-
-import javax.annotation.PostConstruct;
 
 /**
  * An auto-configuration for Azure Storage Account
@@ -58,8 +55,8 @@ public class AzureStorageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public CloudStorageAccount storageAccount(AzureStorageProperties storageProperties, EnvironmentProvider
-            environmentProvider) {
+    public CloudStorageAccount storageAccount(AzureStorageProperties storageProperties,
+            EnvironmentProvider environmentProvider) {
         String connectionString;
 
         if (resourceManagerProvider != null) {
@@ -68,8 +65,8 @@ public class AzureStorageAutoConfiguration {
             StorageAccount storageAccount = resourceManagerProvider.getStorageAccountManager().getOrCreate(accountName);
 
             connectionString = StorageConnectionStringProvider
-                    .getConnectionString(storageAccount, environmentProvider.getEnvironment(), storageProperties.isSecureTransfer());
-
+                    .getConnectionString(storageAccount, environmentProvider.getEnvironment(),
+                            storageProperties.isSecureTransfer());
         } else {
             connectionString = StorageConnectionStringProvider
                     .getConnectionString(storageProperties.getAccount(), storageProperties.getAccessKey(),

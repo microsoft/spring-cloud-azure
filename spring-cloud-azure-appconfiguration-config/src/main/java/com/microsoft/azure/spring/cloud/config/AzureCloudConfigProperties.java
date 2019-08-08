@@ -5,7 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import com.microsoft.azure.spring.cloud.config.managed.identity.AzureManagedIdentityProperties;
+import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;

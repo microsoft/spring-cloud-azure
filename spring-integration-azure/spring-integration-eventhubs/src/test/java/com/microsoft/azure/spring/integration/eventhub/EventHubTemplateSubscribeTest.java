@@ -6,6 +6,9 @@
 
 package com.microsoft.azure.spring.integration.eventhub;
 
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 import com.microsoft.azure.eventprocessorhost.EventProcessorOptions;
 import com.microsoft.azure.eventprocessorhost.IEventProcessorFactory;
@@ -18,9 +21,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.concurrent.CompletableFuture;
-
-import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -38,6 +39,7 @@ public class EventHubTemplateSubscribeTest extends SubscribeByGroupOperationTest
         future.complete(null);
         this.subscribeByGroupOperation = new EventHubTemplate(mockClientFactory);
         when(this.mockClientFactory.getOrCreateEventProcessorHost(anyString(), anyString())).thenReturn(this.host);
+        when(this.mockClientFactory.getEventProcessorHost(anyString(), anyString())).thenReturn(Optional.of(this.host));
         when(this.host
                 .registerEventProcessorFactory(isA(IEventProcessorFactory.class), isA(EventProcessorOptions.class)))
                 .thenReturn(future);
@@ -62,6 +64,7 @@ public class EventHubTemplateSubscribeTest extends SubscribeByGroupOperationTest
 
     @Override
     protected void verifySubscriberUnregistered(int times) {
+        verify(this.mockClientFactory, times(times)).removeEventProcessorHost(anyString(), anyString());
         verify(this.host, times(times)).unregisterEventProcessor();
     }
 }
