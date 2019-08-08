@@ -5,84 +5,116 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.cloud.endpoint.event.RefreshEvent;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_ETAG;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_WATCH_KEY;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.cloud.endpoint.event.RefreshEvent;
+import org.springframework.context.ApplicationEventPublisher;
 
+import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ AzureCloudConfigWatch.class, AzureConfigPropertySource.class })
 public class AzureConfigCloudWatchTest {
     @Mock
     private ConfigServiceOperations configOperations;
 
     @Mock
     private ApplicationEventPublisher eventPublisher;
+    
+    PropertyCache propertyCache;
 
-    private AzureCloudConfigProperties properties = new AzureCloudConfigProperties();
+    @Mock
+    private AzureCloudConfigProperties properties;
+    
+    @Mock
+    Map<String, List<String>> contextsMap;
 
-    private AzureCloudConfigWatch watch;
-
-    private TaskScheduler scheduler;
+    AzureCloudConfigWatch watch;
+    
+    ArrayList<KeyValueItem> keys;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        scheduler = new ThreadPoolTaskScheduler();
-        ((ThreadPoolTaskScheduler) scheduler).initialize();
 
         ConfigStore store = new ConfigStore();
         store.setName(TEST_STORE_NAME);
         store.setConnectionString(TEST_CONN_STRING);
         store.setWatchedKey(TEST_WATCH_KEY);
+        properties = new AzureCloudConfigProperties();
         properties.setStores(Arrays.asList(store));
 
         properties.getWatch().setDelay(Duration.ofSeconds(1));
 
-        Map<String, List<String>> contextsMap = new ConcurrentHashMap<>();
+        contextsMap = new ConcurrentHashMap<>();
         contextsMap.put(TEST_STORE_NAME, Arrays.asList(TEST_ETAG));
-        watch = new AzureCloudConfigWatch(configOperations, properties, scheduler, contextsMap);
-        watch.setApplicationEventPublisher(eventPublisher);
-    }
-
-    @After
-    public void tearDown() {
-        watch.stop();
+        keys = new ArrayList<KeyValueItem>();
+        KeyValueItem kvi = new KeyValueItem();
+        kvi.setKey("/application/test.key");
+        kvi.setValue("TestValue");
+        keys.add(kvi);
+        
+        propertyCache = new PropertyCache();
+        propertyCache.createNewCache();
+        CachedKey cachedKey = new CachedKey(new KeyValueItem(), "store1", new Date());
+        propertyCache.addToCache("/application/test.key", cachedKey);
+        
+        watch = new AzureCloudConfigWatch(configOperations, properties, contextsMap, propertyCache);
     }
 
     @Test
     public void firstCallShouldNotPublishEvent() {
+        PowerMockito.mockStatic(AzureConfigPropertySource.class);
+        
+        watch.setApplicationEventPublisher(eventPublisher);
+        when(configOperations.getKeys(any(), any())).thenReturn(keys);
+        
         List<KeyValueItem> mockResponse = initialResponse();
+
         when(configOperations.getRevisions(any(), any())).thenReturn(mockResponse);
-        watch.start();
         watch.watchConfigKeyValues();
         verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
     }
 
     @Test
     public void updatedEtagShouldPublishEvent() throws InterruptedException {
-        List<KeyValueItem> mockResponse = initialResponse();
-        when(configOperations.getRevisions(any(), any())).thenReturn(mockResponse);
-        watch.start();
-        watch.watchConfigKeyValues();
-
-        List<KeyValueItem> updatedResponse = updatedResponse();
-        when(configOperations.getRevisions(any(), any())).thenReturn(updatedResponse);
+        PowerMockito.mockStatic(AzureConfigPropertySource.class);
+        
+        watch.setApplicationEventPublisher(eventPublisher);
+        when(configOperations.getKeys(any(), any())).thenReturn(keys);
+        when(configOperations.getRevisions(any(), any())).thenReturn(initialResponse()).thenReturn(updatedResponse());
+        
         Thread.sleep(properties.getWatch().getDelay().getSeconds() * 1000 * 2);
+        watch.watchConfigKeyValues();
+        
+        verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
+        
+        Thread.sleep(properties.getWatch().getDelay().getSeconds() * 1000 * 2);
+        watch.watchConfigKeyValues();
+        
         verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
     }
 

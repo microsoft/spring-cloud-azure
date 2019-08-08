@@ -5,22 +5,36 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONTEXT;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_KEY_1;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_KEY_2;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_KEY_3;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_LABEL_1;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_LABEL_2;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_LABEL_3;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_SLASH_KEY;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_SLASH_VALUE;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_VALUE_1;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_VALUE_2;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_VALUE_3;
+import static com.microsoft.azure.spring.cloud.config.TestUtils.createItem;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
-import static com.microsoft.azure.spring.cloud.config.TestUtils.createItem;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 
 public class AzureConfigPropertySourceTest {
     private static final AzureCloudConfigProperties TEST_PROPS = new AzureCloudConfigProperties();
@@ -33,6 +47,8 @@ public class AzureConfigPropertySourceTest {
 
     @Mock
     private ConfigServiceOperations operations;
+    
+    PropertyCache propertyCache;
 
     @BeforeClass
     public static void init() {
@@ -48,11 +64,12 @@ public class AzureConfigPropertySourceTest {
         MockitoAnnotations.initMocks(this);
         propertySource = new AzureConfigPropertySource(TEST_CONTEXT, operations, null, null);
         when(operations.getKeys(any(), any())).thenReturn(TEST_ITEMS);
+        propertyCache = new PropertyCache();
     }
 
     @Test
     public void testPropCanBeInitAndQueried() {
-        propertySource.initProperties();
+        propertySource.initProperties(propertyCache);
 
         String[] keyNames = propertySource.getPropertyNames();
         String[] expectedKeyNames = TEST_ITEMS.stream()
@@ -69,7 +86,7 @@ public class AzureConfigPropertySourceTest {
         KeyValueItem slashedProp = createItem(TEST_CONTEXT, TEST_SLASH_KEY, TEST_SLASH_VALUE, null);
         when(operations.getKeys(any(), any())).thenReturn(Arrays.asList(slashedProp));
 
-        propertySource.initProperties();
+        propertySource.initProperties(propertyCache);
 
         String expectedKeyName = TEST_SLASH_KEY.replace('/', '.');
         String[] actualKeyNames = propertySource.getPropertyNames();
