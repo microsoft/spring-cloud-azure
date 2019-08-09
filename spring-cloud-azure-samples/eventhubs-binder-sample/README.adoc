@@ -63,8 +63,41 @@ spring.cloud.azure.eventhub.namespace=[eventhub-namespace]
 spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-account]
 ....
 
+== MSI credential based usage
+
+1. Create https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create[Azure Event Hubs]. Please note `Basic` tier is unsupported. 
+
+2. Create https://docs.microsoft.com/en-us/azure/storage/[Azure Storage] for checkpoint use.
+
+3. Create https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/how-to-manage-ua-identity-portal[User-assigned Managed Identity] in Azure Portal.
+
+4. Create VM and add managed identity in Azure portal.
+Learn how to create VM on Azure and add an managed identity from a VM using the Azure portal, please refer to https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/qs-configure-portal-windows-vm[link].
+
+5. Create project includes this sample in the VM on Azure.
+
+6. Update link:src/main/resources/application.properties[application.properties]
+
++
+....
+# Enable MSI for event hub and storage account
+spring.cloud.azure.msi-enabled=true
+
+# Fill subscription ID copied from portal
+spring.cloud.azure.subscription-id=[subscription-id]
+
+# Fill resource group name
+spring.cloud.azure.resource-group=[resource-group]
+
+# Fill checkpoint storage account name
+spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-account]
+
+# Fill event hub namespace
+spring.cloud.azure.eventhub.namespace=[eventhub-namespace]
+....
+
 == How to run
-5. Update stream binding related properties in link:src/main/resources/application.properties[application.properties]
+4. Update stream binding related properties in link:src/main/resources/application.properties[application.properties]
 
 +
 ....
