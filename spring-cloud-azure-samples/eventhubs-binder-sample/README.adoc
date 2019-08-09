@@ -97,7 +97,7 @@ spring.cloud.azure.eventhub.namespace=[eventhub-namespace]
 ....
 
 == How to run
-4. Update stream binding related properties in link:src/main/resources/application.properties[application.properties]
+1. Update stream binding related properties in link:src/main/resources/application.properties[application.properties]
 
 +
 ....
@@ -106,19 +106,19 @@ spring.cloud.stream.bindings.input.group=[consumer-group]
 spring.cloud.stream.bindings.output.destination=[eventhub-name]
 ....
 
-5. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
+2. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
 
-6.  Send a POST request
+3.  Send a POST request
 +
 ....
 $ curl -X POST http://localhost:8080/messages?message=hello
 ....
 
-7. Verify in your app's logs that a similar message was posted:
+4. Verify in your app's logs that a similar message was posted:
 +
 ....
 New message received: 'hello'
 Message 'hello' successfully checkpointed
 ....
 
-8. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
+5. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
