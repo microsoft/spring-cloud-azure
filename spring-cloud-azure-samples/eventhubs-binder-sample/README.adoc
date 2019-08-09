@@ -65,19 +65,35 @@ spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-accou
 
 == MSI credential based usage
 
-1. Create https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create[Azure Event Hubs]. Please note `Basic` tier is unsupported. 
+=== Overview
+
+https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/[MSI] (Managed Service Identity, aka Managed Identity) for Azure resources provides Azure services with an automatically managed identity in https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-whatis[Azure AD]. You can use this identity to authenticate to any service that supports Azure AD authentication without having any credentials in your code.
+
+Please note your application should run in VM (Virtual Machine) or App Services on Azure for support of MSI.
+
+=== Steps
+
+1. Create https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create[Azure Event Hubs]. Please note `Basic` tier is unsupported.
 
 2. Create https://docs.microsoft.com/en-us/azure/storage/[Azure Storage] for checkpoint use.
 
-3. Create https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/how-to-manage-ua-identity-portal[User-assigned Managed Identity] in Azure Portal.
+3. Create VM in Azure portal.
+Please refer to https://docs.microsoft.com/en-us/azure/virtual-machines/windows/quick-create-portal[Create a Windows virtual machine in the Azure portal] or https://docs.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-portal[Create a Linux virtual machine in the Azure portal]. Choose any one according to your needs.
 
-4. Create VM and add managed identity in Azure portal.
-Learn how to create VM on Azure and add an managed identity from a VM using the Azure portal, please refer to https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/qs-configure-portal-windows-vm[link].
+4. Create an user-assigned identity in Azure Portal.
+Please refer to https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/how-to-manage-ua-identity-portal#create-a-user-assigned-managed-identity[Create an user-assigned managed identity].
 
-5. Create project includes this sample in the VM on Azure.
+5. Assign the user-assigned identity to the VM.
+Please refer to https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/qs-configure-portal-windows-vm#assign-a-user-assigned-managed-identity-to-an-existing-vm[Assign an user-assigned managed identity to an existing VM].
 
-6. Update link:src/main/resources/application.properties[application.properties]
+6. Add role assignment to event hub and storage account. You should add managed identity to the `Contributor` role for event hub, and add managed identity to the `Storage Account Key Operator Service Role` role for storage account.
++
+--
+For how to add role assignment to event hub and storage account, please see https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-managed-service-identity[Managed identities for Azure resources with Event Hubs].
+Role assignments are the way you control access to Azure resources. For different built-in role's descriptions, please see https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles[Built-in role descriptions].
+--
 
+7. Update link:src/main/resources/application.properties[application.properties]
 +
 ....
 # Enable MSI for event hub and storage account
