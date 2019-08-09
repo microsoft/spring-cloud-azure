@@ -71,10 +71,8 @@ public class AzureConfigPropertySourceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        azureProperties = new AzureCloudConfigProperties();
-        azureProperties.setFailFast(true);
-        propertySource = new AzureConfigPropertySource(TEST_CONTEXT, operations, null, null, azureProperties);
-        when(operations.getKeys(any(), any())).thenReturn(TEST_ITEMS).thenReturn(FEATURE_ITEMS);
+        propertySource = new AzureConfigPropertySource(TEST_CONTEXT, operations, "store1", null);
+        when(operations.getKeys(any(), any())).thenReturn(TEST_ITEMS);
         propertyCache = new PropertyCache();
     }
 

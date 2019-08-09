@@ -9,6 +9,7 @@ import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_ST
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_ETAG;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_WATCH_KEY;
+import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -78,7 +79,6 @@ public class AzureConfigCloudWatchTest {
         keys.add(kvi);
         
         propertyCache = new PropertyCache();
-        propertyCache.createNewCache();
         CachedKey cachedKey = new CachedKey(new KeyValueItem(), "store1", new Date());
         propertyCache.addToCache("/application/test.key", cachedKey);
         
@@ -86,7 +86,7 @@ public class AzureConfigCloudWatchTest {
     }
 
     @Test
-    public void firstCallShouldNotPublishEvent() {
+    public void firstCallShouldPublishEvent() {
         PowerMockito.mockStatic(AzureConfigPropertySource.class);
         
         watch.setApplicationEventPublisher(eventPublisher);
@@ -95,26 +95,51 @@ public class AzureConfigCloudWatchTest {
         List<KeyValueItem> mockResponse = initialResponse();
 
         when(configOperations.getRevisions(any(), any())).thenReturn(mockResponse);
-        watch.watchConfigKeyValues();
+        try {
+            Thread.sleep(properties.getWatch().getDelay().getSeconds() * 1000 * 2);
+        } catch (InterruptedException e) {
+            fail("Failed to wait for cache to need refreshing.");
+        }
+        watch.refreshConfigurations();
         verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
     }
 
     @Test
-    public void updatedEtagShouldPublishEvent() throws InterruptedException {
+    public void updatedEtagShouldPublishEvent() {
         PowerMockito.mockStatic(AzureConfigPropertySource.class);
         
         watch.setApplicationEventPublisher(eventPublisher);
         when(configOperations.getKeys(any(), any())).thenReturn(keys);
         when(configOperations.getRevisions(any(), any())).thenReturn(initialResponse()).thenReturn(updatedResponse());
         
-        Thread.sleep(properties.getWatch().getDelay().getSeconds() * 1000 * 2);
-        watch.watchConfigKeyValues();
+        try {
+            Thread.sleep(properties.getWatch().getDelay().getSeconds() * 1000 * 2);
+        } catch (InterruptedException e) {
+            fail("Failed to wait for cache to need refreshing.");
+        }
+        watch.refreshConfigurations();
         
+        // The first time an action happens it can update
         verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
         
-        Thread.sleep(properties.getWatch().getDelay().getSeconds() * 1000 * 2);
-        watch.watchConfigKeyValues();
+        try {
+            Thread.sleep(properties.getWatch().getDelay().getSeconds() * 1000 * 2);
+        } catch (InterruptedException e) {
+            fail("Failed to wait for cache to need refreshing.");
+        }
+        watch.refreshConfigurations();
         
+        // If there is a change it should update
+        verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
+        
+        try {
+            Thread.sleep(properties.getWatch().getDelay().getSeconds() * 1000 * 2);
+        } catch (InterruptedException e) {
+            fail("Failed to wait for cache to need refreshing.");
+        }
+        watch.refreshConfigurations();
+        
+        // If there is no change it shouldn't update
         verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
     }
 

@@ -6,6 +6,7 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import java.time.Duration;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -64,19 +65,18 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
         this.publisher = applicationEventPublisher;
     }
 
-    public void watchConfigKeyValues() {
+    public void refreshConfigurations() {
         if (this.running.compareAndSet(false, true)) {
             for (ConfigStore configStore : configStores) {
-                if (propertyCache.findNonCachedKeys(delay, configStore.getName()).size() > 0
-                        && needRefresh(configStore)) {
-                    break;
+                if (propertyCache.findNonCachedKeys(delay, configStore.getName()).size() > 0) {
+                    refresh(configStore);
                 }
             }
             this.running.set(false);
         }
     }
 
-    private boolean needRefreshConfiguration(ConfigStore store) {
+    private void refresh(ConfigStore store) {
         String watchedKeyNames = watchedKeyNames(store, storeContextsMap);
         return needRefresh(store, CONFIGURATION_SUFFIX, watchedKeyNames);
     }
@@ -92,35 +92,56 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
         List<KeyValueItem> keyValueItems = configOperations.getRevisions(store.getName(), options);
         
         if (keyValueItems.isEmpty()) {
-            return false;
+            return;
         }
 
-        boolean first = false;
         String etag = keyValueItems.get(0).getEtag();
         if (firstTimeMap.get(store.getName() + storeSuffix) == null) {
             storeEtagMap.put(store.getName() + storeSuffix, etag);
             firstTimeMap.put(store.getName() + storeSuffix, false);
-            propertyCache.updateRefreshCacheTime();
-            first = true;
+            propertyCache.updateRefreshCacheTime(store.getName());
         }
+        
+        if (!etag.equals(storeEtagMap.get(store.getName()))) {
+            Date date = new Date();
+            
+            // Checks all cached items to see if they have been updated
+            for (int i = 0; i < propertyCache.getRefreshKeys(store.getName()).size(); i++) {
+                String refreshKey = propertyCache.getRefreshKeys(store.getName()).get(i);
 
-        if (!etag.equals(storeEtagMap.get(store.getName())) || first) {
-            LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
-                    store.getName(), watchedKeyNames);
-            storeEtagMap.put(store.getName() + storeSuffix, etag);
-            RefreshEventData eventData = new RefreshEventData(watchedKeyNames);
-            publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
-            return true;
+                options = new QueryOptions().withKeyNames(refreshKey)
+                        .withLabels(store.getLabels()).withFields(QueryField.ETAG).withRange(0, 0);
+
+                keyValueItems = configOperations.getRevisions(store.getName(), options);
+
+                if (keyValueItems.isEmpty() || keyValueItems.get(0).getEtag()
+                        .equals(propertyCache.getCachedEtag(refreshKey))) {
+                    propertyCache.updateRefreshCacheTimeForKey(store.getName(), refreshKey, date);
+                    i--;
+                }
+            }
+
+            if (propertyCache.getRefreshKeys(store.getName()).size() > 0) {
+                LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
+                        store.getName(), watchedKeyNames);
+                storeEtagMap.put(store.getName(), etag);
+                RefreshEventData eventData = new RefreshEventData(watchedKeyNames);
+                publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
+                
+                // Don't need to refresh here will be done in Property Source
+                return;
+            }
         }
-        propertyCache.updateRefreshCacheTime();
-        return false;
+        propertyCache.updateRefreshCacheTime(store.getName());
     }
 
     /**
-     * For each refresh, multiple etags can change, but even one etag is changed, refresh is required.
+     * For each refresh, multiple etags can change, but even one etag is changed, refresh
+     * is required.
      */
     class RefreshEventData {
         private static final String MSG_TEMPLATE = "Some keys matching %s has been updated since last check.";
+
         private final String message;
 
         public RefreshEventData(String prefix) {
@@ -133,15 +154,12 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
     }
 
     /**
-     * Composite watched key names separated by comma, the key names is made up of: prefix, context and key name pattern
-     * e.g., prefix: /config, context: /application, watched key: my.watch.key
-     *      will return: /config/application/my.watch.key
+     * Composite watched key names separated by comma, the key names is made up of:
+     * prefix, context and key name pattern e.g., prefix: /config, context: /application,
+     * watched key: my.watch.key will return: /config/application/my.watch.key
      *
      * The returned watched key will be one key pattern, one or multiple specific keys
-     * e.g., 1) *
-     *       2) /application/abc*
-     *       3) /application/abc
-     *       4) /application/abc,xyz
+     * e.g., 1) * 2) /application/abc* 3) /application/abc 4) /application/abc,xyz
      *
      * @param store the {@code store} for which to composite watched key names
      * @param storeContextsMap map storing store name and List of context key-value pair
@@ -156,7 +174,8 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
                 .collect(Collectors.joining(","));
 
         if (watchedKeys.contains(",") && watchedKeys.contains("*")) {
-            // Multi keys including one or more key patterns is not supported by API, will watch all keys(*) instead
+            // Multi keys including one or more key patterns is not supported by API, will
+            // watch all keys(*) instead
             watchedKeys = "*";
         }
 

@@ -21,7 +21,7 @@ public class ConfigListener implements ApplicationListener<ServletRequestHandled
     
     @Override
     public void onApplicationEvent(ServletRequestHandledEvent event) {
-        azureCloudConfigWatch.watchConfigKeyValues();
+        azureCloudConfigWatch.refreshConfigurations();
     }
 
 }
