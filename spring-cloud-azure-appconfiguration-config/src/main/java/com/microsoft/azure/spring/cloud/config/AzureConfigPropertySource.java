@@ -16,13 +16,17 @@ import java.util.Set;
 
 public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigServiceOperations> {
     private final String context;
+
     private Map<String, Object> properties = new LinkedHashMap<>();
+
     private final String storeName;
+
     private final String label;
 
     public AzureConfigPropertySource(String context, ConfigServiceOperations operations, String storeName,
             String label) {
-        // The context alone does not uniquely define a PropertySource, append storeName and label to uniquely
+        // The context alone does not uniquely define a PropertySource, append storeName
+        // and label to uniquely
         // define a PropertySource
         super(context + storeName + "/" + label, operations);
         this.context = context;
@@ -42,8 +46,8 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     }
 
     public void initProperties(PropertyCache propertyCache) {
-        if (propertyCache.getCache() == null) {
-            propertyCache.createNewCache();
+        if (propertyCache.getContext(storeName) == null) {
+            propertyCache.addContext(storeName, context);
             // * for wildcard match
             QueryOptions queryOptions = new QueryOptions().withKeyNames(context + "*").withLabels(label);
             List<KeyValueItem> items = source.getKeys(storeName, queryOptions);
@@ -54,14 +58,16 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
             }
             propertyCache.addKeyValuesToCache(items, storeName);
         } else {
-            if (propertyCache.getRefreshKeys() != null && propertyCache.getRefreshKeys().size() > 0) {
-                QueryOptions queryOptions = new QueryOptions().withKeyNames(propertyCache.getRefreshKeys())
-                        .withLabels(label);
-                List<KeyValueItem> items = source.getKeys(storeName, queryOptions);
-                propertyCache.addKeyValuesToCache(items, storeName);
+            if (propertyCache.getRefreshKeys(storeName) != null &&
+                    propertyCache.getRefreshKeys(storeName).size() > 0) {
+                for (String refreshKey : propertyCache.getRefreshKeys(storeName)) {
+                    QueryOptions queryOptions = new QueryOptions().withKeyNames(refreshKey).withLabels(label);
+                    List<KeyValueItem> items = source.getKeys(storeName, queryOptions);
+                    propertyCache.addKeyValuesToCache(items, storeName);
+                }
 
             }
-            for (String key : propertyCache.getKeySet()) {
+            for (String key : propertyCache.getKeySet(storeName)) {
                 String cachedKey = key.trim().substring(context.length()).replace('/', '.');
                 properties.put(cachedKey, propertyCache.getCachedValue(key));
             }

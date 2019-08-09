@@ -62,7 +62,7 @@ public class AzureConfigPropertySourceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        propertySource = new AzureConfigPropertySource(TEST_CONTEXT, operations, null, null);
+        propertySource = new AzureConfigPropertySource(TEST_CONTEXT, operations, "store1", null);
         when(operations.getKeys(any(), any())).thenReturn(TEST_ITEMS);
         propertyCache = new PropertyCache();
     }
