@@ -38,17 +38,20 @@ public class PropertyCache {
     public List<String> getRefreshKeys(String storeName) {
         return refreshKeys.get(storeName);
     }
+    
+    public List<String> getRefreshKeys(String storeName, String filter) {
+        return refreshKeys.get(storeName).stream().filter(key -> key.startsWith(filter)).collect(Collectors.toList());
+    }
 
     public ConcurrentMap<String, CachedKey> getCache() {
         return cache;
     }
 
-    public void addToCache(String key, CachedKey value) {
-        cache.put(key, value);
+    public void addToCache(KeyValueItem item, String storeName, Date date) {
+        cache.put(item.getKey(), new CachedKey(item, storeName, date));
     }
 
-    public void addKeyValuesToCache(List<KeyValueItem> items, String storeName) {
-        Date date = new Date();
+    public void addKeyValuesToCache(List<KeyValueItem> items, String storeName, Date date) {
         ConcurrentMap<String, CachedKey> newCacheItems = items.stream()
                 .map(item -> new CachedKey(item, storeName, date))
                 .collect(Collectors.toConcurrentMap(item -> item.getKey(), item -> item));
@@ -60,7 +63,7 @@ public class PropertyCache {
                 .collect(Collectors.toSet());
     }
 
-    public Object getCachedValue(String key) {
+    public String getCachedValue(String key) {
         return cache.get(key).getValue();
     }
 
@@ -83,18 +86,20 @@ public class PropertyCache {
         return storeRefreshKeys;
     }
 
-    public void updateRefreshCacheTime(String storeName) {
+    public void updateRefreshCacheTime(String storeName, String filter, Duration delay) {
         Date date = new Date();
         if (refreshKeys.get(storeName) == null) {
             return;
         }
-        refreshKeys.get(storeName).forEach(key -> cache.get(key).setLastUpdated(date));
-        refreshKeys.put(storeName, new ArrayList<String>());
+        refreshKeys.get(storeName).stream().filter(key -> key.contains(filter))
+                .forEach(key -> cache.get(key).setLastUpdated(date));
+        findNonCachedKeys(delay, storeName);
     }
 
-    public void updateRefreshCacheTimeForKey(String storeName, String key, Date date) {
+    public List<String> updateRefreshCacheTimeForKey(String storeName, String key, Date date) {
         cache.get(key).setLastUpdated(date);
         refreshKeys.get(storeName).remove(key);
+        return refreshKeys.get(storeName);
     }
 
     public void addContext(String storeName, String context) {

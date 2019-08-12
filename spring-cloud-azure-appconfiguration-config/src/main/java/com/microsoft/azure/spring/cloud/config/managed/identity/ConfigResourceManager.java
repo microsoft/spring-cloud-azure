@@ -5,6 +5,13 @@
  */
 package com.microsoft.azure.spring.cloud.config.managed.identity;
 
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
+
 import com.microsoft.azure.credentials.AzureTokenCredentials;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.resources.GenericResource;
@@ -12,12 +19,6 @@ import com.microsoft.azure.management.resources.GenericResources;
 import com.microsoft.azure.management.resources.Subscription;
 import com.microsoft.azure.management.resources.Subscriptions;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-
-import java.util.Optional;
 
 /**
  * Resource manager for config store in Azure Configuration Service

@@ -49,11 +49,14 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicStatusLine;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
@@ -77,30 +80,39 @@ public class ConfigServiceTemplateTest {
     @Mock
     private ConfigHttpClient configClient;
 
+    @InjectMocks
     private ConfigServiceTemplate template;
 
     private ConnectionStringPool pool;
+
     private ConfigStore configStore;
-    public  List<KeyValueItem> testItems;
+
+    public List<KeyValueItem> testItems;
+
     private HttpEntity okEntity;
 
     private static final KeyValueItem item1 = createItem(TEST_CONTEXT, TEST_KEY_1, TEST_VALUE_1, TEST_LABEL_1);
+
     private static final KeyValueItem item2 = createItem(TEST_CONTEXT, TEST_KEY_2, TEST_VALUE_2, TEST_LABEL_2);
+
     private static final KeyValueItem item3 = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3, TEST_LABEL_3);
 
     private static final QueryOptions TEST_OPTIONS = new QueryOptions().withKeyNames(TEST_CONTEXT);
 
     private static final ProtocolVersion VERSION = new ProtocolVersion("HTTP", 1, 1);
+
     private static final StatusLine OK_STATUS = new BasicStatusLine(VERSION, HttpStatus.SC_OK, null);
 
-    private static final StatusLine NOT_FOUND_STATUS =
-            new BasicStatusLine(VERSION, HttpStatus.SC_NOT_FOUND, null);
+    private static final StatusLine NOT_FOUND_STATUS = new BasicStatusLine(VERSION, HttpStatus.SC_NOT_FOUND, null);
 
     private static final StatusLine TOO_MANY_REQ_STATUS = new BasicStatusLine(VERSION, 429, null);
+
     private static final String RETRY_AFTER_MS_HEADER = "retry-after-ms";
+
     private static final String LINK_HEADER = "link";
 
     private static final String FAIL_REASON = "Failed to process the request.";
+
     private static final StatusLine FAIL_STATUS = new BasicStatusLine(VERSION, HttpStatus.SC_BAD_REQUEST, FAIL_REASON);
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -119,6 +131,12 @@ public class ConfigServiceTemplateTest {
         testItems.addAll(Arrays.asList(item1, item2, item3));
 
         okEntity = buildEntity(testItems);
+    }
+
+    @After
+    public void cleanup() {
+        pool = new ConnectionStringPool();
+        configStore = new ConfigStore();
     }
 
     @Test
@@ -147,7 +165,8 @@ public class ConfigServiceTemplateTest {
         when(configClient.execute(any(), any(), any(), any())).thenAnswer(new Answer<CloseableHttpResponse>() {
             @Override
             public CloseableHttpResponse answer(InvocationOnMock invocation) throws Throwable {
-                // Extract label params from the request argument and filter result from the given testItems
+                // Extract label params from the request argument and filter result from
+                // the given testItems
                 Object[] args = invocation.getArguments();
                 HttpUriRequest request = (HttpUriRequest) args[0];
                 List<NameValuePair> params = URLEncodedUtils.parse(request.getURI(), Charset.defaultCharset());

@@ -28,7 +28,7 @@ import com.microsoft.azure.spring.cloud.config.domain.QueryOptions;
 
 public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureCloudConfigWatch.class);
-    
+
     private final ConfigServiceOperations configOperations;
 
     private final Map<String, String> storeEtagMap = new ConcurrentHashMap<>();
@@ -42,10 +42,12 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
     private final List<ConfigStore> configStores;
 
     private final Map<String, List<String>> storeContextsMap;
-    
+
     private static final String CONFIGURATION_SUFFIX = "_configuration";
+
     private static final String FEATURE_SUFFIX = "_feature";
-    private static final String FEATURE_STORE_WATCH_KEY = "*appconfig*";
+
+    private static final String FEATURE_STORE_WATCH_KEY = ".appconfig*";
 
     private Duration delay;
 
@@ -69,70 +71,73 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
         if (this.running.compareAndSet(false, true)) {
             for (ConfigStore configStore : configStores) {
                 if (propertyCache.findNonCachedKeys(delay, configStore.getName()).size() > 0) {
-                    refresh(configStore);
+                    String watchedKeyNames = watchedKeyNames(configStore, storeContextsMap);
+                    refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames);
+
+                    // Refresh Feature Flags
+                    if (propertyCache.getRefreshKeys(configStore.getName(), FEATURE_STORE_WATCH_KEY.replace("*", ""))
+                            .size() > 0) {
+                        refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY);
+                    }
                 }
             }
             this.running.set(false);
         }
     }
 
-    private void refresh(ConfigStore store) {
-        String watchedKeyNames = watchedKeyNames(store, storeContextsMap);
-        return needRefresh(store, CONFIGURATION_SUFFIX, watchedKeyNames);
-    }
-    
-    private boolean needRefreshFeatureFlag(ConfigStore store) {
-        return needRefresh(store, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY);
-    }
-    
-    private boolean needRefresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
+    private void refresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
+        String storeName = store.getName() + storeSuffix;
         QueryOptions options = new QueryOptions().withKeyNames(watchedKeyNames)
                 .withLabels(store.getLabels()).withFields(QueryField.ETAG).withRange(0, 0);
 
         List<KeyValueItem> keyValueItems = configOperations.getRevisions(store.getName(), options);
-        
+
         if (keyValueItems.isEmpty()) {
             return;
         }
 
         String etag = keyValueItems.get(0).getEtag();
-        if (firstTimeMap.get(store.getName() + storeSuffix) == null) {
-            storeEtagMap.put(store.getName() + storeSuffix, etag);
-            firstTimeMap.put(store.getName() + storeSuffix, false);
-            propertyCache.updateRefreshCacheTime(store.getName());
+        if (firstTimeMap.get(storeName) == null) {
+            storeEtagMap.put(storeName, etag);
+            firstTimeMap.put(storeName, false);
+            propertyCache.updateRefreshCacheTime(store.getName(), watchedKeyNames, delay);
         }
-        
-        if (!etag.equals(storeEtagMap.get(store.getName()))) {
+
+        if (!etag.equals(storeEtagMap.get(storeName))) {
             Date date = new Date();
-            
+
             // Checks all cached items to see if they have been updated
-            for (int i = 0; i < propertyCache.getRefreshKeys(store.getName()).size(); i++) {
-                String refreshKey = propertyCache.getRefreshKeys(store.getName()).get(i);
+            List<String> refreshKeys = propertyCache.getRefreshKeys(store.getName());
+            for (int i = 0; i < refreshKeys.size(); i++) {
+                String refreshKey = refreshKeys.get(i);
+                if (refreshKey.contains(watchedKeyNames.replace("*", ""))) {
 
-                options = new QueryOptions().withKeyNames(refreshKey)
-                        .withLabels(store.getLabels()).withFields(QueryField.ETAG).withRange(0, 0);
+                    storeEtagMap.put(storeName, etag);
+                    options = new QueryOptions().withKeyNames(refreshKey)
+                            .withLabels(store.getLabels()).withFields(QueryField.ETAG).withRange(0, 0);
 
-                keyValueItems = configOperations.getRevisions(store.getName(), options);
+                    keyValueItems = configOperations.getRevisions(store.getName(), options);
 
-                if (keyValueItems.isEmpty() || keyValueItems.get(0).getEtag()
-                        .equals(propertyCache.getCachedEtag(refreshKey))) {
-                    propertyCache.updateRefreshCacheTimeForKey(store.getName(), refreshKey, date);
-                    i--;
+                    if (keyValueItems.isEmpty() || keyValueItems.get(0).getEtag()
+                            .equals(propertyCache.getCachedEtag(refreshKey))) {
+                        refreshKeys = propertyCache.updateRefreshCacheTimeForKey(store.getName(), refreshKey, date);
+                        i--;
+                    }
                 }
             }
 
-            if (propertyCache.getRefreshKeys(store.getName()).size() > 0) {
+            if (refreshKeys.size() > 0) {
                 LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
                         store.getName(), watchedKeyNames);
-                storeEtagMap.put(store.getName(), etag);
+                storeEtagMap.put(storeName, etag);
                 RefreshEventData eventData = new RefreshEventData(watchedKeyNames);
                 publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
-                
+
                 // Don't need to refresh here will be done in Property Source
                 return;
             }
         }
-        propertyCache.updateRefreshCacheTime(store.getName());
+        propertyCache.updateRefreshCacheTime(store.getName(), watchedKeyNames, delay);
     }
 
     /**

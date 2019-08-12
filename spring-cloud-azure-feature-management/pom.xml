@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>spring-cloud-azure-feature-management</artifactId>
-    <name>Spring Clould Azure Feature Management</name>
+    <name>Spring Cloud Azure Feature Management</name>
     <description>Adds Feature Management into Spring</description>
 
     <dependencies>

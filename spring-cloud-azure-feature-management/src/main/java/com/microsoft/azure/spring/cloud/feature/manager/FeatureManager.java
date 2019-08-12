@@ -76,6 +76,9 @@ public class FeatureManager {
         }
         
         if (featureItem.getEnabled()) {
+            if (featureItem.getEnabledFor().isEmpty()) {
+                return true;
+            }
             for (FeatureFilterEvaluationContext filter : featureItem.getEnabledFor()) {
                 if (filter != null && filter.getName() != null) {
                     try {

@@ -36,7 +36,7 @@ import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA_256;
 /**
  * Util class to execute http request, before sending http request, valid request headers
  * will be added for each request based on given credential ID and secret.
- *
+ * 
  * How to use:
  * <p>
  * HttpGet httpGet = new HttpGet("https://my-config-store.azconfig.io/keys");
@@ -139,7 +139,6 @@ public class ConfigHttpClient {
     // /abc?param=xyz
     private static String getRequestPath(HttpRequest request) throws URISyntaxException {
         URIBuilder uri = new URIBuilder(request.getRequestLine().getUri());
-        
         String scheme = uri.getScheme() + "://";
 
         return uri.toString().substring(scheme.length()).substring(uri.getHost().length());

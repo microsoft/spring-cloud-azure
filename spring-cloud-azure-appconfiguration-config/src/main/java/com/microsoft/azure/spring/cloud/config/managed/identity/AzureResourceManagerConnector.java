@@ -5,9 +5,10 @@
  */
 package com.microsoft.azure.spring.cloud.config.managed.identity;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsoft.azure.credentials.AzureTokenCredentials;
-import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
+import static com.microsoft.azure.spring.cloud.config.managed.identity.ConfigAccessKeyResource.ARM_ENDPONT;
+
+import java.io.IOException;
+
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -16,9 +17,9 @@ import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-
-import static com.microsoft.azure.spring.cloud.config.managed.identity.ConfigAccessKeyResource.ARM_ENDPONT;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.azure.credentials.AzureTokenCredentials;
+import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 
 /**
  * Get connection string for given Azure Configuration Service config store from ARM with managed identity access token.
