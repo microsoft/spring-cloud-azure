@@ -27,9 +27,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -38,9 +38,7 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -51,6 +49,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureFilterEvaluationContext;
@@ -85,8 +84,6 @@ public class AzureConfigPropertySourceTest {
     
     PropertyCache propertyCache;
 
-    PropertyCache propertyCache;
-
     @BeforeClass
     public static void init() {
         TestUtils.addStore(TEST_PROPS, TEST_STORE_NAME, TEST_CONN_STRING);
@@ -103,14 +100,14 @@ public class AzureConfigPropertySourceTest {
         MockitoAnnotations.initMocks(this);
         propertySource = new AzureConfigPropertySource(TEST_CONTEXT, operations, TEST_STORE_NAME, null,
                 new AzureCloudConfigProperties());
-        when(operations.getKeys(any(), any())).thenReturn(TEST_ITEMS);
+        when(operations.getKeys(any(), any())).thenReturn(TEST_ITEMS).thenReturn(FEATURE_ITEMS);
         propertyCache = new PropertyCache();
     }
 
     @Test
     public void testPropCanBeInitAndQueried() {
         try {
-            propertySource.initProperties();
+            propertySource.initProperties(propertyCache);
         } catch (IOException e) {
             fail("Failed Reading in Feature Flags");
         }
@@ -134,7 +131,7 @@ public class AzureConfigPropertySourceTest {
         when(operations.getKeys(any(), any())).thenReturn(Arrays.asList(slashedProp)).thenReturn(FEATURE_ITEMS);
 
         try {
-            propertySource.initProperties();
+            propertySource.initProperties(propertyCache);
         } catch (IOException e) {
             fail("Failed Reading in Feature Flags");
         }

@@ -43,8 +43,6 @@ public class AzureConfigCloudWatchTest {
 
     @Mock
     private ApplicationEventPublisher eventPublisher;
-    
-    PropertyCache propertyCache;
 
     PropertyCache propertyCache;
 
@@ -69,7 +67,6 @@ public class AzureConfigCloudWatchTest {
         store.setName(TEST_STORE_NAME);
         store.setConnectionString(TEST_CONN_STRING);
         store.setWatchedKey("/application/*");
-        properties = new AzureCloudConfigProperties();
         properties = new AzureCloudConfigProperties();
         properties.setStores(Arrays.asList(store));
 

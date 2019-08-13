@@ -42,8 +42,6 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     
     private PropertyCache propertyCache;
 
-    private PropertyCache propertyCache;
-
     public AzureConfigPropertySourceLocator(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
             PropertyCache propertyCache) {
         this.operations = operations;
