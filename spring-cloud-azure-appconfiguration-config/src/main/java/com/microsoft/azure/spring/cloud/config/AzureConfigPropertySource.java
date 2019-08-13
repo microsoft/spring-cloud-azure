@@ -12,10 +12,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.EnumerablePropertySource;
+import org.springframework.util.ReflectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
@@ -66,6 +68,17 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
         return properties.get(name);
     }
 
+    /**
+     * Gets settings from Azure/Cache to set as configurations. Updates the cache. </br>
+     * </br>
+     * <b>Note</b>: Doesn't update Feature Management, just stores values in cache. Call
+     * {@code initFeatures} to update Feature Management, but make sure its done in the
+     * last {@code AzureConfigPropertySource}
+     * 
+     * @param propertyCache Cached values to use in store. Also contains values the need
+     * to be refreshed.
+     * @throws IOException
+     */
     public void initProperties(PropertyCache propertyCache) throws IOException {
         Date date = new Date();
         if (propertyCache.getContext(storeName) == null) {
@@ -80,41 +93,13 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
             propertyCache.addKeyValuesToCache(items, storeName, date);
 
             // Reading In Features
-
             queryOptions = new QueryOptions().withKeyNames("*appconfig*").withLabels(label);
-
             items = source.getKeys(storeName, queryOptions);
 
-            FeatureSet featureSet = new FeatureSet();
+            createFeatureSet(items, propertyCache, date);
 
-            for (KeyValueItem item : items) {
-                if (item.getContentType().equals(FEATURE_FLAG_CONTENT_TYPE)) {
-                    try {
-                        FeatureManagementItem featureItem = mapper.readValue(item.getValue(),
-                                FeatureManagementItem.class);
-                        Feature feature = new Feature();
-                        feature.setEnabled(featureItem.getEnabled());
-                        feature.setId(featureItem.getId());
-                        feature.setEnabledFor(featureItem.getConditions().getClientFilters());
-                        featureSet.addFeature(feature);
-                    } catch (IOException e) {
-                        LOGGER.error("Unabled to parse Feature Management values from Azure.", e);
-                        if (azureProperties.isFailFast()) {
-                            throw e;
-                        }
-                    }
-                } else {
-                    LOGGER.error(String.format("Found Feature Flag %s with invalid Content Type of %s", item.getKey(),
-                            item.getContentType()));
-                    if (azureProperties.isFailFast()) {
-                        throw new IOException();
-                    }
-                }
-            }
-            LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSet, LinkedHashMap.class);
-            properties.put(FEATURE_MANAGEMENT_KEY, convertedValue);
-            propertyCache.addKeyValuesToCache(items, storeName, date);
         } else {
+            // Using Cached values, first updates cache then sets new properties.
             if (propertyCache.getRefreshKeys(storeName) != null &&
                     propertyCache.getRefreshKeys(storeName).size() > 0) {
                 for (String refreshKey : propertyCache.getRefreshKeys(storeName)) {
@@ -136,17 +121,46 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
                     item.setContentType(FEATURE_FLAG_CONTENT_TYPE);
                     items.add(item);
 
-                    FeatureSet featureSet = createFeatureSet(items);
-                    // LinkedHashMap<?, ?> convertedValue =
-                    // mapper.convertValue(featureSet, LinkedHashMap.class);
-                    // Adding Features to Cache
-                    properties.put(FEATURE_MANAGEMENT_KEY, featureSet);
+                    createFeatureSet(items, propertyCache, date);
                 }
             }
         }
     }
 
-    private FeatureSet createFeatureSet(List<KeyValueItem> items) throws IOException {
+    /**
+     * Initializes Feature Management configurations. Only one
+     * <{@code AzureConfigPropertySource} can call this, and it needs to be done after the
+     * rest have run initProperties.
+     * @param propertyCache Cached values to use in store. Also contains values the need
+     * to be refreshed.
+     */
+    public void initFeatures(PropertyCache propertyCache) {
+        FeatureSet featureSet = new FeatureSet();
+        List<String> features = propertyCache.getCache().keySet().stream()
+                .filter(key -> key.startsWith(".appconfig")).collect(Collectors.toList());
+        features.parallelStream().forEach(key -> {
+            try {
+                featureSet.addFeature(createFeature(
+                        new KeyValueItem(key, propertyCache.getCachedValue(key), FEATURE_FLAG_CONTENT_TYPE)));
+            } catch (IOException e) {
+                if (azureProperties.isFailFast()) {
+                    ReflectionUtils.rethrowRuntimeException(e);
+                }
+            }
+        });
+        
+        properties.put(FEATURE_MANAGEMENT_KEY, mapper.convertValue(featureSet, LinkedHashMap.class));
+    }
+
+    /**
+     * Creates a {@code FeatureSet} from a list of {@code KeyValueItem}. 
+     * 
+     * @param items New items read in from Azure
+     * @param propertyCache Cached values where updated values are set.
+     * @param date Cache timestamp
+     * @throws IOException
+     */
+    private void createFeatureSet(List<KeyValueItem> items, PropertyCache propertyCache, Date date) throws IOException {
         // Reading In Features
         FeatureSet featureSet = new FeatureSet();
         for (KeyValueItem item : items) {
@@ -155,9 +169,18 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
                 featureSet.addFeature(feature);
             }
         }
-        return featureSet;
+        if (featureSet != null && featureSet.getFeatureManagement() != null) {
+            propertyCache.addKeyValuesToCache(items, storeName, date);
+        }
     }
 
+    /**
+     * Creates a {@code Feature} from a {@code KeyValueItem}
+     * 
+     * @param item Used to create Features before being converted to be set into properties.
+     * @return Feature created from KeyValueItem
+     * @throws IOException
+     */
     private Feature createFeature(KeyValueItem item) throws IOException {
         Feature feature = null;
         if (item.getContentType().equals(FEATURE_FLAG_CONTENT_TYPE)) {

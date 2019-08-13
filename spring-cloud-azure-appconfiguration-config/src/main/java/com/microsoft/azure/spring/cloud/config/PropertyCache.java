@@ -33,24 +33,51 @@ public class PropertyCache {
     }
 
     /**
+     * Gets a List of keys that need to refreshed by the given store
+     * 
+     * @param storeName Store of which the refreshed keys are from
      * @return the refreshKeys
      */
     public List<String> getRefreshKeys(String storeName) {
         return refreshKeys.get(storeName);
     }
     
+    /**
+     * Gets a List of keys that need to refreshed by the given store, and there key starts with the filtered value
+     * 
+     * @param storeName Store of which the refreshed keys are from
+     * @param filter Filter used to find a specific set of keys
+     * @return
+     */
     public List<String> getRefreshKeys(String storeName, String filter) {
         return refreshKeys.get(storeName).stream().filter(key -> key.startsWith(filter)).collect(Collectors.toList());
     }
 
+    /**
+     * @return the cache
+     */
     public ConcurrentMap<String, CachedKey> getCache() {
         return cache;
     }
 
+    /**
+     * Adds a new KeyValueItem to the cache.
+     * 
+     * @param item KeyValueItem to be added to the cache
+     * @param storeName Store the key is from
+     * @param date current date, used for checking next refresh time
+     */
     public void addToCache(KeyValueItem item, String storeName, Date date) {
         cache.put(item.getKey(), new CachedKey(item, storeName, date));
     }
 
+    /**
+     * Adds new KeyValueItems to the cache.
+     * 
+     * @param items KeyValueItem to be added to the cache
+     * @param storeName Store the key is from
+     * @param date current date, used for checking next refresh time
+     */
     public void addKeyValuesToCache(List<KeyValueItem> items, String storeName, Date date) {
         ConcurrentMap<String, CachedKey> newCacheItems = items.stream()
                 .map(item -> new CachedKey(item, storeName, date))
@@ -58,17 +85,43 @@ public class PropertyCache {
         cache.putAll(newCacheItems);
     }
 
+    /**
+     * Returns a list of the cached keys from the cache from the given store.
+     * 
+     * @param storeName Store from which the keys are from.
+     * @return the List of keys from the given store
+     */
     public Set<String> getKeySet(String storeName) {
         return cache.keySet().stream().filter(string -> cache.get(string).getStoreName().equals(storeName))
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Returns the value of the cached key.
+     * 
+     * @param key cached key.
+     * @return the cached key. Null if key isn't found.
+     */
     public String getCachedValue(String key) {
-        return cache.get(key).getValue();
+        CachedKey cachedKey = cache.get(key);
+        if (cachedKey == null) {
+            return null;
+        }
+        return cachedKey.getValue();
     }
 
+    /**
+     * Returns the etag of the cached key.
+     * 
+     * @param key cached key.
+     * @return the etag of the cached key. Null if key isn't found.
+     */
     public String getCachedEtag(String key) {
-        return cache.get(key).getEtag();
+        CachedKey cachedKey = cache.get(key);
+        if (cachedKey == null) {
+            return null;
+        }
+        return cachedKey.getEtag();
     }
 
     public List<String> findNonCachedKeys(Duration delay, String storeName) {
@@ -86,14 +139,14 @@ public class PropertyCache {
         return storeRefreshKeys;
     }
 
-    public void updateRefreshCacheTime(String storeName, String filter, Duration delay) {
+    public List<String> updateRefreshCacheTime(String storeName, String filter, Duration delay) {
         Date date = new Date();
         if (refreshKeys.get(storeName) == null) {
-            return;
+            return findNonCachedKeys(delay, storeName);
         }
         refreshKeys.get(storeName).stream().filter(key -> key.contains(filter))
                 .forEach(key -> cache.get(key).setLastUpdated(date));
-        findNonCachedKeys(delay, storeName);
+        return findNonCachedKeys(delay, storeName);
     }
 
     public List<String> updateRefreshCacheTimeForKey(String storeName, String key, Date date) {

@@ -23,16 +23,23 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigPropertySourceLocator.class);
+
     private static final String SPRING_APP_NAME_PROP = "spring.application.name";
+
     private static final String PROPERTY_SOURCE_NAME = "azure-config-store";
+
     private static final String PATH_SPLITTER = "/";
 
     private final ConfigServiceOperations operations;
+
     private final AzureCloudConfigProperties properties;
+
     private final String profileSeparator;
+
     private final List<ConfigStore> configStores;
+
     private final Map<String, List<String>> storeContextsMap = new ConcurrentHashMap<>();
-    
+
     private PropertyCache propertyCache;
 
     public AzureConfigPropertySourceLocator(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
@@ -61,8 +68,10 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
         CompositePropertySource composite = new CompositePropertySource(PROPERTY_SOURCE_NAME);
         Collections.reverse(configStores); // Last store has highest precedence
+        int count = configStores.size();
         for (ConfigStore configStore : configStores) {
-            addPropertySource(composite, configStore, applicationName, profiles, storeContextsMap);
+            count--;
+            addPropertySource(composite, configStore, applicationName, profiles, storeContextsMap, count == 0);
         }
 
         return composite;
@@ -73,21 +82,24 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     }
 
     private void addPropertySource(CompositePropertySource composite, ConfigStore store, String applicationName,
-                                   List<String> profiles, Map<String, List<String>> storeContextsMap) {
-        /* Generate which contexts(key prefixes) will be used for key-value items search
-           If key prefix is empty, default context is: application, current application name is: foo,
-           active profile is: dev, profileSeparator is: _
-           Will generate these contexts: /application/, /application_dev/, /foo/, /foo_dev/
-        */
+            List<String> profiles, Map<String, List<String>> storeContextsMap, boolean initFeatures) {
+        /*
+         * Generate which contexts(key prefixes) will be used for key-value items search
+         * If key prefix is empty, default context is: application, current application
+         * name is: foo, active profile is: dev, profileSeparator is: _ Will generate
+         * these contexts: /application/, /application_dev/, /foo/, /foo_dev/
+         */
         List<String> contexts = new ArrayList<>();
         contexts.addAll(generateContexts(this.properties.getDefaultContext(), profiles, store));
         contexts.addAll(generateContexts(applicationName, profiles, store));
 
-        // Reverse in order to add Profile specific properties earlier, and last profile comes first
+        // Reverse in order to add Profile specific properties earlier, and last profile
+        // comes first
         Collections.reverse(contexts);
         for (String sourceContext : contexts) {
             try {
-                List<AzureConfigPropertySource> sourceList = create(sourceContext, store, storeContextsMap);
+                List<AzureConfigPropertySource> sourceList = create(sourceContext, store, storeContextsMap,
+                        initFeatures);
                 sourceList.forEach(composite::addPropertySource);
                 LOGGER.debug("PropertySource context [{}] is added.", sourceContext);
             } catch (Exception e) {
@@ -119,8 +131,8 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
     private String propWithAppName(String prefix, String applicationName) {
         if (StringUtils.hasText(prefix)) {
-            return prefix.startsWith(PATH_SPLITTER) ? prefix + PATH_SPLITTER + applicationName :
-                    PATH_SPLITTER + prefix + PATH_SPLITTER + applicationName;
+            return prefix.startsWith(PATH_SPLITTER) ? prefix + PATH_SPLITTER + applicationName
+                    : PATH_SPLITTER + prefix + PATH_SPLITTER + applicationName;
         }
 
         return PATH_SPLITTER + applicationName;
@@ -130,8 +142,8 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         return context + this.profileSeparator + profile + PATH_SPLITTER;
     }
 
-    private List<AzureConfigPropertySource> create(String context, ConfigStore store, Map<String,
-            List<String>> storeContextsMap) throws IOException {
+    private List<AzureConfigPropertySource> create(String context, ConfigStore store,
+            Map<String, List<String>> storeContextsMap, boolean initFeatures) throws IOException {
         List<AzureConfigPropertySource> sourceList = new ArrayList<>();
 
         for (String label : store.getLabels()) {
@@ -139,6 +151,9 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
                     store.getName(), label, properties);
 
             propertySource.initProperties(propertyCache);
+            if (initFeatures) {
+                propertySource.initFeatures(propertyCache);
+            }
             sourceList.add(propertySource);
             putStoreContext(store.getName(), context, storeContextsMap);
         }
@@ -153,7 +168,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
      * @param storeContextsMap the Map storing the storeName -> List of contexts map
      */
     private void putStoreContext(String storeName, String context,
-                                 @NonNull Map<String, List<String>> storeContextsMap) {
+            @NonNull Map<String, List<String>> storeContextsMap) {
         if (!StringUtils.hasText(context) || !StringUtils.hasText(storeName)) {
             return;
         }

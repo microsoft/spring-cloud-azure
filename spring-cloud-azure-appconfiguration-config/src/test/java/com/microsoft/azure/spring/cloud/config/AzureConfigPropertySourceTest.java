@@ -112,6 +112,7 @@ public class AzureConfigPropertySourceTest {
         } catch (IOException e) {
             fail("Failed Reading in Feature Flags");
         }
+        propertySource.initFeatures(propertyCache);
 
         String[] keyNames = propertySource.getPropertyNames();
         String[] expectedKeyNames = TEST_ITEMS.stream()
@@ -139,7 +140,7 @@ public class AzureConfigPropertySourceTest {
         String expectedKeyName = TEST_SLASH_KEY.replace('/', '.');
         String[] actualKeyNames = propertySource.getPropertyNames();
 
-        assertThat(actualKeyNames.length).isEqualTo(2);
+        assertThat(actualKeyNames.length).isEqualTo(1);
         assertThat(actualKeyNames[0]).isEqualTo(expectedKeyName);
         assertThat(propertySource.getProperty(TEST_SLASH_KEY)).isNull();
         assertThat(propertySource.getProperty(expectedKeyName)).isEqualTo(TEST_SLASH_VALUE);
@@ -148,12 +149,12 @@ public class AzureConfigPropertySourceTest {
     @Test
     public void testFeatureFlagCanBeInitedAndQueried() {
         when(operations.getKeys(any(), any())).thenReturn(FEATURE_ITEMS);
-
         try {
             propertySource.initProperties(propertyCache);
         } catch (IOException e) {
-            fail("Failed Reading in Feature Flags");
+            fail();
         }
+        propertySource.initFeatures(propertyCache);
 
         FeatureSet featureSet = new FeatureSet();
         Feature feature = new Feature();
@@ -187,6 +188,7 @@ public class AzureConfigPropertySourceTest {
         } catch (IOException e) {
             fail("Failed Reading in Feature Flags");
         }
+        propertySource.initFeatures(propertyCache);
 
         String[] keyNames = propertySource.getPropertyNames();
         String[] expectedKeyNames = TEST_ITEMS.stream()
@@ -198,7 +200,6 @@ public class AzureConfigPropertySourceTest {
         assertThat(propertySource.getProperty(TEST_KEY_1)).isEqualTo(TEST_VALUE_1);
         assertThat(propertySource.getProperty(TEST_KEY_2)).isEqualTo(TEST_VALUE_2);
         assertThat(propertySource.getProperty(TEST_KEY_3)).isEqualTo(TEST_VALUE_3);
-        assertThat(propertySource.getProperty(FEATURE_MANAGEMENT_KEY)).isNotNull();
         verify(operations, times(4)).getKeys(any(), any());
     }
 }

@@ -43,9 +43,9 @@ public class FeatureManager {
 
     @Autowired
     private ApplicationContext context;
-    
+
     private FeatureManagementConfigProperties properties;
-    
+
     public FeatureManager(FeatureManagementConfigProperties properties) {
         this.properties = properties;
     }
@@ -61,20 +61,20 @@ public class FeatureManager {
      */
     public boolean isEnabled(String feature) {
         boolean enabled = false;
-        if (featureManagement == null || featureManagement.getFeatureManagement() == null || 
+        if (featureManagement == null || featureManagement.getFeatureManagement() == null ||
                 featureManagement.getOnOff() == null) {
             return false;
         }
 
         Feature featureItem = featureManagement.getFeatureManagement().get(feature);
         Boolean boolFeature = featureManagement.getOnOff().get(feature);
-        
+
         if (boolFeature != null) {
             return boolFeature;
         } else if (featureItem == null) {
             return false;
         }
-        
+
         if (featureItem.getEnabled()) {
             if (featureItem.getEnabledFor().isEmpty()) {
                 return true;
@@ -113,13 +113,23 @@ public class FeatureManager {
      * @param featureSet the featureSet to set
      */
     public void setFeatureManagement(LinkedHashMap<String, ?> featureSet) {
-        this.featureManagement = mapper.convertValue(featureSet, FeatureSet.class);
+        if (this.featureManagement == null) {
+            this.featureManagement = mapper.convertValue(featureSet, FeatureSet.class);
+        } else {
+            FeatureSet featureManagement = mapper.convertValue(featureSet, FeatureSet.class);
+            featureManagement.getFeatureManagement().forEach((k, v) -> this.featureManagement.addFeature(v));
+        }
     }
 
     /**
      * @param featureSet the featureSet to set
      */
     public void setFeatureSet(FeatureSet featureSet) {
-        this.featureManagement = featureSet;
+        if (this.featureManagement == null) {
+            this.featureManagement = featureSet;
+        } else {
+            FeatureSet featureManagement = featureSet;
+            featureManagement.getFeatureManagement().forEach((k, v) -> this.featureManagement.addFeature(v));
+        }
     }
 }

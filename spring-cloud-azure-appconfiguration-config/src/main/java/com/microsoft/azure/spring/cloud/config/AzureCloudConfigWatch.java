@@ -67,6 +67,10 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
         this.publisher = applicationEventPublisher;
     }
 
+    /**
+     * Checks configurations to see if they are no longer cached. If they are no longer
+     * cached they are updated.
+     */
     public void refreshConfigurations() {
         if (this.running.compareAndSet(false, true)) {
             for (ConfigStore configStore : configStores) {
@@ -85,6 +89,14 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
         }
     }
 
+    /**
+     * Checks un-cached items for etag changes. If they have changed a RefreshEventData is
+     * published.
+     * 
+     * @param store the {@code store} for which to composite watched key names
+     * @param storeSuffix Suffix used to distinguish between Settings and Features
+     * @param watchedKeyNames Key used to check if refresh should occur
+     */
     private void refresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
         String storeName = store.getName() + storeSuffix;
         QueryOptions options = new QueryOptions().withKeyNames(watchedKeyNames)
