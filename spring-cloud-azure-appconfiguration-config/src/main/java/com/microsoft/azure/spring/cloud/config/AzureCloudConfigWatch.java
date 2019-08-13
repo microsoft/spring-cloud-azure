@@ -114,6 +114,13 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
             firstTimeMap.put(storeName, false);
             propertyCache.updateRefreshCacheTime(store.getName(), watchedKeyNames, delay);
         }
+        
+        if (!etag.equals(storeEtagMap.get(store.getName()))) {
+            Date date = new Date();
+            
+            // Checks all cached items to see if they have been updated
+            for (int i = 0; i < propertyCache.getRefreshKeys(store.getName()).size(); i++) {
+                String refreshKey = propertyCache.getRefreshKeys(store.getName()).get(i);
 
         if (!etag.equals(storeEtagMap.get(storeName))) {
             Date date = new Date();

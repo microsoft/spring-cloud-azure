@@ -39,6 +39,8 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private final List<ConfigStore> configStores;
 
     private final Map<String, List<String>> storeContextsMap = new ConcurrentHashMap<>();
+    
+    private PropertyCache propertyCache;
 
     private PropertyCache propertyCache;
 
