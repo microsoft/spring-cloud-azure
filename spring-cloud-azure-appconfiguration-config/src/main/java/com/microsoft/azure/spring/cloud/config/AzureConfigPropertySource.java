@@ -45,6 +45,8 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
 
     private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
 
+    private static final String FEATURE_FLAG_PREFIX = ".appconfig.featureflag/";
+
     public AzureConfigPropertySource(String context, ConfigServiceOperations operations, String storeName,
             String label, AzureCloudConfigProperties azureProperties) {
         // The context alone does not uniquely define a PropertySource, append storeName
@@ -137,10 +139,10 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     public void initFeatures(PropertyCache propertyCache) {
         FeatureSet featureSet = new FeatureSet();
         List<String> features = propertyCache.getCache().keySet().stream()
-                .filter(key -> key.startsWith(".appconfig")).collect(Collectors.toList());
+                .filter(key -> key.startsWith(FEATURE_FLAG_PREFIX)).collect(Collectors.toList());
         features.parallelStream().forEach(key -> {
             try {
-                featureSet.addFeature(createFeature(
+                featureSet.addFeature(key.trim().substring(FEATURE_FLAG_PREFIX.length()), createFeature(
                         new KeyValueItem(key, propertyCache.getCachedValue(key), FEATURE_FLAG_CONTENT_TYPE)));
             } catch (IOException e) {
                 if (azureProperties.isFailFast()) {
@@ -148,7 +150,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
                 }
             }
         });
-        
+
         properties.put(FEATURE_MANAGEMENT_KEY, mapper.convertValue(featureSet, LinkedHashMap.class));
     }
 
@@ -164,9 +166,9 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
         // Reading In Features
         FeatureSet featureSet = new FeatureSet();
         for (KeyValueItem item : items) {
-            Feature feature = createFeature(item);
+            Object feature = createFeature(item);
             if (feature != null) {
-                featureSet.addFeature(feature);
+                featureSet.addFeature(item.getKey(), feature);
             }
         }
         if (featureSet != null && featureSet.getFeatureManagement() != null) {
@@ -181,12 +183,23 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
      * @return Feature created from KeyValueItem
      * @throws IOException
      */
-    private Feature createFeature(KeyValueItem item) throws IOException {
+    private Object createFeature(KeyValueItem item) throws IOException {
         Feature feature = null;
         if (item.getContentType().equals(FEATURE_FLAG_CONTENT_TYPE)) {
             try {
                 FeatureManagementItem featureItem = mapper.readValue(item.getValue(), FeatureManagementItem.class);
-                return new Feature(featureItem);
+                feature = new Feature(featureItem);
+
+                // Setting Enabled For to null, but enabled = true will result in the
+                // feature being on. This is the case of a feature is on/off and set to
+                // on. This is to tell the difference between conditional/off which looks
+                // exactly the same... It should never be the case of Conditional On, and
+                // no filters coming from Azure, but it is a valid way from the config
+                // file, which should result in false being returned.
+                if (feature.getEnabledFor().size() == 0 && feature.getEnabled() == true) {
+                    return true;
+                }
+                return feature;
 
             } catch (IOException e) {
                 LOGGER.error("Unabled to parse Feature Management values from Azure.", e);

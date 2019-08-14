@@ -40,8 +40,8 @@ public class FeatureSet {
     /**
      * @param featureManagement the featureManagement to set
      */
-    public void setFeatureManagement(HashMap<String, Feature> featureManagement) {
-        this.featureManagement = featureManagement;
+    public void setFeatureManagement(HashMap<String, Object> featureManagement) {
+        setFeatures(featureManagement);
     }
     
     public void addFeature(Feature feature) {

@@ -76,9 +76,6 @@ public class FeatureManager {
         }
 
         if (featureItem.getEnabled()) {
-            if (featureItem.getEnabledFor().isEmpty()) {
-                return true;
-            }
             for (FeatureFilterEvaluationContext filter : featureItem.getEnabledFor()) {
                 if (filter != null && filter.getName() != null) {
                     try {
@@ -113,23 +110,14 @@ public class FeatureManager {
      * @param featureSet the featureSet to set
      */
     public void setFeatureManagement(LinkedHashMap<String, ?> featureSet) {
-        if (this.featureManagement == null) {
-            this.featureManagement = mapper.convertValue(featureSet, FeatureSet.class);
-        } else {
-            FeatureSet featureManagement = mapper.convertValue(featureSet, FeatureSet.class);
-            featureManagement.getFeatureManagement().forEach((k, v) -> this.featureManagement.addFeature(v));
-        }
+        this.featureManagement = mapper.convertValue(featureSet, FeatureSet.class);
+
     }
 
     /**
      * @param featureSet the featureSet to set
      */
     public void setFeatureSet(FeatureSet featureSet) {
-        if (this.featureManagement == null) {
-            this.featureManagement = featureSet;
-        } else {
-            FeatureSet featureManagement = featureSet;
-            featureManagement.getFeatureManagement().forEach((k, v) -> this.featureManagement.addFeature(v));
-        }
+        this.featureManagement = featureSet;
     }
 }

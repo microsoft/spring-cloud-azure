@@ -15,7 +15,6 @@ public class ConfigListener implements ApplicationListener<ServletRequestHandled
     private AzureCloudConfigWatch azureCloudConfigWatch;
     
     public ConfigListener(AzureCloudConfigWatch azureCloudConfigWatch) {
-        System.out.println();
         this.azureCloudConfigWatch = azureCloudConfigWatch;
     }
     

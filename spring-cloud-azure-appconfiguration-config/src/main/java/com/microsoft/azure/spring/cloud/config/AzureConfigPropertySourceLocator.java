@@ -68,10 +68,13 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
         CompositePropertySource composite = new CompositePropertySource(PROPERTY_SOURCE_NAME);
         Collections.reverse(configStores); // Last store has highest precedence
-        int count = configStores.size();
-        for (ConfigStore configStore : configStores) {
-            count--;
-            addPropertySource(composite, configStore, applicationName, profiles, storeContextsMap, count == 0);
+
+        Iterator<ConfigStore> configStoreIterator = configStores.iterator();
+        // Feature Management needs to be set in the last config store.
+        while (configStoreIterator.hasNext()) {
+            ConfigStore configStore = configStoreIterator.next();
+            addPropertySource(composite, configStore, applicationName, profiles, storeContextsMap,
+                    !configStoreIterator.hasNext());
         }
 
         return composite;
@@ -81,6 +84,17 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         return this.storeContextsMap;
     }
 
+    /**
+     * Adds a new Property Source
+     * 
+     * @param composite PropertySource being added
+     * @param store Config Store the PropertySource is being generated from
+     * @param applicationName Name of the application
+     * @param profiles Active profiles in the Store
+     * @param storeContextsMap the Map storing the storeName -> List of contexts map
+     * @param initFeatures determines if Feature Management is set in the PropertySource.
+     * When generating more than one it needs to be in the last one.
+     */
     private void addPropertySource(CompositePropertySource composite, ConfigStore store, String applicationName,
             List<String> profiles, Map<String, List<String>> storeContextsMap, boolean initFeatures) {
         /*
@@ -142,6 +156,17 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         return context + this.profileSeparator + profile + PATH_SPLITTER;
     }
 
+    /**
+     * Creates a new set of AzureConfigProertySources, 1 per Label.
+     * 
+     * @param context Context of the application, part of uniquely define a PropertySource
+     * @param store Config Store the PropertySource is being generated from
+     * @param storeContextsMap the Map storing the storeName -> List of contexts map
+     * @param initFeatures determines if Feature Management is set in the PropertySource.
+     * When generating more than one it needs to be in the last one.
+     * @return a list of AzureConfigPropertySources
+     * @throws IOException
+     */
     private List<AzureConfigPropertySource> create(String context, ConfigStore store,
             Map<String, List<String>> storeContextsMap, boolean initFeatures) throws IOException {
         List<AzureConfigPropertySource> sourceList = new ArrayList<>();

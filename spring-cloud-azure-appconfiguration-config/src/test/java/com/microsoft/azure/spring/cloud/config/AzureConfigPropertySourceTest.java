@@ -68,7 +68,7 @@ public class AzureConfigPropertySourceTest {
 
     private static final KeyValueItem item3 = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3, TEST_LABEL_3);
 
-    private static final KeyValueItem featureItem = createItem(".appconfig/", FEATURE_KEY, FEATURE_VALUE,
+    private static final KeyValueItem featureItem = createItem(".appconfig.featureflag/", "Alpha", FEATURE_VALUE,
             FEATURE_LABEL);
 
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
@@ -100,12 +100,12 @@ public class AzureConfigPropertySourceTest {
         MockitoAnnotations.initMocks(this);
         propertySource = new AzureConfigPropertySource(TEST_CONTEXT, operations, TEST_STORE_NAME, null,
                 new AzureCloudConfigProperties());
-        when(operations.getKeys(any(), any())).thenReturn(TEST_ITEMS).thenReturn(FEATURE_ITEMS);
         propertyCache = new PropertyCache();
     }
 
     @Test
     public void testPropCanBeInitAndQueried() {
+        when(operations.getKeys(any(), any())).thenReturn(TEST_ITEMS).thenReturn(FEATURE_ITEMS);
         try {
             propertySource.initProperties(propertyCache);
         } catch (IOException e) {
@@ -127,6 +127,7 @@ public class AzureConfigPropertySourceTest {
 
     @Test
     public void testPropertyNameSlashConvertedToDots() {
+        when(operations.getKeys(any(), any())).thenReturn(TEST_ITEMS).thenReturn(FEATURE_ITEMS);
         KeyValueItem slashedProp = createItem(TEST_CONTEXT, TEST_SLASH_KEY, TEST_SLASH_VALUE, null);
         when(operations.getKeys(any(), any())).thenReturn(Arrays.asList(slashedProp)).thenReturn(FEATURE_ITEMS);
 
@@ -147,7 +148,7 @@ public class AzureConfigPropertySourceTest {
 
     @Test
     public void testFeatureFlagCanBeInitedAndQueried() {
-        when(operations.getKeys(any(), any())).thenReturn(FEATURE_ITEMS);
+        when(operations.getKeys(any(), any())).thenReturn(new ArrayList<KeyValueItem>()).thenReturn(FEATURE_ITEMS);
         try {
             propertySource.initProperties(propertyCache);
         } catch (IOException e) {
@@ -164,7 +165,7 @@ public class AzureConfigPropertySourceTest {
         ffec.setName("TestFilter");
         filters.add(ffec);
         feature.setEnabledFor(filters);
-        featureSet.addFeature(feature);
+        featureSet.addFeature("Alpha", feature);
         LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSet, LinkedHashMap.class);
 
         assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));
@@ -172,6 +173,7 @@ public class AzureConfigPropertySourceTest {
 
     @Test
     public void testWatchUpdateConfigurations() throws ParseException {
+        when(operations.getKeys(any(), any())).thenReturn(TEST_ITEMS).thenReturn(FEATURE_ITEMS);
         Duration delay = Duration.ofSeconds(0);
         
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
