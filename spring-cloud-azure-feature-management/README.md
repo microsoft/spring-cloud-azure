@@ -30,12 +30,12 @@ feature-management:
       FeatureU:
         id: FeatureU
         enabled: true
-        enabledFor:
+        EnabledFor:
           -
             name: Random
       FeatureV:
         id: FeatureV
-        enabledFor:
+        EnabledFor:
           -
             name: TimeWindow
             parameters:
@@ -43,7 +43,7 @@ feature-management:
               end: "Mon, 01 July 2019 00:00:00 GMT"
 ```
 
-The `feature-management` section of the YAML document is used by convention to load feature flags. In the section above, we see that we have provided three different features. Features define their filters using the `enabledFor`  property. We can see that feature `FeatureT` is set to false with no filters set. `FeatureT` will allways return false, this can also be done for true. `FeatureU` which has only one feature filter `Random` which does not require any configuration so it only has the name property. `FeatureV` has no `enabled` set as it defaults to true, it also specifies a feature filter named `TimeWindow`. This is an example of a configurable feature filter. We can see in the example that the filter has a parameter's property. This is used to configure the filter. In this case, the start and end times for the feature to be active are configured.
+The `feature-management` section of the YAML document is used by convention to load feature flags. In the section above, we see that we have provided three different features. Features define their filters using the `EnabledFor`  property. We can see that feature `FeatureT` is set to false with no filters set. `FeatureT` will allways return false, this can also be done for true. `FeatureU` which has only one feature filter `Random` which does not require any configuration so it only has the name property. `FeatureV` has no `enabled` set as it defaults to true, it also specifies a feature filter named `TimeWindow`. This is an example of a configurable feature filter. We can see in the example that the filter has a parameter's property. This is used to configure the filter. In this case, the start and end times for the feature to be active are configured.
 
 ### Supported properties
 
