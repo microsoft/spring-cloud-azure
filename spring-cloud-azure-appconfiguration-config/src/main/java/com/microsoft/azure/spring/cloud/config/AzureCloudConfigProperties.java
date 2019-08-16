@@ -5,8 +5,15 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
-import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.lang.Nullable;
@@ -14,20 +21,10 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
-import javax.annotation.PostConstruct;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties.LABEL_SEPARATOR;
-import static com.microsoft.azure.spring.cloud.config.Constants.EMPTY_LABEL;
+import com.microsoft.azure.AzureEnvironment;
+import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
+import com.microsoft.azure.spring.cloud.config.stores.KeyVaultStore;
+import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
 
 @Validated
 @ConfigurationProperties(prefix = AzureCloudConfigProperties.CONFIG_PREFIX)
@@ -38,6 +35,8 @@ public class AzureCloudConfigProperties {
     private boolean enabled = true;
 
     private List<ConfigStore> stores = new ArrayList<>();
+    
+    private List<KeyVaultStore> keyVaultStores = new ArrayList<>();
 
     @NotEmpty
     private String defaultContext = "application";
@@ -57,6 +56,22 @@ public class AzureCloudConfigProperties {
     private boolean failFast = true;
 
     private Watch watch = new Watch();
+    
+    private AzureEnvironment environment = AzureEnvironment.AZURE;
+
+    /**
+     * @return the environment
+     */
+    public AzureEnvironment getEnvironment() {
+        return environment;
+    }
+
+    /**
+     * @param environment the environment to set
+     */
+    public void setEnvironment(AzureEnvironment environment) {
+        this.environment = environment;
+    }
 
     public boolean isEnabled() {
         return enabled;
@@ -72,6 +87,14 @@ public class AzureCloudConfigProperties {
 
     public void setStores(List<ConfigStore> stores) {
         this.stores = stores;
+    }
+    
+    public List<KeyVaultStore> getKeyVaultStores() {
+        return keyVaultStores;
+    }
+
+    public void setKeyVaultStoresStores(List<KeyVaultStore> keyVaultStores) {
+        this.keyVaultStores = keyVaultStores;
     }
 
     public String getDefaultContext() {
@@ -159,115 +182,5 @@ public class AzureCloudConfigProperties {
         public void setDelay(Duration delay) {
             this.delay = delay;
         }
-    }
-}
-
-class ConfigStore {
-    private static final List<String> EMPTY_LABEL_ONLY = Arrays.asList(EMPTY_LABEL);
-    private String name; // Config store name
-
-    @Nullable
-    @Pattern(regexp = "(/[a-zA-Z0-9.\\-_]+)*")
-    private String prefix;
-
-    private String connectionString;
-
-    // Label values separated by comma in the Azure Config Service, can be empty
-    @Nullable
-    private String label;
-
-    // The keys to be watched, won't take effect if watch not enabled
-    @NotEmpty
-    private String watchedKey = "*";
-
-    public ConfigStore() {
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
-
-    public String getConnectionString() {
-        return connectionString;
-    }
-
-    public void setConnectionString(String connectionString) {
-        this.connectionString = connectionString;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getWatchedKey() {
-        return watchedKey;
-    }
-
-    public void setWatchedKey(String watchedKey) {
-        this.watchedKey = watchedKey;
-    }
-
-    @PostConstruct
-    public void validateAndInit() {
-        if (StringUtils.hasText(label)) {
-            Assert.isTrue(!label.contains("*"), "Label must not contain asterisk(*).");
-        }
-
-        if (StringUtils.hasText(connectionString)) {
-            String endpoint = ConnectionString.of(connectionString).getEndpoint();
-            try {
-                URI uri = new URI(endpoint);
-                this.name = uri.getHost().split("\\.")[0];
-            } catch (URISyntaxException e) {
-                throw new IllegalStateException("Endpoint in connection string is not a valid URI.", e);
-            }
-        }
-
-        Assert.isTrue(watchedKeyValid(this.watchedKey), "Watched key can only be a single asterisk(*) or " +
-                "a specific key without asterisk(*)");
-    }
-
-    private boolean watchedKeyValid(String watchedKey) {
-        if (!StringUtils.hasText(watchedKey)) {
-            return false;
-        }
-
-        String trimmedKey = watchedKey.trim();
-        // Watched key can either be single asterisk(*) or a specific key without asterisk(*)
-        return trimmedKey.equals("*") || !trimmedKey.contains("*");
-    }
-
-    /**
-     * @return List of reversed label values, which are split by the separator, the latter label has higher priority
-     */
-    public List<String> getLabels() {
-        if (!StringUtils.hasText(this.getLabel())) {
-            return EMPTY_LABEL_ONLY;
-        }
-
-        List<String> labels =  Arrays.stream(this.getLabel().split(LABEL_SEPARATOR))
-                .filter(StringUtils::hasText)
-                .map(String::trim)
-                .distinct()
-                .collect(Collectors.toList());
-
-        Collections.reverse(labels);
-        return labels.isEmpty() ? EMPTY_LABEL_ONLY : labels;
     }
 }

@@ -6,8 +6,11 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +23,8 @@ import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.util.ReflectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.azure.keyvault.KeyVaultClient;
+import com.microsoft.azure.keyvault.models.SecretBundle;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 import com.microsoft.azure.spring.cloud.config.domain.QueryOptions;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature;
@@ -44,6 +49,9 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
 
     private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
+
+    private static final String KEY_VAULT_CONTENT_TYPE = 
+            "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8";
 
     private static final String FEATURE_FLAG_PREFIX = ".appconfig.featureflag/";
 
@@ -80,8 +88,10 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
      * @param propertyCache Cached values to use in store. Also contains values the need
      * to be refreshed.
      * @throws IOException
+     * @throws URISyntaxException
      */
-    public void initProperties(PropertyCache propertyCache) throws IOException {
+    public void initProperties(PropertyCache propertyCache, HashMap<String, KeyVaultClient> keyVaultClients)
+            throws IOException, URISyntaxException {
         Date date = new Date();
         if (propertyCache.getContext(storeName) == null) {
             propertyCache.addContext(storeName, context);
@@ -90,7 +100,25 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
             List<KeyValueItem> items = source.getKeys(storeName, queryOptions);
             for (KeyValueItem item : items) {
                 String key = item.getKey().trim().substring(context.length()).replace('/', '.');
-                properties.put(key, item.getValue());
+                if (item.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
+                    String uriString = item.getValue().substring(8, item.getValue().length() - 2);
+                    URI uri = new URI(uriString);
+                    KeyVaultClient keyVaultClient = keyVaultClients.get(uri.getHost());
+                    if (keyVaultClient != null) {
+                        SecretBundle secretBundle = keyVaultClient.getSecret(uriString);
+                        properties.put(key, secretBundle.value());
+                    } else {
+                        logger.error("Found KeyVault Secret without an associated KeyVaultClient.");
+                        if (azureProperties.isFailFast()) {
+                            throw new IOException(
+                                    "Failed Processing KeyVault Secret without an associated KeyVaultClient.");
+                        }
+                    }
+
+                } else {
+                    properties.put(key, item.getValue());
+                }
+
             }
             propertyCache.addKeyValuesToCache(items, storeName, date);
 
@@ -112,9 +140,29 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
             }
 
             for (String key : propertyCache.getKeySet(storeName)) {
-                if (key.startsWith(context)) {
-                    String cachedKey = key.trim().substring(context.length()).replace('/', '.');
-                    properties.put(cachedKey, propertyCache.getCachedValue(key));
+                CachedKey cachedKey = propertyCache.getCache().get(key);
+                if (key.startsWith(context) && cachedKey.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
+                    if (cachedKey.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
+                        String value = cachedKey.getValue();
+                        String uriString = value.substring(8, value.length() - 2);
+                        URI uri = new URI(uriString);
+
+                        KeyVaultClient keyVaultClient = keyVaultClients.get(uri.getHost());
+                        if (keyVaultClient != null) {
+                            SecretBundle secretBundle = keyVaultClient.getSecret(uriString);
+                            key = key.trim().substring(context.length()).replace('/', '.');
+                            properties.put(key, secretBundle.value());
+                        } else {
+                            logger.error("Found KeyVault Secret without an associated KeyVaultClient.");
+                            if (azureProperties.isFailFast()) {
+                                throw new IOException(
+                                        "Failed Processing KeyVault Secret without an associated KeyVaultClient.");
+                            }
+                        }
+                    }
+                } else if (key.startsWith(context)) {
+                    String trimedKey = key.trim().substring(context.length()).replace('/', '.');
+                    properties.put(trimedKey, propertyCache.getCachedValue(key));
                 } else {
                     List<KeyValueItem> items = new ArrayList<KeyValueItem>();
                     KeyValueItem item = new KeyValueItem();
@@ -155,7 +203,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     }
 
     /**
-     * Creates a {@code FeatureSet} from a list of {@code KeyValueItem}. 
+     * Creates a {@code FeatureSet} from a list of {@code KeyValueItem}.
      * 
      * @param items New items read in from Azure
      * @param propertyCache Cached values where updated values are set.
@@ -179,7 +227,8 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     /**
      * Creates a {@code Feature} from a {@code KeyValueItem}
      * 
-     * @param item Used to create Features before being converted to be set into properties.
+     * @param item Used to create Features before being converted to be set into
+     * properties.
      * @return Feature created from KeyValueItem
      * @throws IOException
      */

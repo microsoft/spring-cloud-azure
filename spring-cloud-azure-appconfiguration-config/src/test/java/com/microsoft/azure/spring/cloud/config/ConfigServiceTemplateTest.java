@@ -51,7 +51,6 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicStatusLine;
 import org.junit.After;
 import org.junit.Before;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -71,6 +70,7 @@ import com.microsoft.azure.spring.cloud.config.domain.QueryOptions;
 import com.microsoft.azure.spring.cloud.config.mock.MockCloseableHttpResponse;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
+import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 @RunWith(PowerMockRunner.class)
 public class ConfigServiceTemplateTest {

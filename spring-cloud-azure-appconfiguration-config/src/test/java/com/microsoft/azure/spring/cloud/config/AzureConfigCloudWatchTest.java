@@ -34,6 +34,7 @@ import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationEventPublisher;
 
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
+import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(PropertyCache.class)

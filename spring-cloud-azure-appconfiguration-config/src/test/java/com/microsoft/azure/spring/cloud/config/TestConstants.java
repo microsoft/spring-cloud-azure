@@ -28,6 +28,15 @@ public class TestConstants {
     public static final String SEPARATOR_PROP = "spring.cloud.azure.appconfiguration.profile-separator";
     
     public static final String FAIL_FAST_PROP = "spring.cloud.azure.appconfiguration.failFast";
+    public static final String KEY_VAULT_STORE_1_CONNECTION = 
+            "spring.cloud.azure.appconfiguration.key_vault_stores[0].connection_url";
+    public static final String KEY_VAULT_STORE_1_CLIENT = 
+            "spring.cloud.azure.appconfiguration.key_vault_stores[0].client_id";
+    public static final String KEY_VAULT_STORE_1_DOMAIN = 
+            "spring.cloud.azure.appconfiguration.key_vault_stores[0].domain";
+    public static final String KEY_VAULT_STORE_1_SECRET = 
+            "spring.cloud.azure.appconfiguration.key_vault_stores[0].secret";
+    
 
     public static final String TEST_CONN_STRING =
             "Endpoint=https://fake.test.config.io;Id=fake-conn-id;Secret=ZmFrZS1jb25uLXNlY3JldA==";
@@ -56,6 +65,9 @@ public class TestConstants {
     public static final String TEST_WATCH_KEY = "my.watched.key";
     public static final String TEST_WATCH_KEY_PATTERN = "my.watched.key.*";
     public static final String TEST_ETAG = "fake-etag";
+    public static final String TEST_KEY_VAULT_1 = "test_key_vault_1";
+    public static final String TEST_VALUE_VAULT_1 = "{\"url\":\"https://test.key.vault.com/my_secret_url\"}";
+    public static final String TEST_LABEL_VAULT_1 = "test_lable_vault_1";
     
     public static final String FEATURE_KEY = "feature-management.featureManagement";
     public static final String FEATURE_VALUE = "{\"id\":\"Alpha\",\"description\":\"\",\"enabled\":true,"

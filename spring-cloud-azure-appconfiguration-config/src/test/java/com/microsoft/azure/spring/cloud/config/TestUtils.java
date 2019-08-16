@@ -5,9 +5,10 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
-
 import java.util.List;
+
+import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
+import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 /**
  * Utility methods which can be used across different test classes
@@ -25,6 +26,7 @@ public class TestUtils {
         item.setKey(context + key);
         item.setValue(value);
         item.setLabel(label);
+        item.setContentType("");
 
         return item;
     }
