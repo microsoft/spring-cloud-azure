@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "enabled", matchIfMissing = true)
 public class AzureCloudConfigAutoConfiguration {
-    public static final String WATCH_TASK_SCHEDULER_NAME = "azureConfigWatchTaskScheduler";
 
     @Configuration
     @ConditionalOnClass(RefreshEndpoint.class)
