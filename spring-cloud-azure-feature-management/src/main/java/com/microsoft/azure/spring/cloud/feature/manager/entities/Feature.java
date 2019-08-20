@@ -21,10 +21,10 @@ public class Feature {
     @JsonProperty("enabled")
     private boolean enabled = true;
 
-    @JsonProperty("EnabledFor")
+    @JsonProperty("enabledFor")
     private List<FeatureFilterEvaluationContext> enabledFor;
     
-    @JsonProperty("enabledFor")
+    @JsonProperty("EnabledFor")
     private HashMap<Integer, HashMap<String, Object>> filterMapper;
 
     /**

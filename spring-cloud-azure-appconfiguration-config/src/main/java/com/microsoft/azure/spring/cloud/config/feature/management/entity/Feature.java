@@ -22,6 +22,14 @@ public class Feature {
 
     @JsonAlias("EnabledFor")
     private List<FeatureFilterEvaluationContext> enabledFor;
+    
+    public Feature() {}
+    
+    public Feature(FeatureManagementItem featureItem) {
+        this.enabled = featureItem.getEnabled();
+        this.id = featureItem.getId();
+        this.enabledFor = featureItem.getConditions().getClientFilters();
+    }
 
     /**
      * @return the id

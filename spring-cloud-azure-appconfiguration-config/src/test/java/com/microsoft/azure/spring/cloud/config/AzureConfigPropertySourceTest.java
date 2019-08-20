@@ -39,8 +39,10 @@ public class AzureConfigPropertySourceTest {
     private static final KeyValueItem item1 = createItem(TEST_CONTEXT, TEST_KEY_1, TEST_VALUE_1, TEST_LABEL_1);
     private static final KeyValueItem item2 = createItem(TEST_CONTEXT, TEST_KEY_2, TEST_VALUE_2, TEST_LABEL_2);
     private static final KeyValueItem item3 = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3, TEST_LABEL_3);
-    private static final KeyValueItem featureItem = createItem(TEST_CONTEXT, FEATURE_KEY, FEATURE_VALUE, FEATURE_LABEL);
-    
+
+    private static final KeyValueItem featureItem = createItem(".appconfig.featureflag/", "Alpha", FEATURE_VALUE,
+            FEATURE_LABEL);
+
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
     private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
 
@@ -115,7 +117,7 @@ public class AzureConfigPropertySourceTest {
     
     @Test
     public void testFeatureFlagCanBeInitedAndQueried() {
-        when(operations.getKeys(any(), any())).thenReturn(FEATURE_ITEMS);
+        when(operations.getKeys(any(), any())).thenReturn(new ArrayList<KeyValueItem>()).thenReturn(FEATURE_ITEMS);
         
         try {
             propertySource.initProperties();
@@ -132,7 +134,7 @@ public class AzureConfigPropertySourceTest {
         ffec.setName("TestFilter");
         filters.add(ffec);
         feature.setEnabledFor(filters);
-        featureSet.addFeature(feature);
+        featureSet.addFeature("Alpha", feature);
         LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSet, LinkedHashMap.class);
         
         assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));

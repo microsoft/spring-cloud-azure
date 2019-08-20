@@ -118,11 +118,24 @@ public String oldEndpoint() {
 ```
 
 ## Implementing a Feature Filter
-Creating a feature filter provides a way to enable features bassed on criteria that you define. To implement a feature filter, the `FeatureFilter` interface must be implemented. `FeatureFilter` has a single method `evaluate`. When a feature specifies that it can be enabled for a feature filter, the `evaluate` method is called. method is called. If `evaluate` returns `true` it means the feature should be enabled.
+Creating a feature filter provides a way to enable features bassed on criteria that you define. To implement a feature filter, the `FeatureFilter` interface must be implemented. `FeatureFilter` has a single method `evaluate`. When a feature specifies that it can be enabled with a feature filter, the `evaluate` method is called. If `evaluate` returns `true` it means the feature should be enabled. If `false` it will continue evaluating the Feature's filters until one returns true. If all return `false` then the feature is off.
 
 Feature filters are found by being defined as `@Component` where there name matches the expected filter defined in the configuration.
 
-# Parameterized Feature Filters
+```
+@Component("Random")
+public class Random implements FeatureFilter{
+
+    @Override
+    public boolean evaluate(FeatureFilterEvaluationContext context) {
+        double chance = Double.valueOf((String) context.getParameters().get("chance"));
+        return Math.random() > chance/100; 
+    }
+
+}
+```
+
+### Parameterized Feature Filters
 Some feature filters require parameters to decide whether a feature should be turned on or not. For example a browser feature filter may turn on a feature for a certain set of browsers. It may be desired that Edge and Chrome browsers enable a feature, while FireFox does not. To do this a feature filter can be designed to expect parameters. These parameters would be specified in the feature configuration, and in code would be accessible via the `FeatureFilterEvaluationContext` parameter of `evaluate`. `FeatureFilterEvaluationContext` has a property `parameters` which is a `HashMap<String, Object>`.
 
 ## Request Based Features/Snapshot

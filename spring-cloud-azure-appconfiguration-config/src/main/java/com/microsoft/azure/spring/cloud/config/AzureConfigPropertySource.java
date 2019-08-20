@@ -40,6 +40,8 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
 
     private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
+    
+    private static final String FEATURE_FLAG_PREFIX = ".appconfig.featureflag/";
 
     public AzureConfigPropertySource(String context, ConfigServiceOperations operations, String storeName,
             String label, AzureCloudConfigProperties azureProperties) {
@@ -76,32 +78,69 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
         // Reading In Features
         queryOptions = new QueryOptions().withKeyNames("*appconfig*").withLabels(label);
         items = source.getKeys(storeName, queryOptions);
+        createFeatureSet(items);
+    }
+    
+    /**
+     * Creates a {@code FeatureSet} from a list of {@code KeyValueItem}. 
+     * 
+     * @param items New items read in from Azure
+     * @param propertyCache Cached values where updated values are set.
+     * @param date Cache timestamp
+     * @throws IOException
+     */
+    private void createFeatureSet(List<KeyValueItem> items) throws IOException {
+        // Reading In Features
         FeatureSet featureSet = new FeatureSet();
         for (KeyValueItem item : items) {
-            if (item.getContentType().equals(FEATURE_FLAG_CONTENT_TYPE)) {
-                try {
-                    FeatureManagementItem featureItem = mapper.readValue(item.getValue(), FeatureManagementItem.class);
-                    Feature feature = new Feature();
-                    feature.setEnabled(featureItem.getEnabled());
-                    feature.setId(featureItem.getId());
-                    feature.setEnabledFor(featureItem.getConditions().getClientFilters());
-                    featureSet.addFeature(feature);
-                } catch (IOException e) {
-                    LOGGER.error("Unabled to parse Feature Management values from Azure.", e);
-                    if (azureProperties.isFailFast()) {
-                        throw e;
-                    }
-                }
-
-            } else {
-                LOGGER.error(String.format("Found Feature Flag %s with invalid Content Type of %s", item.getKey(),
-                        item.getContentType()));
-                if (azureProperties.isFailFast()) {
-                    throw new IOException();
-                }
+            Object feature = createFeature(item);
+            if (feature != null) {
+                String key = item.getKey().trim().substring(FEATURE_FLAG_PREFIX.length());
+                featureSet.addFeature(key, feature);
             }
         }
-        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSet, LinkedHashMap.class);
-        properties.put(FEATURE_MANAGEMENT_KEY, convertedValue);
+        properties.put(FEATURE_MANAGEMENT_KEY, mapper.convertValue(featureSet, LinkedHashMap.class));
+    }
+    
+    /**
+     * Creates a {@code Feature} from a {@code KeyValueItem}
+     * 
+     * @param item Used to create Features before being converted to be set into properties.
+     * @return Feature created from KeyValueItem
+     * @throws IOException
+     */
+    private Object createFeature(KeyValueItem item) throws IOException {
+        Feature feature = null;
+        if (item.getContentType().equals(FEATURE_FLAG_CONTENT_TYPE)) {
+            try {
+                FeatureManagementItem featureItem = mapper.readValue(item.getValue(), FeatureManagementItem.class);
+                feature = new Feature(featureItem);
+
+                // Setting Enabled For to null, but enabled = true will result in the
+                // feature being on. This is the case of a feature is on/off and set to
+                // on. This is to tell the difference between conditional/off which looks
+                // exactly the same... It should never be the case of Conditional On, and
+                // no filters coming from Azure, but it is a valid way from the config
+                // file, which should result in false being returned.
+                if (feature.getEnabledFor().size() == 0 && feature.getEnabled() == true) {
+                    return true;
+                }
+                return feature;
+
+            } catch (IOException e) {
+                LOGGER.error("Unabled to parse Feature Management values from Azure.", e);
+                if (azureProperties.isFailFast()) {
+                    throw e;
+                }
+            }
+
+        } else {
+            LOGGER.error(String.format("Found Feature Flag %s with invalid Content Type of %s", item.getKey(),
+                    item.getContentType()));
+            if (azureProperties.isFailFast()) {
+                throw new IOException();
+            }
+        }
+        return feature;
     }
 }

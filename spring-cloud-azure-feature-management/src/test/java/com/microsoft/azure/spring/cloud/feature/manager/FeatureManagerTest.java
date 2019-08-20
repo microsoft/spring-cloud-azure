@@ -53,9 +53,6 @@ public class FeatureManagerTest {
     @Mock
     private ApplicationContext context;
     
-    @Mock
-    private FeatureSet featureManagment;
-    
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -107,7 +104,7 @@ public class FeatureManagerTest {
     @Test
     public void isEnabledFeatureNotFound() {
         FeatureSet featureSet = new FeatureSet();
-        HashMap<String, Feature> features = new HashMap<String, Feature>();
+        HashMap<String, Object> features = new HashMap<String, Object>();
         featureSet.setFeatureManagement(features);
         featureManager.setFeatureSet(featureSet);
 
@@ -117,7 +114,7 @@ public class FeatureManagerTest {
     @Test
     public void isEnabledFeatureOff() {
         FeatureSet featureSet = new FeatureSet();
-        HashMap<String, Feature> features = new HashMap<String, Feature>();
+        HashMap<String, Object> features = new HashMap<String, Object>();
         Feature off = new Feature();
         off.setId("Off");
         off.setEnabled(false);
@@ -131,7 +128,7 @@ public class FeatureManagerTest {
     @Test
     public void isEnabledFeatureHasNoFilters() {
         FeatureSet featureSet = new FeatureSet();
-        HashMap<String, Feature> features = new HashMap<String, Feature>();
+        HashMap<String, Object> features = new HashMap<String, Object>();
         Feature noFilters = new Feature();
         noFilters.setId("NoFilters");
         noFilters.setEnabledFor(new ArrayList<FeatureFilterEvaluationContext>());
@@ -145,7 +142,7 @@ public class FeatureManagerTest {
     @Test
     public void isEnabledON() {
         FeatureSet featureSet = new FeatureSet();
-        HashMap<String, Feature> features = new HashMap<String, Feature>();
+        HashMap<String, Object> features = new HashMap<String, Object>();
         Feature onFeature = new Feature();
         onFeature.setId("On");
         ArrayList<FeatureFilterEvaluationContext> filters = new ArrayList<FeatureFilterEvaluationContext>();
@@ -175,11 +172,9 @@ public class FeatureManagerTest {
     
     @Test
     public void featureManagerNotEnabledCorrectly() {
-        when(featureManagment.getFeatureManagement()).thenReturn(null);
         assertFalse(featureManager.isEnabled(""));
         featureManager.setFeatureSet(null);
         assertFalse(featureManager.isEnabled(""));
-        verify(featureManagment, times(1)).getFeatureManagement();
     }
     
     @Test
