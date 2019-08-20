@@ -6,30 +6,30 @@
 
 package com.microsoft.azure.spring.cloud.context.core.storage;
 
+import com.microsoft.azure.AzureEnvironment;
 import com.microsoft.azure.management.storage.StorageAccount;
-import com.microsoft.azure.spring.cloud.context.core.api.Environment;
 
 public class StorageConnectionStringProvider {
 
-    public static String getConnectionString(StorageAccount storageAccount, Environment environment,
+    public static String getConnectionString(StorageAccount storageAccount, AzureEnvironment environment,
             boolean isSecureTransfer) {
         return buildConnectionString(storageAccount, environment, isSecureTransfer);
     }
 
-    public static String getConnectionString(StorageAccount storageAccount, Environment environment) {
+    public static String getConnectionString(StorageAccount storageAccount, AzureEnvironment environment) {
         return getConnectionString(storageAccount, environment, true);
     }
 
-    public static String getConnectionString(String storageAccount, String accessKey, Environment environment) {
+    public static String getConnectionString(String storageAccount, String accessKey, AzureEnvironment environment) {
         return getConnectionString(storageAccount, accessKey, environment, true);
     }
 
-    public static String getConnectionString(String storageAccount, String accessKey, Environment environment,
+    public static String getConnectionString(String storageAccount, String accessKey, AzureEnvironment environment,
             boolean isSecureTransfer) {
         return StorageConnectionStringBuilder.build(storageAccount, accessKey, environment, isSecureTransfer);
     }
 
-    private static String buildConnectionString(StorageAccount storageAccount, Environment environment,
+    private static String buildConnectionString(StorageAccount storageAccount, AzureEnvironment environment,
             boolean isSecureTransfer) {
         return storageAccount.getKeys().stream().findFirst().map(key -> StorageConnectionStringBuilder
                 .build(storageAccount.name(), key.value(), environment, isSecureTransfer))

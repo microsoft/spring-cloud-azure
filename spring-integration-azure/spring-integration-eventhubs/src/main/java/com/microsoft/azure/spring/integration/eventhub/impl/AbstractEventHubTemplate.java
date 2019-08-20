@@ -6,6 +6,20 @@
 
 package com.microsoft.azure.spring.integration.eventhub.impl;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
+import org.springframework.messaging.Message;
+import org.springframework.util.Assert;
+
 import com.google.common.base.Strings;
 import com.microsoft.azure.eventhubs.EventData;
 import com.microsoft.azure.eventhubs.EventHubClient;
@@ -18,15 +32,6 @@ import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.converter.EventHubMessageConverter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
-import org.springframework.messaging.Message;
-import org.springframework.util.Assert;
-
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 /**
  * Abstract base implementation of event hub template.
@@ -104,13 +109,22 @@ public class AbstractEventHubTemplate {
     }
 
     protected void unregister(String name, String consumerGroup) {
-        this.clientFactory.getOrCreateEventProcessorHost(name, consumerGroup).unregisterEventProcessor()
-                          .whenComplete((s, t) -> {
-                              if (t != null) {
-                                  log.warn(String.format("Failed to unregister consumer '%s' with group '%s'", name,
-                                          consumerGroup), t);
-                              }
-                          });
+        this.clientFactory
+        .getEventProcessorHost(name, consumerGroup)
+        .ifPresent(eventProcessorHost -> unregisterEventProcessor(eventProcessorHost, name, consumerGroup));
+    }
+
+    private void unregisterEventProcessor(EventProcessorHost eventProcessorHost, String name, String consumerGroup) {
+        this.clientFactory.removeEventProcessorHost(name, consumerGroup);
+
+        eventProcessorHost
+        .unregisterEventProcessor()
+        .whenComplete((s, t) -> {
+            if (t != null) {
+                log.warn(String.format("Failed to unregister consumer '%s' with group '%s'", name,
+                        consumerGroup), t);
+            }
+        });
     }
 
     protected Map<String, Object> buildPropertiesMap() {

@@ -6,12 +6,15 @@
 
 package com.microsoft.azure.spring.integration.eventhub.api;
 
+import java.util.Optional;
+
 import com.microsoft.azure.eventhubs.EventHubClient;
 import com.microsoft.azure.eventhubs.PartitionSender;
 import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
 
 /**
  * @author Warren Zhu
+ * @author Domenico Sibilio
  */
 public interface EventHubClientFactory {
 
@@ -20,5 +23,9 @@ public interface EventHubClientFactory {
     PartitionSender getOrCreatePartitionSender(String eventhub, String partition);
 
     EventProcessorHost getOrCreateEventProcessorHost(String name, String consumerGroup);
+
+    Optional<EventProcessorHost> getEventProcessorHost(String name, String consumerGroup);
+
+    EventProcessorHost removeEventProcessorHost(String name, String consumerGroup);
 
 }
