@@ -6,7 +6,6 @@
 package com.microsoft.azure.spring.cloud.config.stores;
 
 import static com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties.LABEL_SEPARATOR;
-import static com.microsoft.azure.spring.cloud.config.Constants.EMPTY_LABEL;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -26,7 +25,7 @@ import org.springframework.util.StringUtils;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
 
 public class ConfigStore {
-    private static final List<String> EMPTY_LABEL_ONLY = Arrays.asList(EMPTY_LABEL);
+    private static final String[] EMPTY_LABEL_ONLY = {"\0"};
     private String name; // Config store name
 
     @Nullable
@@ -119,7 +118,7 @@ public class ConfigStore {
     /**
      * @return List of reversed label values, which are split by the separator, the latter label has higher priority
      */
-    public List<String> getLabels() {
+    public String[] getLabels() {
         if (!StringUtils.hasText(this.getLabel())) {
             return EMPTY_LABEL_ONLY;
         }
@@ -131,6 +130,11 @@ public class ConfigStore {
                 .collect(Collectors.toList());
 
         Collections.reverse(labels);
-        return labels.isEmpty() ? EMPTY_LABEL_ONLY : labels;
+        if (labels.isEmpty()) {
+            return EMPTY_LABEL_ONLY;
+        } else {
+            String[] t = new String[labels.size()];
+            return labels.toArray(t);
+        }
     }
 }

@@ -27,6 +27,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
+import com.azure.data.appconfiguration.ConfigurationAsyncClient;
 import com.google.common.collect.Lists;
 import com.microsoft.azure.keyvault.KeyVaultClient;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
@@ -40,8 +41,6 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
     private static final String PATH_SPLITTER = "/";
 
-    private final ConfigServiceOperations operations;
-
     private final AzureCloudConfigProperties properties;
 
     private final String profileSeparator;
@@ -49,19 +48,22 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private final List<ConfigStore> configStores;
 
     private final Map<String, List<String>> storeContextsMap = new ConcurrentHashMap<>();
-    
+
     private PropertyCache propertyCache;
-    
+
     private HashMap<String, KeyVaultClient> keyVaultClients;
 
-    public AzureConfigPropertySourceLocator(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
-            PropertyCache propertyCache, HashMap<String, KeyVaultClient> keyVaultClients) {
-        this.operations = operations;
+    private HashMap<String, ConfigurationAsyncClient> configClients;
+
+    public AzureConfigPropertySourceLocator(AzureCloudConfigProperties properties,
+            PropertyCache propertyCache, HashMap<String, KeyVaultClient> keyVaultClients,
+            HashMap<String, ConfigurationAsyncClient> configClients) {
         this.properties = properties;
         this.profileSeparator = properties.getProfileSeparator();
         this.configStores = properties.getStores();
         this.propertyCache = propertyCache;
         this.keyVaultClients = keyVaultClients;
+        this.configClients = configClients;
     }
 
     @Override
@@ -179,17 +181,17 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
      * When generating more than one it needs to be in the last one.
      * @return a list of AzureConfigPropertySources
      * @throws IOException
-     * @throws URISyntaxException 
+     * @throws URISyntaxException
      */
     private List<AzureConfigPropertySource> create(String context, ConfigStore store,
             Map<String, List<String>> storeContextsMap, boolean initFeatures) throws IOException, URISyntaxException {
         List<AzureConfigPropertySource> sourceList = new ArrayList<>();
 
         for (String label : store.getLabels()) {
-            AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, operations,
+            AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context,
                     store.getName(), label, properties);
-
-            propertySource.initProperties(propertyCache, keyVaultClients);
+            ConfigurationAsyncClient client = configClients.get(store.getName());
+            propertySource.initProperties(propertyCache, keyVaultClients, client);
             if (initFeatures) {
                 propertySource.initFeatures(propertyCache);
             }

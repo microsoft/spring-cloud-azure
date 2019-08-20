@@ -6,7 +6,9 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,15 +24,19 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
-import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
-import com.microsoft.azure.spring.cloud.config.domain.QueryField;
-import com.microsoft.azure.spring.cloud.config.domain.QueryOptions;
+import com.azure.core.http.rest.PagedFlux;
+import com.azure.core.http.rest.PagedResponse;
+import com.azure.data.appconfiguration.ConfigurationAsyncClient;
+import com.azure.data.appconfiguration.models.ConfigurationSetting;
+import com.azure.data.appconfiguration.models.Range;
+import com.azure.data.appconfiguration.models.SettingSelector;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureCloudConfigWatch.class);
-
-    private final ConfigServiceOperations configOperations;
 
     private final Map<String, String> storeEtagMap = new ConcurrentHashMap<>();
 
@@ -54,13 +60,16 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
 
     PropertyCache propertyCache;
 
-    public AzureCloudConfigWatch(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
-            Map<String, List<String>> storeContextsMap, PropertyCache propertyCache) {
-        this.configOperations = operations;
+    HashMap<String, ConfigurationAsyncClient> configClients;
+
+    public AzureCloudConfigWatch(AzureCloudConfigProperties properties,
+            Map<String, List<String>> storeContextsMap, PropertyCache propertyCache,
+            HashMap<String, ConfigurationAsyncClient> configClients) {
         this.configStores = properties.getStores();
         this.storeContextsMap = storeContextsMap;
         this.delay = properties.getWatch().getDelay();
         this.propertyCache = propertyCache;
+        this.configClients = configClients;
     }
 
     @Override
@@ -99,23 +108,41 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
      * @param watchedKeyNames Key used to check if refresh should occur
      */
     private void refresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
+        ConfigurationAsyncClient client = configClients.get(store.getName());
         String storeName = store.getName() + storeSuffix;
-        QueryOptions options = new QueryOptions().withKeyNames(watchedKeyNames)
-                .withLabels(store.getLabels()).withFields(QueryField.ETAG).withRange(0, 0);
 
-        List<KeyValueItem> keyValueItems = configOperations.getRevisions(store.getName(), options);
+        List<ConfigurationSetting> items = new ArrayList<ConfigurationSetting>();
 
-        if (keyValueItems.isEmpty()) {
+        SettingSelector settingSelector = new SettingSelector().keys(watchedKeyNames).labels(store.getLabels())
+                .range(new Range(0, 0));
+
+        PagedFlux<ConfigurationSetting> settings = client.listSettingRevisions(settingSelector);
+
+        Flux<PagedResponse<ConfigurationSetting>> page = settings.byPage();
+        List<PagedResponse<ConfigurationSetting>> pagedResponses;
+        try {
+            pagedResponses = page.collectList().block(Duration.ofMinutes(2));
+            for (PagedResponse<ConfigurationSetting> pagedResponse : pagedResponses) {
+                for (ConfigurationSetting setting : pagedResponse.items()) {
+                    items.add(setting);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
             return;
         }
 
-        String etag = keyValueItems.get(0).getEtag();
+        if (items.isEmpty()) {
+            return;
+        }
+
+        String etag = items.get(0).etag();
         if (firstTimeMap.get(storeName) == null) {
             storeEtagMap.put(storeName, etag);
             firstTimeMap.put(storeName, false);
             propertyCache.updateRefreshCacheTime(store.getName(), watchedKeyNames, delay);
         }
-        
+
         if (!etag.equals(storeEtagMap.get(storeName))) {
             Date date = new Date();
 
@@ -124,14 +151,20 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
             for (int i = 0; i < refreshKeys.size(); i++) {
                 String refreshKey = refreshKeys.get(i);
                 if (refreshKey.contains(watchedKeyNames.replace("*", ""))) {
-
+                    List<ConfigurationSetting> items2 = new ArrayList<ConfigurationSetting>();
                     storeEtagMap.put(storeName, etag);
-                    options = new QueryOptions().withKeyNames(refreshKey)
-                            .withLabels(store.getLabels()).withFields(QueryField.ETAG).withRange(0, 0);
+                    settingSelector.keys(refreshKey);
 
-                    keyValueItems = configOperations.getRevisions(store.getName(), options);
+                    settings = client.listSettingRevisions(settingSelector);
+                    page = settings.byPage();
+                    pagedResponses = page.collectList().block();
+                    for (PagedResponse<ConfigurationSetting> pagedResponse : pagedResponses) {
+                        for (ConfigurationSetting setting : pagedResponse.items()) {
+                            items2.add(setting);
+                        }
+                    }
 
-                    if (keyValueItems.isEmpty() || keyValueItems.get(0).getEtag()
+                    if (items2.isEmpty() || items2.get(0).etag()
                             .equals(propertyCache.getCachedEtag(refreshKey))) {
                         refreshKeys = propertyCache.updateRefreshCacheTimeForKey(store.getName(), refreshKey, date);
                         i--;

@@ -6,5 +6,8 @@
 package com.microsoft.azure.spring.cloud.config;
 
 public class Constants {
-    public static final String EMPTY_LABEL = "%00";
+    public static final String FEATURE_FLAG_CONTENT_TYPE = 
+            "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
+    public static final String KEY_VAULT_CONTENT_TYPE = 
+            "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8";
 }

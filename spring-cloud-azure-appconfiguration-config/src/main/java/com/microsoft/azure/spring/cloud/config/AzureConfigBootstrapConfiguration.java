@@ -5,12 +5,11 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
-
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -24,10 +23,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
+import com.azure.data.appconfiguration.ConfigurationAsyncClient;
+import com.azure.data.appconfiguration.ConfigurationClientBuilder;
+import com.azure.data.appconfiguration.credentials.ConfigurationClientCredentials;
 import com.microsoft.azure.AzureEnvironment;
 import com.microsoft.azure.AzureResponseBuilder;
 import com.microsoft.azure.credentials.AppServiceMSICredentials;
@@ -37,9 +38,6 @@ import com.microsoft.azure.credentials.MSICredentials;
 import com.microsoft.azure.keyvault.KeyVaultClient;
 import com.microsoft.azure.serializer.AzureJacksonAdapter;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
-import com.microsoft.azure.spring.cloud.config.managed.identity.AzureResourceManagerConnector;
-import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
-import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 import com.microsoft.azure.spring.cloud.config.stores.KeyVaultStore;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
@@ -61,37 +59,6 @@ public class AzureConfigBootstrapConfiguration {
     private static final String TELEMETRY_SERVICE = "AppConfiguration";
 
     private static final String TELEMETRY_KEY = "HashedStoreName";
-
-    @Bean
-    public ConnectionStringPool initConnectionString(AzureCloudConfigProperties properties,
-            AzureTokenCredentials credentials) {
-        ConnectionStringPool pool = new ConnectionStringPool();
-        List<ConfigStore> stores = properties.getStores();
-
-        for (ConfigStore store : stores) {
-            if (StringUtils.hasText(store.getName()) && StringUtils.hasText(store.getConnectionString())) {
-                pool.put(store.getName(), ConnectionString.of(store.getConnectionString()));
-            } else if (StringUtils.hasText(store.getName())) {
-                // Try load connection string from ARM if connection string is not
-                // configured
-                LOGGER.info("Load connection string for store [{}] from Azure Resource Management, " +
-                        "Azure managed identity should be enabled.", store.getName());
-                AzureResourceManagerConnector armConnector = new AzureResourceManagerConnector(credentials,
-                        store.getName());
-
-                String connectionString = armConnector.getConnectionString();
-                Assert.hasText(connectionString, "Connection string cannot be empty");
-
-                pool.put(store.getName(), ConnectionString.of(connectionString));
-            }
-
-            TelemetryCollector.getInstance().addProperty(TELEMETRY_SERVICE, TELEMETRY_KEY, sha256Hex(store.getName()));
-        }
-
-        Assert.notEmpty(pool.getAll(), "Connection string pool for the configuration stores is empty");
-
-        return pool;
-    }
 
     @Bean
     public AzureTokenCredentials tokenCredentials(AzureCloudConfigProperties properties) {
@@ -117,20 +84,11 @@ public class AzureConfigBootstrapConfiguration {
     }
 
     @Bean
-    public ConfigHttpClient httpClient(CloseableHttpClient httpClient) {
-        return new ConfigHttpClient(httpClient);
-    }
-
-    @Bean
-    public ConfigServiceOperations azureConfigOperations(ConfigHttpClient client, ConnectionStringPool pool) {
-        return new ConfigServiceTemplate(client, pool);
-    }
-
-    @Bean
-    public AzureConfigPropertySourceLocator sourceLocator(ConfigServiceOperations operations,
+    public AzureConfigPropertySourceLocator sourceLocator(
             AzureCloudConfigProperties properties, PropertyCache propertyCache,
-            HashMap<String, KeyVaultClient> keyVaultClients) {
-        return new AzureConfigPropertySourceLocator(operations, properties, propertyCache, keyVaultClients);
+            HashMap<String, KeyVaultClient> keyVaultClients, HashMap<String, ConfigurationAsyncClient> configClients) {
+        return new AzureConfigPropertySourceLocator(properties, propertyCache, keyVaultClients,
+                configClients);
     }
 
     @Bean
@@ -170,6 +128,24 @@ public class AzureConfigBootstrapConfiguration {
             }
         }
         return keyVaultClients;
+    }
+
+    @Bean
+    public HashMap<String, ConfigurationAsyncClient> getConfigurationClient(AzureCloudConfigProperties properties) {
+        HashMap<String, ConfigurationAsyncClient> configClients = new HashMap<String, ConfigurationAsyncClient>();
+        for (ConfigStore store : properties.getStores()) {
+            try {
+                ConfigurationAsyncClient client = new ConfigurationClientBuilder()
+                        .credential(new ConfigurationClientCredentials(store.getConnectionString())).buildAsyncClient();
+                configClients.put(store.getName(), client);
+            } catch (InvalidKeyException | NoSuchAlgorithmException e) {
+                LOGGER.error("Failed to load Config Store.");
+                if (properties.isFailFast()) {
+                    ReflectionUtils.rethrowRuntimeException(e);
+                }
+            }
+        }
+        return configClients;
     }
 
     @PostConstruct

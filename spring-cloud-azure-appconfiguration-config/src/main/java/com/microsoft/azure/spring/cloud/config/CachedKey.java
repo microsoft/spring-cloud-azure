@@ -7,7 +7,7 @@ package com.microsoft.azure.spring.cloud.config;
 
 import java.util.Date;
 
-import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
+import com.azure.data.appconfiguration.models.ConfigurationSetting;
 
 public class CachedKey {
 
@@ -23,13 +23,13 @@ public class CachedKey {
 
     private Date lastUpdated;
     
-    public CachedKey(KeyValueItem item, String storeName, Date time) {
-        key = item.getKey();
-        etag = item.getEtag();
-        value = item.getValue();
+    public CachedKey(ConfigurationSetting item, String storeName, Date time) {
+        key = item.key();
+        etag = item.etag();
+        value = item.value();
         this.storeName = storeName;
         lastUpdated = time;
-        this.contentType = item.getContentType();
+        this.contentType = item.contentType();
     }
 
     /**
