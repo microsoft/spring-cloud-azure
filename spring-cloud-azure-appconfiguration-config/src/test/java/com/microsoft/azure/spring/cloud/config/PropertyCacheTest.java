@@ -19,7 +19,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
+import com.azure.data.appconfiguration.models.ConfigurationSetting;
 
 public class PropertyCacheTest {
 
@@ -42,13 +42,13 @@ public class PropertyCacheTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        List<KeyValueItem> keys = new ArrayList<KeyValueItem>();
+        List<ConfigurationSetting> keys = new ArrayList<ConfigurationSetting>();
 
-        KeyValueItem keyValueItem = new KeyValueItem();
-        keyValueItem.setKey(TEST_KEY_1);
+        ConfigurationSetting keyValueItem = new ConfigurationSetting();
+        keyValueItem.key(TEST_KEY_1);
         keys.add(keyValueItem);
-        keyValueItem = new KeyValueItem();
-        keyValueItem.setKey(TEST_KEY_2);
+        keyValueItem = new ConfigurationSetting();
+        keyValueItem.key(TEST_KEY_2);
         keys.add(keyValueItem);
 
         propertyCache = new PropertyCache();

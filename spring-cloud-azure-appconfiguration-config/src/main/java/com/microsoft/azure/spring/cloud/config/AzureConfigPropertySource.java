@@ -13,7 +13,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,10 +35,11 @@ import com.microsoft.azure.keyvault.models.SecretBundle;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureManagementItem;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
+import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 
 import reactor.core.publisher.Flux;
 
-public class AzureConfigPropertySource extends EnumerablePropertySource {
+public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigurationAsyncClient> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigPropertySource.class);
 
     private final String context;
@@ -93,9 +93,9 @@ public class AzureConfigPropertySource extends EnumerablePropertySource {
      * @throws IOException
      * @throws URISyntaxException
      */
-    public void initProperties(PropertyCache propertyCache, HashMap<String, KeyVaultClient> keyVaultClients,
-            ConfigurationAsyncClient client)
+    public void initProperties(PropertyCache propertyCache, ClientStore clients)
             throws IOException, URISyntaxException {
+        ConfigurationAsyncClient client = clients.getConfigurationClient(storeName);
         Date date = new Date();
         if (propertyCache.getContext(storeName) == null) {
             propertyCache.addContext(storeName, context);
@@ -106,43 +106,39 @@ public class AzureConfigPropertySource extends EnumerablePropertySource {
             if (!label.equals("%00")) {
                 settingSelector.labels(label);
             }
-            PagedFlux<ConfigurationSetting> settings = client.listSettings(settingSelector);
-            Flux<PagedResponse<ConfigurationSetting>> page = settings.byPage();
-            List<PagedResponse<ConfigurationSetting>> items = page.collectList().block();
+            List<ConfigurationSetting> settings = clients.listSettings(settingSelector, storeName);
 
-            for (PagedResponse<ConfigurationSetting> pageResponse : items) {
-                for (ConfigurationSetting item : pageResponse.items()) {
-                    String key = item.key().trim().substring(context.length()).replace('/', '.');
-                    if (item.contentType().equals(KEY_VAULT_CONTENT_TYPE)) {
-                        String uriString = item.value().substring(8, item.value().length() - 2);
-                        try {
-                            URI uri = new URI(uriString);
-                            KeyVaultClient keyVaultClient = keyVaultClients.get(uri.getHost());
-                            if (keyVaultClient != null) {
-                                try {
-                                    SecretBundle secretBundle = keyVaultClient.getSecret(uriString);
-                                    properties.put(key, secretBundle.value());
-                                } catch (Exception e) {
-                                    logger.error(e.getMessage());
-                                }
-                            } else {
-                                logger.error("Found KeyVault Secret without an associated KeyVaultClient.");
-                                if (azureProperties.isFailFast()) {
-                                    // throw new IOException(
-                                    // "Failed Processing KeyVault Secret without an
-                                    // associated
-                                    // KeyVaultClient.");
-                                }
+            for (ConfigurationSetting item : settings) {
+                String key = item.key().trim().substring(context.length()).replace('/', '.');
+                if (item.contentType().equals(KEY_VAULT_CONTENT_TYPE)) {
+                    String uriString = item.value().substring(8, item.value().length() - 2);
+                    try {
+                        URI uri = new URI(uriString);
+                        KeyVaultClient keyVaultClient = clients.getKeyVaultClient(uri.getHost());
+                        if (keyVaultClient != null) {
+                            try {
+                                SecretBundle secretBundle = keyVaultClient.getSecret(uriString);
+                                properties.put(key, secretBundle.value());
+                            } catch (Exception e) {
+                                logger.error(e.getMessage());
                             }
-                        } catch (URISyntaxException e) {
-                            e.printStackTrace();
+                        } else {
+                            logger.error("Found KeyVault Secret without an associated KeyVaultClient.");
+                            if (azureProperties.isFailFast()) {
+                                // throw new IOException(
+                                // "Failed Processing KeyVault Secret without an
+                                // associated
+                                // KeyVaultClient.");
+                            }
                         }
-
-                    } else {
-                        properties.put(key, item.value());
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
                     }
-                    propertyCache.addToCache(item, storeName, date);
+
+                } else {
+                    properties.put(key, item.value());
                 }
+                propertyCache.addToCache(item, storeName, date);
             }
 
             // Reading In Features
@@ -151,11 +147,8 @@ public class AzureConfigPropertySource extends EnumerablePropertySource {
             if (!label.equals("%00")) {
                 settingSelector.labels(label);
             }
-            settings = client.listSettings(settingSelector);
-            page = settings.byPage();
-
-            List<PagedResponse<ConfigurationSetting>> items2 = page.collectList().block();
-            createFeatureSet(items2, propertyCache, date);
+            settings = clients.listSettings(settingSelector, storeName);
+            createFeatureSet(settings, propertyCache, date);
         } else {
             // Using Cached values, first updates cache then sets new properties.
             if (propertyCache.getRefreshKeys(storeName) != null &&
@@ -183,7 +176,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource {
                         String uriString = value.substring(8, value.length() - 2);
                         URI uri = new URI(uriString);
 
-                        KeyVaultClient keyVaultClient = keyVaultClients.get(uri.getHost());
+                        KeyVaultClient keyVaultClient = clients.getKeyVaultClient(uri.getHost());
                         if (keyVaultClient != null) {
                             SecretBundle secretBundle = keyVaultClient.getSecret(uriString);
                             key = key.trim().substring(context.length()).replace('/', '.');
@@ -207,7 +200,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource {
                     item.contentType(FEATURE_FLAG_CONTENT_TYPE);
                     items.add(item);
 
-                    createFeatureSetFromList(items, propertyCache, date);
+                    createFeatureSet(items, propertyCache, date);
                 }
             }
         }
@@ -238,36 +231,8 @@ public class AzureConfigPropertySource extends EnumerablePropertySource {
                 }
             }
         });
-
-        properties.put(FEATURE_MANAGEMENT_KEY, mapper.convertValue(featureSet, LinkedHashMap.class));
-    }
-
-    /**
-     * Creates a {@code FeatureSet} from a list of {@code KeyValueItem}.
-     * 
-     * @param items New items read in from Azure
-     * @param propertyCache Cached values where updated values are set.
-     * @param date Cache timestamp
-     * @throws IOException
-     */
-    private void createFeatureSet(List<PagedResponse<ConfigurationSetting>> pages, PropertyCache propertyCache,
-            Date date)
-            throws IOException {
-        // Reading In Features
-        FeatureSet featureSet = new FeatureSet();
-        for (PagedResponse<ConfigurationSetting> page : pages) {
-            for (ConfigurationSetting item : page.items()) {
-                Object feature = createFeature(item);
-                if (feature != null) {
-                    featureSet.addFeature(item.key(), feature);
-                }
-            }
-        }
-
-        if (featureSet != null && featureSet.getFeatureManagement() != null) {
-            for (PagedResponse<ConfigurationSetting> page : pages) {
-                propertyCache.addKeyValuesToCache(page.items(), storeName, date);
-            }
+        if (featureSet.getFeatureManagement() != null) {
+            properties.put(FEATURE_MANAGEMENT_KEY, mapper.convertValue(featureSet, LinkedHashMap.class));
         }
     }
 
@@ -279,12 +244,12 @@ public class AzureConfigPropertySource extends EnumerablePropertySource {
      * @param date Cache timestamp
      * @throws IOException
      */
-    private void createFeatureSetFromList(List<ConfigurationSetting> items, PropertyCache propertyCache,
+    private void createFeatureSet(List<ConfigurationSetting> settings, PropertyCache propertyCache,
             Date date)
             throws IOException {
         // Reading In Features
         FeatureSet featureSet = new FeatureSet();
-        for (ConfigurationSetting item : items) {
+        for (ConfigurationSetting item : settings) {
             Object feature = createFeature(item);
             if (feature != null) {
                 featureSet.addFeature(item.key(), feature);
@@ -292,7 +257,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource {
         }
 
         if (featureSet != null && featureSet.getFeatureManagement() != null) {
-            propertyCache.addKeyValuesToCache(items, storeName, date);
+            propertyCache.addKeyValuesToCache(settings, storeName, date);
         }
     }
 

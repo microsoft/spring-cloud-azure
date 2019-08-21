@@ -10,7 +10,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -27,9 +26,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-import com.azure.data.appconfiguration.ConfigurationAsyncClient;
 import com.google.common.collect.Lists;
-import com.microsoft.azure.keyvault.KeyVaultClient;
+import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
@@ -51,19 +49,15 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
     private PropertyCache propertyCache;
 
-    private HashMap<String, KeyVaultClient> keyVaultClients;
-
-    private HashMap<String, ConfigurationAsyncClient> configClients;
+    private ClientStore clients;
 
     public AzureConfigPropertySourceLocator(AzureCloudConfigProperties properties,
-            PropertyCache propertyCache, HashMap<String, KeyVaultClient> keyVaultClients,
-            HashMap<String, ConfigurationAsyncClient> configClients) {
+            PropertyCache propertyCache, ClientStore clients) {
         this.properties = properties;
         this.profileSeparator = properties.getProfileSeparator();
         this.configStores = properties.getStores();
         this.propertyCache = propertyCache;
-        this.keyVaultClients = keyVaultClients;
-        this.configClients = configClients;
+        this.clients = clients;
     }
 
     @Override
@@ -190,8 +184,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         for (String label : store.getLabels()) {
             AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context,
                     store.getName(), label, properties);
-            ConfigurationAsyncClient client = configClients.get(store.getName());
-            propertySource.initProperties(propertyCache, keyVaultClients, client);
+            propertySource.initProperties(propertyCache, clients);
             if (initFeatures) {
                 propertySource.initFeatures(propertyCache);
             }

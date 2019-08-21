@@ -23,9 +23,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.ProtocolVersion;
@@ -55,11 +53,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
-import com.microsoft.azure.spring.cloud.config.domain.KeyValueResponse;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ConfigServiceTemplate.class, AzureConfigBootstrapConfiguration.class})
+@PrepareForTest({AzureConfigBootstrapConfiguration.class})
 @PowerMockIgnore({ "javax.net.ssl.*", "javax.crypto.*", "org.mockito.*"})
 public class AzureCloudConfigPropertiesTest {
     @InjectMocks
@@ -77,9 +73,6 @@ public class AzureCloudConfigPropertiesTest {
     private static final String[] ILLEGAL_PROFILE_SEPARATOR = { "/", "\\", "." };
 
     private static final String ILLEGAL_LABELS = "*,my-label";
-    
-    @Mock
-    ConfigHttpClient configClient;
 
     @Mock
     HttpGet mockHttpGet;
@@ -111,23 +104,12 @@ public class AzureCloudConfigPropertiesTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        
-        KeyValueResponse kvResponse = new KeyValueResponse();
-        List<KeyValueItem> items = new ArrayList<KeyValueItem>();
-        kvResponse.setItems(items);
         try {
-            
-            PowerMockito.whenNew(ConfigHttpClient.class).withAnyArguments().thenReturn(configClient);
             PowerMockito.whenNew(ObjectMapper.class).withAnyArguments().thenReturn(mockObjectMapper);
-            when(configClient.execute(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
-                .thenReturn(mockClosableHttpResponse);
             when(mockClosableHttpResponse.getStatusLine())
                 .thenReturn(new BasicStatusLine(new ProtocolVersion("", 0, 0), 200, ""));
             when(mockClosableHttpResponse.getEntity()).thenReturn(mockHttpEntity);
             when(mockHttpEntity.getContent()).thenReturn(mockInputStream);
-            
-            when(mockObjectMapper.readValue(Mockito.isA(InputStream.class), Mockito.any(Class.class)))
-                .thenReturn(kvResponse);
         } catch (Exception e) {
             fail();
         }

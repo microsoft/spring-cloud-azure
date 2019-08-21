@@ -7,7 +7,7 @@ package com.microsoft.azure.spring.cloud.config;
 
 import java.util.List;
 
-import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
+import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 /**
@@ -21,12 +21,12 @@ public class TestUtils {
         return String.format("%s=%s", propName, propValue);
     }
 
-    static KeyValueItem createItem(String context, String key, String value, String label) {
-        KeyValueItem item = new KeyValueItem();
-        item.setKey(context + key);
-        item.setValue(value);
-        item.setLabel(label);
-        item.setContentType("");
+    static ConfigurationSetting createItem(String context, String key, String value, String label) {
+        ConfigurationSetting item = new ConfigurationSetting();
+        item.key(context + key);
+        item.value(value);
+        item.label(label);
+        item.contentType("");
 
         return item;
     }

@@ -6,9 +6,7 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,16 +22,11 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
-import com.azure.core.http.rest.PagedFlux;
-import com.azure.core.http.rest.PagedResponse;
-import com.azure.data.appconfiguration.ConfigurationAsyncClient;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.Range;
 import com.azure.data.appconfiguration.models.SettingSelector;
+import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
-
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureCloudConfigWatch.class);
@@ -60,16 +53,16 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
 
     PropertyCache propertyCache;
 
-    HashMap<String, ConfigurationAsyncClient> configClients;
+    private ClientStore clientStore;
 
     public AzureCloudConfigWatch(AzureCloudConfigProperties properties,
             Map<String, List<String>> storeContextsMap, PropertyCache propertyCache,
-            HashMap<String, ConfigurationAsyncClient> configClients) {
+            ClientStore clientStore) {
         this.configStores = properties.getStores();
         this.storeContextsMap = storeContextsMap;
         this.delay = properties.getWatch().getDelay();
         this.propertyCache = propertyCache;
-        this.configClients = configClients;
+        this.clientStore = clientStore;
     }
 
     @Override
@@ -108,29 +101,12 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
      * @param watchedKeyNames Key used to check if refresh should occur
      */
     private void refresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
-        ConfigurationAsyncClient client = configClients.get(store.getName());
         String storeName = store.getName() + storeSuffix;
-
-        List<ConfigurationSetting> items = new ArrayList<ConfigurationSetting>();
 
         SettingSelector settingSelector = new SettingSelector().keys(watchedKeyNames).labels(store.getLabels())
                 .range(new Range(0, 0));
 
-        PagedFlux<ConfigurationSetting> settings = client.listSettingRevisions(settingSelector);
-
-        Flux<PagedResponse<ConfigurationSetting>> page = settings.byPage();
-        List<PagedResponse<ConfigurationSetting>> pagedResponses;
-        try {
-            pagedResponses = page.collectList().block(Duration.ofMinutes(2));
-            for (PagedResponse<ConfigurationSetting> pagedResponse : pagedResponses) {
-                for (ConfigurationSetting setting : pagedResponse.items()) {
-                    items.add(setting);
-                }
-            }
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage());
-            return;
-        }
+        List<ConfigurationSetting> items = clientStore.listSettingRevisons(settingSelector, store.getName());
 
         if (items.isEmpty()) {
             return;
@@ -151,20 +127,12 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
             for (int i = 0; i < refreshKeys.size(); i++) {
                 String refreshKey = refreshKeys.get(i);
                 if (refreshKey.contains(watchedKeyNames.replace("*", ""))) {
-                    List<ConfigurationSetting> items2 = new ArrayList<ConfigurationSetting>();
+                    
                     storeEtagMap.put(storeName, etag);
                     settingSelector.keys(refreshKey);
 
-                    settings = client.listSettingRevisions(settingSelector);
-                    page = settings.byPage();
-                    pagedResponses = page.collectList().block();
-                    for (PagedResponse<ConfigurationSetting> pagedResponse : pagedResponses) {
-                        for (ConfigurationSetting setting : pagedResponse.items()) {
-                            items2.add(setting);
-                        }
-                    }
-
-                    if (items2.isEmpty() || items2.get(0).etag()
+                    items = clientStore.listSettingRevisons(settingSelector, store.getName());
+                    if (items.isEmpty() || items.get(0).etag()
                             .equals(propertyCache.getCachedEtag(refreshKey))) {
                         refreshKeys = propertyCache.updateRefreshCacheTimeForKey(store.getName(), refreshKey, date);
                         i--;
