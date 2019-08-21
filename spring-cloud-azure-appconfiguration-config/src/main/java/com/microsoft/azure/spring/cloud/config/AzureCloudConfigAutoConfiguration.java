@@ -31,7 +31,7 @@ public class AzureCloudConfigAutoConfiguration {
         @Bean
         @ConditionalOnMissingBean
         public PropertyCache getPropertyCache() {
-            return new PropertyCache();
+            return PropertyCache.getPropertyCache();
         }
 
         @Bean

@@ -100,7 +100,7 @@ public class AzureConfigPropertySourceTest {
         MockitoAnnotations.initMocks(this);
         propertySource = new AzureConfigPropertySource(TEST_CONTEXT, operations, TEST_STORE_NAME, null,
                 new AzureCloudConfigProperties());
-        propertyCache = new PropertyCache();
+        propertyCache = PropertyCache.resetPropertyCache();
     }
 
     @Test

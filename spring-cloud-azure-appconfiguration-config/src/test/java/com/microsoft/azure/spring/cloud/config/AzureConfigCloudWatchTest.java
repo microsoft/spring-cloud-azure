@@ -80,7 +80,7 @@ public class AzureConfigCloudWatchTest {
         kvi.setValue("TestValue");
         keys.add(kvi);
 
-        propertyCache = new PropertyCache();
+        propertyCache = PropertyCache.getPropertyCache();
         KeyValueItem item = new KeyValueItem();
         item.setKey("fake-etag/application/test.key");
         item.setEtag("fake-etag");
