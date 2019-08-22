@@ -44,6 +44,8 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
 
     private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
+    
+    private static final String FEATURE_FLAG_PREFIX = ".appconfig.featureflag/";
 
     private static final String FEATURE_FLAG_PREFIX = ".appconfig.featureflag/";
 

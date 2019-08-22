@@ -149,6 +149,7 @@ public class AzureConfigPropertySourceTest {
     @Test
     public void testFeatureFlagCanBeInitedAndQueried() {
         when(operations.getKeys(any(), any())).thenReturn(new ArrayList<KeyValueItem>()).thenReturn(FEATURE_ITEMS);
+
         try {
             propertySource.initProperties(propertyCache);
         } catch (IOException e) {
