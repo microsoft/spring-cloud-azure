@@ -14,28 +14,28 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class FeatureSet {
 
     @JsonProperty("FeatureManagement")
-    private HashMap<String, Feature> featureManagement;
+    private HashMap<String, Object> featureManagement;
 
     /**
      * @return the featureManagement
      */
-    public HashMap<String, Feature> getFeatureManagement() {
+    public HashMap<String, Object> getFeatureManagement() {
         return featureManagement;
     }
 
     /**
      * @param featureManagement the featureManagement to set
      */
-    public void setFeatureManagement(HashMap<String, Feature> featureManagement) {
+    public void setFeatureManagement(HashMap<String, Object> featureManagement) {
         this.featureManagement = featureManagement;
     }
     
-    public void addFeature(Feature feature) {
+    public void addFeature(String key, Object feature) {
         if (featureManagement == null) {
-            featureManagement = new HashMap<String, Feature>();
+            featureManagement = new HashMap<String, Object>();
         }
         if (feature != null) {
-            featureManagement.put(feature.getId(), feature);
+            featureManagement.put(key, feature);
         }
     }
 }
