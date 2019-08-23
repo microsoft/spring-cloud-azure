@@ -47,8 +47,6 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     
     private static final String FEATURE_FLAG_PREFIX = ".appconfig.featureflag/";
 
-    private static final String FEATURE_FLAG_PREFIX = ".appconfig.featureflag/";
-
     public AzureConfigPropertySource(String context, ConfigServiceOperations operations, String storeName,
             String label, AzureCloudConfigProperties azureProperties) {
         // The context alone does not uniquely define a PropertySource, append storeName
