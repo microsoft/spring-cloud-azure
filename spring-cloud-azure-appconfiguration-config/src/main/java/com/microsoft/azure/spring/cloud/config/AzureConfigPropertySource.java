@@ -24,8 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.util.ReflectionUtils;
 
-import com.azure.core.http.rest.PagedFlux;
-import com.azure.core.http.rest.PagedResponse;
 import com.azure.data.appconfiguration.ConfigurationAsyncClient;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
@@ -36,8 +34,6 @@ import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureManagementItem;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
-
-import reactor.core.publisher.Flux;
 
 public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigurationAsyncClient> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigPropertySource.class);
@@ -95,46 +91,24 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
      */
     public void initProperties(PropertyCache propertyCache, ClientStore clients)
             throws IOException, URISyntaxException {
-        ConfigurationAsyncClient client = clients.getConfigurationClient(storeName);
         Date date = new Date();
+        SettingSelector settingSelector = new SettingSelector();
+        if (!label.equals("%00")) {
+            settingSelector.labels(label);
+        }
         if (propertyCache.getContext(storeName) == null) {
             propertyCache.addContext(storeName, context);
+            
             // * for wildcard match
-
-            SettingSelector settingSelector = new SettingSelector();
             settingSelector.keys(context + "*");
-            if (!label.equals("%00")) {
-                settingSelector.labels(label);
-            }
+            
+            // Reading in Settings + Key Vault Values
             List<ConfigurationSetting> settings = clients.listSettings(settingSelector, storeName);
 
             for (ConfigurationSetting item : settings) {
                 String key = item.key().trim().substring(context.length()).replace('/', '.');
                 if (item.contentType().equals(KEY_VAULT_CONTENT_TYPE)) {
-                    String uriString = item.value().substring(8, item.value().length() - 2);
-                    try {
-                        URI uri = new URI(uriString);
-                        KeyVaultClient keyVaultClient = clients.getKeyVaultClient(uri.getHost());
-                        if (keyVaultClient != null) {
-                            try {
-                                SecretBundle secretBundle = keyVaultClient.getSecret(uriString);
-                                properties.put(key, secretBundle.value());
-                            } catch (Exception e) {
-                                logger.error(e.getMessage());
-                            }
-                        } else {
-                            logger.error("Found KeyVault Secret without an associated KeyVaultClient.");
-                            if (azureProperties.isFailFast()) {
-                                // throw new IOException(
-                                // "Failed Processing KeyVault Secret without an
-                                // associated
-                                // KeyVaultClient.");
-                            }
-                        }
-                    } catch (URISyntaxException e) {
-                        e.printStackTrace();
-                    }
-
+                    getKeyVaultValue(key, item.value(), item.contentType(), clients);
                 } else {
                     properties.put(key, item.value());
                 }
@@ -142,53 +116,26 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
             }
 
             // Reading In Features
-            settingSelector = new SettingSelector();
             settingSelector.keys("*appconfig*");
-            if (!label.equals("%00")) {
-                settingSelector.labels(label);
-            }
+            
             settings = clients.listSettings(settingSelector, storeName);
             createFeatureSet(settings, propertyCache, date);
         } else {
             // Using Cached values, first updates cache then sets new properties.
-            if (propertyCache.getRefreshKeys(storeName) != null &&
-                    propertyCache.getRefreshKeys(storeName).size() > 0) {
+            if (propertyCache.hasRefreshKeys(storeName)) {
                 for (String refreshKey : propertyCache.getRefreshKeys(storeName)) {
-                    SettingSelector settingSelector = new SettingSelector();
                     settingSelector.keys(refreshKey);
-                    if (!label.equals("%00")) {
-                        settingSelector.labels(label);
-                    }
-                    PagedFlux<ConfigurationSetting> settings = client.listSettings(settingSelector);
-                    Flux<PagedResponse<ConfigurationSetting>> page = settings.byPage();
-                    List<PagedResponse<ConfigurationSetting>> pages = page.collectList().block();
-                    for (PagedResponse<ConfigurationSetting> pagedResponse : pages) {
-                        propertyCache.addKeyValuesToCache(pagedResponse.items(), storeName, date);
-                    }
+                    
+                    List<ConfigurationSetting> settings = clients.listSettings(settingSelector, storeName);
+                    propertyCache.addKeyValuesToCache(settings, storeName, date);
                 }
             }
 
             for (String key : propertyCache.getKeySet(storeName)) {
                 CachedKey cachedKey = propertyCache.getCache().get(key);
                 if (key.startsWith(context) && cachedKey.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
-                    if (cachedKey.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
-                        String value = cachedKey.getValue();
-                        String uriString = value.substring(8, value.length() - 2);
-                        URI uri = new URI(uriString);
-
-                        KeyVaultClient keyVaultClient = clients.getKeyVaultClient(uri.getHost());
-                        if (keyVaultClient != null) {
-                            SecretBundle secretBundle = keyVaultClient.getSecret(uriString);
-                            key = key.trim().substring(context.length()).replace('/', '.');
-                            properties.put(key, secretBundle.value());
-                        } else {
-                            logger.error("Found KeyVault Secret without an associated KeyVaultClient.");
-                            if (azureProperties.isFailFast()) {
-                                throw new IOException(
-                                        "Failed Processing KeyVault Secret without an associated KeyVaultClient.");
-                            }
-                        }
-                    }
+                    key = key.trim().substring(context.length()).replace('/', '.');
+                    getKeyVaultValue(key, cachedKey.getValue(), cachedKey.getContentType(), clients);
                 } else if (key.startsWith(context)) {
                     String trimedKey = key.trim().substring(context.length()).replace('/', '.');
                     properties.put(trimedKey, propertyCache.getCachedValue(key));
@@ -302,5 +249,25 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
             }
         }
         return feature;
+    }
+
+    private void getKeyVaultValue(String key, String value, String contentType, ClientStore clients)
+            throws IOException, URISyntaxException {
+        if (contentType.equals(KEY_VAULT_CONTENT_TYPE)) {
+            String uriString = value.substring(8, value.length() - 2);
+            URI uri = new URI(uriString);
+
+            KeyVaultClient keyVaultClient = clients.getKeyVaultClient(uri.getHost());
+            if (keyVaultClient != null) {
+                SecretBundle secretBundle = keyVaultClient.getSecret(uriString);
+                properties.put(key, secretBundle.value());
+            } else {
+                logger.error("Found KeyVault Secret without an associated KeyVaultClient.");
+                if (azureProperties.isFailFast()) {
+                    throw new IOException(
+                            "Failed Processing KeyVault Secret without an associated KeyVaultClient.");
+                }
+            }
+        }
     }
 }

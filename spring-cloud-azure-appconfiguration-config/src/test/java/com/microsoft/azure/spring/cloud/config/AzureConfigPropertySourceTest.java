@@ -25,6 +25,9 @@ import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_VALUE_2
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_VALUE_3;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_VALUE_VAULT_1;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.createItem;
+import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_FLAG_CONTENT_TYPE;
+import static com.microsoft.azure.spring.cloud.config.Constants.KEY_VAULT_CONTENT_TYPE;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -88,11 +91,6 @@ public class AzureConfigPropertySourceTest {
             TEST_LABEL_VAULT_1);
 
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
-
-    private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
-
-    private static final String KEY_VAULT_CONTENT_TYPE = 
-            "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8";
 
     private AzureConfigPropertySource propertySource;
 
@@ -168,12 +166,11 @@ public class AzureConfigPropertySourceTest {
 
     @Test
     public void testPropCanBeInitAndQueried() {
-        propertyCache = new PropertyCache();
+        propertyCache = PropertyCache.resetPropertyCache();
 
-        when(clientStoreMock.getConfigurationClient(Mockito.anyString())).thenReturn(configClientMock);
-        when(itemsIteratorMock.hasNext()).thenReturn(true).thenReturn(false).thenReturn(true).thenReturn(false)
-                .thenReturn(true).thenReturn(false);
-        when(pagedResponseMock.items()).thenReturn(testItems).thenReturn(FEATURE_ITEMS);
+        when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(testItems)
+                .thenReturn(FEATURE_ITEMS);
+
         try {
             propertySource.initProperties(propertyCache, clientStoreMock);
         } catch (IOException | URISyntaxException e) {
@@ -195,13 +192,12 @@ public class AzureConfigPropertySourceTest {
 
     @Test
     public void testPropertyNameSlashConvertedToDots() {
-        propertyCache = new PropertyCache();
+        propertyCache = PropertyCache.resetPropertyCache();
         ConfigurationSetting slashedProp = createItem(TEST_CONTEXT, TEST_SLASH_KEY, TEST_SLASH_VALUE, null);
         List<ConfigurationSetting> settings = new ArrayList<ConfigurationSetting>();
         settings.add(slashedProp);
-        when(clientStoreMock.getConfigurationClient(Mockito.anyString())).thenReturn(configClientMock);
-        when(itemsIteratorMock.hasNext()).thenReturn(true).thenReturn(false);
-        when(pagedResponseMock.items()).thenReturn(settings);
+        when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(settings)
+                .thenReturn(new ArrayList<ConfigurationSetting>());
 
         try {
             propertySource.initProperties(propertyCache, clientStoreMock);
@@ -220,10 +216,10 @@ public class AzureConfigPropertySourceTest {
 
     @Test
     public void testFeatureFlagCanBeInitedAndQueried() {
-        propertyCache = new PropertyCache();
-        when(clientStoreMock.getConfigurationClient(Mockito.anyString())).thenReturn(configClientMock);
-        when(itemsIteratorMock.hasNext()).thenReturn(true).thenReturn(false).thenReturn(true).thenReturn(false);
-        when(pagedResponseMock.items()).thenReturn(FEATURE_ITEMS);
+        propertyCache = PropertyCache.resetPropertyCache();
+        when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString()))
+                .thenReturn(new ArrayList<ConfigurationSetting>()).thenReturn(FEATURE_ITEMS);
+
         try {
             propertySource.initProperties(propertyCache, clientStoreMock);
         } catch (IOException | URISyntaxException e) {
@@ -248,7 +244,7 @@ public class AzureConfigPropertySourceTest {
 
     @Test
     public void testWatchUpdateConfigurations() throws ParseException {
-        propertyCache = new PropertyCache();
+        propertyCache = PropertyCache.resetPropertyCache();
         Duration delay = Duration.ofSeconds(0);
 
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
@@ -283,13 +279,12 @@ public class AzureConfigPropertySourceTest {
 
     @Test
     public void testKeyVaultTest() throws ParseException {
-        propertyCache = new PropertyCache();
+        propertyCache = PropertyCache.resetPropertyCache();
         testItems.add(keyVaultItem);
 
-        when(clientStoreMock.getConfigurationClient(Mockito.anyString())).thenReturn(configClientMock);
+        when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(testItems)
+                .thenReturn(new ArrayList<ConfigurationSetting>());
         when(clientStoreMock.getKeyVaultClient(Mockito.anyString())).thenReturn(keyVaultClient);
-        when(itemsIteratorMock.hasNext()).thenReturn(true).thenReturn(false);
-        when(pagedResponseMock.items()).thenReturn(testItems);
         when(keyVaultClient.getSecret(Mockito.any())).thenReturn(secretBundleMock);
         when(secretBundleMock.value()).thenReturn("mySecret");
         Duration delay = Duration.ofSeconds(0);
@@ -323,7 +318,7 @@ public class AzureConfigPropertySourceTest {
 
     @Test
     public void testKeyVaultReloadTest() throws ParseException {
-        propertyCache = new PropertyCache();
+        propertyCache = PropertyCache.resetPropertyCache();
         testItems.add(keyVaultItem);
 
         when(clientStoreMock.getConfigurationClient(Mockito.anyString())).thenReturn(configClientMock);

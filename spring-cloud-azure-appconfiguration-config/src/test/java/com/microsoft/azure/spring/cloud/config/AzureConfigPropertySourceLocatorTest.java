@@ -93,7 +93,7 @@ public class AzureConfigPropertySourceLocatorTest {
 
     @Test
     public void compositeSourceIsCreated() {
-        locator = new AzureConfigPropertySourceLocator(properties, new PropertyCache(), configStoreMock);
+        locator = new AzureConfigPropertySourceLocator(properties, PropertyCache.resetPropertyCache(), configStoreMock);
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
 
@@ -111,7 +111,7 @@ public class AzureConfigPropertySourceLocatorTest {
     @Test
     public void compositeSourceIsCreatedForPrefixedConfig() {
         properties.getStores().get(0).setPrefix(PREFIX);
-        locator = new AzureConfigPropertySourceLocator(properties, new PropertyCache(), configStoreMock);
+        locator = new AzureConfigPropertySourceLocator(properties, PropertyCache.resetPropertyCache(), configStoreMock);
 
         PropertySource<?> source = locator.locate(environment);
 
@@ -134,7 +134,7 @@ public class AzureConfigPropertySourceLocatorTest {
         when(environment.getActiveProfiles()).thenReturn(new String[] {});
         when(environment.getProperty("spring.application.name")).thenReturn(null);
         properties.setName(null);
-        locator = new AzureConfigPropertySourceLocator(properties, new PropertyCache(), configStoreMock);
+        locator = new AzureConfigPropertySourceLocator(properties, PropertyCache.resetPropertyCache(), configStoreMock);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
@@ -152,7 +152,7 @@ public class AzureConfigPropertySourceLocatorTest {
         when(environment.getActiveProfiles()).thenReturn(new String[] {});
         when(environment.getProperty("spring.application.name")).thenReturn("");
         properties.setName("");
-        locator = new AzureConfigPropertySourceLocator(properties, new PropertyCache(), configStoreMock);
+        locator = new AzureConfigPropertySourceLocator(properties, PropertyCache.resetPropertyCache(), configStoreMock);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
@@ -169,9 +169,9 @@ public class AzureConfigPropertySourceLocatorTest {
     public void defaultFailFastThrowException() {
         expected.expect(RuntimeException.class);
 
-        locator = new AzureConfigPropertySourceLocator(properties, new PropertyCache(), configStoreMock);
+        locator = new AzureConfigPropertySourceLocator(properties, PropertyCache.resetPropertyCache(), configStoreMock);
 
-        when(configClientMock.listSettings(Mockito.any())).thenThrow(new RuntimeException());
+        when(configStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenThrow(new RuntimeException());
         assertThat(properties.isFailFast()).isTrue();
         locator.locate(environment);
     }
@@ -179,7 +179,7 @@ public class AzureConfigPropertySourceLocatorTest {
     @Test
     public void notFailFastShouldPass() {
         properties.setFailFast(false);
-        locator = new AzureConfigPropertySourceLocator(properties, new PropertyCache(), configStoreMock);
+        locator = new AzureConfigPropertySourceLocator(properties, PropertyCache.resetPropertyCache(), configStoreMock);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
@@ -193,7 +193,7 @@ public class AzureConfigPropertySourceLocatorTest {
         TestUtils.addStore(properties, TEST_STORE_NAME_1, TEST_CONN_STRING);
         TestUtils.addStore(properties, TEST_STORE_NAME_2, TEST_CONN_STRING_2);
 
-        locator = new AzureConfigPropertySourceLocator(properties, new PropertyCache(), configStoreMock);
+        locator = new AzureConfigPropertySourceLocator(properties, PropertyCache.resetPropertyCache(), configStoreMock);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);

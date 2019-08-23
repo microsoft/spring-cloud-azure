@@ -30,13 +30,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.beans.BeanInstantiationException;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
@@ -111,13 +110,6 @@ public class AzureConfigBootstrapConfigurationTest {
 
     @Test
     public void clientsBeanCreated() throws Exception {
-        whenNew(Builder.class).withNoArguments().thenReturn(builderMock);
-        when(builderMock.withBaseUrl(Mockito.anyString())).thenReturn(builderMock);
-        when(builderMock.withCredentials(Mockito.any())).thenReturn(builderMock);
-        when(builderMock.withSerializerAdapter(Mockito.any())).thenReturn(builderMock);
-        when(builderMock.withResponseBuilderFactory(Mockito.any())).thenReturn(builderMock);
-        when(builderMock.build()).thenReturn(restClientMock);
-
         whenNew(KeyVaultClient.class).withAnyArguments().thenReturn(keyVaultClientMock);
 
         contextRunner.withPropertyValues(propPair(FAIL_FAST_PROP, "false"))
@@ -129,7 +121,6 @@ public class AzureConfigBootstrapConfigurationTest {
     @Test
     public void armEmptyConnectionStringShouldFail() throws Exception {
         whenNew(MSICredentials.class).withAnyArguments().thenReturn(msiCredentials);
-        whenNew(ClientStore.class).withAnyArguments().thenReturn(clientStoreMock);
 
         when(msiCredentials.getToken(anyString())).thenReturn(TEST_ACCESS_TOKEN);
 
@@ -139,11 +130,12 @@ public class AzureConfigBootstrapConfigurationTest {
 
         contextRunner.run(context -> {
             try {
-                context.getBean(AzureCloudConfigProperties.class);
+                context.getBean(ClientStore.class);
                 Assert.fail("Empty connection string should fail.");
             } catch (Exception e) {
-                assertThat(context).getFailure().hasCauseInstanceOf(BeanInstantiationException.class);
-                assertThat(context).getFailure().hasStackTraceContaining("Connection string cannot be empty");
+                System.out.println(context.getStartupFailure().getCause());
+                assertThat(context).getFailure().hasCauseInstanceOf(BeanCreationException.class);
+                assertThat(context).getFailure().hasStackTraceContaining("Failed to load Config Store.");
             }
         });
     }

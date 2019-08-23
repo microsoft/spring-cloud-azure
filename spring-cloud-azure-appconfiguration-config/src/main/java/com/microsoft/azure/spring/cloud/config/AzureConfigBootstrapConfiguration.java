@@ -70,7 +70,7 @@ public class AzureConfigBootstrapConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public PropertyCache getPropertyCache() {
-        return new PropertyCache();
+        return PropertyCache.getPropertyCache();
     }
 
     @Bean

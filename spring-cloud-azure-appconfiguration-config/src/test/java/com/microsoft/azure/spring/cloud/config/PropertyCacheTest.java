@@ -51,7 +51,7 @@ public class PropertyCacheTest {
         keyValueItem.key(TEST_KEY_2);
         keys.add(keyValueItem);
 
-        propertyCache = new PropertyCache();
+        propertyCache = PropertyCache.resetPropertyCache();
         propertyCache.addKeyValuesToCache(keys, TEST_STORE_1, new Date());
     }
 

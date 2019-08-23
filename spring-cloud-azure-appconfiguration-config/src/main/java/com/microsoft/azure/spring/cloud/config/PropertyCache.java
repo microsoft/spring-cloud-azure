@@ -26,10 +26,24 @@ public class PropertyCache {
 
     private ConcurrentHashMap<String, String> contextLookup;
 
-    public PropertyCache() {
+    private static PropertyCache propertyCache;
+
+    private PropertyCache() {
         cache = new ConcurrentHashMap<String, CachedKey>();
         refreshKeys = new ConcurrentHashMap<String, List<String>>();
         contextLookup = new ConcurrentHashMap<String, String>();
+    }
+    
+    public static PropertyCache getPropertyCache() {
+        if (propertyCache == null) {
+            propertyCache = new PropertyCache();
+        }
+        return propertyCache;
+    }
+    
+    public static PropertyCache resetPropertyCache() {
+        propertyCache = new PropertyCache();
+        return propertyCache;
     }
 
     /**
@@ -40,6 +54,10 @@ public class PropertyCache {
      */
     public List<String> getRefreshKeys(String storeName) {
         return refreshKeys.get(storeName);
+    }
+    
+    public boolean hasRefreshKeys(String storeName) {
+        return refreshKeys.get(storeName) != null && refreshKeys.get(storeName).size() > 0;
     }
     
     /**

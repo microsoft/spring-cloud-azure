@@ -34,6 +34,7 @@ import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationEventPublisher;
 
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
+import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 @RunWith(PowerMockRunner.class)
@@ -58,6 +59,9 @@ public class AzureConfigCloudWatchTest {
     @Mock
     Date date;
 
+    @Mock
+    private ClientStore clientStoreMock;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -79,13 +83,13 @@ public class AzureConfigCloudWatchTest {
         kvi.value("TestValue");
         keys.add(kvi);
 
-        propertyCache = new PropertyCache();
+        propertyCache = PropertyCache.resetPropertyCache();
         ConfigurationSetting item = new ConfigurationSetting();
         item.key("fake-etag/application/test.key");
         item.etag("fake-etag");
         propertyCache.addToCache(item, TEST_STORE_NAME, new Date());
 
-        watch = new AzureCloudConfigWatch(properties, contextsMap, propertyCache, null);
+        watch = new AzureCloudConfigWatch(properties, contextsMap, propertyCache, clientStoreMock);
     }
 
     @Test
@@ -93,7 +97,7 @@ public class AzureConfigCloudWatchTest {
         PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
         watch.setApplicationEventPublisher(eventPublisher);
 
-        List<ConfigurationSetting> mockResponse = initialResponse();
+        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(initialResponse());
 
         when(date.after(Mockito.any(Date.class))).thenReturn(true);
         watch.refreshConfigurations();
@@ -103,6 +107,8 @@ public class AzureConfigCloudWatchTest {
     @Test
     public void updatedEtagShouldPublishEvent() throws Exception {
         PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
+        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(initialResponse())
+        .thenReturn(updatedResponse());
         watch.setApplicationEventPublisher(eventPublisher);
 
         when(date.after(Mockito.any(Date.class))).thenReturn(true);
@@ -124,6 +130,10 @@ public class AzureConfigCloudWatchTest {
     @Test
     public void nonUpdatedEtagsRemoved() throws Exception {
         PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
+
+        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(initialResponse())
+                .thenReturn(updatedResponse()).thenReturn(initialResponse());
+
         watch.setApplicationEventPublisher(eventPublisher);
 
         when(date.after(Mockito.any(Date.class))).thenReturn(true);
