@@ -27,9 +27,13 @@ public class BaseAppConfigurationPolicy implements HttpPipelinePolicy {
 
     public static final String USER_AGENT = String.format("%s/%s", StringUtils.remove(PACKAGE_NAME, " "),
             BaseAppConfigurationPolicy.class.getPackage().getImplementationVersion());
+    
+    int count = 0;
 
     @Override
     public Mono<HttpResponse> process(HttpPipelineCallContext context, HttpPipelineNextPolicy next) {
+        count++;
+        System.out.println(count);
         String sdkUserAgent = context.httpRequest().headers().get(HttpHeaders.USER_AGENT).value();
         context.httpRequest().headers().put(HttpHeaders.USER_AGENT, USER_AGENT + "; " + sdkUserAgent);
         context.httpRequest().headers().put("Correlation-Context", getTracingInfo(context.httpRequest()));

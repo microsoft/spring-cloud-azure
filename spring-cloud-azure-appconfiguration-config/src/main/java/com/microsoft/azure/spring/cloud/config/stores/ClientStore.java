@@ -17,11 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
 
-import com.azure.core.http.HttpPipeline;
-import com.azure.core.http.HttpPipelineBuilder;
-import com.azure.core.http.policy.HttpPipelinePolicy;
 import com.azure.core.http.rest.PagedFlux;
-import com.azure.core.implementation.http.policy.spi.PolicyProvider;
 import com.azure.data.appconfiguration.ConfigurationAsyncClient;
 import com.azure.data.appconfiguration.ConfigurationClientBuilder;
 import com.azure.data.appconfiguration.credentials.ConfigurationClientCredentials;
@@ -50,16 +46,23 @@ public class ClientStore {
 
     public ClientStore(AzureCloudConfigProperties properties) {
         buildConfigurationClientStores(properties);
-        buildKeyVaultCients(properties);
+        buildKeyVaultClients(properties);
     }
 
     private void buildConfigurationClientStores(AzureCloudConfigProperties properties) {
         configClients = new HashMap<String, ConfigurationAsyncClient>();
         for (ConfigStore store : properties.getStores()) {
             try {
-                ConfigurationAsyncClient client = new ConfigurationClientBuilder()
-                        .credential(new ConfigurationClientCredentials(store.getConnectionString()))
-                        .addPolicy(new BaseAppConfigurationPolicy()).buildAsyncClient();
+                ConfigurationClientBuilder builder = new ConfigurationClientBuilder()
+                        .addPolicy(new BaseAppConfigurationPolicy());
+                
+                // Using Connection String not Managed Identity
+                if (store.getConnectionString() != null) {
+                    builder.credential(new ConfigurationClientCredentials(store.getConnectionString()));
+                }
+                
+                ConfigurationAsyncClient client = builder.buildAsyncClient();
+                
                 configClients.put(store.getName(), client);
             } catch (InvalidKeyException | NoSuchAlgorithmException | IllegalArgumentException e) {
                 LOGGER.error("Failed to load Config Store.");
@@ -70,7 +73,7 @@ public class ClientStore {
         }
     }
 
-    private void buildKeyVaultCients(AzureCloudConfigProperties properties) {
+    private void buildKeyVaultClients(AzureCloudConfigProperties properties) {
         keyVaultClients = new HashMap<String, KeyVaultClient>();
         AzureEnvironment environment = properties.getEnvironment();
         for (KeyVaultStore keyVaultStore : properties.getKeyVaultStores()) {
@@ -84,8 +87,13 @@ public class ClientStore {
 
             AzureTokenCredentials credentials = new ApplicationTokenCredentials(clientId, domain, secret, environment);
 
-            RestClient restClient = new Builder().withBaseUrl(baseUrl).withCredentials(credentials)
-                    .withSerializerAdapter(azureJacksonAdapter).withResponseBuilderFactory(factory).build();
+            Builder builder = new Builder();
+            builder.withBaseUrl(baseUrl);
+            builder.withCredentials(credentials);
+            builder.withSerializerAdapter(azureJacksonAdapter);
+            builder.withResponseBuilderFactory(factory);
+            
+            RestClient restClient = builder.build();
 
             try {
                 URI uri = new URI(baseUrl);
@@ -114,22 +122,41 @@ public class ClientStore {
      * @param storeName
      * @return
      */
-    public List<ConfigurationSetting> listSettingRevisons(SettingSelector settingSelector, String storeName) {
+    public final List<ConfigurationSetting> listSettingRevisons(SettingSelector settingSelector, String storeName) {
         ConfigurationAsyncClient client = getConfigurationClient(storeName);
         return fluxResponseToListTest(client.listSettingRevisions(settingSelector));
     }
 
-    public List<ConfigurationSetting> listSettings(SettingSelector settingSelector, String storeName) {
+    /**'
+     * 
+     * @param settingSelector
+     * @param storeName
+     * @return
+     */
+    public final List<ConfigurationSetting> listSettings(SettingSelector settingSelector, String storeName) {
         ConfigurationAsyncClient client = getConfigurationClient(storeName);
         return fluxResponseToListTest(client.listSettings(settingSelector));
     }
 
-    private List<ConfigurationSetting> fluxResponseToListTest(PagedFlux<ConfigurationSetting> response) {
+    /**
+     * 
+     * @param response
+     * @return
+     */
+    private final List<ConfigurationSetting> fluxResponseToListTest(PagedFlux<ConfigurationSetting> response) {
         List<ConfigurationSetting> items = new ArrayList<ConfigurationSetting>();
         Disposable ready = response.byPage().subscribe(page -> items.addAll(page.items()));
         while (!ready.isDisposed()) {
         }
         return items;
+    }
+    
+    public HashMap<String, KeyVaultClient> getKeyVaultClients() {
+        return keyVaultClients;
+    }
+    
+    public HashMap<String, ConfigurationAsyncClient> getConfigurationClient() {
+        return configClients;
     }
 
 }

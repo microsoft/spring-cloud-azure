@@ -23,7 +23,6 @@ import java.io.InputStream;
 import org.apache.http.HttpEntity;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicStatusLine;
 import org.junit.Assert;
 import org.junit.Before;
@@ -91,27 +90,23 @@ public class AzureConfigBootstrapConfigurationTest {
                     .thenReturn(new BasicStatusLine(new ProtocolVersion("", 0, 0), 200, ""));
             when(mockClosableHttpResponse.getEntity()).thenReturn(mockHttpEntity);
             when(mockHttpEntity.getContent()).thenReturn(mockInputStream);
+            
+            whenNew(Builder.class).withNoArguments().thenReturn(builderMock);
         } catch (Exception e) {
             fail();
         }
     }
 
     @Test
-    public void closeableHttpClientBeanCreated() {
-        contextRunner.withPropertyValues(propPair(FAIL_FAST_PROP, "false"))
-                .run(context -> assertThat(context).hasSingleBean(CloseableHttpClient.class));
-    }
-
-    @Test
-    public void propertySourceLocatorBeanCreated() {
+    public void propertySourceLocatorBeanCreated() throws Exception {
+        whenNew(ClientStore.class).withAnyArguments().thenReturn(clientStoreMock);
         contextRunner.withPropertyValues(propPair(FAIL_FAST_PROP, "false"))
                 .run(context -> assertThat(context).hasSingleBean(AzureConfigPropertySourceLocator.class));
     }
 
     @Test
     public void clientsBeanCreated() throws Exception {
-        whenNew(KeyVaultClient.class).withAnyArguments().thenReturn(keyVaultClientMock);
-
+        whenNew(ClientStore.class).withAnyArguments().thenReturn(clientStoreMock);
         contextRunner.withPropertyValues(propPair(FAIL_FAST_PROP, "false"))
                 .run(context -> {
                     assertThat(context).hasSingleBean(ClientStore.class);
@@ -133,7 +128,6 @@ public class AzureConfigBootstrapConfigurationTest {
                 context.getBean(ClientStore.class);
                 Assert.fail("Empty connection string should fail.");
             } catch (Exception e) {
-                System.out.println(context.getStartupFailure().getCause());
                 assertThat(context).getFailure().hasCauseInstanceOf(BeanCreationException.class);
                 assertThat(context).getFailure().hasStackTraceContaining("Failed to load Config Store.");
             }

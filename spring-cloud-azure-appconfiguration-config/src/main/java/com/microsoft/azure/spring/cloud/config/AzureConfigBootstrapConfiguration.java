@@ -7,16 +7,12 @@ package com.microsoft.azure.spring.cloud.config;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import com.microsoft.azure.AzureEnvironment;
@@ -58,11 +54,6 @@ public class AzureConfigBootstrapConfiguration {
     }
 
     @Bean
-    public CloseableHttpClient closeableHttpClient() {
-        return HttpClients.createDefault();
-    }
-
-    @Bean
     public AzureConfigPropertySourceLocator sourceLocator(
             AzureCloudConfigProperties properties, PropertyCache propertyCache,
             ClientStore clients) {
@@ -76,11 +67,6 @@ public class AzureConfigBootstrapConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
-        return PropertyCache.getPropertyCache();
-    }
-
-	@Bean
     public ClientStore buildClientStores(AzureCloudConfigProperties properties) {
         return new ClientStore(properties);
     }

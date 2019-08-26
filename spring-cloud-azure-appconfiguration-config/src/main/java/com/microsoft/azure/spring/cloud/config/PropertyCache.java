@@ -28,8 +28,6 @@ public class PropertyCache {
     
     private static PropertyCache propertyCache;
 
-    private static PropertyCache propertyCache;
-
     private PropertyCache() {
         cache = new ConcurrentHashMap<String, CachedKey>();
         refreshKeys = new ConcurrentHashMap<String, List<String>>();
