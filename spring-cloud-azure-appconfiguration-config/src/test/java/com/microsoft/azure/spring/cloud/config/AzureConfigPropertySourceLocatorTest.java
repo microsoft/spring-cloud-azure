@@ -83,7 +83,7 @@ public class AzureConfigPropertySourceLocatorTest {
         properties = new AzureCloudConfigProperties();
         TestUtils.addStore(properties, TEST_STORE_NAME, TEST_CONN_STRING);
         properties.setName(APPLICATION_NAME);
-
+        PropertyCache.resetPropertyCache();
         when(configClientMock.listSettings(Mockito.any())).thenReturn(settingsMock);
         when(settingsMock.byPage()).thenReturn(pageMock);
         when(pageMock.collectList()).thenReturn(collectionMock);

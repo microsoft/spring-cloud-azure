@@ -220,6 +220,7 @@ public class AzureConfigPropertySourceTest {
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString()))
                 .thenReturn(new ArrayList<ConfigurationSetting>()).thenReturn(FEATURE_ITEMS);
 
+
         try {
             propertySource.initProperties(propertyCache, clientStoreMock);
         } catch (IOException | URISyntaxException e) {

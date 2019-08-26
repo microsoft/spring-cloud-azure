@@ -25,6 +25,8 @@ public class PropertyCache {
     private ConcurrentMap<String, List<String>> refreshKeys;
 
     private ConcurrentHashMap<String, String> contextLookup;
+    
+    private static PropertyCache propertyCache;
 
     private static PropertyCache propertyCache;
 
