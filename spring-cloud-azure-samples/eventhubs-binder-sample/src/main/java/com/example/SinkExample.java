@@ -32,15 +32,15 @@ public class SinkExample {
         });
     }
 
-    // Replace destination into spring.cloud.stream.bindings.input.destination
-    // Replace group into spring.cloud.stream.bindings.input.group
+    // Replace destination with spring.cloud.stream.bindings.input.destination
+    // Replace group with spring.cloud.stream.bindings.input.group
     @ServiceActivator(inputChannel = "{destination}.{group}.errors")
     public void consumerError(Message<?> message) {
         System.out.println("Handling customer ERROR: " + message);
     }
 
 
-    // Replace destination into spring.cloud.stream.bindings.output.destination
+    // Replace destination with spring.cloud.stream.bindings.output.destination
     @ServiceActivator(inputChannel = "{destination}.errors")
     public void producerError(Message<?> message) {
         System.out.println("Handling Producer ERROR: " + message);
