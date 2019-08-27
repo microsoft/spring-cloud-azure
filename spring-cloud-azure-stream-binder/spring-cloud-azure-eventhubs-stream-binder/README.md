@@ -32,7 +32,7 @@ Please use this [sample](../../spring-cloud-azure-samples/eventhubs-binder-sampl
 
 - [Dependency Management](#dependency-management)
 - [Configuration Options](#configuration-options)
-- [Error Channel](#configuration-options)
+- [Error Channel](#error-channels)
 
 ### Dependency Management
 
