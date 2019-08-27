@@ -52,6 +52,7 @@ public class EventHubMessageChannelBinder extends
         handler.setBeanFactory(getBeanFactory());
         handler.setSync(producerProperties.getExtension().isSync());
         handler.setSendTimeout(producerProperties.getExtension().getSendTimeout());
+        handler.setSendFailureChannel(errorChannel);
         if (producerProperties.isPartitioned()) {
             handler.setPartitionKeyExpressionString(
                     "'partitionKey-' + headers['" + BinderHeaders.PARTITION_HEADER + "']");
@@ -79,6 +80,8 @@ public class EventHubMessageChannelBinder extends
         EventHubInboundChannelAdapter inboundAdapter =
                 new EventHubInboundChannelAdapter(destination.getName(), this.eventHubOperation, group);
         inboundAdapter.setBeanFactory(getBeanFactory());
+        ErrorInfrastructure errorInfrastructure = registerErrorInfrastructure(destination, group, properties);
+        inboundAdapter.setErrorChannel(errorInfrastructure.getErrorChannel());
         return inboundAdapter;
     }
 
