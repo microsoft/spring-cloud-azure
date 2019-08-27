@@ -43,9 +43,9 @@ public class FeatureManager {
 
     @Autowired
     private ApplicationContext context;
-    
+
     private FeatureManagementConfigProperties properties;
-    
+
     public FeatureManager(FeatureManagementConfigProperties properties) {
         this.properties = properties;
     }
@@ -61,38 +61,36 @@ public class FeatureManager {
      */
     public boolean isEnabled(String feature) {
         boolean enabled = false;
-        if (featureManagement == null || featureManagement.getFeatureManagement() == null || 
+        if (featureManagement == null || featureManagement.getFeatureManagement() == null ||
                 featureManagement.getOnOff() == null) {
             return false;
         }
 
         Feature featureItem = featureManagement.getFeatureManagement().get(feature);
         Boolean boolFeature = featureManagement.getOnOff().get(feature);
-        
+
         if (boolFeature != null) {
             return boolFeature;
         } else if (featureItem == null) {
             return false;
         }
-        
-        if (featureItem.getEnabled()) {
-            for (FeatureFilterEvaluationContext filter : featureItem.getEnabledFor()) {
-                if (filter != null && filter.getName() != null) {
-                    try {
-                        FeatureFilter featureFilter = (FeatureFilter) context.getBean(filter.getName());
-                        enabled = featureFilter.evaluate(filter);
-                    } catch (NoSuchBeanDefinitionException e) {
-                        logger.error("Was unable to find Filter " + filter.getName()
-                                + ". Does the class exist and set as an @Component?");
-                        if (properties.isFailFast()) {
-                            logger.error("Fail fast is set and a Filter was unable to be found.");
-                            ReflectionUtils.rethrowRuntimeException(e);
-                        }
+
+        for (FeatureFilterEvaluationContext filter : featureItem.getEnabledFor()) {
+            if (filter != null && filter.getName() != null) {
+                try {
+                    FeatureFilter featureFilter = (FeatureFilter) context.getBean(filter.getName());
+                    enabled = featureFilter.evaluate(filter);
+                } catch (NoSuchBeanDefinitionException e) {
+                    logger.error("Was unable to find Filter " + filter.getName()
+                            + ". Does the class exist and set as an @Component?");
+                    if (properties.isFailFast()) {
+                        String message = "Fail fast is set and a Filter was unable to be found.";
+                        ReflectionUtils.rethrowRuntimeException(new FilterNotFoundException(message, e, filter));
                     }
                 }
-                if (enabled) {
-                    return enabled;
-                }
+            }
+            if (enabled) {
+                return enabled;
             }
         }
         return enabled;

@@ -9,8 +9,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -52,7 +50,7 @@ public class FeatureManagerTest {
 
     @Mock
     private ApplicationContext context;
-    
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -93,7 +91,6 @@ public class FeatureManagerTest {
         assertNotNull(featureManagement.getFeatureManagement().get(FEATURE_ID));
         Feature feature = featureManagement.getFeatureManagement().get(FEATURE_ID);
         assertEquals(FEATURE_ID, feature.getId());
-        assertTrue(feature.getEnabled());
         assertEquals(1, feature.getEnabledFor().size());
         FeatureFilterEvaluationContext zeroth = feature.getEnabledFor().get(0);
         assertEquals(FILTER_NAME, zeroth.getName());
@@ -115,10 +112,7 @@ public class FeatureManagerTest {
     public void isEnabledFeatureOff() {
         FeatureSet featureSet = new FeatureSet();
         HashMap<String, Object> features = new HashMap<String, Object>();
-        Feature off = new Feature();
-        off.setId("Off");
-        off.setEnabled(false);
-        features.put("Off", off);
+        features.put("Off", false);
         featureSet.setFeatureManagement(features);
         featureManager.setFeatureSet(featureSet);
 
@@ -153,12 +147,12 @@ public class FeatureManagerTest {
         features.put("On", onFeature);
         featureSet.setFeatureManagement(features);
         featureManager.setFeatureSet(featureSet);
-        
+
         when(context.getBean(Mockito.matches("AlwaysOn"))).thenReturn(new AlwaysOn());
 
         assertTrue(featureManager.isEnabled("On"));
     }
-    
+
     @Test
     public void isEnabledOnBoolean() {
         FeatureSet featureSet = new FeatureSet();
@@ -169,39 +163,37 @@ public class FeatureManagerTest {
 
         assertTrue(featureManager.isEnabled("On"));
     }
-    
+
     @Test
     public void featureManagerNotEnabledCorrectly() {
         assertFalse(featureManager.isEnabled(""));
         featureManager.setFeatureSet(null);
         assertFalse(featureManager.isEnabled(""));
     }
-    
+
     @Test
     public void bootstrapConfiguration() {
         FeatureSet featureSet = new FeatureSet();
         HashMap<String, Object> features = new HashMap<String, Object>();
         features.put("FeatureU", false);
         Feature featureV = new Feature();
-        HashMap<Integer, FeatureFilterEvaluationContext> filterMapper = 
-                new HashMap<Integer, FeatureFilterEvaluationContext>();
-        
+        HashMap<Integer, FeatureFilterEvaluationContext> filterMapper = new HashMap<Integer, FeatureFilterEvaluationContext>();
+
         FeatureFilterEvaluationContext enabledFor = new FeatureFilterEvaluationContext();
         enabledFor.setName("Random");
-        
+
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<String, Object>();
         parameters.put("chance", "50");
-        
+
         enabledFor.setParameters(parameters);
         filterMapper.put(0, enabledFor);
         featureV.setFilterMapper(filterMapper);
         features.put("FeatureV", featureV);
         featureSet.setFeatures(features);
-        
+
         assertNotNull(featureSet.getOnOff());
         assertNotNull(featureSet.getFeatureManagement());
-        
-        
+
         assertEquals(featureSet.getOnOff().get("FeatureU"), false);
         Feature feature = featureSet.getFeatureManagement().get("FeatureV");
         assertEquals(feature.getEnabledFor().size(), 1);
@@ -210,9 +202,9 @@ public class FeatureManagerTest {
         assertEquals(ffec.getParameters().size(), 1);
         assertEquals(ffec.getParameters().get("chance"), "50");
     }
-    
+
     @Component
-    public class AlwaysOn implements FeatureFilter{
+    public class AlwaysOn implements FeatureFilter {
 
         @Override
         public boolean evaluate(FeatureFilterEvaluationContext context) {

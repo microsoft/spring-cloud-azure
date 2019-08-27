@@ -25,6 +25,7 @@ public class TestConstants {
     public static final String DEFAULT_CONTEXT_PROP = "spring.cloud.azure.appconfiguration.default-context";
     public static final String CONFIG_ENABLED_PROP = "spring.cloud.azure.appconfiguration.enabled";
     public static final String WATCH_ENABLED_PROP = "spring.cloud.azure.appconfiguration.watch.enabled";
+    public static final String WATCH_DELAY_PROP = "spring.cloud.azure.appconfiguration.watch.delay";
     public static final String SEPARATOR_PROP = "spring.cloud.azure.appconfiguration.profile-separator";
 
     public static final String TEST_CONN_STRING =

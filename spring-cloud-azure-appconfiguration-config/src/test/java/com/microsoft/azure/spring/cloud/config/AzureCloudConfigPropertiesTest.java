@@ -23,18 +23,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AzureCloudConfigPropertiesTest {
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class));
+
     private static final String NO_ENDPOINT_CONN_STRING = "Id=fake-conn-id;Secret=ZmFrZS1jb25uLXNlY3JldA==";
-    private static final String NO_ID_CONN_STRING =
-            "Endpoint=https://fake.test.config.io;Secret=ZmFrZS1jb25uLXNlY3JldA==";
+
+    private static final String NO_ID_CONN_STRING = "Endpoint=https://fake.test.config.io;Secret=ZmFrZS1jb25uLXNlY3JldA==";
+
     private static final String NO_SECRET_CONN_STRING = "Endpoint=https://fake.test.config.io;Id=fake-conn-id;";
-    private static final String[] ILLEGAL_PREFIXES = {"/ config", "config"};
-    private static final String[] ILLEGAL_PROFILE_SEPARATOR = {"/", "\\", "."};
+
+    private static final String[] ILLEGAL_PREFIXES = { "/ config", "config" };
+
+    private static final String[] ILLEGAL_PROFILE_SEPARATOR = { "/", "\\", "." };
+
     private static final String ILLEGAL_LABELS = "*,my-label";
 
     @Test
     public void validInputShouldCreatePropertiesBean() {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING)).run(context -> {
-           assertThat(context).hasSingleBean(AzureCloudConfigProperties.class);
+            assertThat(context).hasSingleBean(AzureCloudConfigProperties.class);
         });
     }
 
@@ -63,8 +68,8 @@ public class AzureCloudConfigPropertiesTest {
     public void defaultContextShouldNotBeEmpty() {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                 propPair(DEFAULT_CONTEXT_PROP, "")).run(context -> {
-            assertInvalidField(context, "defaultContext");
-        });
+                    assertInvalidField(context, "defaultContext");
+                });
     }
 
     @Test
@@ -72,8 +77,8 @@ public class AzureCloudConfigPropertiesTest {
         Arrays.asList(ILLEGAL_PREFIXES).stream().forEach(prefix -> {
             this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                     propPair(PREFIX_PROP, prefix)).run(context -> {
-                assertInvalidField(context, "prefix");
-            });
+                        assertInvalidField(context, "prefix");
+                    });
         });
     }
 
@@ -83,7 +88,7 @@ public class AzureCloudConfigPropertiesTest {
             this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                     propPair(SEPARATOR_PROP, separator)).run(context -> {
                         assertInvalidField(context, "profileSeparator");
-            });
+                    });
         });
     }
 
@@ -91,37 +96,56 @@ public class AzureCloudConfigPropertiesTest {
     public void asteriskShouldNotBeIncludedInTheLabels() {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                 propPair(LABEL_PROP, ILLEGAL_LABELS)).run(context -> {
-            assertThat(context).getFailure()
-                    .hasStackTraceContaining("Label must not contain asterisk(*)");
-        });
+                    assertThat(context).getFailure()
+                            .hasStackTraceContaining("Label must not contain asterisk(*)");
+                });
     }
 
     @Test
     public void watchedKeyCanNotBeKeyPattern() {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                 propPair(WATCHED_KEY_PROP, TEST_WATCH_KEY_PATTERN)).run(context -> {
-           assertThat(context).getFailure().hasStackTraceContaining("Watched key can only be a single asterisk(*) " +
-            "or a specific key without asterisk(*)");
-        });
+                    assertThat(context).getFailure()
+                            .hasStackTraceContaining("Watched key can only be a single asterisk(*) " +
+                                    "or a specific key without asterisk(*)");
+                });
     }
 
     @Test
     public void storeNameCanBeInitIfConnectionStringConfigured() {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                 propPair(STORE_NAME_PROP, "")).run(context -> {
-            AzureCloudConfigProperties properties = context.getBean(AzureCloudConfigProperties.class);
-            assertThat(properties.getStores()).isNotNull();
-            assertThat(properties.getStores().size()).isEqualTo(1);
-            assertThat(properties.getStores().get(0).getName()).isEqualTo("fake");
-        });
+                    AzureCloudConfigProperties properties = context.getBean(AzureCloudConfigProperties.class);
+                    assertThat(properties.getStores()).isNotNull();
+                    assertThat(properties.getStores().size()).isEqualTo(1);
+                    assertThat(properties.getStores().get(0).getName()).isEqualTo("fake");
+                });
     }
 
     @Test
     public void duplicateConnectionStringIsNotAllowed() {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                 propPair(CONN_STRING_PROP_NEW, TEST_CONN_STRING)).run(context -> {
-            assertThat(context).getFailure().hasStackTraceContaining("Duplicate store name exists");
-        });
+                    assertThat(context).getFailure().hasStackTraceContaining("Duplicate store name exists");
+                });
+    }
+
+    @Test
+    public void invalidWatchTime() {
+        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING))
+                .withPropertyValues(propPair(WATCH_ENABLED_PROP, "true"), propPair(WATCH_DELAY_PROP, "99ms"))
+                .run(context -> {
+                    assertThat(context).getFailure().hasStackTraceContaining("Minimum Watch time is 1 Second.");
+                });
+    }
+    
+    @Test
+    public void minValidWatchTime() {
+        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING))
+                .withPropertyValues(propPair(WATCH_ENABLED_PROP, "true"), propPair(WATCH_DELAY_PROP, "1s"))
+                .run(context -> {
+                    assertThat(context).hasSingleBean(AzureCloudConfigProperties.class);
+                });
     }
 
     private void assertInvalidField(AssertableApplicationContext context, String fieldName) {
