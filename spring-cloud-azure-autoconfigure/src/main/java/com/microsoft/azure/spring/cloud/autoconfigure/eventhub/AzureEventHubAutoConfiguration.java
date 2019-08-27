@@ -28,6 +28,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 
@@ -69,8 +70,13 @@ public class AzureEventHubAutoConfiguration {
             return new EventHubConnectionStringProvider(namespace);
         } else {
             String connectionString = eventHubProperties.getConnectionString();
-            TelemetryCollector.getInstance().addProperty(EVENT_HUB, NAMESPACE,
-                    EventHubUtils.getNamespace(connectionString));
+
+            if (!StringUtils.hasText(connectionString)) {
+                throw new IllegalArgumentException("Event hubs connection string cannot be empty");
+            }
+
+            TelemetryCollector.getInstance()
+                              .addProperty(EVENT_HUB, NAMESPACE, EventHubUtils.getNamespace(connectionString));
             return new EventHubConnectionStringProvider(connectionString);
         }
     }
@@ -78,16 +84,15 @@ public class AzureEventHubAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public EventHubClientFactory clientFactory(EventHubConnectionStringProvider connectionStringProvider,
-            AzureEventHubProperties eventHubProperties, EnvironmentProvider environmentProvider, 
-            StorageConnectionStringProvider storageConnectionStringProvider) {
+            AzureEventHubProperties eventHubProperties, EnvironmentProvider environmentProvider) {
         String checkpointConnectionString;
         if (resourceManagerProvider != null) {
             StorageAccount checkpointStorageAccount = resourceManagerProvider.getStorageAccountManager().getOrCreate(
                     eventHubProperties.getCheckpointStorageAccount());
-            checkpointConnectionString = storageConnectionStringProvider
+            checkpointConnectionString = StorageConnectionStringProvider
                     .getConnectionString(checkpointStorageAccount, environmentProvider.getEnvironment());
         } else {
-            checkpointConnectionString = storageConnectionStringProvider
+            checkpointConnectionString = StorageConnectionStringProvider
                     .getConnectionString(eventHubProperties.getCheckpointStorageAccount(),
                             eventHubProperties.getCheckpointAccessKey(), environmentProvider.getEnvironment());
         }

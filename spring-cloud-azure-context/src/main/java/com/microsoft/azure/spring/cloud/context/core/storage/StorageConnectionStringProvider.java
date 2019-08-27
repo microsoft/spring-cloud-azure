@@ -6,33 +6,33 @@
 
 package com.microsoft.azure.spring.cloud.context.core.storage;
 
+import com.microsoft.azure.AzureEnvironment;
 import com.microsoft.azure.management.storage.StorageAccount;
-import com.microsoft.azure.spring.cloud.context.core.api.Environment;
-import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
-
-import java.util.function.BiFunction;
 
 public class StorageConnectionStringProvider {
 
-    private final BiFunction<StorageAccount, Environment, String> connectionStringProvider =
-            Memoizer.memoize(this::buildConnectionString);
-    private final StorageConnectionStringBuilder storageConnectionStringBuilder;
-
-    public StorageConnectionStringProvider(StorageConnectionStringBuilder storageConnectionStringBuilder) {
-        this.storageConnectionStringBuilder = storageConnectionStringBuilder;
+    public static String getConnectionString(StorageAccount storageAccount, AzureEnvironment environment,
+            boolean isSecureTransfer) {
+        return buildConnectionString(storageAccount, environment, isSecureTransfer);
     }
 
-    private String buildConnectionString(StorageAccount storageAccount, Environment environment) {
-        return storageAccount.getKeys().stream().findFirst().map(key -> storageConnectionStringBuilder
-                .build(storageAccount.name(), key.value(), environment))
-                .orElseThrow(() -> new RuntimeException("Storage account key is empty."));
+    public static String getConnectionString(StorageAccount storageAccount, AzureEnvironment environment) {
+        return getConnectionString(storageAccount, environment, true);
     }
 
-    public String getConnectionString(StorageAccount storageAccount, Environment environment) {
-        return connectionStringProvider.apply(storageAccount, environment);
+    public static String getConnectionString(String storageAccount, String accessKey, AzureEnvironment environment) {
+        return getConnectionString(storageAccount, accessKey, environment, true);
     }
 
-    public String getConnectionString(String storageAccount, String accessKey, Environment environment) {
-        return storageConnectionStringBuilder.build(storageAccount, accessKey, environment);
+    public static String getConnectionString(String storageAccount, String accessKey, AzureEnvironment environment,
+            boolean isSecureTransfer) {
+        return StorageConnectionStringBuilder.build(storageAccount, accessKey, environment, isSecureTransfer);
+    }
+
+    private static String buildConnectionString(StorageAccount storageAccount, AzureEnvironment environment,
+            boolean isSecureTransfer) {
+        return storageAccount.getKeys().stream().findFirst().map(key -> StorageConnectionStringBuilder
+                .build(storageAccount.name(), key.value(), environment, isSecureTransfer))
+                             .orElseThrow(() -> new RuntimeException("Storage account key is empty."));
     }
 }

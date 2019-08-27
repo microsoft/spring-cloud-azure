@@ -1,0 +1,10 @@
+feature-management:
+  featureSet:
+    features:
+      Beta: true
+      FeatureV:
+        enabledFor:
+          -
+            name: Random
+            parameters:
+              chance: "50"

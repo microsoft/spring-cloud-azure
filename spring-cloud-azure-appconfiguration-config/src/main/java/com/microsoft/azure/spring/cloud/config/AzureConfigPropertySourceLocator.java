@@ -17,6 +17,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -126,12 +127,12 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     }
 
     private List<AzureConfigPropertySource> create(String context, ConfigStore store, Map<String,
-            List<String>> storeContextsMap) {
+            List<String>> storeContextsMap) throws IOException {
         List<AzureConfigPropertySource> sourceList = new ArrayList<>();
 
         for (String label : store.getLabels()) {
             AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, operations,
-                    store.getName(), label);
+                    store.getName(), label, properties);
 
             propertySource.initProperties();
             sourceList.add(propertySource);

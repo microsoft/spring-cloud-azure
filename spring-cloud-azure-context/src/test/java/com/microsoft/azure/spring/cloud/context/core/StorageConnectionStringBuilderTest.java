@@ -5,7 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.context.core;
 
-import com.microsoft.azure.spring.cloud.context.core.api.Environment;
+import com.microsoft.azure.AzureEnvironment;
 import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringBuilder;
 import org.junit.Test;
 
@@ -21,20 +21,18 @@ public class StorageConnectionStringBuilderTest {
     private static final String PROTOCOL_FORMAT = "{0}={1};";
     private static final String ACCOUNT_NAME = "accountName";
     private static final String ACCOUNT_KEY = "accountKey";
-    private static final Environment ENVIRONMENT = Environment.GLOBAL;
+    private static final AzureEnvironment ENVIRONMENT = AzureEnvironment.AZURE;
     private static final String DEFAULT_PROTOCOL = "DefaultEndpointsProtocol";
 
     @Test
     public void protocolShouldBeHttpsIfSecureTransferEnabled() {
-        StorageConnectionStringBuilder underTest = new StorageConnectionStringBuilder(true);
-        String connectionString = underTest.build(ACCOUNT_NAME, ACCOUNT_KEY, ENVIRONMENT);
+        String connectionString = StorageConnectionStringBuilder.build(ACCOUNT_NAME, ACCOUNT_KEY, ENVIRONMENT, true);
         assertThat(connectionString).contains(MessageFormat.format(PROTOCOL_FORMAT, DEFAULT_PROTOCOL, "https"));
     }
     
     @Test
     public void protocolShouldBeHttpIfSecureTransferDisabled() {
-        StorageConnectionStringBuilder underTest = new StorageConnectionStringBuilder(false);
-        String connectionString = underTest.build(ACCOUNT_NAME, ACCOUNT_KEY, ENVIRONMENT);
+        String connectionString = StorageConnectionStringBuilder.build(ACCOUNT_NAME, ACCOUNT_KEY, ENVIRONMENT, false);
         assertThat(connectionString).contains(MessageFormat.format(PROTOCOL_FORMAT, DEFAULT_PROTOCOL, "http"));
     }
 

@@ -6,9 +6,8 @@
 
 package com.microsoft.azure.spring.cloud.context.core.impl;
 
-import com.microsoft.azure.spring.cloud.context.core.api.Environment;
+import com.microsoft.azure.AzureEnvironment;
 import com.microsoft.azure.spring.cloud.context.core.api.EnvironmentProvider;
-import org.springframework.lang.NonNull;
 
 /**
  * A {@link com.microsoft.azure.spring.cloud.context.core.api.EnvironmentProvider} implementation that based on
@@ -18,14 +17,14 @@ import org.springframework.lang.NonNull;
  */
 public class DefaultEnvironmentProvider implements EnvironmentProvider {
 
-    private Environment environment = Environment.GLOBAL;
+    private AzureEnvironment environment = AzureEnvironment.AZURE;
 
     @Override
-    public Environment getEnvironment() {
+    public AzureEnvironment getEnvironment() {
         return environment;
     }
 
-    public void setEnvironment(@NonNull Environment environment) {
+    public void setEnvironment(AzureEnvironment environment) {
         this.environment = environment;
     }
 }

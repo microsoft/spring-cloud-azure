@@ -5,15 +5,12 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import com.microsoft.azure.AzureEnvironment;
-import com.microsoft.azure.credentials.AppServiceMSICredentials;
-import com.microsoft.azure.credentials.AzureTokenCredentials;
-import com.microsoft.azure.credentials.MSICredentials;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
-import com.microsoft.azure.spring.cloud.config.managed.identity.AzureManagedIdentityProperties;
-import com.microsoft.azure.spring.cloud.config.managed.identity.AzureResourceManagerConnector;
-import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
-import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
+import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
+
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
@@ -26,10 +23,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.PostConstruct;
-import java.util.List;
-
-import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
+import com.microsoft.azure.AzureEnvironment;
+import com.microsoft.azure.credentials.AppServiceMSICredentials;
+import com.microsoft.azure.credentials.AzureTokenCredentials;
+import com.microsoft.azure.credentials.MSICredentials;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
+import com.microsoft.azure.spring.cloud.config.managed.identity.AzureResourceManagerConnector;
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
+import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
 
 @Configuration
 @EnableConfigurationProperties(AzureCloudConfigProperties.class)

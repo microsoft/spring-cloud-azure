@@ -74,7 +74,7 @@ public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements Se
         return new MessageHandlerOptions(this.clientConfig.getConcurrency(), false, Duration.ofMinutes(5));
     }
 
-    protected ExecutorService buildHandlerExectutors(String threadPrefix){
+    protected ExecutorService buildHandlerExecutors(String threadPrefix){
         ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat
                 (threadPrefix + "-%d").build();
         return Executors.newFixedThreadPool(this.clientConfig.getConcurrency(), threadFactory);
