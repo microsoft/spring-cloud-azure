@@ -119,6 +119,11 @@ public class AzureCloudConfigProperties {
         return watch;
     }
 
+    /**
+     * The watch time between refresh checks. The minimum valid watch time is 1s.
+     * 
+     * @param watch
+     */
     public void setWatch(Watch watch) {
         this.watch = watch;
     }
