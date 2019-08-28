@@ -127,7 +127,8 @@ public class AzureCloudConfigProperties {
     public void validateAndInit() {
         Assert.notEmpty(this.stores, "At least one config store has to be configured.");
 
-        this.stores.forEach(store -> { Assert.isTrue(StringUtils.hasText(store.getName()) ||
+        this.stores.forEach(store -> {
+            Assert.isTrue(StringUtils.hasText(store.getName()) ||
                         StringUtils.hasText(store.getConnectionString()),
                     "Either configuration store name or connection string should be configured.");
             store.validateAndInit();
