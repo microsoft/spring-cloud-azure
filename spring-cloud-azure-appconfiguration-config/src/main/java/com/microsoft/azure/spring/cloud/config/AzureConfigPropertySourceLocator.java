@@ -32,12 +32,16 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private final String profileSeparator;
     private final List<ConfigStore> configStores;
     private final Map<String, List<String>> storeContextsMap = new ConcurrentHashMap<>();
+    
+    private PropertyCache propertyCache;
 
-    public AzureConfigPropertySourceLocator(ConfigServiceOperations operations, AzureCloudConfigProperties properties) {
+    public AzureConfigPropertySourceLocator(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
+            PropertyCache propertyCache) {
         this.operations = operations;
         this.properties = properties;
         this.profileSeparator = properties.getProfileSeparator();
         this.configStores = properties.getStores();
+        this.propertyCache = propertyCache;
     }
 
     @Override
@@ -57,8 +61,13 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
         CompositePropertySource composite = new CompositePropertySource(PROPERTY_SOURCE_NAME);
         Collections.reverse(configStores); // Last store has highest precedence
-        for (ConfigStore configStore : configStores) {
-            addPropertySource(composite, configStore, applicationName, profiles, storeContextsMap);
+
+        Iterator<ConfigStore> configStoreIterator = configStores.iterator();
+        // Feature Management needs to be set in the last config store.
+        while (configStoreIterator.hasNext()) {
+            ConfigStore configStore = configStoreIterator.next();
+            addPropertySource(composite, configStore, applicationName, profiles, storeContextsMap,
+                    !configStoreIterator.hasNext());
         }
 
         return composite;
@@ -68,13 +77,25 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         return this.storeContextsMap;
     }
 
+    /**
+     * Adds a new Property Source
+     * 
+     * @param composite PropertySource being added
+     * @param store Config Store the PropertySource is being generated from
+     * @param applicationName Name of the application
+     * @param profiles Active profiles in the Store
+     * @param storeContextsMap the Map storing the storeName -> List of contexts map
+     * @param initFeatures determines if Feature Management is set in the PropertySource.
+     * When generating more than one it needs to be in the last one.
+     */
     private void addPropertySource(CompositePropertySource composite, ConfigStore store, String applicationName,
-                                   List<String> profiles, Map<String, List<String>> storeContextsMap) {
-        /* Generate which contexts(key prefixes) will be used for key-value items search
-           If key prefix is empty, default context is: application, current application name is: foo,
-           active profile is: dev, profileSeparator is: _
-           Will generate these contexts: /application/, /application_dev/, /foo/, /foo_dev/
-        */
+            List<String> profiles, Map<String, List<String>> storeContextsMap, boolean initFeatures) {
+        /*
+         * Generate which contexts(key prefixes) will be used for key-value items search
+         * If key prefix is empty, default context is: application, current application
+         * name is: foo, active profile is: dev, profileSeparator is: _ Will generate
+         * these contexts: /application/, /application_dev/, /foo/, /foo_dev/
+         */
         List<String> contexts = new ArrayList<>();
         contexts.addAll(generateContexts(this.properties.getDefaultContext(), profiles, store));
         contexts.addAll(generateContexts(applicationName, profiles, store));
@@ -83,7 +104,8 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         Collections.reverse(contexts);
         for (String sourceContext : contexts) {
             try {
-                List<AzureConfigPropertySource> sourceList = create(sourceContext, store, storeContextsMap);
+                List<AzureConfigPropertySource> sourceList = create(sourceContext, store, storeContextsMap,
+                        initFeatures);
                 sourceList.forEach(composite::addPropertySource);
                 LOGGER.debug("PropertySource context [{}] is added.", sourceContext);
             } catch (Exception e) {
@@ -126,15 +148,29 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         return context + this.profileSeparator + profile + PATH_SPLITTER;
     }
 
-    private List<AzureConfigPropertySource> create(String context, ConfigStore store, Map<String,
-            List<String>> storeContextsMap) throws IOException {
+    /**
+     * Creates a new set of AzureConfigProertySources, 1 per Label.
+     * 
+     * @param context Context of the application, part of uniquely define a PropertySource
+     * @param store Config Store the PropertySource is being generated from
+     * @param storeContextsMap the Map storing the storeName -> List of contexts map
+     * @param initFeatures determines if Feature Management is set in the PropertySource.
+     * When generating more than one it needs to be in the last one.
+     * @return a list of AzureConfigPropertySources
+     * @throws IOException
+     */
+    private List<AzureConfigPropertySource> create(String context, ConfigStore store,
+            Map<String, List<String>> storeContextsMap, boolean initFeatures) throws IOException {
         List<AzureConfigPropertySource> sourceList = new ArrayList<>();
 
         for (String label : store.getLabels()) {
             AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, operations,
                     store.getName(), label, properties);
 
-            propertySource.initProperties();
+            propertySource.initProperties(propertyCache);
+            if (initFeatures) {
+                propertySource.initFeatures(propertyCache);
+            }
             sourceList.add(propertySource);
             putStoreContext(store.getName(), context, storeContextsMap);
         }

@@ -31,6 +31,15 @@ public class KeyValueItem {
 
     @JsonProperty("last_modified")
     private Date lastModified;
+    
+    public KeyValueItem() {
+    }
+    
+    public KeyValueItem(String key, String value, String contentType) {
+        this.key = key;
+        this.value = value;
+        this.contentType = contentType;
+    }
 
     public String getEtag() {
         return etag;

@@ -5,6 +5,8 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import java.time.Duration;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,11 +49,17 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
 
     private static final String FEATURE_STORE_WATCH_KEY = ".appconfig*";
 
+    private Duration delay;
+
+    PropertyCache propertyCache;
+
     public AzureCloudConfigWatch(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
-            Map<String, List<String>> storeContextsMap) {
+            Map<String, List<String>> storeContextsMap, PropertyCache propertyCache) {
         this.configOperations = operations;
         this.configStores = properties.getStores();
         this.storeContextsMap = storeContextsMap;
+        this.delay = properties.getWatch().getDelay();
+        this.propertyCache = propertyCache;
     }
 
     @Override
@@ -66,10 +74,16 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
     public void refreshConfigurations() {
         if (this.running.compareAndSet(false, true)) {
             for (ConfigStore configStore : configStores) {
-                String watchedKeyNames = watchedKeyNames(configStore, storeContextsMap);
-                refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames);
-                
-                refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY);
+                if (propertyCache.findNonCachedKeys(delay, configStore.getName()).size() > 0) {
+                    String watchedKeyNames = watchedKeyNames(configStore, storeContextsMap);
+                    refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames);
+
+                    // Refresh Feature Flags
+                    if (propertyCache.getRefreshKeys(configStore.getName(), FEATURE_STORE_WATCH_KEY.replace("*", ""))
+                            .size() > 0) {
+                        refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY);
+                    }
+                }
             }
             this.running.set(false);
         }
@@ -98,16 +112,44 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
         if (firstTimeMap.get(storeName) == null) {
             storeEtagMap.put(storeName, etag);
             firstTimeMap.put(storeName, false);
-            return;
+            propertyCache.updateRefreshCacheTime(store.getName(), watchedKeyNames, delay);
         }
+        
+        if (!etag.equals(storeEtagMap.get(storeName))) {
+            Date date = new Date();
 
-        if (!etag.equals(storeEtagMap.get(store.getName() + storeSuffix))) {
-            LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
-                    store.getName(), watchedKeyNames);
-            storeEtagMap.put(storeName, etag);
-            RefreshEventData eventData = new RefreshEventData(watchedKeyNames);
-            publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
+            // Checks all cached items to see if they have been updated
+            List<String> refreshKeys = propertyCache.getRefreshKeys(store.getName());
+            for (int i = 0; i < refreshKeys.size(); i++) {
+                String refreshKey = refreshKeys.get(i);
+                if (refreshKey.contains(watchedKeyNames.replace("*", ""))) {
+
+                    storeEtagMap.put(storeName, etag);
+                    options = new QueryOptions().withKeyNames(refreshKey)
+                            .withLabels(store.getLabels()).withFields(QueryField.ETAG).withRange(0, 0);
+
+                    keyValueItems = configOperations.getRevisions(store.getName(), options);
+
+                    if (keyValueItems.isEmpty() || keyValueItems.get(0).getEtag()
+                            .equals(propertyCache.getCachedEtag(refreshKey))) {
+                        refreshKeys = propertyCache.updateRefreshCacheTimeForKey(store.getName(), refreshKey, date);
+                        i--;
+                    }
+                }
+            }
+
+            if (refreshKeys.size() > 0) {
+                LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
+                        store.getName(), watchedKeyNames);
+                storeEtagMap.put(storeName, etag);
+                RefreshEventData eventData = new RefreshEventData(watchedKeyNames);
+                publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
+
+                // Don't need to refresh here will be done in Property Source
+                return;
+            }
         }
+        propertyCache.updateRefreshCacheTime(store.getName(), watchedKeyNames, delay);
     }
 
     /**
