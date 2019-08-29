@@ -6,6 +6,7 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
+import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class TestUtils {
         item.setKey(context + key);
         item.setValue(value);
         item.setLabel(label);
+        item.setContentType("");
 
         return item;
     }

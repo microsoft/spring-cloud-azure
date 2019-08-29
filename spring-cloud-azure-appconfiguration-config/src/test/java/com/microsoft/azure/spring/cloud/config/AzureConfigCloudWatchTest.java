@@ -6,6 +6,8 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
+import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

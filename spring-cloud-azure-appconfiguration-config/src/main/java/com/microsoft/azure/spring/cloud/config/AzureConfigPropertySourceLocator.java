@@ -6,6 +6,9 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import com.google.common.collect.Lists;
+import com.microsoft.azure.keyvault.KeyVaultClient;
+import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
@@ -18,6 +21,7 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -34,14 +38,17 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private final Map<String, List<String>> storeContextsMap = new ConcurrentHashMap<>();
     
     private PropertyCache propertyCache;
+    
+    private HashMap<String, KeyVaultClient> keyVaultClients;
 
     public AzureConfigPropertySourceLocator(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
-            PropertyCache propertyCache) {
+            PropertyCache propertyCache, HashMap<String, KeyVaultClient> keyVaultClients) {
         this.operations = operations;
         this.properties = properties;
         this.profileSeparator = properties.getProfileSeparator();
         this.configStores = properties.getStores();
         this.propertyCache = propertyCache;
+        this.keyVaultClients = keyVaultClients;
     }
 
     @Override
@@ -158,16 +165,17 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
      * When generating more than one it needs to be in the last one.
      * @return a list of AzureConfigPropertySources
      * @throws IOException
+     * @throws URISyntaxException 
      */
     private List<AzureConfigPropertySource> create(String context, ConfigStore store,
-            Map<String, List<String>> storeContextsMap, boolean initFeatures) throws IOException {
+            Map<String, List<String>> storeContextsMap, boolean initFeatures) throws IOException, URISyntaxException {
         List<AzureConfigPropertySource> sourceList = new ArrayList<>();
 
         for (String label : store.getLabels()) {
             AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, operations,
                     store.getName(), label, properties);
 
-            propertySource.initProperties(propertyCache);
+            propertySource.initProperties(propertyCache, keyVaultClients);
             if (initFeatures) {
                 propertySource.initFeatures(propertyCache);
             }
