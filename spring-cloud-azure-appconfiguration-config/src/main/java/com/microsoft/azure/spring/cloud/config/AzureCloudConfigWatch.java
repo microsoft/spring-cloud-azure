@@ -51,7 +51,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
 
     private Duration delay;
 
-    PropertyCache propertyCache;
+    private PropertyCache propertyCache;
 
     public AzureCloudConfigWatch(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
             Map<String, List<String>> storeContextsMap, PropertyCache propertyCache) {

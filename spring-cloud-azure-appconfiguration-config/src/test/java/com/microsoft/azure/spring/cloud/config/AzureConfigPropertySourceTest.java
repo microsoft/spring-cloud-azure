@@ -60,7 +60,7 @@ public class AzureConfigPropertySourceTest {
     @Mock
     private ConfigServiceOperations operations;
     
-    PropertyCache propertyCache;
+    private PropertyCache propertyCache;
 
     @BeforeClass
     public static void init() {

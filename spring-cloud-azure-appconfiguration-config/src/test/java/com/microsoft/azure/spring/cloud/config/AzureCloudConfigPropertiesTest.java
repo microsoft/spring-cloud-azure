@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.ProtocolVersion;
+import org.apache.http.RequestLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -69,31 +70,31 @@ public class AzureCloudConfigPropertiesTest {
     private static final String ILLEGAL_LABELS = "*,my-label";
     
     @Mock
-    ConfigHttpClient configClient;
+    private ConfigHttpClient configClient;
 
     @Mock
-    HttpGet mockHttpGet;
+    private HttpGet mockHttpGet;
     
     @Mock
-    HttpClientBuilder mockHttpClientBuilder;
+    private HttpClientBuilder mockHttpClientBuilder;
     
     @Mock
-    org.apache.http.RequestLine mockRequestLine;
+    private RequestLine mockRequestLine;
     
     @Mock
-    ApplicationContext context;
+    private ApplicationContext context;
     
     @Mock
-    CloseableHttpResponse mockClosableHttpResponse;
+    private CloseableHttpResponse mockClosableHttpResponse;
     
     @Mock
-    HttpEntity mockHttpEntity;
+    private HttpEntity mockHttpEntity;
 
     @Mock
-    InputStream mockInputStream;
+    private InputStream mockInputStream;
     
     @Mock
-    ObjectMapper mockObjectMapper;
+    private ObjectMapper mockObjectMapper;
     
     @Rule
     public ExpectedException exception = ExpectedException.none();

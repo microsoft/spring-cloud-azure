@@ -65,7 +65,7 @@ public class ConfigServiceTemplateTest {
     private ConnectionStringPool pool;
     private ConfigStore configStore;
 
-    public List<KeyValueItem> testItems;
+    private List<KeyValueItem> testItems;
 
     private HttpEntity okEntity;
 

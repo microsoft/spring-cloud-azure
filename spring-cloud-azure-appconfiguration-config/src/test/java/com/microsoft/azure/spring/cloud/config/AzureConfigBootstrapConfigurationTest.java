@@ -66,19 +66,19 @@ public class AzureConfigBootstrapConfigurationTest {
     private AzureResourceManagerConnector armConnector;
     
     @Mock
-    ConfigHttpClient configClient;
+    private ConfigHttpClient configClient;
     
     @Mock
-    CloseableHttpResponse mockClosableHttpResponse;
+    private CloseableHttpResponse mockClosableHttpResponse;
     
     @Mock
-    HttpEntity mockHttpEntity;
+    private HttpEntity mockHttpEntity;
 
     @Mock
-    InputStream mockInputStream;
+    private InputStream mockInputStream;
     
     @Mock
-    ObjectMapper mockObjectMapper;
+    private ObjectMapper mockObjectMapper;
 
     @Before
     public void setup() {
