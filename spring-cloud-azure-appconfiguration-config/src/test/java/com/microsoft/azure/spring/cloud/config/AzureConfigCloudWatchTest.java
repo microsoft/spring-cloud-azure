@@ -43,6 +43,8 @@ public class AzureConfigCloudWatchTest {
 
     @Mock
     private AzureCloudConfigProperties properties;
+    
+    ArrayList<KeyValueItem> keys;
 
     @Mock
     Map<String, List<String>> contextsMap;
@@ -74,21 +76,9 @@ public class AzureConfigCloudWatchTest {
         kvi.setKey("fake-etag/application/test.key");
         kvi.setValue("TestValue");
         keys.add(kvi);
-
-        propertyCache = PropertyCache.getPropertyCache();
-        KeyValueItem item = new KeyValueItem();
-        item.setKey("fake-etag/application/test.key");
-        item.setEtag("fake-etag");
-        propertyCache.addToCache(item, TEST_STORE_NAME, new Date());
-
-        watch = new AzureCloudConfigWatch(configOperations, properties, contextsMap, propertyCache);
+        watch = new AzureCloudConfigWatch(configOperations, properties, contextsMap);
     }
 
-    @Test
-    public void firstCallShouldPublishEvent() throws Exception {
-        PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
-        watch.setApplicationEventPublisher(eventPublisher);
-        when(configOperations.getKeys(any(), any())).thenReturn(keys);
 
         List<KeyValueItem> mockResponse = initialResponse();
 

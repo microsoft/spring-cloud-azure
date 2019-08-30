@@ -119,6 +119,11 @@ public class AzureCloudConfigProperties {
         return watch;
     }
 
+    /**
+     * The watch time between refresh checks. The minimum valid watch time is 1s.
+     * 
+     * @param watch
+     */
     public void setWatch(Watch watch) {
         this.watch = watch;
     }
@@ -136,6 +141,7 @@ public class AzureCloudConfigProperties {
 
         int uniqueStoreSize = this.stores.stream().map(s -> s.getName()).distinct().collect(Collectors.toList()).size();
         Assert.isTrue(this.stores.size() == uniqueStoreSize, "Duplicate store name exists.");
+        Assert.isTrue(watch.delay.getSeconds()  >= 1, "Minimum Watch time is 1 Second.");
     }
 
     class Watch {

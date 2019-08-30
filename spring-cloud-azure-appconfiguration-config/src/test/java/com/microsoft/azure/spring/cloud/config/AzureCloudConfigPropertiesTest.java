@@ -228,6 +228,24 @@ public class AzureCloudConfigPropertiesTest {
                 });
     }
 
+    @Test
+    public void invalidWatchTime() {
+        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING))
+                .withPropertyValues(propPair(WATCH_ENABLED_PROP, "true"), propPair(WATCH_DELAY_PROP, "99ms"))
+                .run(context -> {
+                    assertThat(context).getFailure().hasStackTraceContaining("Minimum Watch time is 1 Second.");
+                });
+    }
+    
+    @Test
+    public void minValidWatchTime() {
+        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING))
+                .withPropertyValues(propPair(WATCH_ENABLED_PROP, "true"), propPair(WATCH_DELAY_PROP, "1s"))
+                .run(context -> {
+                    assertThat(context).hasSingleBean(AzureCloudConfigProperties.class);
+                });
+    }
+
     private void assertInvalidField(AssertableApplicationContext context, String fieldName) {
         assertThat(context).getFailure().hasCauseInstanceOf(ConfigurationPropertiesBindException.class);
         assertThat(context).getFailure()
