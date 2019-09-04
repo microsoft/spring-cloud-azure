@@ -120,9 +120,11 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
 
             // Checks all cached items to see if they have been updated
             List<String> refreshKeys = propertyCache.getRefreshKeys(store.getName());
-            for (int i = 0; i < refreshKeys.size(); i++) {
-                String refreshKey = refreshKeys.get(i);
-                if (refreshKey.contains(watchedKeyNames.replace("*", ""))) {
+            // RefreshKeyIndex is the current refresh key being checked. If not needing
+            // refresh it is removed from the list.
+            for (int refreshKeyIndex = 0; refreshKeyIndex < refreshKeys.size(); refreshKeyIndex++) {
+                String refreshKey = refreshKeys.get(refreshKeyIndex);
+                if (refreshKey.toLowerCase().startsWith(watchedKeyNamesPrefix.toLowerCase())) {
 
                     storeEtagMap.put(storeName, etag);
                     options = new QueryOptions().withKeyNames(refreshKey)
@@ -133,7 +135,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
                     if (keyValueItems.isEmpty() || keyValueItems.get(0).getEtag()
                             .equals(propertyCache.getCachedEtag(refreshKey))) {
                         refreshKeys = propertyCache.updateRefreshCacheTimeForKey(store.getName(), refreshKey, date);
-                        i--;
+                        refreshKeyIndex--;
                     }
                 }
             }

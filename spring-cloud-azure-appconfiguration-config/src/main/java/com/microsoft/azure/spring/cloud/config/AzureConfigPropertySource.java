@@ -94,7 +94,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
             propertyCache.addKeyValuesToCache(items, storeName, date);
 
             // Reading In Features
-            queryOptions = new QueryOptions().withKeyNames("*appconfig*").withLabels(label);
+            queryOptions = new QueryOptions().withKeyNames(FEATURE_FLAG_PREFIX + "*").withLabels(label);
             items = source.getKeys(storeName, queryOptions);
 
             createFeatureSet(items, propertyCache, date);
