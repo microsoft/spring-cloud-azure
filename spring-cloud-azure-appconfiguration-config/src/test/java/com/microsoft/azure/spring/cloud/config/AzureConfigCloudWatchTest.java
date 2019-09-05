@@ -41,20 +41,20 @@ public class AzureConfigCloudWatchTest {
     @Mock
     private ApplicationEventPublisher eventPublisher;
 
-    PropertyCache propertyCache;
+    private PropertyCache propertyCache;
 
     @Mock
     private AzureCloudConfigProperties properties;
+    
+    private ArrayList<KeyValueItem> keys;
 
     @Mock
-    Map<String, List<String>> contextsMap;
+    private Map<String, List<String>> contextsMap;
 
-    AzureCloudConfigWatch watch;
-
-    ArrayList<KeyValueItem> keys;
+    private AzureCloudConfigWatch watch;
 
     @Mock
-    Date date;
+    private Date date;
 
     @Before
     public void setup() {

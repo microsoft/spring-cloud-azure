@@ -42,6 +42,8 @@ Module | Version | Sample
 Module | Version | Sample
 -------|--- | ---
 [Spring Cloud Config with Azure App Configuration](spring-cloud-azure-samples/azure-appconfiguration-sample) | [![Maven Central](https://img.shields.io/maven-central/v/com.microsoft.azure/spring-cloud-starter-azure-appconfiguration-config.svg)](https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22spring-cloud-starter-azure-appconfiguration-config%22) | [Sample](https://github.com/Microsoft/spring-cloud-azure/tree/release/1.1.0.M1/spring-cloud-azure-samples/azure-appconfiguration-sample)
+[Spring Cloud Config with Feature Management](spring-cloud-azure-samples/feature-management-sample) | [![Maven Central](https://img.shields.io/maven-central/v/com.microsoft.azure/spring-cloud-azure-feature-management.svg)](https://search.maven.org/search?q=a:spring-cloud-azure-feature-management) | [Sample](https://github.com/microsoft/spring-cloud-azure/tree/master/spring-cloud-azure-samples/feature-management-sample)
+[Spring Cloud Config with Feature Management Web](spring-cloud-azure-samples/feature-management-web-sample) | [![Maven Central](https://img.shields.io/maven-central/v/com.microsoft.azure/spring-cloud-azure-feature-management-web.svg)](https://search.maven.org/search?q=a:spring-cloud-azure-feature-management-web) | [Sample](https://github.com/microsoft/spring-cloud-azure/tree/master/spring-cloud-azure-samples/feature-management-web-sample)
 
 ## Sample and Tutorial 
 

@@ -100,6 +100,7 @@ public class AzureConfigPropertySourceTest {
     @Mock
     private ConfigServiceOperations operations;
     
+    private PropertyCache propertyCache;
     @Mock
     private ChainedTokenCredential keyVaultCredential;
     
@@ -194,7 +195,6 @@ public class AzureConfigPropertySourceTest {
         FeatureSet featureSet = new FeatureSet();
         Feature feature = new Feature();
         feature.setId("Alpha");
-        feature.setEnabled(true);
         ArrayList<FeatureFilterEvaluationContext> filters = new ArrayList<FeatureFilterEvaluationContext>();
         FeatureFilterEvaluationContext ffec = new FeatureFilterEvaluationContext();
         ffec.setName("TestFilter");

@@ -71,16 +71,16 @@ public class AzureConfigBootstrapConfigurationTest {
 
     @Mock
     private ConfigHttpClient configClient;
-
+    
     @Mock
     private CloseableHttpResponse mockClosableHttpResponse;
-
+    
     @Mock
     private HttpEntity mockHttpEntity;
 
     @Mock
     private InputStream mockInputStream;
-
+    
     @Mock
     private ObjectMapper mockObjectMapper;
 

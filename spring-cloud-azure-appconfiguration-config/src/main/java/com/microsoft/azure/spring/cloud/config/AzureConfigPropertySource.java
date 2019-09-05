@@ -118,7 +118,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
             propertyCache.addKeyValuesToCache(items, storeName, date);
 
             // Reading In Features
-            queryOptions = new QueryOptions().withKeyNames("*appconfig*").withLabels(label);
+            queryOptions = new QueryOptions().withKeyNames(FEATURE_FLAG_PREFIX + "*").withLabels(label);
             items = source.getKeys(storeName, queryOptions);
 
             createFeatureSet(items, propertyCache, date);
@@ -267,7 +267,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
                 // exactly the same... It should never be the case of Conditional On, and
                 // no filters coming from Azure, but it is a valid way from the config
                 // file, which should result in false being returned.
-                if (feature.getEnabledFor().size() == 0 && feature.getEnabled() == true) {
+                if (feature.getEnabledFor().size() == 0 && featureItem.getEnabled() == true) {
                     return true;
                 }
                 return feature;

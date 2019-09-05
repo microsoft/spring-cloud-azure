@@ -5,17 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import static com.microsoft.azure.spring.cloud.config.TestConstants.CONN_STRING_PROP;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.CONN_STRING_PROP_NEW;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.DEFAULT_CONTEXT_PROP;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.FAIL_FAST_PROP;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.LABEL_PROP;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.PREFIX_PROP;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.SEPARATOR_PROP;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.STORE_NAME_PROP;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_WATCH_KEY_PATTERN;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.WATCHED_KEY_PROP;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.propPair;
 import static com.microsoft.azure.spring.cloud.config.resource.ConnectionString.ENDPOINT_ERR_MSG;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,6 +19,7 @@ import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.ProtocolVersion;
+import org.apache.http.RequestLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -79,31 +70,31 @@ public class AzureCloudConfigPropertiesTest {
     private static final String ILLEGAL_LABELS = "*,my-label";
     
     @Mock
-    ConfigHttpClient configClient;
+    private ConfigHttpClient configClient;
 
     @Mock
-    HttpGet mockHttpGet;
+    private HttpGet mockHttpGet;
     
     @Mock
-    HttpClientBuilder mockHttpClientBuilder;
+    private HttpClientBuilder mockHttpClientBuilder;
     
     @Mock
-    org.apache.http.RequestLine mockRequestLine;
+    private RequestLine mockRequestLine;
     
     @Mock
-    ApplicationContext context;
+    private ApplicationContext context;
     
     @Mock
-    CloseableHttpResponse mockClosableHttpResponse;
+    private CloseableHttpResponse mockClosableHttpResponse;
     
     @Mock
-    HttpEntity mockHttpEntity;
+    private HttpEntity mockHttpEntity;
 
     @Mock
-    InputStream mockInputStream;
+    private InputStream mockInputStream;
     
     @Mock
-    ObjectMapper mockObjectMapper;
+    private ObjectMapper mockObjectMapper;
     
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -225,6 +216,24 @@ public class AzureCloudConfigPropertiesTest {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                 propPair(CONN_STRING_PROP_NEW, TEST_CONN_STRING)).run(context -> {
                     assertThat(context).getFailure().hasStackTraceContaining("Duplicate store name exists");
+                });
+    }
+
+    @Test
+    public void invalidWatchTime() {
+        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING))
+                .withPropertyValues(propPair(WATCH_ENABLED_PROP, "true"), propPair(WATCH_DELAY_PROP, "99ms"))
+                .run(context -> {
+                    assertThat(context).getFailure().hasStackTraceContaining("Minimum Watch time is 1 Second.");
+                });
+    }
+    
+    @Test
+    public void minValidWatchTime() {
+        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING))
+                .withPropertyValues(propPair(WATCH_ENABLED_PROP, "true"), propPair(WATCH_DELAY_PROP, "1s"))
+                .run(context -> {
+                    assertThat(context).hasSingleBean(AzureCloudConfigProperties.class);
                 });
     }
 
