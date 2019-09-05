@@ -7,17 +7,15 @@ package com.microsoft.azure.spring.cloud.config;
 
 import static com.microsoft.azure.spring.cloud.config.TestConstants.CONN_STRING_PROP;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FAIL_FAST_PROP;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.KEY_VAULT_STORE_1_CLIENT;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.KEY_VAULT_STORE_1_CONNECTION;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.KEY_VAULT_STORE_1_DOMAIN;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.KEY_VAULT_STORE_1_SECRET;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.STORE_NAME_PROP;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_ACCESS_TOKEN;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.propPair;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -25,7 +23,6 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -48,76 +45,65 @@ import org.springframework.beans.BeanInstantiationException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
+import com.azure.identity.credential.ChainedTokenCredential;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.credentials.MSICredentials;
-import com.microsoft.azure.keyvault.KeyVaultClient;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueResponse;
 import com.microsoft.azure.spring.cloud.config.managed.identity.AzureResourceManagerConnector;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
-import com.microsoft.rest.RestClient;
-import com.microsoft.rest.RestClient.Builder;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ConfigServiceTemplate.class, AzureConfigBootstrapConfiguration.class})
+@PrepareForTest({ ConfigServiceTemplate.class, AzureConfigBootstrapConfiguration.class })
 @PowerMockIgnore({ "javax.net.ssl.*", "javax.crypto.*" })
 public class AzureConfigBootstrapConfigurationTest {
     private static final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
             .withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                     propPair(STORE_NAME_PROP, TEST_STORE_NAME))
             .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class));
-
+    
     @Mock
     private MSICredentials msiCredentials;
 
     @Mock
     private AzureResourceManagerConnector armConnector;
-    
-    @Mock
-    ConfigHttpClient configClient;
-    
-    @Mock
-    CloseableHttpResponse mockClosableHttpResponse;
-    
-    @Mock
-    HttpEntity mockHttpEntity;
 
     @Mock
-    InputStream mockInputStream;
-    
-    @Mock
-    Builder builderMock;
+    private ConfigHttpClient configClient;
 
     @Mock
-    RestClient restClientMock;
+    private CloseableHttpResponse mockClosableHttpResponse;
 
     @Mock
-    KeyVaultClient keyVaultClientMock;
+    private HttpEntity mockHttpEntity;
 
     @Mock
-    ObjectMapper mockObjectMapper;
+    private InputStream mockInputStream;
+
+    @Mock
+    private ObjectMapper mockObjectMapper;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        
+
         KeyValueResponse kvResponse = new KeyValueResponse();
         List<KeyValueItem> items = new ArrayList<KeyValueItem>();
         kvResponse.setItems(items);
         try {
-            
+
             PowerMockito.whenNew(ConfigHttpClient.class).withAnyArguments().thenReturn(configClient);
             PowerMockito.whenNew(ObjectMapper.class).withAnyArguments().thenReturn(mockObjectMapper);
             when(configClient.execute(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
-                .thenReturn(mockClosableHttpResponse);
+                    .thenReturn(mockClosableHttpResponse);
             when(mockClosableHttpResponse.getStatusLine())
-                .thenReturn(new BasicStatusLine(new ProtocolVersion("", 0, 0), 200, ""));
+                    .thenReturn(new BasicStatusLine(new ProtocolVersion("", 0, 0), 200, ""));
             when(mockClosableHttpResponse.getEntity()).thenReturn(mockHttpEntity);
             when(mockHttpEntity.getContent()).thenReturn(mockInputStream);
-            
+
             when(mockObjectMapper.readValue(Mockito.isA(InputStream.class), Mockito.any(Class.class)))
-                .thenReturn(kvResponse);
+                    .thenReturn(kvResponse);
         } catch (Exception e) {
             fail();
         }
@@ -147,54 +133,6 @@ public class AzureConfigBootstrapConfigurationTest {
     public void propertySourceLocatorBeanCreated() {
         contextRunner.withPropertyValues(propPair(FAIL_FAST_PROP, "false"))
                 .run(context -> assertThat(context).hasSingleBean(AzureConfigPropertySourceLocator.class));
-    }
-
-    @Test
-    public void keyVaultClientsBeanCreated() throws Exception {
-        HashMap<String, KeyVaultClient> keyVaultClients = new HashMap<String, KeyVaultClient>();
-
-        whenNew(Builder.class).withNoArguments().thenReturn(builderMock);
-        when(builderMock.withBaseUrl(Mockito.anyString())).thenReturn(builderMock);
-        when(builderMock.withCredentials(Mockito.any())).thenReturn(builderMock);
-        when(builderMock.withSerializerAdapter(Mockito.any())).thenReturn(builderMock);
-        when(builderMock.withResponseBuilderFactory(Mockito.any())).thenReturn(builderMock);
-        when(builderMock.build()).thenReturn(restClientMock);
-
-        whenNew(KeyVaultClient.class).withAnyArguments().thenReturn(keyVaultClientMock);
-
-        contextRunner.withPropertyValues(propPair(FAIL_FAST_PROP, "false"))
-                .withPropertyValues(propPair(KEY_VAULT_STORE_1_CONNECTION, "https://test.com"))
-                .withPropertyValues(propPair(KEY_VAULT_STORE_1_CLIENT, ""))
-                .withPropertyValues(propPair(KEY_VAULT_STORE_1_DOMAIN, ""))
-                .withPropertyValues(propPair(KEY_VAULT_STORE_1_SECRET, ""))
-                .run(context -> {
-                    assertThat(context).hasSingleBean(keyVaultClients.getClass());
-                    assertEquals(1, context.getBean(keyVaultClients.getClass()).size());
-                }
-
-                );
-    }
-
-    @Test
-    public void keyVaultClientsBeanCreatedEmpty() throws Exception {
-        HashMap<String, KeyVaultClient> keyVaultClients = new HashMap<String, KeyVaultClient>();
-
-        whenNew(Builder.class).withNoArguments().thenReturn(builderMock);
-        when(builderMock.withBaseUrl(Mockito.anyString())).thenReturn(builderMock);
-        when(builderMock.withCredentials(Mockito.any())).thenReturn(builderMock);
-        when(builderMock.withSerializerAdapter(Mockito.any())).thenReturn(builderMock);
-        when(builderMock.withResponseBuilderFactory(Mockito.any())).thenReturn(builderMock);
-        when(builderMock.build()).thenReturn(restClientMock);
-
-        whenNew(KeyVaultClient.class).withAnyArguments().thenReturn(keyVaultClientMock);
-
-        contextRunner.withPropertyValues(propPair(FAIL_FAST_PROP, "false"))
-                .run(context -> {
-                    assertThat(context).hasSingleBean(keyVaultClients.getClass());
-                    assertEquals(0, context.getBean(keyVaultClients.getClass()).size());
-                }
-
-                );
     }
 
     @Test

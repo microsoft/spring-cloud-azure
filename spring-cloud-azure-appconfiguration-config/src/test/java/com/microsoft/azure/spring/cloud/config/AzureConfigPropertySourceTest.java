@@ -42,7 +42,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -50,18 +49,28 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+import com.azure.identity.credential.ChainedTokenCredential;
+import com.azure.security.keyvault.secrets.SecretAsyncClient;
+import com.azure.security.keyvault.secrets.SecretClientBuilder;
+import com.azure.security.keyvault.secrets.models.Secret;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsoft.azure.keyvault.KeyVaultClient;
-import com.microsoft.azure.keyvault.models.SecretBundle;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureFilterEvaluationContext;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
 
+import reactor.core.publisher.Mono;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({AzureConfigPropertySource.class})
 public class AzureConfigPropertySourceTest {
     private static final AzureCloudConfigProperties TEST_PROPS = new AzureCloudConfigProperties();
     
@@ -91,15 +100,19 @@ public class AzureConfigPropertySourceTest {
     @Mock
     private ConfigServiceOperations operations;
     
-    private HashMap<String, KeyVaultClient> keyVaultClients;
+    @Mock
+    private ChainedTokenCredential keyVaultCredential;
     
     @Mock
-    private KeyVaultClient keyVaultClient;
+    private SecretClientBuilder secretClientBuilder;
     
     @Mock
-    private SecretBundle secretBundleMock;
+    private SecretAsyncClient secretAsyncClient;
+    
+    @Mock
+    private Mono<Secret> monoSecret;
 
-    PropertyCache propertyCache;
+    private PropertyCache propertyCache;
 
     @BeforeClass
     public static void init() {
@@ -122,16 +135,13 @@ public class AzureConfigPropertySourceTest {
         testItems.add(item1);
         testItems.add(item2);
         testItems.add(item3);
-
-        keyVaultClients = new HashMap<String, KeyVaultClient>();
-        keyVaultClients.put("test.key.vault.com", keyVaultClient);
     }
 
     @Test
     public void testPropCanBeInitAndQueried() {
         when(operations.getKeys(any(), any())).thenReturn(testItems).thenReturn(FEATURE_ITEMS);
         try {
-            propertySource.initProperties(propertyCache, null);
+            propertySource.initProperties(propertyCache);
         } catch (IOException | URISyntaxException e) {
             fail("Failed Reading in Feature Flags");
         }
@@ -156,7 +166,7 @@ public class AzureConfigPropertySourceTest {
         when(operations.getKeys(any(), any())).thenReturn(Arrays.asList(slashedProp)).thenReturn(FEATURE_ITEMS);
 
         try {
-            propertySource.initProperties(propertyCache, keyVaultClients);
+            propertySource.initProperties(propertyCache);
         } catch (IOException | URISyntaxException e) {
             fail("Failed Reading in Feature Flags");
         }
@@ -175,7 +185,7 @@ public class AzureConfigPropertySourceTest {
         when(operations.getKeys(any(), any())).thenReturn(new ArrayList<KeyValueItem>()).thenReturn(FEATURE_ITEMS);
 
         try {
-            propertySource.initProperties(propertyCache, keyVaultClients);
+            propertySource.initProperties(propertyCache);
         } catch (IOException | URISyntaxException e) {
             fail("Failed Reading in Feature Flags");
         }
@@ -210,7 +220,7 @@ public class AzureConfigPropertySourceTest {
         propertyCache.findNonCachedKeys(delay, TEST_STORE_NAME);
         propertyCache.addContext(TEST_STORE_NAME, TEST_CONTEXT);
         try {
-            propertySource.initProperties(propertyCache, keyVaultClients);
+            propertySource.initProperties(propertyCache);
         } catch (IOException | URISyntaxException e) {
             fail("Failed Reading in Feature Flags");
         }
@@ -230,11 +240,17 @@ public class AzureConfigPropertySourceTest {
     }
 
     @Test
-    public void testKeyVaultTest() throws ParseException {
+    public void testKeyVaultTest() throws Exception {
         testItems.add(keyVaultItem);
         when(operations.getKeys(any(), any())).thenReturn(testItems).thenReturn(FEATURE_ITEMS);
-        when(keyVaultClient.getSecret(Mockito.any())).thenReturn(secretBundleMock);
-        when(secretBundleMock.value()).thenReturn("mySecret");
+        PowerMockito.whenNew(SecretClientBuilder.class).withNoArguments().thenReturn(secretClientBuilder);
+        when(secretClientBuilder.endpoint(Mockito.anyString())).thenReturn(secretClientBuilder);
+        when(secretClientBuilder.credential(Mockito.any())).thenReturn(secretClientBuilder);
+        when(secretClientBuilder.buildAsyncClient()).thenReturn(secretAsyncClient);
+        when(secretAsyncClient.getSecret(Mockito.any(Secret.class))).thenReturn(monoSecret);
+        Secret secret = new Secret("mySecret", "mySecret");
+        when(monoSecret.block(Mockito.any())).thenReturn(secret);
+        
         Duration delay = Duration.ofSeconds(0);
 
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
@@ -245,7 +261,7 @@ public class AzureConfigPropertySourceTest {
 
         propertyCache.findNonCachedKeys(delay, TEST_STORE_NAME);
         try {
-            propertySource.initProperties(propertyCache, keyVaultClients);
+            propertySource.initProperties(propertyCache);
         } catch (IOException | URISyntaxException e) {
             fail("Failed Reading in Feature Flags");
         }
@@ -266,11 +282,17 @@ public class AzureConfigPropertySourceTest {
     }
     
     @Test
-    public void testKeyVaultReloadTest() throws ParseException {
+    public void testKeyVaultReloadTest() throws Exception {
         testItems.add(keyVaultItem);
         when(operations.getKeys(any(), any())).thenReturn(testItems).thenReturn(FEATURE_ITEMS);
-        when(keyVaultClient.getSecret(Mockito.any())).thenReturn(secretBundleMock);
-        when(secretBundleMock.value()).thenReturn("mySecret");
+        when(operations.getKeys(any(), any())).thenReturn(testItems).thenReturn(FEATURE_ITEMS);
+        PowerMockito.whenNew(SecretClientBuilder.class).withNoArguments().thenReturn(secretClientBuilder);
+        when(secretClientBuilder.endpoint(Mockito.anyString())).thenReturn(secretClientBuilder);
+        when(secretClientBuilder.credential(Mockito.any())).thenReturn(secretClientBuilder);
+        when(secretClientBuilder.buildAsyncClient()).thenReturn(secretAsyncClient);
+        when(secretAsyncClient.getSecret(Mockito.any(Secret.class))).thenReturn(monoSecret);
+        Secret secret = new Secret("mySecret", "mySecret");
+        when(monoSecret.block(Mockito.any())).thenReturn(secret);
         Duration delay = Duration.ofSeconds(0);
         propertyCache.addContext(TEST_STORE_NAME, TEST_CONTEXT);
 
@@ -282,7 +304,7 @@ public class AzureConfigPropertySourceTest {
 
         propertyCache.findNonCachedKeys(delay, TEST_STORE_NAME);
         try {
-            propertySource.initProperties(propertyCache, keyVaultClients);
+            propertySource.initProperties(propertyCache);
         } catch (IOException | URISyntaxException e) {
             fail("Failed Reading in Feature Flags");
         }

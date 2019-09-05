@@ -7,9 +7,6 @@ package com.microsoft.azure.spring.cloud.config;
 
 import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -25,42 +22,37 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.microsoft.azure.AzureEnvironment;
-import com.microsoft.azure.AzureResponseBuilder;
 import com.microsoft.azure.credentials.AppServiceMSICredentials;
-import com.microsoft.azure.credentials.ApplicationTokenCredentials;
 import com.microsoft.azure.credentials.AzureTokenCredentials;
 import com.microsoft.azure.credentials.MSICredentials;
-import com.microsoft.azure.keyvault.KeyVaultClient;
-import com.microsoft.azure.serializer.AzureJacksonAdapter;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.config.managed.identity.AzureResourceManagerConnector;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
-import com.microsoft.azure.spring.cloud.config.stores.KeyVaultStore;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
-import com.microsoft.rest.RestClient;
-import com.microsoft.rest.RestClient.Builder;
-import com.microsoft.rest.protocol.ResponseBuilder.Factory;
 
 @Configuration
 @EnableConfigurationProperties(AzureCloudConfigProperties.class)
 @ConditionalOnClass(AzureConfigPropertySourceLocator.class)
 @ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "enabled", matchIfMissing = true)
 public class AzureConfigBootstrapConfiguration {
-    private static final Logger LOGGER =  LoggerFactory.getLogger(AzureConfigBootstrapConfiguration.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigBootstrapConfiguration.class);
+
     private static final String ENV_MSI_ENDPOINT = "MSI_ENDPOINT";
+
     private static final String ENV_MSI_SECRET = "MSI_SECRET";
+
     private static final String TELEMETRY_SERVICE = "AppConfiguration";
+
     private static final String TELEMETRY_KEY = "HashedStoreName";
 
     @Bean
     public ConnectionStringPool initConnectionString(AzureCloudConfigProperties properties,
-                                                     AzureTokenCredentials credentials) {
+            AzureTokenCredentials credentials) {
         ConnectionStringPool pool = new ConnectionStringPool();
         List<ConfigStore> stores = properties.getStores();
 
@@ -68,7 +60,8 @@ public class AzureConfigBootstrapConfiguration {
             if (StringUtils.hasText(store.getName()) && StringUtils.hasText(store.getConnectionString())) {
                 pool.put(store.getName(), ConnectionString.of(store.getConnectionString()));
             } else if (StringUtils.hasText(store.getName())) {
-                // Try load connection string from ARM if connection string is not configured
+                // Try load connection string from ARM if connection string is not
+                // configured
                 LOGGER.info("Load connection string for store [{}] from Azure Resource Management, " +
                         "Azure managed identity should be enabled.", store.getName());
                 AzureResourceManagerConnector armConnector = new AzureResourceManagerConnector(credentials,
@@ -123,48 +116,14 @@ public class AzureConfigBootstrapConfiguration {
 
     @Bean
     public AzureConfigPropertySourceLocator sourceLocator(ConfigServiceOperations operations,
-            AzureCloudConfigProperties properties, PropertyCache propertyCache,
-            HashMap<String, KeyVaultClient> keyVaultClients) {
-        return new AzureConfigPropertySourceLocator(operations, properties, propertyCache, keyVaultClients);
+            AzureCloudConfigProperties properties, PropertyCache propertyCache) {
+        return new AzureConfigPropertySourceLocator(operations, properties, propertyCache);
     }
-    
+
     @Bean
     @ConditionalOnMissingBean
     public PropertyCache getPropertyCache() {
         return PropertyCache.getPropertyCache();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public HashMap<String, KeyVaultClient> getKeyVaultClients(AzureCloudConfigProperties properties) {
-        HashMap<String, KeyVaultClient> keyVaultClients = new HashMap<String, KeyVaultClient>();
-        AzureEnvironment environment = properties.getEnvironment();
-        for (KeyVaultStore keyVaultStore : properties.getKeyVaultStores()) {
-            String clientId = keyVaultStore.getClientId();
-            String domain = keyVaultStore.getDomain();
-            String secret = keyVaultStore.getSecret();
-            String baseUrl = keyVaultStore.getConnectionUrl();
-
-            AzureJacksonAdapter azureJacksonAdapter = new AzureJacksonAdapter();
-            Factory factory = new AzureResponseBuilder.Factory();
-
-            AzureTokenCredentials credentials = new ApplicationTokenCredentials(clientId, domain, secret, environment);
-
-            RestClient restClient = new Builder().withBaseUrl(baseUrl).withCredentials(credentials)
-                    .withSerializerAdapter(azureJacksonAdapter).withResponseBuilderFactory(factory).build();
-
-            try {
-                URI uri = new URI(baseUrl);
-
-                keyVaultClients.put(uri.getHost(), new KeyVaultClient(restClient));
-            } catch (URISyntaxException e) {
-                LOGGER.error("Failed to parse KeyVaultHost.");
-                if (properties.isFailFast()) {
-                    ReflectionUtils.rethrowRuntimeException(e);
-                }
-            }
-        }
-        return keyVaultClients;
     }
 
     @PostConstruct

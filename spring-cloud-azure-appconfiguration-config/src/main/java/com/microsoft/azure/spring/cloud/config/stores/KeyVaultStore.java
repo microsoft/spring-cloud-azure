@@ -5,29 +5,20 @@
  */
 package com.microsoft.azure.spring.cloud.config.stores;
 
+import javax.validation.constraints.NotEmpty;
+
+import org.springframework.core.io.Resource;
+import org.springframework.validation.annotation.Validated;
+
+@Validated
 public class KeyVaultStore {
     
-    private String connectionUrl;
-    
+    @NotEmpty
     private String clientId;
     
-    private String domain;
+    private String clientSecret;
     
-    private String secret;
-
-    /**
-     * @return the connectionUrl
-     */
-    public String getConnectionUrl() {
-        return connectionUrl;
-    }
-
-    /**
-     * @param connectionUrl the connectionUrl to set
-     */
-    public void setConnectionUrl(String connectionUrl) {
-        this.connectionUrl = connectionUrl;
-    }
+    private Resource clientCertificate;
 
     /**
      * @return the clientId
@@ -44,33 +35,31 @@ public class KeyVaultStore {
     }
 
     /**
-     * @return the domain
-     */
-    public String getDomain() {
-        return domain;
-    }
-
-    /**
-     * @param domain the domain to set
-     */
-    public void setDomain(String domain) {
-        this.domain = domain;
-    }
-
-    /**
      * @return the secret
      */
-    public String getSecret() {
-        return secret;
+    public String getClientSecret() {
+        return clientSecret;
     }
 
     /**
      * @param secret the secret to set
      */
-    public void setSecret(String secret) {
-        this.secret = secret;
+    public void setClientSecret(String clientSecret) {
+        this.clientSecret = clientSecret;
     }
-    
-    
+
+    /**
+     * @return the clientCertificate
+     */
+    public Resource getClientCertificate() {
+        return clientCertificate;
+    }
+
+    /**
+     * @param clientCertificate the clientCertificate to set
+     */
+    public void setClientCertificate(Resource clientCertificate) {
+        this.clientCertificate = clientCertificate;
+    }
 
 }

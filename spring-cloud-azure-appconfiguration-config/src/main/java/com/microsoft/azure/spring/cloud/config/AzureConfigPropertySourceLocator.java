@@ -5,9 +5,15 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import com.google.common.collect.Lists;
-import com.microsoft.azure.keyvault.KeyVaultClient;
-import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +26,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import com.google.common.collect.Lists;
+import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigPropertySourceLocator.class);
@@ -38,17 +42,14 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private final Map<String, List<String>> storeContextsMap = new ConcurrentHashMap<>();
     
     private PropertyCache propertyCache;
-    
-    private HashMap<String, KeyVaultClient> keyVaultClients;
 
     public AzureConfigPropertySourceLocator(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
-            PropertyCache propertyCache, HashMap<String, KeyVaultClient> keyVaultClients) {
+            PropertyCache propertyCache) {
         this.operations = operations;
         this.properties = properties;
         this.profileSeparator = properties.getProfileSeparator();
         this.configStores = properties.getStores();
         this.propertyCache = propertyCache;
-        this.keyVaultClients = keyVaultClients;
     }
 
     @Override
@@ -175,7 +176,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
             AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, operations,
                     store.getName(), label, properties);
 
-            propertySource.initProperties(propertyCache, keyVaultClients);
+            propertySource.initProperties(propertyCache);
             if (initFeatures) {
                 propertySource.initFeatures(propertyCache);
             }
