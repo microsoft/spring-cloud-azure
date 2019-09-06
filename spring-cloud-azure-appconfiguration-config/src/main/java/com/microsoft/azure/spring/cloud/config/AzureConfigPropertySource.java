@@ -27,9 +27,7 @@ import com.azure.identity.credential.DefaultAzureCredentialBuilder;
 import com.azure.security.keyvault.secrets.SecretAsyncClient;
 import com.azure.security.keyvault.secrets.SecretClientBuilder;
 import com.azure.security.keyvault.secrets.models.Secret;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 import com.microsoft.azure.spring.cloud.config.domain.QueryOptions;
@@ -87,19 +85,17 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     }
 
     /**
-     * Gets settings from Azure/Cache to set as configurations. Updates the cache. </br>
-     * </br>
-     * <b>Note</b>: Doesn't update Feature Management, just stores values in cache. Call
+     * <p>Gets settings from Azure/Cache to set as configurations. Updates the cache.</p>
+     * 
+     * <p><b>Note</b>: Doesn't update Feature Management, just stores values in cache. Call
      * {@code initFeatures} to update Feature Management, but make sure its done in the
-     * last {@code AzureConfigPropertySource}
+     * last {@code AzureConfigPropertySource}</p>
      * 
      * @param propertyCache Cached values to use in store. Also contains values the need
      * to be refreshed.
-     * @throws IOException
-     * @throws URISyntaxException
+     * @throws IOException Thrown when processing key/value failed when reading feature flags
      */
-    public void initProperties(PropertyCache propertyCache)
-            throws IOException, URISyntaxException {
+    public void initProperties(PropertyCache propertyCache) throws IOException {
         Date date = new Date();
         if (propertyCache.getContext(storeName) == null) {
             propertyCache.addContext(storeName, context);
@@ -109,7 +105,12 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
             for (KeyValueItem item : items) {
                 String key = item.getKey().trim().substring(context.length()).replace('/', '.');
                 if (item.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
-                    properties.put(key, getKeyVaultEntry(item.getValue()));
+                    String entry = getKeyVaultEntry(item.getValue());
+
+                    // Null in the case of failFast is false, will just skip entry.
+                    if (entry != null) {
+                        properties.put(key, entry);
+                    }
                 } else {
                     properties.put(key, item.getValue());
                 }
@@ -134,51 +135,77 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
                 }
             }
 
+            // Take keys from Cache and set them to properties
             for (String key : propertyCache.getKeySet(storeName)) {
                 CachedKey cachedKey = propertyCache.getCache().get(key);
-                if (key.startsWith(context) && cachedKey.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
-                        key = key.trim().substring(context.length()).replace('/', '.');
-                        properties.put(key, getKeyVaultEntry(cachedKey.getValue()));
-                } else if (key.startsWith(context)) {
-                    String trimedKey = key.trim().substring(context.length()).replace('/', '.');
-                    properties.put(trimedKey, propertyCache.getCachedValue(key));
-                } else {
-                    List<KeyValueItem> items = new ArrayList<KeyValueItem>();
-                    KeyValueItem item = new KeyValueItem();
-                    item.setKey(key);
-                    item.setValue(propertyCache.getCachedValue(key));
-                    item.setContentType(FEATURE_FLAG_CONTENT_TYPE);
-                    items.add(item);
+                List<KeyValueItem> items = new ArrayList<KeyValueItem>();
 
-                    createFeatureSet(items, propertyCache, date);
+                if (cachedKey.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
+                    key = key.trim().substring(context.length()).replace('/', '.');
+                    String entry = getKeyVaultEntry(cachedKey.getValue());
+
+                    // Null in the case of failFast is false, will just skip entry.
+                    if (entry != null) {
+                        properties.put(key, entry);
+                    }
+                } else if (cachedKey.getContentType().equals(FEATURE_FLAG_CONTENT_TYPE)) {
+                    KeyValueItem item = new KeyValueItem(key, cachedKey.getValue(),
+                            FEATURE_FLAG_CONTENT_TYPE);
+                    items.add(item);
+                } else {
+                    key = key.trim().substring(context.length()).replace('/', '.');
+                    properties.put(key, cachedKey.getValue());
                 }
+
+                createFeatureSet(items, propertyCache, date);
             }
         }
     }
-    
+
+    /**
+     * Given a Setting's Key Vault Reference stored in the Settings value, it will get its
+     * entry in Key Vault.
+     * 
+     * @param value {"uri":
+     * "&lt;your-vault-url&gt;/secret/&lt;secret&gt;/&lt;version&gt;"}
+     * @return Key Vault Secret Value
+     */
     private String getKeyVaultEntry(String value) {
-        String secretValue = "";
+        String secretValue = null;
         try {
-            String uriString = "";
-            JsonFactory factory = new JsonFactory();
-            JsonParser parser = factory.createParser(value);
+            String stringUri = "";
+            URI uri = null;
+            Secret secret = new Secret();
 
-            while (!parser.isClosed()) {
-                JsonToken jsonToken = parser.nextToken();
-                String fieldName = parser.getCurrentName();
-
-                if (JsonToken.FIELD_NAME.equals(jsonToken)) {
-                    jsonToken = parser.nextToken();
-                    if (fieldName.equals("uri")) {
-                        uriString = parser.getValueAsString();
-                        break;
-                    }
+            // Parsing Key Vault Reference for URI
+            try {
+                JsonNode kvReference = mapper.readTree(value);
+                stringUri = kvReference.at("/uri").asText();
+                uri = new URI(stringUri);
+            } catch (URISyntaxException e) {
+                if (azureProperties.isFailFast()) {
+                    LOGGER.error("Error Processing Key Vault Entry URI.", e);
+                } else {
+                    LOGGER.error("Error Processing Key Vault Entry URI.");
+                    ReflectionUtils.rethrowRuntimeException(e);
                 }
             }
 
-            Secret secret = new Secret();
-            secret.id(uriString);
-            URI uri = new URI(uriString);
+            // If no entry found don't connect to Key Vault
+            if (stringUri.equals("") || uri == null) {
+                if (azureProperties.isFailFast()) {
+                    ReflectionUtils.rethrowRuntimeException(
+                            new IOException("Invaid URI when parsing Key Vault Reference."));
+                } else {
+                    return null;
+                }
+            }
+
+            // Setting the Key Vault Reference as ID enables search by id and version
+            secret.id(stringUri);
+
+            // Check if we already have a client for this key vault, if not we will make
+            // one
             if (!keyVaultClients.containsKey(uri.getHost())) {
                 SecretAsyncClient secretAsyncClient = new SecretClientBuilder()
                         .endpoint("https://" + uri.getHost())
@@ -186,13 +213,17 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
                         .buildAsyncClient();
                 keyVaultClients.put(uri.getHost(), secretAsyncClient);
             }
+
             secret = keyVaultClients.get(uri.getHost()).getSecret(secret).block(Duration.ofSeconds(30));
+            if (secret == null) {
+                throw new IOException("No Key Vault Secret found for Reference.");
+            }
             secretValue = secret.value();
-        } catch (RuntimeException | IOException | URISyntaxException e) {
+        } catch (RuntimeException | IOException e) {
             if (azureProperties.isFailFast()) {
-                LOGGER.error("Error Processing Key Vault Entry", e);
+                LOGGER.error("Error Retreiving Key Vault Entry", e);
             } else {
-                LOGGER.error("Error Processing Key Vault Entry");
+                LOGGER.error("Error Retreiving Key Vault Entry");
                 ReflectionUtils.rethrowRuntimeException(e);
             }
         }
@@ -201,7 +232,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
 
     /**
      * Initializes Feature Management configurations. Only one
-     * <{@code AzureConfigPropertySource} can call this, and it needs to be done after the
+     * {@code AzureConfigPropertySource} can call this, and it needs to be done after the
      * rest have run initProperties.
      * @param propertyCache Cached values to use in store. Also contains values the need
      * to be refreshed.

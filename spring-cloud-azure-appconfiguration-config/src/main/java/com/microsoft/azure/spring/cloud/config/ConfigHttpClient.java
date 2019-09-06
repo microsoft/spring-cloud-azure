@@ -42,7 +42,7 @@ import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA_256;
  * HttpGet httpGet = new HttpGet("https://my-config-store.azconfig.io/keys");
  * CloseableHttpResponse response = ConfigHttpClient.execute(httpGet, "my-credential",
  * "my-secret");
- * <p/>
+ * </p>
  */
 public class ConfigHttpClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigHttpClient.class);

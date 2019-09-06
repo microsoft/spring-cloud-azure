@@ -34,7 +34,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -113,8 +112,6 @@ public class AzureConfigPropertySourceTest {
     @Mock
     private Mono<Secret> monoSecret;
 
-    private PropertyCache propertyCache;
-
     @BeforeClass
     public static void init() {
         TestUtils.addStore(TEST_PROPS, TEST_STORE_NAME, TEST_CONN_STRING);
@@ -143,7 +140,7 @@ public class AzureConfigPropertySourceTest {
         when(operations.getKeys(any(), any())).thenReturn(testItems).thenReturn(FEATURE_ITEMS);
         try {
             propertySource.initProperties(propertyCache);
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             fail("Failed Reading in Feature Flags");
         }
         propertySource.initFeatures(propertyCache);
@@ -168,7 +165,7 @@ public class AzureConfigPropertySourceTest {
 
         try {
             propertySource.initProperties(propertyCache);
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             fail("Failed Reading in Feature Flags");
         }
 
@@ -187,7 +184,7 @@ public class AzureConfigPropertySourceTest {
 
         try {
             propertySource.initProperties(propertyCache);
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             fail("Failed Reading in Feature Flags");
         }
         propertySource.initFeatures(propertyCache);
@@ -221,7 +218,7 @@ public class AzureConfigPropertySourceTest {
         propertyCache.addContext(TEST_STORE_NAME, TEST_CONTEXT);
         try {
             propertySource.initProperties(propertyCache);
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             fail("Failed Reading in Feature Flags");
         }
         propertySource.initFeatures(propertyCache);
@@ -262,7 +259,7 @@ public class AzureConfigPropertySourceTest {
         propertyCache.findNonCachedKeys(delay, TEST_STORE_NAME);
         try {
             propertySource.initProperties(propertyCache);
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             fail("Failed Reading in Feature Flags");
         }
         propertySource.initFeatures(propertyCache);
@@ -291,6 +288,7 @@ public class AzureConfigPropertySourceTest {
         when(secretClientBuilder.credential(Mockito.any())).thenReturn(secretClientBuilder);
         when(secretClientBuilder.buildAsyncClient()).thenReturn(secretAsyncClient);
         when(secretAsyncClient.getSecret(Mockito.any(Secret.class))).thenReturn(monoSecret);
+        
         Secret secret = new Secret("mySecret", "mySecret");
         when(monoSecret.block(Mockito.any())).thenReturn(secret);
         Duration delay = Duration.ofSeconds(0);
@@ -305,7 +303,7 @@ public class AzureConfigPropertySourceTest {
         propertyCache.findNonCachedKeys(delay, TEST_STORE_NAME);
         try {
             propertySource.initProperties(propertyCache);
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             fail("Failed Reading in Feature Flags");
         }
         propertySource.initFeatures(propertyCache);

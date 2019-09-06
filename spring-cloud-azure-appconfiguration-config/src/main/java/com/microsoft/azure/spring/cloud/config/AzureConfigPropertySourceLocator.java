@@ -5,16 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
@@ -26,8 +17,9 @@ import org.springframework.lang.NonNull;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-import com.google.common.collect.Lists;
-import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigPropertySourceLocator.class);
@@ -166,10 +158,9 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
      * When generating more than one it needs to be in the last one.
      * @return a list of AzureConfigPropertySources
      * @throws IOException
-     * @throws URISyntaxException 
      */
     private List<AzureConfigPropertySource> create(String context, ConfigStore store,
-            Map<String, List<String>> storeContextsMap, boolean initFeatures) throws IOException, URISyntaxException {
+            Map<String, List<String>> storeContextsMap, boolean initFeatures) throws IOException {
         List<AzureConfigPropertySource> sourceList = new ArrayList<>();
 
         for (String label : store.getLabels()) {

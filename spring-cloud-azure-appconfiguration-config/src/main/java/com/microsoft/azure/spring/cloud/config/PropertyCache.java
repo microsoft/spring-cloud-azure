@@ -25,7 +25,7 @@ public class PropertyCache {
     private ConcurrentMap<String, List<String>> refreshKeys;
 
     private ConcurrentHashMap<String, String> contextLookup;
-    
+
     private static PropertyCache propertyCache;
 
     private PropertyCache() {
@@ -33,14 +33,14 @@ public class PropertyCache {
         refreshKeys = new ConcurrentHashMap<String, List<String>>();
         contextLookup = new ConcurrentHashMap<String, String>();
     }
-    
+
     public static PropertyCache getPropertyCache() {
         if (propertyCache == null) {
             propertyCache = new PropertyCache();
         }
         return propertyCache;
     }
-    
+
     public static PropertyCache resetPropertyCache() {
         propertyCache = new PropertyCache();
         return propertyCache;
@@ -55,13 +55,14 @@ public class PropertyCache {
     public List<String> getRefreshKeys(String storeName) {
         return refreshKeys.get(storeName);
     }
-    
+
     /**
-     * Gets a List of keys that need to refreshed by the given store, and there key starts with the filtered value
+     * Gets a List of keys that need to refreshed by the given store, and there key starts
+     * with the filtered value
      * 
      * @param storeName Store of which the refreshed keys are from
      * @param filter Filter used to find a specific set of keys
-     * @return
+     * @return List of key values
      */
     public List<String> getRefreshKeys(String storeName, String filter) {
         return refreshKeys.get(storeName).stream().filter(key -> key.startsWith(filter)).collect(Collectors.toList());

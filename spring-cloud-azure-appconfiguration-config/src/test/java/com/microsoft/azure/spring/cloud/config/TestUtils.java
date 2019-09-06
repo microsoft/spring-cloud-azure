@@ -6,7 +6,6 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
-import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 import java.util.List;
 

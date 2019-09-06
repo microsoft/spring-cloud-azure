@@ -13,9 +13,6 @@ import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_ST
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.propPair;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -45,7 +42,6 @@ import org.springframework.beans.BeanInstantiationException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
-import com.azure.identity.credential.ChainedTokenCredential;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.credentials.MSICredentials;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
@@ -55,20 +51,20 @@ import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ConfigServiceTemplate.class, AzureConfigBootstrapConfiguration.class })
+@PrepareForTest({ConfigServiceTemplate.class, AzureConfigBootstrapConfiguration.class})
 @PowerMockIgnore({ "javax.net.ssl.*", "javax.crypto.*" })
 public class AzureConfigBootstrapConfigurationTest {
     private static final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
             .withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                     propPair(STORE_NAME_PROP, TEST_STORE_NAME))
             .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class));
-    
+
     @Mock
     private MSICredentials msiCredentials;
 
     @Mock
     private AzureResourceManagerConnector armConnector;
-
+    
     @Mock
     private ConfigHttpClient configClient;
     
@@ -87,23 +83,23 @@ public class AzureConfigBootstrapConfigurationTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-
+        
         KeyValueResponse kvResponse = new KeyValueResponse();
         List<KeyValueItem> items = new ArrayList<KeyValueItem>();
         kvResponse.setItems(items);
         try {
-
+            
             PowerMockito.whenNew(ConfigHttpClient.class).withAnyArguments().thenReturn(configClient);
             PowerMockito.whenNew(ObjectMapper.class).withAnyArguments().thenReturn(mockObjectMapper);
             when(configClient.execute(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
-                    .thenReturn(mockClosableHttpResponse);
+                .thenReturn(mockClosableHttpResponse);
             when(mockClosableHttpResponse.getStatusLine())
-                    .thenReturn(new BasicStatusLine(new ProtocolVersion("", 0, 0), 200, ""));
+                .thenReturn(new BasicStatusLine(new ProtocolVersion("", 0, 0), 200, ""));
             when(mockClosableHttpResponse.getEntity()).thenReturn(mockHttpEntity);
             when(mockHttpEntity.getContent()).thenReturn(mockInputStream);
-
+            
             when(mockObjectMapper.readValue(Mockito.isA(InputStream.class), Mockito.any(Class.class)))
-                    .thenReturn(kvResponse);
+                .thenReturn(kvResponse);
         } catch (Exception e) {
             fail();
         }

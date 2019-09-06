@@ -25,7 +25,6 @@ import org.springframework.util.StringUtils;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 import com.microsoft.azure.spring.cloud.config.domain.QueryField;
 import com.microsoft.azure.spring.cloud.config.domain.QueryOptions;
-import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureCloudConfigWatch.class);
