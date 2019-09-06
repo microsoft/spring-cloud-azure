@@ -256,7 +256,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     }
 
     /**
-     * Creates a {@code FeatureSet} from a list of {@code KeyValueItem}.
+     * Creates a {@code FeatureSet} from a list of {@code KeyValueItem}. 
      * 
      * @param items New items read in from Azure
      * @param propertyCache Cached values where updated values are set.
