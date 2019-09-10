@@ -20,7 +20,7 @@ Running this sample will be charged by Azure. You can check the usage and bill a
 [source%nowrap, properties]
 ....
 
-# Configuration for default binder
+# Configuration for default binder. Currently, the limitation is default binder must be provided
 # Fill the first event hub namespace connection string copied from portal
 spring.cloud.azure.eventhub.connection-string=[eventhub-namespace-1-connection-string]
 # Fill checkpoint storage account name and access key
