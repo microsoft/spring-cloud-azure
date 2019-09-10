@@ -1,171 +1,95 @@
-= Spring Cloud Azure Stream Binder for Event Hub Code Sample
+= Spring Cloud Azure Stream Binder for Multiple Event Hub Namespace Code Sample
 
-This code sample demonstrates how to use the Spring Cloud Stream binder for Azure Event Hub.
-The sample app exposes a rest api to receive string message. Then message is sent through Azure
+This code sample demonstrates how to use the Spring Cloud Stream Binder for multiple Azure Event Hub namespaces.
+In this sample you will bind to two Event Hub namespaces separately through two binders.
+The sample app exposes REST APIs to receive string message. Then message is sent through Azure
 Event Hub to a `sink` which simply logs the message.
 
 Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
 
 == Connection string based usage
 
-1. Create https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create[Azure Event Hubs]. Please note `Basic` tier is unsupported.
+1. Create two Event Hubs in different Event Hub namespace. Please refer to https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create[Azure Event Hubs]. Please note `Basic` tier is unsupported.
 
 2. Create https://docs.microsoft.com/en-us/azure/storage/[Azure Storage] for checkpoint use.
 
 3. Update link:src/main/resources/application.properties[application.properties]
 
 +
-....
-# Fill event hub namespace connection string copied from portal
-spring.cloud.azure.eventhub.connection-string=[eventhub-namespace-connection-string]
 
-# Fill checkpoint storage account name and accese key
+[source%nowrap, properties]
+....
+
+# Configuration for default binder
+# Fill the first event hub namespace connection string copied from portal
+spring.cloud.azure.eventhub.connection-string=[eventhub-namespace-1-connection-string]
+# Fill checkpoint storage account name and access key
 spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-account]
 spring.cloud.azure.eventhub.checkpoint-access-key=[checkpoint-accesskey]
+
+
+# Configuration for another binder
+spring.cloud.stream.binders.eventhub2.type=eventhub
+# Set defaultCandidate to false
+spring.cloud.stream.binders.eventhub2.defaultCandidate=false
+spring.cloud.stream.binders.eventhub2.environment.spring.cloud.azure.eventhub.connection-string=[eventhub-namespace-2-connection-string]
+spring.cloud.stream.binders.eventhub2.environment.spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-account]
+spring.cloud.stream.binders.eventhub2.environment.spring.cloud.azure.eventhub.checkpoint-access-key=[checkpoint-accesskey]
+
 ....
 
-== Credential file based usage
+[NOTE]
+====
+The *defaultCandidate* configuration item:
 
-1. Create Azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how
-to create credential file]
-+
-....
-$  az login
-$  az account set --subscription <name or id>
-$  az ad sp create-for-rbac --sdk-auth > my.azureauth
-....
-+
-Make sure `my.azureauth` is encoded with UTF-8.
-
-2. Put credential file under `src/main/resources/`.
-
-3. Create https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create[Azure Event Hubs] and https://docs.microsoft.com/en-us/azure/storage/[Azure Storage]. Please note event hub `Basic` tier is unsupported. Or enable auto create
-resources feature in link:src/main/resources/application.properties[application.properties]:
-+
-....
-spring.cloud.azure.auto-create-resources=true
-
-# Default environment is GLOBAL. Provide your own if in another environment
-# Example environment is China, GLOBAL
-# spring.cloud.azure.environment=[environment]
-# Example region is westUS, northchina
-spring.cloud.azure.region=[region]
-....
-
-4. Update credential file based properties in link:src/main/resources/application.properties[application.properties]
-+
-....
-# Enter 'my.azureauth' here if following step 1 and 2
-spring.cloud.azure.credential-file-path=[credential-file-path]
-spring.cloud.azure.resource-group=[resource-group]
-
-spring.cloud.azure.eventhub.namespace=[eventhub-namespace]
-spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-account]
-....
-
-== MSI credential based usage
-
-=== Overview
-
-https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/[MSI] (Managed Service Identity, aka Managed Identity) for Azure resources provides Azure services with an automatically managed identity in https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-whatis[Azure AD]. You can use this identity to authenticate to any service that supports Azure AD authentication without having any credentials in your code.
-
-Please note your application should run in VM (Virtual Machine) or App Services on Azure for support of MSI.
-
-=== Prerequisites
-1. Create https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create[Azure Event Hubs]. Please note `Basic` tier is unsupported.
-
-2. Create https://docs.microsoft.com/en-us/azure/storage/[Azure Storage] for checkpoint use.
-
-
-=== Setup VM and assign identity
-
-3. Create VM in Azure portal.
-Please refer to https://docs.microsoft.com/en-us/azure/virtual-machines/windows/quick-create-portal[Create a Windows virtual machine in the Azure portal] or https://docs.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-portal[Create a Linux virtual machine in the Azure portal]. Choose any one according to your needs.
-
-4. Create an user-assigned identity in Azure Portal.
-Please refer to https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/how-to-manage-ua-identity-portal#create-a-user-assigned-managed-identity[Create an user-assigned managed identity].
-
-5. Assign the user-assigned identity to the VM.
-Please refer to https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/qs-configure-portal-windows-vm#assign-a-user-assigned-managed-identity-to-an-existing-vm[Assign an user-assigned managed identity to an existing VM].
-
-=== Setup App Service and assign identity
-
-1. Please refer to https://docs.microsoft.com/en-us/java/azure/spring-framework/deploy-spring-boot-java-app-with-maven-plugin?toc=%2Fazure%2Fapp-service%2Fcontainers%2Ftoc.json&view=azure-java-stable[
-   Deploy a Spring Boot JAR file to Azure App Service] to deploy a Spring Boot JAR file.
-   The maven plugin does not support deploying App Service using `user-assigned` type identity now.
-   Another way to deploy an executable JAR is via FTP/S. Please refer to https://docs.microsoft.com/en-us/azure/app-service/deploy-ftp[
-   Deploy your app to App Service using FTP/S]. And the JAR file's name must be `app.jar`.
-
-
-2. Create a managed identity for App Service.
-   Please refer to https://docs.microsoft.com/en-us/azure/app-service/overview-managed-identity#adding-a-system-assigned-identity[
-   Adding a system assigned identity] if you choose to use system-assigned identity,
-   or https://docs.microsoft.com/en-us/azure/app-service/overview-managed-identity#adding-a-user-assigned-identity[
-   Adding a user assigned identity] if user-assigned identity is chosen.
-
-=== Role Assignment
-
-1. Add role assignment to event hub and storage account. You should add managed identity to the `Contributor` role for event hub, and add managed identity to the `Storage Account Key Operator Service Role` role for storage account.
-+
---
-For how to add role assignment to event hub, please see https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-managed-service-identity[Managed identities for Azure resources with Event Hubs]. Adding role assignment to storage account is almost similar, you can set it in `Access Control (IAM)` page in Azure Portal of your storage account resource by imitating the steps of adding role assignment for event hub.
-Role assignments are the way you control access to Azure resources. For different built-in role's descriptions, please see https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles[Built-in role descriptions].
---
-
-=== Add MSI related properties
-
-1. Update link:src/main/resources/application.properties[application.properties]
-+
-....
-# Enable MSI for event hub and storage account
-spring.cloud.azure.msi-enabled=true
-
-# Fill subscription ID copied from portal
-spring.cloud.azure.subscription-id=[subscription-id]
-
-# Fill client ID if user-assigned identity is used in App Service
-spring.cloud.azure.managed-identity.client-id=[The ID of the user-assigned identity to be used]
-
-# Fill resource group name
-spring.cloud.azure.resource-group=[resource-group]
-
-# Fill checkpoint storage account name
-spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-account]
-
-# Fill event hub namespace
-spring.cloud.azure.eventhub.namespace=[eventhub-namespace]
-....
+Whether the binder configuration is a candidate for being considered a default binder, or can be used only when explicitly referenced. This allows adding binder configurations without interfering with the default processing.
+====
 
 
 == How to run
 1. Update stream binding related properties in link:src/main/resources/application.properties[application.properties]
 
 +
+[source%nowrap, properties]
 ....
-spring.cloud.stream.bindings.input.destination=[eventhub-name]
+spring.cloud.stream.bindings.input.destination=[eventhub-1-name]
 spring.cloud.stream.bindings.input.group=[consumer-group]
-spring.cloud.stream.bindings.output.destination=[eventhub-name]
+spring.cloud.stream.bindings.output.destination=[eventhub-1-name]
+
+
+spring.cloud.stream.bindings.input1.destination=[eventhub-2-name]
+spring.cloud.stream.bindings.input1.group=[consumer-group]
+spring.cloud.stream.bindings.output1.destination=[eventhub-2-name]
 ....
 
 2. Run the `mvn clean spring-boot:run` in the root of the code sample to get the app running.
 
-3.  Send a POST request
+3.  Send a POST request to test the default binder
 +
 ....
 $ curl -X POST http://localhost:8080/messages?message=hello
 ....
 +
-or when the app runs on App Service
-+
-....
-$ curl -X POST https://[your-app-URL]/messages?message=hello
-....
 
 4. Verify in your app's logs that a similar message was posted:
 +
 ....
-New message received: 'hello'
-Message 'hello' successfully checkpointed
+[1] New message received: 'hello'
+[1] Message 'hello' successfully checkpointed
+....
+
+5. Send another POST request to test the other binder
++
+....
+$ curl -X POST http://localhost:8080/messages1?message=hello
+....
++
+
+6. Verify in your app's logs that a similar message was posted:
++
+....
+[2] New message received: 'hello'
+[2] Message 'hello' successfully checkpointed
 ....
 
 5. Delete the resources on http://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
