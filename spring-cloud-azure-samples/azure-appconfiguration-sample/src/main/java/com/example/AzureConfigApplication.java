@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @SpringBootApplication
-@EnableConfigurationProperties(MessageProperties.class)
+@EnableConfigurationProperties({MessageProperties.class, Second.class, KeyVault.class})
 public class AzureConfigApplication {
     public static void main(String[] args) {
         SpringApplication.run(AzureConfigApplication.class, args);

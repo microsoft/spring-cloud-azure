@@ -18,6 +18,8 @@ public class CachedKey {
     private String value;
 
     private String storeName;
+    
+    private String contentType;
 
     private Date lastUpdated;
     
@@ -27,6 +29,7 @@ public class CachedKey {
         value = item.getValue();
         this.storeName = storeName;
         lastUpdated = time;
+        this.contentType = item.getContentType();
     }
 
     /**
@@ -97,6 +100,20 @@ public class CachedKey {
      */
     public void setLastUpdated(Date lastUpdated) {
         this.lastUpdated = lastUpdated;
+    }
+
+    /**
+     * @return the contentType
+     */
+    public String getContentType() {
+        return contentType;
+    }
+
+    /**
+     * @param contentType the contentType to set
+     */
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 
 }

@@ -68,10 +68,15 @@ public class ConfigServiceTemplateTest {
     private List<KeyValueItem> testItems;
 
     private HttpEntity okEntity;
+    
+    private static final String EMPTY_CONTENT_TYPE = "";
 
-    private static final KeyValueItem item1 = createItem(TEST_CONTEXT, TEST_KEY_1, TEST_VALUE_1, TEST_LABEL_1);
-    private static final KeyValueItem item2 = createItem(TEST_CONTEXT, TEST_KEY_2, TEST_VALUE_2, TEST_LABEL_2);
-    private static final KeyValueItem item3 = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3, TEST_LABEL_3);
+    private static final KeyValueItem item1 = 
+            createItem(TEST_CONTEXT, TEST_KEY_1, TEST_VALUE_1, TEST_LABEL_1, EMPTY_CONTENT_TYPE);
+    private static final KeyValueItem item2 = 
+            createItem(TEST_CONTEXT, TEST_KEY_2, TEST_VALUE_2, TEST_LABEL_2, EMPTY_CONTENT_TYPE);
+    private static final KeyValueItem item3 = 
+            createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3, TEST_LABEL_3, EMPTY_CONTENT_TYPE);
 
     private static final QueryOptions TEST_OPTIONS = new QueryOptions().withKeyNames(TEST_CONTEXT);
 
@@ -88,6 +93,8 @@ public class ConfigServiceTemplateTest {
     private static final StatusLine FAIL_STATUS = new BasicStatusLine(VERSION, HttpStatus.SC_BAD_REQUEST, FAIL_REASON);
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    
+    private AppConfigProviderProperties properties;
 
     @Before
     public void setup() throws Exception {
@@ -103,6 +110,8 @@ public class ConfigServiceTemplateTest {
         testItems.addAll(Arrays.asList(item1, item2, item3));
 
         okEntity = buildEntity(testItems);
+        properties = new AppConfigProviderProperties();
+        properties.setVersion("1.0");
     }
 
     @After
@@ -115,7 +124,7 @@ public class ConfigServiceTemplateTest {
     public void testKeysCanBeSearched() throws IOException, URISyntaxException {
         when(configClient.execute(any(), any(), any(), any()))
                 .thenReturn(new MockCloseableHttpResponse(OK_STATUS, okEntity));
-        template = new ConfigServiceTemplate(configClient, pool);
+        template = new ConfigServiceTemplate(configClient, pool, properties);
 
         List<KeyValueItem> result = template.getKeys(configStore.getName(), TEST_OPTIONS);
         assertThat(result.size()).isEqualTo(testItems.size());
@@ -126,7 +135,7 @@ public class ConfigServiceTemplateTest {
     public void testSpecificLabelCanBeSearched() throws IOException, URISyntaxException {
         prepareConfigClient();
 
-        template = new ConfigServiceTemplate(configClient, pool);
+        template = new ConfigServiceTemplate(configClient, pool, properties);
         List<KeyValueItem> result = template.getKeys(configStore.getName(), TEST_OPTIONS.withLabels(TEST_LABEL_2));
         List<KeyValueItem> expectedResult = Arrays.asList(item2);
         assertThat(result.size()).isEqualTo(expectedResult.size());
@@ -169,7 +178,7 @@ public class ConfigServiceTemplateTest {
         when(configClient.execute(any(), any(), any(), any()))
                 .thenReturn(new MockCloseableHttpResponse(FAIL_STATUS, null));
 
-        template = new ConfigServiceTemplate(configClient, pool);
+        template = new ConfigServiceTemplate(configClient, pool, properties);
         template.getKeys(TEST_STORE_NAME, new QueryOptions());
     }
 
@@ -177,7 +186,7 @@ public class ConfigServiceTemplateTest {
     public void notFoundReturnEmptyList() throws Exception {
         when(configClient.execute(any(), any(), any(), any()))
                 .thenReturn(new MockCloseableHttpResponse(NOT_FOUND_STATUS, null));
-        template = new ConfigServiceTemplate(configClient, pool);
+        template = new ConfigServiceTemplate(configClient, pool, properties);
 
         List<KeyValueItem> result = template.getKeys(configStore.getName(), TEST_OPTIONS);
         assertThat(result).isNotNull();
@@ -202,7 +211,7 @@ public class ConfigServiceTemplateTest {
         when(secondResponse.getEntity()).thenReturn(secondEntity);
 
         when(configClient.execute(any(), any(), any(), any())).thenReturn(firstResponse).thenReturn(secondResponse);
-        template = new ConfigServiceTemplate(configClient, pool);
+        template = new ConfigServiceTemplate(configClient, pool, properties);
         List<KeyValueItem> result = template.getKeys(configStore.getName(), TEST_OPTIONS);
 
         verify(configClient, times(2)).execute(any(), any(), any(), any());
@@ -228,7 +237,7 @@ public class ConfigServiceTemplateTest {
         when(secondResponse.getEntity()).thenReturn(entity);
 
         when(configClient.execute(any(), any(), any(), any())).thenReturn(firstResponse).thenReturn(secondResponse);
-        template = new ConfigServiceTemplate(configClient, pool);
+        template = new ConfigServiceTemplate(configClient, pool, properties);
 
         long start = System.currentTimeMillis();
         List<KeyValueItem> result = template.getKeys(configStore.getName(), TEST_OPTIONS);
@@ -250,7 +259,7 @@ public class ConfigServiceTemplateTest {
         when(response.getEntity()).thenReturn(httpEntity);
 
         when(configClient.execute(any(), any(), any(), any())).thenReturn(response);
-        template = new ConfigServiceTemplate(configClient, pool);
+        template = new ConfigServiceTemplate(configClient, pool, properties);
         List<KeyValueItem> result = template.getKeys(configStore.getName(), TEST_OPTIONS);
 
         verify(configClient, times(1)).execute(any(), any(), any(), any());
@@ -269,7 +278,7 @@ public class ConfigServiceTemplateTest {
         when(response.getEntity()).thenReturn(httpEntity);
 
         when(configClient.execute(any(), any(), any(), any())).thenReturn(response);
-        template = new ConfigServiceTemplate(configClient, pool);
+        template = new ConfigServiceTemplate(configClient, pool, properties);
         List<KeyValueItem> result = template.getKeys(configStore.getName(), TEST_OPTIONS);
 
         verify(configClient, times(1)).execute(any(), any(), any(), any());

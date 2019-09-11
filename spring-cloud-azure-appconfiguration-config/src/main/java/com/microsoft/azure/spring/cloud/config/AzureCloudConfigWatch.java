@@ -186,11 +186,10 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
      * @return the full name of the key mapping to the configuration store
      */
     private String watchedKeyNames(ConfigStore store, Map<String, List<String>> storeContextsMap) {
-        String prefix = store.getPrefix();
         String watchedKey = store.getWatchedKey().trim();
         List<String> contexts = storeContextsMap.get(store.getName());
 
-        String watchedKeys = contexts.stream().map(ctx -> genKey(prefix, ctx, watchedKey))
+        String watchedKeys = contexts.stream().map(ctx -> genKey(ctx, watchedKey))
                 .collect(Collectors.joining(","));
 
         if (watchedKeys.contains(",") && watchedKeys.contains("*")) {
@@ -202,10 +201,9 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
         return watchedKeys;
     }
 
-    private String genKey(@Nullable String prefix, @NonNull String context, @Nullable String watchedKey) {
+    private String genKey(@NonNull String context, @Nullable String watchedKey) {
         String trimmedWatchedKey = StringUtils.hasText(watchedKey) ? watchedKey.trim() : "*";
-        String trimmedPrefix = StringUtils.hasText(prefix) ? prefix.trim() : "";
 
-        return String.format("%s%s%s", trimmedPrefix, context, trimmedWatchedKey);
+        return String.format("%s%s", context, trimmedWatchedKey);
     }
 }

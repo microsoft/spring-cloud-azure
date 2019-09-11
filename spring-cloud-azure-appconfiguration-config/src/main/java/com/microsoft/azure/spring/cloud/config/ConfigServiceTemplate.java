@@ -41,10 +41,14 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
 
     private final ConfigHttpClient configClient;
     private final ConnectionStringPool connectionStringPool;
+    
+    private AppConfigProviderProperties properties;
 
-    public ConfigServiceTemplate(ConfigHttpClient httpClient, ConnectionStringPool connectionStringPool) {
+    public ConfigServiceTemplate(ConfigHttpClient httpClient, ConnectionStringPool connectionStringPool, 
+            AppConfigProviderProperties properties) {
         this.configClient = httpClient;
         this.connectionStringPool = connectionStringPool;
+        this.properties = properties;
     }
 
     @Override
@@ -55,7 +59,8 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         ConnectionString connString = connectionStringPool.get(storeName);
         String storeEndpoint = connString.getEndpoint();
 
-        String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildKVApi(options);
+        String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildKVApi(options,
+                properties.getVersion());
 
         return getKeys(requestUri, options, storeName);
     }
@@ -68,7 +73,8 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         ConnectionString connString = connectionStringPool.get(storeName);
         String storeEndpoint = connString.getEndpoint();
 
-        String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildRevisionsApi(options);
+        String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildRevisionsApi(options,
+                properties.getVersion());
 
         return getKeys(requestUri, options, storeName);
     }
@@ -109,7 +115,8 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
                     break;
                 }
 
-                requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).withPath(nextLink).buildKVApi();
+                requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).withPath(nextLink)
+                        .buildKVApi(properties.getVersion());
             }
         } finally {
             if (response != null) {

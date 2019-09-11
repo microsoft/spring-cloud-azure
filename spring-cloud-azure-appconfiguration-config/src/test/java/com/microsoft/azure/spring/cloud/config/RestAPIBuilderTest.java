@@ -28,6 +28,7 @@ public class RestAPIBuilderTest {
     private static final String LABEL_PARAM = "label";
     private static final String KV_API = RestAPIBuilder.KEY_VALUE_API;
     private static final String NULL_LABEL_QUERY = LABEL_PARAM + "=%00";
+    private static final String API_VERSION = "1.0";
 
     @Rule
     public ExpectedException expected = ExpectedException.none();
@@ -38,7 +39,7 @@ public class RestAPIBuilderTest {
 
         expected.expect(IllegalArgumentException.class);
         expected.expectMessage("Endpoint should not be empty or null");
-        builder.buildKVApi(new QueryOptions());
+        builder.buildKVApi(new QueryOptions(), API_VERSION);
     }
 
     @Test
@@ -47,13 +48,13 @@ public class RestAPIBuilderTest {
 
         expected.expect(IllegalArgumentException.class);
         expected.expectMessage("Endpoint should not be empty or null");
-        builder.buildKVApi(new QueryOptions());
+        builder.buildKVApi(new QueryOptions(), API_VERSION);
     }
 
     @Test
     public void kvAPIShouldInitPath() throws URISyntaxException {
         final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT).withPath(null);
-        String apiPath = builder.buildKVApi(new QueryOptions());
+        String apiPath = builder.buildKVApi(new QueryOptions(), API_VERSION);
         URIBuilder uriBuilder = new URIBuilder(apiPath);
 
         Assert.assertTrue("KV API path is not empty", StringUtils.hasText(KV_API));
@@ -63,17 +64,17 @@ public class RestAPIBuilderTest {
     @Test
     public void nullLabelCanBeQueried() {
         final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT);
-        String apiPath = builder.buildKVApi(new QueryOptions());
+        String apiPath = builder.buildKVApi(new QueryOptions(), API_VERSION);
 
-        Assert.assertTrue("Null label should have query param %00.", apiPath.endsWith(NULL_LABEL_QUERY));
+        Assert.assertTrue("Null label should have query param %00.", apiPath.contains(NULL_LABEL_QUERY));
     }
 
     @Test
     public void nullLabelValueQueriedAsEmptyLabel() {
         final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT);
 
-        String apiPath = builder.buildKVApi(new QueryOptions());
-        Assert.assertTrue("Empty label should have query param %00.", apiPath.endsWith(NULL_LABEL_QUERY));
+        String apiPath = builder.buildKVApi(new QueryOptions(), API_VERSION);
+        Assert.assertTrue("Empty label should have query param %00.", apiPath.contains(NULL_LABEL_QUERY));
     }
 
     @Test
@@ -81,9 +82,9 @@ public class RestAPIBuilderTest {
         final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT);
         final QueryOptions options = new QueryOptions().withLabels(Arrays.asList("   ", "  "));
 
-        String apiPath = builder.buildKVApi(options);
+        String apiPath = builder.buildKVApi(options, API_VERSION);
         Assert.assertTrue("Whitespace consisted label should have query param %00.",
-                apiPath.endsWith(NULL_LABEL_QUERY));
+                apiPath.contains(NULL_LABEL_QUERY));
     }
 
     @Test
@@ -91,7 +92,7 @@ public class RestAPIBuilderTest {
         final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT);
         final QueryOptions options = new QueryOptions().withKeyNames(FAKE_KEY).withLabels(FAKE_LABEL);
 
-        String apiPath = builder.buildKVApi(options);
+        String apiPath = builder.buildKVApi(options, API_VERSION);
         URIBuilder uriBuilder = new URIBuilder(apiPath);
 
         List<String> keyParams = getParamValuesFrom(uriBuilder, KEY_PARAM);
@@ -109,7 +110,7 @@ public class RestAPIBuilderTest {
         final RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT);
         final QueryOptions options = new QueryOptions().withKeyNames(FAKE_KEY).withLabels(MULTI_FAKE_LABELS);
 
-        String apiPath = builder.buildKVApi(options);
+        String apiPath = builder.buildKVApi(options, API_VERSION);
         URIBuilder uriBuilder = new URIBuilder(apiPath);
 
         List<String> keyParams = getParamValuesFrom(uriBuilder, KEY_PARAM);
@@ -126,8 +127,8 @@ public class RestAPIBuilderTest {
     @Test
     public void userCanConfigureWholePath() {
         RestAPIBuilder builder = new RestAPIBuilder().withEndpoint(FAKE_ENDPOINT).withPath(FAKE_PATH_QUERY);
-        String actualPath = builder.buildKVApi();
-        String expectedPath = FAKE_ENDPOINT + FAKE_PATH_QUERY;
+        String actualPath = builder.buildKVApi(API_VERSION);
+        String expectedPath = FAKE_ENDPOINT + FAKE_PATH_QUERY + "&api-version=1.0";
 
         Assert.assertEquals("API path should be constructed from endpoint and path query.",
                 expectedPath, actualPath);

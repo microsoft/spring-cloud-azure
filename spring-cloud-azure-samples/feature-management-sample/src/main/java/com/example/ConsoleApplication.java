@@ -33,7 +33,7 @@ public class ConsoleApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         LOG.info("EXECUTING : command line runner");
 
-        if (featureManager.isEnabled("Beta")) {
+        if (featureManager.isEnabled("FeatureV")) {
             System.out.println("Running Beta");
         } else {
             System.out.println("Running Application");
