@@ -5,8 +5,6 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import java.time.Duration;
-
 import javax.validation.constraints.NotEmpty;
 
 import org.springframework.beans.factory.annotation.Value;

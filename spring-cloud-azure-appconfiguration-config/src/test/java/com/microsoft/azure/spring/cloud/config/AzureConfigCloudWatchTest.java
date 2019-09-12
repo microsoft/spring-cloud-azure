@@ -5,7 +5,23 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_ETAG;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,17 +34,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationEventPublisher;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(PropertyCache.class)
@@ -83,6 +89,11 @@ public class AzureConfigCloudWatchTest {
 
         watch = new AzureCloudConfigWatch(configOperations, properties, contextsMap, propertyCache);
     }
+    
+    @After
+    public void cleanUp() {
+        PropertyCache.resetPropertyCache();
+    }
 
     @Test
     public void firstCallShouldPublishEvent() throws Exception {
@@ -94,7 +105,7 @@ public class AzureConfigCloudWatchTest {
 
         when(configOperations.getRevisions(any(), any())).thenReturn(mockResponse);
         when(date.after(Mockito.any(Date.class))).thenReturn(true);
-        watch.refreshConfigurations();
+        watch.refreshConfigurations().get();
         verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
     }
 
@@ -106,19 +117,19 @@ public class AzureConfigCloudWatchTest {
         when(configOperations.getRevisions(any(), any())).thenReturn(initialResponse()).thenReturn(updatedResponse());
 
         when(date.after(Mockito.any(Date.class))).thenReturn(true);
-        watch.refreshConfigurations();
+        watch.refreshConfigurations().get();
 
         // The first time an action happens it can update
         verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
         verify(configOperations, times(1)).getRevisions(any(), any());
 
-        watch.refreshConfigurations();
+        watch.refreshConfigurations().get();
 
         // If there is a change it should update
         verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
         verify(configOperations, times(3)).getRevisions(any(), any());
 
-        watch.refreshConfigurations();
+        watch.refreshConfigurations().get();
 
         // If there is no change it shouldn't update
         verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
@@ -134,13 +145,13 @@ public class AzureConfigCloudWatchTest {
                 .thenReturn(initialResponse());
 
         when(date.after(Mockito.any(Date.class))).thenReturn(true);
-        watch.refreshConfigurations();
+        watch.refreshConfigurations().get();
 
         // The first time an action happens it can update
         verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
         verify(configOperations, times(1)).getRevisions(any(), any());
 
-        watch.refreshConfigurations();
+        watch.refreshConfigurations().get();
 
         // This time the main etag has been changed, but the one etag checked hasn't
         // changed
