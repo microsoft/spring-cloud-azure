@@ -106,8 +106,8 @@ public class PropertyCache {
      * @return the List of keys from the given store
      */
     public Set<CachedKey> getKeySet(String storeName) {
-        return cache.keySet().stream().filter(string -> cache.get(string).getStoreName().equals(storeName)).map(key -> cache.get(key))
-                .collect(Collectors.toSet());
+        return cache.keySet().stream().filter(string -> cache.get(string).getStoreName().equals(storeName))
+                .map(key -> cache.get(key)).collect(Collectors.toSet());
     }
 
     /**

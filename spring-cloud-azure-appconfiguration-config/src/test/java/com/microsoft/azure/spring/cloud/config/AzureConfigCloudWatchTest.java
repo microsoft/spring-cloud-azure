@@ -153,7 +153,8 @@ public class AzureConfigCloudWatchTest {
         PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
         watch.setApplicationEventPublisher(eventPublisher);
         when(configOperations.getKeys(any(), any())).thenReturn(keys);
-        when(configOperations.getRevisions(any(), any())).thenReturn(initialResponse()).thenReturn(updatedResponse()).thenReturn(new ArrayList<KeyValueItem>());
+        when(configOperations.getRevisions(any(), any())).thenReturn(initialResponse()).thenReturn(updatedResponse())
+            .thenReturn(new ArrayList<KeyValueItem>());
 
         when(date.after(Mockito.any(Date.class))).thenReturn(true);
         watch.refreshConfigurations();
