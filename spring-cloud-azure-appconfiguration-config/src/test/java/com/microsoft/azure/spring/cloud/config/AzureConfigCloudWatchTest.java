@@ -147,6 +147,22 @@ public class AzureConfigCloudWatchTest {
         verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
         verify(configOperations, times(3)).getRevisions(any(), any());
     }
+    
+    @Test
+    public void revisonsEndpointReturnsEmptyForKnownKey() throws Exception {
+        PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
+        watch.setApplicationEventPublisher(eventPublisher);
+        when(configOperations.getKeys(any(), any())).thenReturn(keys);
+        when(configOperations.getRevisions(any(), any())).thenReturn(initialResponse()).thenReturn(updatedResponse()).thenReturn(new ArrayList<KeyValueItem>());
+
+        when(date.after(Mockito.any(Date.class))).thenReturn(true);
+        watch.refreshConfigurations();
+        watch.refreshConfigurations();
+
+        // The first time an action happens it can update
+        verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
+        verify(configOperations, times(3)).getRevisions(any(), any());
+    }
 
     private List<KeyValueItem> initialResponse() {
         KeyValueItem item = new KeyValueItem();

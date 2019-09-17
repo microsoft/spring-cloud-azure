@@ -106,20 +106,23 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
                 for (String refreshKey : propertyCache.getRefreshKeys(storeName)) {
                     QueryOptions queryOptions = new QueryOptions().withKeyNames(refreshKey).withLabels(label);
                     List<KeyValueItem> items = source.getKeys(storeName, queryOptions);
-                    propertyCache.addKeyValuesToCache(items, storeName, date);
+                    if (items.size() == 0) {
+                        KeyValueItem emptyKey = new KeyValueItem();
+                        emptyKey.setKey(refreshKey);
+                        propertyCache.addToCache(emptyKey, storeName, date);
+                    } else {
+                        propertyCache.addToCache(items.get(0), storeName, date);
+                    }
                 }
             }
 
-            for (String key : propertyCache.getKeySet(storeName)) {
-                if (key.startsWith(context)) {
-                    String cachedKey = key.trim().substring(context.length()).replace('/', '.');
-                    properties.put(cachedKey, propertyCache.getCachedValue(key));
+            for (CachedKey cachedKey : propertyCache.getKeySet(storeName)) {
+                if (cachedKey.getKey().startsWith(context)) {
+                    String trimedKey = cachedKey.getKey().trim().substring(context.length()).replace('/', '.');
+                    properties.put(trimedKey, propertyCache.getCachedValue(cachedKey.getKey()));
                 } else {
                     List<KeyValueItem> items = new ArrayList<KeyValueItem>();
-                    KeyValueItem item = new KeyValueItem();
-                    item.setKey(key);
-                    item.setValue(propertyCache.getCachedValue(key));
-                    item.setContentType(FEATURE_FLAG_CONTENT_TYPE);
+                    KeyValueItem item = new KeyValueItem(cachedKey, FEATURE_FLAG_CONTENT_TYPE);
                     items.add(item);
 
                     createFeatureSet(items, propertyCache, date);
@@ -170,7 +173,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
                 featureSet.addFeature(item.getKey(), feature);
             }
         }
-        if (featureSet != null && featureSet.getFeatureManagement() != null) {
+        if (featureSet.getFeatureManagement() != null) {
             propertyCache.addKeyValuesToCache(items, storeName, date);
         }
     }
