@@ -122,8 +122,6 @@ public class ConfigServiceTemplateTest {
         okEntity = buildEntity(testItems);
         appProperties = new AppConfigProviderProperties();
         appProperties.setVersion("1.0");
-        appProperties.setMaxRetries(12);
-        appProperties.setMaxRetryTime(60);
     }
     
     @After
@@ -178,42 +176,6 @@ public class ConfigServiceTemplateTest {
                 return new MockCloseableHttpResponse(OK_STATUS, buildEntity(result));
             }
         });
-    }
-
-    @Test
-    public void retryAttempts() throws IOException, URISyntaxException {
-        CloseableHttpResponse response = new MockCloseableHttpResponse(FAIL_STATUS, new BasicHttpEntity());
-        Header header = new BasicHeader(RETRY_AFTER_MS_HEADER, "1");
-        response.addHeader(header);
-        when(configClient.execute(Mockito.any(HttpGet.class), Mockito.any(Date.class),
-                Mockito.matches("fake-conn-id"), Mockito.matches("ZmFrZS1jb25uLXNlY3JldA==")))
-                .thenReturn(response);
-
-        template = new ConfigServiceTemplate(configClient, pool, appProperties);
-        try {
-            template.getKeys(TEST_STORE_NAME, new QueryOptions());
-        } catch (IllegalStateException e) {
-            
-        }
-
-        verify(configClient, Mockito.times(13)).execute(Mockito.any(HttpGet.class), Mockito.any(Date.class),
-                Mockito.matches("fake-conn-id"), Mockito.matches("ZmFrZS1jb25uLXNlY3JldA=="));
-    }
-    
-    @Test
-    public void retryAttemptsWork() throws IOException, URISyntaxException {
-        CloseableHttpResponse response = new MockCloseableHttpResponse(FAIL_STATUS, new BasicHttpEntity());
-        Header header = new BasicHeader(RETRY_AFTER_MS_HEADER, "1");
-        response.addHeader(header);
-        when(configClient.execute(Mockito.any(HttpGet.class), Mockito.any(Date.class),
-                Mockito.matches("fake-conn-id"), Mockito.matches("ZmFrZS1jb25uLXNlY3JldA==")))
-                .thenReturn(response).thenReturn(new MockCloseableHttpResponse(OK_STATUS, okEntity));
-
-        template = new ConfigServiceTemplate(configClient, pool, appProperties);
-        template.getKeys(TEST_STORE_NAME, new QueryOptions());
-
-        verify(configClient, Mockito.times(2)).execute(Mockito.any(HttpGet.class), Mockito.any(Date.class),
-                Mockito.matches("fake-conn-id"), Mockito.matches("ZmFrZS1jb25uLXNlY3JldA=="));
     }
 
     @Test

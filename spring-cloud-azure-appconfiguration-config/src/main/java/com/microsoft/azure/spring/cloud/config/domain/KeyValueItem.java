@@ -42,15 +42,6 @@ public class KeyValueItem {
         this.contentType = contentType;
     }
 
-    public KeyValueItem() {
-    }
-
-    public KeyValueItem(String key, String value, String contentType) {
-        this.key = key;
-        this.value = value;
-        this.contentType = contentType;
-    }
-
     public KeyValueItem(CachedKey cachedKey, String contentType) {
         this.key = cachedKey.getKey();
         this.value = cachedKey.getValue();

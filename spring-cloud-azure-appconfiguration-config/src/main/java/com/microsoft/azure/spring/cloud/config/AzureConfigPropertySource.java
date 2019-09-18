@@ -43,8 +43,9 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
 
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
 
-    private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
-    
+    private static final String FEATURE_FLAG_CONTENT_TYPE = 
+            "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
+
     private static final String FEATURE_FLAG_PREFIX = ".appconfig.featureflag/";
 
     public AzureConfigPropertySource(String context, ConfigServiceOperations operations, String storeName,
@@ -70,15 +71,20 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     }
 
     /**
-     * <p>Gets settings from Azure/Cache to set as configurations. Updates the cache.</p>
+     * <p>
+     * Gets settings from Azure/Cache to set as configurations. Updates the cache.
+     * </p>
      * 
-     * <p><b>Note</b>: Doesn't update Feature Management, just stores values in cache. Call
+     * <p>
+     * <b>Note</b>: Doesn't update Feature Management, just stores values in cache. Call
      * {@code initFeatures} to update Feature Management, but make sure its done in the
-     * last {@code AzureConfigPropertySource}</p>
+     * last {@code AzureConfigPropertySource}
+     * </p>
      * 
      * @param propertyCache Cached values to use in store. Also contains values the need
      * to be refreshed.
-     * @throws IOException Thrown when processing key/value failed when reading feature flags
+     * @throws IOException Thrown when processing key/value failed when reading feature
+     * flags
      */
     public void initProperties(PropertyCache propertyCache) throws IOException {
         Date date = new Date();
@@ -127,7 +133,8 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
                     String trimedKey = cachedKey.getKey().trim().substring(context.length()).replace('/', '.');
                     properties.put(trimedKey, propertyCache.getCachedValue(cachedKey.getKey()));
                 }
-            }        }
+            }
+        }
     }
 
     /**
@@ -156,7 +163,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     }
 
     /**
-     * Creates a {@code FeatureSet} from a list of {@code KeyValueItem}. 
+     * Creates a {@code FeatureSet} from a list of {@code KeyValueItem}.
      * 
      * @param items New items read in from Azure
      * @param propertyCache Cached values where updated values are set.
@@ -180,7 +187,8 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     /**
      * Creates a {@code Feature} from a {@code KeyValueItem}
      * 
-     * @param item Used to create Features before being converted to be set into properties.
+     * @param item Used to create Features before being converted to be set into
+     * properties.
      * @return Feature created from KeyValueItem
      * @throws IOException
      */
