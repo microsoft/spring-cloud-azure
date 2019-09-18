@@ -123,7 +123,7 @@ public class ConfigServiceTemplateTest {
         appProperties = new AppConfigProviderProperties();
         appProperties.setVersion("1.0");
     }
-    
+
     @After
     public void cleanup() {
         pool = new ConnectionStringPool();
@@ -156,8 +156,7 @@ public class ConfigServiceTemplateTest {
         when(configClient.execute(any(), any(), any(), any())).thenAnswer(new Answer<CloseableHttpResponse>() {
             @Override
             public CloseableHttpResponse answer(InvocationOnMock invocation) throws Throwable {
-                // Extract label params from the request argument and filter result from
-                // the given testItems
+                // Extract label params from the request argument and filter result from the given testItems
                 Object[] args = invocation.getArguments();
                 HttpUriRequest request = (HttpUriRequest) args[0];
                 List<NameValuePair> params = URLEncodedUtils.parse(request.getURI(), Charset.defaultCharset());

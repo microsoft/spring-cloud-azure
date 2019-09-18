@@ -61,7 +61,7 @@ public class PropertyCache {
      * 
      * @param storeName Store of which the refreshed keys are from
      * @param prefix Prefix used to find a specific set of keys
-     * @return
+     * @return the refreshKeys
      */
     public List<String> getRefreshKeys(String storeName, String prefix) {
         return refreshKeys.get(storeName).stream().filter(key -> key.startsWith(prefix)).collect(Collectors.toList());

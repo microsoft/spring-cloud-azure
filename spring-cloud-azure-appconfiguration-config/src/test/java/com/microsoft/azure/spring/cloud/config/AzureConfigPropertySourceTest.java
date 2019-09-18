@@ -58,7 +58,6 @@ public class AzureConfigPropertySourceTest {
 
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
 
-
     private AzureConfigPropertySource propertySource;
     
     private static ObjectMapper mapper = new ObjectMapper();
