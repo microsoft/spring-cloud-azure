@@ -8,32 +8,29 @@ package com.example;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.messaging.support.GenericMessage;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
-/**
- * @author Warren Zhu
- */
-@EnableBinding(Source.class)
+@EnableBinding(CustomProcessor.class)
 @RestController
 public class SourceExample {
 
     @Autowired
-    private Source source;
+    private CustomProcessor pipe;
 
     @PostMapping("/messages")
     public String postMessage(@RequestParam String message) {
-        this.source.output().send(new GenericMessage<>(message));
+        this.pipe.output().send(new GenericMessage<>(message));
         return message;
     }
 
-    @GetMapping("/hello")
-    public String hello() {
-        return "hello world";
+    @PostMapping("/messages1")
+    public String postMessage1(@RequestParam String message) {
+        this.pipe.output1().send(new GenericMessage<>(message));
+        return message;
     }
+
 }

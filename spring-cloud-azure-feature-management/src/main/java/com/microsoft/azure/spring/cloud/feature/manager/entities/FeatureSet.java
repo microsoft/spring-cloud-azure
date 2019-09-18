@@ -49,6 +49,9 @@ public class FeatureSet {
     }
     
     public void setFeatures(HashMap<String, Object> features) {
+        if (features == null) {
+            return;
+        }
         for (String key: features.keySet()) {
             if (features.get(key) instanceof Boolean) {
                 onOff.put(key, (Boolean) features.get(key));

@@ -103,7 +103,7 @@ public class ConfigHttpClient {
         headers.put("x-ms-content-sha256", contentHash);
         headers.put("correlation-context", getTracingInfo(request));
 
-        String authorization = String.format("HMAC-SHA256 Credential=%s, SignedHeaders=%s, Signature=%s",
+        String authorization = String.format("HMAC-SHA256 Credential=%s&SignedHeaders=%s&Signature=%s",
                 credential, signedHeaders, signature);
         headers.put("Authorization", authorization);
 

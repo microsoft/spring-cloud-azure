@@ -24,6 +24,7 @@ public class RestAPIBuilder {
     private static final String KEY_PARAM = "key";
     private static final String LABEL_PARAM = "label";
     private static final String SELECT_PARAM = "$select";
+    private static final String API_VERSION_PARAM = "api-version";
 
     private String endpoint;
     private String path;
@@ -52,27 +53,31 @@ public class RestAPIBuilder {
      *
      * <p>
      * e.g.,
-     *   https://host.domain.io/kv
-     *   https://host.domain.io/kv?key=abc
-     *   https://host.domain.io/kv?key=abc*
-     *   https://host.domain.io/kv?key=abc*&label=prod
      * </p>
+     * <ul>
+     *   <li>https://host.domain.io/kv</li>
+     *   <li>https://host.domain.io/kv?key=abc</li>
+     *   <li>https://host.domain.io/kv?key=abc*</li>
+     *   <li>https://host.domain.io/kv?key=abc*&amp;label=prod</li>
+     * </ul>
+     * 
      *
      * @param options is {@link NonNull}, query options used to build the KV API
+     * @param apiVersion Version of App Configuration API used
      * @return valid full path of target REST API
      */
-    public String buildKVApi(@NonNull QueryOptions options) {
+    public String buildKVApi(@NonNull QueryOptions options, String apiVersion) {
         this.withPath(KEY_VALUE_API);
         this.buildParams(options);
 
-        return buildRequestUri();
+        return buildRequestUri(apiVersion);
     }
 
-    public String buildRevisionsApi(@NonNull QueryOptions options) {
+    public String buildRevisionsApi(@NonNull QueryOptions options, String apiVersion) {
         this.withPath(REVISIONS_API);
         this.buildParams(options);
 
-        return buildRequestUri();
+        return buildRequestUri(apiVersion);
     }
 
     private void buildParams(QueryOptions options) {
@@ -97,13 +102,20 @@ public class RestAPIBuilder {
 
     /**
      * User is responsible to configure the required endpoint, path and params ahead
+     * @param apiVersion Version of App Configuration API used
      * @return valid full path of target REST API
      */
-    public String buildKVApi() {
-        return buildRequestUri();
+    public String buildKVApi(String apiVersion) {
+        return buildRequestUri(apiVersion);
     }
 
-    private String buildRequestUri() {
+    /**
+     * Builds a API request, and adds on the Api Version
+     * 
+     * @param apiVersion Version of App Configuration API used
+     * @return full api request string
+     */
+    private String buildRequestUri(String apiVersion) {
         Assert.hasText(endpoint, "Endpoint should not be empty or null");
         Assert.hasText(path, "Request path should not be empty or null");
 
@@ -123,6 +135,12 @@ public class RestAPIBuilder {
 
             builder.append(queryParams);
         }
+        if (builder.indexOf("?") == -1) {
+            builder.append("?");
+        } else {
+            builder.append("&");
+        }
+        builder.append(API_VERSION_PARAM + "=" + apiVersion);
 
         return builder.toString();
     }

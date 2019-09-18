@@ -25,9 +25,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicStatusLine;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -95,9 +93,6 @@ public class AzureCloudConfigPropertiesTest {
     
     @Mock
     private ObjectMapper mockObjectMapper;
-    
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
     
     @Before
     public void setup() {

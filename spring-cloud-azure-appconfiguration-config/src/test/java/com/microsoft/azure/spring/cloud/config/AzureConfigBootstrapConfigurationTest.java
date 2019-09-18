@@ -107,19 +107,17 @@ public class AzureConfigBootstrapConfigurationTest {
 
     @Test
     public void closeableHttpClientBeanCreated() {
-        contextRunner.withPropertyValues(propPair(FAIL_FAST_PROP, "false"))
-                .run(context -> assertThat(context).hasSingleBean(CloseableHttpClient.class));
+        contextRunner.run(context -> assertThat(context).hasSingleBean(CloseableHttpClient.class));
     }
 
     @Test
     public void configHttpClientBeanCreated() {
-        contextRunner.withPropertyValues(propPair(FAIL_FAST_PROP, "false"))
-                .run(context -> assertThat(context).hasSingleBean(ConfigHttpClient.class));
+        contextRunner.run(context -> assertThat(context).hasSingleBean(ConfigHttpClient.class));
     }
 
     @Test
     public void configServiceOperationsBeanCreated() {
-        contextRunner.withPropertyValues(propPair(FAIL_FAST_PROP, "false")).run(context -> {
+        contextRunner.run(context -> {
             assertThat(context).hasSingleBean(ConfigServiceOperations.class);
             assertThat(context.getBean(ConfigServiceOperations.class)).isExactlyInstanceOf(ConfigServiceTemplate.class);
         });
@@ -127,8 +125,7 @@ public class AzureConfigBootstrapConfigurationTest {
 
     @Test
     public void propertySourceLocatorBeanCreated() {
-        contextRunner.withPropertyValues(propPair(FAIL_FAST_PROP, "false"))
-                .run(context -> assertThat(context).hasSingleBean(AzureConfigPropertySourceLocator.class));
+        contextRunner.run(context -> assertThat(context).hasSingleBean(AzureConfigPropertySourceLocator.class));
     }
 
     @Test
@@ -166,7 +163,7 @@ public class AzureConfigBootstrapConfigurationTest {
                 .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class))
                 .withPropertyValues(propPair(STORE_NAME_PROP, TEST_STORE_NAME));
 
-        contextRunner.withPropertyValues(propPair(FAIL_FAST_PROP, "false")).run(context -> {
+        contextRunner.run(context -> {
             assertThat(context.getBean(ConnectionStringPool.class)).isNotNull();
             ConnectionStringPool pool = context.getBean(ConnectionStringPool.class);
             ConnectionString connString = pool.get(TEST_STORE_NAME);

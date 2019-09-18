@@ -71,15 +71,21 @@ import reactor.core.publisher.Mono;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({AzureConfigPropertySource.class})
 public class AzureConfigPropertySourceTest {
+    private static final String EMPTY_CONTENT_TYPE = "";
+    private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
+    
     private static final AzureCloudConfigProperties TEST_PROPS = new AzureCloudConfigProperties();
     
     public static final List<KeyValueItem> FEATURE_ITEMS = new ArrayList<>();
-    private static final KeyValueItem item1 = createItem(TEST_CONTEXT, TEST_KEY_1, TEST_VALUE_1, TEST_LABEL_1);
-    private static final KeyValueItem item2 = createItem(TEST_CONTEXT, TEST_KEY_2, TEST_VALUE_2, TEST_LABEL_2);
-    private static final KeyValueItem item3 = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3, TEST_LABEL_3);
+    private static final KeyValueItem item1 = 
+            createItem(TEST_CONTEXT, TEST_KEY_1, TEST_VALUE_1, TEST_LABEL_1, EMPTY_CONTENT_TYPE);
+    private static final KeyValueItem item2 = 
+            createItem(TEST_CONTEXT, TEST_KEY_2, TEST_VALUE_2, TEST_LABEL_2, EMPTY_CONTENT_TYPE);
+    private static final KeyValueItem item3 = 
+            createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3, TEST_LABEL_3, EMPTY_CONTENT_TYPE);
 
     private static final KeyValueItem featureItem = createItem(".appconfig.featureflag/", "Alpha", FEATURE_VALUE,
-            FEATURE_LABEL);
+            FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
 
     private static final KeyValueItem keyVaultItem = createItem(TEST_CONTEXT, TEST_KEY_VAULT_1, TEST_VALUE_VAULT_1,
             TEST_LABEL_VAULT_1);
@@ -87,7 +93,6 @@ public class AzureConfigPropertySourceTest {
     public List<KeyValueItem> testItems = new ArrayList<>();
 
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
-    private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
     
     private static final String KEY_VAULT_CONTENT_TYPE = 
             "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8";
@@ -118,7 +123,6 @@ public class AzureConfigPropertySourceTest {
 
         keyVaultItem.setContentType(KEY_VAULT_CONTENT_TYPE);
         
-        featureItem.setContentType(FEATURE_FLAG_CONTENT_TYPE);
         FEATURE_ITEMS.add(featureItem);
     }
 
@@ -160,7 +164,7 @@ public class AzureConfigPropertySourceTest {
     @Test
     public void testPropertyNameSlashConvertedToDots() {
         when(operations.getKeys(any(), any())).thenReturn(testItems).thenReturn(FEATURE_ITEMS);
-        KeyValueItem slashedProp = createItem(TEST_CONTEXT, TEST_SLASH_KEY, TEST_SLASH_VALUE, null);
+        KeyValueItem slashedProp = createItem(TEST_CONTEXT, TEST_SLASH_KEY, TEST_SLASH_VALUE, null, EMPTY_CONTENT_TYPE);
         when(operations.getKeys(any(), any())).thenReturn(Arrays.asList(slashedProp)).thenReturn(FEATURE_ITEMS);
 
         try {

@@ -6,6 +6,7 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,9 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
 
     private static final String FEATURE_SUFFIX = "_feature";
 
-    private static final String FEATURE_STORE_WATCH_KEY = ".appconfig*";
+    private static final String FEATURE_STORE_SUFFIX = ".appconfig";
+
+    private static final String FEATURE_STORE_WATCH_KEY = FEATURE_STORE_SUFFIX + "*";
 
     private Duration delay;
 
@@ -77,10 +80,8 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
                 if (propertyCache.findNonCachedKeys(delay, configStore.getName()).size() > 0) {
                     String watchedKeyNames = watchedKeyNames(configStore, storeContextsMap);
                     refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames);
-
                     // Refresh Feature Flags
-                    if (propertyCache.getRefreshKeys(configStore.getName(), FEATURE_STORE_WATCH_KEY.replace("*", ""))
-                            .size() > 0) {
+                    if (propertyCache.getRefreshKeys(configStore.getName(), FEATURE_STORE_SUFFIX).size() > 0) {
                         refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY);
                     }
                 }
@@ -98,7 +99,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
      * @param watchedKeyNames Key used to check if refresh should occur
      */
     private void refresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
-        String storeName = store.getName() + storeSuffix;
+        String storeNameWithSuffix = store.getName() + storeSuffix;
         QueryOptions options = new QueryOptions().withKeyNames(watchedKeyNames)
                 .withLabels(store.getLabels()).withFields(QueryField.ETAG).withRange(0, 0);
 
@@ -109,42 +110,41 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
         }
 
         String etag = keyValueItems.get(0).getEtag();
-        if (firstTimeMap.get(storeName) == null) {
-            storeEtagMap.put(storeName, etag);
-            firstTimeMap.put(storeName, false);
+        if (firstTimeMap.get(storeNameWithSuffix) == null) {
+            storeEtagMap.put(storeNameWithSuffix, etag);
+            firstTimeMap.put(storeNameWithSuffix, false);
             propertyCache.updateRefreshCacheTime(store.getName(), watchedKeyNames, delay);
         }
-        
-        if (!etag.equals(storeEtagMap.get(storeName))) {
+
+        if (!etag.equals(storeEtagMap.get(storeNameWithSuffix))) {
             Date date = new Date();
             String watchedKeyNamesPrefix = watchedKeyNames.replace("*", "");
 
             // Checks all cached items to see if they have been updated
-            List<String> refreshKeys = propertyCache.getRefreshKeys(store.getName());
+            List<String> refreshKeys = new ArrayList<String>(propertyCache.getRefreshKeys(store.getName()));
             // RefreshKeyIndex is the current refresh key being checked. If not needing
             // refresh it is removed from the list.
-            for (int refreshKeyIndex = 0; refreshKeyIndex < refreshKeys.size(); refreshKeyIndex++) {
-                String refreshKey = refreshKeys.get(refreshKeyIndex);
+            for (String refreshKey : refreshKeys) {
                 if (refreshKey.toLowerCase().startsWith(watchedKeyNamesPrefix.toLowerCase())) {
 
-                    storeEtagMap.put(storeName, etag);
+                    storeEtagMap.put(storeNameWithSuffix, etag);
                     options = new QueryOptions().withKeyNames(refreshKey)
                             .withLabels(store.getLabels()).withFields(QueryField.ETAG).withRange(0, 0);
 
                     keyValueItems = configOperations.getRevisions(store.getName(), options);
 
-                    if (keyValueItems.isEmpty() || keyValueItems.get(0).getEtag()
+                    if (!keyValueItems.isEmpty() && keyValueItems.get(0).getEtag()
                             .equals(propertyCache.getCachedEtag(refreshKey))) {
-                        refreshKeys = propertyCache.updateRefreshCacheTimeForKey(store.getName(), refreshKey, date);
-                        refreshKeyIndex--;
+                        propertyCache.updateRefreshCacheTimeForKey(store.getName(), refreshKey, date);
                     }
                 }
             }
 
+            refreshKeys = propertyCache.getRefreshKeys(store.getName());
             if (refreshKeys.size() > 0) {
                 LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
                         store.getName(), watchedKeyNames);
-                storeEtagMap.put(storeName, etag);
+                storeEtagMap.put(storeNameWithSuffix, etag);
                 RefreshEventData eventData = new RefreshEventData(watchedKeyNames);
                 publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
 
@@ -186,11 +186,10 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
      * @return the full name of the key mapping to the configuration store
      */
     private String watchedKeyNames(ConfigStore store, Map<String, List<String>> storeContextsMap) {
-        String prefix = store.getPrefix();
         String watchedKey = store.getWatchedKey().trim();
         List<String> contexts = storeContextsMap.get(store.getName());
 
-        String watchedKeys = contexts.stream().map(ctx -> genKey(prefix, ctx, watchedKey))
+        String watchedKeys = contexts.stream().map(ctx -> genKey(ctx, watchedKey))
                 .collect(Collectors.joining(","));
 
         if (watchedKeys.contains(",") && watchedKeys.contains("*")) {
@@ -202,10 +201,9 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
         return watchedKeys;
     }
 
-    private String genKey(@Nullable String prefix, @NonNull String context, @Nullable String watchedKey) {
+    private String genKey(@NonNull String context, @Nullable String watchedKey) {
         String trimmedWatchedKey = StringUtils.hasText(watchedKey) ? watchedKey.trim() : "*";
-        String trimmedPrefix = StringUtils.hasText(prefix) ? prefix.trim() : "";
 
-        return String.format("%s%s%s", trimmedPrefix, context, trimmedWatchedKey);
+        return String.format("%s%s", context, trimmedWatchedKey);
     }
 }

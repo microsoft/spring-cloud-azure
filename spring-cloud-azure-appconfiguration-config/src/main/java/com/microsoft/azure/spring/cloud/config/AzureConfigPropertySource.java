@@ -52,7 +52,8 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
 
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
 
-    private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
+    private static final String FEATURE_FLAG_CONTENT_TYPE = 
+            "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
 
     private static final String KEY_VAULT_CONTENT_TYPE = 
             "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8";
@@ -85,15 +86,20 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     }
 
     /**
-     * <p>Gets settings from Azure/Cache to set as configurations. Updates the cache.</p>
+     * <p>
+     * Gets settings from Azure/Cache to set as configurations. Updates the cache.
+     * </p>
      * 
-     * <p><b>Note</b>: Doesn't update Feature Management, just stores values in cache. Call
+     * <p>
+     * <b>Note</b>: Doesn't update Feature Management, just stores values in cache. Call
      * {@code initFeatures} to update Feature Management, but make sure its done in the
      * last {@code AzureConfigPropertySource}</p>
+     * </p>
      * 
      * @param propertyCache Cached values to use in store. Also contains values the need
      * to be refreshed.
-     * @throws IOException Thrown when processing key/value failed when reading feature flags
+     * @throws IOException Thrown when processing key/value failed when reading feature
+     * flags
      */
     public void initProperties(PropertyCache propertyCache) throws IOException {
         Date date = new Date();
@@ -131,15 +137,17 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
                 for (String refreshKey : propertyCache.getRefreshKeys(storeName)) {
                     QueryOptions queryOptions = new QueryOptions().withKeyNames(refreshKey).withLabels(label);
                     List<KeyValueItem> items = source.getKeys(storeName, queryOptions);
-                    propertyCache.addKeyValuesToCache(items, storeName, date);
+                    if (items.size() == 0) {
+                        KeyValueItem emptyKey = new KeyValueItem();
+                        emptyKey.setKey(refreshKey);
+                        propertyCache.addToCache(emptyKey, storeName, date);
+                    } else {
+                        propertyCache.addToCache(items.get(0), storeName, date);
+                    }
                 }
             }
 
-            // Take keys from Cache and set them to properties
-            for (String key : propertyCache.getKeySet(storeName)) {
-                CachedKey cachedKey = propertyCache.getCache().get(key);
-                List<KeyValueItem> items = new ArrayList<KeyValueItem>();
-
+            for (CachedKey cachedKey : propertyCache.getKeySet(storeName)) {
                 if (cachedKey.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
                     key = key.trim().substring(context.length()).replace('/', '.');
                     String entry = getKeyVaultEntry(cachedKey.getValue());
@@ -149,14 +157,14 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
                         properties.put(key, entry);
                     }
                 } else if (cachedKey.getContentType().equals(FEATURE_FLAG_CONTENT_TYPE)) {
-                    KeyValueItem item = new KeyValueItem(key, cachedKey.getValue(),
-                            FEATURE_FLAG_CONTENT_TYPE);
+                    List<KeyValueItem> items = new ArrayList<KeyValueItem>();
+                    KeyValueItem item = new KeyValueItem(cachedKey, FEATURE_FLAG_CONTENT_TYPE);
                     items.add(item);
-                } else {
-                    key = key.trim().substring(context.length()).replace('/', '.');
-                    properties.put(key, cachedKey.getValue());
-                }
 
+                } else {
+                    String trimedKey = cachedKey.getKey().trim().substring(context.length()).replace('/', '.');
+                    properties.put(trimedKey, propertyCache.getCachedValue(cachedKey.getKey()));
+                }
                 createFeatureSet(items, propertyCache, date);
             }
         }
@@ -188,6 +196,9 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
                 } else {
                     LOGGER.error("Error Processing Key Vault Entry URI.");
                     ReflectionUtils.rethrowRuntimeException(e);
+                } else {
+                    String trimedKey = cachedKey.getKey().trim().substring(context.length()).replace('/', '.');
+                    properties.put(trimedKey, propertyCache.getCachedValue(cachedKey.getKey()));
                 }
             }
 
@@ -272,7 +283,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
                 featureSet.addFeature(item.getKey(), feature);
             }
         }
-        if (featureSet != null && featureSet.getFeatureManagement() != null) {
+        if (featureSet.getFeatureManagement() != null) {
             propertyCache.addKeyValuesToCache(items, storeName, date);
         }
     }
