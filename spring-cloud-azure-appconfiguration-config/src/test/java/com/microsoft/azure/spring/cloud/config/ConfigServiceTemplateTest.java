@@ -148,7 +148,7 @@ public class ConfigServiceTemplateTest {
         appProperties.setMaxRetryTime(60);
         appProperties.setPrekillTime(10);
     }
-    
+
     @After
     public void cleanup() {
         pool = new ConnectionStringPool();
@@ -181,8 +181,7 @@ public class ConfigServiceTemplateTest {
         when(configClient.execute(any(), any(), any(), any())).thenAnswer(new Answer<CloseableHttpResponse>() {
             @Override
             public CloseableHttpResponse answer(InvocationOnMock invocation) throws Throwable {
-                // Extract label params from the request argument and filter result from
-                // the given testItems
+                // Extract label params from the request argument and filter result from the given testItems
                 Object[] args = invocation.getArguments();
                 HttpUriRequest request = (HttpUriRequest) args[0];
                 List<NameValuePair> params = URLEncodedUtils.parse(request.getURI(), Charset.defaultCharset());

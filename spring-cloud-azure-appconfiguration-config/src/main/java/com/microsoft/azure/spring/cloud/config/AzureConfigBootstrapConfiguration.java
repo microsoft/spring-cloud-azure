@@ -38,19 +38,15 @@ import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentity
 @ConditionalOnClass(AzureConfigPropertySourceLocator.class)
 @ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "enabled", matchIfMissing = true)
 public class AzureConfigBootstrapConfiguration {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigBootstrapConfiguration.class);
-
+    private static final Logger LOGGER =  LoggerFactory.getLogger(AzureConfigBootstrapConfiguration.class);
     private static final String ENV_MSI_ENDPOINT = "MSI_ENDPOINT";
-
     private static final String ENV_MSI_SECRET = "MSI_SECRET";
-
     private static final String TELEMETRY_SERVICE = "AppConfiguration";
-
     private static final String TELEMETRY_KEY = "HashedStoreName";
 
     @Bean
     public ConnectionStringPool initConnectionString(AzureCloudConfigProperties properties,
-            AzureTokenCredentials credentials) {
+                                                     AzureTokenCredentials credentials) {
         ConnectionStringPool pool = new ConnectionStringPool();
         List<ConfigStore> stores = properties.getStores();
 
@@ -58,8 +54,7 @@ public class AzureConfigBootstrapConfiguration {
             if (StringUtils.hasText(store.getName()) && StringUtils.hasText(store.getConnectionString())) {
                 pool.put(store.getName(), ConnectionString.of(store.getConnectionString()));
             } else if (StringUtils.hasText(store.getName())) {
-                // Try load connection string from ARM if connection string is not
-                // configured
+                // Try load connection string from ARM if connection string is not configured
                 LOGGER.info("Load connection string for store [{}] from Azure Resource Management, " +
                         "Azure managed identity should be enabled.", store.getName());
                 AzureResourceManagerConnector armConnector = new AzureResourceManagerConnector(credentials,
@@ -118,7 +113,7 @@ public class AzureConfigBootstrapConfiguration {
             AzureCloudConfigProperties properties, PropertyCache propertyCache) {
         return new AzureConfigPropertySourceLocator(operations, properties, propertyCache);
     }
-
+    
     @Bean
     public PropertyCache getPropertyCache() {
         return PropertyCache.getPropertyCache();
