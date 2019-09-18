@@ -5,23 +5,56 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
+import static com.microsoft.azure.spring.cloud.config.TestUtils.propPair;
+import static com.microsoft.azure.spring.cloud.config.resource.ConnectionString.ENDPOINT_ERR_MSG;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.when;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.ProtocolVersion;
+import org.apache.http.RequestLine;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicStatusLine;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBindException;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.assertj.AssertableApplicationContext;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Arrays;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
+import com.microsoft.azure.spring.cloud.config.domain.KeyValueResponse;
 
-import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
-import static com.microsoft.azure.spring.cloud.config.TestUtils.propPair;
-import static com.microsoft.azure.spring.cloud.config.resource.ConnectionString.ENDPOINT_ERR_MSG;
-import static org.assertj.core.api.Assertions.assertThat;
-
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ConfigServiceTemplate.class, AzureConfigBootstrapConfiguration.class})
+@PowerMockIgnore({ "javax.net.ssl.*", "javax.crypto.*", "org.mockito.*"})
 public class AzureCloudConfigPropertiesTest {
-    private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+    @InjectMocks
+    private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class));
 
     private static final String NO_ENDPOINT_CONN_STRING = "Id=fake-conn-id;Secret=ZmFrZS1jb25uLXNlY3JldA==";
@@ -35,12 +68,68 @@ public class AzureCloudConfigPropertiesTest {
     private static final String[] ILLEGAL_PROFILE_SEPARATOR = { "/", "\\", "." };
 
     private static final String ILLEGAL_LABELS = "*,my-label";
+    
+    @Mock
+    private ConfigHttpClient configClient;
+
+    @Mock
+    private HttpGet mockHttpGet;
+    
+    @Mock
+    private HttpClientBuilder mockHttpClientBuilder;
+    
+    @Mock
+    private RequestLine mockRequestLine;
+    
+    @Mock
+    private ApplicationContext context;
+    
+    @Mock
+    private CloseableHttpResponse mockClosableHttpResponse;
+    
+    @Mock
+    private HttpEntity mockHttpEntity;
+
+    @Mock
+    private InputStream mockInputStream;
+    
+    @Mock
+    private ObjectMapper mockObjectMapper;
+    
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+    
+    @Before
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
+        
+        KeyValueResponse kvResponse = new KeyValueResponse();
+        List<KeyValueItem> items = new ArrayList<KeyValueItem>();
+        kvResponse.setItems(items);
+        try {
+            
+            PowerMockito.whenNew(ConfigHttpClient.class).withAnyArguments().thenReturn(configClient);
+            PowerMockito.whenNew(ObjectMapper.class).withAnyArguments().thenReturn(mockObjectMapper);
+            when(configClient.execute(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                .thenReturn(mockClosableHttpResponse);
+            when(mockClosableHttpResponse.getStatusLine())
+                .thenReturn(new BasicStatusLine(new ProtocolVersion("", 0, 0), 200, ""));
+            when(mockClosableHttpResponse.getEntity()).thenReturn(mockHttpEntity);
+            when(mockHttpEntity.getContent()).thenReturn(mockInputStream);
+            
+            when(mockObjectMapper.readValue(Mockito.isA(InputStream.class), Mockito.any(Class.class)))
+                .thenReturn(kvResponse);
+        } catch (Exception e) {
+            fail();
+        }
+    }
 
     @Test
     public void validInputShouldCreatePropertiesBean() {
-        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING)).run(context -> {
-            assertThat(context).hasSingleBean(AzureCloudConfigProperties.class);
-        });
+        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING))
+                .withPropertyValues(propPair(FAIL_FAST_PROP, "false")).run(context -> {
+                    assertThat(context).hasSingleBean(AzureCloudConfigProperties.class);
+                });
     }
 
     @Test
@@ -112,9 +201,9 @@ public class AzureCloudConfigPropertiesTest {
     }
 
     @Test
-    public void storeNameCanBeInitIfConnectionStringConfigured() {
+    public void storeNameCanBeInitIfConnectionStringConfigured() {        
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
-                propPair(STORE_NAME_PROP, "")).run(context -> {
+                propPair(STORE_NAME_PROP, "")).withPropertyValues(propPair(FAIL_FAST_PROP, "false")).run(context -> {
                     AzureCloudConfigProperties properties = context.getBean(AzureCloudConfigProperties.class);
                     assertThat(properties.getStores()).isNotNull();
                     assertThat(properties.getStores().size()).isEqualTo(1);

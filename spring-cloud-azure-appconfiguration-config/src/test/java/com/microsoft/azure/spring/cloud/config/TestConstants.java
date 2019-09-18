@@ -27,6 +27,8 @@ public class TestConstants {
     public static final String WATCH_ENABLED_PROP = "spring.cloud.azure.appconfiguration.watch.enabled";
     public static final String WATCH_DELAY_PROP = "spring.cloud.azure.appconfiguration.watch.delay";
     public static final String SEPARATOR_PROP = "spring.cloud.azure.appconfiguration.profile-separator";
+    
+    public static final String FAIL_FAST_PROP = "spring.cloud.azure.appconfiguration.failFast";
 
     public static final String TEST_CONN_STRING =
             "Endpoint=https://fake.test.config.io;Id=fake-conn-id;Secret=ZmFrZS1jb25uLXNlY3JldA==";

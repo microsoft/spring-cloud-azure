@@ -109,8 +109,13 @@ public class AzureConfigBootstrapConfiguration {
 
     @Bean
     public AzureConfigPropertySourceLocator sourceLocator(ConfigServiceOperations operations,
-                                                          AzureCloudConfigProperties properties) {
-        return new AzureConfigPropertySourceLocator(operations, properties);
+            AzureCloudConfigProperties properties, PropertyCache propertyCache) {
+        return new AzureConfigPropertySourceLocator(operations, properties, propertyCache);
+    }
+    
+    @Bean
+    public PropertyCache getPropertyCache() {
+        return PropertyCache.getPropertyCache();
     }
 
     @PostConstruct

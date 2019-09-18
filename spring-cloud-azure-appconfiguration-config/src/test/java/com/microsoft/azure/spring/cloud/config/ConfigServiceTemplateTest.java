@@ -30,14 +30,18 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicStatusLine;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import static com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties.LABEL_SEPARATOR;
 import static com.microsoft.azure.spring.cloud.config.ConfigServiceTemplate.LOAD_FAILURE_VERBOSE_MSG;
@@ -47,6 +51,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@RunWith(PowerMockRunner.class)
 public class ConfigServiceTemplateTest {
     @Rule
     public ExpectedException expected = ExpectedException.none();
@@ -54,11 +59,14 @@ public class ConfigServiceTemplateTest {
     @Mock
     private ConfigHttpClient configClient;
 
+    @InjectMocks
     private ConfigServiceTemplate template;
 
     private ConnectionStringPool pool;
     private ConfigStore configStore;
-    public  List<KeyValueItem> testItems;
+
+    private List<KeyValueItem> testItems;
+
     private HttpEntity okEntity;
 
     private static final KeyValueItem item1 = createItem(TEST_CONTEXT, TEST_KEY_1, TEST_VALUE_1, TEST_LABEL_1);
@@ -70,8 +78,7 @@ public class ConfigServiceTemplateTest {
     private static final ProtocolVersion VERSION = new ProtocolVersion("HTTP", 1, 1);
     private static final StatusLine OK_STATUS = new BasicStatusLine(VERSION, HttpStatus.SC_OK, null);
 
-    private static final StatusLine NOT_FOUND_STATUS =
-            new BasicStatusLine(VERSION, HttpStatus.SC_NOT_FOUND, null);
+    private static final StatusLine NOT_FOUND_STATUS = new BasicStatusLine(VERSION, HttpStatus.SC_NOT_FOUND, null);
 
     private static final StatusLine TOO_MANY_REQ_STATUS = new BasicStatusLine(VERSION, 429, null);
     private static final String RETRY_AFTER_MS_HEADER = "retry-after-ms";
@@ -96,6 +103,12 @@ public class ConfigServiceTemplateTest {
         testItems.addAll(Arrays.asList(item1, item2, item3));
 
         okEntity = buildEntity(testItems);
+    }
+
+    @After
+    public void cleanup() {
+        pool = new ConnectionStringPool();
+        configStore = new ConfigStore();
     }
 
     @Test
