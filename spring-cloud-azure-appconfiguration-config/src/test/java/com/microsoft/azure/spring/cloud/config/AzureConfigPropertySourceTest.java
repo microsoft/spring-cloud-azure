@@ -93,8 +93,6 @@ public class AzureConfigPropertySourceTest {
 
     private AzureCloudConfigProperties azureProperties;
 
-    private AppConfigProviderProperties appProperties;
-
     @Rule
     public ExpectedException expected = ExpectedException.none();
 
@@ -111,16 +109,11 @@ public class AzureConfigPropertySourceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        appProperties = new AppConfigProviderProperties();
-        appProperties.setVersion("1.0");
-        appProperties.setMaxRetries(12);
-        appProperties.setMaxRetryTime(2);
-        appProperties.setPrekillTime(30);
         azureProperties = new AzureCloudConfigProperties();
         azureProperties.setFailFast(true);
 
         propertySource = new AzureConfigPropertySource(TEST_CONTEXT, operations, TEST_STORE_NAME, null,
-                azureProperties, appProperties);
+                azureProperties);
         propertyCache = PropertyCache.resetPropertyCache();
     }
 

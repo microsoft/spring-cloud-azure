@@ -5,9 +5,15 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import com.google.common.collect.Lists;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
@@ -19,9 +25,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import com.google.common.collect.Lists;
 
 public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigPropertySourceLocator.class);
@@ -36,8 +40,6 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
     private final AzureCloudConfigProperties properties;
 
-    private final AppConfigProviderProperties appProperties;
-
     private final String profileSeparator;
 
     private final List<ConfigStore> configStores;
@@ -47,13 +49,12 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private PropertyCache propertyCache;
 
     public AzureConfigPropertySourceLocator(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
-            PropertyCache propertyCache, AppConfigProviderProperties appProperties) {
+            PropertyCache propertyCache) {
         this.operations = operations;
         this.properties = properties;
         this.profileSeparator = properties.getProfileSeparator();
         this.configStores = properties.getStores();
         this.propertyCache = propertyCache;
-        this.appProperties = appProperties;
     }
 
     @Override
@@ -125,17 +126,6 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
                 if (properties.isFailFast()) {
                     LOGGER.error("Fail fast is set and there was an error reading configuration from Azure Config " +
                             "Service for " + sourceContext);
-                    Date currentDate = new Date();
-                    Date maxRetryDate = DateUtils.addSeconds(appProperties.getStartDate(),
-                            appProperties.getPrekillTime());
-                    if (currentDate.before(maxRetryDate)) {
-                        long diffInMillies = Math.abs(maxRetryDate.getTime() - currentDate.getTime());
-                        try {
-                            Thread.sleep(diffInMillies);
-                        } catch (InterruptedException e1) {
-                            LOGGER.error("Failed to wait before fast fail.");
-                        }
-                    }
                     ReflectionUtils.rethrowRuntimeException(e);
                 } else {
                     LOGGER.warn("Unable to load configuration from Azure Config Service for " + sourceContext, e);
@@ -189,7 +179,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
         for (String label : store.getLabels()) {
             AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, operations,
-                    store.getName(), label, properties, appProperties);
+                    store.getName(), label, properties);
 
             propertySource.initProperties(propertyCache);
             if (initFeatures) {

@@ -61,13 +61,13 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
 
     private final ConnectionStringPool connectionStringPool;
 
-    private AppConfigProviderProperties properties;
+    private AppConfigProviderProperties appProperties;
 
     public ConfigServiceTemplate(ConfigHttpClient httpClient, ConnectionStringPool connectionStringPool,
-            AppConfigProviderProperties properties) {
+            AppConfigProviderProperties appProperties) {
         this.configClient = httpClient;
         this.connectionStringPool = connectionStringPool;
-        this.properties = properties;
+        this.appProperties = appProperties;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         String storeEndpoint = connString.getEndpoint();
 
         String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildKVApi(options,
-                properties.getVersion());
+                appProperties.getVersion());
 
         return getKeys(requestUri, options, storeName);
     }
@@ -93,7 +93,7 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
         String storeEndpoint = connString.getEndpoint();
 
         String requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).buildRevisionsApi(options,
-                properties.getVersion());
+                appProperties.getVersion());
 
         return getKeys(requestUri, options, storeName);
     }
@@ -135,7 +135,7 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
                 }
 
                 requestUri = new RestAPIBuilder().withEndpoint(storeEndpoint).withPath(nextLink)
-                        .buildKVApi(properties.getVersion());
+                        .buildKVApi(appProperties.getVersion());
             }
         } finally {
             if (response != null) {
@@ -222,9 +222,9 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
             if (retryHeader != null && Long.valueOf(retryHeader.getValue()) > 0) {
                 long retryValue = Long.valueOf(retryHeader.getValue());
                 int retryCount = 0;
-                Date maxRetryDate = DateUtils.addSeconds(date, properties.getMaxRetryTime());
+                Date maxRetryDate = DateUtils.addSeconds(date, appProperties.getMaxRetryTime());
 
-                while (retryCount < properties.getMaxRetries() && !date.after(maxRetryDate)) {
+                while (retryCount < appProperties.getMaxRetries() && !date.after(maxRetryDate)) {
                     try {
                         // Need to wait before Retry, need to figure out how long.
                         long retryBackoff = (new Double(Math.pow(2, retryCount))).longValue() - 1;
@@ -265,14 +265,27 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
                 LOGGER.warn("No configuration data found in Azure Config Service for request uri {}.", requestUri);
                 return null;
             } else {
+                delayException();
                 throw new IllegalStateException(String.format(LOAD_FAILURE_VERBOSE_MSG, statusCode, response));
             }
         } catch (IOException | URISyntaxException e) {
             LOGGER.error(LOAD_FAILURE_MSG, e);
-            // TODO (wp) wrap exception as config service specific exception in order to
-            // provide fail-fast etc.
-            // features?
+            delayException();
             throw new IllegalStateException(LOAD_FAILURE_MSG, e);
+        }
+    }
+    
+    private void delayException() {
+        Date currentDate = new Date();
+        Date maxRetryDate = DateUtils.addSeconds(appProperties.getStartDate(),
+                appProperties.getPrekillTime());
+        if (currentDate.before(maxRetryDate)) {
+            long diffInMillies = Math.abs(maxRetryDate.getTime() - currentDate.getTime());
+            try {
+                Thread.sleep(diffInMillies);
+            } catch (InterruptedException e) {
+                LOGGER.error("Failed to wait before fast fail.");
+            }
         }
     }
 

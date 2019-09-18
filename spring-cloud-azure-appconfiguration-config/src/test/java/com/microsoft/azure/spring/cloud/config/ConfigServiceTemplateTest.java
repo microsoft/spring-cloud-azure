@@ -22,6 +22,7 @@ import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_VALUE_2
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_VALUE_3;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.createItem;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -34,16 +35,19 @@ import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.BasicHttpEntity;
@@ -57,6 +61,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -139,6 +144,9 @@ public class ConfigServiceTemplateTest {
         okEntity = buildEntity(testItems);
         appProperties = new AppConfigProviderProperties();
         appProperties.setVersion("1.0");
+        appProperties.setMaxRetries(12);
+        appProperties.setMaxRetryTime(60);
+        appProperties.setPrekillTime(10);
     }
     
     @After
@@ -193,6 +201,43 @@ public class ConfigServiceTemplateTest {
                 return new MockCloseableHttpResponse(OK_STATUS, buildEntity(result));
             }
         });
+    }
+    
+    @Test
+    public void retryAttempts() throws IOException, URISyntaxException {
+        CloseableHttpResponse response = new MockCloseableHttpResponse(FAIL_STATUS, new BasicHttpEntity());
+        Header header = new BasicHeader(RETRY_AFTER_MS_HEADER, "1");
+        response.addHeader(header);
+        when(configClient.execute(Mockito.any(HttpGet.class), Mockito.any(Date.class),
+                Mockito.matches("fake-conn-id"), Mockito.matches("ZmFrZS1jb25uLXNlY3JldA=="))).thenReturn(response);
+
+        template = new ConfigServiceTemplate(configClient, pool, appProperties);
+
+        try {
+            template.getKeys(TEST_STORE_NAME, new QueryOptions());
+        } catch (IllegalStateException e) {
+            
+        }
+
+        verify(configClient, Mockito.times(13)).execute(Mockito.any(HttpGet.class), Mockito.any(Date.class),
+                Mockito.matches("fake-conn-id"), Mockito.matches("ZmFrZS1jb25uLXNlY3JldA=="));
+    }
+    
+    @Test
+    public void retryAttemptsWork() throws IOException, URISyntaxException {
+        CloseableHttpResponse response = new MockCloseableHttpResponse(FAIL_STATUS, new BasicHttpEntity());
+        Header header = new BasicHeader(RETRY_AFTER_MS_HEADER, "1");
+        response.addHeader(header);
+
+        when(configClient.execute(Mockito.any(HttpGet.class), Mockito.any(Date.class),
+                Mockito.matches("fake-conn-id"), Mockito.matches("ZmFrZS1jb25uLXNlY3JldA==")))
+                .thenReturn(response).thenReturn(new MockCloseableHttpResponse(OK_STATUS, okEntity));
+
+        template = new ConfigServiceTemplate(configClient, pool, appProperties);
+        template.getKeys(TEST_STORE_NAME, new QueryOptions());
+
+        verify(configClient, Mockito.times(2)).execute(Mockito.any(HttpGet.class), Mockito.any(Date.class),
+                Mockito.matches("fake-conn-id"), Mockito.matches("ZmFrZS1jb25uLXNlY3JldA=="));
     }
 
     @Test

@@ -36,7 +36,7 @@ public class AppConfigProviderProperties {
     private int maxRetryTime;
     
     @NotNull
-    @Value("${prekillTime:60}")
+    @Value("${prekillTime:5}")
     private int prekillTime;
     
     private static final Date startDate = new Date();
