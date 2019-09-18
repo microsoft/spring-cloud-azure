@@ -4,13 +4,5 @@ spring:
   cloud:
     azure:
       appconfiguration:
-        fail_fast: false
-        watch:
-          enabled: true
-          delay: 5s
         stores:
-          - 
-            connection-string: Endpoint=https://secondsource.azconfig.io;Id=2-l3-s0:IfJ2QVIGo6fMpMYE9nKZ;Secret=vHP75tAZ7Fs/N/rIUSTAvcMZ3R8y1jYtP93FLY3E7W0=
-          - 
-            connection-string: Endpoint=https://mametcal-app-config.azconfig.io;Id=2-l3-s0:O428jqETtEj2XkBzlGz1;Secret=Hl82+2EJk+gO/HjUm8HZUZjrjxJCHc6ODj2VXTLDTTU=
-        
+          - connection-string: [configuration-store-string]
