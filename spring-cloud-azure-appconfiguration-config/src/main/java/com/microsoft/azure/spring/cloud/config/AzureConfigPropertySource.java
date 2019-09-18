@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.EnumerablePropertySource;
@@ -39,6 +40,8 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
 
     private AzureCloudConfigProperties azureProperties;
 
+    private AppConfigProviderProperties appProperties;
+
     private static ObjectMapper mapper = new ObjectMapper();
 
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
@@ -49,7 +52,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     private static final String FEATURE_FLAG_PREFIX = ".appconfig.featureflag/";
 
     public AzureConfigPropertySource(String context, ConfigServiceOperations operations, String storeName,
-            String label, AzureCloudConfigProperties azureProperties) {
+            String label, AzureCloudConfigProperties azureProperties, AppConfigProviderProperties appProperties) {
         // The context alone does not uniquely define a PropertySource, append storeName
         // and label to uniquely define a PropertySource
         super(context + storeName + "/" + label, operations);
@@ -57,6 +60,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
         this.storeName = storeName;
         this.label = label;
         this.azureProperties = azureProperties;
+        this.appProperties = appProperties;
     }
 
     @Override
@@ -152,8 +156,19 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
             try {
                 featureSet.addFeature(key.trim().substring(FEATURE_FLAG_PREFIX.length()), createFeature(
                         new KeyValueItem(key, propertyCache.getCachedValue(key), FEATURE_FLAG_CONTENT_TYPE)));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 if (azureProperties.isFailFast()) {
+                    Date currentDate = new Date();
+                    Date maxRetryDate = DateUtils.addSeconds(appProperties.getStartDate(),
+                            appProperties.getPrekillTime());
+                    if (currentDate.before(maxRetryDate)) {
+                        long diffInMillies = Math.abs(maxRetryDate.getTime() - currentDate.getTime());
+                        try {
+                            Thread.sleep(diffInMillies);
+                        } catch (InterruptedException e1) {
+                            LOGGER.error("Failed to wait before fast fail.");
+                        }
+                    }
                     ReflectionUtils.rethrowRuntimeException(e);
                 }
             }
@@ -218,11 +233,13 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
             }
 
         } else {
-            LOGGER.error(String.format("Found Feature Flag %s with invalid Content Type of %s", item.getKey(),
-                    item.getContentType()));
+            String message = String.format("Found Feature Flag %s with invalid Content Type of %s", item.getKey(),
+                    item.getContentType());
+
             if (azureProperties.isFailFast()) {
-                throw new IOException();
+                throw new IOException(message);
             }
+            LOGGER.error(message);
         }
         return feature;
     }
