@@ -120,6 +120,12 @@ public class ConfigServiceTemplateTest {
         configStore = new ConfigStore();
     }
 
+    @After
+    public void cleanup() {
+        pool = new ConnectionStringPool();
+        configStore = new ConfigStore();
+    }
+
     @Test
     public void testKeysCanBeSearched() throws IOException, URISyntaxException {
         when(configClient.execute(any(), any(), any(), any()))

@@ -5,12 +5,13 @@
  */
 package com.microsoft.azure.spring.cloud.config.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.microsoft.azure.spring.cloud.config.CachedKey;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KeyValueItem {
@@ -39,6 +40,32 @@ public class KeyValueItem {
         this.key = key;
         this.value = value;
         this.contentType = contentType;
+    }
+
+    public KeyValueItem() {
+    }
+
+    public KeyValueItem(String key, String value, String contentType) {
+        this.key = key;
+        this.value = value;
+        this.contentType = contentType;
+    }
+
+    public KeyValueItem(CachedKey cachedKey, String contentType) {
+        this.key = cachedKey.getKey();
+        this.value = cachedKey.getValue();
+        this.contentType = contentType;
+    }
+
+    public KeyValueItem(KeyValueItem keyValueItem) {
+        this.key = keyValueItem.getKey();
+        this.value = keyValueItem.getValue();
+        this.etag = keyValueItem.getEtag();
+        this.label = keyValueItem.getLabel();
+        this.contentType = keyValueItem.getContentType();
+        this.tags = keyValueItem.getTags();
+        this.locked = keyValueItem.isLocked();
+        this.lastModified = keyValueItem.getLastModified();
     }
 
     public String getEtag() {

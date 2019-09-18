@@ -24,6 +24,7 @@
         <module>eventhubs-operation-sample</module>
         <module>eventhubs-integration-sample</module>
         <module>eventhubs-binder-sample</module>
+        <module>eventhubs-multibinders-sample</module>
         <module>eventhubs-kafka-sample</module>
         <module>feature-management-sample</module>
         <module>feature-management-web-sample</module>
