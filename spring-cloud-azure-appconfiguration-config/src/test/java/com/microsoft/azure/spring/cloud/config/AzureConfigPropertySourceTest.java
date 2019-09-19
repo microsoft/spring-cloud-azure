@@ -73,6 +73,8 @@ import reactor.core.publisher.Mono;
 public class AzureConfigPropertySourceTest {
     private static final String EMPTY_CONTENT_TYPE = "";
     private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
+    private static final String KEY_VAULT_CONTENT_TYPE = 
+            "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8";
     
     private static final AzureCloudConfigProperties TEST_PROPS = new AzureCloudConfigProperties();
     
@@ -88,14 +90,11 @@ public class AzureConfigPropertySourceTest {
             FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
 
     private static final KeyValueItem keyVaultItem = createItem(TEST_CONTEXT, TEST_KEY_VAULT_1, TEST_VALUE_VAULT_1,
-            TEST_LABEL_VAULT_1);
+            TEST_LABEL_VAULT_1, KEY_VAULT_CONTENT_TYPE);
     
     public List<KeyValueItem> testItems = new ArrayList<>();
 
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
-    
-    private static final String KEY_VAULT_CONTENT_TYPE = 
-            "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8";
 
     private AzureConfigPropertySource propertySource;
     

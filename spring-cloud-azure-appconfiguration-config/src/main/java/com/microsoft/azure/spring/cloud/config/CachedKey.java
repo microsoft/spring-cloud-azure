@@ -19,7 +19,6 @@ public class CachedKey extends KeyValueItem{
         super(item);
         this.storeName = storeName;
         this.lastUpdated = time;
-
     }
 
     /**

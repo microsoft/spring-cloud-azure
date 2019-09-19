@@ -47,6 +47,8 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     private final String label;
 
     private AzureCloudConfigProperties azureProperties;
+    
+    private AppConfigProviderProperties appProperties;
 
     private static ObjectMapper mapper = new ObjectMapper();
 
@@ -63,7 +65,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     private HashMap<String, SecretAsyncClient> keyVaultClients;
 
     public AzureConfigPropertySource(String context, ConfigServiceOperations operations, String storeName,
-            String label, AzureCloudConfigProperties azureProperties) {
+            String label, AzureCloudConfigProperties azureProperties, AppConfigProviderProperties appProperties) {
         // The context alone does not uniquely define a PropertySource, append storeName
         // and label to uniquely define a PropertySource
         super(context + storeName + "/" + label, operations);
@@ -71,6 +73,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
         this.storeName = storeName;
         this.label = label;
         this.azureProperties = azureProperties;
+        this.appProperties = appProperties;
         this.keyVaultClients = new HashMap<String, SecretAsyncClient>();
     }
 
@@ -149,7 +152,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
 
             for (CachedKey cachedKey : propertyCache.getKeySet(storeName)) {
                 if (cachedKey.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
-                    key = key.trim().substring(context.length()).replace('/', '.');
+                    String key = cachedKey.getKey().trim().substring(context.length()).replace('/', '.');
                     String entry = getKeyVaultEntry(cachedKey.getValue());
 
                     // Null in the case of failFast is false, will just skip entry.
@@ -161,11 +164,11 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
                     KeyValueItem item = new KeyValueItem(cachedKey, FEATURE_FLAG_CONTENT_TYPE);
                     items.add(item);
 
+                    createFeatureSet(items, propertyCache, date);
                 } else {
                     String trimedKey = cachedKey.getKey().trim().substring(context.length()).replace('/', '.');
                     properties.put(trimedKey, propertyCache.getCachedValue(cachedKey.getKey()));
                 }
-                createFeatureSet(items, propertyCache, date);
             }
         }
     }
@@ -196,9 +199,6 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
                 } else {
                     LOGGER.error("Error Processing Key Vault Entry URI.");
                     ReflectionUtils.rethrowRuntimeException(e);
-                } else {
-                    String trimedKey = cachedKey.getKey().trim().substring(context.length()).replace('/', '.');
-                    properties.put(trimedKey, propertyCache.getCachedValue(cachedKey.getKey()));
                 }
             }
 
@@ -224,8 +224,8 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
                         .buildAsyncClient();
                 keyVaultClients.put(uri.getHost(), secretAsyncClient);
             }
-
-            secret = keyVaultClients.get(uri.getHost()).getSecret(secret).block(Duration.ofSeconds(30));
+            Duration keyVaultWaitTime = Duration.ofSeconds(appProperties.getKeyVaultWaitTime());
+            secret = keyVaultClients.get(uri.getHost()).getSecret(secret).block(keyVaultWaitTime);
             if (secret == null) {
                 throw new IOException("No Key Vault Secret found for Reference.");
             }
@@ -291,8 +291,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     /**
      * Creates a {@code Feature} from a {@code KeyValueItem}
      * 
-     * @param item Used to create Features before being converted to be set into
-     * properties.
+     * @param item Used to create Features before being converted to be set into properties.
      * @return Feature created from KeyValueItem
      * @throws IOException
      */

@@ -57,8 +57,7 @@ public class PropertyCache {
     }
     
     /**
-     * Gets a List of keys that need to refreshed by the given store, and there key starts
-     * with the filtered value
+     * Gets a List of keys that need to refreshed by the given store, and there key starts with the filtered value
      * 
      * @param storeName Store of which the refreshed keys are from
      * @param prefix Prefix used to find a specific set of keys
