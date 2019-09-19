@@ -77,7 +77,7 @@ public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicC
             subscriptionClient.setPrefetchCount(this.clientConfig.getPrefetchCount());
             subscriptionClient
                     .registerMessageHandler(new TopicMessageHandler(consumer, payloadType, subscriptionClient),
-                            buildHandlerOptions(), buildHandlerExectutors(threadPrefix));
+                            buildHandlerOptions(), buildHandlerExecutors(threadPrefix));
         } catch (ServiceBusException | InterruptedException e) {
             log.error("Failed to register topic message handler", e);
             throw new ServiceBusRuntimeException("Failed to register topic message handler", e);

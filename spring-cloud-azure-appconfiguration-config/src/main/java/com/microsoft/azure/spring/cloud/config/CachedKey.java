@@ -7,71 +7,18 @@ package com.microsoft.azure.spring.cloud.config;
 
 import java.util.Date;
 
-import com.azure.data.appconfiguration.models.ConfigurationSetting;
+import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 
-public class CachedKey {
-
-    private String key;
-
-    private String etag;
-
-    private String value;
+public class CachedKey extends KeyValueItem{
 
     private String storeName;
-    
-    private String contentType;
 
     private Date lastUpdated;
     
-    public CachedKey(ConfigurationSetting item, String storeName, Date time) {
-        key = item.key();
-        etag = item.etag();
-        value = item.value();
+    public CachedKey(KeyValueItem item, String storeName, Date time) {
+        super(item);
         this.storeName = storeName;
-        lastUpdated = time;
-        this.contentType = item.contentType();
-    }
-
-    /**
-     * @return the key
-     */
-    public String getKey() {
-        return key;
-    }
-
-    /**
-     * @param key the key to set
-     */
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    /**
-     * @return the etag
-     */
-    public String getEtag() {
-        return etag;
-    }
-
-    /**
-     * @param etag the etag to set
-     */
-    public void setEtag(String etag) {
-        this.etag = etag;
-    }
-
-    /**
-     * @return the value
-     */
-    public String getValue() {
-        return value;
-    }
-
-    /**
-     * @param value the value to set
-     */
-    public void setValue(String value) {
-        this.value = value;
+        this.lastUpdated = time;
     }
 
     /**
@@ -100,20 +47,6 @@ public class CachedKey {
      */
     public void setLastUpdated(Date lastUpdated) {
         this.lastUpdated = lastUpdated;
-    }
-
-    /**
-     * @return the contentType
-     */
-    public String getContentType() {
-        return contentType;
-    }
-
-    /**
-     * @param contentType the contentType to set
-     */
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
     }
 
 }

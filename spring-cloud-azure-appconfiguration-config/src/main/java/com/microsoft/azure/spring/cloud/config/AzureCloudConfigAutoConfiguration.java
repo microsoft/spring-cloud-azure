@@ -6,7 +6,6 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.endpoint.RefreshEndpoint;
 import org.springframework.context.annotation.Bean;
@@ -32,9 +31,8 @@ public class AzureCloudConfigAutoConfiguration {
         }
 
         @Bean
-        @ConditionalOnMissingBean
-        public PropertyCache getPropertyCache() {
-            return PropertyCache.getPropertyCache();
+        public ConfigListener configListener(AzureCloudConfigWatch azureCloudConfigWatch) {
+            return new ConfigListener(azureCloudConfigWatch);
         }
 
         @Bean

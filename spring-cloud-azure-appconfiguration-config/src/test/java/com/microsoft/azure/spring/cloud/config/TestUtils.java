@@ -27,6 +27,7 @@ public class TestUtils {
         item.value(value);
         item.label(label);
         item.contentType("");
+        item.setContentType(contentType);
 
         return item;
     }

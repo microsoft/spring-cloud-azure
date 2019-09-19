@@ -67,7 +67,7 @@ public class PropertyCacheTest {
         when(delay.getSeconds()).thenReturn(new Long(1000));
         List<String> refreshKeys = propertyCache.findNonCachedKeys(delay, TEST_STORE_1);
         assertEquals(0, refreshKeys.size());
-        when(delay.getSeconds()).thenReturn(new Long(0));
+        when(delay.getSeconds()).thenReturn(new Long(-1000));
         refreshKeys = propertyCache.findNonCachedKeys(delay, TEST_STORE_1);
         assertEquals(2, refreshKeys.size());
     }

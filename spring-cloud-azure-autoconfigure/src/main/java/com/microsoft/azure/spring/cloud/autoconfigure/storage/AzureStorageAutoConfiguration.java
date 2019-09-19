@@ -67,7 +67,6 @@ public class AzureStorageAutoConfiguration {
             connectionString = StorageConnectionStringProvider
                     .getConnectionString(storageAccount, environmentProvider.getEnvironment(),
                             storageProperties.isSecureTransfer());
-
         } else {
             connectionString = StorageConnectionStringProvider
                     .getConnectionString(storageProperties.getAccount(), storageProperties.getAccessKey(),

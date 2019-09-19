@@ -21,13 +21,40 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
+import static com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties.LABEL_SEPARATOR;
+import static com.microsoft.azure.spring.cloud.config.Constants.EMPTY_LABEL;
+
 import com.microsoft.azure.AzureEnvironment;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 import com.microsoft.azure.spring.cloud.config.stores.KeyVaultStore;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.context.annotation.Import;
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
+
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
+import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
 
 @Validated
 @ConfigurationProperties(prefix = AzureCloudConfigProperties.CONFIG_PREFIX)
+@Import({AppConfigProviderProperties.class})
 public class AzureCloudConfigProperties {
     public static final String CONFIG_PREFIX = "spring.cloud.azure.appconfiguration";
     public static final String LABEL_SEPARATOR = ",";
@@ -142,6 +169,11 @@ public class AzureCloudConfigProperties {
         return watch;
     }
 
+    /**
+     * The minimum watch time between refresh checks. The minimum valid watch time is 1s.
+     * 
+     * @param watch minimum time between refresh checks
+     */
     public void setWatch(Watch watch) {
         this.watch = watch;
     }
@@ -150,15 +182,16 @@ public class AzureCloudConfigProperties {
     public void validateAndInit() {
         Assert.notEmpty(this.stores, "At least one config store has to be configured.");
 
-        this.stores.forEach(store -> { 
+        this.stores.forEach(store -> {
             Assert.isTrue(StringUtils.hasText(store.getName()) ||
-            StringUtils.hasText(store.getConnectionString()),
-            "Either configuration store name or connection string should be configured.");
+                        StringUtils.hasText(store.getConnectionString()),
+                    "Either configuration store name or connection string should be configured.");
             store.validateAndInit();
         });
 
         int uniqueStoreSize = this.stores.stream().map(s -> s.getName()).distinct().collect(Collectors.toList()).size();
         Assert.isTrue(this.stores.size() == uniqueStoreSize, "Duplicate store name exists.");
+        Assert.isTrue(watch.delay.getSeconds()  >= 1, "Minimum Watch time is 1 Second.");
     }
 
     class Watch {

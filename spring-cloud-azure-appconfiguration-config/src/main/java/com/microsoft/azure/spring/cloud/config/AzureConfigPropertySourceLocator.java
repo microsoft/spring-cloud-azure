@@ -39,6 +39,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
     private static final String PATH_SPLITTER = "/";
 
+
     private final AzureCloudConfigProperties properties;
 
     private final String profileSeparator;
@@ -48,12 +49,13 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private final Map<String, List<String>> storeContextsMap = new ConcurrentHashMap<>();
 
     private PropertyCache propertyCache;
-
+    private AppConfigProviderProperties appProperties;
     private ClientStore clients;
 
     public AzureConfigPropertySourceLocator(AzureCloudConfigProperties properties,
-            PropertyCache propertyCache, ClientStore clients) {
+            PropertyCache propertyCache, AppConfigProviderProperties appProperties, ClientStore clients) {
         this.properties = properties;
+        this.appProperties = appProperties;
         this.profileSeparator = properties.getProfileSeparator();
         this.configStores = properties.getStores();
         this.propertyCache = propertyCache;
@@ -128,7 +130,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
             } catch (Exception e) {
                 if (properties.isFailFast()) {
                     LOGGER.error("Fail fast is set and there was an error reading configuration from Azure Config " +
-                            "Service for " + sourceContext, e);
+                            "Service for " + sourceContext);
                     ReflectionUtils.rethrowRuntimeException(e);
                 } else {
                     LOGGER.warn("Unable to load configuration from Azure Config Service for " + sourceContext, e);
@@ -183,7 +185,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
         for (String label : store.getLabels()) {
             AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context,
-                    store.getName(), label, properties);
+                    store.getName(), label, properties, appProperties);
             propertySource.initProperties(propertyCache, clients);
             if (initFeatures) {
                 propertySource.initFeatures(propertyCache);

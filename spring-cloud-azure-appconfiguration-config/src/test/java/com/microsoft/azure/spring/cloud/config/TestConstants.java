@@ -25,7 +25,10 @@ public class TestConstants {
     public static final String DEFAULT_CONTEXT_PROP = "spring.cloud.azure.appconfiguration.default-context";
     public static final String CONFIG_ENABLED_PROP = "spring.cloud.azure.appconfiguration.enabled";
     public static final String WATCH_ENABLED_PROP = "spring.cloud.azure.appconfiguration.watch.enabled";
+    public static final String WATCH_DELAY_PROP = "spring.cloud.azure.appconfiguration.watch.delay";
     public static final String SEPARATOR_PROP = "spring.cloud.azure.appconfiguration.profile-separator";
+    
+    public static final String FAIL_FAST_PROP = "spring.cloud.azure.appconfiguration.failFast";
     
     public static final String FAIL_FAST_PROP = "spring.cloud.azure.appconfiguration.failFast";
     public static final String KEY_VAULT_STORE_1_CONNECTION = 
@@ -66,7 +69,8 @@ public class TestConstants {
     public static final String TEST_WATCH_KEY_PATTERN = "my.watched.key.*";
     public static final String TEST_ETAG = "fake-etag";
     public static final String TEST_KEY_VAULT_1 = "test_key_vault_1";
-    public static final String TEST_VALUE_VAULT_1 = "{\"url\":\"https://test.key.vault.com/my_secret_url\"}";
+    public static final String TEST_URI_VAULT_1 = "https://test.key.vault.com/my_secret_url";
+    public static final String TEST_VALUE_VAULT_1 = "{\"uri\":\"" + TEST_URI_VAULT_1 + "\"}";
     public static final String TEST_LABEL_VAULT_1 = "test_lable_vault_1";
     
     public static final String FEATURE_KEY = "feature-management.featureManagement";

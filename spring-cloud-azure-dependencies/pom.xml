@@ -11,13 +11,6 @@
     <name>Spring Cloud Azure dependencies BOM</name>
     <description>BOM for Spring Cloud Azure dependencies</description>
 
-    <parent>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-dependencies-parent</artifactId>
-        <version>2.1.0.RC3</version>
-        <relativePath/>
-    </parent>
-
     <properties>
         <powermock.version>1.7.1</powermock.version>
         <mockito.version>2.8.9</mockito.version>
@@ -26,16 +19,15 @@
         <commons.io.version>2.6</commons.io.version>
         <hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
         <google.guava.version>20.0</google.guava.version>
-        <azure.sdk.version>1.14.0</azure.sdk.version>
+        <azure.sdk.version>1.23.0</azure.sdk.version>
         <azure.eventhubs.eph.version>2.4.0</azure.eventhubs.eph.version>
         <azure.keyvault.version>1.0.0</azure.keyvault.version>
-        <azure.client.version>1.6.0</azure.client.version>
         <azure.servicebus.version>1.2.8</azure.servicebus.version>
         <javax.jms-api.version>2.0.1</javax.jms-api.version>
         <spring-jms.version>5.1.8.RELEASE</spring-jms.version>
         <qpid-jms-client.version>0.43.0</qpid-jms-client.version>
-
         <spring.cloud.azure.version>1.1.0-SNAPSHOT</spring.cloud.azure.version>
+        <okhttp3.version>3.11.0</okhttp3.version>
     </properties>
 
     <dependencyManagement>
@@ -160,11 +152,26 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+
+            <!-- azure client runtime use okhttp 3.11.0 and spring-cloud dependency introduces 3.8.1 -->
             <dependency>
-                <groupId>com.microsoft.azure</groupId>
-                <artifactId>azure-client-runtime</artifactId>
-                <version>${azure.client.version}</version>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>${okhttp3.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>logging-interceptor</artifactId>
+                <version>${okhttp3.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp-urlconnection</artifactId>
+                <version>${okhttp3.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>azure-eventhubs-eph</artifactId>
@@ -248,11 +255,6 @@
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-api-mockito2</artifactId>
                 <version>${powermock.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>

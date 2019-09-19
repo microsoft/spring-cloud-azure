@@ -5,17 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import static com.microsoft.azure.spring.cloud.config.TestConstants.CONN_STRING_PROP;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.CONN_STRING_PROP_NEW;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.DEFAULT_CONTEXT_PROP;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.FAIL_FAST_PROP;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.LABEL_PROP;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.PREFIX_PROP;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.SEPARATOR_PROP;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.STORE_NAME_PROP;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_WATCH_KEY_PATTERN;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.WATCHED_KEY_PROP;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.propPair;
 import static com.microsoft.azure.spring.cloud.config.resource.ConnectionString.ENDPOINT_ERR_MSG;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,21 +13,23 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.ProtocolVersion;
+import org.apache.http.RequestLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicStatusLine;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -52,9 +44,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
+import com.microsoft.azure.spring.cloud.config.domain.KeyValueResponse;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({AzureConfigBootstrapConfiguration.class})
+@PrepareForTest({ConfigServiceTemplate.class, AzureConfigBootstrapConfiguration.class})
 @PowerMockIgnore({ "javax.net.ssl.*", "javax.crypto.*", "org.mockito.*"})
 public class AzureCloudConfigPropertiesTest {
     @InjectMocks
@@ -72,43 +66,54 @@ public class AzureCloudConfigPropertiesTest {
     private static final String[] ILLEGAL_PROFILE_SEPARATOR = { "/", "\\", "." };
 
     private static final String ILLEGAL_LABELS = "*,my-label";
+    
+    @Mock
+    private ConfigHttpClient configClient;
 
     @Mock
-    HttpGet mockHttpGet;
+    private HttpGet mockHttpGet;
     
     @Mock
-    HttpClientBuilder mockHttpClientBuilder;
+    private HttpClientBuilder mockHttpClientBuilder;
     
     @Mock
-    org.apache.http.RequestLine mockRequestLine;
+    private RequestLine mockRequestLine;
     
     @Mock
-    ApplicationContext context;
+    private ApplicationContext context;
     
     @Mock
-    CloseableHttpResponse mockClosableHttpResponse;
+    private CloseableHttpResponse mockClosableHttpResponse;
     
     @Mock
-    HttpEntity mockHttpEntity;
+    private HttpEntity mockHttpEntity;
 
     @Mock
-    InputStream mockInputStream;
+    private InputStream mockInputStream;
     
     @Mock
-    ObjectMapper mockObjectMapper;
-    
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
+    private ObjectMapper mockObjectMapper;
     
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
+        
+        KeyValueResponse kvResponse = new KeyValueResponse();
+        List<KeyValueItem> items = new ArrayList<KeyValueItem>();
+        kvResponse.setItems(items);
         try {
+            
+            PowerMockito.whenNew(ConfigHttpClient.class).withAnyArguments().thenReturn(configClient);
             PowerMockito.whenNew(ObjectMapper.class).withAnyArguments().thenReturn(mockObjectMapper);
+            when(configClient.execute(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                .thenReturn(mockClosableHttpResponse);
             when(mockClosableHttpResponse.getStatusLine())
                 .thenReturn(new BasicStatusLine(new ProtocolVersion("", 0, 0), 200, ""));
             when(mockClosableHttpResponse.getEntity()).thenReturn(mockHttpEntity);
             when(mockHttpEntity.getContent()).thenReturn(mockInputStream);
+            
+            when(mockObjectMapper.readValue(Mockito.isA(InputStream.class), Mockito.any(Class.class)))
+                .thenReturn(kvResponse);
         } catch (Exception e) {
             fail();
         }
@@ -206,6 +211,24 @@ public class AzureCloudConfigPropertiesTest {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                 propPair(CONN_STRING_PROP_NEW, TEST_CONN_STRING)).run(context -> {
                     assertThat(context).getFailure().hasStackTraceContaining("Duplicate store name exists");
+                });
+    }
+
+    @Test
+    public void invalidWatchTime() {
+        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING))
+                .withPropertyValues(propPair(WATCH_ENABLED_PROP, "true"), propPair(WATCH_DELAY_PROP, "99ms"))
+                .run(context -> {
+                    assertThat(context).getFailure().hasStackTraceContaining("Minimum Watch time is 1 Second.");
+                });
+    }
+    
+    @Test
+    public void minValidWatchTime() {
+        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING))
+                .withPropertyValues(propPair(WATCH_ENABLED_PROP, "true"), propPair(WATCH_DELAY_PROP, "1s"))
+                .run(context -> {
+                    assertThat(context).hasSingleBean(AzureCloudConfigProperties.class);
                 });
     }
 

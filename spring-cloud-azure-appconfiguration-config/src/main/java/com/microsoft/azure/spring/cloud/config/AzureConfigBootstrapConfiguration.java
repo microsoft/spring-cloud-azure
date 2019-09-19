@@ -24,7 +24,7 @@ import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
 
 @Configuration
-@EnableConfigurationProperties(AzureCloudConfigProperties.class)
+@EnableConfigurationProperties({ AzureCloudConfigProperties.class, AppConfigProviderProperties.class })
 @ConditionalOnClass(AzureConfigPropertySourceLocator.class)
 @ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "enabled", matchIfMissing = true)
 public class AzureConfigBootstrapConfiguration {
@@ -69,6 +69,18 @@ public class AzureConfigBootstrapConfiguration {
     @Bean
     public ClientStore buildClientStores(AzureCloudConfigProperties properties) {
         return new ClientStore(properties);
+    }
+
+    @Bean
+    public AzureConfigPropertySourceLocator sourceLocator(ConfigServiceOperations operations,
+            AzureCloudConfigProperties properties, PropertyCache propertyCache, 
+            AppConfigProviderProperties appProperties) {
+        return new AzureConfigPropertySourceLocator(operations, properties, propertyCache, appProperties);
+    }
+    
+    @Bean
+    public PropertyCache getPropertyCache() {
+        return PropertyCache.getPropertyCache();
     }
 
     @PostConstruct

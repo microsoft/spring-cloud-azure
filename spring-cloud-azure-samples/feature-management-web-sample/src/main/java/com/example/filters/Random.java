@@ -15,8 +15,7 @@ public class Random implements FeatureFilter{
 
     @Override
     public boolean evaluate(FeatureFilterEvaluationContext context) {
-        double chance = Double.valueOf((String) context.getParameters().get("chance"));
-        return Math.random() > chance/100; 
+        return new java.util.Random().nextBoolean();
     }
 
 }

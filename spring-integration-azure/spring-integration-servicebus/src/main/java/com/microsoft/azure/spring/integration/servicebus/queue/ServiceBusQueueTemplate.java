@@ -76,7 +76,7 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
         try {
             queueClient.setPrefetchCount(this.clientConfig.getPrefetchCount());
             queueClient.registerMessageHandler(new QueueMessageHandler(consumer, payloadType, queueClient),
-                    buildHandlerOptions(), buildHandlerExectutors(threadPrefix));
+                    buildHandlerOptions(), buildHandlerExecutors(threadPrefix));
         } catch (ServiceBusException | InterruptedException e) {
             log.error("Failed to register queue message handler", e);
             throw new ServiceBusRuntimeException("Failed to register queue message handler", e);
