@@ -77,7 +77,8 @@ public class PropertyCacheTest {
         propertyCache.findNonCachedKeys(Duration.ofSeconds(1), TEST_STORE_1);
         assertTrue(propertyCache.getCache().get(TEST_KEY_1).getLastUpdated().getClass() == Date.class);
 
-        List<String> refreshKeys = propertyCache.updateRefreshCacheTimeForKey(TEST_STORE_1, TEST_KEY_1, date);
+        propertyCache.updateRefreshCacheTimeForKey(TEST_STORE_1, TEST_KEY_1, date);
+        List<String> refreshKeys = propertyCache.getRefreshKeys(TEST_STORE_1);
         assertEquals(date, propertyCache.getCache().get(TEST_KEY_1).getLastUpdated());
         assertEquals(0, refreshKeys.size());
         assertEquals(0, propertyCache.getCache().get(TEST_KEY_1).getLastUpdated().getTime());
@@ -99,10 +100,12 @@ public class PropertyCacheTest {
         when(delay.getSeconds()).thenReturn(new Long(0));
         propertyCache.findNonCachedKeys(Duration.ofSeconds(-1), TEST_STORE_1);
         assertEquals(2, propertyCache.getRefreshKeys(TEST_STORE_1).size());
-        List<String> refreshKeys = propertyCache.updateRefreshCacheTime(TEST_STORE_2, "/application/",
+        propertyCache.updateRefreshCacheTime(TEST_STORE_2, "/application/",
                 Duration.ofDays(1));
+        List<String> refreshKeys = propertyCache.getRefreshKeys(TEST_STORE_2);
         assertEquals(0, refreshKeys.size());
-        refreshKeys = propertyCache.updateRefreshCacheTime(TEST_STORE_1, "/application/", Duration.ofDays(1));
+        propertyCache.updateRefreshCacheTime(TEST_STORE_1, "/application/", Duration.ofDays(1));
+        refreshKeys = propertyCache.getRefreshKeys(TEST_STORE_2);
         assertEquals(0, refreshKeys.size());
 
     }

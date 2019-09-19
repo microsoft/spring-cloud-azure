@@ -92,6 +92,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
             }
             this.running.set(false);
         }
+    }
 
     /**
      * Checks un-cached items for etag changes. If they have changed a RefreshEventData is
@@ -107,13 +108,12 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
                 .range(new Range(0, 0));
 
         List<ConfigurationSetting> items = clientStore.listSettingRevisons(settingSelector, store.getName());
-                .withLabels(store.getLabels()).withFields(QueryField.ETAG).withRange(0, 0);
 
         if (items.isEmpty()) {
             return;
         }
 
-        String etag = keyValueItems.get(0).getEtag();
+        String etag = items.get(0).etag();
         if (firstTimeMap.get(storeNameWithSuffix) == null) {
             storeEtagMap.put(storeNameWithSuffix, etag);
             firstTimeMap.put(storeNameWithSuffix, false);
@@ -138,7 +138,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
 
                    items = clientStore.listSettingRevisons(settingSelector, store.getName());
 
-                    if (!itesm.isEmpty() && items.get(0).getEtag()
+                    if (!items.isEmpty() && items.get(0).etag()
                             .equals(propertyCache.getCachedEtag(refreshKey))) {
                         propertyCache.updateRefreshCacheTimeForKey(store.getName(), refreshKey, date);
                     }

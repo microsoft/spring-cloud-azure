@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.time.DateUtils;
 
-import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
+import com.azure.data.appconfiguration.models.ConfigurationSetting;
 
 public class PropertyCache {
 
@@ -81,8 +81,12 @@ public class PropertyCache {
      * @param storeName Store the key is from
      * @param date current date, used for checking next refresh time
      */
-    public void addToCache(KeyValueItem item, String storeName, Date date) {
-        cache.put(item.getKey(), new CachedKey(item, storeName, date));
+    public void addToCache(ConfigurationSetting setting, String storeName, Date date) {
+        cache.put(setting.key(), new CachedKey(setting, storeName, date));
+    }
+    
+    public void removeFromCache(ConfigurationSetting setting) {
+        cache.remove(setting.key());
     }
 
     /**
@@ -92,10 +96,10 @@ public class PropertyCache {
      * @param storeName Store the key is from
      * @param date current date, used for checking next refresh time
      */
-    public void addKeyValuesToCache(List<KeyValueItem> items, String storeName, Date date) {
-        ConcurrentMap<String, CachedKey> newCacheItems = items.stream()
-                .map(item -> new CachedKey(item, storeName, date))
-                .collect(Collectors.toConcurrentMap(item -> item.getKey(), item -> item));
+    public void addKeyValuesToCache(List<ConfigurationSetting> settings, String storeName, Date date) {
+        ConcurrentMap<String, CachedKey> newCacheItems = settings.stream()
+                .map(setting -> new CachedKey(setting, storeName, date))
+                .collect(Collectors.toConcurrentMap(setting -> setting.key(), setting -> setting));
         cache.putAll(newCacheItems);
     }
 
@@ -121,7 +125,7 @@ public class PropertyCache {
         if (cachedKey == null) {
             return null;
         }
-        return cachedKey.getValue();
+        return cachedKey.value();
     }
 
     /**
@@ -135,7 +139,7 @@ public class PropertyCache {
         if (cachedKey == null) {
             return null;
         }
-        return cachedKey.getEtag();
+        return cachedKey.etag();
     }
 
     public List<String> findNonCachedKeys(Duration delay, String storeName) {
@@ -146,7 +150,7 @@ public class PropertyCache {
             Date notCachedTime = DateUtils.addSeconds(cachedKey.getLastUpdated(),
                     Math.toIntExact(delay.getSeconds()));
             if (date.after(notCachedTime)) {
-                storeRefreshKeys.add(cachedKey.getKey());
+                storeRefreshKeys.add(cachedKey.key());
             }
         }
         refreshKeys.put(storeName, storeRefreshKeys);

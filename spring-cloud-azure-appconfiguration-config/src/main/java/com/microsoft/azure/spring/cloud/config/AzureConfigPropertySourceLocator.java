@@ -185,8 +185,8 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
         for (String label : store.getLabels()) {
             AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context,
-                    store.getName(), label, properties, appProperties);
-            propertySource.initProperties(propertyCache, clients);
+                    store.getName(), label, properties, appProperties, clients);
+            propertySource.initProperties(propertyCache);
             if (initFeatures) {
                 propertySource.initFeatures(propertyCache);
             }

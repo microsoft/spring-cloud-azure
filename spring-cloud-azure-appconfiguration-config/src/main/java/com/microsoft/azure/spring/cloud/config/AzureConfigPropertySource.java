@@ -5,9 +5,6 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_FLAG_CONTENT_TYPE;
-import static com.microsoft.azure.spring.cloud.config.Constants.KEY_VAULT_CONTENT_TYPE;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,8 +32,6 @@ import com.azure.security.keyvault.secrets.SecretClientBuilder;
 import com.azure.security.keyvault.secrets.models.Secret;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsoft.azure.keyvault.KeyVaultClient;
-import com.microsoft.azure.keyvault.models.SecretBundle;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureManagementItem;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
@@ -70,9 +65,11 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
     private static final String FEATURE_FLAG_PREFIX = ".appconfig.featureflag/";
 
     private HashMap<String, SecretAsyncClient> keyVaultClients;
+    
+    private ClientStore clients;
 
     public AzureConfigPropertySource(String context, String storeName,
-            String label, AzureCloudConfigProperties azureProperties, AppConfigProviderProperties appProperties) {
+            String label, AzureCloudConfigProperties azureProperties, AppConfigProviderProperties appProperties, ClientStore clients) {
         // The context alone does not uniquely define a PropertySource, append storeName
         // and label to uniquely
         // define a PropertySource
@@ -83,6 +80,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
         this.azureProperties = azureProperties;
         this.appProperties = appProperties;
         this.keyVaultClients = new HashMap<String, SecretAsyncClient>();
+        this.clients = clients;
     }
 
     @Override
@@ -116,7 +114,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
         Date date = new Date();
         SettingSelector settingSelector = new SettingSelector();
         if (!label.equals("%00")) {
-            settingSelector.labels(label)
+            settingSelector.labels(label);
         }
         
         if (propertyCache.getContext(storeName) == null) {
@@ -124,27 +122,27 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
             // * for wildcard match
             settingSelector.keys(context + "*");
             List<ConfigurationSetting> settings = clients.listSettings(settingSelector, storeName);
-            for (ConfigurationSetting item : items) {
-                String key = item.key().trim().substring(context.length()).replace('/', '.');
-                if (item.contentType().equals(KEY_VAULT_CONTENT_TYPE)) {
-                    String entry = getKeyVaultEntry(item.value());
+            for (ConfigurationSetting setting : settings) {
+                String key = setting.key().trim().substring(context.length()).replace('/', '.');
+                if (setting.contentType().equals(KEY_VAULT_CONTENT_TYPE)) {
+                    String entry = getKeyVaultEntry(setting.value());
 
                     // Null in the case of failFast is false, will just skip entry.
                     if (entry != null) {
                         properties.put(key, entry);
                     }
                 } else {
-                    properties.put(key, item.value());
+                    properties.put(key, setting.value());
                 }
 
             }
-            propertyCache.addKeyValuesToCache(items, storeName, date);
+            propertyCache.addKeyValuesToCache(settings, storeName, date);
 
             // Reading In Features
             settingSelector.keys("*appconfig*");
             settings = clients.listSettings(settingSelector, storeName);
 
-            createFeatureSet(items, propertyCache, date);
+            createFeatureSet(settings, propertyCache, date);
 
         } else {
             // Using Cached values, first updates cache then sets new properties.
@@ -152,37 +150,40 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
                     propertyCache.getRefreshKeys(storeName).size() > 0) {
                 for (String refreshKey : propertyCache.getRefreshKeys(storeName)) {
                     settingSelector.keys(refreshKey);
-                    List<ConfigurationSetting> settings = clients.listSettings(settingSelector, storeName);
-                    if (settings.size() == 0) {
-                        KeyValueItem emptyKey = new KeyValueItem();
-                        emptyKey.setKey(refreshKey);
+                    ConfigurationSetting setting = clients.getSetting(refreshKey, storeName);
+                    if (setting == null) {
+                        ConfigurationSetting emptyKey = new ConfigurationSetting();
+                        emptyKey.key(refreshKey);
                         propertyCache.addToCache(emptyKey, storeName, date);
                     } else {
-                        propertyCache.addToCache(settings.get(0), storeName, date);
+                        propertyCache.addToCache(setting, storeName, date);
                     }
                 }
             }
-
-            for (CachedKey cachedKey : propertyCache.getKeySet(storeName)) {
-                if (cachedKey.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
-                    String key = cachedKey.getKey().trim().substring(context.length()).replace('/', '.');
-                    String entry = getKeyVaultEntry(cachedKey.getValue());
+            
+            List<ConfigurationSetting> items = new ArrayList<ConfigurationSetting>();
+            Set<CachedKey> cachedKeys = propertyCache.getKeySet(storeName);
+            for (CachedKey cachedKey : cachedKeys) {
+                if (cachedKey.contentType() == null) {
+                    String trimedKey = cachedKey.key().trim().substring(context.length()).replace('/', '.');
+                    properties.put(trimedKey, propertyCache.getCachedValue(cachedKey.key()));
+                    propertyCache.removeFromCache(cachedKey);
+                } else if (cachedKey.contentType().equals(KEY_VAULT_CONTENT_TYPE)) {
+                    String key = cachedKey.key().trim().substring(context.length()).replace('/', '.');
+                    String entry = getKeyVaultEntry(cachedKey.value());
 
                     // Null in the case of failFast is false, will just skip entry.
                     if (entry != null) {
                         properties.put(key, entry);
                     }
-                } else if (cachedKey.getContentType().equals(FEATURE_FLAG_CONTENT_TYPE)) {
-                    List<KeyValueItem> items = new ArrayList<KeyValueItem>();
-                    KeyValueItem item = new KeyValueItem(cachedKey, FEATURE_FLAG_CONTENT_TYPE);
-                    items.add(item);
-
-                    createFeatureSet(items, propertyCache, date);
+                } else if (cachedKey.contentType().equals(FEATURE_FLAG_CONTENT_TYPE)) {
+                    items.add(cachedKey.getSetting());
                 } else {
-                    String trimedKey = cachedKey.getKey().trim().substring(context.length()).replace('/', '.');
-                    properties.put(trimedKey, propertyCache.getCachedValue(cachedKey.getKey()));
+                    String trimedKey = cachedKey.key().trim().substring(context.length()).replace('/', '.');
+                    properties.put(trimedKey, propertyCache.getCachedValue(cachedKey.key()));
                 }
             }
+            createFeatureSet(items, propertyCache, date);
         }
     }
 
@@ -267,8 +268,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
                 .filter(key -> key.startsWith(FEATURE_FLAG_PREFIX)).collect(Collectors.toList());
         features.parallelStream().forEach(key -> {
             try {
-                featureSet.addFeature(key.trim().substring(FEATURE_FLAG_PREFIX.length()), createFeature(
-                        new KeyValueItem(key, propertyCache.getCachedValue(key), FEATURE_FLAG_CONTENT_TYPE)));
+                featureSet.addFeature(key.trim().substring(FEATURE_FLAG_PREFIX.length()), createFeature(propertyCache.getCache().get(key)));
             } catch (Exception e) {
                 if (azureProperties.isFailFast()) {
                     ReflectionUtils.rethrowRuntimeException(e);
@@ -290,15 +290,15 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
     private void createFeatureSet(List<ConfigurationSetting> settings, PropertyCache propertyCache, Date date) throws IOException {
         // Reading In Features
         FeatureSet featureSet = new FeatureSet();
-        for (ConfigurationSetting item : settings) {
-            Object feature = createFeature(item);
+        for (ConfigurationSetting setting : settings) {
+            Object feature = createFeature(setting);
             if (feature != null) {
-                String key = item.getKey().trim().substring(FEATURE_FLAG_PREFIX.length());
+                String key = setting.key().trim().substring(FEATURE_FLAG_PREFIX.length());
                 featureSet.addFeature(key, feature);
             }
         }
         if (featureSet.getFeatureManagement() != null) {
-            propertyCache.addKeyValuesToCache(items, storeName, date);
+            propertyCache.addKeyValuesToCache(settings, storeName, date);
         }
     }
 
@@ -336,7 +336,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
             }
 
         } else {
-            String message = String.format("Found Feature Flag %s with invalid Content Type of %s", item.getKey(),
+            String message = String.format("Found Feature Flag %s with invalid Content Type of %s", item.key(),
                     item.contentType());
 
             if (azureProperties.isFailFast()) {
@@ -345,25 +345,5 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
             LOGGER.error(message);
         }
         return feature;
-    }
-
-    private void getKeyVaultValue(String key, String value, String contentType, ClientStore clients)
-            throws IOException, URISyntaxException {
-        if (contentType.equals(KEY_VAULT_CONTENT_TYPE)) {
-            String uriString = value.substring(8, value.length() - 2);
-            URI uri = new URI(uriString);
-
-            KeyVaultClient keyVaultClient = clients.getKeyVaultClient(uri.getHost());
-            if (keyVaultClient != null) {
-                SecretBundle secretBundle = keyVaultClient.getSecret(uriString);
-                properties.put(key, secretBundle.value());
-            } else {
-                logger.error("Found KeyVault Secret without an associated KeyVaultClient.");
-                if (azureProperties.isFailFast()) {
-                    throw new IOException(
-                            "Failed Processing KeyVault Secret without an associated KeyVaultClient.");
-                }
-            }
-        }
     }
 }

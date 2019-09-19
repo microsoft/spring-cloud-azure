@@ -21,13 +21,12 @@ public class TestUtils {
         return String.format("%s=%s", propName, propValue);
     }
 
-    static ConfigurationSetting createItem(String context, String key, String value, String label) {
+    static ConfigurationSetting createItem(String context, String key, String value, String label, String contentType) {
         ConfigurationSetting item = new ConfigurationSetting();
         item.key(context + key);
         item.value(value);
         item.label(label);
-        item.contentType("");
-        item.setContentType(contentType);
+        item.contentType(contentType);
 
         return item;
     }

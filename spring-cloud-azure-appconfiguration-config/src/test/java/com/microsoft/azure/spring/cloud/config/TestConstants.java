@@ -30,7 +30,6 @@ public class TestConstants {
     
     public static final String FAIL_FAST_PROP = "spring.cloud.azure.appconfiguration.failFast";
     
-    public static final String FAIL_FAST_PROP = "spring.cloud.azure.appconfiguration.failFast";
     public static final String KEY_VAULT_STORE_1_CONNECTION = 
             "spring.cloud.azure.appconfiguration.key_vault_stores[0].connection_url";
     public static final String KEY_VAULT_STORE_1_CLIENT = 

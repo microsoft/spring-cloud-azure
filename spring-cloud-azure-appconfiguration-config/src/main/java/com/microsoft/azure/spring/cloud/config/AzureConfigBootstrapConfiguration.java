@@ -7,8 +7,9 @@ package com.microsoft.azure.spring.cloud.config;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -54,33 +55,25 @@ public class AzureConfigBootstrapConfiguration {
     }
 
     @Bean
+    public CloseableHttpClient closeableHttpClient() {
+        return HttpClients.createDefault();
+    }
+
+    @Bean
     public AzureConfigPropertySourceLocator sourceLocator(
             AzureCloudConfigProperties properties, PropertyCache propertyCache,
-            ClientStore clients) {
-        return new AzureConfigPropertySourceLocator(properties, propertyCache, clients);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public PropertyCache getPropertyCache() {
-        return PropertyCache.getPropertyCache();
-    }
-
-    @Bean
-    public ClientStore buildClientStores(AzureCloudConfigProperties properties) {
-        return new ClientStore(properties);
-    }
-
-    @Bean
-    public AzureConfigPropertySourceLocator sourceLocator(ConfigServiceOperations operations,
-            AzureCloudConfigProperties properties, PropertyCache propertyCache, 
-            AppConfigProviderProperties appProperties) {
-        return new AzureConfigPropertySourceLocator(operations, properties, propertyCache, appProperties);
+            AppConfigProviderProperties appProperties, ClientStore clients) {
+        return new AzureConfigPropertySourceLocator(properties, propertyCache, appProperties, clients);
     }
     
     @Bean
     public PropertyCache getPropertyCache() {
         return PropertyCache.getPropertyCache();
+    }
+
+	@Bean
+    public ClientStore buildClientStores(AzureCloudConfigProperties properties) {
+        return new ClientStore(properties);
     }
 
     @PostConstruct

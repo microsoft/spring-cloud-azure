@@ -7,18 +7,26 @@ package com.microsoft.azure.spring.cloud.config;
 
 import java.util.Date;
 
-import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
+import com.azure.data.appconfiguration.models.ConfigurationSetting;
 
-public class CachedKey extends KeyValueItem{
+public class CachedKey extends ConfigurationSetting{
 
     private String storeName;
 
     private Date lastUpdated;
     
-    public CachedKey(KeyValueItem item, String storeName, Date time) {
-        super(item);
+    private final ConfigurationSetting setting;
+    
+    public CachedKey(ConfigurationSetting setting, String storeName, Date time) {
         this.storeName = storeName;
         this.lastUpdated = time;
+        this.key(setting.key());
+        this.label(setting.label());
+        this.value(setting.value());
+        this.contentType(setting.contentType());
+        this.etag(setting.etag());
+        this.tags(setting.tags());
+        this.setting = setting;
     }
 
     /**
@@ -47,6 +55,13 @@ public class CachedKey extends KeyValueItem{
      */
     public void setLastUpdated(Date lastUpdated) {
         this.lastUpdated = lastUpdated;
+    }
+
+    /**
+     * @return the setting
+     */
+    public ConfigurationSetting getSetting() {
+        return setting;
     }
 
 }

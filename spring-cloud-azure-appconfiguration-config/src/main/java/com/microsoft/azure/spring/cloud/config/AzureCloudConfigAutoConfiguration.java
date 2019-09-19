@@ -34,10 +34,5 @@ public class AzureCloudConfigAutoConfiguration {
         public ConfigListener configListener(AzureCloudConfigWatch azureCloudConfigWatch) {
             return new ConfigListener(azureCloudConfigWatch);
         }
-
-        @Bean
-        public ConfigListener configListener(AzureCloudConfigWatch azureCloudConfigWatch) {
-            return new ConfigListener(azureCloudConfigWatch);
-        }
     }
 }

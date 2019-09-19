@@ -39,8 +39,6 @@ import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(PropertyCache.class)
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(PropertyCache.class)
 public class AzureConfigCloudWatchTest {
 
     @Mock
@@ -50,18 +48,9 @@ public class AzureConfigCloudWatchTest {
 
     @Mock
     private AzureCloudConfigProperties properties;
-    
-    private ArrayList<KeyValueItem> keys;
-
-    @Mock
-    private Map<String, List<String>> contextsMap;
-
-    private AzureCloudConfigWatch watch;
 
     @Mock
     Map<String, List<String>> contextsMap;
-    @Mock
-    private Date date;
 
     AzureCloudConfigWatch watch;
 
