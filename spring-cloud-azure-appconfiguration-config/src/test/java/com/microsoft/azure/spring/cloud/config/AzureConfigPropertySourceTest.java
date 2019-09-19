@@ -47,8 +47,10 @@ import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -77,14 +79,19 @@ public class AzureConfigPropertySourceTest {
             "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8";
     
     private static final AzureCloudConfigProperties TEST_PROPS = new AzureCloudConfigProperties();
-    
+
+    public static final List<KeyValueItem> TEST_ITEMS = new ArrayList<>();
+
     public static final List<KeyValueItem> FEATURE_ITEMS = new ArrayList<>();
-    private static final KeyValueItem item1 = 
-            createItem(TEST_CONTEXT, TEST_KEY_1, TEST_VALUE_1, TEST_LABEL_1, EMPTY_CONTENT_TYPE);
-    private static final KeyValueItem item2 = 
-            createItem(TEST_CONTEXT, TEST_KEY_2, TEST_VALUE_2, TEST_LABEL_2, EMPTY_CONTENT_TYPE);
-    private static final KeyValueItem item3 = 
-            createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3, TEST_LABEL_3, EMPTY_CONTENT_TYPE);
+
+    private static final KeyValueItem item1 = createItem(TEST_CONTEXT, TEST_KEY_1, TEST_VALUE_1, TEST_LABEL_1,
+            EMPTY_CONTENT_TYPE);
+
+    private static final KeyValueItem item2 = createItem(TEST_CONTEXT, TEST_KEY_2, TEST_VALUE_2, TEST_LABEL_2,
+            EMPTY_CONTENT_TYPE);
+
+    private static final KeyValueItem item3 = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3, TEST_LABEL_3,
+            EMPTY_CONTENT_TYPE);
 
     private static final KeyValueItem featureItem = createItem(".appconfig.featureflag/", "Alpha", FEATURE_VALUE,
             FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
@@ -97,12 +104,12 @@ public class AzureConfigPropertySourceTest {
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
 
     private AzureConfigPropertySource propertySource;
-    
+
     private static ObjectMapper mapper = new ObjectMapper();
 
     @Mock
     private ConfigServiceOperations operations;
-    
+
     private PropertyCache propertyCache;
     @Mock
     private ChainedTokenCredential keyVaultCredential;
@@ -116,6 +123,11 @@ public class AzureConfigPropertySourceTest {
     @Mock
     private Mono<Secret> monoSecret;
 
+    private AzureCloudConfigProperties azureProperties;
+
+    @Rule
+    public ExpectedException expected = ExpectedException.none();
+
     @BeforeClass
     public static void init() {
         TestUtils.addStore(TEST_PROPS, TEST_STORE_NAME, TEST_CONN_STRING);
@@ -128,8 +140,11 @@ public class AzureConfigPropertySourceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
+        azureProperties = new AzureCloudConfigProperties();
+        azureProperties.setFailFast(true);
+
         propertySource = new AzureConfigPropertySource(TEST_CONTEXT, operations, TEST_STORE_NAME, null,
-                new AzureCloudConfigProperties());
+                azureProperties);
         propertyCache = PropertyCache.resetPropertyCache();
         
         testItems = new ArrayList<KeyValueItem>();
@@ -152,7 +167,7 @@ public class AzureConfigPropertySourceTest {
         String[] expectedKeyNames = testItems.stream()
                 .map(t -> t.getKey().substring(TEST_CONTEXT.length())).toArray(String[]::new);
         String[] allExpectedKeyNames = ArrayUtils.addAll(expectedKeyNames, FEATURE_MANAGEMENT_KEY);
-        
+
         assertThat(keyNames).containsExactlyInAnyOrder(allExpectedKeyNames);
 
         assertThat(propertySource.getProperty(TEST_KEY_1)).isEqualTo(TEST_VALUE_1);
@@ -202,7 +217,46 @@ public class AzureConfigPropertySourceTest {
         feature.setEnabledFor(filters);
         featureSet.addFeature("Alpha", feature);
         LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSet, LinkedHashMap.class);
-        
+
+        assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));
+    }
+
+    @Test
+    public void testFeatureFlagThrowError() throws IOException {
+        when(operations.getKeys(any(), any())).thenReturn(new ArrayList<KeyValueItem>()).thenReturn(TEST_ITEMS)
+        .thenReturn(FEATURE_ITEMS).thenReturn(FEATURE_ITEMS);
+
+        propertyCache = PropertyCache.resetPropertyCache();
+
+        try {
+            propertySource.initProperties(propertyCache);
+        } catch (IOException e) {
+            assertEquals("Found Feature Flag /foo/test_key_1 with invalid Content Type of ", e.getMessage());
+        }
+    }
+    
+    @Test
+    public void testFeatureFlagBuildError() {
+        when(operations.getKeys(any(), any())).thenReturn(new ArrayList<KeyValueItem>()).thenReturn(FEATURE_ITEMS);
+
+        try {
+            propertySource.initProperties(propertyCache);
+        } catch (IOException e) {
+            fail();
+        }
+        propertySource.initFeatures(propertyCache);
+
+        FeatureSet featureSet = new FeatureSet();
+        Feature feature = new Feature();
+        feature.setId("Alpha");
+        ArrayList<FeatureFilterEvaluationContext> filters = new ArrayList<FeatureFilterEvaluationContext>();
+        FeatureFilterEvaluationContext ffec = new FeatureFilterEvaluationContext();
+        ffec.setName("TestFilter");
+        filters.add(ffec);
+        feature.setEnabledFor(filters);
+        featureSet.addFeature("Alpha", feature);
+        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSet, LinkedHashMap.class);
+
         assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));
     }
 
@@ -210,13 +264,13 @@ public class AzureConfigPropertySourceTest {
     public void testWatchUpdateConfigurations() throws ParseException {
         when(operations.getKeys(any(), any())).thenReturn(testItems).thenReturn(FEATURE_ITEMS);
         Duration delay = Duration.ofSeconds(0);
-        
+
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
         Date date = dateFormat.parse("20190202");
         Date testDate = new Date(date.getTime() - 2);
         propertyCache.addKeyValuesToCache(testItems, TEST_STORE_NAME, testDate);
         propertyCache.addToCache(featureItem, TEST_STORE_NAME, testDate);
-        
+
         propertyCache.findNonCachedKeys(delay, TEST_STORE_NAME);
         propertyCache.addContext(TEST_STORE_NAME, TEST_CONTEXT);
         try {
@@ -323,5 +377,16 @@ public class AzureConfigPropertySourceTest {
         assertThat(propertySource.getProperty(TEST_KEY_3)).isEqualTo(TEST_VALUE_3);
         assertThat(propertySource.getProperty(TEST_KEY_VAULT_1)).isEqualTo("mySecret");
         verify(operations, times(5)).getKeys(any(), any());
+    }
+    
+    @Test
+    public void awaitOnError() {
+        expected.expect(NullPointerException.class);
+        
+        KeyValueItem badFeature = new KeyValueItem();
+        badFeature.setContentType(FEATURE_FLAG_CONTENT_TYPE);
+        badFeature.setKey(".appconfig.featureflag/");
+        propertyCache.addToCache(badFeature, "test", new Date());
+        propertySource.initFeatures(propertyCache);
     }
 }
