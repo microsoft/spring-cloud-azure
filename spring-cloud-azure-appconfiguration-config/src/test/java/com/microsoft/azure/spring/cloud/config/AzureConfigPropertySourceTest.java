@@ -124,6 +124,8 @@ public class AzureConfigPropertySourceTest {
     private Mono<Secret> monoSecret;
 
     private AzureCloudConfigProperties azureProperties;
+    
+    private AppConfigProviderProperties appProperties;
 
     @Rule
     public ExpectedException expected = ExpectedException.none();
@@ -142,9 +144,11 @@ public class AzureConfigPropertySourceTest {
         MockitoAnnotations.initMocks(this);
         azureProperties = new AzureCloudConfigProperties();
         azureProperties.setFailFast(true);
+        appProperties = new AppConfigProviderProperties();
+        appProperties.setKeyVaultWaitTime(0);
 
         propertySource = new AzureConfigPropertySource(TEST_CONTEXT, operations, TEST_STORE_NAME, null,
-                azureProperties);
+                azureProperties, appProperties);
         propertyCache = PropertyCache.resetPropertyCache();
         
         testItems = new ArrayList<KeyValueItem>();

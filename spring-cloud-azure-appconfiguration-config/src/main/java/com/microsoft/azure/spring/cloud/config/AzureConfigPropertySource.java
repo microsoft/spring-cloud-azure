@@ -96,7 +96,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
      * <p>
      * <b>Note</b>: Doesn't update Feature Management, just stores values in cache. Call
      * {@code initFeatures} to update Feature Management, but make sure its done in the
-     * last {@code AzureConfigPropertySource}</p>
+     * last {@code AzureConfigPropertySource}
      * </p>
      * 
      * @param propertyCache Cached values to use in store. Also contains values the need

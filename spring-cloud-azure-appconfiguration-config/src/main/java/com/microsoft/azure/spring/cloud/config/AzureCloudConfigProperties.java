@@ -126,7 +126,7 @@ public class AzureCloudConfigProperties {
     /**
      * The minimum watch time between refresh checks. The minimum valid watch time is 1s.
      * 
-     * @param watch the minimum delay between refresh checks.
+     * @param watch minimum time between refresh checks
      */
     public void setWatch(Watch watch) {
         this.watch = watch;

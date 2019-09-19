@@ -27,10 +27,9 @@ public class AppConfigProviderProperties {
     @Value("${version:1.0}")
     private String version;
     
-    @NotEmpty
+    @NotNull
     @Value("${keyVaultWaitTime:5}")
     private int keyVaultWaitTime;
-
     
     @NotNull
     @Value("${maxRetries:12}")
@@ -73,7 +72,6 @@ public class AppConfigProviderProperties {
     public void setKeyVaultWaitTime(int keyVaultWaitTime) {
         this.keyVaultWaitTime = keyVaultWaitTime;
     }
-
     
     /**
      * @return the maxRetries
