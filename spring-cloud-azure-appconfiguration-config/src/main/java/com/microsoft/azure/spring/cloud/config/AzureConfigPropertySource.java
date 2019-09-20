@@ -43,8 +43,9 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
 
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
 
-    private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
-    
+    private static final String FEATURE_FLAG_CONTENT_TYPE = 
+            "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
+
     private static final String FEATURE_FLAG_PREFIX = ".appconfig.featureflag/";
 
     public AzureConfigPropertySource(String context, ConfigServiceOperations operations, String storeName,
@@ -70,15 +71,20 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     }
 
     /**
-     * Gets settings from Azure/Cache to set as configurations. Updates the cache. </br>
-     * </br>
+     * <p>
+     * Gets settings from Azure/Cache to set as configurations. Updates the cache.
+     * </p>
+     * 
+     * <p>
      * <b>Note</b>: Doesn't update Feature Management, just stores values in cache. Call
      * {@code initFeatures} to update Feature Management, but make sure its done in the
      * last {@code AzureConfigPropertySource}
+     * </p>
      * 
      * @param propertyCache Cached values to use in store. Also contains values the need
      * to be refreshed.
-     * @throws IOException
+     * @throws IOException Thrown when processing key/value failed when reading feature
+     * flags
      */
     public void initProperties(PropertyCache propertyCache) throws IOException {
         Date date = new Date();
@@ -117,15 +123,15 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
             }
 
             for (CachedKey cachedKey : propertyCache.getKeySet(storeName)) {
-                if (cachedKey.getKey().startsWith(context)) {
-                    String trimedKey = cachedKey.getKey().trim().substring(context.length()).replace('/', '.');
-                    properties.put(trimedKey, propertyCache.getCachedValue(cachedKey.getKey()));
-                } else {
+                if (cachedKey.getContentType().equals(FEATURE_FLAG_CONTENT_TYPE)) {
                     List<KeyValueItem> items = new ArrayList<KeyValueItem>();
                     KeyValueItem item = new KeyValueItem(cachedKey, FEATURE_FLAG_CONTENT_TYPE);
                     items.add(item);
 
                     createFeatureSet(items, propertyCache, date);
+                } else {
+                    String trimedKey = cachedKey.getKey().trim().substring(context.length()).replace('/', '.');
+                    properties.put(trimedKey, propertyCache.getCachedValue(cachedKey.getKey()));
                 }
             }
         }
@@ -133,7 +139,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
 
     /**
      * Initializes Feature Management configurations. Only one
-     * <{@code AzureConfigPropertySource} can call this, and it needs to be done after the
+     * {@code AzureConfigPropertySource} can call this, and it needs to be done after the
      * rest have run initProperties.
      * @param propertyCache Cached values to use in store. Also contains values the need
      * to be refreshed.

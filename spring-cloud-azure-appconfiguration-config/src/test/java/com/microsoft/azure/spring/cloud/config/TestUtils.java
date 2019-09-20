@@ -20,11 +20,12 @@ public class TestUtils {
         return String.format("%s=%s", propName, propValue);
     }
 
-    static KeyValueItem createItem(String context, String key, String value, String label) {
+    static KeyValueItem createItem(String context, String key, String value, String label, String contentType) {
         KeyValueItem item = new KeyValueItem();
         item.setKey(context + key);
         item.setValue(value);
         item.setLabel(label);
+        item.setContentType(contentType);
 
         return item;
     }

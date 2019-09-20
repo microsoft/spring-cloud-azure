@@ -58,26 +58,26 @@ public class ConfigHttpClientTest {
     private static final String CLIENT_REQUEST_ID_1 = "39bb45d6-d973-4224-8281-00834f09e0ac";
     private static final String CONTENT_HASH_1 = "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=";
     // The signature is generated with body as empty string "", but not null string
-    private static final String AUTH_HEADER_1 = "HMAC-SHA256 Credential=fake-conn-id, SignedHeaders=x-ms-date;host;" +
-            "x-ms-content-sha256, Signature=D+oRT4KhIRHpCdLiahSwJmcWuHmvnaYjwAm0SAcHGqs=";
+    private static final String AUTH_HEADER_1 = "HMAC-SHA256 Credential=fake-conn-id&SignedHeaders=x-ms-date;host;" +
+            "x-ms-content-sha256&Signature=D+oRT4KhIRHpCdLiahSwJmcWuHmvnaYjwAm0SAcHGqs=";
 
     private static final String TEST_DATE_2 = "Mon, 19 Nov 2018 12:00:00 GMT";
     private static final String CLIENT_REQUEST_ID_2 = "139465da-d671-4c32-adee-2832d15bec62";
     private static final String CONTENT_HASH_2 = "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=";
-    private static final String AUTH_HEADER_2 = "HMAC-SHA256 Credential=fake-conn-id, SignedHeaders=x-ms-date;host;" +
-            "x-ms-content-sha256, Signature=P1SJR6iQjGgDmoV8/utXdwFyj69nYpd1OLkH1B9xjl8=";
+    private static final String AUTH_HEADER_2 = "HMAC-SHA256 Credential=fake-conn-id&SignedHeaders=x-ms-date;host;" +
+            "x-ms-content-sha256&Signature=P1SJR6iQjGgDmoV8/utXdwFyj69nYpd1OLkH1B9xjl8=";
 
     private static final String TEST_DATE_3 = "Mon, 19 Nov 2018 18:00:00 GMT";
     private static final String CLIENT_REQUEST_ID_3 = "d325fa85-b980-4532-a122-ef4dec652353";
     private static final String CONTENT_HASH_3 = "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=";
-    private static final String AUTH_HEADER_3 = "HMAC-SHA256 Credential=fake-conn-id, SignedHeaders=x-ms-date;host;" +
-            "x-ms-content-sha256, Signature=llHdHiBSvwRQjCOTz77g59hksBqxtEo3aERgxIWS4Ns=";
+    private static final String AUTH_HEADER_3 = "HMAC-SHA256 Credential=fake-conn-id&SignedHeaders=x-ms-date;host;" +
+            "x-ms-content-sha256&Signature=llHdHiBSvwRQjCOTz77g59hksBqxtEo3aERgxIWS4Ns=";
 
     private static final String TEST_DATE_4 = "Mon, 19 Nov 2018 23:59:59 GMT";
     private static final String CLIENT_REQUEST_ID_4 = "3695c623-a9dc-4f04-a0bc-0005ecbb57c4";
     private static final String CONTENT_HASH_4 = "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=";
-    private static final String AUTH_HEADER_4 = "HMAC-SHA256 Credential=fake-conn-id, SignedHeaders=x-ms-date;host;" +
-            "x-ms-content-sha256, Signature=va31Qc4gkGyZsqmVU8UoKh85QsxnjeNx2G9uxM5hZq0=";
+    private static final String AUTH_HEADER_4 = "HMAC-SHA256 Credential=fake-conn-id&SignedHeaders=x-ms-date;host;" +
+            "x-ms-content-sha256&Signature=va31Qc4gkGyZsqmVU8UoKh85QsxnjeNx2G9uxM5hZq0=";
 
     private static final List<TestRequestData> REQUEST_DATA_LIST = new ArrayList<>();
 
