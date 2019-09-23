@@ -129,7 +129,6 @@ public class AzureConfigBootstrapConfigurationTest {
                 context.getBean(ClientStore.class);
                 Assert.fail("Empty connection string should fail.");
             } catch (Exception e) {
-                System.out.println(context.getStartupFailure().getCause());
                 assertThat(context).getFailure().hasCauseInstanceOf(BeanCreationException.class);
                 assertThat(context).getFailure().hasStackTraceContaining("Failed to load Config Store.");
             }

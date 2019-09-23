@@ -5,6 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_FLAG_CONTENT_TYPE;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_LABEL;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_VALUE;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
@@ -16,7 +17,7 @@ import static com.microsoft.azure.spring.cloud.config.TestUtils.createItem;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import java.lang.reflect.UndeclaredThrowableException;
+import java.rmi.ServerException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -52,16 +53,10 @@ public class AzureConfigPropertySourceLocatorTest {
 
     private static final String PREFIX = "/config";
 
-    private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
-
     public static final List<ConfigurationSetting> FEATURE_ITEMS = new ArrayList<>();
 
-    private static final ConfigurationSetting featureItem = createItem(".appconfig.featureflag/", "Alpha", FEATURE_VALUE,
-            FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
-
-    private static final ConfigurationSetting featureItemInvalid = createItem(".appconfig.featureflag/", "Alpha", FEATURE_VALUE,
-            FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE + "invalid");
-
+    private static final ConfigurationSetting featureItem = createItem(".appconfig.featureflag/", "Alpha",
+            FEATURE_VALUE, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
     @Rule
     public ExpectedException expected = ExpectedException.none();
 
@@ -168,7 +163,8 @@ public class AzureConfigPropertySourceLocatorTest {
         when(environment.getActiveProfiles()).thenReturn(new String[] {});
         when(environment.getProperty("spring.application.name")).thenReturn(null);
         properties.setName(null);
-        locator = new AzureConfigPropertySourceLocator(properties, PropertyCache.resetPropertyCache(), appProperties, configStoreMock);
+        locator = new AzureConfigPropertySourceLocator(properties, PropertyCache.resetPropertyCache(), appProperties,
+                configStoreMock);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
@@ -182,29 +178,12 @@ public class AzureConfigPropertySourceLocatorTest {
     }
 
     @Test
-    public void awaitOnError() {
-        expected.expect(UndeclaredThrowableException.class);
-
-        ArrayList<ConfigurationSetting> invalid = new ArrayList<ConfigurationSetting>();
-        invalid.add(featureItemInvalid);
-
-        when(environment.getActiveProfiles()).thenReturn(new String[] {});
-        when(environment.getProperty("spring.application.name")).thenReturn(null);
-
-        properties.setName(null);
-        appProperties.setPrekillTime(30);
-        locator = new AzureConfigPropertySourceLocator(properties, PropertyCache.getPropertyCache(),
-                appProperties, configStoreMock);
-
-        locator.locate(environment);
-    }
-
-    @Test
     public void emptyApplicationNameCreateDefaultContextOnly() {
         when(environment.getActiveProfiles()).thenReturn(new String[] {});
         when(environment.getProperty("spring.application.name")).thenReturn("");
         properties.setName("");
-        locator = new AzureConfigPropertySourceLocator(properties, PropertyCache.resetPropertyCache(), appProperties, configStoreMock);
+        locator = new AzureConfigPropertySourceLocator(properties, PropertyCache.resetPropertyCache(), appProperties,
+                configStoreMock);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
@@ -218,11 +197,12 @@ public class AzureConfigPropertySourceLocatorTest {
     }
 
     @Test
-    public void defaultFailFastThrowException() {
+    public void defaultFailFastThrowException() throws ServerException {
         expected.expect(RuntimeException.class);
 
-        locator = new AzureConfigPropertySourceLocator(properties, PropertyCache.resetPropertyCache(), appProperties, configStoreMock);
-        
+        locator = new AzureConfigPropertySourceLocator(properties, PropertyCache.resetPropertyCache(), appProperties,
+                configStoreMock);
+
         when(configStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenThrow(new RuntimeException());
         assertThat(properties.isFailFast()).isTrue();
         locator.locate(environment);
@@ -231,7 +211,8 @@ public class AzureConfigPropertySourceLocatorTest {
     @Test
     public void notFailFastShouldPass() {
         properties.setFailFast(false);
-        locator = new AzureConfigPropertySourceLocator(properties, PropertyCache.resetPropertyCache(), appProperties, configStoreMock);
+        locator = new AzureConfigPropertySourceLocator(properties, PropertyCache.resetPropertyCache(), appProperties,
+                configStoreMock);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
@@ -245,7 +226,8 @@ public class AzureConfigPropertySourceLocatorTest {
         TestUtils.addStore(properties, TEST_STORE_NAME_1, TEST_CONN_STRING);
         TestUtils.addStore(properties, TEST_STORE_NAME_2, TEST_CONN_STRING_2);
 
-        locator = new AzureConfigPropertySourceLocator(properties, PropertyCache.resetPropertyCache(), appProperties, configStoreMock);
+        locator = new AzureConfigPropertySourceLocator(properties, PropertyCache.resetPropertyCache(), appProperties,
+                configStoreMock);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);

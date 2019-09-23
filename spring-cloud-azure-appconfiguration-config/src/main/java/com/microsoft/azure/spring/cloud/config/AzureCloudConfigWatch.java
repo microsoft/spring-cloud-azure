@@ -5,6 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import java.rmi.ServerException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,6 +22,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
@@ -31,7 +33,6 @@ import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureCloudConfigWatch.class);
-
 
     private final Map<String, String> storeEtagMap = new ConcurrentHashMap<>();
 
@@ -107,7 +108,13 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
         SettingSelector settingSelector = new SettingSelector().keys(watchedKeyNames).labels(store.getLabels())
                 .range(new Range(0, 0));
 
-        List<ConfigurationSetting> items = clientStore.listSettingRevisons(settingSelector, store.getName());
+        List<ConfigurationSetting> items = null;
+        try {
+            items = clientStore.listSettingRevisons(settingSelector, store.getName());
+        } catch (ServerException e) {
+            LOGGER.error("Failed to retrieve setting change information.");
+            ReflectionUtils.rethrowRuntimeException(e);
+        }
 
         if (items.isEmpty()) {
             return;
@@ -119,8 +126,6 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
             firstTimeMap.put(storeNameWithSuffix, false);
             propertyCache.updateRefreshCacheTime(store.getName(), watchedKeyNames, delay);
         }
-
-
 
         if (!etag.equals(storeEtagMap.get(storeNameWithSuffix))) {
             Date date = new Date();
@@ -136,7 +141,12 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
                     storeEtagMap.put(storeNameWithSuffix, etag);
                     settingSelector.keys(refreshKey);
 
-                   items = clientStore.listSettingRevisons(settingSelector, store.getName());
+                    try {
+                        items = clientStore.listSettingRevisons(settingSelector, store.getName());
+                    } catch (ServerException e) {
+                        LOGGER.error("Failed to retrieve setting change information.");
+                        ReflectionUtils.rethrowRuntimeException(e);
+                    }
 
                     if (!items.isEmpty() && items.get(0).etag()
                             .equals(propertyCache.getCachedEtag(refreshKey))) {

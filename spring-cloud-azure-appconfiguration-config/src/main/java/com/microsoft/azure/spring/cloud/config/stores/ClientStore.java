@@ -7,6 +7,7 @@ package com.microsoft.azure.spring.cloud.config.stores;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.rmi.ServerException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -16,13 +17,15 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
 
 import com.azure.core.exception.HttpResponseException;
-import com.azure.core.exception.ResourceNotFoundException;
+import com.azure.core.http.HttpHeader;
+import com.azure.core.http.HttpResponse;
 import com.azure.core.http.rest.PagedFlux;
 import com.azure.data.appconfiguration.ConfigurationAsyncClient;
 import com.azure.data.appconfiguration.ConfigurationClientBuilder;
@@ -48,6 +51,8 @@ import reactor.core.publisher.Mono;
 public class ClientStore {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientStore.class);
 
+    private static final String RETRY_AFTER_MS_HEADER = "retry-after-ms";
+
     private HashMap<String, ConfigurationAsyncClient> configClients;
 
     private HashMap<String, KeyVaultClient> keyVaultClients;
@@ -64,8 +69,8 @@ public class ClientStore {
         configClients = new HashMap<String, ConfigurationAsyncClient>();
         for (ConfigStore store : properties.getStores()) {
             try {
-                ConfigurationClientBuilder builder = new ConfigurationClientBuilder()
-                        .addPolicy(new BaseAppConfigurationPolicy());
+                ConfigurationClientBuilder builder = new ConfigurationClientBuilder();
+                builder = builder.addPolicy(new BaseAppConfigurationPolicy());
 
                 // Using Connection String not Managed Identity
                 if (StringUtils.isNotEmpty(store.getConnectionString())) {
@@ -134,40 +139,84 @@ public class ClientStore {
      * @param settingSelector
      * @param storeName
      * @return
+     * @throws ServerException
      */
-    public final List<ConfigurationSetting> listSettingRevisons(SettingSelector settingSelector, String storeName) {
+    public final List<ConfigurationSetting> listSettingRevisons(SettingSelector settingSelector, String storeName)
+            throws ServerException {
         ConfigurationAsyncClient client = getConfigurationClient(storeName);
-        return fluxResponseToListTest(client.listSettingRevisions(settingSelector));
-    }
+        List<ConfigurationSetting> configSettings = null;
+        boolean retry = true;
+        int retryCount = 0;
 
-    /**
-     * 
-     * @param settingSelector
-     * @param storeName
-     * @return
-     */
-    public final List<ConfigurationSetting> listSettings(SettingSelector settingSelector, String storeName) {
-        ConfigurationAsyncClient client = getConfigurationClient(storeName);
-        return fluxResponseToListTest(client.listSettings(settingSelector));
-    }
-
-    /**
-     * 
-     * @param settingSelector
-     * @param storeName
-     * @return
-     */
-    public final ConfigurationSetting getSetting(String setting, String storeName) {
-        ConfigurationAsyncClient client = getConfigurationClient(storeName);
-        try {
-            Mono<ConfigurationSetting> settingMono = client.getSetting(setting);
-            return settingMono.block();
-        } catch (IllegalArgumentException | ResourceNotFoundException e) {
-            
-        } catch (HttpResponseException e) {
-            
+        while (configSettings == null && retry) {
+            try {
+                configSettings = fluxResponseToListTest(client.listSettingRevisions(settingSelector));
+            } catch (IllegalArgumentException e) {
+                retry = false;
+            } catch (HttpResponseException e) {
+                retry = retryIfFailed(e.response(), retryCount);
+                retryCount++;
+            }
         }
-        return null;
+        return configSettings;
+    }
+
+    /**
+     * 
+     * @param settingSelector
+     * @param storeName
+     * @return
+     * @throws ServerException
+     */
+    public final List<ConfigurationSetting> listSettings(SettingSelector settingSelector, String storeName)
+            throws ServerException {
+        ConfigurationAsyncClient client = getConfigurationClient(storeName);
+        List<ConfigurationSetting> configSettings = null;
+        boolean retry = true;
+        int retryCount = 0;
+
+        while (configSettings == null && retry) {
+            try {
+                configSettings = fluxResponseToListTest(client.listSettings(settingSelector));
+            } catch (IllegalArgumentException e) {
+                retry = false;
+            } catch (HttpResponseException e) {
+                retry = retryIfFailed(e.response(), retryCount);
+                retryCount++;
+            }
+        }
+        return configSettings;
+    }
+
+    /**
+     * 
+     * @param settingSelector
+     * @param storeName
+     * @return
+     * @throws ServerException
+     */
+    public final ConfigurationSetting getSetting(String setting, String storeName) throws ServerException {
+        ConfigurationAsyncClient client = getConfigurationClient(storeName);
+        ConfigurationSetting configSetting = null;
+        boolean retry = true;
+        int retryCount = 0;
+
+        while (configSetting == null && retry) {
+            try {
+                Mono<ConfigurationSetting> settingMono = client.getSetting(setting);
+                configSetting = settingMono.block();
+            } catch (IllegalArgumentException e) {
+                retry = false;
+            } catch (HttpResponseException e) {
+                retry = retryIfFailed(e.response(), retryCount);
+                retryCount++;
+                
+                if (!retry) {
+                    ReflectionUtils.rethrowRuntimeException(e);
+                }
+            }
+        }
+        return configSetting;
     }
 
     /**
@@ -183,18 +232,27 @@ public class ClientStore {
         return items;
     }
 
-    public HashMap<String, KeyVaultClient> getKeyVaultClients() {
-        return keyVaultClients;
-    }
+    private boolean retryIfFailed(HttpResponse response, int retryCount) throws ServerException {
+        HttpHeader retryHeader = response.headers().get(RETRY_AFTER_MS_HEADER);
+        long retryLength = 0;
+        if (retryHeader != null) {
+            String retryValue = retryHeader.value();
+            if (NumberUtils.isCreatable(retryValue)) {
+                try {
+                    retryLength = Long.valueOf(retryValue);
+                } catch (NumberFormatException nfe) {
+                    throw new ServerException("Server Returned Invalid retry-after-ms header.", nfe);
+                }
 
-    public HashMap<String, ConfigurationAsyncClient> getConfigurationClient() {
-        return configClients;
-    }
-
-    private int retryIfFailed(Date startDate, int retryCount, long retryLength) {
+            }
+        } else {
+            return false;
+        }
+        
+        Date startDate = appProperties.getStartDate();
         Date maxRetryDate = DateUtils.addSeconds(startDate, appProperties.getMaxRetryTime());
 
-        while (retryCount < appProperties.getMaxRetries() && !startDate.after(maxRetryDate)) {
+        if (retryCount < appProperties.getMaxRetries() && !startDate.after(maxRetryDate)) {
             try {
                 // Need to wait before Retry, need to figure out how long.
                 long retryBackoff = (new Double(Math.pow(2, retryCount))).longValue() - 1;
@@ -208,8 +266,18 @@ public class ClientStore {
             } catch (InterruptedException e) {
                 LOGGER.error("Failed to wait before retry.", e);
             }
+        } else {
+            return false;
         }
-        return retryCount + 1;
+        return true;
+    }
+
+    public HashMap<String, KeyVaultClient> getKeyVaultClients() {
+        return keyVaultClients;
+    }
+
+    public HashMap<String, ConfigurationAsyncClient> getConfigurationClient() {
+        return configClients;
     }
 
 }

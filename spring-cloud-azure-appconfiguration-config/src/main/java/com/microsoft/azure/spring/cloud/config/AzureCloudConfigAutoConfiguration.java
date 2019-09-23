@@ -22,8 +22,7 @@ public class AzureCloudConfigAutoConfiguration {
     @ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "watch.enabled")
     static class CloudWatchAutoConfiguration {
         @Bean
-        public AzureCloudConfigWatch getConfigWatch(
-                AzureCloudConfigProperties properties,
+        public AzureCloudConfigWatch getConfigWatch(AzureCloudConfigProperties properties,
                 AzureConfigPropertySourceLocator sourceLocator, PropertyCache propertyCache,
                 ClientStore clientStore) {
             return new AzureCloudConfigWatch(properties, sourceLocator.getStoreContextsMap(), propertyCache,

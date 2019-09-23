@@ -5,6 +5,9 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_FLAG_CONTENT_TYPE;
+import static com.microsoft.azure.spring.cloud.config.Constants.KEY_VAULT_CONTENT_TYPE;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -49,27 +52,22 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
     private final String label;
 
     private AzureCloudConfigProperties azureProperties;
-    
+
     private AppConfigProviderProperties appProperties;
 
     private static ObjectMapper mapper = new ObjectMapper();
 
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
 
-    private static final String FEATURE_FLAG_CONTENT_TYPE = 
-            "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
-
-    private static final String KEY_VAULT_CONTENT_TYPE = 
-            "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8";
-
     private static final String FEATURE_FLAG_PREFIX = ".appconfig.featureflag/";
 
     private HashMap<String, SecretAsyncClient> keyVaultClients;
-    
+
     private ClientStore clients;
 
     public AzureConfigPropertySource(String context, String storeName,
-            String label, AzureCloudConfigProperties azureProperties, AppConfigProviderProperties appProperties, ClientStore clients) {
+            String label, AzureCloudConfigProperties azureProperties, AppConfigProviderProperties appProperties,
+            ClientStore clients) {
         // The context alone does not uniquely define a PropertySource, append storeName
         // and label to uniquely
         // define a PropertySource
@@ -116,7 +114,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
         if (!label.equals("%00")) {
             settingSelector.labels(label);
         }
-        
+
         if (propertyCache.getContext(storeName) == null) {
             propertyCache.addContext(storeName, context);
             // * for wildcard match
@@ -160,7 +158,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
                     }
                 }
             }
-            
+
             List<ConfigurationSetting> items = new ArrayList<ConfigurationSetting>();
             Set<CachedKey> cachedKeys = propertyCache.getKeySet(storeName);
             for (CachedKey cachedKey : cachedKeys) {
@@ -268,7 +266,8 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
                 .filter(key -> key.startsWith(FEATURE_FLAG_PREFIX)).collect(Collectors.toList());
         features.parallelStream().forEach(key -> {
             try {
-                featureSet.addFeature(key.trim().substring(FEATURE_FLAG_PREFIX.length()), createFeature(propertyCache.getCache().get(key)));
+                featureSet.addFeature(key.trim().substring(FEATURE_FLAG_PREFIX.length()),
+                        createFeature(propertyCache.getCache().get(key)));
             } catch (Exception e) {
                 if (azureProperties.isFailFast()) {
                     ReflectionUtils.rethrowRuntimeException(e);
@@ -280,14 +279,15 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
     }
 
     /**
-     * Creates a {@code FeatureSet} from a list of {@code KeyValueItem}. 
+     * Creates a {@code FeatureSet} from a list of {@code KeyValueItem}.
      * 
      * @param items New items read in from Azure
      * @param propertyCache Cached values where updated values are set.
      * @param date Cache timestamp
      * @throws IOException
      */
-    private void createFeatureSet(List<ConfigurationSetting> settings, PropertyCache propertyCache, Date date) throws IOException {
+    private void createFeatureSet(List<ConfigurationSetting> settings, PropertyCache propertyCache, Date date)
+            throws IOException {
         // Reading In Features
         FeatureSet featureSet = new FeatureSet();
         for (ConfigurationSetting setting : settings) {

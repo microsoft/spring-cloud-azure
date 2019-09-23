@@ -5,6 +5,8 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_FLAG_CONTENT_TYPE;
+import static com.microsoft.azure.spring.cloud.config.Constants.KEY_VAULT_CONTENT_TYPE;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_LABEL;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_VALUE;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
@@ -31,6 +33,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.rmi.ServerException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -79,10 +82,6 @@ import reactor.core.publisher.Mono;
 @PrepareForTest({ AzureConfigPropertySource.class })
 public class AzureConfigPropertySourceTest {
     private static final String EMPTY_CONTENT_TYPE = "";
-
-    private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
-
-    private static final String KEY_VAULT_CONTENT_TYPE = "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8";
 
     private static final AzureCloudConfigProperties TEST_PROPS = new AzureCloudConfigProperties();
 
@@ -205,7 +204,7 @@ public class AzureConfigPropertySourceTest {
     }
 
     @Test
-    public void testPropCanBeInitAndQueried() {
+    public void testPropCanBeInitAndQueried() throws ServerException {
         propertyCache = PropertyCache.resetPropertyCache();
 
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(testItems)
@@ -231,7 +230,7 @@ public class AzureConfigPropertySourceTest {
     }
 
     @Test
-    public void testPropertyNameSlashConvertedToDots() {
+    public void testPropertyNameSlashConvertedToDots() throws ServerException {
         propertyCache = PropertyCache.resetPropertyCache();
         ConfigurationSetting slashedProp = createItem(TEST_CONTEXT, TEST_SLASH_KEY, TEST_SLASH_VALUE, null,
                 EMPTY_CONTENT_TYPE);
@@ -256,7 +255,7 @@ public class AzureConfigPropertySourceTest {
     }
 
     @Test
-    public void testFeatureFlagCanBeInitedAndQueried() {
+    public void testFeatureFlagCanBeInitedAndQueried() throws ServerException {
         propertyCache = PropertyCache.resetPropertyCache();
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString()))
                 .thenReturn(new ArrayList<ConfigurationSetting>()).thenReturn(FEATURE_ITEMS);
@@ -294,7 +293,7 @@ public class AzureConfigPropertySourceTest {
     }
 
     @Test
-    public void testFeatureFlagBuildError() {
+    public void testFeatureFlagBuildError() throws ServerException {
         propertyCache = PropertyCache.resetPropertyCache();
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(FEATURE_ITEMS);
         try {
@@ -319,7 +318,7 @@ public class AzureConfigPropertySourceTest {
     }
 
     @Test
-    public void testWatchUpdateConfigurations() throws ParseException {
+    public void testWatchUpdateConfigurations() throws ParseException, ServerException {
         propertyCache = PropertyCache.resetPropertyCache();
         Duration delay = Duration.ofSeconds(0);
 
@@ -333,10 +332,11 @@ public class AzureConfigPropertySourceTest {
         propertyCache.addContext(TEST_STORE_NAME, TEST_CONTEXT);
 
         when(clientStoreMock.getConfigurationClient(Mockito.anyString())).thenReturn(configClientMock);
-        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT+TEST_KEY_1), Mockito.anyString())).thenReturn(item1);
-        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT+TEST_KEY_2), Mockito.anyString())).thenReturn(item2);
-        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT+TEST_KEY_3), Mockito.anyString())).thenReturn(item3);
-        when(clientStoreMock.getSetting(Mockito.eq(".appconfig.featureflag/Alpha"), Mockito.anyString())).thenReturn(featureItem);
+        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT + TEST_KEY_1), Mockito.anyString())).thenReturn(item1);
+        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT + TEST_KEY_2), Mockito.anyString())).thenReturn(item2);
+        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT + TEST_KEY_3), Mockito.anyString())).thenReturn(item3);
+        when(clientStoreMock.getSetting(Mockito.eq(".appconfig.featureflag/Alpha"), Mockito.anyString()))
+                .thenReturn(featureItem);
 
         try {
             propertySource.initProperties(propertyCache);
@@ -418,12 +418,14 @@ public class AzureConfigPropertySourceTest {
         when(clientStoreMock.getKeyVaultClient(Mockito.anyString())).thenReturn(keyVaultClient);
         when(keyVaultClient.getSecret(Mockito.any())).thenReturn(secretBundleMock);
         when(secretBundleMock.value()).thenReturn("mySecret");
-        
-        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT+TEST_KEY_1), Mockito.anyString())).thenReturn(item1);
-        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT+TEST_KEY_2), Mockito.anyString())).thenReturn(item2);
-        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT+TEST_KEY_3), Mockito.anyString())).thenReturn(item3);
-        when(clientStoreMock.getSetting(Mockito.eq(".appconfig.featureflag/Alpha"), Mockito.anyString())).thenReturn(featureItem);
-        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT+TEST_KEY_VAULT_1), Mockito.anyString())).thenReturn(keyVaultItem);
+
+        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT + TEST_KEY_1), Mockito.anyString())).thenReturn(item1);
+        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT + TEST_KEY_2), Mockito.anyString())).thenReturn(item2);
+        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT + TEST_KEY_3), Mockito.anyString())).thenReturn(item3);
+        when(clientStoreMock.getSetting(Mockito.eq(".appconfig.featureflag/Alpha"), Mockito.anyString()))
+                .thenReturn(featureItem);
+        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT + TEST_KEY_VAULT_1), Mockito.anyString()))
+                .thenReturn(keyVaultItem);
 
         Secret secret = new Secret("mySecret", "mySecret");
         when(monoSecret.block(Mockito.any())).thenReturn(secret);

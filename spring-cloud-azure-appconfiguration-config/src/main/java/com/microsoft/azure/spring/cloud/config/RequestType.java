@@ -8,7 +8,7 @@ package com.microsoft.azure.spring.cloud.config;
 /**
  * The types of requests made to the App Configuration service.
  */
-public enum RequestType {
+enum RequestType {
 
     STARTUP("Startup"),
     WATCH("Watch");

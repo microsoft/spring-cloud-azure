@@ -60,20 +60,20 @@ public class AzureConfigBootstrapConfiguration {
     }
 
     @Bean
-    public AzureConfigPropertySourceLocator sourceLocator(
-            AzureCloudConfigProperties properties, PropertyCache propertyCache,
-            AppConfigProviderProperties appProperties, ClientStore clients) {
+    public AzureConfigPropertySourceLocator sourceLocator(AzureCloudConfigProperties properties,
+            PropertyCache propertyCache, AppConfigProviderProperties appProperties, ClientStore clients) {
         return new AzureConfigPropertySourceLocator(properties, propertyCache, appProperties, clients);
     }
-    
+
     @Bean
     public PropertyCache getPropertyCache() {
         return PropertyCache.getPropertyCache();
     }
 
-	@Bean
-    public ClientStore buildClientStores(AzureCloudConfigProperties properties) {
-        return new ClientStore(properties);
+    @Bean
+    public ClientStore buildClientStores(AzureCloudConfigProperties properties,
+            AppConfigProviderProperties appProperties) {
+        return new ClientStore(properties, appProperties);
     }
 
     @PostConstruct

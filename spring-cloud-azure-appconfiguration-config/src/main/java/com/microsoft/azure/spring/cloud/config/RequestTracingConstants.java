@@ -8,7 +8,7 @@ package com.microsoft.azure.spring.cloud.config;
 /**
  * Request Tracing values used to check 
  */
-public enum RequestTracingConstants {
+enum RequestTracingConstants {
     
     AZURE_APP_CONFIGURATION_TRACING_DISABLED("AZURE_APP_CONFIGURATION_TRACING_DISABLED"),
     FUNCTIONS_EXTENSION_VERSION("FUNCTIONS_EXTENSION_VERSION"),
