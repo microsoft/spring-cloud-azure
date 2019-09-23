@@ -22,23 +22,25 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(prefix = AppConfigProviderProperties.CONFIG_PREFIX)
 public class AppConfigProviderProperties {
     public static final String CONFIG_PREFIX = "spring.cloud.appconfiguration";
-    
+
     @NotEmpty
     @Value("${version:1.0}")
     private String version;
-    
+
     @NotNull
     @Value("${maxRetries:12}")
     private int maxRetries;
-    
+
     @NotNull
     @Value("${maxRetryTime:60}")
     private int maxRetryTime;
-    
+
+    // The minimum amount of time the application is kept on if there is a server side
+    // error on startup.
     @NotNull
     @Value("${prekillTime:5}")
     private int prekillTime;
-    
+
     private static final Date startDate = new Date();
 
     /**
@@ -103,5 +105,5 @@ public class AppConfigProviderProperties {
     public Date getStartDate() {
         return startDate;
     }
-    
+
 }
