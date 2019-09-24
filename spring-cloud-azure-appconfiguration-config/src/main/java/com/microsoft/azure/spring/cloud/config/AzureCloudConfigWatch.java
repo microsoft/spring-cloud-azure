@@ -5,10 +5,12 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -17,41 +19,50 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.context.SmartLifecycle;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.util.StringUtils;
 
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 import com.microsoft.azure.spring.cloud.config.domain.QueryField;
 import com.microsoft.azure.spring.cloud.config.domain.QueryOptions;
 
-public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, SmartLifecycle {
+public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureCloudConfigWatch.class);
-    
+
     private final ConfigServiceOperations configOperations;
+
     private final Map<String, String> storeEtagMap = new ConcurrentHashMap<>();
-    private final TaskScheduler taskScheduler;
+
     private final AtomicBoolean running = new AtomicBoolean(false);
+
     private ApplicationEventPublisher publisher;
-    private ScheduledFuture<?> watchFuture;
-    private final AzureCloudConfigProperties properties;
+
     private final Map<String, Boolean> firstTimeMap = new ConcurrentHashMap<>();
+
     private final List<ConfigStore> configStores;
+
     private final Map<String, List<String>> storeContextsMap;
-    
+
     private static final String CONFIGURATION_SUFFIX = "_configuration";
+
     private static final String FEATURE_SUFFIX = "_feature";
-    private static final String FEATURE_STORE_WATCH_KEY = "*appconfig*";
+
+    private static final String FEATURE_STORE_SUFFIX = ".appconfig";
+
+    private static final String FEATURE_STORE_WATCH_KEY = FEATURE_STORE_SUFFIX + "*";
+
+    private Duration delay;
+
+    private PropertyCache propertyCache;
 
     public AzureCloudConfigWatch(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
-                                 TaskScheduler scheduler, Map<String, List<String>> storeContextsMap) {
+            Map<String, List<String>> storeContextsMap, PropertyCache propertyCache) {
         this.configOperations = operations;
-        this.properties = properties;
-        this.taskScheduler = scheduler;
         this.configStores = properties.getStores();
         this.storeContextsMap = storeContextsMap;
+        this.delay = properties.getWatch().getDelay();
+        this.propertyCache = propertyCache;
     }
 
     @Override
@@ -59,97 +70,98 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
         this.publisher = applicationEventPublisher;
     }
 
-    @Override
-    public boolean isAutoStartup() {
-        return true;
-    }
-
-    @Override
-    public void stop(Runnable callback) {
-        this.stop();
-        callback.run();
-    }
-
-    @Override
-    public void start() {
+    /**
+     * Checks configurations to see if they are no longer cached. If they are no longer
+     * cached they are updated.
+     */
+    public void refreshConfigurations() {
         if (this.running.compareAndSet(false, true)) {
-            this.watchFuture = this.taskScheduler.scheduleWithFixedDelay(this::watchConfigKeyValues,
-                    this.properties.getWatch().getDelay());
-        }
-    }
-
-    @Override
-    public void stop() {
-        if (this.running.compareAndSet(true, false) && this.watchFuture != null) {
-            this.watchFuture.cancel(true);
-        }
-    }
-
-    @Override
-    public boolean isRunning() {
-        return this.running.get();
-    }
-
-    @Override
-    public int getPhase() {
-        return 0;
-    }
-
-    public void watchConfigKeyValues() {
-        if (!this.running.get()) {
-            return;
-        }
-
-        for (ConfigStore configStore : configStores) {
-            if (needRefreshConfiguration(configStore) || needRefreshFeatureFlag(configStore)) {
-                break;
+            for (ConfigStore configStore : configStores) {
+                if (propertyCache.findNonCachedKeys(delay, configStore.getName()).size() > 0) {
+                    String watchedKeyNames = watchedKeyNames(configStore, storeContextsMap);
+                    refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames);
+                    // Refresh Feature Flags
+                    if (propertyCache.getRefreshKeys(configStore.getName(), FEATURE_STORE_SUFFIX).size() > 0) {
+                        refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY);
+                    }
+                }
             }
+            this.running.set(false);
         }
     }
 
-    private boolean needRefreshConfiguration(ConfigStore store) {
-        String watchedKeyNames = watchedKeyNames(store, storeContextsMap);
-        return needRefresh(store, CONFIGURATION_SUFFIX, watchedKeyNames);
-    }
-    
-    private boolean needRefreshFeatureFlag(ConfigStore store) {
-        return needRefresh(store, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY);
-    }
-    
-    private boolean needRefresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
+    /**
+     * Checks un-cached items for etag changes. If they have changed a RefreshEventData is
+     * published.
+     * 
+     * @param store the {@code store} for which to composite watched key names
+     * @param storeSuffix Suffix used to distinguish between Settings and Features
+     * @param watchedKeyNames Key used to check if refresh should occur
+     */
+    private void refresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
+        String storeNameWithSuffix = store.getName() + storeSuffix;
         QueryOptions options = new QueryOptions().withKeyNames(watchedKeyNames)
                 .withLabels(store.getLabels()).withFields(QueryField.ETAG).withRange(0, 0);
 
         List<KeyValueItem> keyValueItems = configOperations.getRevisions(store.getName(), options);
-        
+
         if (keyValueItems.isEmpty()) {
-            return false;
+            return;
         }
 
         String etag = keyValueItems.get(0).getEtag();
-        if (firstTimeMap.get(store.getName() + storeSuffix) == null) {
-            storeEtagMap.put(store.getName() + storeSuffix, etag);
-            firstTimeMap.put(store.getName() + storeSuffix, false);
-            return false;
+        if (firstTimeMap.get(storeNameWithSuffix) == null) {
+            storeEtagMap.put(storeNameWithSuffix, etag);
+            firstTimeMap.put(storeNameWithSuffix, false);
+            propertyCache.updateRefreshCacheTime(store.getName(), watchedKeyNames, delay);
         }
 
-        if (!etag.equals(storeEtagMap.get(store.getName() + storeSuffix))) {
-            LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
-                    store.getName(), watchedKeyNames);
-            storeEtagMap.put(store.getName() + storeSuffix, etag);
-            RefreshEventData eventData = new RefreshEventData(watchedKeyNames);
-            publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
-            return true;
-        }
+        if (!etag.equals(storeEtagMap.get(storeNameWithSuffix))) {
+            Date date = new Date();
+            String watchedKeyNamesPrefix = watchedKeyNames.replace("*", "");
 
-        return false;
+            // Checks all cached items to see if they have been updated
+            List<String> refreshKeys = new ArrayList<String>(propertyCache.getRefreshKeys(store.getName()));
+            // RefreshKeyIndex is the current refresh key being checked. If not needing
+            // refresh it is removed from the list.
+            for (String refreshKey : refreshKeys) {
+                if (refreshKey.toLowerCase().startsWith(watchedKeyNamesPrefix.toLowerCase())) {
+
+                    storeEtagMap.put(storeNameWithSuffix, etag);
+                    options = new QueryOptions().withKeyNames(refreshKey)
+                            .withLabels(store.getLabels()).withFields(QueryField.ETAG).withRange(0, 0);
+
+                    keyValueItems = configOperations.getRevisions(store.getName(), options);
+
+                    if (!keyValueItems.isEmpty() && keyValueItems.get(0).getEtag()
+                            .equals(propertyCache.getCachedEtag(refreshKey))) {
+                        propertyCache.updateRefreshCacheTimeForKey(store.getName(), refreshKey, date);
+                    }
+                }
+            }
+
+            refreshKeys = propertyCache.getRefreshKeys(store.getName());
+            if (refreshKeys.size() > 0) {
+                LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
+                        store.getName(), watchedKeyNames);
+                storeEtagMap.put(storeNameWithSuffix, etag);
+                RefreshEventData eventData = new RefreshEventData(watchedKeyNames);
+                publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
+
+                // Don't need to refresh here will be done in Property Source
+                return;
+            }
+        }
+        propertyCache.updateRefreshCacheTime(store.getName(), watchedKeyNames, delay);
     }
 
     /**
-     * For each refresh, multiple etags can change, but even one etag is changed, refresh is required.
+     * For each refresh, multiple etags can change, but even one etag is changed, refresh
+     * is required.
      */
     class RefreshEventData {
         private static final String MSG_TEMPLATE = "Some keys matching %s has been updated since last check.";
+
         private final String message;
 
         public RefreshEventData(String prefix) {
@@ -162,40 +174,36 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware, Sm
     }
 
     /**
-     * Composite watched key names separated by comma, the key names is made up of: prefix, context and key name pattern
-     * e.g., prefix: /config, context: /application, watched key: my.watch.key
-     *      will return: /config/application/my.watch.key
+     * Composite watched key names separated by comma, the key names is made up of:
+     * prefix, context and key name pattern e.g., prefix: /config, context: /application,
+     * watched key: my.watch.key will return: /config/application/my.watch.key
      *
      * The returned watched key will be one key pattern, one or multiple specific keys
-     * e.g., 1) *
-     *       2) /application/abc*
-     *       3) /application/abc
-     *       4) /application/abc,xyz
+     * e.g., 1) * 2) /application/abc* 3) /application/abc 4) /application/abc,xyz
      *
      * @param store the {@code store} for which to composite watched key names
      * @param storeContextsMap map storing store name and List of context key-value pair
      * @return the full name of the key mapping to the configuration store
      */
     private String watchedKeyNames(ConfigStore store, Map<String, List<String>> storeContextsMap) {
-        String prefix = store.getPrefix();
         String watchedKey = store.getWatchedKey().trim();
         List<String> contexts = storeContextsMap.get(store.getName());
 
-        String watchedKeys = contexts.stream().map(ctx -> genKey(prefix, ctx, watchedKey))
+        String watchedKeys = contexts.stream().map(ctx -> genKey(ctx, watchedKey))
                 .collect(Collectors.joining(","));
 
         if (watchedKeys.contains(",") && watchedKeys.contains("*")) {
-            // Multi keys including one or more key patterns is not supported by API, will watch all keys(*) instead
+            // Multi keys including one or more key patterns is not supported by API, will
+            // watch all keys(*) instead
             watchedKeys = "*";
         }
 
         return watchedKeys;
     }
 
-    private String genKey(@Nullable String prefix, @NonNull String context, @Nullable String watchedKey) {
+    private String genKey(@NonNull String context, @Nullable String watchedKey) {
         String trimmedWatchedKey = StringUtils.hasText(watchedKey) ? watchedKey.trim() : "*";
-        String trimmedPrefix = StringUtils.hasText(prefix) ? prefix.trim() : "";
 
-        return String.format("%s%s%s", trimmedPrefix, context, trimmedWatchedKey);
+        return String.format("%s%s", context, trimmedWatchedKey);
     }
 }

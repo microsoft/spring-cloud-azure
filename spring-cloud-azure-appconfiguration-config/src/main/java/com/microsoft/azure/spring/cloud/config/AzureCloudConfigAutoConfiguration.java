@@ -5,20 +5,15 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.endpoint.RefreshEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @Configuration
 @ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "enabled", matchIfMissing = true)
 public class AzureCloudConfigAutoConfiguration {
-    public static final String WATCH_TASK_SCHEDULER_NAME = "azureConfigWatchTaskScheduler";
 
     @Configuration
     @ConditionalOnClass(RefreshEndpoint.class)
@@ -26,16 +21,15 @@ public class AzureCloudConfigAutoConfiguration {
     static class CloudWatchAutoConfiguration {
         @Bean
         public AzureCloudConfigWatch getConfigWatch(ConfigServiceOperations operations,
-                                                    AzureCloudConfigProperties properties,
-                                                    @Qualifier(WATCH_TASK_SCHEDULER_NAME) TaskScheduler scheduler,
-                                                    AzureConfigPropertySourceLocator sourceLocator) {
-            return new AzureCloudConfigWatch(operations, properties, scheduler, sourceLocator.getStoreContextsMap());
+                AzureCloudConfigProperties properties, AzureConfigPropertySourceLocator sourceLocator, 
+                PropertyCache propertyCache) {
+            return new AzureCloudConfigWatch(operations, properties, sourceLocator.getStoreContextsMap(),
+                    propertyCache);
         }
 
-        @Bean(name = WATCH_TASK_SCHEDULER_NAME)
-        @ConditionalOnMissingBean
-        public TaskScheduler getTaskScheduler() {
-            return new ThreadPoolTaskScheduler();
+        @Bean
+        public ConfigListener configListener(AzureCloudConfigWatch azureCloudConfigWatch) {
+            return new ConfigListener(azureCloudConfigWatch);
         }
     }
 }

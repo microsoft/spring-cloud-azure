@@ -6,14 +6,18 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.EnumerablePropertySource;
+import org.springframework.util.ReflectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
@@ -39,8 +43,9 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
 
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
 
-    private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
-    
+    private static final String FEATURE_FLAG_CONTENT_TYPE = 
+            "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
+
     private static final String FEATURE_FLAG_PREFIX = ".appconfig.featureflag/";
 
     public AzureConfigPropertySource(String context, ConfigServiceOperations operations, String storeName,
@@ -65,22 +70,98 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
         return properties.get(name);
     }
 
-    public void initProperties() throws IOException {
-        // * for wildcard match
-        // Reading in Configurations
-        QueryOptions queryOptions = new QueryOptions().withKeyNames(context + "*").withLabels(label);
-        List<KeyValueItem> items = source.getKeys(storeName, queryOptions);
-        for (KeyValueItem item : items) {
-            String key = item.getKey().trim().substring(context.length()).replace('/', '.');
-            properties.put(key, item.getValue());
-        }
+    /**
+     * <p>
+     * Gets settings from Azure/Cache to set as configurations. Updates the cache.
+     * </p>
+     * 
+     * <p>
+     * <b>Note</b>: Doesn't update Feature Management, just stores values in cache. Call
+     * {@code initFeatures} to update Feature Management, but make sure its done in the
+     * last {@code AzureConfigPropertySource}
+     * </p>
+     * 
+     * @param propertyCache Cached values to use in store. Also contains values the need
+     * to be refreshed.
+     * @throws IOException Thrown when processing key/value failed when reading feature
+     * flags
+     */
+    public void initProperties(PropertyCache propertyCache) throws IOException {
+        Date date = new Date();
+        if (propertyCache.getContext(storeName) == null) {
+            propertyCache.addContext(storeName, context);
+            // * for wildcard match
+            QueryOptions queryOptions = new QueryOptions().withKeyNames(context + "*").withLabels(label);
+            List<KeyValueItem> items = source.getKeys(storeName, queryOptions);
+            for (KeyValueItem item : items) {
+                String key = item.getKey().trim().substring(context.length()).replace('/', '.');
+                properties.put(key, item.getValue());
+            }
+            propertyCache.addKeyValuesToCache(items, storeName, date);
 
-        // Reading In Features
-        queryOptions = new QueryOptions().withKeyNames("*appconfig*").withLabels(label);
-        items = source.getKeys(storeName, queryOptions);
-        createFeatureSet(items);
+            // Reading In Features
+            queryOptions = new QueryOptions().withKeyNames(FEATURE_FLAG_PREFIX + "*").withLabels(label);
+            items = source.getKeys(storeName, queryOptions);
+
+            createFeatureSet(items, propertyCache, date);
+
+        } else {
+            // Using Cached values, first updates cache then sets new properties.
+            if (propertyCache.getRefreshKeys(storeName) != null &&
+                    propertyCache.getRefreshKeys(storeName).size() > 0) {
+                for (String refreshKey : propertyCache.getRefreshKeys(storeName)) {
+                    QueryOptions queryOptions = new QueryOptions().withKeyNames(refreshKey).withLabels(label);
+                    List<KeyValueItem> items = source.getKeys(storeName, queryOptions);
+                    if (items.size() == 0) {
+                        KeyValueItem emptyKey = new KeyValueItem();
+                        emptyKey.setKey(refreshKey);
+                        propertyCache.addToCache(emptyKey, storeName, date);
+                    } else {
+                        propertyCache.addToCache(items.get(0), storeName, date);
+                    }
+                }
+            }
+
+            for (CachedKey cachedKey : propertyCache.getKeySet(storeName)) {
+                if (cachedKey.getContentType().equals(FEATURE_FLAG_CONTENT_TYPE)) {
+                    List<KeyValueItem> items = new ArrayList<KeyValueItem>();
+                    KeyValueItem item = new KeyValueItem(cachedKey, FEATURE_FLAG_CONTENT_TYPE);
+                    items.add(item);
+
+                    createFeatureSet(items, propertyCache, date);
+                } else {
+                    String trimedKey = cachedKey.getKey().trim().substring(context.length()).replace('/', '.');
+                    properties.put(trimedKey, propertyCache.getCachedValue(cachedKey.getKey()));
+                }
+            }
+        }
     }
-    
+
+    /**
+     * Initializes Feature Management configurations. Only one
+     * {@code AzureConfigPropertySource} can call this, and it needs to be done after the
+     * rest have run initProperties.
+     * @param propertyCache Cached values to use in store. Also contains values the need
+     * to be refreshed.
+     */
+    public void initFeatures(PropertyCache propertyCache) {
+        FeatureSet featureSet = new FeatureSet();
+        List<String> features = propertyCache.getCache().keySet().stream()
+                .filter(key -> key.startsWith(FEATURE_FLAG_PREFIX)).collect(Collectors.toList());
+        features.parallelStream().forEach(key -> {
+            try {
+                featureSet.addFeature(key.trim().substring(FEATURE_FLAG_PREFIX.length()), createFeature(
+                        new KeyValueItem(key, propertyCache.getCachedValue(key), FEATURE_FLAG_CONTENT_TYPE)));
+            } catch (IOException e) {
+                if (azureProperties.isFailFast()) {
+                    ReflectionUtils.rethrowRuntimeException(e);
+                }
+            }
+        });
+
+        properties.put(FEATURE_MANAGEMENT_KEY, mapper.convertValue(featureSet, LinkedHashMap.class));
+    }
+
     /**
      * Creates a {@code FeatureSet} from a list of {@code KeyValueItem}. 
      * 
@@ -89,19 +170,20 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
      * @param date Cache timestamp
      * @throws IOException
      */
-    private void createFeatureSet(List<KeyValueItem> items) throws IOException {
+    private void createFeatureSet(List<KeyValueItem> items, PropertyCache propertyCache, Date date) throws IOException {
         // Reading In Features
         FeatureSet featureSet = new FeatureSet();
         for (KeyValueItem item : items) {
             Object feature = createFeature(item);
             if (feature != null) {
-                String key = item.getKey().trim().substring(FEATURE_FLAG_PREFIX.length());
-                featureSet.addFeature(key, feature);
+                featureSet.addFeature(item.getKey(), feature);
             }
         }
-        properties.put(FEATURE_MANAGEMENT_KEY, mapper.convertValue(featureSet, LinkedHashMap.class));
+        if (featureSet.getFeatureManagement() != null) {
+            propertyCache.addKeyValuesToCache(items, storeName, date);
+        }
     }
-    
+
     /**
      * Creates a {@code Feature} from a {@code KeyValueItem}
      * 
@@ -122,7 +204,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
                 // exactly the same... It should never be the case of Conditional On, and
                 // no filters coming from Azure, but it is a valid way from the config
                 // file, which should result in false being returned.
-                if (feature.getEnabledFor().size() == 0 && feature.getEnabled() == true) {
+                if (feature.getEnabledFor().size() == 0 && featureItem.getEnabled() == true) {
                     return true;
                 }
                 return feature;

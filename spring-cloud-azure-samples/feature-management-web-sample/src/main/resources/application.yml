@@ -14,7 +14,7 @@ feature-management:
     features:
       Beta: true
       FeatureV:
-        enabledFor:
+        EnabledFor:
           -
             name: Random
             parameters:

@@ -5,18 +5,9 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
-import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.annotation.Validated;
+import static com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties.LABEL_SEPARATOR;
+import static com.microsoft.azure.spring.cloud.config.Constants.EMPTY_LABEL;
 
-import javax.annotation.PostConstruct;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -26,11 +17,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties.LABEL_SEPARATOR;
-import static com.microsoft.azure.spring.cloud.config.Constants.EMPTY_LABEL;
+import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.context.annotation.Import;
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
+
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
+import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
 
 @Validated
 @ConfigurationProperties(prefix = AzureCloudConfigProperties.CONFIG_PREFIX)
+@Import({AppConfigProviderProperties.class})
 public class AzureCloudConfigProperties {
     public static final String CONFIG_PREFIX = "spring.cloud.azure.appconfiguration";
     public static final String LABEL_SEPARATOR = ",";
@@ -119,6 +123,11 @@ public class AzureCloudConfigProperties {
         return watch;
     }
 
+    /**
+     * The minimum watch time between refresh checks. The minimum valid watch time is 1s.
+     * 
+     * @param watch minimum time between refresh checks
+     */
     public void setWatch(Watch watch) {
         this.watch = watch;
     }
@@ -136,6 +145,7 @@ public class AzureCloudConfigProperties {
 
         int uniqueStoreSize = this.stores.stream().map(s -> s.getName()).distinct().collect(Collectors.toList()).size();
         Assert.isTrue(this.stores.size() == uniqueStoreSize, "Duplicate store name exists.");
+        Assert.isTrue(watch.delay.getSeconds()  >= 1, "Minimum Watch time is 1 Second.");
     }
 
     class Watch {

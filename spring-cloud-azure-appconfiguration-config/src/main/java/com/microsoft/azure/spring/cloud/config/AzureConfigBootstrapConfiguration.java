@@ -34,7 +34,7 @@ import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
 
 @Configuration
-@EnableConfigurationProperties(AzureCloudConfigProperties.class)
+@EnableConfigurationProperties({ AzureCloudConfigProperties.class, AppConfigProviderProperties.class })
 @ConditionalOnClass(AzureConfigPropertySourceLocator.class)
 @ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "enabled", matchIfMissing = true)
 public class AzureConfigBootstrapConfiguration {
@@ -103,14 +103,20 @@ public class AzureConfigBootstrapConfiguration {
     }
 
     @Bean
-    public ConfigServiceOperations azureConfigOperations(ConfigHttpClient client, ConnectionStringPool pool) {
-        return new ConfigServiceTemplate(client, pool);
+    public ConfigServiceOperations azureConfigOperations(ConfigHttpClient client, ConnectionStringPool pool,
+            AppConfigProviderProperties properties) {
+        return new ConfigServiceTemplate(client, pool, properties);
     }
 
     @Bean
     public AzureConfigPropertySourceLocator sourceLocator(ConfigServiceOperations operations,
-                                                          AzureCloudConfigProperties properties) {
-        return new AzureConfigPropertySourceLocator(operations, properties);
+            AzureCloudConfigProperties properties, PropertyCache propertyCache) {
+        return new AzureConfigPropertySourceLocator(operations, properties, propertyCache);
+    }
+    
+    @Bean
+    public PropertyCache getPropertyCache() {
+        return PropertyCache.getPropertyCache();
     }
 
     @PostConstruct
