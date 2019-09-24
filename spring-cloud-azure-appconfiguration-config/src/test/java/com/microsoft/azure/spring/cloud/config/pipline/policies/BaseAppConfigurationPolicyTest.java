@@ -23,36 +23,37 @@ import com.azure.core.http.HttpPipelineNextPolicy;
 import com.azure.core.http.HttpRequest;
 
 public class BaseAppConfigurationPolicyTest {
-    
+
     @Mock
     HttpPipelineCallContext contextMock;
-    
+
     @Mock
     HttpPipelineNextPolicy nextMock;
-    
+
     private static final String PRE_USER_AGENT = "PreExistingUserAgent";
-    
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
     }
-    
+
     @Test
     public void processTest() throws MalformedURLException {
         URL url = new URL("https://www.test.url/link");
-        HttpRequest request = new HttpRequest(HttpMethod.GET, url); 
+        HttpRequest request = new HttpRequest(HttpMethod.GET, url);
         request.header(HttpHeaders.USER_AGENT, "PreExistingUserAgent");
         BaseAppConfigurationPolicy policy = new BaseAppConfigurationPolicy();
-        
+
         when(contextMock.httpRequest()).thenReturn(request);
-        
+
         policy.process(contextMock, nextMock);
-        
+
         String userAgent = contextMock.httpRequest().headers().get(HttpHeaders.USER_AGENT).value();
         assertEquals("null/null; " + PRE_USER_AGENT, userAgent);
-        
-        System.out.println(contextMock.httpRequest().headers().get("Correlation-Context"));
-        
+
+        assertEquals("RequestType=Watch,Host=None",
+                contextMock.httpRequest().headers().get("Correlation-Context").value());
+
     }
 
 }
