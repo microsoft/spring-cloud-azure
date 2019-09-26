@@ -24,7 +24,7 @@ public class ConfigListener implements ApplicationListener<ServletRequestHandled
     @Override
     public void onApplicationEvent(ServletRequestHandledEvent event) {
         try {
-            azureCloudConfigWatch.refreshConfigurations().get();
+            azureCloudConfigWatch.refreshConfigurations();
         } catch (Exception e) {
             LOGGER.error("Refresh failed with unexpected exception.", e);
         }

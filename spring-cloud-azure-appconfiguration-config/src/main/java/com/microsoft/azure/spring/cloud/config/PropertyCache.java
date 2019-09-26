@@ -138,6 +138,29 @@ public class PropertyCache {
         return cachedKey.getEtag();
     }
 
+    public void findAllNonCachedKeys(Duration delay) {
+        Date date = new Date();
+        refreshKeys = new ConcurrentHashMap<String, List<String>>();
+
+        for (CachedKey cachedKey : cache.values()) {
+            Date notCachedTime = DateUtils.addSeconds(cachedKey.getLastUpdated(),
+                    Math.toIntExact(delay.getSeconds()));
+            if (date.after(notCachedTime)) {
+                if (refreshKeys.get(cachedKey.getStoreName()) == null) {
+                    refreshKeys.put(cachedKey.getStoreName(), new ArrayList<String>());
+                }
+                refreshKeys.get(cachedKey.getStoreName()).add(cachedKey.getKey());
+            }
+        }
+    }
+
+    public int storeRefreshKeyCount(String storeName) {
+        if (refreshKeys.get(storeName) == null) {
+            return 0;
+        }
+        return refreshKeys.get(storeName).size();
+    }
+
     public List<String> findNonCachedKeys(Duration delay, String storeName) {
         ArrayList<String> storeRefreshKeys = new ArrayList<String>();
         Date date = new Date();

@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -48,7 +50,9 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
 
     private static final String FEATURE_SUFFIX = "_feature";
 
-    private static final String FEATURE_STORE_WATCH_KEY = ".appconfig*";
+    private static final String FEATURE_STORE_SUFFIX = ".appconfig";
+
+    private static final String FEATURE_STORE_WATCH_KEY = FEATURE_STORE_SUFFIX + "*";
 
     private Duration delay;
 
@@ -72,30 +76,52 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
      * Checks configurations to see if they are no longer cached. If they are no longer
      * cached they are updated.
      * 
-     * @return CompletableFuture<Boolean> will return true if a refresh event was triggered.
+     * @return Future with a boolean of if a RefreshEvent was published. If
+     * refreshConfigurations is currently being run elsewhere this method will return
+     * right away as <b>false</b>.
      */
-    public CompletableFuture<Boolean> refreshConfigurations() {
-        return CompletableFuture.supplyAsync(this::refreshConfigStores);
+    public Future<Boolean> refreshConfigurations() {
+        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
+
+        Executors.newCachedThreadPool().submit(() -> {
+            completableFuture.complete(refreshStores());
+            return null;
+        });
+
+        return completableFuture;
     }
 
-    public Boolean refreshConfigStores() {
-        Boolean refreshed = false;
+    /**
+     * Goes through each config store and checks if any of its keys need to be refreshed.
+     * If any store has a value that needs to be updated a refresh event is called after
+     * every store is checked.
+     * @return If a refresh event is called.
+     */
+    private Boolean refreshStores() {
+        boolean needsRefresh = false;
         if (this.running.compareAndSet(false, true)) {
             for (ConfigStore configStore : configStores) {
-                if (propertyCache.findNonCachedKeys(delay, configStore.getName()).size() > 0) {
+                propertyCache.findAllNonCachedKeys(delay);
+                if (propertyCache.storeRefreshKeyCount(configStore.getName()) > 0) {
                     String watchedKeyNames = watchedKeyNames(configStore, storeContextsMap);
-                    refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames);
-
+                    needsRefresh = refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames);
                     // Refresh Feature Flags
-                    if (propertyCache.getRefreshKeys(configStore.getName(), FEATURE_STORE_WATCH_KEY.replace("*", ""))
+                    if (propertyCache.getRefreshKeys(configStore.getName(), FEATURE_STORE_SUFFIX)
                             .size() > 0) {
-                        refreshed = refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY) ? true : refreshed;
+                        needsRefresh = refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY) ? true
+                                : needsRefresh;
                     }
                 }
             }
+            if (needsRefresh) {
+                // Only one refresh Event needs to be call to update all of the stores,
+                // not one for each.
+                RefreshEventData eventData = new RefreshEventData(this.getClass().getName());
+                publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
+            }
             this.running.set(false);
         }
-        return refreshed;
+        return needsRefresh;
     }
 
     /**
@@ -105,9 +131,10 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
      * @param store the {@code store} for which to composite watched key names
      * @param storeSuffix Suffix used to distinguish between Settings and Features
      * @param watchedKeyNames Key used to check if refresh should occur
+     * @return boolean Returns true on Refresh Event being called.
      */
-    private Boolean refresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
-        Boolean refreshed = false;
+    private boolean refresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
+        String storeNameWithSuffix = store.getName() + storeSuffix;
         String storeName = store.getName() + storeSuffix;
         QueryOptions options = new QueryOptions().withKeyNames(watchedKeyNames)
                 .withLabels(store.getLabels()).withFields(QueryField.ETAG).withRange(0, 0);
@@ -115,7 +142,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
         List<KeyValueItem> keyValueItems = configOperations.getRevisions(store.getName(), options);
 
         if (keyValueItems.isEmpty()) {
-            return refreshed;
+            return false;
         }
 
         String etag = keyValueItems.get(0).getEtag();
@@ -155,15 +182,13 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
                 LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
                         store.getName(), watchedKeyNames);
                 storeEtagMap.put(storeName, etag);
-                RefreshEventData eventData = new RefreshEventData(watchedKeyNames);
-                publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
 
                 // Don't need to refresh here will be done in Property Source
-                refreshed = true;
+                return true;
             }
         }
         propertyCache.updateRefreshCacheTime(store.getName(), watchedKeyNames, delay);
-        return refreshed;
+        return false;
     }
 
     /**
