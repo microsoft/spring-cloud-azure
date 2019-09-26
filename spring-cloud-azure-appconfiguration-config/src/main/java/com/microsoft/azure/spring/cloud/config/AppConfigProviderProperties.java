@@ -21,7 +21,7 @@ public class AppConfigProviderProperties {
     public static final String CONFIG_PREFIX = "spring.cloud.appconfiguration";
     
     @NotEmpty
-    @Value("${version:2.0}")
+    @Value("${version:1.0}")
     private String version;
 
     /**

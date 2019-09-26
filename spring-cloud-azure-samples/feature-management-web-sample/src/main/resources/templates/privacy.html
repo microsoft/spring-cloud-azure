@@ -23,23 +23,30 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-            <a class="nav-link" href="/welcome">Home <span class="sr-only">(current)</span></a>
+            <li class="nav-item">
+            <a class="nav-link" href="/welcome">Home</a>
             </li>
             <li class="nav-item" th:if="${Beta}">
             <a class="nav-link" href="/Beta">Beta</a>
             </li>
             <li class="nav-item">
-            <a class="nav-link" href="/privacy">Privacy</a>
+            <a class="nav-link active" href="/privacy">Privacy <span class="sr-only">(current)</span></a>
             </li>
         </ul>
         </div>
     </nav>
     </header>
     <div class="container body-content">
-        <h1 class="mt-5">Welcome</h1>
-        <p>Learn more about <a href="https://github.com/microsoft/spring-cloud-azure/blob/master/spring-cloud-azure-feature-management/README.md">Feature Management with Spring Cloud Azure</a></p>
-
+        <h1 class="mt-5">Privacy</h1>
+        <div th:classappend="${isDarkThemeS1} ? light : dark">
+            <h2 class="mt-4">Section 1</h2>
+        </div>
+        <div th:classappend="${isDarkThemeS2} ? light : dark">
+            <h2 class="mt-4">Section 2</h2>
+        </div>
+        <div th:classappend="${isDarkThemeS3} ? light : dark">
+            <h2 class="mt-4">Section 3</h2>
+        </div>
     </div>
     <footer class="footer">
         <div class="container">
