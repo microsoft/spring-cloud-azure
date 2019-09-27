@@ -60,6 +60,8 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
     private final ConfigHttpClient configClient;
 
     private final ConnectionStringPool connectionStringPool;
+    
+    private AppConfigProviderProperties properties;
 
     private AppConfigProviderProperties appProperties;
 
