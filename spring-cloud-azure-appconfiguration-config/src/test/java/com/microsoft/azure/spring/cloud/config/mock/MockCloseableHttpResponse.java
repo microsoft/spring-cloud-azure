@@ -5,12 +5,18 @@
  */
 package com.microsoft.azure.spring.cloud.config.mock;
 
-import org.apache.http.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.http.Header;
+import org.apache.http.HeaderIterator;
+import org.apache.http.HttpEntity;
+import org.apache.http.ProtocolVersion;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.params.HttpParams;
-
-import java.io.IOException;
-import java.util.Locale;
 
 /**
  * Mock implementation of CloseableHttpResponse in order to store test Response data
@@ -18,10 +24,13 @@ import java.util.Locale;
 public class MockCloseableHttpResponse implements CloseableHttpResponse {
     private StatusLine statusLine;
     private HttpEntity entity;
+    private List<Header> headers;
+    
 
     public MockCloseableHttpResponse(StatusLine statusLine, HttpEntity entity) {
         this.statusLine = statusLine;
         this.entity = entity;
+        headers = new ArrayList<Header>();
     }
 
     @Override
@@ -90,27 +99,38 @@ public class MockCloseableHttpResponse implements CloseableHttpResponse {
 
     @Override
     public Header[] getHeaders(String name) {
-        return new Header[0];
+        return null;
     }
 
     @Override
     public Header getFirstHeader(String name) {
+        for (Header header: headers) {
+            if (header.getName().equals(name)) {
+                return header;
+            }
+        }
         return null;
     }
 
     @Override
     public Header getLastHeader(String name) {
-        return null;
+        Header last = null;
+        for (Header header: headers) {
+            if (header.getName().equals(name)) {
+                last = header;
+            }
+        }
+        return last;
     }
 
     @Override
     public Header[] getAllHeaders() {
-        return new Header[0];
+        return (Header[]) headers.toArray();
     }
 
     @Override
     public void addHeader(Header header) {
-
+        headers.add(header);
     }
 
     @Override

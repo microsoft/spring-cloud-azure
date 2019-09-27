@@ -152,7 +152,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
             try {
                 featureSet.addFeature(key.trim().substring(FEATURE_FLAG_PREFIX.length()), createFeature(
                         new KeyValueItem(key, propertyCache.getCachedValue(key), FEATURE_FLAG_CONTENT_TYPE)));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 if (azureProperties.isFailFast()) {
                     ReflectionUtils.rethrowRuntimeException(e);
                 }
@@ -217,11 +217,13 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
             }
 
         } else {
-            LOGGER.error(String.format("Found Feature Flag %s with invalid Content Type of %s", item.getKey(),
-                    item.getContentType()));
+            String message = String.format("Found Feature Flag %s with invalid Content Type of %s", item.getKey(),
+                    item.getContentType());
+
             if (azureProperties.isFailFast()) {
-                throw new IOException();
+                throw new IOException(message);
             }
+            LOGGER.error(message);
         }
         return feature;
     }

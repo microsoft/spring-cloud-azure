@@ -5,6 +5,30 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import static com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties.LABEL_SEPARATOR;
+import static com.microsoft.azure.spring.cloud.config.ConfigServiceTemplate.LOAD_FAILURE_VERBOSE_MSG;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.LABEL_PARAM;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONTEXT;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_KEY_1;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_KEY_2;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_KEY_3;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_LABEL_1;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_LABEL_2;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_LABEL_3;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_VALUE_1;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_VALUE_2;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_VALUE_3;
+import static com.microsoft.azure.spring.cloud.config.TestUtils.createItem;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -16,15 +40,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
-import com.microsoft.azure.spring.cloud.config.domain.KeyValueResponse;
-import com.microsoft.azure.spring.cloud.config.domain.QueryOptions;
-import com.microsoft.azure.spring.cloud.config.mock.MockCloseableHttpResponse;
-import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
-import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
-import org.apache.http.*;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.ProtocolVersion;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -46,13 +67,14 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties.LABEL_SEPARATOR;
-import static com.microsoft.azure.spring.cloud.config.ConfigServiceTemplate.LOAD_FAILURE_VERBOSE_MSG;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
-import static com.microsoft.azure.spring.cloud.config.TestUtils.createItem;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
+import com.microsoft.azure.spring.cloud.config.domain.KeyValueResponse;
+import com.microsoft.azure.spring.cloud.config.domain.QueryOptions;
+import com.microsoft.azure.spring.cloud.config.mock.MockCloseableHttpResponse;
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
 
 @RunWith(PowerMockRunner.class)
 public class ConfigServiceTemplateTest {
@@ -122,6 +144,9 @@ public class ConfigServiceTemplateTest {
         okEntity = buildEntity(testItems);
         appProperties = new AppConfigProviderProperties();
         appProperties.setVersion("1.0");
+        appProperties.setMaxRetries(12);
+        appProperties.setMaxRetryTime(60);
+        appProperties.setPrekillTime(10);
     }
 
     @After
@@ -175,6 +200,43 @@ public class ConfigServiceTemplateTest {
                 return new MockCloseableHttpResponse(OK_STATUS, buildEntity(result));
             }
         });
+    }
+    
+    @Test
+    public void retryAttempts() throws IOException, URISyntaxException {
+        CloseableHttpResponse response = new MockCloseableHttpResponse(FAIL_STATUS, new BasicHttpEntity());
+        Header header = new BasicHeader(RETRY_AFTER_MS_HEADER, "1");
+        response.addHeader(header);
+        when(configClient.execute(Mockito.any(HttpGet.class), Mockito.any(Date.class),
+                Mockito.matches("fake-conn-id"), Mockito.matches("ZmFrZS1jb25uLXNlY3JldA=="))).thenReturn(response);
+
+        template = new ConfigServiceTemplate(configClient, pool, appProperties);
+
+        try {
+            template.getKeys(TEST_STORE_NAME, new QueryOptions());
+        } catch (IllegalStateException e) {
+            
+        }
+
+        verify(configClient, Mockito.times(13)).execute(Mockito.any(HttpGet.class), Mockito.any(Date.class),
+                Mockito.matches("fake-conn-id"), Mockito.matches("ZmFrZS1jb25uLXNlY3JldA=="));
+    }
+    
+    @Test
+    public void retryAttemptsWork() throws IOException, URISyntaxException {
+        CloseableHttpResponse response = new MockCloseableHttpResponse(FAIL_STATUS, new BasicHttpEntity());
+        Header header = new BasicHeader(RETRY_AFTER_MS_HEADER, "1");
+        response.addHeader(header);
+
+        when(configClient.execute(Mockito.any(HttpGet.class), Mockito.any(Date.class),
+                Mockito.matches("fake-conn-id"), Mockito.matches("ZmFrZS1jb25uLXNlY3JldA==")))
+                .thenReturn(response).thenReturn(new MockCloseableHttpResponse(OK_STATUS, okEntity));
+
+        template = new ConfigServiceTemplate(configClient, pool, appProperties);
+        template.getKeys(TEST_STORE_NAME, new QueryOptions());
+
+        verify(configClient, Mockito.times(2)).execute(Mockito.any(HttpGet.class), Mockito.any(Date.class),
+                Mockito.matches("fake-conn-id"), Mockito.matches("ZmFrZS1jb25uLXNlY3JldA=="));
     }
 
     @Test
