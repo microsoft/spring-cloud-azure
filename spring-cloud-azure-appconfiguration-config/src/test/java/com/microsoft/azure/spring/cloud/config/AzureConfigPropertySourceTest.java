@@ -265,45 +265,6 @@ public class AzureConfigPropertySourceTest {
     }
 
     @Test
-    public void testFeatureFlagThrowError() throws IOException {
-        when(operations.getKeys(any(), any())).thenReturn(new ArrayList<KeyValueItem>()).thenReturn(TEST_ITEMS)
-        .thenReturn(FEATURE_ITEMS).thenReturn(FEATURE_ITEMS);
-
-        propertyCache = PropertyCache.resetPropertyCache();
-
-        try {
-            propertySource.initProperties(propertyCache);
-        } catch (IOException e) {
-            assertEquals("Found Feature Flag /foo/test_key_1 with invalid Content Type of ", e.getMessage());
-        }
-    }
-    
-    @Test
-    public void testFeatureFlagBuildError() {
-        when(operations.getKeys(any(), any())).thenReturn(new ArrayList<KeyValueItem>()).thenReturn(FEATURE_ITEMS);
-
-        try {
-            propertySource.initProperties(propertyCache);
-        } catch (IOException e) {
-            fail();
-        }
-        propertySource.initFeatures(propertyCache);
-
-        FeatureSet featureSet = new FeatureSet();
-        Feature feature = new Feature();
-        feature.setId("Alpha");
-        ArrayList<FeatureFilterEvaluationContext> filters = new ArrayList<FeatureFilterEvaluationContext>();
-        FeatureFilterEvaluationContext ffec = new FeatureFilterEvaluationContext();
-        ffec.setName("TestFilter");
-        filters.add(ffec);
-        feature.setEnabledFor(filters);
-        featureSet.addFeature("Alpha", feature);
-        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSet, LinkedHashMap.class);
-
-        assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));
-    }
-
-    @Test
     public void testWatchUpdateConfigurations() throws ParseException {
         when(operations.getKeys(any(), any())).thenReturn(testItems).thenReturn(FEATURE_ITEMS);
         Duration delay = Duration.ofSeconds(0);
