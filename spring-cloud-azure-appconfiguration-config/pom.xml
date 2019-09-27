@@ -65,12 +65,12 @@
         <dependency>
             <groupId>com.azure</groupId>
             <artifactId>azure-identity</artifactId>
-            <version>1.0.0-preview.2</version>
+            <version>1.0.0-preview.3</version>
         </dependency>
         <dependency>
             <groupId>com.azure</groupId>
             <artifactId>azure-keyvault-secrets</artifactId>
-            <version>4.0.0-preview.2</version>
+            <version>4.0.0-preview.3</version>
         </dependency>
     </dependencies>
 </project>
