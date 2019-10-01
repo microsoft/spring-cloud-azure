@@ -16,10 +16,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.env.OriginTrackedMapPropertySource;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
+import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
 import org.springframework.lang.NonNull;
 import org.springframework.util.ReflectionUtils;
@@ -47,16 +50,27 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private final Map<String, List<String>> storeContextsMap = new ConcurrentHashMap<>();
 
     private PropertyCache propertyCache;
+
     private AppConfigProviderProperties appProperties;
 
+    private AbstractEnvironment env;
+
+    private OriginTrackedMapPropertySource bootstrapPropertySource;
+    
+    private MutablePropertySources resolvers;
+
     public AzureConfigPropertySourceLocator(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
-            PropertyCache propertyCache, AppConfigProviderProperties appProperties) {
+            PropertyCache propertyCache, AppConfigProviderProperties appProperties, AbstractEnvironment env,
+            OriginTrackedMapPropertySource bootstrapPropertySource) {
         this.operations = operations;
         this.properties = properties;
         this.appProperties = appProperties;
         this.profileSeparator = properties.getProfileSeparator();
         this.configStores = properties.getStores();
         this.propertyCache = propertyCache;
+        this.env = env;
+        this.bootstrapPropertySource = bootstrapPropertySource;
+        this.resolvers = new MutablePropertySources();
     }
 
     @Override
@@ -184,8 +198,11 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
                     store.getName(), label, properties, appProperties);
 
             propertySource.initProperties(propertyCache);
+            resolvers.addFirst(propertySource);
             if (initFeatures) {
                 propertySource.initFeatures(propertyCache);
+                propertySource.postProcessConfigurations(env, bootstrapPropertySource, resolvers);
+                
             }
             sourceList.add(propertySource);
             putStoreContext(store.getName(), context, storeContextsMap);

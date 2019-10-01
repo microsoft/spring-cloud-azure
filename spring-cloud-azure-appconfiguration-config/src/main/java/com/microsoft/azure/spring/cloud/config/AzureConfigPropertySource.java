@@ -20,7 +20,12 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.env.OriginTrackedMapPropertySource;
+import org.springframework.boot.origin.OriginTrackedValue;
+import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
+import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.PropertySourcesPropertyResolver;
 import org.springframework.util.ReflectionUtils;
 
 import com.azure.identity.credential.DefaultAzureCredentialBuilder;
@@ -331,4 +336,22 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
         }
         return feature;
     }
+
+    public void postProcessConfigurations(AbstractEnvironment env,
+            OriginTrackedMapPropertySource bootstrapPropertySource, MutablePropertySources resolvers) {
+        Map<String, Object> source = bootstrapPropertySource.getSource();
+        PropertySourcesPropertyResolver pspr = new PropertySourcesPropertyResolver(resolvers);
+
+        for (String item : source.keySet()) {
+            if (source.get(item) instanceof OriginTrackedValue) {
+                OriginTrackedValue otv = (OriginTrackedValue) source.get(item);
+                if (otv.getValue() instanceof String) {
+                    String resolved = pspr.resolvePlaceholders((String) otv.getValue());
+                    resolved = env.resolvePlaceholders(resolved);
+                    properties.put(item, resolved);
+                }
+            }
+        }
+    }
+
 }

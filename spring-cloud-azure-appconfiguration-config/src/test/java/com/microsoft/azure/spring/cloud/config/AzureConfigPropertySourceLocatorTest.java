@@ -20,7 +20,9 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -30,6 +32,8 @@ import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.env.OriginTrackedMapPropertySource;
+import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertySource;
@@ -93,8 +97,15 @@ public class AzureConfigPropertySourceLocatorTest {
 
     @Test
     public void compositeSourceIsCreated() {
+        HashMap<String, Object> bootstrapMap = new HashMap<String, Object>();
+
+        AbstractEnvironment envMock = Mockito.mock(AbstractEnvironment.class);
+        OriginTrackedMapPropertySource bootstrapSourceMock = Mockito.mock(OriginTrackedMapPropertySource.class);
+
+        when(bootstrapSourceMock.getSource()).thenReturn(bootstrapMap);
+
         locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache(),
-                appProperties);
+                appProperties, envMock, bootstrapSourceMock);
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
 
@@ -112,8 +123,15 @@ public class AzureConfigPropertySourceLocatorTest {
     @Test
     public void compositeSourceIsCreatedForPrefixedConfig() {
         properties.getStores().get(0).setPrefix(PREFIX);
+        HashMap<String, Object> bootstrapMap = new HashMap<String, Object>();
+
+        AbstractEnvironment envMock = Mockito.mock(AbstractEnvironment.class);
+        OriginTrackedMapPropertySource bootstrapSourceMock = Mockito.mock(OriginTrackedMapPropertySource.class);
+
+        when(bootstrapSourceMock.getSource()).thenReturn(bootstrapMap);
+
         locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache(),
-                appProperties);
+                appProperties, envMock, bootstrapSourceMock);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
@@ -135,8 +153,15 @@ public class AzureConfigPropertySourceLocatorTest {
         when(environment.getActiveProfiles()).thenReturn(new String[] {});
         when(environment.getProperty("spring.application.name")).thenReturn(null);
         properties.setName(null);
+        HashMap<String, Object> bootstrapMap = new HashMap<String, Object>();
+
+        AbstractEnvironment envMock = Mockito.mock(AbstractEnvironment.class);
+        OriginTrackedMapPropertySource bootstrapSourceMock = Mockito.mock(OriginTrackedMapPropertySource.class);
+
+        when(bootstrapSourceMock.getSource()).thenReturn(bootstrapMap);
+
         locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache(),
-                appProperties);
+                appProperties, envMock, bootstrapSourceMock);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
@@ -164,7 +189,7 @@ public class AzureConfigPropertySourceLocatorTest {
         properties.setName(null);
         appProperties.setPrekillTime(30);
         locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache(),
-                appProperties);
+                appProperties, null, null);
 
         locator.locate(environment);
     }
@@ -174,8 +199,15 @@ public class AzureConfigPropertySourceLocatorTest {
         when(environment.getActiveProfiles()).thenReturn(new String[] {});
         when(environment.getProperty("spring.application.name")).thenReturn("");
         properties.setName("");
+        HashMap<String, Object> bootstrapMap = new HashMap<String, Object>();
+
+        AbstractEnvironment envMock = Mockito.mock(AbstractEnvironment.class);
+        OriginTrackedMapPropertySource bootstrapSourceMock = Mockito.mock(OriginTrackedMapPropertySource.class);
+
+        when(bootstrapSourceMock.getSource()).thenReturn(bootstrapMap);
+
         locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache(),
-                appProperties);
+                appProperties, envMock, bootstrapSourceMock);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
@@ -195,7 +227,7 @@ public class AzureConfigPropertySourceLocatorTest {
         expected.expectMessage(failureMsg);
 
         locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache(),
-                appProperties);
+                appProperties, null, null);
 
         when(operations.getKeys(any(), any())).thenThrow(new IllegalStateException(failureMsg));
         assertThat(properties.isFailFast()).isTrue();
@@ -206,7 +238,7 @@ public class AzureConfigPropertySourceLocatorTest {
     public void notFailFastShouldPass() {
         properties.setFailFast(false);
         locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache(),
-                appProperties);
+                appProperties, null, null);
         when(operations.getKeys(any(), any())).thenThrow(new IllegalStateException());
 
         PropertySource<?> source = locator.locate(environment);
@@ -220,9 +252,15 @@ public class AzureConfigPropertySourceLocatorTest {
         properties = new AzureCloudConfigProperties();
         TestUtils.addStore(properties, TEST_STORE_NAME_1, TEST_CONN_STRING);
         TestUtils.addStore(properties, TEST_STORE_NAME_2, TEST_CONN_STRING_2);
+        HashMap<String, Object> bootstrapMap = new HashMap<String, Object>();
+
+        AbstractEnvironment envMock = Mockito.mock(AbstractEnvironment.class);
+        OriginTrackedMapPropertySource bootstrapSourceMock = Mockito.mock(OriginTrackedMapPropertySource.class);
+
+        when(bootstrapSourceMock.getSource()).thenReturn(bootstrapMap);
 
         locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache(),
-                appProperties);
+                appProperties, envMock, bootstrapSourceMock);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);

@@ -41,6 +41,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -49,14 +50,19 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.boot.env.OriginTrackedMapPropertySource;
+import org.springframework.boot.origin.OriginTrackedValue;
+import org.springframework.core.env.AbstractEnvironment;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.MutablePropertySources;
 
 import com.azure.identity.credential.ChainedTokenCredential;
 import com.azure.security.keyvault.secrets.SecretAsyncClient;
@@ -74,10 +80,13 @@ import reactor.core.publisher.Mono;
 @PrepareForTest({AzureConfigPropertySource.class})
 public class AzureConfigPropertySourceTest {
     private static final String EMPTY_CONTENT_TYPE = "";
-    private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
+
+    private static final String FEATURE_FLAG_CONTENT_TYPE = 
+            "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
+
     private static final String KEY_VAULT_CONTENT_TYPE = 
             "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8";
-    
+
     private static final AzureCloudConfigProperties TEST_PROPS = new AzureCloudConfigProperties();
 
     public static final List<KeyValueItem> TEST_ITEMS = new ArrayList<>();
@@ -111,6 +120,7 @@ public class AzureConfigPropertySourceTest {
     private ConfigServiceOperations operations;
 
     private PropertyCache propertyCache;
+
     @Mock
     private ChainedTokenCredential keyVaultCredential;
     
@@ -238,7 +248,7 @@ public class AzureConfigPropertySourceTest {
             assertEquals("Found Feature Flag /foo/test_key_1 with invalid Content Type of ", e.getMessage());
         }
     }
-    
+
     @Test
     public void testFeatureFlagBuildError() {
         when(operations.getKeys(any(), any())).thenReturn(new ArrayList<KeyValueItem>()).thenReturn(FEATURE_ITEMS);
@@ -392,5 +402,45 @@ public class AzureConfigPropertySourceTest {
         badFeature.setKey(".appconfig.featureflag/");
         propertyCache.addToCache(badFeature, "test", new Date());
         propertySource.initFeatures(propertyCache);
+    }
+
+    @Test
+    public void postProcessConfigsTest() {
+        AbstractEnvironment envMock = Mockito.mock(AbstractEnvironment.class);
+        OriginTrackedMapPropertySource bootstrapSourceMock = Mockito.mock(OriginTrackedMapPropertySource.class);
+        MutablePropertySources sources = new MutablePropertySources();
+
+        HashMap<String, Object> source = new HashMap<String, Object>();
+        HashMap<String, Object> primaryConfigs = new HashMap<String, Object>();
+        HashMap<String, Object> secondaryConfigs = new HashMap<String, Object>();
+
+        source.put("KEY_1", OriginTrackedValue.of("${PLACE_1}"));
+        source.put("KEY_2", OriginTrackedValue.of("${PLACE_2}"));
+        source.put("KEY_3", OriginTrackedValue.of("${PLACE_3}"));
+        source.put("KEY_4", OriginTrackedValue.of("${PLACE_1}-${PLACE_3}"));
+
+        primaryConfigs.put("PLACE_1", "P1_1");
+        primaryConfigs.put("PLACE_2", "P1_2");
+
+        secondaryConfigs.put("PLACE_2", "P2_2");
+        secondaryConfigs.put("PLACE_3", "P2_3");
+
+        MapPropertySource primarySource = new MapPropertySource("primary", primaryConfigs);
+        MapPropertySource secondarySource = new MapPropertySource("secondary", secondaryConfigs);
+
+        sources.addFirst(secondarySource);
+        sources.addFirst(primarySource);
+
+        when(bootstrapSourceMock.getSource()).thenReturn(source);
+        when(envMock.resolvePlaceholders(Mockito.matches("P1_1"))).thenReturn("P1_1");
+        when(envMock.resolvePlaceholders(Mockito.matches("P1_2"))).thenReturn("P1_2");
+        when(envMock.resolvePlaceholders(Mockito.matches("P2_3"))).thenReturn("P2_3");
+        when(envMock.resolvePlaceholders(Mockito.matches("P1_1-P2_3"))).thenReturn("P1_1-P2_3");
+
+        propertySource.postProcessConfigurations(envMock, bootstrapSourceMock, sources);
+        assertEquals("P1_1", propertySource.getProperty("KEY_1"));
+        assertEquals("P1_2", propertySource.getProperty("KEY_2"));
+        assertEquals("P2_3", propertySource.getProperty("KEY_3"));
+        assertEquals("P1_1-P2_3", propertySource.getProperty("KEY_4"));
     }
 }

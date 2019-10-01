@@ -18,8 +18,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.env.OriginTrackedMapPropertySource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.AbstractEnvironment;
+import org.springframework.core.env.PropertySource;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -46,7 +49,7 @@ public class AzureConfigBootstrapConfiguration {
 
     @Bean
     public ConnectionStringPool initConnectionString(AzureCloudConfigProperties properties,
-                                                     AzureTokenCredentials credentials) {
+            AzureTokenCredentials credentials, AbstractEnvironment env) {
         ConnectionStringPool pool = new ConnectionStringPool();
         List<ConfigStore> stores = properties.getStores();
 
@@ -110,9 +113,18 @@ public class AzureConfigBootstrapConfiguration {
 
     @Bean
     public AzureConfigPropertySourceLocator sourceLocator(ConfigServiceOperations operations,
-            AzureCloudConfigProperties properties, PropertyCache propertyCache, 
-            AppConfigProviderProperties appProperties) {
-        return new AzureConfigPropertySourceLocator(operations, properties, propertyCache, appProperties);
+            AzureCloudConfigProperties properties, PropertyCache propertyCache,
+            AppConfigProviderProperties appProperties, AbstractEnvironment env) {
+        String name = env.getProperty("spring.cloud.bootstrap.name");
+        OriginTrackedMapPropertySource bootstrapPropertySource = null;
+        
+        for (PropertySource<?> sources: env.getPropertySources()) {
+            if (sources instanceof OriginTrackedMapPropertySource && sources.getName().contains(name)) {
+                bootstrapPropertySource = (OriginTrackedMapPropertySource) sources;
+            }
+        }
+        return new AzureConfigPropertySourceLocator(operations, properties, propertyCache, appProperties, env,
+                bootstrapPropertySource);
     }
     
     @Bean
