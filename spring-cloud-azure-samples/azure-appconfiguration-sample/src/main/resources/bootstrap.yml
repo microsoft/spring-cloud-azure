@@ -4,8 +4,5 @@ spring:
   cloud:
     azure:
       appconfiguration:
-        watch:
-          enabled: false
         stores:
-          - connection-string: ${CONFIG_SOTRE_CONNECTION_STRING}
-
+          - connection-string: ${CONFIG_STORE_CONNECTION_STRING}

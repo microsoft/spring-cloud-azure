@@ -116,11 +116,13 @@ public class AzureConfigBootstrapConfiguration {
             AzureCloudConfigProperties properties, PropertyCache propertyCache,
             AppConfigProviderProperties appProperties, AbstractEnvironment env) {
         String name = env.getProperty("spring.cloud.bootstrap.name");
+        name = name == null ? "bootstrap" : name;
         OriginTrackedMapPropertySource bootstrapPropertySource = null;
         
         for (PropertySource<?> sources: env.getPropertySources()) {
             if (sources instanceof OriginTrackedMapPropertySource && sources.getName().contains(name)) {
                 bootstrapPropertySource = (OriginTrackedMapPropertySource) sources;
+                break;
             }
         }
         return new AzureConfigPropertySourceLocator(operations, properties, propertyCache, appProperties, env,
