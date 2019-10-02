@@ -5,3 +5,5 @@ spring:
       maxRetries: 12
       maxRetryTime: 60
       preKillTime: 5
+      keyVaultWaitTime: 5
+

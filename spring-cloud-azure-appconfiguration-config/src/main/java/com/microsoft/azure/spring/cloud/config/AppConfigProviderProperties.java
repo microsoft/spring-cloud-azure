@@ -28,6 +28,10 @@ public class AppConfigProviderProperties {
     private String version;
 
     @NotNull
+    @Value("${keyVaultWaitTime:5}")
+    private int keyVaultWaitTime;
+
+    @NotNull
     @Value("${maxRetries:12}")
     private int maxRetries;
 
@@ -35,8 +39,6 @@ public class AppConfigProviderProperties {
     @Value("${maxRetryTime:60}")
     private int maxRetryTime;
 
-    // The minimum amount of time the application is kept on if there is a server side
-    // error on startup.
     @NotNull
     @Value("${prekillTime:5}")
     private int prekillTime;
@@ -55,6 +57,20 @@ public class AppConfigProviderProperties {
      */
     public void setVersion(String apiVersion) {
         this.version = apiVersion;
+    }
+
+    /**
+     * @return the keyVaultWaitTime
+     */
+    public int getKeyVaultWaitTime() {
+        return keyVaultWaitTime;
+    }
+
+    /**
+     * @param keyVaultWaitTime the keyVaultWaitTime to set
+     */
+    public void setKeyVaultWaitTime(int keyVaultWaitTime) {
+        this.keyVaultWaitTime = keyVaultWaitTime;
     }
 
     /**

@@ -221,8 +221,8 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
             }
 
             Header retryHeader = response.getFirstHeader(RETRY_AFTER_MS_HEADER);
-            if (retryHeader != null && Long.valueOf(retryHeader.getValue()) > 0) {
-                long retryValue = Long.valueOf(retryHeader.getValue());
+            if (retryHeader != null && Long.parseLong(retryHeader.getValue()) > 0) {
+                long retryValue = Long.parseLong(retryHeader.getValue());
                 int retryCount = 0;
                 Date maxRetryDate = DateUtils.addSeconds(date, appProperties.getMaxRetryTime());
 

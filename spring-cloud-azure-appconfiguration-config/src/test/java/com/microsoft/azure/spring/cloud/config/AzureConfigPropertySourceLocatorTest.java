@@ -88,11 +88,13 @@ public class AzureConfigPropertySourceLocatorTest {
         appProperties.setVersion("1.0");
         appProperties.setMaxRetries(12);
         appProperties.setMaxRetryTime(0);
+        appProperties.setKeyVaultWaitTime(0);
     }
 
     @Test
     public void compositeSourceIsCreated() {
-        locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache());
+        locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache(),
+                appProperties);
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
 
@@ -110,7 +112,8 @@ public class AzureConfigPropertySourceLocatorTest {
     @Test
     public void compositeSourceIsCreatedForPrefixedConfig() {
         properties.getStores().get(0).setPrefix(PREFIX);
-        locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache());
+        locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache(),
+                appProperties);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
@@ -132,7 +135,8 @@ public class AzureConfigPropertySourceLocatorTest {
         when(environment.getActiveProfiles()).thenReturn(new String[] {});
         when(environment.getProperty("spring.application.name")).thenReturn(null);
         properties.setName(null);
-        locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache());
+        locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache(),
+                appProperties);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
@@ -159,7 +163,8 @@ public class AzureConfigPropertySourceLocatorTest {
 
         properties.setName(null);
         appProperties.setPrekillTime(30);
-        locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache());
+        locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache(),
+                appProperties);
 
         locator.locate(environment);
     }
@@ -169,7 +174,8 @@ public class AzureConfigPropertySourceLocatorTest {
         when(environment.getActiveProfiles()).thenReturn(new String[] {});
         when(environment.getProperty("spring.application.name")).thenReturn("");
         properties.setName("");
-        locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache());
+        locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache(),
+                appProperties);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
@@ -188,7 +194,8 @@ public class AzureConfigPropertySourceLocatorTest {
         expected.expect(RuntimeException.class);
         expected.expectMessage(failureMsg);
 
-        locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache());
+        locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache(),
+                appProperties);
 
         when(operations.getKeys(any(), any())).thenThrow(new IllegalStateException(failureMsg));
         assertThat(properties.isFailFast()).isTrue();
@@ -198,7 +205,8 @@ public class AzureConfigPropertySourceLocatorTest {
     @Test
     public void notFailFastShouldPass() {
         properties.setFailFast(false);
-        locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache());
+        locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache(),
+                appProperties);
         when(operations.getKeys(any(), any())).thenThrow(new IllegalStateException());
 
         PropertySource<?> source = locator.locate(environment);
@@ -213,7 +221,8 @@ public class AzureConfigPropertySourceLocatorTest {
         TestUtils.addStore(properties, TEST_STORE_NAME_1, TEST_CONN_STRING);
         TestUtils.addStore(properties, TEST_STORE_NAME_2, TEST_CONN_STRING_2);
 
-        locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache());
+        locator = new AzureConfigPropertySourceLocator(operations, properties, PropertyCache.getPropertyCache(),
+                appProperties);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);

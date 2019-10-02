@@ -11,12 +11,11 @@ import com.microsoft.azure.spring.cloud.feature.manager.FeatureFilter;
 import com.microsoft.azure.spring.cloud.feature.manager.entities.FeatureFilterEvaluationContext;
 
 @Component("Random")
-public class Random implements FeatureFilter{
+public class Random implements FeatureFilter {
 
     @Override
     public boolean evaluate(FeatureFilterEvaluationContext context) {
         double chance = Double.valueOf((String) context.getParameters().get("chance"));
-        return Math.random() > chance/100; 
+        return Math.random() > chance / 100;
     }
-
 }
