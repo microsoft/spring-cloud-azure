@@ -22,27 +22,27 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(prefix = AppConfigProviderProperties.CONFIG_PREFIX)
 public class AppConfigProviderProperties {
     public static final String CONFIG_PREFIX = "spring.cloud.appconfiguration";
-    
+
     @NotEmpty
     @Value("${version:1.0}")
     private String version;
-    
+
     @NotNull
     @Value("${keyVaultWaitTime:5}")
     private int keyVaultWaitTime;
-    
+
     @NotNull
     @Value("${maxRetries:12}")
     private int maxRetries;
-    
+
     @NotNull
     @Value("${maxRetryTime:60}")
     private int maxRetryTime;
-    
+
     @NotNull
     @Value("${prekillTime:5}")
     private int prekillTime;
-    
+
     private static final Date startDate = new Date();
 
     /**
@@ -72,7 +72,7 @@ public class AppConfigProviderProperties {
     public void setKeyVaultWaitTime(int keyVaultWaitTime) {
         this.keyVaultWaitTime = keyVaultWaitTime;
     }
-    
+
     /**
      * @return the maxRetries
      */
@@ -121,5 +121,5 @@ public class AppConfigProviderProperties {
     public Date getStartDate() {
         return startDate;
     }
-    
+
 }

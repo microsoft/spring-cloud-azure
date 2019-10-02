@@ -89,7 +89,7 @@ public class AzureConfigPropertySourceTest {
 
     private static final AzureCloudConfigProperties TEST_PROPS = new AzureCloudConfigProperties();
 
-    public static final List<KeyValueItem> TEST_ITEMS = new ArrayList<>();
+    public static List<KeyValueItem> TEST_ITEMS = new ArrayList<>();
 
     public static final List<KeyValueItem> FEATURE_ITEMS = new ArrayList<>();
 
@@ -107,8 +107,6 @@ public class AzureConfigPropertySourceTest {
 
     private static final KeyValueItem keyVaultItem = createItem(TEST_CONTEXT, TEST_KEY_VAULT_1, TEST_VALUE_VAULT_1,
             TEST_LABEL_VAULT_1, KEY_VAULT_CONTENT_TYPE);
-    
-    public List<KeyValueItem> testItems = new ArrayList<>();
 
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
 
@@ -161,15 +159,15 @@ public class AzureConfigPropertySourceTest {
                 azureProperties, appProperties);
         propertyCache = PropertyCache.resetPropertyCache();
         
-        testItems = new ArrayList<KeyValueItem>();
-        testItems.add(item1);
-        testItems.add(item2);
-        testItems.add(item3);
+        TEST_ITEMS = new ArrayList<KeyValueItem>();
+        TEST_ITEMS.add(item1);
+        TEST_ITEMS.add(item2);
+        TEST_ITEMS.add(item3);
     }
 
     @Test
     public void testPropCanBeInitAndQueried() {
-        when(operations.getKeys(any(), any())).thenReturn(testItems).thenReturn(FEATURE_ITEMS);
+        when(operations.getKeys(any(), any())).thenReturn(TEST_ITEMS).thenReturn(FEATURE_ITEMS);
         try {
             propertySource.initProperties(propertyCache);
         } catch (IOException e) {
@@ -178,7 +176,7 @@ public class AzureConfigPropertySourceTest {
         propertySource.initFeatures(propertyCache);
 
         String[] keyNames = propertySource.getPropertyNames();
-        String[] expectedKeyNames = testItems.stream()
+        String[] expectedKeyNames = TEST_ITEMS.stream()
                 .map(t -> t.getKey().substring(TEST_CONTEXT.length())).toArray(String[]::new);
         String[] allExpectedKeyNames = ArrayUtils.addAll(expectedKeyNames, FEATURE_MANAGEMENT_KEY);
 
@@ -191,7 +189,7 @@ public class AzureConfigPropertySourceTest {
 
     @Test
     public void testPropertyNameSlashConvertedToDots() {
-        when(operations.getKeys(any(), any())).thenReturn(testItems).thenReturn(FEATURE_ITEMS);
+        when(operations.getKeys(any(), any())).thenReturn(TEST_ITEMS).thenReturn(FEATURE_ITEMS);
         KeyValueItem slashedProp = createItem(TEST_CONTEXT, TEST_SLASH_KEY, TEST_SLASH_VALUE, null, EMPTY_CONTENT_TYPE);
         when(operations.getKeys(any(), any())).thenReturn(Arrays.asList(slashedProp)).thenReturn(FEATURE_ITEMS);
 
@@ -276,13 +274,13 @@ public class AzureConfigPropertySourceTest {
 
     @Test
     public void testWatchUpdateConfigurations() throws ParseException {
-        when(operations.getKeys(any(), any())).thenReturn(testItems).thenReturn(FEATURE_ITEMS);
+        when(operations.getKeys(any(), any())).thenReturn(TEST_ITEMS).thenReturn(FEATURE_ITEMS);
         Duration delay = Duration.ofSeconds(0);
 
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
         Date date = dateFormat.parse("20190202");
         Date testDate = new Date(date.getTime() - 2);
-        propertyCache.addKeyValuesToCache(testItems, TEST_STORE_NAME, testDate);
+        propertyCache.addKeyValuesToCache(TEST_ITEMS, TEST_STORE_NAME, testDate);
         propertyCache.addToCache(featureItem, TEST_STORE_NAME, testDate);
 
         propertyCache.findNonCachedKeys(delay, TEST_STORE_NAME);
@@ -295,7 +293,7 @@ public class AzureConfigPropertySourceTest {
         propertySource.initFeatures(propertyCache);
 
         String[] keyNames = propertySource.getPropertyNames();
-        String[] expectedKeyNames = testItems.stream()
+        String[] expectedKeyNames = TEST_ITEMS.stream()
                 .map(t -> t.getKey().substring(TEST_CONTEXT.length())).toArray(String[]::new);
         String[] allExpectedKeyNames = ArrayUtils.addAll(expectedKeyNames, FEATURE_MANAGEMENT_KEY);
 
@@ -309,14 +307,16 @@ public class AzureConfigPropertySourceTest {
 
     @Test
     public void testKeyVaultTest() throws Exception {
-        testItems.add(keyVaultItem);
-        when(operations.getKeys(any(), any())).thenReturn(testItems).thenReturn(FEATURE_ITEMS);
+        TEST_ITEMS.add(keyVaultItem);
+        when(operations.getKeys(any(), any())).thenReturn(TEST_ITEMS).thenReturn(FEATURE_ITEMS);
         PowerMockito.whenNew(SecretClientBuilder.class).withNoArguments().thenReturn(secretClientBuilder);
         when(secretClientBuilder.endpoint(Mockito.anyString())).thenReturn(secretClientBuilder);
         when(secretClientBuilder.credential(Mockito.any())).thenReturn(secretClientBuilder);
         when(secretClientBuilder.buildAsyncClient()).thenReturn(secretAsyncClient);
         when(secretAsyncClient.getSecret(Mockito.any(Secret.class))).thenReturn(monoSecret);
-        Secret secret = new Secret("mySecret", "mySecret");
+        
+        String secretValue = "secretValue";
+        Secret secret = new Secret("mySecret", secretValue);
         when(monoSecret.block(Mockito.any())).thenReturn(secret);
         
         Duration delay = Duration.ofSeconds(0);
@@ -324,7 +324,7 @@ public class AzureConfigPropertySourceTest {
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
         Date date = dateFormat.parse("20190202");
         Date testDate = new Date(date.getTime() - 2);
-        propertyCache.addKeyValuesToCache(testItems, TEST_STORE_NAME, testDate);
+        propertyCache.addKeyValuesToCache(TEST_ITEMS, TEST_STORE_NAME, testDate);
         propertyCache.addToCache(featureItem, TEST_STORE_NAME, testDate);
 
         propertyCache.findNonCachedKeys(delay, TEST_STORE_NAME);
@@ -336,7 +336,7 @@ public class AzureConfigPropertySourceTest {
         propertySource.initFeatures(propertyCache);
 
         String[] keyNames = propertySource.getPropertyNames();
-        String[] expectedKeyNames = testItems.stream()
+        String[] expectedKeyNames = TEST_ITEMS.stream()
                 .map(t -> t.getKey().substring(TEST_CONTEXT.length())).toArray(String[]::new);
         String[] allExpectedKeyNames = ArrayUtils.addAll(expectedKeyNames, FEATURE_MANAGEMENT_KEY);
 
@@ -345,22 +345,23 @@ public class AzureConfigPropertySourceTest {
         assertThat(propertySource.getProperty(TEST_KEY_1)).isEqualTo(TEST_VALUE_1);
         assertThat(propertySource.getProperty(TEST_KEY_2)).isEqualTo(TEST_VALUE_2);
         assertThat(propertySource.getProperty(TEST_KEY_3)).isEqualTo(TEST_VALUE_3);
-        assertThat(propertySource.getProperty(TEST_KEY_VAULT_1)).isEqualTo("mySecret");
+        assertThat(propertySource.getProperty(TEST_KEY_VAULT_1)).isEqualTo(secretValue);
         verify(operations, times(2)).getKeys(any(), any());
     }
     
     @Test
     public void testKeyVaultReloadTest() throws Exception {
-        testItems.add(keyVaultItem);
-        when(operations.getKeys(any(), any())).thenReturn(testItems).thenReturn(FEATURE_ITEMS);
-        when(operations.getKeys(any(), any())).thenReturn(testItems).thenReturn(FEATURE_ITEMS);
+        TEST_ITEMS.add(keyVaultItem);
+        when(operations.getKeys(any(), any())).thenReturn(TEST_ITEMS).thenReturn(FEATURE_ITEMS);
+        when(operations.getKeys(any(), any())).thenReturn(TEST_ITEMS).thenReturn(FEATURE_ITEMS);
         PowerMockito.whenNew(SecretClientBuilder.class).withNoArguments().thenReturn(secretClientBuilder);
         when(secretClientBuilder.endpoint(Mockito.anyString())).thenReturn(secretClientBuilder);
         when(secretClientBuilder.credential(Mockito.any())).thenReturn(secretClientBuilder);
         when(secretClientBuilder.buildAsyncClient()).thenReturn(secretAsyncClient);
         when(secretAsyncClient.getSecret(Mockito.any(Secret.class))).thenReturn(monoSecret);
         
-        Secret secret = new Secret("mySecret", "mySecret");
+        String secretValue = "secretValue";
+        Secret secret = new Secret("mySecret", secretValue);
         when(monoSecret.block(Mockito.any())).thenReturn(secret);
         Duration delay = Duration.ofSeconds(0);
         propertyCache.addContext(TEST_STORE_NAME, TEST_CONTEXT);
@@ -368,7 +369,7 @@ public class AzureConfigPropertySourceTest {
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
         Date date = dateFormat.parse("20190202");
         Date testDate = new Date(date.getTime() - 2);
-        propertyCache.addKeyValuesToCache(testItems, TEST_STORE_NAME, testDate);
+        propertyCache.addKeyValuesToCache(TEST_ITEMS, TEST_STORE_NAME, testDate);
         propertyCache.addToCache(featureItem, TEST_STORE_NAME, testDate);
 
         propertyCache.findNonCachedKeys(delay, TEST_STORE_NAME);
@@ -380,7 +381,7 @@ public class AzureConfigPropertySourceTest {
         propertySource.initFeatures(propertyCache);
 
         String[] keyNames = propertySource.getPropertyNames();
-        String[] expectedKeyNames = testItems.stream()
+        String[] expectedKeyNames = TEST_ITEMS.stream()
                 .map(t -> t.getKey().substring(TEST_CONTEXT.length())).toArray(String[]::new);
         String[] allExpectedKeyNames = ArrayUtils.addAll(expectedKeyNames, FEATURE_MANAGEMENT_KEY);
 
@@ -389,7 +390,7 @@ public class AzureConfigPropertySourceTest {
         assertThat(propertySource.getProperty(TEST_KEY_1)).isEqualTo(TEST_VALUE_1);
         assertThat(propertySource.getProperty(TEST_KEY_2)).isEqualTo(TEST_VALUE_2);
         assertThat(propertySource.getProperty(TEST_KEY_3)).isEqualTo(TEST_VALUE_3);
-        assertThat(propertySource.getProperty(TEST_KEY_VAULT_1)).isEqualTo("mySecret");
+        assertThat(propertySource.getProperty(TEST_KEY_VAULT_1)).isEqualTo(secretValue);
         verify(operations, times(5)).getKeys(any(), any());
     }
     
