@@ -80,10 +80,7 @@ import reactor.core.publisher.Mono;
 @PrepareForTest({AzureConfigPropertySource.class})
 public class AzureConfigPropertySourceTest {
     private static final String EMPTY_CONTENT_TYPE = "";
-
-    private static final String FEATURE_FLAG_CONTENT_TYPE = 
-            "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
-
+    private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
     private static final String KEY_VAULT_CONTENT_TYPE = 
             "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8";
 
@@ -118,7 +115,6 @@ public class AzureConfigPropertySourceTest {
     private ConfigServiceOperations operations;
 
     private PropertyCache propertyCache;
-
     @Mock
     private ChainedTokenCredential keyVaultCredential;
     
