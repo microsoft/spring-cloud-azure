@@ -22,7 +22,6 @@ import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_VALUE_2
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_VALUE_3;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.createItem;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
