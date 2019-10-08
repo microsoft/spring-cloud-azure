@@ -86,9 +86,15 @@ public class AzureConfigPropertySourceTest {
 
     private static final KeyValueItem item3 = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3, TEST_LABEL_3,
             EMPTY_CONTENT_TYPE);
+    
+    private static final KeyValueItem item3Null = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3, TEST_LABEL_3,
+            null);
 
     private static final KeyValueItem featureItem = createItem(".appconfig.featureflag/", "Alpha", FEATURE_VALUE,
             FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
+    
+    private static final KeyValueItem featureItemNull = createItem(".appconfig.featureflag/", "Alpha", FEATURE_VALUE,
+            FEATURE_LABEL, null);
 
     private static final KeyValueItem keyVaultItem = createItem(TEST_CONTEXT, TEST_KEY_VAULT_1, TEST_VALUE_VAULT_1,
             TEST_LABEL_VAULT_1, KEY_VAULT_CONTENT_TYPE);
@@ -257,6 +263,7 @@ public class AzureConfigPropertySourceTest {
 
         assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));
     }
+    
     @Test
     public void testKeyVaultTest() throws Exception {
         testItems.add(keyVaultItem);
@@ -291,5 +298,44 @@ public class AzureConfigPropertySourceTest {
         assertThat(propertySource.getProperty(TEST_KEY_3)).isEqualTo(TEST_VALUE_3);
         assertThat(propertySource.getProperty(TEST_KEY_VAULT_1)).isEqualTo(secretValue);
         verify(operations, times(2)).getKeys(any(), any());
+    }
+    
+    @Test
+    public void initNullValidContentTypeTest() {
+        ArrayList<KeyValueItem> items = new ArrayList<KeyValueItem>();
+        items.add(item3Null);
+        when(operations.getKeys(any(), any())).thenReturn(items).thenReturn(new ArrayList<KeyValueItem>());
+        
+        FeatureSet featureSet = new FeatureSet();
+        try {
+            propertySource.initProperties(featureSet);
+        } catch (IOException e) {
+            fail("Failed Reading in Feature Flags");
+        }
+        
+        String[] keyNames = propertySource.getPropertyNames();
+        String[] expectedKeyNames = items.stream()
+                .map(t -> t.getKey().substring(TEST_CONTEXT.length())).toArray(String[]::new);
+
+        assertThat(keyNames).containsExactlyInAnyOrder(expectedKeyNames);
+    }
+    
+    @Test
+    public void initNullInvalidContentTypeFeatureFlagTest() {
+        ArrayList<KeyValueItem> items = new ArrayList<KeyValueItem>();
+        items.add(featureItemNull);
+        when(operations.getKeys(any(), any())).thenReturn(new ArrayList<KeyValueItem>()).thenReturn(items);
+        
+        FeatureSet featureSet = new FeatureSet();
+        try {
+            propertySource.initProperties(featureSet);
+        } catch (IOException e) {
+
+        }
+        
+        String[] keyNames = propertySource.getPropertyNames();
+        String[] expectedKeyNames = {};
+
+        assertThat(keyNames).containsExactlyInAnyOrder(expectedKeyNames);
     }
 }

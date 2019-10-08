@@ -104,7 +104,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
         List<KeyValueItem> items = source.getKeys(storeName, queryOptions);
         for (KeyValueItem item : items) {
             String key = item.getKey().trim().substring(context.length()).replace('/', '.');
-            if (item.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
+            if (item.getContentType() != null && item.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
                 String entry = getKeyVaultEntry(item.getValue());
 
                 // Null in the case of failFast is false, will just skip entry.
@@ -231,7 +231,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
      */
     private Object createFeature(KeyValueItem item) throws IOException {
         Feature feature = null;
-        if (item.getContentType().equals(FEATURE_FLAG_CONTENT_TYPE)) {
+        if (item.getContentType() != null && item.getContentType().equals(FEATURE_FLAG_CONTENT_TYPE)) {
             try {
                 FeatureManagementItem featureItem = mapper.readValue(item.getValue(), FeatureManagementItem.class);
                 feature = new Feature(featureItem);
