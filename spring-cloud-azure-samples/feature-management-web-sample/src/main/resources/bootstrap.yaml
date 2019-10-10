@@ -5,4 +5,4 @@ spring:
     azure:
       appconfiguration:
         stores:
-          - connection-string: [configuration-store-string]
+          - connection-string: ${APP_CONFIGURATION_CONNECTION_STRING}

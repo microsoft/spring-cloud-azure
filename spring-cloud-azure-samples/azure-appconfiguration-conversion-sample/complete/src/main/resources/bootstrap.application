@@ -1,0 +1,2 @@
+spring.cloud.azure.appconfiguration.stores[0].connection-string=${CONFIG_STORE_CONNECTION_STRING}
+          
