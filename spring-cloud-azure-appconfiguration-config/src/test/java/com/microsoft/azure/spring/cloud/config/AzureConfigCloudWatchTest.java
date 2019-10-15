@@ -66,7 +66,7 @@ public class AzureConfigCloudWatchTest {
         properties = new AzureCloudConfigProperties();
         properties.setStores(Arrays.asList(store));
 
-        properties.getWatch().setDelay(Duration.ofSeconds(1));
+        properties.getWatch().setDelay(Duration.ofSeconds(-60));
 
         contextsMap = new ConcurrentHashMap<>();
         contextsMap.put(TEST_STORE_NAME, Arrays.asList(TEST_ETAG));
@@ -122,6 +122,24 @@ public class AzureConfigCloudWatchTest {
         // If there is no change it shouldn't update
         verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
         verify(configOperations, times(5)).getRevisions(any(), any());
+    }
+    
+    @Test
+    public void notRefreshTime() throws Exception {
+        properties.getWatch().setDelay(Duration.ofSeconds(60));
+        AzureCloudConfigWatch watchLargeDelay = new AzureCloudConfigWatch(configOperations, properties, contextsMap);
+        
+        PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
+        watchLargeDelay.setApplicationEventPublisher(eventPublisher);
+        when(configOperations.getKeys(any(), any())).thenReturn(keys);
+        when(configOperations.getRevisions(any(), any())).thenReturn(initialResponse()).thenReturn(updatedResponse());
+
+        when(date.after(Mockito.any(Date.class))).thenReturn(true);
+        watchLargeDelay.refreshConfigurations();
+
+        // The first time an action happens it can update
+        verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
+        verify(configOperations, times(0)).getRevisions(any(), any());
     }
 
     private List<KeyValueItem> initialResponse() {
