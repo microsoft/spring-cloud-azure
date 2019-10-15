@@ -27,6 +27,7 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.google.common.collect.Lists;
+import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
@@ -39,7 +40,6 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
     private static final String PATH_SPLITTER = "/";
 
-
     private final AzureCloudConfigProperties properties;
 
     private final String profileSeparator;
@@ -48,17 +48,16 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
     private final Map<String, List<String>> storeContextsMap = new ConcurrentHashMap<>();
 
-    private PropertyCache propertyCache;
     private AppConfigProviderProperties appProperties;
+
     private ClientStore clients;
 
     public AzureConfigPropertySourceLocator(AzureCloudConfigProperties properties,
-            PropertyCache propertyCache, AppConfigProviderProperties appProperties, ClientStore clients) {
+            AppConfigProviderProperties appProperties, ClientStore clients) {
         this.properties = properties;
         this.appProperties = appProperties;
         this.profileSeparator = properties.getProfileSeparator();
         this.configStores = properties.getStores();
-        this.propertyCache = propertyCache;
         this.clients = clients;
     }
 
@@ -118,13 +117,16 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         contexts.addAll(generateContexts(this.properties.getDefaultContext(), profiles, store));
         contexts.addAll(generateContexts(applicationName, profiles, store));
 
+        // There is only one Feature Set for all AzureConfigPropertySources
+        FeatureSet featureSet = new FeatureSet();
+
         // Reverse in order to add Profile specific properties earlier, and last profile
         // comes first
         Collections.reverse(contexts);
         for (String sourceContext : contexts) {
             try {
                 List<AzureConfigPropertySource> sourceList = create(sourceContext, store, storeContextsMap,
-                        initFeatures);
+                        initFeatures, featureSet);
                 sourceList.forEach(composite::addPropertySource);
                 LOGGER.debug("PropertySource context [{}] is added.", sourceContext);
             } catch (Exception e) {
@@ -180,15 +182,17 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
      * @throws URISyntaxException
      */
     private List<AzureConfigPropertySource> create(String context, ConfigStore store,
-            Map<String, List<String>> storeContextsMap, boolean initFeatures) throws IOException, URISyntaxException {
+            Map<String, List<String>> storeContextsMap, boolean initFeatures, FeatureSet featureSet)
+            throws IOException {
         List<AzureConfigPropertySource> sourceList = new ArrayList<>();
 
         for (String label : store.getLabels()) {
-            AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context,
-                    store.getName(), label, properties, appProperties, clients);
-            propertySource.initProperties(propertyCache);
+            AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, store.getName(), label,
+                    properties, appProperties, clients);
+
+            propertySource.initProperties(featureSet);
             if (initFeatures) {
-                propertySource.initFeatures(propertyCache);
+                propertySource.initFeatures(featureSet);
             }
             sourceList.add(propertySource);
             putStoreContext(store.getName(), context, storeContextsMap);

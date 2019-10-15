@@ -32,7 +32,5 @@ public enum RequestTracingConstants {
     public String toString() {
         return text;
     }
-    
-    
 
 }

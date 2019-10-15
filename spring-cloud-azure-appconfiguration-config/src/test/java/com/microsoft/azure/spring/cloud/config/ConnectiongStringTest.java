@@ -5,15 +5,16 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
-import static com.microsoft.azure.spring.cloud.config.resource.ConnectionString.ENDPOINT_ERR_MSG;
-import static org.assertj.core.api.Assertions.assertThat;
-
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME;
+import static com.microsoft.azure.spring.cloud.config.resource.ConnectionString.ENDPOINT_ERR_MSG;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConnectiongStringTest {
     private static final String NO_ENDPOINT_CONN_STRING = "Id=fake-conn-id;Secret=ZmFrZS1jb25uLXNlY3JldA==";
@@ -49,6 +50,23 @@ public class ConnectiongStringTest {
     public void validConnectionStringCanBeExtracted() {
         ConnectionString connString = ConnectionString.of(TEST_CONN_STRING);
         assertConnStringFieldsValid(connString);
+    }
+
+    @Test
+    public void connectionPoolMapCanBePut() {
+        ConnectionStringPool pool = new ConnectionStringPool();
+        pool.put(TEST_STORE_NAME, TEST_CONN_STRING);
+        ConnectionString connString = pool.get(TEST_STORE_NAME);
+        assertConnStringFieldsValid(connString);
+    }
+
+    @Test
+    public void nullConnectionPoolShouldNotBePut() {
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage("Connection string should not be null.");
+        ConnectionStringPool pool = new ConnectionStringPool();
+        ConnectionString nullConnString = null;
+        pool.put(TEST_STORE_NAME, nullConnString);
     }
 
     private void assertConnStringFieldsValid(ConnectionString connString) {

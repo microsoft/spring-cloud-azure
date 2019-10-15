@@ -30,9 +30,9 @@ public class BaseAppConfigurationPolicy implements HttpPipelinePolicy {
 
     @Override
     public Mono<HttpResponse> process(HttpPipelineCallContext context, HttpPipelineNextPolicy next) {
-        String sdkUserAgent = context.httpRequest().headers().get(HttpHeaders.USER_AGENT).value();
-        context.httpRequest().headers().put(HttpHeaders.USER_AGENT, USER_AGENT + "; " + sdkUserAgent);
-        context.httpRequest().headers().put("Correlation-Context", getTracingInfo(context.httpRequest()));
+        String sdkUserAgent = context.getHttpRequest().getHeaders().get(HttpHeaders.USER_AGENT).getValue();
+        context.getHttpRequest().getHeaders().put(HttpHeaders.USER_AGENT, USER_AGENT + "; " + sdkUserAgent);
+        context.getHttpRequest().getHeaders().put("Correlation-Context", getTracingInfo(context.getHttpRequest()));
         return next.process();
     }
 
@@ -51,7 +51,7 @@ public class BaseAppConfigurationPolicy implements HttpPipelinePolicy {
             return "";
         }
 
-        String requestTypeValue = request.url().getPath().startsWith("/kv") ? RequestType.STARTUP.toString()
+        String requestTypeValue = request.getUrl().getPath().startsWith("/kv") ? RequestType.STARTUP.toString()
                 : RequestType.WATCH.toString();
         String requestType = RequestTracingConstants.REQUEST_TYPE.toString() + "=" + requestTypeValue;
         String host = RequestTracingConstants.HOST + "=" + getHostType();

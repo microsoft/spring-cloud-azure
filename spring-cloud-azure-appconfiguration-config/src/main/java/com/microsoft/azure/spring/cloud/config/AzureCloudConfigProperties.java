@@ -24,7 +24,6 @@ import org.springframework.validation.annotation.Validated;
 
 import com.microsoft.azure.AzureEnvironment;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
-import com.microsoft.azure.spring.cloud.config.stores.KeyVaultStore;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
 
 @Validated
@@ -37,8 +36,6 @@ public class AzureCloudConfigProperties {
     private boolean enabled = true;
 
     private List<ConfigStore> stores = new ArrayList<>();
-    
-    private List<KeyVaultStore> keyVaultStores = new ArrayList<>();
 
     @NotEmpty
     private String defaultContext = "application";
@@ -89,14 +86,6 @@ public class AzureCloudConfigProperties {
 
     public void setStores(List<ConfigStore> stores) {
         this.stores = stores;
-    }
-    
-    public List<KeyVaultStore> getKeyVaultStores() {
-        return keyVaultStores;
-    }
-
-    public void setKeyVaultStoresStores(List<KeyVaultStore> keyVaultStores) {
-        this.keyVaultStores = keyVaultStores;
     }
 
     public String getDefaultContext() {

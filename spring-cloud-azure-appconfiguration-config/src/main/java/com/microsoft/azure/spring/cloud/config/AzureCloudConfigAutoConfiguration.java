@@ -23,10 +23,8 @@ public class AzureCloudConfigAutoConfiguration {
     static class CloudWatchAutoConfiguration {
         @Bean
         public AzureCloudConfigWatch getConfigWatch(AzureCloudConfigProperties properties,
-                AzureConfigPropertySourceLocator sourceLocator, PropertyCache propertyCache,
-                ClientStore clientStore) {
-            return new AzureCloudConfigWatch(properties, sourceLocator.getStoreContextsMap(), propertyCache,
-                    clientStore);
+                AzureConfigPropertySourceLocator sourceLocator, ClientStore clientStore) {
+            return new AzureCloudConfigWatch(properties, sourceLocator.getStoreContextsMap(), clientStore);
         }
 
         @Bean

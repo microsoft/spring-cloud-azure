@@ -41,18 +41,18 @@ public class BaseAppConfigurationPolicyTest {
     public void processTest() throws MalformedURLException {
         URL url = new URL("https://www.test.url/link");
         HttpRequest request = new HttpRequest(HttpMethod.GET, url);
-        request.header(HttpHeaders.USER_AGENT, "PreExistingUserAgent");
+        request.setHeader(HttpHeaders.USER_AGENT, "PreExistingUserAgent");
         BaseAppConfigurationPolicy policy = new BaseAppConfigurationPolicy();
 
-        when(contextMock.httpRequest()).thenReturn(request);
+        when(contextMock.getHttpRequest()).thenReturn(request);
 
         policy.process(contextMock, nextMock);
 
-        String userAgent = contextMock.httpRequest().headers().get(HttpHeaders.USER_AGENT).value();
+        String userAgent = contextMock.getHttpRequest().getHeaders().get(HttpHeaders.USER_AGENT).getValue();
         assertEquals("null/null; " + PRE_USER_AGENT, userAgent);
 
         assertEquals("RequestType=Watch,Host=None",
-                contextMock.httpRequest().headers().get("Correlation-Context").value());
+                contextMock.getHttpRequest().getHeaders().get("Correlation-Context").getValue());
 
     }
 

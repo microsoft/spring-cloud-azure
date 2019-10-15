@@ -30,17 +30,14 @@ import static com.microsoft.azure.spring.cloud.config.TestUtils.createItem;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.net.URI;
 import java.rmi.ServerException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -63,17 +60,13 @@ import com.azure.core.http.rest.PagedFlux;
 import com.azure.core.http.rest.PagedResponse;
 import com.azure.data.appconfiguration.ConfigurationAsyncClient;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
-import com.azure.identity.credential.ChainedTokenCredential;
-import com.azure.security.keyvault.secrets.SecretAsyncClient;
-import com.azure.security.keyvault.secrets.SecretClientBuilder;
 import com.azure.security.keyvault.secrets.models.Secret;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsoft.azure.keyvault.KeyVaultClient;
-import com.microsoft.azure.keyvault.models.SecretBundle;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureFilterEvaluationContext;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
+import com.microsoft.azure.spring.cloud.config.stores.KeyVaultClient;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -112,31 +105,9 @@ public class AzureConfigPropertySourceTest {
 
     private static ObjectMapper mapper = new ObjectMapper();
 
-    private HashMap<String, KeyVaultClient> keyVaultClients;
-
-    @Mock
-    private KeyVaultClient keyVaultClient;
-
-    @Mock
-    private ChainedTokenCredential keyVaultCredential;
-
-    @Mock
-    private SecretClientBuilder secretClientBuilder;
-
-    @Mock
-    private SecretAsyncClient secretAsyncClient;
-
-    @Mock
-    private Mono<Secret> monoSecret;
-
     private AzureCloudConfigProperties azureProperties;
 
     private AppConfigProviderProperties appProperties;
-
-    @Mock
-    private SecretBundle secretBundleMock;
-
-    PropertyCache propertyCache;
 
     @Mock
     private ClientStore clientStoreMock;
@@ -162,9 +133,6 @@ public class AzureConfigPropertySourceTest {
     @Mock
     private PagedResponse<ConfigurationSetting> pagedResponseMock;
 
-    @Mock
-    private Iterator<ConfigurationSetting> configurationsIterator;
-
     @Rule
     public ExpectedException expected = ExpectedException.none();
 
@@ -172,8 +140,8 @@ public class AzureConfigPropertySourceTest {
     public static void init() {
         TestUtils.addStore(TEST_PROPS, TEST_STORE_NAME, TEST_CONN_STRING);
 
-        keyVaultItem.contentType(KEY_VAULT_CONTENT_TYPE);
-        featureItem.contentType(FEATURE_FLAG_CONTENT_TYPE);
+        keyVaultItem.setContentType(KEY_VAULT_CONTENT_TYPE);
+        featureItem.setContentType(FEATURE_FLAG_CONTENT_TYPE);
         FEATURE_ITEMS.add(featureItem);
     }
 
@@ -192,9 +160,6 @@ public class AzureConfigPropertySourceTest {
         testItems.add(item2);
         testItems.add(item3);
 
-        keyVaultClients = new HashMap<String, KeyVaultClient>();
-        keyVaultClients.put("test.key.vault.com", keyVaultClient);
-
         when(configClientMock.listSettings(Mockito.any())).thenReturn(settingsMock);
         when(settingsMock.byPage()).thenReturn(pageMock);
         when(pageMock.collectList()).thenReturn(collectionMock);
@@ -205,21 +170,19 @@ public class AzureConfigPropertySourceTest {
 
     @Test
     public void testPropCanBeInitAndQueried() throws ServerException {
-        propertyCache = PropertyCache.resetPropertyCache();
-
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(testItems)
                 .thenReturn(FEATURE_ITEMS);
-
+        FeatureSet featureSet = new FeatureSet();
         try {
-            propertySource.initProperties(propertyCache);
+            propertySource.initProperties(featureSet);
         } catch (IOException e) {
             fail("Failed Reading in Feature Flags");
         }
-        propertySource.initFeatures(propertyCache);
+        propertySource.initFeatures(featureSet);
 
         String[] keyNames = propertySource.getPropertyNames();
         String[] expectedKeyNames = testItems.stream()
-                .map(t -> t.key().substring(TEST_CONTEXT.length())).toArray(String[]::new);
+                .map(t -> t.getKey().substring(TEST_CONTEXT.length())).toArray(String[]::new);
         String[] allExpectedKeyNames = ArrayUtils.addAll(expectedKeyNames, FEATURE_MANAGEMENT_KEY);
 
         assertThat(keyNames).containsExactlyInAnyOrder(allExpectedKeyNames);
@@ -231,16 +194,15 @@ public class AzureConfigPropertySourceTest {
 
     @Test
     public void testPropertyNameSlashConvertedToDots() throws ServerException {
-        propertyCache = PropertyCache.resetPropertyCache();
         ConfigurationSetting slashedProp = createItem(TEST_CONTEXT, TEST_SLASH_KEY, TEST_SLASH_VALUE, null,
                 EMPTY_CONTENT_TYPE);
         List<ConfigurationSetting> settings = new ArrayList<ConfigurationSetting>();
         settings.add(slashedProp);
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(settings)
                 .thenReturn(new ArrayList<ConfigurationSetting>());
-
+        FeatureSet featureSet = new FeatureSet();
         try {
-            propertySource.initProperties(propertyCache);
+            propertySource.initProperties(featureSet);
         } catch (IOException e) {
             fail("Failed Reading in Feature Flags");
         }
@@ -256,18 +218,18 @@ public class AzureConfigPropertySourceTest {
 
     @Test
     public void testFeatureFlagCanBeInitedAndQueried() throws ServerException {
-        propertyCache = PropertyCache.resetPropertyCache();
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString()))
                 .thenReturn(new ArrayList<ConfigurationSetting>()).thenReturn(FEATURE_ITEMS);
 
+        FeatureSet featureSet = new FeatureSet();
         try {
-            propertySource.initProperties(propertyCache);
+            propertySource.initProperties(featureSet);
         } catch (IOException e) {
             fail("Failed Reading in Feature Flags");
         }
-        propertySource.initFeatures(propertyCache);
+        propertySource.initFeatures(featureSet);
 
-        FeatureSet featureSet = new FeatureSet();
+        FeatureSet featureSetExpected = new FeatureSet();
         Feature feature = new Feature();
         feature.setId("Alpha");
         ArrayList<FeatureFilterEvaluationContext> filters = new ArrayList<FeatureFilterEvaluationContext>();
@@ -275,18 +237,17 @@ public class AzureConfigPropertySourceTest {
         ffec.setName("TestFilter");
         filters.add(ffec);
         feature.setEnabledFor(filters);
-        featureSet.addFeature("Alpha", feature);
-        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSet, LinkedHashMap.class);
+        featureSetExpected.addFeature("Alpha", feature);
+        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected, LinkedHashMap.class);
 
         assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));
     }
 
     @Test
     public void testFeatureFlagThrowError() throws IOException {
-        propertyCache = PropertyCache.resetPropertyCache();
-
+        FeatureSet featureSet = new FeatureSet();
         try {
-            propertySource.initProperties(propertyCache);
+            propertySource.initProperties(featureSet);
         } catch (IOException e) {
             assertEquals("Found Feature Flag /foo/test_key_1 with invalid Content Type of ", e.getMessage());
         }
@@ -294,16 +255,17 @@ public class AzureConfigPropertySourceTest {
 
     @Test
     public void testFeatureFlagBuildError() throws ServerException {
-        propertyCache = PropertyCache.resetPropertyCache();
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(FEATURE_ITEMS);
+
+        FeatureSet featureSet = new FeatureSet();
         try {
-            propertySource.initProperties(propertyCache);
+            propertySource.initProperties(featureSet);
         } catch (IOException e) {
             fail();
         }
-        propertySource.initFeatures(propertyCache);
+        propertySource.initFeatures(featureSet);
 
-        FeatureSet featureSet = new FeatureSet();
+        FeatureSet featureSetExpected = new FeatureSet();
         Feature feature = new Feature();
         feature.setId("Alpha");
         ArrayList<FeatureFilterEvaluationContext> filters = new ArrayList<FeatureFilterEvaluationContext>();
@@ -311,162 +273,40 @@ public class AzureConfigPropertySourceTest {
         ffec.setName("TestFilter");
         filters.add(ffec);
         feature.setEnabledFor(filters);
-        featureSet.addFeature("Alpha", feature);
-        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSet, LinkedHashMap.class);
+        featureSetExpected.addFeature("Alpha", feature);
+        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected, LinkedHashMap.class);
 
         assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));
     }
 
     @Test
-    public void testWatchUpdateConfigurations() throws ParseException, ServerException {
-        propertyCache = PropertyCache.resetPropertyCache();
-        Duration delay = Duration.ofSeconds(0);
-
-        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-        Date date = dateFormat.parse("20190202");
-        Date testDate = new Date(date.getTime() - 2);
-        propertyCache.addKeyValuesToCache(testItems, TEST_STORE_NAME, testDate);
-        propertyCache.addToCache(featureItem, TEST_STORE_NAME, testDate);
-
-        propertyCache.findNonCachedKeys(delay, TEST_STORE_NAME);
-        propertyCache.addContext(TEST_STORE_NAME, TEST_CONTEXT);
-
-        when(clientStoreMock.getConfigurationClient(Mockito.anyString())).thenReturn(configClientMock);
-        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT + TEST_KEY_1), Mockito.anyString())).thenReturn(item1);
-        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT + TEST_KEY_2), Mockito.anyString())).thenReturn(item2);
-        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT + TEST_KEY_3), Mockito.anyString())).thenReturn(item3);
-        when(clientStoreMock.getSetting(Mockito.eq(".appconfig.featureflag/Alpha"), Mockito.anyString()))
-                .thenReturn(featureItem);
-
-        try {
-            propertySource.initProperties(propertyCache);
-        } catch (IOException e) {
-            fail("Failed Reading in Feature Flags");
-        }
-        propertySource.initFeatures(propertyCache);
-
-        String[] keyNames = propertySource.getPropertyNames();
-        String[] expectedKeyNames = testItems.stream()
-                .map(t -> t.key().substring(TEST_CONTEXT.length())).toArray(String[]::new);
-        String[] allExpectedKeyNames = ArrayUtils.addAll(expectedKeyNames, FEATURE_MANAGEMENT_KEY);
-
-        assertThat(keyNames).containsExactlyInAnyOrder(allExpectedKeyNames);
-
-        assertThat(propertySource.getProperty(TEST_KEY_1)).isEqualTo(TEST_VALUE_1);
-        assertThat(propertySource.getProperty(TEST_KEY_2)).isEqualTo(TEST_VALUE_2);
-        assertThat(propertySource.getProperty(TEST_KEY_3)).isEqualTo(TEST_VALUE_3);
-    }
-
-    @Test
     public void testKeyVaultTest() throws Exception {
-        propertyCache = PropertyCache.resetPropertyCache();
         testItems.add(keyVaultItem);
-        PowerMockito.whenNew(SecretClientBuilder.class).withNoArguments().thenReturn(secretClientBuilder);
-        when(secretClientBuilder.endpoint(Mockito.anyString())).thenReturn(secretClientBuilder);
-        when(secretClientBuilder.credential(Mockito.any())).thenReturn(secretClientBuilder);
-        when(secretClientBuilder.buildAsyncClient()).thenReturn(secretAsyncClient);
-        when(secretAsyncClient.getSecret(Mockito.any(Secret.class))).thenReturn(monoSecret);
-        Secret secret = new Secret("mySecret", "mySecret");
-        when(monoSecret.block(Mockito.any())).thenReturn(secret);
-
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(testItems)
                 .thenReturn(new ArrayList<ConfigurationSetting>());
-        when(clientStoreMock.getKeyVaultClient(Mockito.anyString())).thenReturn(keyVaultClient);
-        when(keyVaultClient.getSecret(Mockito.any())).thenReturn(secretBundleMock);
-        when(secretBundleMock.value()).thenReturn("mySecret");
-
-        Duration delay = Duration.ofSeconds(0);
-
-        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-        Date date = dateFormat.parse("20190202");
-        Date testDate = new Date(date.getTime() - 2);
-        propertyCache.addKeyValuesToCache(testItems, TEST_STORE_NAME, testDate);
-        propertyCache.addToCache(featureItem, TEST_STORE_NAME, testDate);
-
-        propertyCache.findNonCachedKeys(delay, TEST_STORE_NAME);
-        try {
-            propertySource.initProperties(propertyCache);
-        } catch (IOException e) {
-            fail("Failed Reading in Feature Flags");
-        }
-        propertySource.initFeatures(propertyCache);
-
-        String[] keyNames = propertySource.getPropertyNames();
-        String[] expectedKeyNames = testItems.stream()
-                .map(t -> t.key().substring(TEST_CONTEXT.length())).toArray(String[]::new);
-        String[] allExpectedKeyNames = ArrayUtils.addAll(expectedKeyNames, FEATURE_MANAGEMENT_KEY);
-
-        assertThat(keyNames).containsExactlyInAnyOrder(allExpectedKeyNames);
-
-        assertThat(propertySource.getProperty(TEST_KEY_1)).isEqualTo(TEST_VALUE_1);
-        assertThat(propertySource.getProperty(TEST_KEY_2)).isEqualTo(TEST_VALUE_2);
-        assertThat(propertySource.getProperty(TEST_KEY_3)).isEqualTo(TEST_VALUE_3);
-        assertThat(propertySource.getProperty(TEST_KEY_VAULT_1)).isEqualTo("mySecret");
-    }
-
-    @Test
-    public void testKeyVaultReloadTest() throws Exception {
-        propertyCache = PropertyCache.resetPropertyCache();
-        testItems.add(keyVaultItem);
-        PowerMockito.whenNew(SecretClientBuilder.class).withNoArguments().thenReturn(secretClientBuilder);
-        when(secretClientBuilder.endpoint(Mockito.anyString())).thenReturn(secretClientBuilder);
-        when(secretClientBuilder.credential(Mockito.any())).thenReturn(secretClientBuilder);
-        when(secretClientBuilder.buildAsyncClient()).thenReturn(secretAsyncClient);
-        when(secretAsyncClient.getSecret(Mockito.any(Secret.class))).thenReturn(monoSecret);
-
-        when(clientStoreMock.getConfigurationClient(Mockito.anyString())).thenReturn(configClientMock);
-        when(clientStoreMock.getKeyVaultClient(Mockito.anyString())).thenReturn(keyVaultClient);
-        when(keyVaultClient.getSecret(Mockito.any())).thenReturn(secretBundleMock);
-        when(secretBundleMock.value()).thenReturn("mySecret");
-
-        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT + TEST_KEY_1), Mockito.anyString())).thenReturn(item1);
-        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT + TEST_KEY_2), Mockito.anyString())).thenReturn(item2);
-        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT + TEST_KEY_3), Mockito.anyString())).thenReturn(item3);
-        when(clientStoreMock.getSetting(Mockito.eq(".appconfig.featureflag/Alpha"), Mockito.anyString()))
-                .thenReturn(featureItem);
-        when(clientStoreMock.getSetting(Mockito.eq(TEST_CONTEXT + TEST_KEY_VAULT_1), Mockito.anyString()))
-                .thenReturn(keyVaultItem);
+        KeyVaultClient client = Mockito.mock(KeyVaultClient.class);
+        PowerMockito.whenNew(KeyVaultClient.class).withAnyArguments().thenReturn(client);
 
         Secret secret = new Secret("mySecret", "mySecret");
-        when(monoSecret.block(Mockito.any())).thenReturn(secret);
-        Duration delay = Duration.ofSeconds(0);
-        propertyCache.addContext(TEST_STORE_NAME, TEST_CONTEXT);
+        given(client.getSecret(Mockito.any(URI.class), Mockito.any(Duration.class))).willReturn(secret);
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-        Date date = dateFormat.parse("20190202");
-        Date testDate = new Date(date.getTime() - 2);
-        propertyCache.addKeyValuesToCache(testItems, TEST_STORE_NAME, testDate);
-        propertyCache.addToCache(featureItem, TEST_STORE_NAME, testDate);
+        FeatureSet featureSet = new FeatureSet();
 
-        propertyCache.findNonCachedKeys(delay, TEST_STORE_NAME);
         try {
-            propertySource.initProperties(propertyCache);
+            propertySource.initProperties(featureSet);
         } catch (IOException e) {
             fail("Failed Reading in Feature Flags");
         }
-        propertySource.initFeatures(propertyCache);
 
         String[] keyNames = propertySource.getPropertyNames();
         String[] expectedKeyNames = testItems.stream()
-                .map(t -> t.key().substring(TEST_CONTEXT.length())).toArray(String[]::new);
-        String[] allExpectedKeyNames = ArrayUtils.addAll(expectedKeyNames, FEATURE_MANAGEMENT_KEY);
+                .map(t -> t.getKey().substring(TEST_CONTEXT.length())).toArray(String[]::new);
 
-        assertThat(keyNames).containsExactlyInAnyOrder(allExpectedKeyNames);
+        assertThat(keyNames).containsExactlyInAnyOrder(expectedKeyNames);
 
         assertThat(propertySource.getProperty(TEST_KEY_1)).isEqualTo(TEST_VALUE_1);
         assertThat(propertySource.getProperty(TEST_KEY_2)).isEqualTo(TEST_VALUE_2);
         assertThat(propertySource.getProperty(TEST_KEY_3)).isEqualTo(TEST_VALUE_3);
         assertThat(propertySource.getProperty(TEST_KEY_VAULT_1)).isEqualTo("mySecret");
-    }
-
-    @Test
-    public void awaitOnError() {
-        expected.expect(NullPointerException.class);
-
-        ConfigurationSetting badFeature = new ConfigurationSetting();
-        badFeature.contentType(FEATURE_FLAG_CONTENT_TYPE);
-        badFeature.key(".appconfig.featureflag/");
-        propertyCache.addToCache(badFeature, "test", new Date());
-        propertySource.initFeatures(propertyCache);
     }
 }

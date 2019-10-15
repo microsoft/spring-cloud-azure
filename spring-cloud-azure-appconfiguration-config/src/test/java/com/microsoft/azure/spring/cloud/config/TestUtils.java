@@ -23,10 +23,10 @@ public class TestUtils {
 
     static ConfigurationSetting createItem(String context, String key, String value, String label, String contentType) {
         ConfigurationSetting item = new ConfigurationSetting();
-        item.key(context + key);
-        item.value(value);
-        item.label(label);
-        item.contentType(contentType);
+        item.setKey(context + key);
+        item.setValue(value);
+        item.setLabel(label);
+        item.setContentType(contentType);
 
         return item;
     }

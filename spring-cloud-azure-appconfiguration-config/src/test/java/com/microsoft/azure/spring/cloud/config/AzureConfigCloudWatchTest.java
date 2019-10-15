@@ -28,7 +28,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -38,26 +37,23 @@ import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(PropertyCache.class)
 public class AzureConfigCloudWatchTest {
 
     @Mock
     private ApplicationEventPublisher eventPublisher;
 
-    private PropertyCache propertyCache;
-
     @Mock
     private AzureCloudConfigProperties properties;
+    
+    private ArrayList<ConfigurationSetting> keys;
 
     @Mock
-    Map<String, List<String>> contextsMap;
+    private Map<String, List<String>> contextsMap;
 
     AzureCloudConfigWatch watch;
 
-    ArrayList<ConfigurationSetting> keys;
-
     @Mock
-    Date date;
+    private Date date;
 
     @Mock
     private ClientStore clientStoreMock;
@@ -79,17 +75,15 @@ public class AzureConfigCloudWatchTest {
         contextsMap.put(TEST_STORE_NAME, Arrays.asList(TEST_ETAG));
         keys = new ArrayList<ConfigurationSetting>();
         ConfigurationSetting kvi = new ConfigurationSetting();
-        kvi.key("fake-etag/application/test.key");
-        kvi.value("TestValue");
+        kvi.setKey("fake-etag/application/test.key");
+        kvi.setValue("TestValue");
         keys.add(kvi);
 
-        propertyCache = PropertyCache.resetPropertyCache();
         ConfigurationSetting item = new ConfigurationSetting();
-        item.key("fake-etag/application/test.key");
-        item.etag("fake-etag");
-        propertyCache.addToCache(item, TEST_STORE_NAME, new Date());
+        item.setKey("fake-etag/application/test.key");
+        item.setETag("fake-etag");
 
-        watch = new AzureCloudConfigWatch(properties, contextsMap, propertyCache, clientStoreMock);
+        watch = new AzureCloudConfigWatch(properties, contextsMap, clientStoreMock);
     }
 
     @Test
@@ -127,38 +121,16 @@ public class AzureConfigCloudWatchTest {
         verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
     }
 
-    @Test
-    public void nonUpdatedEtagsRemoved() throws Exception {
-        PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
-
-        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(initialResponse())
-                .thenReturn(updatedResponse()).thenReturn(initialResponse());
-
-        watch.setApplicationEventPublisher(eventPublisher);
-
-        when(date.after(Mockito.any(Date.class))).thenReturn(true);
-        watch.refreshConfigurations();
-
-        // The first time an action happens it can update
-        verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
-
-        watch.refreshConfigurations();
-
-        // This time the main etag has been changed, but the one etag checked hasn't
-        // changed
-        verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
-    }
-
     private List<ConfigurationSetting> initialResponse() {
         ConfigurationSetting item = new ConfigurationSetting();
-        item.etag("fake-etag");
+        item.setETag("fake-etag");
 
         return Arrays.asList(item);
     }
 
     private List<ConfigurationSetting> updatedResponse() {
         ConfigurationSetting item = new ConfigurationSetting();
-        item.etag("fake-etag-updated");
+        item.setETag("fake-etag-updated");
 
         return Arrays.asList(item);
     }

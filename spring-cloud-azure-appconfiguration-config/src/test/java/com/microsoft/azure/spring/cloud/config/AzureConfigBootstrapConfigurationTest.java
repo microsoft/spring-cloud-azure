@@ -34,6 +34,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -41,6 +42,9 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.credentials.MSICredentials;
 import com.microsoft.azure.keyvault.KeyVaultClient;
+import com.microsoft.azure.spring.cloud.config.managed.identity.AzureResourceManagerConnector;
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.rest.RestClient;
 import com.microsoft.rest.RestClient.Builder;
@@ -59,6 +63,9 @@ public class AzureConfigBootstrapConfigurationTest {
     
     @Mock
     private CloseableHttpResponse mockClosableHttpResponse;
+
+    @Mock
+    private AzureResourceManagerConnector armConnector;
 
     @Mock
     HttpEntity mockHttpEntity;
@@ -115,10 +122,11 @@ public class AzureConfigBootstrapConfigurationTest {
 
     @Test
     public void armEmptyConnectionStringShouldFail() throws Exception {
-        //whenNew(ClientStore.class).withAnyArguments().thenReturn(clientStoreMock);
         whenNew(MSICredentials.class).withAnyArguments().thenReturn(msiCredentials);
+        whenNew(AzureResourceManagerConnector.class).withAnyArguments().thenReturn(armConnector);
 
         when(msiCredentials.getToken(anyString())).thenReturn(TEST_ACCESS_TOKEN);
+        when(armConnector.getConnectionString()).thenReturn("");
 
         ApplicationContextRunner contextRunner = new ApplicationContextRunner()
                 .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class))
@@ -126,12 +134,36 @@ public class AzureConfigBootstrapConfigurationTest {
 
         contextRunner.run(context -> {
             try {
-                context.getBean(ClientStore.class);
+                context.getBean(AzureCloudConfigProperties.class);
                 Assert.fail("Empty connection string should fail.");
             } catch (Exception e) {
-                assertThat(context).getFailure().hasCauseInstanceOf(BeanCreationException.class);
-                assertThat(context).getFailure().hasStackTraceContaining("Failed to load Config Store.");
+                assertThat(context).getFailure().hasCauseInstanceOf(BeanInstantiationException.class);
+                assertThat(context).getFailure().hasStackTraceContaining("Connection string cannot be empty");
             }
+        });
+    }
+
+    @Test
+    public void armNonEmptyConnectionStringShouldPass() throws Exception {
+        whenNew(MSICredentials.class).withAnyArguments().thenReturn(msiCredentials);
+        whenNew(AzureResourceManagerConnector.class).withAnyArguments().thenReturn(armConnector);
+
+        when(msiCredentials.getToken(anyString())).thenReturn(TEST_ACCESS_TOKEN);
+        when(armConnector.getConnectionString()).thenReturn(TEST_CONN_STRING);
+
+        ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+                .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class))
+                .withPropertyValues(propPair(STORE_NAME_PROP, TEST_STORE_NAME));
+
+        contextRunner.run(context -> {
+            assertThat(context.getBean(ConnectionStringPool.class)).isNotNull();
+            ConnectionStringPool pool = context.getBean(ConnectionStringPool.class);
+            ConnectionString connString = pool.get(TEST_STORE_NAME);
+
+            assertThat(connString).isNotNull();
+            assertThat(connString.getEndpoint()).isEqualTo("https://fake.test.config.io");
+            assertThat(connString.getId()).isEqualTo("fake-conn-id");
+            assertThat(connString.getSecret()).isEqualTo("ZmFrZS1jb25uLXNlY3JldA==");
         });
     }
 }
