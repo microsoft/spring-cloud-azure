@@ -142,17 +142,20 @@ In this section, you clone a containerized Spring Boot application and test it l
     "galleryEndpointUrl": "https://gallery.azure.com/",
     "managementEndpointUrl": "https://management.core.windows.net/"
     }
+    ```
 
 1. Run the following command to allow the service principal to access your key vault:
 
     ```azurecli
         az keyvault set-policy -n myVaultName --spn "iiiiiiii-iiii-iiii-iiii-iiiiiiiiiiii" --secret-permissions get
     ```
+
 1. Upload your Cosmos DB key to Key Vault.
 
     ```azurecli
         az keyvault secret set --vault-name myKeyCaultName --name "COSMOSDB-KEY" --value yourCosmosDBKey
     ```
+
 1. Upload your Configurations Cosmos DB name and URI to App Configuration
 
     ```azurecli
@@ -180,9 +183,19 @@ In this section, you clone a containerized Spring Boot application and test it l
         spring.cloud.azure.appconfiguration.stores[0].connection-string=${CONFIG_STORE_CONNECTION_STRING}
     ```
 
+1. Update the pom.xml file to now include.
+
+    ```xml
+    <dependency>
+        <groupId>com.microsoft.azure</groupId>
+        <artifactId>spring-cloud-starter-azure-appconfiguration-config</artifactId>
+        <version>1.1.0.M4</version>
+    </dependency>
+    ```
+
 1. Create the following Environment Variables with there respective values: AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID, CONFIG_STORE_CONNECTION_STRING.
 
-### Run the sample
+### Run the updated sample
 
 1. Build the JAR file using Maven; for example:
 
