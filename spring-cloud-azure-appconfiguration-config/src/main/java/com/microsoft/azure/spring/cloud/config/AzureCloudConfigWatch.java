@@ -54,7 +54,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
 
     private Duration delay;
 
-    private Date lastChecked;
+    private Date lastCheckedTime;
 
     public AzureCloudConfigWatch(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
             Map<String, List<String>> storeContextsMap) {
@@ -62,7 +62,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
         this.configStores = properties.getStores();
         this.storeContextsMap = storeContextsMap;
         this.delay = properties.getWatch().getDelay();
-        this.lastChecked = new Date();
+        this.lastCheckedTime = new Date();
     }
 
     @Override
@@ -77,7 +77,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
     public void refreshConfigurations() {
         if (this.running.compareAndSet(false, true)) {
             Boolean refreshed = false;
-            Date notCachedTime = DateUtils.addSeconds(lastChecked, Math.toIntExact(delay.getSeconds()));
+            Date notCachedTime = DateUtils.addSeconds(lastCheckedTime, Math.toIntExact(delay.getSeconds()));
             Date date = new Date();
             if (date.after(notCachedTime)) {
                 for (ConfigStore configStore : configStores) {
@@ -94,7 +94,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
                     }
                 }
                 // Resetting last Checked date to now.
-                lastChecked = new Date();
+                lastCheckedTime = new Date();
             }
             this.running.set(false);
         }
