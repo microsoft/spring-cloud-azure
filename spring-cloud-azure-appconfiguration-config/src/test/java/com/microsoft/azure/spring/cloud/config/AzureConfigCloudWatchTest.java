@@ -69,7 +69,7 @@ public class AzureConfigCloudWatchTest {
         properties = new AzureCloudConfigProperties();
         properties.setStores(Arrays.asList(store));
 
-        properties.getWatch().setDelay(Duration.ofSeconds(1));
+        properties.getWatch().setDelay(Duration.ofSeconds(-60));
 
         contextsMap = new ConcurrentHashMap<>();
         contextsMap.put(TEST_STORE_NAME, Arrays.asList(TEST_ETAG));

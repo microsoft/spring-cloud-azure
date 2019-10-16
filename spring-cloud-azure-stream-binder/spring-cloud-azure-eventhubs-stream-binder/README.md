@@ -8,7 +8,7 @@ microservice using **Spring Cloud Stream** based on [Azure Event Hub](https://az
 The Spring Cloud Stream Binder for Azure Event Hub provides the binding implementation for the Spring Cloud Stream.
 This implementation uses Spring Integration Event Hub Channel Adapters at its foundation. From design's perspective, 
 Event Hub is similar as Kafka. Also, Event Hub could be accessed via Kafka API. If your project has tight dependency 
-on Kafka API, you can try [Event Hub with Kafka API Sample](../spring-cloud-azure-samples/spring-cloud-azure-eventhub-kafka-sample/)
+on Kafka API, you can try [Event Hub with Kafka API Sample](../../spring-cloud-azure-samples/eventhubs-kafka-sample/)
 
 ### Consumer Group
 

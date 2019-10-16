@@ -8,7 +8,6 @@ package com.microsoft.azure.spring.cloud.config;
 import java.rmi.ServerException;
 import java.time.Duration;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,15 +57,15 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
     private Duration delay;
 
     private ClientStore clientStore;
-
-    private HashMap<String, Date> lastUpdated;
+    
+    private Date lastChecked;
 
     public AzureCloudConfigWatch(AzureCloudConfigProperties properties, Map<String, List<String>> storeContextsMap,
             ClientStore clientStore) {
         this.configStores = properties.getStores();
         this.storeContextsMap = storeContextsMap;
         this.delay = properties.getWatch().getDelay();
-        this.lastUpdated = new HashMap<String, Date>();
+        this.lastChecked = new Date();
         this.clientStore = clientStore;
     }
 
@@ -81,30 +80,25 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
      */
     public void refreshConfigurations() {
         if (this.running.compareAndSet(false, true)) {
-            Date date = new Date();
             Boolean refreshed = false;
-            for (ConfigStore configStore : configStores) {
-                Boolean needsRefresh = false;
-                if (!lastUpdated.containsKey(configStore.getName())) {
-                    needsRefresh = true;
-                } else {
-                    Date notCachedTime = DateUtils.addSeconds(lastUpdated.get(configStore.getName()),
-                            Math.toIntExact(delay.getSeconds()));
-                    if (date.after(notCachedTime)) {
-                        needsRefresh = true;
-                    }
-                }
-                if (needsRefresh) {
+            Date notCachedTime = DateUtils.addSeconds(lastChecked, Math.toIntExact(delay.getSeconds()));
+            Date date = new Date();
+            if (date.after(notCachedTime)) {
+                for (ConfigStore configStore : configStores) {
                     String watchedKeyNames = watchedKeyNames(configStore, storeContextsMap);
                     refreshed = refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames);
                     // Refresh Feature Flags
                     if (!refreshed) {
                         refreshed = refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY);
                     }
+
+                    // The Refresh Event updates all config stores
+                    if (refreshed) {
+                        break;
+                    }
                 }
-                if (refreshed) {
-                    break;
-                }
+                // Resetting last Checked date to now.
+                lastChecked = new Date();
             }
             this.running.set(false);
         }

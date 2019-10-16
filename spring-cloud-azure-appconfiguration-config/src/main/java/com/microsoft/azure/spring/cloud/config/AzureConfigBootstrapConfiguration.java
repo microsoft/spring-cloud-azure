@@ -5,8 +5,6 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
-
 import java.util.List;
 
 import javax.annotation.PostConstruct;
