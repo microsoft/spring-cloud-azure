@@ -61,8 +61,6 @@ public class ConfigServiceTemplate implements ConfigServiceOperations {
 
     private final ConnectionStringPool connectionStringPool;
     
-    private AppConfigProviderProperties properties;
-
     private AppConfigProviderProperties appProperties;
 
     public ConfigServiceTemplate(ConfigHttpClient httpClient, ConnectionStringPool connectionStringPool,

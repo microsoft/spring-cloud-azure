@@ -5,18 +5,19 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_FLAG_CONTENT_TYPE;
+import static com.microsoft.azure.spring.cloud.config.Constants.KEY_VAULT_CONTENT_TYPE;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,18 +48,12 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     private final String label;
 
     private AzureCloudConfigProperties azureProperties;
-    
+
     private AppConfigProviderProperties appProperties;
 
     private static ObjectMapper mapper = new ObjectMapper();
 
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
-
-    private static final String FEATURE_FLAG_CONTENT_TYPE = 
-            "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
-
-    private static final String KEY_VAULT_CONTENT_TYPE = 
-            "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8";
 
     private static final String FEATURE_FLAG_PREFIX = ".appconfig.featureflag/";
 
@@ -66,8 +61,6 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
 
     public AzureConfigPropertySource(String context, ConfigServiceOperations operations, String storeName,
             String label, AzureCloudConfigProperties azureProperties, AppConfigProviderProperties appProperties) {
-        // The context alone does not uniquely define a PropertySource, append storeName
-        // and label to uniquely define a PropertySource
         super(context + storeName + "/" + label, operations);
         this.context = context;
         this.storeName = storeName;
@@ -99,78 +92,36 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
      * last {@code AzureConfigPropertySource}
      * </p>
      * 
-     * @param propertyCache Cached values to use in store. Also contains values the need
-     * to be refreshed.
+     * @param featureSet The set of Feature Management Flags from various config stores.
      * @throws IOException Thrown when processing key/value failed when reading feature
      * flags
+     * @return Updated Feature Set from Property Source
      */
-    public void initProperties(PropertyCache propertyCache) throws IOException {
+    public FeatureSet initProperties(FeatureSet featureSet) throws IOException {
         Date date = new Date();
-        if (propertyCache.getContext(storeName) == null) {
-            propertyCache.addContext(storeName, context);
-            // * for wildcard match
-            QueryOptions queryOptions = new QueryOptions().withKeyNames(context + "*").withLabels(label);
-            List<KeyValueItem> items = source.getKeys(storeName, queryOptions);
-            for (KeyValueItem item : items) {
-                String key = item.getKey().trim().substring(context.length()).replace('/', '.');
-                if (item.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
-                    String entry = getKeyVaultEntry(item.getValue());
+        // * for wildcard match
+        QueryOptions queryOptions = new QueryOptions().withKeyNames(context + "*").withLabels(label);
+        List<KeyValueItem> items = source.getKeys(storeName, queryOptions);
+        for (KeyValueItem item : items) {
+            String key = item.getKey().trim().substring(context.length()).replace('/', '.');
+            if (item.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
+                String entry = getKeyVaultEntry(item.getValue());
 
-                    // Null in the case of failFast is false, will just skip entry.
-                    if (entry != null) {
-                        properties.put(key, entry);
-                    }
-                } else {
-                    properties.put(key, item.getValue());
+                // Null in the case of failFast is false, will just skip entry.
+                if (entry != null) {
+                    properties.put(key, entry);
                 }
-
-            }
-            propertyCache.addKeyValuesToCache(items, storeName, date);
-
-            // Reading In Features
-            queryOptions = new QueryOptions().withKeyNames(FEATURE_FLAG_PREFIX + "*").withLabels(label);
-            items = source.getKeys(storeName, queryOptions);
-
-            createFeatureSet(items, propertyCache, date);
-
-        } else {
-            // Using Cached values, first updates cache then sets new properties.
-            if (propertyCache.getRefreshKeys(storeName) != null &&
-                    propertyCache.getRefreshKeys(storeName).size() > 0) {
-                for (String refreshKey : propertyCache.getRefreshKeys(storeName)) {
-                    QueryOptions queryOptions = new QueryOptions().withKeyNames(refreshKey).withLabels(label);
-                    List<KeyValueItem> items = source.getKeys(storeName, queryOptions);
-                    if (items.size() == 0) {
-                        KeyValueItem emptyKey = new KeyValueItem();
-                        emptyKey.setKey(refreshKey);
-                        propertyCache.addToCache(emptyKey, storeName, date);
-                    } else {
-                        propertyCache.addToCache(items.get(0), storeName, date);
-                    }
-                }
+            } else {
+                properties.put(key, item.getValue());
             }
 
-            for (CachedKey cachedKey : propertyCache.getKeySet(storeName)) {
-                if (cachedKey.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
-                    String key = cachedKey.getKey().trim().substring(context.length()).replace('/', '.');
-                    String entry = getKeyVaultEntry(cachedKey.getValue());
-
-                    // Null in the case of failFast is false, will just skip entry.
-                    if (entry != null) {
-                        properties.put(key, entry);
-                    }
-                } else if (cachedKey.getContentType().equals(FEATURE_FLAG_CONTENT_TYPE)) {
-                    List<KeyValueItem> items = new ArrayList<KeyValueItem>();
-                    KeyValueItem item = new KeyValueItem(cachedKey, FEATURE_FLAG_CONTENT_TYPE);
-                    items.add(item);
-
-                    createFeatureSet(items, propertyCache, date);
-                } else {
-                    String trimedKey = cachedKey.getKey().trim().substring(context.length()).replace('/', '.');
-                    properties.put(trimedKey, propertyCache.getCachedValue(cachedKey.getKey()));
-                }
-            }
         }
+
+        // Reading In Features
+        queryOptions = new QueryOptions().withKeyNames(FEATURE_FLAG_PREFIX + "*").withLabels(label);
+        items = source.getKeys(storeName, queryOptions);
+
+        return addToFeatureSet(featureSet, items, date);
     }
 
     /**
@@ -245,53 +196,36 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
      * Initializes Feature Management configurations. Only one
      * {@code AzureConfigPropertySource} can call this, and it needs to be done after the
      * rest have run initProperties.
-     * @param propertyCache Cached values to use in store. Also contains values the need
-     * to be refreshed.
+     * @param featureSet Feature Flag info to be set to this property source.
      */
-    public void initFeatures(PropertyCache propertyCache) {
-        FeatureSet featureSet = new FeatureSet();
-        List<String> features = propertyCache.getCache().keySet().stream()
-                .filter(key -> key.startsWith(FEATURE_FLAG_PREFIX)).collect(Collectors.toList());
-        features.parallelStream().forEach(key -> {
-            try {
-                featureSet.addFeature(key.trim().substring(FEATURE_FLAG_PREFIX.length()), createFeature(
-                        new KeyValueItem(key, propertyCache.getCachedValue(key), FEATURE_FLAG_CONTENT_TYPE)));
-            } catch (Exception e) {
-                if (azureProperties.isFailFast()) {
-                    ReflectionUtils.rethrowRuntimeException(e);
-                }
-            }
-        });
-
+    public void initFeatures(FeatureSet featureSet) {
         properties.put(FEATURE_MANAGEMENT_KEY, mapper.convertValue(featureSet, LinkedHashMap.class));
     }
 
     /**
-     * Creates a {@code FeatureSet} from a list of {@code KeyValueItem}. 
+     * Adds items to a {@code FeatureSet} from a list of {@code KeyValueItem}.
      * 
+     * @param featureSet The parsed KeyValueItems will be added to this
      * @param items New items read in from Azure
-     * @param propertyCache Cached values where updated values are set.
      * @param date Cache timestamp
      * @throws IOException
      */
-    private void createFeatureSet(List<KeyValueItem> items, PropertyCache propertyCache, Date date) throws IOException {
+    private FeatureSet addToFeatureSet(FeatureSet featureSet, List<KeyValueItem> items, Date date) throws IOException {
         // Reading In Features
-        FeatureSet featureSet = new FeatureSet();
         for (KeyValueItem item : items) {
             Object feature = createFeature(item);
             if (feature != null) {
-                featureSet.addFeature(item.getKey(), feature);
+                featureSet.addFeature(item.getKey().trim().substring(FEATURE_FLAG_PREFIX.length()), feature);
             }
         }
-        if (featureSet.getFeatureManagement() != null) {
-            propertyCache.addKeyValuesToCache(items, storeName, date);
-        }
+        return featureSet;
     }
 
     /**
      * Creates a {@code Feature} from a {@code KeyValueItem}
      * 
-     * @param item Used to create Features before being converted to be set into properties.
+     * @param item Used to create Features before being converted to be set into
+     * properties.
      * @return Feature created from KeyValueItem
      * @throws IOException
      */

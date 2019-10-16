@@ -5,18 +5,13 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.cloud.endpoint.event.RefreshEvent;
-import org.springframework.context.ApplicationEventPublisher;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_ETAG;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -26,20 +21,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.microsoft.azure.spring.cloud.config.TestConstants.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.cloud.endpoint.event.RefreshEvent;
+import org.springframework.context.ApplicationEventPublisher;
+
+import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(PropertyCache.class)
 public class AzureConfigCloudWatchTest {
     @Mock
     private ConfigServiceOperations configOperations;
 
     @Mock
     private ApplicationEventPublisher eventPublisher;
-
-    private PropertyCache propertyCache;
 
     @Mock
     private AzureCloudConfigProperties properties;
@@ -65,7 +66,7 @@ public class AzureConfigCloudWatchTest {
         properties = new AzureCloudConfigProperties();
         properties.setStores(Arrays.asList(store));
 
-        properties.getWatch().setDelay(Duration.ofSeconds(1));
+        properties.getWatch().setDelay(Duration.ofSeconds(-60));
 
         contextsMap = new ConcurrentHashMap<>();
         contextsMap.put(TEST_STORE_NAME, Arrays.asList(TEST_ETAG));
@@ -75,13 +76,11 @@ public class AzureConfigCloudWatchTest {
         kvi.setValue("TestValue");
         keys.add(kvi);
 
-        propertyCache = PropertyCache.getPropertyCache();
         KeyValueItem item = new KeyValueItem();
         item.setKey("fake-etag/application/test.key");
         item.setEtag("fake-etag");
-        propertyCache.addToCache(item, TEST_STORE_NAME, new Date());
 
-        watch = new AzureCloudConfigWatch(configOperations, properties, contextsMap, propertyCache);
+        watch = new AzureCloudConfigWatch(configOperations, properties, contextsMap);
     }
 
     @Test
@@ -110,7 +109,7 @@ public class AzureConfigCloudWatchTest {
 
         // The first time an action happens it can update
         verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
-        verify(configOperations, times(1)).getRevisions(any(), any());
+        verify(configOperations, times(2)).getRevisions(any(), any());
 
         watch.refreshConfigurations();
 
@@ -122,47 +121,25 @@ public class AzureConfigCloudWatchTest {
 
         // If there is no change it shouldn't update
         verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
-        verify(configOperations, times(4)).getRevisions(any(), any());
-    }
-
-    @Test
-    public void nonUpdatedEtagsRemoved() throws Exception {
-        PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
-        watch.setApplicationEventPublisher(eventPublisher);
-        when(configOperations.getKeys(any(), any())).thenReturn(keys);
-        when(configOperations.getRevisions(any(), any())).thenReturn(initialResponse()).thenReturn(updatedResponse())
-                .thenReturn(initialResponse());
-
-        when(date.after(Mockito.any(Date.class))).thenReturn(true);
-        watch.refreshConfigurations();
-
-        // The first time an action happens it can update
-        verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
-        verify(configOperations, times(1)).getRevisions(any(), any());
-
-        watch.refreshConfigurations();
-
-        // This time the main etag has been changed, but the one etag checked hasn't
-        // changed
-        verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
-        verify(configOperations, times(3)).getRevisions(any(), any());
+        verify(configOperations, times(5)).getRevisions(any(), any());
     }
     
     @Test
-    public void revisonsEndpointReturnsEmptyForKnownKey() throws Exception {
+    public void notRefreshTime() throws Exception {
+        properties.getWatch().setDelay(Duration.ofSeconds(60));
+        AzureCloudConfigWatch watchLargeDelay = new AzureCloudConfigWatch(configOperations, properties, contextsMap);
+        
         PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
-        watch.setApplicationEventPublisher(eventPublisher);
+        watchLargeDelay.setApplicationEventPublisher(eventPublisher);
         when(configOperations.getKeys(any(), any())).thenReturn(keys);
-        when(configOperations.getRevisions(any(), any())).thenReturn(initialResponse()).thenReturn(updatedResponse())
-            .thenReturn(new ArrayList<KeyValueItem>());
+        when(configOperations.getRevisions(any(), any())).thenReturn(initialResponse()).thenReturn(updatedResponse());
 
         when(date.after(Mockito.any(Date.class))).thenReturn(true);
-        watch.refreshConfigurations();
-        watch.refreshConfigurations();
+        watchLargeDelay.refreshConfigurations();
 
         // The first time an action happens it can update
-        verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
-        verify(configOperations, times(3)).getRevisions(any(), any());
+        verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
+        verify(configOperations, times(0)).getRevisions(any(), any());
     }
 
     private List<KeyValueItem> initialResponse() {

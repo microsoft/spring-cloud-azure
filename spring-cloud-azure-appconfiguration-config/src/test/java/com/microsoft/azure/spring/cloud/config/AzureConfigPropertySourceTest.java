@@ -5,6 +5,8 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_FLAG_CONTENT_TYPE;
+import static com.microsoft.azure.spring.cloud.config.Constants.KEY_VAULT_CONTENT_TYPE;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_LABEL;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_VALUE;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
@@ -34,13 +36,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -49,8 +46,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -74,9 +71,6 @@ import reactor.core.publisher.Mono;
 @PrepareForTest({AzureConfigPropertySource.class})
 public class AzureConfigPropertySourceTest {
     private static final String EMPTY_CONTENT_TYPE = "";
-    private static final String FEATURE_FLAG_CONTENT_TYPE = "application/vnd.microsoft.appconfig.ff+json;charset=utf-8";
-    private static final String KEY_VAULT_CONTENT_TYPE = 
-            "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8";
     
     private static final AzureCloudConfigProperties TEST_PROPS = new AzureCloudConfigProperties();
 
@@ -108,7 +102,6 @@ public class AzureConfigPropertySourceTest {
     @Mock
     private ConfigServiceOperations operations;
 
-    private PropertyCache propertyCache;
     @Mock
     private ChainedTokenCredential keyVaultCredential;
     
@@ -147,7 +140,6 @@ public class AzureConfigPropertySourceTest {
 
         propertySource = new AzureConfigPropertySource(TEST_CONTEXT, operations, TEST_STORE_NAME, null,
                 azureProperties, appProperties);
-        propertyCache = PropertyCache.resetPropertyCache();
         
         testItems = new ArrayList<KeyValueItem>();
         testItems.add(item1);
@@ -158,12 +150,13 @@ public class AzureConfigPropertySourceTest {
     @Test
     public void testPropCanBeInitAndQueried() {
         when(operations.getKeys(any(), any())).thenReturn(testItems).thenReturn(FEATURE_ITEMS);
+        FeatureSet featureSet = new FeatureSet();
         try {
-            propertySource.initProperties(propertyCache);
+            propertySource.initProperties(featureSet);
         } catch (IOException e) {
             fail("Failed Reading in Feature Flags");
         }
-        propertySource.initFeatures(propertyCache);
+        propertySource.initFeatures(featureSet);
 
         String[] keyNames = propertySource.getPropertyNames();
         String[] expectedKeyNames = testItems.stream()
@@ -183,8 +176,10 @@ public class AzureConfigPropertySourceTest {
         KeyValueItem slashedProp = createItem(TEST_CONTEXT, TEST_SLASH_KEY, TEST_SLASH_VALUE, null, EMPTY_CONTENT_TYPE);
         when(operations.getKeys(any(), any())).thenReturn(Arrays.asList(slashedProp)).thenReturn(FEATURE_ITEMS);
 
+        FeatureSet featureSet = new FeatureSet();
+        
         try {
-            propertySource.initProperties(propertyCache);
+            propertySource.initProperties(featureSet);
         } catch (IOException e) {
             fail("Failed Reading in Feature Flags");
         }
@@ -202,14 +197,15 @@ public class AzureConfigPropertySourceTest {
     public void testFeatureFlagCanBeInitedAndQueried() {
         when(operations.getKeys(any(), any())).thenReturn(new ArrayList<KeyValueItem>()).thenReturn(FEATURE_ITEMS);
 
+        FeatureSet featureSet = new FeatureSet();
         try {
-            propertySource.initProperties(propertyCache);
+            propertySource.initProperties(featureSet);
         } catch (IOException e) {
             fail("Failed Reading in Feature Flags");
         }
-        propertySource.initFeatures(propertyCache);
+        propertySource.initFeatures(featureSet);
 
-        FeatureSet featureSet = new FeatureSet();
+        FeatureSet featureSetExpected = new FeatureSet();
         Feature feature = new Feature();
         feature.setId("Alpha");
         ArrayList<FeatureFilterEvaluationContext> filters = new ArrayList<FeatureFilterEvaluationContext>();
@@ -217,8 +213,8 @@ public class AzureConfigPropertySourceTest {
         ffec.setName("TestFilter");
         filters.add(ffec);
         feature.setEnabledFor(filters);
-        featureSet.addFeature("Alpha", feature);
-        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSet, LinkedHashMap.class);
+        featureSetExpected.addFeature("Alpha", feature);
+        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected, LinkedHashMap.class);
 
         assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));
     }
@@ -228,10 +224,9 @@ public class AzureConfigPropertySourceTest {
         when(operations.getKeys(any(), any())).thenReturn(new ArrayList<KeyValueItem>()).thenReturn(testItems)
         .thenReturn(FEATURE_ITEMS).thenReturn(FEATURE_ITEMS);
 
-        propertyCache = PropertyCache.resetPropertyCache();
-
+        FeatureSet featureSet = new FeatureSet();
         try {
-            propertySource.initProperties(propertyCache);
+            propertySource.initProperties(featureSet);
         } catch (IOException e) {
             assertEquals("Found Feature Flag /foo/test_key_1 with invalid Content Type of ", e.getMessage());
         }
@@ -241,14 +236,15 @@ public class AzureConfigPropertySourceTest {
     public void testFeatureFlagBuildError() {
         when(operations.getKeys(any(), any())).thenReturn(new ArrayList<KeyValueItem>()).thenReturn(FEATURE_ITEMS);
 
+        FeatureSet featureSet = new FeatureSet();
         try {
-            propertySource.initProperties(propertyCache);
+            propertySource.initProperties(featureSet);
         } catch (IOException e) {
             fail();
         }
-        propertySource.initFeatures(propertyCache);
+        propertySource.initFeatures(featureSet);
 
-        FeatureSet featureSet = new FeatureSet();
+        FeatureSet featureSetExpected = new FeatureSet();
         Feature feature = new Feature();
         feature.setId("Alpha");
         ArrayList<FeatureFilterEvaluationContext> filters = new ArrayList<FeatureFilterEvaluationContext>();
@@ -256,45 +252,11 @@ public class AzureConfigPropertySourceTest {
         ffec.setName("TestFilter");
         filters.add(ffec);
         feature.setEnabledFor(filters);
-        featureSet.addFeature("Alpha", feature);
-        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSet, LinkedHashMap.class);
+        featureSetExpected.addFeature("Alpha", feature);
+        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected, LinkedHashMap.class);
 
         assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));
     }
-
-    @Test
-    public void testWatchUpdateConfigurations() throws ParseException {
-        when(operations.getKeys(any(), any())).thenReturn(testItems).thenReturn(FEATURE_ITEMS);
-        Duration delay = Duration.ofSeconds(0);
-
-        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-        Date date = dateFormat.parse("20190202");
-        Date testDate = new Date(date.getTime() - 2);
-        propertyCache.addKeyValuesToCache(testItems, TEST_STORE_NAME, testDate);
-        propertyCache.addToCache(featureItem, TEST_STORE_NAME, testDate);
-
-        propertyCache.findNonCachedKeys(delay, TEST_STORE_NAME);
-        propertyCache.addContext(TEST_STORE_NAME, TEST_CONTEXT);
-        try {
-            propertySource.initProperties(propertyCache);
-        } catch (IOException e) {
-            fail("Failed Reading in Feature Flags");
-        }
-        propertySource.initFeatures(propertyCache);
-
-        String[] keyNames = propertySource.getPropertyNames();
-        String[] expectedKeyNames = testItems.stream()
-                .map(t -> t.getKey().substring(TEST_CONTEXT.length())).toArray(String[]::new);
-        String[] allExpectedKeyNames = ArrayUtils.addAll(expectedKeyNames, FEATURE_MANAGEMENT_KEY);
-
-        assertThat(keyNames).containsExactlyInAnyOrder(allExpectedKeyNames);
-
-        assertThat(propertySource.getProperty(TEST_KEY_1)).isEqualTo(TEST_VALUE_1);
-        assertThat(propertySource.getProperty(TEST_KEY_2)).isEqualTo(TEST_VALUE_2);
-        assertThat(propertySource.getProperty(TEST_KEY_3)).isEqualTo(TEST_VALUE_3);
-        verify(operations, times(4)).getKeys(any(), any());
-    }
-
     @Test
     public void testKeyVaultTest() throws Exception {
         testItems.add(keyVaultItem);
@@ -309,21 +271,13 @@ public class AzureConfigPropertySourceTest {
         Secret secret = new Secret("mySecret", secretValue);
         when(monoSecret.block(Mockito.any())).thenReturn(secret);
         
-        Duration delay = Duration.ofSeconds(0);
-
-        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-        Date date = dateFormat.parse("20190202");
-        Date testDate = new Date(date.getTime() - 2);
-        propertyCache.addKeyValuesToCache(testItems, TEST_STORE_NAME, testDate);
-        propertyCache.addToCache(featureItem, TEST_STORE_NAME, testDate);
-
-        propertyCache.findNonCachedKeys(delay, TEST_STORE_NAME);
+        FeatureSet featureSet = new FeatureSet();
         try {
-            propertySource.initProperties(propertyCache);
+            propertySource.initProperties(featureSet);
         } catch (IOException e) {
             fail("Failed Reading in Feature Flags");
         }
-        propertySource.initFeatures(propertyCache);
+        propertySource.initFeatures(featureSet);
 
         String[] keyNames = propertySource.getPropertyNames();
         String[] expectedKeyNames = testItems.stream()
@@ -337,61 +291,5 @@ public class AzureConfigPropertySourceTest {
         assertThat(propertySource.getProperty(TEST_KEY_3)).isEqualTo(TEST_VALUE_3);
         assertThat(propertySource.getProperty(TEST_KEY_VAULT_1)).isEqualTo(secretValue);
         verify(operations, times(2)).getKeys(any(), any());
-    }
-    
-    @Test
-    public void testKeyVaultReloadTest() throws Exception {
-        testItems.add(keyVaultItem);
-        when(operations.getKeys(any(), any())).thenReturn(testItems).thenReturn(FEATURE_ITEMS);
-        when(operations.getKeys(any(), any())).thenReturn(testItems).thenReturn(FEATURE_ITEMS);
-        PowerMockito.whenNew(SecretClientBuilder.class).withNoArguments().thenReturn(secretClientBuilder);
-        when(secretClientBuilder.endpoint(Mockito.anyString())).thenReturn(secretClientBuilder);
-        when(secretClientBuilder.credential(Mockito.any())).thenReturn(secretClientBuilder);
-        when(secretClientBuilder.buildAsyncClient()).thenReturn(secretAsyncClient);
-        when(secretAsyncClient.getSecret(Mockito.any(Secret.class))).thenReturn(monoSecret);
-        
-        String secretValue = "secretValue";
-        Secret secret = new Secret("mySecret", secretValue);
-        when(monoSecret.block(Mockito.any())).thenReturn(secret);
-        Duration delay = Duration.ofSeconds(0);
-        propertyCache.addContext(TEST_STORE_NAME, TEST_CONTEXT);
-
-        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-        Date date = dateFormat.parse("20190202");
-        Date testDate = new Date(date.getTime() - 2);
-        propertyCache.addKeyValuesToCache(testItems, TEST_STORE_NAME, testDate);
-        propertyCache.addToCache(featureItem, TEST_STORE_NAME, testDate);
-
-        propertyCache.findNonCachedKeys(delay, TEST_STORE_NAME);
-        try {
-            propertySource.initProperties(propertyCache);
-        } catch (IOException e) {
-            fail("Failed Reading in Feature Flags");
-        }
-        propertySource.initFeatures(propertyCache);
-
-        String[] keyNames = propertySource.getPropertyNames();
-        String[] expectedKeyNames = testItems.stream()
-                .map(t -> t.getKey().substring(TEST_CONTEXT.length())).toArray(String[]::new);
-        String[] allExpectedKeyNames = ArrayUtils.addAll(expectedKeyNames, FEATURE_MANAGEMENT_KEY);
-
-        assertThat(keyNames).containsExactlyInAnyOrder(allExpectedKeyNames);
-
-        assertThat(propertySource.getProperty(TEST_KEY_1)).isEqualTo(TEST_VALUE_1);
-        assertThat(propertySource.getProperty(TEST_KEY_2)).isEqualTo(TEST_VALUE_2);
-        assertThat(propertySource.getProperty(TEST_KEY_3)).isEqualTo(TEST_VALUE_3);
-        assertThat(propertySource.getProperty(TEST_KEY_VAULT_1)).isEqualTo(secretValue);
-        verify(operations, times(5)).getKeys(any(), any());
-    }
-    
-    @Test
-    public void awaitOnError() {
-        expected.expect(NullPointerException.class);
-        
-        KeyValueItem badFeature = new KeyValueItem();
-        badFeature.setContentType(FEATURE_FLAG_CONTENT_TYPE);
-        badFeature.setKey(".appconfig.featureflag/");
-        propertyCache.addToCache(badFeature, "test", new Date());
-        propertySource.initFeatures(propertyCache);
     }
 }

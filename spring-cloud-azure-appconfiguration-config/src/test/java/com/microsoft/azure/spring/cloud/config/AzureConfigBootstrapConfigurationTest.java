@@ -6,7 +6,6 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import static com.microsoft.azure.spring.cloud.config.TestConstants.CONN_STRING_PROP;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.FAIL_FAST_PROP;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.STORE_NAME_PROP;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_ACCESS_TOKEN;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
