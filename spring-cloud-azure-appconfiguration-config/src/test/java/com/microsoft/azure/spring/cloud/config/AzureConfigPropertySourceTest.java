@@ -263,7 +263,6 @@ public class AzureConfigPropertySourceTest {
 
         assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));
     }
-    
     @Test
     public void testKeyVaultTest() throws Exception {
         testItems.add(keyVaultItem);
