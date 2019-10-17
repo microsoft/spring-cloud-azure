@@ -7,7 +7,6 @@ package com.microsoft.azure.spring.cloud.config;
 
 import java.time.Duration;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -54,8 +53,6 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
     private static final String FEATURE_STORE_WATCH_KEY = FEATURE_STORE_SUFFIX + "*";
 
     private Duration delay;
-    
-    private HashMap<String, Date> lastUpdated;
 
     private Date lastCheckedTime;
 
