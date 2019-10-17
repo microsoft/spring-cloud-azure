@@ -109,7 +109,6 @@ public class FeatureManager {
      */
     public void setFeatureManagement(LinkedHashMap<String, ?> featureSet) {
         this.featureManagement = mapper.convertValue(featureSet, FeatureSet.class);
-
     }
 
     /**

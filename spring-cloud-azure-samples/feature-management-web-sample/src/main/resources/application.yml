@@ -1,3 +1,14 @@
+spring:
+  thymeleaf:
+    cache: false
+  cloud:
+    azure:
+      appconfiguration:
+        watch:
+          enabled: True
+          delay: 5s
+config:
+  message: Hi
 feature-management:
   featureSet:
     features:
@@ -8,3 +19,7 @@ feature-management:
             name: Random
             parameters:
               chance: "50"
+          -
+            name: ClientFilter
+            parameters:
+              clientIp: 10.0.0.1 
