@@ -91,8 +91,16 @@ public class AzureConfigPropertySourceTest {
     private static final ConfigurationSetting item3 = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3, TEST_LABEL_3,
             EMPTY_CONTENT_TYPE);
 
+    private static final ConfigurationSetting item3Null = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3,
+            TEST_LABEL_3,
+            null);
+
     private static final ConfigurationSetting featureItem = createItem(".appconfig.featureflag/", "Alpha",
             FEATURE_VALUE, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
+
+    private static final ConfigurationSetting featureItemNull = createItem(".appconfig.featureflag/", "Alpha",
+            FEATURE_VALUE,
+            FEATURE_LABEL, null);
 
     private static final ConfigurationSetting keyVaultItem = createItem(TEST_CONTEXT, TEST_KEY_VAULT_1,
             TEST_VALUE_VAULT_1, TEST_LABEL_VAULT_1, KEY_VAULT_CONTENT_TYPE);
@@ -308,5 +316,46 @@ public class AzureConfigPropertySourceTest {
         assertThat(propertySource.getProperty(TEST_KEY_2)).isEqualTo(TEST_VALUE_2);
         assertThat(propertySource.getProperty(TEST_KEY_3)).isEqualTo(TEST_VALUE_3);
         assertThat(propertySource.getProperty(TEST_KEY_VAULT_1)).isEqualTo("mySecret");
+    }
+
+    @Test
+    public void initNullValidContentTypeTest() throws ServerException {
+        ArrayList<ConfigurationSetting> items = new ArrayList<ConfigurationSetting>();
+        items.add(item3Null);
+        when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(items)
+                .thenReturn(new ArrayList<ConfigurationSetting>());
+
+        FeatureSet featureSet = new FeatureSet();
+        try {
+            propertySource.initProperties(featureSet);
+        } catch (IOException e) {
+            fail("Failed Reading in Feature Flags");
+        }
+
+        String[] keyNames = propertySource.getPropertyNames();
+        String[] expectedKeyNames = items.stream()
+                .map(t -> t.getKey().substring(TEST_CONTEXT.length())).toArray(String[]::new);
+
+        assertThat(keyNames).containsExactlyInAnyOrder(expectedKeyNames);
+    }
+
+    @Test
+    public void initNullInvalidContentTypeFeatureFlagTest() throws ServerException {
+        ArrayList<ConfigurationSetting> items = new ArrayList<ConfigurationSetting>();
+        items.add(featureItemNull);
+        when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString()))
+                .thenReturn(new ArrayList<ConfigurationSetting>()).thenReturn(items);
+
+        FeatureSet featureSet = new FeatureSet();
+        try {
+            propertySource.initProperties(featureSet);
+        } catch (IOException e) {
+
+        }
+
+        String[] keyNames = propertySource.getPropertyNames();
+        String[] expectedKeyNames = {};
+
+        assertThat(keyNames).containsExactlyInAnyOrder(expectedKeyNames);
     }
 }

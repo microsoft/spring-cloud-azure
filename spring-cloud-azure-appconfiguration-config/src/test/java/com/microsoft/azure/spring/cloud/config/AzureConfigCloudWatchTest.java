@@ -120,6 +120,21 @@ public class AzureConfigCloudWatchTest {
         // If there is no change it shouldn't update
         verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
     }
+    
+    @Test
+    public void notRefreshTime() throws Exception {
+        properties.getWatch().setDelay(Duration.ofSeconds(60));
+        AzureCloudConfigWatch watchLargeDelay = new AzureCloudConfigWatch(properties, contextsMap, clientStoreMock);
+        
+        PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
+        watchLargeDelay.setApplicationEventPublisher(eventPublisher);
+
+        when(date.after(Mockito.any(Date.class))).thenReturn(true);
+        watchLargeDelay.refreshConfigurations();
+
+        // The first time an action happens it can update
+        verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
+    }
 
     private List<ConfigurationSetting> initialResponse() {
         ConfigurationSetting item = new ConfigurationSetting();
