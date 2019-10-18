@@ -10,11 +10,13 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
@@ -182,20 +184,25 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
      * @throws URISyntaxException
      */
     private List<AzureConfigPropertySource> create(String context, ConfigStore store,
-            Map<String, List<String>> storeContextsMap, boolean initFeatures, FeatureSet featureSet)
-            throws IOException {
+            Map<String, List<String>> storeContextsMap, boolean initFeatures, FeatureSet featureSet) throws Exception {
         List<AzureConfigPropertySource> sourceList = new ArrayList<>();
 
-        for (String label : store.getLabels()) {
-            AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, store.getName(), label,
-                    properties, appProperties, clients);
+        try {
+            for (String label : store.getLabels()) {
+                AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, store.getName(),
+                        label,
+                        properties, appProperties, clients);
 
-            propertySource.initProperties(featureSet);
-            if (initFeatures) {
-                propertySource.initFeatures(featureSet);
+                propertySource.initProperties(featureSet);
+                if (initFeatures) {
+                    propertySource.initFeatures(featureSet);
+                }
+                sourceList.add(propertySource);
+                putStoreContext(store.getName(), context, storeContextsMap);
             }
-            sourceList.add(propertySource);
-            putStoreContext(store.getName(), context, storeContextsMap);
+        } catch (Exception e) {
+            delayException();
+            throw e;
         }
 
         return sourceList;
@@ -221,5 +228,19 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         }
 
         storeContextsMap.put(storeName, contexts);
+    }
+
+    private void delayException() {
+        Date currentDate = new Date();
+        Date maxRetryDate = DateUtils.addSeconds(appProperties.getStartDate(),
+                appProperties.getPrekillTime());
+        if (currentDate.before(maxRetryDate)) {
+            long diffInMillies = Math.abs(maxRetryDate.getTime() - currentDate.getTime());
+            try {
+                Thread.sleep(diffInMillies);
+            } catch (InterruptedException e) {
+                LOGGER.error("Failed to wait before fast fail.");
+            }
+        }
     }
 }
