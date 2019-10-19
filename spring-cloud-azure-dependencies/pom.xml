@@ -22,7 +22,7 @@
         <azure.sdk.version>1.23.0</azure.sdk.version>
         <azure.eventhubs.eph.version>2.4.0</azure.eventhubs.eph.version>
         <azure.keyvault.version>1.0.0</azure.keyvault.version>
-        <azure.servicebus.version>1.2.8</azure.servicebus.version>
+        <azure.servicebus.version>3.1.1</azure.servicebus.version>
         <javax.jms-api.version>2.0.1</javax.jms-api.version>
         <spring-jms.version>5.1.8.RELEASE</spring-jms.version>
         <qpid-jms-client.version>0.43.0</qpid-jms-client.version>
