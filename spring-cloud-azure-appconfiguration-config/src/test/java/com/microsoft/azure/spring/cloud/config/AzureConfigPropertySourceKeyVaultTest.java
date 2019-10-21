@@ -49,7 +49,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.azure.core.http.rest.PagedFlux;
 import com.azure.core.http.rest.PagedResponse;
-import com.azure.data.appconfiguration.ConfigurationAsyncClient;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.security.keyvault.secrets.models.Secret;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
@@ -92,9 +91,6 @@ public class AzureConfigPropertySourceKeyVaultTest {
 
     @Mock
     private ClientStore clientStoreMock;
-
-    @Mock
-    private ConfigurationAsyncClient configClientMock;
 
     @Mock
     private PagedFlux<ConfigurationSetting> settingsMock;

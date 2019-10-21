@@ -17,8 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
 
 import com.azure.core.http.policy.RetryPolicy;
-import com.azure.core.http.rest.PagedFlux;
-import com.azure.data.appconfiguration.ConfigurationAsyncClient;
+import com.azure.core.http.rest.PagedIterable;
+import com.azure.data.appconfiguration.ConfigurationClient;
 import com.azure.data.appconfiguration.ConfigurationClientBuilder;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
@@ -27,18 +27,15 @@ import com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties;
 import com.microsoft.azure.spring.cloud.config.pipline.policies.BaseAppConfigurationPolicy;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
 
-import reactor.core.Disposable;
-import reactor.core.publisher.Mono;
-
 public class ClientStore {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientStore.class);
 
-    private HashMap<String, ConfigurationAsyncClient> configClients;
+    private HashMap<String, ConfigurationClient> configClients;
 
     public ClientStore(AzureCloudConfigProperties properties, AppConfigProviderProperties appProperties,
             ConnectionStringPool pool) {
 
-        configClients = new HashMap<String, ConfigurationAsyncClient>();
+        configClients = new HashMap<String, ConfigurationClient>();
         for (String store : pool.getAll().keySet()) {
             try {
                 ConfigurationClientBuilder builder = new ConfigurationClientBuilder();
@@ -52,7 +49,7 @@ public class ClientStore {
                     throw new IllegalArgumentException("Connections String can't be empty or null");
                 }
 
-                ConfigurationAsyncClient client = builder.buildAsyncClient();
+                ConfigurationClient client = builder.buildClient();
 
                 configClients.put(store, client);
             } catch (IllegalArgumentException e) {
@@ -64,7 +61,7 @@ public class ClientStore {
         }
     }
 
-    public ConfigurationAsyncClient getConfigurationClient(String storeName) {
+    public ConfigurationClient getConfigurationClient(String storeName) {
         return configClients.get(storeName);
     }
 
@@ -80,11 +77,11 @@ public class ClientStore {
      */
     public final List<ConfigurationSetting> listSettingRevisons(SettingSelector settingSelector, String storeName)
             throws ServerException {
-        ConfigurationAsyncClient client = getConfigurationClient(storeName);
+        ConfigurationClient client = getConfigurationClient(storeName);
         List<ConfigurationSetting> configSettings = null;
 
         while (configSettings == null) {
-            configSettings = fluxResponseToListTest(client.listSettingRevisions(settingSelector));
+            configSettings = pagedIterableToList(client.listSettingRevisions(settingSelector));
         }
         return configSettings;
     }
@@ -101,11 +98,11 @@ public class ClientStore {
      */
     public final List<ConfigurationSetting> listSettings(SettingSelector settingSelector, String storeName)
             throws ServerException {
-        ConfigurationAsyncClient client = getConfigurationClient(storeName);
+        ConfigurationClient client = getConfigurationClient(storeName);
         List<ConfigurationSetting> configSettings = null;
 
         while (configSettings == null) {
-            configSettings = fluxResponseToListTest(client.listSettings(settingSelector));
+            configSettings = pagedIterableToList(client.listSettings(settingSelector));
         }
         return configSettings;
     }
@@ -120,14 +117,8 @@ public class ClientStore {
      * @throws ServerException thrown when retry-after-ms has invalid value.
      */
     public final ConfigurationSetting getSetting(String setting, String storeName) throws ServerException {
-        ConfigurationAsyncClient client = getConfigurationClient(storeName);
-        ConfigurationSetting configSetting = null;
-
-        while (configSetting == null) {
-            Mono<ConfigurationSetting> settingMono = client.getSetting(setting, storeName);
-            configSetting = settingMono.block();
-        }
-        return configSetting;
+        ConfigurationClient client = getConfigurationClient(storeName);
+        return client.getSetting(setting, storeName);
     }
 
     /**
@@ -138,15 +129,15 @@ public class ClientStore {
      * Settings.
      * @return A List of configuration Settings.
      */
-    private final List<ConfigurationSetting> fluxResponseToListTest(PagedFlux<ConfigurationSetting> response) {
-        List<ConfigurationSetting> items = new ArrayList<ConfigurationSetting>();
-        Disposable ready = response.byPage().subscribe(page -> items.addAll(page.getItems()));
-        while (!ready.isDisposed()) {
+    private final List<ConfigurationSetting> pagedIterableToList(PagedIterable<ConfigurationSetting> response) {
+        List<ConfigurationSetting> settings = new ArrayList<ConfigurationSetting>();
+        for (ConfigurationSetting setting : response) {
+            settings.add(setting);
         }
-        return items;
+        return settings;
     }
 
-    public HashMap<String, ConfigurationAsyncClient> getConfigurationClient() {
+    public HashMap<String, ConfigurationClient> getConfigurationClient() {
         return configClients;
     }
 

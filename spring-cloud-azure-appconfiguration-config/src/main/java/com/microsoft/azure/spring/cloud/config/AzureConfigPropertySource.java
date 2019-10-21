@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.util.ReflectionUtils;
 
-import com.azure.data.appconfiguration.ConfigurationAsyncClient;
+import com.azure.data.appconfiguration.ConfigurationClient;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import com.azure.security.keyvault.secrets.models.Secret;
@@ -36,7 +36,7 @@ import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.KeyVaultClient;
 
-public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigurationAsyncClient> {
+public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigurationClient> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigPropertySource.class);
 
     private final String context;

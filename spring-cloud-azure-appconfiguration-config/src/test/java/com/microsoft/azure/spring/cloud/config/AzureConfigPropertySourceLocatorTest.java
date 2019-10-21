@@ -35,14 +35,11 @@ import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertySource;
 
-import com.azure.core.http.rest.PagedFlux;
+import com.azure.core.http.rest.PagedIterable;
 import com.azure.core.http.rest.PagedResponse;
-import com.azure.data.appconfiguration.ConfigurationAsyncClient;
+import com.azure.data.appconfiguration.ConfigurationClient;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
-
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 public class AzureConfigPropertySourceLocatorTest {
     private static final String APPLICATION_NAME = "foo";
@@ -67,22 +64,19 @@ public class AzureConfigPropertySourceLocatorTest {
     private ClientStore configStoreMock;
 
     @Mock
-    private ConfigurationAsyncClient configClientMock;
+    private ConfigurationClient configClientMock;
 
     @Mock
-    private PagedFlux<ConfigurationSetting> settingsMock;
+    private PagedIterable<ConfigurationSetting> settingsMock;
 
     @Mock
-    private Flux<PagedResponse<ConfigurationSetting>> pageMock;
+    private Iterable<PagedResponse<ConfigurationSetting>>  iterableMock;
+    
+    @Mock
+    private Iterator<PagedResponse<ConfigurationSetting>> iteratorMock;
 
     @Mock
-    private Mono<List<PagedResponse<ConfigurationSetting>>> collectionMock;
-
-    @Mock
-    private List<PagedResponse<ConfigurationSetting>> itemsMock;
-
-    @Mock
-    private Iterator<PagedResponse<ConfigurationSetting>> itemsIteratorMock;
+    private PagedResponse<ConfigurationSetting> pagedMock;
 
     private AzureCloudConfigProperties properties;
 
@@ -106,10 +100,11 @@ public class AzureConfigPropertySourceLocatorTest {
         properties.setName(APPLICATION_NAME);
         
         when(configClientMock.listSettings(Mockito.any())).thenReturn(settingsMock);
-        when(settingsMock.byPage()).thenReturn(pageMock);
-        when(pageMock.collectList()).thenReturn(collectionMock);
-        when(collectionMock.block()).thenReturn(itemsMock);
-        when(itemsMock.iterator()).thenReturn(itemsIteratorMock);
+        when(settingsMock.iterableByPage()).thenReturn(iterableMock);
+        when(iterableMock.iterator()).thenReturn(iteratorMock);
+        when(iteratorMock.hasNext()).thenReturn(true).thenReturn(false);
+        when(iteratorMock.next()).thenReturn(pagedMock);
+        when(pagedMock.getItems()).thenReturn(new ArrayList<ConfigurationSetting>());
         
         appProperties = new AppConfigProviderProperties();
         appProperties.setVersion("1.0");
