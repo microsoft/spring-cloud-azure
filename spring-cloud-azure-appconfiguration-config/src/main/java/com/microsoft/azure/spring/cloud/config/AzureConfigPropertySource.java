@@ -233,8 +233,9 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
         Feature feature = null;
         if (item.getContentType() != null && item.getContentType().equals(FEATURE_FLAG_CONTENT_TYPE)) {
             try {
+                String key = item.getKey().trim().substring(FEATURE_FLAG_PREFIX.length());
                 FeatureManagementItem featureItem = mapper.readValue(item.getValue(), FeatureManagementItem.class);
-                feature = new Feature(featureItem);
+                feature = new Feature(key, featureItem);
 
                 // Setting Enabled For to null, but enabled = true will result in the
                 // feature being on. This is the case of a feature is on/off and set to
