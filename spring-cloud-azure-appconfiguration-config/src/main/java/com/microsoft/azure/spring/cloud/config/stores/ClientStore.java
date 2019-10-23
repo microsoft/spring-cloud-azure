@@ -72,7 +72,6 @@ public class ClientStore {
      * results, key value...
      * @param storeName Name of the App Configuration store to query against.
      * @return List of Configuration Settings.
-     * @throws ServerException thrown when retry-after-ms has invalid value.
      */
     public final List<ConfigurationSetting> listSettingRevisons(SettingSelector settingSelector, String storeName) {
         ConfigurationClient client = getConfigurationClient(storeName);

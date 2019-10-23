@@ -34,7 +34,7 @@ public class KeyVaultClient {
      * 
      * @param secretIdentifier The Secret Identifier to Secret
      * @param keyVaultWaitTime Amount of time to wait for a response from key vault.
-     * @return
+     * @return Secret values that matches the secretIdentifier
      */
     public Secret getSecret(URI secretIdentifier, Duration keyVaultWaitTime) {
         if (secretAsyncClient == null) {
