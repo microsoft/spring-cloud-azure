@@ -14,7 +14,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.ReflectionUtils;
 
 import com.azure.core.http.policy.RetryPolicy;
 import com.azure.core.http.rest.PagedIterable;
@@ -55,7 +54,7 @@ public class ClientStore {
             } catch (IllegalArgumentException e) {
                 LOGGER.error("Failed to load Config Store.");
                 if (properties.isFailFast()) {
-                    ReflectionUtils.rethrowRuntimeException(new Exception("Failed to load Config Store.", e));
+                    throw new RuntimeException("Failed to load Config Store.", e);
                 }
             }
         }
@@ -75,8 +74,7 @@ public class ClientStore {
      * @return List of Configuration Settings.
      * @throws ServerException thrown when retry-after-ms has invalid value.
      */
-    public final List<ConfigurationSetting> listSettingRevisons(SettingSelector settingSelector, String storeName)
-            throws ServerException {
+    public final List<ConfigurationSetting> listSettingRevisons(SettingSelector settingSelector, String storeName) {
         ConfigurationClient client = getConfigurationClient(storeName);
         List<ConfigurationSetting> configSettings = null;
 

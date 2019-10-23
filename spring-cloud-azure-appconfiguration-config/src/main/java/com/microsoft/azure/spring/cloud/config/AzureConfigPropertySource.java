@@ -155,10 +155,10 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
                 uri = new URI(kvReference.at("/uri").asText());
             } catch (URISyntaxException e) {
                 if (azureProperties.isFailFast()) {
-                    LOGGER.error("Error Processing Key Vault Entry URI.", e);
-                } else {
                     LOGGER.error("Error Processing Key Vault Entry URI.");
                     ReflectionUtils.rethrowRuntimeException(e);
+                } else {
+                    LOGGER.error("Error Processing Key Vault Entry URI.", e);
                 }
             }
 

@@ -5,7 +5,6 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import java.rmi.ServerException;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
@@ -22,7 +21,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
@@ -118,13 +116,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
         SettingSelector settingSelector = new SettingSelector().setKeys(watchedKeyNames).setLabels(store.getLabels())
                 .setRange(new Range(0, 0));
 
-        List<ConfigurationSetting> items = null;
-        try {
-            items = clientStore.listSettingRevisons(settingSelector, store.getName());
-        } catch (ServerException e) {
-            LOGGER.error("Failed to retrieve setting change information.");
-            ReflectionUtils.rethrowRuntimeException(e);
-        }
+        List<ConfigurationSetting> items = clientStore.listSettingRevisons(settingSelector, store.getName());
 
         if (items.isEmpty()) {
             return false;

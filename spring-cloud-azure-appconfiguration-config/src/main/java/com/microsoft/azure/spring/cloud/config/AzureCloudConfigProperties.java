@@ -22,7 +22,6 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
-import com.microsoft.azure.AzureEnvironment;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
 
@@ -55,22 +54,6 @@ public class AzureCloudConfigProperties {
     private boolean failFast = true;
 
     private Watch watch = new Watch();
-    
-    private AzureEnvironment environment = AzureEnvironment.AZURE;
-
-    /**
-     * @return the environment
-     */
-    public AzureEnvironment getEnvironment() {
-        return environment;
-    }
-
-    /**
-     * @param environment the environment to set
-     */
-    public void setEnvironment(AzureEnvironment environment) {
-        this.environment = environment;
-    }
 
     public boolean isEnabled() {
         return enabled;
