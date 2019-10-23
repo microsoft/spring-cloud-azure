@@ -6,9 +6,16 @@
 
 package com.microsoft.azure.spring.integration.servicebus;
 
+import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.MessageHandlerOptions;
+import com.microsoft.azure.servicebus.SessionHandlerOptions;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
@@ -17,30 +24,27 @@ import com.microsoft.azure.spring.integration.servicebus.converter.ServiceBusMes
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusSenderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import java.time.Duration;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-
 /**
  * Azure service bus template to support send {@link Message} asynchronously
  *
  * @author Warren Zhu
+ * @author Eduardo Sciullo
  */
 public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements SendOperation {
     private static final Logger log = LoggerFactory.getLogger(ServiceBusTemplate.class);
+
     protected final T senderFactory;
 
     protected ServiceBusClientConfig clientConfig = ServiceBusClientConfig.builder().build();
 
-    protected CheckpointConfig checkpointConfig =
-            CheckpointConfig.builder().checkpointMode(CheckpointMode.RECORD).build();
+    protected CheckpointConfig checkpointConfig = CheckpointConfig.builder().checkpointMode(CheckpointMode.RECORD)
+            .build();
 
     protected ServiceBusMessageConverter messageConverter = new ServiceBusMessageConverter();
 
@@ -70,13 +74,16 @@ public class ServiceBusTemplate<T extends ServiceBusSenderFactory> implements Se
         log.info("ServiceBusTemplate checkpoint config becomes: {}", this.checkpointConfig);
     }
 
-    protected MessageHandlerOptions buildHandlerOptions(){
+    protected MessageHandlerOptions buildHandlerOptions() {
         return new MessageHandlerOptions(this.clientConfig.getConcurrency(), false, Duration.ofMinutes(5));
     }
 
-    protected ExecutorService buildHandlerExecutors(String threadPrefix){
-        ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat
-                (threadPrefix + "-%d").build();
+    protected SessionHandlerOptions buildSessionHandlerOptions() {
+        return new SessionHandlerOptions(this.clientConfig.getConcurrency(), false, Duration.ofMinutes(5));
+    }
+
+    protected ExecutorService buildHandlerExecutors(String threadPrefix) {
+        ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat(threadPrefix + "-%d").build();
         return Executors.newFixedThreadPool(this.clientConfig.getConcurrency(), threadFactory);
     }
 

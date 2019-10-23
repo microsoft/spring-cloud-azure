@@ -23,10 +23,12 @@ import org.springframework.messaging.MessageHandler;
 
 /**
  * @author Warren Zhu
+ * @author Eduardo Sciullo
  */
 public abstract class ServiceBusMessageChannelBinder<T extends ServiceBusExtendedBindingProperties> extends
-        AbstractMessageChannelBinder<ExtendedConsumerProperties<ServiceBusConsumerProperties>,
-                ExtendedProducerProperties<ServiceBusProducerProperties>, ServiceBusChannelProvisioner>
+        AbstractMessageChannelBinder<ExtendedConsumerProperties<ServiceBusConsumerProperties>, 
+        ExtendedProducerProperties<ServiceBusProducerProperties>, 
+        ServiceBusChannelProvisioner>
         implements
         ExtendedPropertiesBinder<MessageChannel, ServiceBusConsumerProperties, ServiceBusProducerProperties> {
 
@@ -86,7 +88,8 @@ public abstract class ServiceBusMessageChannelBinder<T extends ServiceBusExtende
             ExtendedConsumerProperties<ServiceBusConsumerProperties> properties) {
         ServiceBusConsumerProperties consumerProperties = properties.getExtension();
         return ServiceBusClientConfig.builder().setPrefetchCount(consumerProperties.getPrefetchCount())
-                                     .setConcurrency(consumerProperties.getConcurrency()).build();
+                .setConcurrency(consumerProperties.getConcurrency())
+                .setSessionsEnabled(consumerProperties.isSessionsEnabled()).build();
     }
 
     abstract SendOperation getSendOperation();
