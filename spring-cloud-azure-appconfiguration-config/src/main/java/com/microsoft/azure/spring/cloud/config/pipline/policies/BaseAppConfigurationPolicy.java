@@ -28,10 +28,12 @@ public class BaseAppConfigurationPolicy implements HttpPipelinePolicy {
     public static final String USER_AGENT = String.format("%s/%s", StringUtils.remove(PACKAGE_NAME, " "),
             BaseAppConfigurationPolicy.class.getPackage().getImplementationVersion());
 
+    public static Boolean watchRequests = false;
+
     @Override
     public Mono<HttpResponse> process(HttpPipelineCallContext context, HttpPipelineNextPolicy next) {
         String sdkUserAgent = context.getHttpRequest().getHeaders().get(HttpHeaders.USER_AGENT).getValue();
-        context.getHttpRequest().getHeaders().put(HttpHeaders.USER_AGENT, USER_AGENT + "; " + sdkUserAgent);
+        context.getHttpRequest().getHeaders().put(HttpHeaders.USER_AGENT, USER_AGENT + " " + sdkUserAgent);
         context.getHttpRequest().getHeaders().put("Correlation-Context", getTracingInfo(context.getHttpRequest()));
         return next.process();
     }
@@ -50,9 +52,14 @@ public class BaseAppConfigurationPolicy implements HttpPipelinePolicy {
         if (track != null && track.equalsIgnoreCase("false")) {
             return "";
         }
-
-        String requestTypeValue = request.getUrl().getPath().startsWith("/kv") ? RequestType.STARTUP.toString()
-                : RequestType.WATCH.toString();
+        String requestTypeValue = RequestType.WATCH.toString();
+        if (!watchRequests) {
+            requestTypeValue = request.getUrl().getPath().startsWith("/kv") ? RequestType.STARTUP.toString()
+                    : RequestType.WATCH.toString();
+        }
+        if (requestTypeValue.equals(RequestType.WATCH.toString())) {
+            watchRequests = true;
+        }
         String requestType = RequestTracingConstants.REQUEST_TYPE.toString() + "=" + requestTypeValue;
         String host = RequestTracingConstants.HOST + "=" + getHostType();
 
