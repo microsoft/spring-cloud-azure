@@ -29,6 +29,16 @@ public class TestConstants {
     public static final String SEPARATOR_PROP = "spring.cloud.azure.appconfiguration.profile-separator";
     
     public static final String FAIL_FAST_PROP = "spring.cloud.azure.appconfiguration.failFast";
+    
+    public static final String KEY_VAULT_STORE_1_CONNECTION = 
+            "spring.cloud.azure.appconfiguration.key_vault_stores[0].connection_url";
+    public static final String KEY_VAULT_STORE_1_CLIENT = 
+            "spring.cloud.azure.appconfiguration.key_vault_stores[0].client_id";
+    public static final String KEY_VAULT_STORE_1_DOMAIN = 
+            "spring.cloud.azure.appconfiguration.key_vault_stores[0].domain";
+    public static final String KEY_VAULT_STORE_1_SECRET = 
+            "spring.cloud.azure.appconfiguration.key_vault_stores[0].secret";
+    
 
     public static final String TEST_CONN_STRING =
             "Endpoint=https://fake.test.config.io;Id=fake-conn-id;Secret=ZmFrZS1jb25uLXNlY3JldA==";

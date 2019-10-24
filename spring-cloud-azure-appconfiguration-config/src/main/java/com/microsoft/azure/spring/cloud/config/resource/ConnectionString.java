@@ -21,11 +21,13 @@ public class ConnectionString {
     private final String endpoint;
     private final String id;
     private final String secret;
+    private final String fullConnectionString;
 
     private ConnectionString(String endpoint, String id, String secret) {
         this.endpoint = endpoint;
         this.id = id;
         this.secret = secret;
+        this.fullConnectionString = "endpoint=" + endpoint + ";id=" + id + ";secret=" + secret;
     }
 
     public static ConnectionString of(String connectionString) {
@@ -57,5 +59,9 @@ public class ConnectionString {
 
     public String getSecret() {
         return secret;
+    }
+    
+    public String getFullConnectionString() {
+        return fullConnectionString;
     }
 }
