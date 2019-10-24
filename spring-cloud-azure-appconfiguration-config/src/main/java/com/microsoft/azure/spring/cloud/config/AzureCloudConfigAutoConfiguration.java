@@ -11,6 +11,8 @@ import org.springframework.cloud.endpoint.RefreshEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
+
 @Configuration
 @ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "enabled", matchIfMissing = true)
 public class AzureCloudConfigAutoConfiguration {
@@ -20,9 +22,9 @@ public class AzureCloudConfigAutoConfiguration {
     @ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "watch.enabled")
     static class CloudWatchAutoConfiguration {
         @Bean
-        public AzureCloudConfigWatch getConfigWatch(ConfigServiceOperations operations,
-                AzureCloudConfigProperties properties, AzureConfigPropertySourceLocator sourceLocator) {
-            return new AzureCloudConfigWatch(operations, properties, sourceLocator.getStoreContextsMap());
+        public AzureCloudConfigWatch getConfigWatch(AzureCloudConfigProperties properties,
+                AzureConfigPropertySourceLocator sourceLocator, ClientStore clientStore) {
+            return new AzureCloudConfigWatch(properties, sourceLocator.getStoreContextsMap(), clientStore);
         }
 
         @Bean

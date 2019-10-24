@@ -31,6 +31,8 @@ import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollect
 import com.microsoft.azure.spring.cloud.config.managed.identity.AzureResourceManagerConnector;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionStringPool;
+import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
+import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
 
 @Configuration
@@ -38,6 +40,7 @@ import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentity
 @ConditionalOnClass(AzureConfigPropertySourceLocator.class)
 @ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "enabled", matchIfMissing = true)
 public class AzureConfigBootstrapConfiguration {
+    
     private static final Logger LOGGER =  LoggerFactory.getLogger(AzureConfigBootstrapConfiguration.class);
     private static final String ENV_MSI_ENDPOINT = "MSI_ENDPOINT";
     private static final String ENV_MSI_SECRET = "MSI_SECRET";
@@ -49,7 +52,7 @@ public class AzureConfigBootstrapConfiguration {
                                                      AzureTokenCredentials credentials) {
         ConnectionStringPool pool = new ConnectionStringPool();
         List<ConfigStore> stores = properties.getStores();
-
+        
         for (ConfigStore store : stores) {
             if (StringUtils.hasText(store.getName()) && StringUtils.hasText(store.getConnectionString())) {
                 pool.put(store.getName(), ConnectionString.of(store.getConnectionString()));
@@ -98,20 +101,15 @@ public class AzureConfigBootstrapConfiguration {
     }
 
     @Bean
-    public ConfigHttpClient httpClient(CloseableHttpClient httpClient) {
-        return new ConfigHttpClient(httpClient);
+    public AzureConfigPropertySourceLocator sourceLocator(AzureCloudConfigProperties properties,
+            AppConfigProviderProperties appProperties, ClientStore clients) {
+        return new AzureConfigPropertySourceLocator(properties, appProperties, clients);
     }
 
     @Bean
-    public ConfigServiceOperations azureConfigOperations(ConfigHttpClient client, ConnectionStringPool pool,
-            AppConfigProviderProperties properties) {
-        return new ConfigServiceTemplate(client, pool, properties);
-    }
-
-    @Bean
-    public AzureConfigPropertySourceLocator sourceLocator(ConfigServiceOperations operations,
-            AzureCloudConfigProperties properties, AppConfigProviderProperties appProperties) {
-        return new AzureConfigPropertySourceLocator(operations, properties, appProperties);
+    public ClientStore buildClientStores(AzureCloudConfigProperties properties,
+            AppConfigProviderProperties appProperties, ConnectionStringPool pool) {
+        return new ClientStore(properties, appProperties, pool);
     }
 
     @PostConstruct

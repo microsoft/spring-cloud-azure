@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>com.microsoft.azure</groupId>
         <artifactId>spring-cloud-azure</artifactId>
@@ -64,13 +64,23 @@
         </dependency>
         <dependency>
             <groupId>com.azure</groupId>
+            <artifactId>azure-data-appconfiguration</artifactId>
+            <version>1.0.0-preview.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.azure</groupId>
             <artifactId>azure-identity</artifactId>
-            <version>1.0.0-preview.2</version>
+            <version>1.0.0-preview.4</version>
         </dependency>
         <dependency>
             <groupId>com.azure</groupId>
             <artifactId>azure-keyvault-secrets</artifactId>
-            <version>4.0.0-preview.2</version>
+            <version>4.0.0-preview.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-core-http-netty</artifactId>
+            <version>1.0.0-preview.6</version>
         </dependency>
     </dependencies>
 </project>
