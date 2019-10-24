@@ -24,19 +24,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.util.ReflectionUtils;
 
-import com.azure.identity.credential.DefaultAzureCredentialBuilder;
-import com.azure.security.keyvault.secrets.SecretAsyncClient;
-import com.azure.security.keyvault.secrets.SecretClientBuilder;
+import com.azure.data.appconfiguration.ConfigurationClient;
+import com.azure.data.appconfiguration.models.ConfigurationSetting;
+import com.azure.data.appconfiguration.models.SettingSelector;
 import com.azure.security.keyvault.secrets.models.Secret;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
-import com.microsoft.azure.spring.cloud.config.domain.QueryOptions;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureManagementItem;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
+import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
+import com.microsoft.azure.spring.cloud.config.stores.KeyVaultClient;
 
-public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigServiceOperations> {
+public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigurationClient> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigPropertySource.class);
 
     private final String context;
@@ -57,17 +57,24 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
 
     private static final String FEATURE_FLAG_PREFIX = ".appconfig.featureflag/";
 
-    private HashMap<String, SecretAsyncClient> keyVaultClients;
+    private HashMap<String, KeyVaultClient> keyVaultClients;
 
-    public AzureConfigPropertySource(String context, ConfigServiceOperations operations, String storeName,
-            String label, AzureCloudConfigProperties azureProperties, AppConfigProviderProperties appProperties) {
-        super(context + storeName + "/" + label, operations);
+    private ClientStore clients;
+
+    public AzureConfigPropertySource(String context, String storeName,
+            String label, AzureCloudConfigProperties azureProperties, AppConfigProviderProperties appProperties,
+            ClientStore clients) {
+        // The context alone does not uniquely define a PropertySource, append storeName
+        // and label to uniquely
+        // define a PropertySource
+        super(context + storeName + "/" + label);
         this.context = context;
         this.storeName = storeName;
         this.label = label;
         this.azureProperties = azureProperties;
         this.appProperties = appProperties;
-        this.keyVaultClients = new HashMap<String, SecretAsyncClient>();
+        this.keyVaultClients = new HashMap<String, KeyVaultClient>();
+        this.clients = clients;
     }
 
     @Override
@@ -99,29 +106,34 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
      */
     public FeatureSet initProperties(FeatureSet featureSet) throws IOException {
         Date date = new Date();
+        SettingSelector settingSelector = new SettingSelector();
+        if (!label.equals("%00")) {
+            settingSelector.setLabels(label);
+        }
+
         // * for wildcard match
-        QueryOptions queryOptions = new QueryOptions().withKeyNames(context + "*").withLabels(label);
-        List<KeyValueItem> items = source.getKeys(storeName, queryOptions);
-        for (KeyValueItem item : items) {
-            String key = item.getKey().trim().substring(context.length()).replace('/', '.');
-            if (item.getContentType() != null && item.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
-                String entry = getKeyVaultEntry(item.getValue());
+        settingSelector.setKeys(context + "*");
+        List<ConfigurationSetting> settings = clients.listSettings(settingSelector, storeName);
+        for (ConfigurationSetting setting : settings) {
+            String key = setting.getKey().trim().substring(context.length()).replace('/', '.');
+            if (setting.getContentType() != null && setting.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
+                String entry = getKeyVaultEntry(setting.getValue());
 
                 // Null in the case of failFast is false, will just skip entry.
                 if (entry != null) {
                     properties.put(key, entry);
                 }
             } else {
-                properties.put(key, item.getValue());
+                properties.put(key, setting.getValue());
             }
 
         }
 
         // Reading In Features
-        queryOptions = new QueryOptions().withKeyNames(FEATURE_FLAG_PREFIX + "*").withLabels(label);
-        items = source.getKeys(storeName, queryOptions);
+        settingSelector.setKeys(".appconfig*");
+        settings = clients.listSettings(settingSelector, storeName);
 
-        return addToFeatureSet(featureSet, items, date);
+        return addToFeatureSet(featureSet, settings, date);
     }
 
     /**
@@ -135,26 +147,23 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
     private String getKeyVaultEntry(String value) {
         String secretValue = null;
         try {
-            String stringUri = "";
             URI uri = null;
-            Secret secret = new Secret();
 
             // Parsing Key Vault Reference for URI
             try {
                 JsonNode kvReference = mapper.readTree(value);
-                stringUri = kvReference.at("/uri").asText();
-                uri = new URI(stringUri);
+                uri = new URI(kvReference.at("/uri").asText());
             } catch (URISyntaxException e) {
                 if (azureProperties.isFailFast()) {
-                    LOGGER.error("Error Processing Key Vault Entry URI.", e);
-                } else {
                     LOGGER.error("Error Processing Key Vault Entry URI.");
                     ReflectionUtils.rethrowRuntimeException(e);
+                } else {
+                    LOGGER.error("Error Processing Key Vault Entry URI.", e);
                 }
             }
 
             // If no entry found don't connect to Key Vault
-            if (stringUri.equals("") || uri == null) {
+            if (uri == null) {
                 if (azureProperties.isFailFast()) {
                     ReflectionUtils.rethrowRuntimeException(
                             new IOException("Invaid URI when parsing Key Vault Reference."));
@@ -163,24 +172,18 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
                 }
             }
 
-            // Setting the Key Vault Reference as ID enables search by id and version
-            secret.id(stringUri);
-
             // Check if we already have a client for this key vault, if not we will make
             // one
             if (!keyVaultClients.containsKey(uri.getHost())) {
-                SecretAsyncClient secretAsyncClient = new SecretClientBuilder()
-                        .endpoint("https://" + uri.getHost())
-                        .credential(new DefaultAzureCredentialBuilder().build())
-                        .buildAsyncClient();
-                keyVaultClients.put(uri.getHost(), secretAsyncClient);
+                KeyVaultClient client = new KeyVaultClient(uri);
+                keyVaultClients.put(uri.getHost(), client);
             }
             Duration keyVaultWaitTime = Duration.ofSeconds(appProperties.getKeyVaultWaitTime());
-            secret = keyVaultClients.get(uri.getHost()).getSecret(secret).block(keyVaultWaitTime);
+            Secret secret = keyVaultClients.get(uri.getHost()).getSecret(uri, keyVaultWaitTime);
             if (secret == null) {
                 throw new IOException("No Key Vault Secret found for Reference.");
             }
-            secretValue = secret.value();
+            secretValue = secret.getValue();
         } catch (RuntimeException | IOException e) {
             if (azureProperties.isFailFast()) {
                 LOGGER.error("Error Retreiving Key Vault Entry", e);
@@ -210,12 +213,13 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
      * @param date Cache timestamp
      * @throws IOException
      */
-    private FeatureSet addToFeatureSet(FeatureSet featureSet, List<KeyValueItem> items, Date date) throws IOException {
+    private FeatureSet addToFeatureSet(FeatureSet featureSet, List<ConfigurationSetting> settings, Date date) 
+            throws IOException {
         // Reading In Features
-        for (KeyValueItem item : items) {
-            Object feature = createFeature(item);
+        for (ConfigurationSetting setting : settings) {
+            Object feature = createFeature(setting);
             if (feature != null) {
-                featureSet.addFeature(item.getKey().trim().substring(FEATURE_FLAG_PREFIX.length()), feature);
+                featureSet.addFeature(setting.getKey().trim().substring(FEATURE_FLAG_PREFIX.length()), feature);
             }
         }
         return featureSet;
@@ -229,7 +233,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigSe
      * @return Feature created from KeyValueItem
      * @throws IOException
      */
-    private Object createFeature(KeyValueItem item) throws IOException {
+    private Object createFeature(ConfigurationSetting item) throws IOException {
         Feature feature = null;
         if (item.getContentType() != null && item.getContentType().equals(FEATURE_FLAG_CONTENT_TYPE)) {
             try {

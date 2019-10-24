@@ -22,4 +22,4 @@ feature-management:
           -
             name: ClientFilter
             parameters:
-              clientIp: 10.0.0.1
+              clientIp: 10.0.0.1 
