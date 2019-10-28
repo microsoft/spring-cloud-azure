@@ -10,6 +10,29 @@
     <packaging>pom</packaging>
     <name>Spring Cloud Azure dependencies BOM</name>
     <description>BOM for Spring Cloud Azure dependencies</description>
+    <url>https://github.com/microsoft/spring-cloud-azure</url>
+
+    <developers>
+        <developer>
+            <id>microsoft</id>
+            <name>Microsoft</name>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>The MIT License (MIT)</name>
+            <url>http://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>scm:git:https://github.com/microsoft/spring-cloud-azure</url>
+        <connection>scm:git:git@github.com:microsoft/spring-cloud-azure.git</connection>
+        <tag>HEAD</tag>
+    </scm>
+
 
     <properties>
         <powermock.version>1.7.1</powermock.version>
