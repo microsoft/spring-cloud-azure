@@ -60,12 +60,12 @@ public class FeatureSet {
             return;
         }
         for (String key : features.keySet()) {
-            convertFeature(features, key, "");
+            addToFeatures(features, key, "");
         }
     }
 
     @SuppressWarnings("unchecked")
-    private void convertFeature(HashMap<String, Object> features, String key, String combined) {
+    private void addToFeatures(HashMap<String, Object> features, String key, String combined) {
         Object featureKey = features.get(key);
         if (!combined.isEmpty() && !combined.endsWith(".")) {
             combined += ".";
@@ -86,7 +86,7 @@ public class FeatureSet {
                     features = (LinkedHashMap<String, Object>) featureKey;
                     for (Object fKey : features.keySet().toArray()) {
                         String newKey = (String) fKey;
-                        convertFeature(features, newKey, combined + key);
+                        addToFeatures(features, newKey, combined + key);
                     }
                 }
             } else {
