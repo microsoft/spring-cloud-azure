@@ -8,6 +8,7 @@ package com.microsoft.azure.spring.cloud.config;
 import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_FLAG_CONTENT_TYPE;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_LABEL;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_VALUE;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_BOOLEAN_VALUE;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONTEXT;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_KEY_1;
@@ -83,6 +84,9 @@ public class AzureConfigPropertySourceTest {
 
     private static final ConfigurationSetting featureItem = createItem(".appconfig.featureflag/", "Alpha",
             FEATURE_VALUE, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
+    
+    private static final ConfigurationSetting featureItem2 = createItem(".appconfig.featureflag/", "Beta",
+            FEATURE_BOOLEAN_VALUE, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
 
     private static final ConfigurationSetting featureItemNull = createItem(".appconfig.featureflag/", "Alpha",
             FEATURE_VALUE,
@@ -133,6 +137,7 @@ public class AzureConfigPropertySourceTest {
 
         featureItem.setContentType(FEATURE_FLAG_CONTENT_TYPE);
         FEATURE_ITEMS.add(featureItem);
+        FEATURE_ITEMS.add(featureItem2);
     }
 
     @Before
@@ -228,6 +233,7 @@ public class AzureConfigPropertySourceTest {
         filters.add(ffec);
         feature.setEnabledFor(filters);
         featureSetExpected.addFeature("Alpha", feature);
+        featureSetExpected.addFeature("Beta", true);
         LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected, LinkedHashMap.class);
 
         assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));
@@ -264,6 +270,7 @@ public class AzureConfigPropertySourceTest {
         filters.add(ffec);
         feature.setEnabledFor(filters);
         featureSetExpected.addFeature("Alpha", feature);
+        featureSetExpected.addFeature("Beta", true);
         LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected, LinkedHashMap.class);
 
         assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));

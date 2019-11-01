@@ -61,6 +61,8 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
 
     private Date lastCheckedTime;
 
+    private String eventDataInfo;
+
     public AzureCloudConfigWatch(AzureCloudConfigProperties properties, Map<String, List<String>> storeContextsMap,
             ClientStore clientStore) {
         this.configStores = properties.getStores();
@@ -68,6 +70,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
         this.delay = properties.getWatch().getDelay();
         this.lastCheckedTime = new Date();
         this.clientStore = clientStore;
+        this.eventDataInfo = "";
     }
 
     @Override
@@ -102,34 +105,33 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
      */
     private Boolean refreshStores() {
         boolean needsRefresh = false;
-        if (this.running.compareAndSet(false, true)) {
-            Boolean refreshed = false;
-            Date notCachedTime = DateUtils.addSeconds(lastCheckedTime, Math.toIntExact(delay.getSeconds()));
-            Date date = new Date();
-            if (date.after(notCachedTime)) {
-                for (ConfigStore configStore : configStores) {
-                    String watchedKeyNames = watchedKeyNames(configStore, storeContextsMap);
-                    refreshed = refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames);
-                    // Refresh Feature Flags
-                    if (!refreshed) {
-                        refreshed = refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY);
+        if (running.compareAndSet(false, true)) {
+            try {
+                Date notCachedTime = DateUtils.addSeconds(lastCheckedTime,
+                        Math.toIntExact(delay.getSeconds()));
+                Date date = new Date();
+                if (date.after(notCachedTime)) {
+                    for (ConfigStore configStore : configStores) {
+                        String watchedKeyNames = watchedKeyNames(configStore, storeContextsMap);
+                        needsRefresh = refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames) ? true
+                                : needsRefresh;
+                        // Refresh Feature Flags
+                        needsRefresh = refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY) ? true
+                                : needsRefresh;
                     }
-
-                    // The Refresh Event updates all config stores
-                    if (refreshed) {
-                        break;
-                    }
+                }
+                if (needsRefresh) {
+                    // Only one refresh Event needs to be call to update all of the
+                    // stores,
+                    // not one for each.
+                    RefreshEventData eventData = new RefreshEventData(this.getClass().getName());
+                    publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
                 }
                 // Resetting last Checked date to now.
                 lastCheckedTime = new Date();
+            } finally {
+                running.set(false);
             }
-            if (needsRefresh) {
-                // Only one refresh Event needs to be call to update all of the stores,
-                // not one for each.
-                RefreshEventData eventData = new RefreshEventData(this.getClass().getName());
-                publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
-            }
-            this.running.set(false);
         }
         return needsRefresh;
     }
@@ -165,8 +167,11 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
             LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
                     store.getName(), watchedKeyNames);
             storeEtagMap.put(storeNameWithSuffix, etag);
-            RefreshEventData eventData = new RefreshEventData(watchedKeyNames);
-            publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
+            if (eventDataInfo.isEmpty()) {
+                eventDataInfo = watchedKeyNames;
+            } else {
+                eventDataInfo += ", " + watchedKeyNames;
+            }
 
             // Don't need to refresh here will be done in Property Source
             return true;

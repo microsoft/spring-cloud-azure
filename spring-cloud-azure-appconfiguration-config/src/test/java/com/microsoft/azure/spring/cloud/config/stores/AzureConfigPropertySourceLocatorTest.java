@@ -10,7 +10,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.rmi.ServerException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -66,7 +65,7 @@ public class AzureConfigPropertySourceLocatorTest {
         when(env.getActiveProfiles()).thenReturn(array);
         String[] labels = {""};
         when(configStore.getLabels()).thenReturn(labels);
-        when(clients.listSettings(Mockito.any(), Mockito.any())).thenThrow(new ServerException(""));
+        when(clients.listSettings(Mockito.any(), Mockito.any())).thenThrow(new NullPointerException(""));
         when(appProperties.getPrekillTime()).thenReturn(-60);
         when(appProperties.getStartDate()).thenReturn(new Date());
         

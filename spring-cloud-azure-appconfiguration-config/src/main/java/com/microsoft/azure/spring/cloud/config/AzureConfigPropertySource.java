@@ -18,7 +18,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,9 +111,14 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
             settingSelector.setLabels(label);
         }
 
-        // * for wildcard match
+        // * for wildcard match, with Configuration Settings
         settingSelector.setKeys(context + "*");
         List<ConfigurationSetting> settings = clients.listSettings(settingSelector, storeName);
+        
+        // Reading In Features
+        settingSelector.setKeys(".appconfig*");
+        List<ConfigurationSetting> features = clients.listSettings(settingSelector, storeName);
+        
         for (ConfigurationSetting setting : settings) {
             String key = setting.getKey().trim().substring(context.length()).replace('/', '.');
             if (setting.getContentType() != null && setting.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
@@ -127,15 +131,9 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
             } else {
                 properties.put(key, setting.getValue());
             }
-
         }
-    }
 
-        // Reading In Features
-        settingSelector.setKeys(".appconfig*");
-        settings = clients.listSettings(settingSelector, storeName);
-
-        return addToFeatureSet(featureSet, settings, date);
+        return addToFeatureSet(featureSet, features, date);
     }
 
     /**

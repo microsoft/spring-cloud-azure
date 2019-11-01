@@ -19,12 +19,6 @@ feature-management:
             name: Random
             parameters:
               chance: "50"
-      BetaAB:
-        EnabledFor:
-          -
-            name: Random
-            parameters:
-              chance: "50"
           -
             name: ClientFilter
             parameters:

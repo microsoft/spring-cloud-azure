@@ -5,7 +5,6 @@
  */
 package com.microsoft.azure.spring.cloud.config.stores;
 
-import java.rmi.ServerException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,10 +90,8 @@ public class ClientStore {
      * results, key value...
      * @param storeName Name of the App Configuration store to query against.
      * @return List of Configuration Settings.
-     * @throws ServerException thrown when retry-after-ms has invalid value.
      */
-    public final List<ConfigurationSetting> listSettings(SettingSelector settingSelector, String storeName)
-            throws ServerException {
+    public final List<ConfigurationSetting> listSettings(SettingSelector settingSelector, String storeName) {
         ConfigurationClient client = getConfigurationClient(storeName);
         List<ConfigurationSetting> configSettings = null;
 
@@ -111,9 +108,8 @@ public class ClientStore {
      * @param setting Name of the key in the config store.
      * @param storeName Name of the App Configuration store to query against.
      * @return A Configuration Setting.
-     * @throws ServerException thrown when retry-after-ms has invalid value.
      */
-    public final ConfigurationSetting getSetting(String setting, String storeName) throws ServerException {
+    public final ConfigurationSetting getSetting(String setting, String storeName) {
         ConfigurationClient client = getConfigurationClient(storeName);
         return client.getSetting(setting, storeName);
     }
