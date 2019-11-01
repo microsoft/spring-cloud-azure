@@ -4,6 +4,8 @@ spring:
   cloud:
     azure:
       appconfiguration:
+        watch:
+          enabled: true
+          delay: 5s
         stores:
-          - connection-string: ${APP_CONFIGURATION_CONNECTION_STRING}
-        
+          - connection-string: ${CONFIG_STORE_CONNECTION_STRING}

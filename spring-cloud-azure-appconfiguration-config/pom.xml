@@ -62,5 +62,25 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-data-appconfiguration</artifactId>
+            <version>1.0.0-preview.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-identity</artifactId>
+            <version>1.0.0-preview.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-keyvault-secrets</artifactId>
+            <version>4.0.0-preview.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-core-http-netty</artifactId>
+            <version>1.0.0-preview.6</version>
+        </dependency>
     </dependencies>
 </project>

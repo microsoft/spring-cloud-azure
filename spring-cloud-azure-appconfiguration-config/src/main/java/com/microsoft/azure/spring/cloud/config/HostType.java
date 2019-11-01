@@ -8,7 +8,7 @@ package com.microsoft.azure.spring.cloud.config;
 /**
  * The Types of Hosts checked in request tracing.
  */
-enum HostType {
+public enum HostType {
     
     NONE("None"),
     AZURE_WEB_APP("AzureWebApp"),

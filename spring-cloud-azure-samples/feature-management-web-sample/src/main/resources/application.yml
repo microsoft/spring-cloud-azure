@@ -13,7 +13,7 @@ feature-management:
   featureSet:
     features:
       Beta: true
-      DarkTheme:
+      FeatureV:
         EnabledFor:
           -
             name: Random
@@ -28,4 +28,4 @@ feature-management:
           -
             name: ClientFilter
             parameters:
-              clientIp: 10.0.0.1
+              clientIp: 10.0.0.1 

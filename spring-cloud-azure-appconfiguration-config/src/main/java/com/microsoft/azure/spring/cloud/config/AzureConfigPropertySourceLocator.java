@@ -5,7 +5,18 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import com.google.common.collect.Lists;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
@@ -17,31 +28,41 @@ import org.springframework.lang.NonNull;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import com.google.common.collect.Lists;
+import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
+import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
+import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigPropertySourceLocator.class);
+
     private static final String SPRING_APP_NAME_PROP = "spring.application.name";
+
     private static final String PROPERTY_SOURCE_NAME = "azure-config-store";
+
     private static final String PATH_SPLITTER = "/";
 
-    private final ConfigServiceOperations operations;
     private final AzureCloudConfigProperties properties;
+
     private final String profileSeparator;
+
     private final List<ConfigStore> configStores;
+
     private final Map<String, List<String>> storeContextsMap = new ConcurrentHashMap<>();
     
     private PropertyCache propertyCache;
 
-    public AzureConfigPropertySourceLocator(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
-            PropertyCache propertyCache) {
-        this.operations = operations;
+    private AppConfigProviderProperties appProperties;
+
+    private ClientStore clients;
+
+    public AzureConfigPropertySourceLocator(AzureCloudConfigProperties properties,
+            AppConfigProviderProperties appProperties, ClientStore clients) {
         this.properties = properties;
+        this.appProperties = appProperties;
         this.profileSeparator = properties.getProfileSeparator();
         this.configStores = properties.getStores();
-        this.propertyCache = propertyCache;
+        this.clients = clients;
     }
 
     @Override
@@ -100,18 +121,22 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         contexts.addAll(generateContexts(this.properties.getDefaultContext(), profiles, store));
         contexts.addAll(generateContexts(applicationName, profiles, store));
 
-        // Reverse in order to add Profile specific properties earlier, and last profile comes first
+        // There is only one Feature Set for all AzureConfigPropertySources
+        FeatureSet featureSet = new FeatureSet();
+
+        // Reverse in order to add Profile specific properties earlier, and last profile
+        // comes first
         Collections.reverse(contexts);
         for (String sourceContext : contexts) {
             try {
                 List<AzureConfigPropertySource> sourceList = create(sourceContext, store, storeContextsMap,
-                        initFeatures);
+                        initFeatures, featureSet);
                 sourceList.forEach(composite::addPropertySource);
                 LOGGER.debug("PropertySource context [{}] is added.", sourceContext);
             } catch (Exception e) {
                 if (properties.isFailFast()) {
                     LOGGER.error("Fail fast is set and there was an error reading configuration from Azure Config " +
-                            "Service for " + sourceContext, e);
+                            "Service for " + sourceContext);
                     ReflectionUtils.rethrowRuntimeException(e);
                 } else {
                     LOGGER.warn("Unable to load configuration from Azure Config Service for " + sourceContext, e);
@@ -137,8 +162,8 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
     private String propWithAppName(String prefix, String applicationName) {
         if (StringUtils.hasText(prefix)) {
-            return prefix.startsWith(PATH_SPLITTER) ? prefix + PATH_SPLITTER + applicationName :
-                    PATH_SPLITTER + prefix + PATH_SPLITTER + applicationName;
+            return prefix.startsWith(PATH_SPLITTER) ? prefix + PATH_SPLITTER + applicationName
+                    : PATH_SPLITTER + prefix + PATH_SPLITTER + applicationName;
         }
 
         return PATH_SPLITTER + applicationName;
@@ -158,21 +183,28 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
      * When generating more than one it needs to be in the last one.
      * @return a list of AzureConfigPropertySources
      * @throws IOException
+     * @throws URISyntaxException
      */
     private List<AzureConfigPropertySource> create(String context, ConfigStore store,
-            Map<String, List<String>> storeContextsMap, boolean initFeatures) throws IOException {
+            Map<String, List<String>> storeContextsMap, boolean initFeatures, FeatureSet featureSet) throws Exception {
         List<AzureConfigPropertySource> sourceList = new ArrayList<>();
 
-        for (String label : store.getLabels()) {
-            AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, operations,
-                    store.getName(), label, properties);
+        try {
+            for (String label : store.getLabels()) {
+                AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, store.getName(),
+                        label,
+                        properties, appProperties, clients);
 
-            propertySource.initProperties(propertyCache);
-            if (initFeatures) {
-                propertySource.initFeatures(propertyCache);
+                propertySource.initProperties(featureSet);
+                if (initFeatures) {
+                    propertySource.initFeatures(featureSet);
+                }
+                sourceList.add(propertySource);
+                putStoreContext(store.getName(), context, storeContextsMap);
             }
-            sourceList.add(propertySource);
-            putStoreContext(store.getName(), context, storeContextsMap);
+        } catch (Exception e) {
+            delayException();
+            throw e;
         }
 
         return sourceList;
@@ -185,7 +217,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
      * @param storeContextsMap the Map storing the storeName -> List of contexts map
      */
     private void putStoreContext(String storeName, String context,
-                                 @NonNull Map<String, List<String>> storeContextsMap) {
+            @NonNull Map<String, List<String>> storeContextsMap) {
         if (!StringUtils.hasText(context) || !StringUtils.hasText(storeName)) {
             return;
         }
@@ -198,5 +230,19 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         }
 
         storeContextsMap.put(storeName, contexts);
+    }
+
+    private void delayException() {
+        Date currentDate = new Date();
+        Date maxRetryDate = DateUtils.addSeconds(appProperties.getStartDate(),
+                appProperties.getPrekillTime());
+        if (currentDate.before(maxRetryDate)) {
+            long diffInMillies = Math.abs(maxRetryDate.getTime() - currentDate.getTime());
+            try {
+                Thread.sleep(diffInMillies);
+            } catch (InterruptedException e) {
+                LOGGER.error("Failed to wait before fast fail.");
+            }
+        }
     }
 }

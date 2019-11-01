@@ -79,13 +79,19 @@ public class DefaultCredentialsProvider implements CredentialsProvider {
     }
 
     private AzureTokenCredentials getMSIToken(AzureProperties azureProperties) {
+        AzureManagedIdentityProperties msiProps = azureProperties.getManagedIdentity();
+
         if (isAppService()) {
-            return new AppServiceMSICredentials(azureProperties.getEnvironment());
+            AppServiceMSICredentials credentials = new AppServiceMSICredentials(azureProperties.getEnvironment());
+
+            if (msiProps != null && StringUtils.hasText(msiProps.getClientId())) {
+                credentials.withClientId(msiProps.getClientId());
+            }
+
+            return credentials;
         }
 
         MSICredentials msiCredentials = new MSICredentials();
-
-        AzureManagedIdentityProperties msiProps = azureProperties.getManagedIdentity();
 
         if (msiProps != null) {
             if (StringUtils.hasText(msiProps.getClientId())) {

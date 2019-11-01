@@ -104,7 +104,7 @@ Follow below steps to enable managed service identity feature:
 
 1. [Enable managed identities service](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview#how-can-i-use-managed-identities-for-azure-resources) for virtual machine or App Service, on which the application will be deployed
 
-2. Configure the [Azure RBAC](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal) to allow application running on VM or App Service to access the configuration store. 
+2. Configure the [Azure RBAC](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal) to allow application running on VM or App Service to access the configuration store. When propted for the Role select Contributor.
  
 3. Configure bootstrap.properties(or .yaml) in the Spring Boot application as following:
 ```
