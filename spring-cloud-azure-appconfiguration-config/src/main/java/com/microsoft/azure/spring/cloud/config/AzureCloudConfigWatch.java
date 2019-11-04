@@ -68,7 +68,6 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
         this.configStores = properties.getStores();
         this.storeContextsMap = storeContextsMap;
         this.delay = properties.getWatch().getDelay();
-        this.lastCheckedTime = new Date();
         this.clientStore = clientStore;
         this.eventDataInfo = "";
     }
@@ -103,14 +102,19 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
      * every store is checked.
      * @return If a refresh event is called.
      */
-    private Boolean refreshStores() {
+    private boolean refreshStores() {
         boolean needsRefresh = false;
         if (running.compareAndSet(false, true)) {
             try {
-                Date notCachedTime = DateUtils.addSeconds(lastCheckedTime,
-                        Math.toIntExact(delay.getSeconds()));
+                Date notCachedTime = null;
+
+                // LastCheckedTime isn't sent until refresh is run once, this forces a
+                // eTag set on startup
+                if (lastCheckedTime != null) {
+                    notCachedTime = DateUtils.addSeconds(lastCheckedTime, Math.toIntExact(delay.getSeconds()));
+                }
                 Date date = new Date();
-                if (date.after(notCachedTime)) {
+                if (notCachedTime == null || date.after(notCachedTime)) {
                     for (ConfigStore configStore : configStores) {
                         String watchedKeyNames = watchedKeyNames(configStore, storeContextsMap);
                         needsRefresh = refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames) ? true
@@ -122,8 +126,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
                 }
                 if (needsRefresh) {
                     // Only one refresh Event needs to be call to update all of the
-                    // stores,
-                    // not one for each.
+                    // stores, not one for each.
                     RefreshEventData eventData = new RefreshEventData(this.getClass().getName());
                     publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
                 }
@@ -145,18 +148,20 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
      * @param watchedKeyNames Key used to check if refresh should occur
      * @return Refresh event was triggered. No other sources need to be checked.
      */
-    private Boolean refresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
+    private boolean refresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
         String storeNameWithSuffix = store.getName() + storeSuffix;
         SettingSelector settingSelector = new SettingSelector().setKeys(watchedKeyNames).setLabels(store.getLabels())
                 .setRange(new Range(0, 0));
 
         List<ConfigurationSetting> items = clientStore.listSettingRevisons(settingSelector, store.getName());
 
-        if (items.isEmpty()) {
-            return false;
+        String etag = "";
+        // If there is no result, etag will be considered empty.
+        // A refresh will trigger once the selector returns a value.
+        if (!items.isEmpty()) {
+            etag = items.get(0).getETag();
         }
 
-        String etag = items.get(0).getETag();
         if (firstTimeMap.get(storeNameWithSuffix) == null) {
             storeEtagMap.put(storeNameWithSuffix, etag);
             firstTimeMap.put(storeNameWithSuffix, false);

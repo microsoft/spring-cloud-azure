@@ -53,7 +53,7 @@ public class AzureConfigCloudWatchTest {
 
     @Mock
     private Map<String, List<String>> contextsMap;
-    
+
     private AzureCloudConfigWatch configWatch;
 
     @Mock
@@ -112,28 +112,29 @@ public class AzureConfigCloudWatchTest {
         configWatch.setApplicationEventPublisher(eventPublisher);
 
         when(date.after(Mockito.any(Date.class))).thenReturn(true);
-        assertFalse(configWatch.refreshConfigurations().get());
 
-        // The first time an action happens it can update
+        // The first time an action happens it can't update
+        assertFalse(configWatch.refreshConfigurations().get());
         verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
-        assertTrue(configWatch.refreshConfigurations().get());
 
         // If there is a change it should update
+        assertTrue(configWatch.refreshConfigurations().get());
         verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
+
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("store1_configuration", "fake-etag-updated");
         map.put("store1_feature", "fake-etag-updated");
-        assertFalse(configWatch.refreshConfigurations().get());
 
         // If there is no change it shouldn't update
+        assertFalse(configWatch.refreshConfigurations().get());
         verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
     }
-    
+
     @Test
     public void notRefreshTime() throws Exception {
         properties.getWatch().setDelay(Duration.ofSeconds(60));
         AzureCloudConfigWatch watchLargeDelay = new AzureCloudConfigWatch(properties, contextsMap, clientStoreMock);
-        
+
         PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
         watchLargeDelay.setApplicationEventPublisher(eventPublisher);
 

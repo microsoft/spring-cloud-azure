@@ -24,7 +24,12 @@ public class AzureCloudConfigAutoConfiguration {
         @Bean
         public AzureCloudConfigWatch getConfigWatch(AzureCloudConfigProperties properties,
                 AzureConfigPropertySourceLocator sourceLocator, ClientStore clientStore) {
-            return new AzureCloudConfigWatch(properties, sourceLocator.getStoreContextsMap(), clientStore);
+            AzureCloudConfigWatch watch = new AzureCloudConfigWatch(properties, sourceLocator.getStoreContextsMap(),
+                    clientStore);
+            // This set up the initial etag values. If not done any configuration changes
+            // made before the first watch event will be missed.
+            watch.refreshConfigurations();
+            return watch;
         }
 
         @Bean
