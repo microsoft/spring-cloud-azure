@@ -84,9 +84,8 @@ public class FeatureSet {
             if (feature != null && feature.getEnabledFor() == null && feature.getKey() == null) {
                 if (LinkedHashMap.class.isAssignableFrom(featureKey.getClass())) {
                     features = (LinkedHashMap<String, Object>) featureKey;
-                    for (Object fKey : features.keySet().toArray()) {
-                        String newKey = (String) fKey;
-                        addToFeatures(features, newKey, combined + key);
+                    for (String fKey : features.keySet()) {
+                        addToFeatures(features, fKey, combined + key);
                     }
                 }
             } else {
