@@ -24,16 +24,14 @@ The feature management library supports application.yml or bootstrap.yml as a fe
 
 ```
 feature-management:
-  featureSet:
+  feature-set:
     features:
       FeatureT: false
       FeatureU:
-        id: FeatureU
         EnabledFor:
           -
             name: Random
       FeatureV:
-        id: FeatureV
         EnabledFor:
           -
             name: TimeWindow

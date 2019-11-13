@@ -221,7 +221,7 @@ public class AzureConfigPropertySourceTest {
 
         FeatureSet featureSetExpected = new FeatureSet();
         Feature feature = new Feature();
-        feature.setId("Alpha");
+        feature.setKey("Alpha");
         ArrayList<FeatureFilterEvaluationContext> filters = new ArrayList<FeatureFilterEvaluationContext>();
         FeatureFilterEvaluationContext ffec = new FeatureFilterEvaluationContext();
         ffec.setName("TestFilter");
@@ -257,7 +257,7 @@ public class AzureConfigPropertySourceTest {
 
         FeatureSet featureSetExpected = new FeatureSet();
         Feature feature = new Feature();
-        feature.setId("Alpha");
+        feature.setKey("Alpha");
         ArrayList<FeatureFilterEvaluationContext> filters = new ArrayList<FeatureFilterEvaluationContext>();
         FeatureFilterEvaluationContext ffec = new FeatureFilterEvaluationContext();
         ffec.setName("TestFilter");

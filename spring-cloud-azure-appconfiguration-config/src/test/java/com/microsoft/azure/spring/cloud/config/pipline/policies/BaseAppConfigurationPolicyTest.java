@@ -39,7 +39,7 @@ public class BaseAppConfigurationPolicyTest {
 
     @Test
     public void processTest() throws MalformedURLException {
-        URL url = new URL("https://www.test.url/link");
+        URL url = new URL("https://www.test.url/kv");
         HttpRequest request = new HttpRequest(HttpMethod.GET, url);
         request.setHeader(HttpHeaders.USER_AGENT, "PreExistingUserAgent");
         BaseAppConfigurationPolicy policy = new BaseAppConfigurationPolicy();
@@ -49,11 +49,53 @@ public class BaseAppConfigurationPolicyTest {
         policy.process(contextMock, nextMock);
 
         String userAgent = contextMock.getHttpRequest().getHeaders().get(HttpHeaders.USER_AGENT).getValue();
-        assertEquals("null/null; " + PRE_USER_AGENT, userAgent);
+        assertEquals("null/null " + PRE_USER_AGENT, userAgent);
+
+        assertEquals("RequestType=Startup,Host=None",
+                contextMock.getHttpRequest().getHeaders().get("Correlation-Context").getValue());
+    }
+    
+    @Test
+    public void watchUpdateTest() throws MalformedURLException {
+        URL url = new URL("https://www.test.url/kv");
+        HttpRequest request = new HttpRequest(HttpMethod.GET, url);
+        request.setHeader(HttpHeaders.USER_AGENT, "PreExistingUserAgent");
+        BaseAppConfigurationPolicy policy = new BaseAppConfigurationPolicy();
+
+        when(contextMock.getHttpRequest()).thenReturn(request);
+
+        policy.process(contextMock, nextMock);
+
+        String userAgent = contextMock.getHttpRequest().getHeaders().get(HttpHeaders.USER_AGENT).getValue();
+        assertEquals("null/null " + PRE_USER_AGENT, userAgent);
+
+        assertEquals("RequestType=Startup,Host=None",
+                contextMock.getHttpRequest().getHeaders().get("Correlation-Context").getValue());
+        
+        url = new URL("https://www.test.url/revisions");
+        request = new HttpRequest(HttpMethod.GET, url);
+        request.setHeader(HttpHeaders.USER_AGENT, "PreExistingUserAgent");
+
+        when(contextMock.getHttpRequest()).thenReturn(request);
+
+        policy.process(contextMock, nextMock);
+
+        assertEquals("null/null " + PRE_USER_AGENT, userAgent);
 
         assertEquals("RequestType=Watch,Host=None",
                 contextMock.getHttpRequest().getHeaders().get("Correlation-Context").getValue());
+        
+        url = new URL("https://www.test.url/kv");
+        request = new HttpRequest(HttpMethod.GET, url);
+        request.setHeader(HttpHeaders.USER_AGENT, "PreExistingUserAgent");
 
+        when(contextMock.getHttpRequest()).thenReturn(request);
+
+        policy.process(contextMock, nextMock);
+        assertEquals("null/null " + PRE_USER_AGENT, userAgent);
+
+        assertEquals("RequestType=Watch,Host=None",
+                contextMock.getHttpRequest().getHeaders().get("Correlation-Context").getValue());
     }
 
 }
