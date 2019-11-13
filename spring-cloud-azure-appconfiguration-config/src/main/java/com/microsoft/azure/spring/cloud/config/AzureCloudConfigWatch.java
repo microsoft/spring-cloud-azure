@@ -114,7 +114,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
     private Boolean refresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
         String storeNameWithSuffix = store.getName() + storeSuffix;
         SettingSelector settingSelector = new SettingSelector().setKeys(watchedKeyNames).setLabels(store.getLabels())
-                .setRange(new Range(-1, 0));
+                .setRange(new Range(0, 0));
 
         List<ConfigurationSetting> items = clientStore.listSettingRevisons(settingSelector, store.getName());
 
