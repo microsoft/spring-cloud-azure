@@ -1,5 +1,5 @@
 feature-management:
-  featureSet:
+  feature-set:
     features:
       Beta: true
       FeatureV:

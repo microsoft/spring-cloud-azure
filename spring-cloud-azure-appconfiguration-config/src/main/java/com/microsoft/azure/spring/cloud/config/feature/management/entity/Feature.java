@@ -14,31 +14,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Feature {
 
-    @JsonProperty("id")
-    private String id;
+    @JsonProperty("key")
+    private String key;
 
     @JsonAlias("EnabledFor")
     private List<FeatureFilterEvaluationContext> enabledFor;
     
     public Feature() {}
     
-    public Feature(FeatureManagementItem featureItem) {
-        this.id = featureItem.getId();
+    public Feature(String key, FeatureManagementItem featureItem) {
+        this.key = key;
         this.enabledFor = featureItem.getConditions().getClientFilters();
     }
 
     /**
-     * @return the id
+     * @return the key
      */
-    public String getId() {
-        return id;
+    public String getKey() {
+        return key;
     }
 
     /**
-     * @param id the id to set
+     * @param key the key to set
      */
-    public void setId(String id) {
-        this.id = id;
+    public void setKey(String key) {
+        this.key = key;
     }
 
     /**
