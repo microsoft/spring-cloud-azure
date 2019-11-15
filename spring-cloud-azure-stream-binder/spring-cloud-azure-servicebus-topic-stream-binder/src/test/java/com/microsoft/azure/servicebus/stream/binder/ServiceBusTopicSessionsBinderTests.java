@@ -26,7 +26,7 @@ public class ServiceBusTopicSessionsBinderTests extends
     protected ExtendedConsumerProperties<ServiceBusConsumerProperties> createConsumerProperties() {
 
         ServiceBusConsumerProperties serviceBusConsumerProperties = new ServiceBusConsumerProperties();
-        serviceBusConsumerProperties.setSessionEnabled(true);
+        serviceBusConsumerProperties.setSessionsEnabled(true);
 
         ExtendedConsumerProperties<ServiceBusConsumerProperties> properties = new ExtendedConsumerProperties<>(
                 serviceBusConsumerProperties);
