@@ -24,7 +24,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
-import com.azure.data.appconfiguration.models.Range;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
@@ -113,12 +112,11 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
      */
     private Boolean refresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
         String storeNameWithSuffix = store.getName() + storeSuffix;
-        SettingSelector settingSelector = new SettingSelector().setKeys(watchedKeyNames).setLabels(store.getLabels())
-                .setRange(new Range(0, 0));
+        SettingSelector settingSelector = new SettingSelector().setKeys(watchedKeyNames).setLabels(store.getLabels());
 
         List<ConfigurationSetting> items = clientStore.listSettingRevisons(settingSelector, store.getName());
 
-        if (items.isEmpty()) {
+        if (items == null || items.isEmpty()) {
             return false;
         }
 
