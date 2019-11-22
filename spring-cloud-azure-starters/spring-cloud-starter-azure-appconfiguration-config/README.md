@@ -2,14 +2,15 @@
 
 This project allows Spring Application to load properties from Azure Configuration Store.
 
-## Samples 
+## Samples
 
-Please use this [sample](../../spring-cloud-azure-samples/azure-appconfiguration-sample/) as a reference for how to use this starter. 
+Please use this [sample](../../spring-cloud-azure-samples/azure-appconfiguration-sample/) as a reference for how to use this starter.
 
 ### Dependency Management
 
-**Maven Coordinates** 
-```
+#### Maven Coordinates
+
+```xml
 <dependency>
     <groupId>com.microsoft.azure</groupId>
     <artifactId>spring-cloud-starter-azure-appconfiguration-config</artifactId>
@@ -17,8 +18,10 @@ Please use this [sample](../../spring-cloud-azure-samples/azure-appconfiguration
 </dependency>
 
 ```
-**Gradle Coordinates** 
-```
+
+#### Gradle Coordinates
+
+```gradle
 dependencies {
     compile group: 'com.microsoft.azure', name: 'spring-cloud-starter-azure-appconfiguration-config', version: '{starter-version}'
 }
@@ -26,7 +29,7 @@ dependencies {
 
 ## Supported properties
 
-Name | Description | Required | Default 
+Name | Description | Required | Default
 ---|---|---|---
 spring.cloud.azure.appconfiguration.stores | List of configuration stores from which to load configuration properties | Yes | true
 spring.cloud.azure.appconfiguration.enabled | Whether enable spring-cloud-azure-appconfiguration-config or not | No | true
@@ -37,12 +40,11 @@ spring.cloud.azure.appconfiguration.fail-fast | Whether throw RuntimeException o
 spring.cloud.azure.appconfiguration.watch.enabled | Whether enable watch feature or not | No | false
 spring.cloud.azure.appconfiguration.watch.delay | Polling interval of type [Duration](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-conversion-duration) between each scheduled polling | No | 30s
 spring.cloud.azure.appconfiguration.managed-identity.client-id | Client id of the user assigned managed identity, only required when choosing to use user assigned managed identity on Azure | No | null
-spring.cloud.azure.appconfiguration.managed-identity.object-id | Object id of the user assigned managed identity, only required when choosing to use user assigned managed identity on Azure | No | null
-
+spring.cloud.azure.appconfiguration.managed-identity.object-id | Object id of the user assigned managed identity, only required when choosing to use user assigned managed identity on Azure. **DEPRECATED in 1.0.0.M6**, only client-id is needed. | No | null
 
 `spring.cloud.azure.appconfiguration.stores` is a List of stores, for each store should follow below format:
 
-Name | Description | Required | Default 
+Name | Description | Required | Default
 ---|---|---|---
 spring.cloud.azure.appconfiguration.stores[0].name | Name of the configuration store, required when `connection-string` is empty. If `connection-string` is empty and application is deployed on Azure VM or App Service with managed identity enabled, will try to load `connection-string` from Azure Resource Management. | Conditional | null
 spring.cloud.azure.appconfiguration.stores[0].prefix | The prefix of the key name in the configuration store, e.g., /my-prefix/application/key.name | No |  null
@@ -50,64 +52,114 @@ spring.cloud.azure.appconfiguration.stores[0].connection-string | Required when 
 spring.cloud.azure.appconfiguration.stores[0].label | Comma separated list of label values, by default will query empty labeled value. If you want to specify *empty*(null) label explicitly, use `%00`, e.g., spring.cloud.azure.appconfiguration.stores[0].label=%00,v0 | No |  null
 spring.cloud.azure.appconfiguration.stores[0].watched-key | The single watched key(or by default *) used to indicate configuration change.  | No | *
 
-
 ## Advanced usage
 
 ### Load from multiple configuration stores
+
 If the application needs to load configuration properties from multiple stores, following configuration sample describes how the bootstrap.properties(or .yaml) can be configured.
-```
+
+```properties
 spring.cloud.azure.appconfiguration.stores[0].connection-string=[first-store-connection-string]
 spring.cloud.azure.appconfiguration.stores[0].prefix=[my-prefix]
 spring.cloud.azure.appconfiguration.stores[0].label=[my-label]
 spring.cloud.azure.appconfiguration.stores[1].connection-string=[second-store-connection-string]
 ```
+
 If duplicate keys exists for multiple stores, the last configuration store has the highest priority.
 
 ### Load from multiple labels
+
 If the application needs to load property values from multiple labels in the same configuration store, following configuration can be used:
-```
+
+```properties
 spring.cloud.azure.appconfiguration.stores[0].connection-string=[first-store-connection-string]
 spring.cloud.azure.appconfiguration.stores[0].label=[my-label1], [my-label2]
 ```
+
 Multiple labels can be separated with comma, if duplicate keys exists for multiple labels, the last label has highest priority.
 
 ### Watch configuration change
+
 Watch feature allows the application to load the latest property value from configuration store automatically, without restarting the application.
 
 By default, the watch feature is disabled. It can be enabled with below configuration:
-```
+
+```properties
 spring.cloud.azure.appconfiguration.watch.enabled=true
 ```
 
 Change certain property key in the configuration store on Azure Portal, e.g., /application/config.message, log similar with below will be printed on the console.
-```
+
+```console
 INFO 17496 --- [TaskScheduler-1] o.s.c.e.event.RefreshEventListener       : Refresh keys changed: [config.message]
 ```
+
 The application now will be using the updated properties. By default, `@ConfigurationProperties` annotated beans will be automatically refreshed. Use `@RefreshScope` on beans which are required to be refreshed when properties are changed.
 By default, all the keys in a configuration store will be watched. To prevent configuration changes are picked up in the middle of an update of multiple keys, you are recommended to use the watched-key property to watch a specific key that signals the completion of your update so all configuration changes can be refreshed together.
-```
+
+```properties
 spring.cloud.azure.appconfiguration.stores[0].watched-key=[my-watched-key]
 ```
 
 ### Failfast
+
 Failfast feature decides whether throw RuntimeException or not when exception happens. By default, failfast is enabled, it can be disabled with below configuration:
-```
+
+```properties
 spring.cloud.azure.appconfiguration.fail-fast=false
 ```
 
-### Use Azure Managed Identity to load the connection string
-[Managed service identity](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview) allows application to access [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) protected resource on [Azure](https://azure.microsoft.com/en-us/).
+### Use Azure Managed Identity/Service Principle to load the connection string
 
-In this library, managed service identity is used to retrieve the connection string of the configuration store, the connection string is not required if running the Spring Boot application on Azure with managed service identity enabled.
+[Managed service identity](https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview) allows application to access [Azure Active Directory](https://azure.microsoft.com/services/active-directory/) protected resource on [Azure](https://azure.microsoft.com).
+
+In this library, [Azure Identity SDK][azure_identity_sdk] is used to access Azure App Configuration and optionally Azure Key Vault, for secrets. The connection string is not required and will be ignored if Managed Identity is being used.
 
 Follow below steps to enable managed service identity feature:
 
-1. [Enable managed identities service](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview#how-can-i-use-managed-identities-for-azure-resources) for virtual machine or App Service, on which the application will be deployed
+1. [Enable managed identities service](https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview#how-can-i-use-managed-identities-for-azure-resources) for virtual machine or App Service, on which the application will be deployed
 
-2. Configure the [Azure RBAC](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal) to allow application running on VM or App Service to access the configuration store. When propted for the Role select Contributor.
- 
-3. Configure bootstrap.properties(or .yaml) in the Spring Boot application as following:
-```
-spring.cloud.azure.appconfiguration.stores[0].name=[config-store-name]
-```
+1. Configure the [Azure RBAC](https://docs.microsoft.com/azure/role-based-access-control/role-assignments-portal) to allow application running on VM or App Service to access the configuration store. When prompted for the Role select App Configuration Data Reader, App Configuration Data Owner is not required but can be used if needed.
+
+1. Choose Configuration option:
+    1. Environment variables, only supports System Assigned Managed Identity and Service Principle.
+    1. Create a TokenCredentialProvider and supply any valid TokenCredential and supply it via a Bean.
+    1. Configure bootstrap.properties(or .yaml) in the Spring Boot application.
+
 The configuration store name must be configured when `connection-string` is empty, the connection string for the configuration store will be loaded automatically.
+
+### Token Credential Provider
+
+```java
+public class MyCredentials implements TokenCredentialProvider {
+
+    @Override
+    public TokenCredential credentialForAppConfig() {
+            return buildCredential();
+    }
+
+    @Override
+    public TokenCredential credentialForKeyVault() {
+            return buildCredential();
+    }
+
+    TokenCredential buildCredential() {
+            return new ManagedIdentityCredentialBuilder()
+                    .clientId("bf2043ad-c58a-4800-ad35-9a7bc8ddfdea")
+                    .build();
+    }
+
+}
+```
+
+### bootstrap.application
+
+```application
+spring.cloud.azure.appconfiguration.stores[0].name=[config-store-name]
+
+#If Using option 3
+spring.cloud.azure.appconfiguration.managed-identity.client-id=[client-id]
+```
+
+<!-- LINKS -->
+[azure_identity_sdk]: https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/identity/azure-identity
