@@ -83,7 +83,18 @@ public class AzureConfigBootstrapConfiguration {
 
     @Bean
     public ClientStore buildClientStores(AzureCloudConfigProperties properties,
-            AppConfigProviderProperties appProperties, ConnectionPool pool) {
-        return new ClientStore(properties, appProperties, pool);
+            AppConfigProviderProperties appProperties, ConnectionPool pool, ApplicationContext context) {
+        TokenCredentialProvider tokenCredentialProvider = null;
+        try {
+            tokenCredentialProvider = context.getBean(TokenCredentialProvider.class);
+        } catch (NoUniqueBeanDefinitionException e) {
+            LOGGER.error("Failed to find unique TokenCredentialProvider Bean for authentication.", e);
+            if (properties.isFailFast()) {
+                throw e;
+            }
+        } catch (NoSuchBeanDefinitionException e) {
+            LOGGER.info("No TokenCredentialProvider found.");
+        }
+        return new ClientStore(appProperties, pool, tokenCredentialProvider);
     }
 }

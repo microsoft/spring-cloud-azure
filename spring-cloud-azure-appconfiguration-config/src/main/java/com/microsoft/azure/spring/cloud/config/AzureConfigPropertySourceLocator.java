@@ -72,8 +72,6 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         if (!(environment instanceof ConfigurableEnvironment)) {
             return null;
         }
-        
-        clients.build(tokenCredentialProvider);
 
         ConfigurableEnvironment env = (ConfigurableEnvironment) environment;
 

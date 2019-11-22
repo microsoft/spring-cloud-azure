@@ -101,7 +101,6 @@ public class AzureConfigPropertySourceLocatorTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         when(environment.getActiveProfiles()).thenReturn(new String[] { PROFILE_NAME_1, PROFILE_NAME_2 });
-        when(configStoreMock.getConfigurationClient(Mockito.anyString())).thenReturn(configClientMock);
 
         properties = new AzureCloudConfigProperties();
         TestUtils.addStore(properties, TEST_STORE_NAME, TEST_CONN_STRING);

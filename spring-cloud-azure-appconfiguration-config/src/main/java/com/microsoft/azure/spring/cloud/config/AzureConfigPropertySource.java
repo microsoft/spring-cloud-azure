@@ -109,24 +109,21 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
         Date date = new Date();
         SettingSelector settingSelector = new SettingSelector();
         if (!label.equals("%00")) {
+            LOGGER.error("Setting Label to: " + label);
             settingSelector.setLabels(label);
         }
 
         // * for wildcard match
+        LOGGER.error("Context: " + context + "*");
         settingSelector.setKeys(context + "*");
-        LOGGER.error("Context: " + context);
         List<ConfigurationSetting> settings = clients.listSettings(settingSelector, storeName);
-        LOGGER.error("Found: " + settings);
         if (settings == null) {
             if (!azureProperties.isFailFast()) {
-                LOGGER.error("Not Fail Fast");
                 return featureSet;
             } else {
-                LOGGER.error("Fail Fast.");
                 throw new IOException("Unable to load properties from App Configuration Store.");
             }
         }
-        LOGGER.error("Found items: " + settings.size());
         for (ConfigurationSetting setting : settings) {
             String key = setting.getKey().trim().substring(context.length()).replace('/', '.');
             if (setting.getContentType() != null && setting.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
