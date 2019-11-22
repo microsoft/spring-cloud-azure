@@ -109,12 +109,10 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
         Date date = new Date();
         SettingSelector settingSelector = new SettingSelector();
         if (!label.equals("%00")) {
-            LOGGER.error("Setting Label to: " + label);
             settingSelector.setLabels(label);
         }
 
         // * for wildcard match
-        LOGGER.error("Context: " + context + "*");
         settingSelector.setKeys(context + "*");
         List<ConfigurationSetting> settings = clients.listSettings(settingSelector, storeName);
         if (settings == null) {
