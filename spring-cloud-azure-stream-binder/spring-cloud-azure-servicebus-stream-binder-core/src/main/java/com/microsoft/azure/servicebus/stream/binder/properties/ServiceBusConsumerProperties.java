@@ -10,10 +10,12 @@ import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 
 /**
  * @author Warren Zhu
+ * @author Eduardo Sciullo
  */
 public class ServiceBusConsumerProperties {
     private int prefetchCount = 1;
     private int concurrency = 1;
+    private boolean sessionsEnabled = false;
 
     private CheckpointMode checkpointMode = CheckpointMode.RECORD;
 
@@ -53,4 +55,20 @@ public class ServiceBusConsumerProperties {
     public void setConcurrency(int concurrency) {
         this.concurrency = concurrency;
     }
+
+    /**
+     * Controls if is session aware
+     *
+     * <p>
+     * Default : false
+     */
+    public boolean isSessionsEnabled() {
+        return sessionsEnabled;
+    }
+
+    public void setSessionsEnabled(boolean sessionsEnabled) {
+        this.sessionsEnabled = sessionsEnabled;
+    }
+    
+    
 }
