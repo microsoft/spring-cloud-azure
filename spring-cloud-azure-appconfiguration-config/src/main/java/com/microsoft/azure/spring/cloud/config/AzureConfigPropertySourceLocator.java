@@ -52,13 +52,17 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
     private ClientStore clients;
 
+    private TokenCredentialProvider tokenCredentialProvider;
+
     public AzureConfigPropertySourceLocator(AzureCloudConfigProperties properties,
-            AppConfigProviderProperties appProperties, ClientStore clients) {
+            AppConfigProviderProperties appProperties, ClientStore clients,
+            TokenCredentialProvider tokenCredentialProvider) {
         this.properties = properties;
         this.appProperties = appProperties;
         this.profileSeparator = properties.getProfileSeparator();
         this.configStores = properties.getStores();
         this.clients = clients;
+        this.tokenCredentialProvider = tokenCredentialProvider;
     }
 
     @Override
@@ -186,8 +190,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         try {
             for (String label : store.getLabels()) {
                 AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, store.getName(),
-                        label,
-                        properties, appProperties, clients);
+                        label, properties, clients, appProperties, tokenCredentialProvider);
 
                 propertySource.initProperties(featureSet);
                 if (initFeatures) {

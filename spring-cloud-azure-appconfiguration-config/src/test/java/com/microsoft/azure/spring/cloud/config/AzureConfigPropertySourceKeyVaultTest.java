@@ -29,7 +29,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URI;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -50,7 +49,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.azure.core.http.rest.PagedFlux;
 import com.azure.core.http.rest.PagedResponse;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
-import com.azure.security.keyvault.secrets.models.Secret;
+import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.KeyVaultClient;
@@ -112,6 +111,8 @@ public class AzureConfigPropertySourceKeyVaultTest {
 
     @Rule
     public ExpectedException expected = ExpectedException.none();
+    
+    private TokenCredentialProvider tokenCredentialProvider = null;
 
     @BeforeClass
     public static void init() {
@@ -126,9 +127,9 @@ public class AzureConfigPropertySourceKeyVaultTest {
         azureProperties = new AzureCloudConfigProperties();
         azureProperties.setFailFast(true);
         appProperties = new AppConfigProviderProperties();
-        appProperties.setKeyVaultWaitTime(0);
+        appProperties.setMaxRetryTime(0);
         propertySource = new AzureConfigPropertySource(TEST_CONTEXT, TEST_STORE_NAME, "\0",
-                azureProperties, appProperties, clientStoreMock);
+                azureProperties, clientStoreMock, appProperties, tokenCredentialProvider);
 
         testItems = new ArrayList<ConfigurationSetting>();
         testItems.add(item1);
@@ -144,8 +145,8 @@ public class AzureConfigPropertySourceKeyVaultTest {
         KeyVaultClient client = Mockito.mock(KeyVaultClient.class);
         PowerMockito.whenNew(KeyVaultClient.class).withAnyArguments().thenReturn(client);
 
-        Secret secret = new Secret("mySecret", "mySecret");
-        given(client.getSecret(Mockito.any(URI.class), Mockito.any(Duration.class))).willReturn(secret);
+        KeyVaultSecret secret = new KeyVaultSecret("mySecret", "mySecret");
+        given(client.getSecret(Mockito.any(URI.class), Mockito.anyInt())).willReturn(secret);
 
         FeatureSet featureSet = new FeatureSet();
 

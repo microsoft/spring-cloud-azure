@@ -11,7 +11,6 @@ import static com.microsoft.azure.spring.cloud.config.Constants.KEY_VAULT_CONTEN
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -27,7 +26,7 @@ import org.springframework.util.ReflectionUtils;
 import com.azure.data.appconfiguration.ConfigurationClient;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
-import com.azure.security.keyvault.secrets.models.Secret;
+import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature;
@@ -49,8 +48,6 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
 
     private AzureCloudConfigProperties azureProperties;
 
-    private AppConfigProviderProperties appProperties;
-
     private static ObjectMapper mapper = new ObjectMapper();
 
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
@@ -61,12 +58,15 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
 
     private ClientStore clients;
 
-    public AzureConfigPropertySource(String context, String storeName,
-            String label, AzureCloudConfigProperties azureProperties, AppConfigProviderProperties appProperties,
-            ClientStore clients) {
+    private TokenCredentialProvider tokenCredentialProvider;
+    
+    private AppConfigProviderProperties appProperties;
+
+    AzureConfigPropertySource(String context, String storeName, String label,
+            AzureCloudConfigProperties azureProperties, ClientStore clients,
+            AppConfigProviderProperties appProperties, TokenCredentialProvider tokenCredentialProvider) {
         // The context alone does not uniquely define a PropertySource, append storeName
-        // and label to uniquely
-        // define a PropertySource
+        // and label to uniquely define a PropertySource
         super(context + storeName + "/" + label);
         this.context = context;
         this.storeName = storeName;
@@ -75,6 +75,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
         this.appProperties = appProperties;
         this.keyVaultClients = new HashMap<String, KeyVaultClient>();
         this.clients = clients;
+        this.tokenCredentialProvider = tokenCredentialProvider;
     }
 
     @Override
@@ -104,14 +105,16 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
      * flags
      * @return Updated Feature Set from Property Source
      */
-    public FeatureSet initProperties(FeatureSet featureSet) throws IOException {
+    FeatureSet initProperties(FeatureSet featureSet) throws IOException {
         Date date = new Date();
         SettingSelector settingSelector = new SettingSelector();
         if (!label.equals("%00")) {
+            LOGGER.error("Setting Label to: " + label);
             settingSelector.setLabels(label);
         }
 
         // * for wildcard match, with Configuration Settings
+        LOGGER.error("Context: " + context + "*");
         settingSelector.setKeys(context + "*");
         List<ConfigurationSetting> settings = clients.listSettings(settingSelector, storeName);
         
@@ -119,6 +122,13 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
         settingSelector.setKeys(".appconfig*");
         List<ConfigurationSetting> features = clients.listSettings(settingSelector, storeName);
         
+        if (settings == null) {
+            if (!azureProperties.isFailFast()) {
+                return featureSet;
+            } else {
+                throw new IOException("Unable to load properties from App Configuration Store.");
+            }
+        }
         for (ConfigurationSetting setting : settings) {
             String key = setting.getKey().trim().substring(context.length()).replace('/', '.');
             if (setting.getContentType() != null && setting.getContentType().equals(KEY_VAULT_CONTENT_TYPE)) {
@@ -175,17 +185,16 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
             // Check if we already have a client for this key vault, if not we will make
             // one
             if (!keyVaultClients.containsKey(uri.getHost())) {
-                KeyVaultClient client = new KeyVaultClient(uri);
+                KeyVaultClient client = new KeyVaultClient(uri, tokenCredentialProvider);
                 keyVaultClients.put(uri.getHost(), client);
             }
-            Duration keyVaultWaitTime = Duration.ofSeconds(appProperties.getKeyVaultWaitTime());
-            Secret secret = keyVaultClients.get(uri.getHost()).getSecret(uri, keyVaultWaitTime);
+            KeyVaultSecret secret = keyVaultClients.get(uri.getHost()).getSecret(uri, appProperties.getMaxRetryTime());
             if (secret == null) {
                 throw new IOException("No Key Vault Secret found for Reference.");
             }
             secretValue = secret.getValue();
         } catch (RuntimeException | IOException e) {
-            if (azureProperties.isFailFast()) {
+            if (!azureProperties.isFailFast()) {
                 LOGGER.error("Error Retreiving Key Vault Entry", e);
             } else {
                 LOGGER.error("Error Retreiving Key Vault Entry");
@@ -201,7 +210,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
      * rest have run initProperties.
      * @param featureSet Feature Flag info to be set to this property source.
      */
-    public void initFeatures(FeatureSet featureSet) {
+    void initFeatures(FeatureSet featureSet) {
         properties.put(FEATURE_MANAGEMENT_KEY, mapper.convertValue(featureSet, LinkedHashMap.class));
     }
 
@@ -213,7 +222,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
      * @param date Cache timestamp
      * @throws IOException
      */
-    private FeatureSet addToFeatureSet(FeatureSet featureSet, List<ConfigurationSetting> settings, Date date) 
+    private FeatureSet addToFeatureSet(FeatureSet featureSet, List<ConfigurationSetting> settings, Date date)
             throws IOException {
         // Reading In Features
         for (ConfigurationSetting setting : settings) {

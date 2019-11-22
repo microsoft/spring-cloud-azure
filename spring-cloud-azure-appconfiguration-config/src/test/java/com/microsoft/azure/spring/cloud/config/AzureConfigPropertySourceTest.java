@@ -30,7 +30,6 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.rmi.ServerException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -101,9 +100,6 @@ public class AzureConfigPropertySourceTest {
     private static ObjectMapper mapper = new ObjectMapper();
 
     private AzureCloudConfigProperties azureProperties;
-
-    private AppConfigProviderProperties appProperties;
-
     @Mock
     private ClientStore clientStoreMock;
 
@@ -130,6 +126,10 @@ public class AzureConfigPropertySourceTest {
 
     @Rule
     public ExpectedException expected = ExpectedException.none();
+    
+    private AppConfigProviderProperties appProperties;
+    
+    private TokenCredentialProvider tokenCredentialProvider = null;
 
     @BeforeClass
     public static void init() {
@@ -146,16 +146,15 @@ public class AzureConfigPropertySourceTest {
         azureProperties = new AzureCloudConfigProperties();
         azureProperties.setFailFast(true);
         appProperties = new AppConfigProviderProperties();
-        appProperties.setKeyVaultWaitTime(0);
         propertySource = new AzureConfigPropertySource(TEST_CONTEXT, TEST_STORE_NAME, "\0",
-                azureProperties, appProperties, clientStoreMock);
+                azureProperties, clientStoreMock, appProperties, tokenCredentialProvider);
 
         testItems = new ArrayList<ConfigurationSetting>();
         testItems.add(item1);
         testItems.add(item2);
         testItems.add(item3);
 
-        when(configClientMock.listSettings(Mockito.any())).thenReturn(settingsMock);
+        when(configClientMock.listConfigurationSettings(Mockito.any())).thenReturn(settingsMock);
         when(settingsMock.byPage()).thenReturn(pageMock);
         when(pageMock.collectList()).thenReturn(collectionMock);
         when(collectionMock.block()).thenReturn(itemsMock);
@@ -164,7 +163,7 @@ public class AzureConfigPropertySourceTest {
     }
 
     @Test
-    public void testPropCanBeInitAndQueried() throws ServerException {
+    public void testPropCanBeInitAndQueried() throws IOException {
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(testItems)
                 .thenReturn(FEATURE_ITEMS);
         FeatureSet featureSet = new FeatureSet();
@@ -188,7 +187,7 @@ public class AzureConfigPropertySourceTest {
     }
 
     @Test
-    public void testPropertyNameSlashConvertedToDots() throws ServerException {
+    public void testPropertyNameSlashConvertedToDots() throws IOException {
         ConfigurationSetting slashedProp = createItem(TEST_CONTEXT, TEST_SLASH_KEY, TEST_SLASH_VALUE, null,
                 EMPTY_CONTENT_TYPE);
         List<ConfigurationSetting> settings = new ArrayList<ConfigurationSetting>();
@@ -212,7 +211,7 @@ public class AzureConfigPropertySourceTest {
     }
 
     @Test
-    public void testFeatureFlagCanBeInitedAndQueried() throws ServerException {
+    public void testFeatureFlagCanBeInitedAndQueried() throws IOException {
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString()))
                 .thenReturn(new ArrayList<ConfigurationSetting>()).thenReturn(FEATURE_ITEMS);
 
@@ -250,7 +249,7 @@ public class AzureConfigPropertySourceTest {
     }
 
     @Test
-    public void testFeatureFlagBuildError() throws ServerException {
+    public void testFeatureFlagBuildError() throws IOException {
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(FEATURE_ITEMS);
 
         FeatureSet featureSet = new FeatureSet();
@@ -277,7 +276,7 @@ public class AzureConfigPropertySourceTest {
     }
 
     @Test
-    public void initNullValidContentTypeTest() throws ServerException {
+    public void initNullValidContentTypeTest() throws IOException {
         ArrayList<ConfigurationSetting> items = new ArrayList<ConfigurationSetting>();
         items.add(item3Null);
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(items)
@@ -298,7 +297,7 @@ public class AzureConfigPropertySourceTest {
     }
 
     @Test
-    public void initNullInvalidContentTypeFeatureFlagTest() throws ServerException {
+    public void initNullInvalidContentTypeFeatureFlagTest() throws IOException {
         ArrayList<ConfigurationSetting> items = new ArrayList<ConfigurationSetting>();
         items.add(featureItemNull);
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString()))
