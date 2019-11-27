@@ -15,8 +15,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Feature {
 
-    @JsonProperty("id")
-    private String id;
+    @JsonProperty("key")
+    private String key;
 
     @JsonProperty("enabledFor")
     private List<FeatureFilterEvaluationContext> enabledFor;
@@ -25,17 +25,17 @@ public class Feature {
     private HashMap<Integer, HashMap<String, Object>> filterMapper;
 
     /**
-     * @return the id
+     * @return the key
      */
-    public String getId() {
-        return id;
+    public String getKey() {
+        return key;
     }
 
     /**
-     * @param id the id to set
+     * @param key the key to set
      */
-    public void setId(String id) {
-        this.id = id;
+    public void setKey(String key) {
+        this.key = key;
     }
 
     /**

@@ -37,7 +37,7 @@ import com.microsoft.azure.spring.cloud.feature.manager.entities.FeatureSet;
 @RunWith(MockitoJUnitRunner.class)
 public class FeatureManagerTest {
 
-    private static final String FEATURE_ID = "TestFeature";
+    private static final String FEATURE_KEY = "TestFeature";
 
     private static final String FILTER_NAME = "Filter1";
 
@@ -65,7 +65,7 @@ public class FeatureManagerTest {
         ObjectMapper mapper = new ObjectMapper();
         FeatureSet set = new FeatureSet();
         Feature f = new Feature();
-        f.setId(FEATURE_ID);
+        f.setKey(FEATURE_KEY);
 
         FeatureFilterEvaluationContext ffec = new FeatureFilterEvaluationContext();
         ffec.setName(FILTER_NAME);
@@ -88,9 +88,9 @@ public class FeatureManagerTest {
         assertNotNull(featureManagement);
         assertNotNull(featureManagement.getFeatureManagement());
         assertEquals(1, featureManagement.getFeatureManagement().size());
-        assertNotNull(featureManagement.getFeatureManagement().get(FEATURE_ID));
-        Feature feature = featureManagement.getFeatureManagement().get(FEATURE_ID);
-        assertEquals(FEATURE_ID, feature.getId());
+        assertNotNull(featureManagement.getFeatureManagement().get(FEATURE_KEY));
+        Feature feature = featureManagement.getFeatureManagement().get(FEATURE_KEY);
+        assertEquals(FEATURE_KEY, feature.getKey());
         assertEquals(1, feature.getEnabledFor().size());
         FeatureFilterEvaluationContext zeroth = feature.getEnabledFor().get(0);
         assertEquals(FILTER_NAME, zeroth.getName());
@@ -124,7 +124,7 @@ public class FeatureManagerTest {
         FeatureSet featureSet = new FeatureSet();
         HashMap<String, Object> features = new HashMap<String, Object>();
         Feature noFilters = new Feature();
-        noFilters.setId("NoFilters");
+        noFilters.setKey("NoFilters");
         noFilters.setEnabledFor(new ArrayList<FeatureFilterEvaluationContext>());
         features.put("NoFilters", noFilters);
         featureSet.setFeatureManagement(features);
@@ -138,7 +138,7 @@ public class FeatureManagerTest {
         FeatureSet featureSet = new FeatureSet();
         HashMap<String, Object> features = new HashMap<String, Object>();
         Feature onFeature = new Feature();
-        onFeature.setId("On");
+        onFeature.setKey("On");
         ArrayList<FeatureFilterEvaluationContext> filters = new ArrayList<FeatureFilterEvaluationContext>();
         FeatureFilterEvaluationContext alwaysOn = new FeatureFilterEvaluationContext();
         alwaysOn.setName("AlwaysOn");

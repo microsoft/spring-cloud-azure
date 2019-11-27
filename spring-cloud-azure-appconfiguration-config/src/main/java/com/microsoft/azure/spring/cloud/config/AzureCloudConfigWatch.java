@@ -23,14 +23,14 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
-import com.microsoft.azure.spring.cloud.config.domain.KeyValueItem;
-import com.microsoft.azure.spring.cloud.config.domain.QueryField;
-import com.microsoft.azure.spring.cloud.config.domain.QueryOptions;
+import com.azure.data.appconfiguration.models.ConfigurationSetting;
+import com.azure.data.appconfiguration.models.Range;
+import com.azure.data.appconfiguration.models.SettingSelector;
+import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
+import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureCloudConfigWatch.class);
-
-    private final ConfigServiceOperations configOperations;
 
     private final Map<String, String> storeEtagMap = new ConcurrentHashMap<>();
 
@@ -54,15 +54,17 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
 
     private Duration delay;
 
+    private ClientStore clientStore;
+
     private Date lastCheckedTime;
 
-    public AzureCloudConfigWatch(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
-            Map<String, List<String>> storeContextsMap) {
-        this.configOperations = operations;
+    public AzureCloudConfigWatch(AzureCloudConfigProperties properties, Map<String, List<String>> storeContextsMap,
+            ClientStore clientStore) {
         this.configStores = properties.getStores();
         this.storeContextsMap = storeContextsMap;
         this.delay = properties.getWatch().getDelay();
         this.lastCheckedTime = new Date();
+        this.clientStore = clientStore;
     }
 
     @Override
@@ -111,16 +113,16 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
      */
     private Boolean refresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
         String storeNameWithSuffix = store.getName() + storeSuffix;
-        QueryOptions options = new QueryOptions().withKeyNames(watchedKeyNames)
-                .withLabels(store.getLabels()).withFields(QueryField.ETAG).withRange(0, 0);
+        SettingSelector settingSelector = new SettingSelector().setKeys(watchedKeyNames).setLabels(store.getLabels())
+                .setRange(new Range(0, 0));
 
-        List<KeyValueItem> keyValueItems = configOperations.getRevisions(store.getName(), options);
+        List<ConfigurationSetting> items = clientStore.listSettingRevisons(settingSelector, store.getName());
 
-        if (keyValueItems.isEmpty()) {
+        if (items.isEmpty()) {
             return false;
         }
 
-        String etag = keyValueItems.get(0).getEtag();
+        String etag = items.get(0).getETag();
         if (firstTimeMap.get(storeNameWithSuffix) == null) {
             storeEtagMap.put(storeNameWithSuffix, etag);
             firstTimeMap.put(storeNameWithSuffix, false);
