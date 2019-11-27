@@ -6,7 +6,15 @@
 
 package com.microsoft.azure.spring.integration.servicebus.topic;
 
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+
 import com.google.common.collect.Sets;
+import com.microsoft.azure.servicebus.IMessage;
+import com.microsoft.azure.servicebus.IMessageSession;
+import com.microsoft.azure.servicebus.ISessionHandler;
 import com.microsoft.azure.servicebus.ISubscriptionClient;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
@@ -17,25 +25,25 @@ import com.microsoft.azure.spring.integration.servicebus.ServiceBusTemplate;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusTopicClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
-
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 /**
  * Default implementation of {@link ServiceBusTopicOperation}.
  *
  * @author Warren Zhu
+ * @author Eduardo Sciullo
  */
 public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicClientFactory>
         implements ServiceBusTopicOperation {
     private static final Logger log = LoggerFactory.getLogger(ServiceBusTopicTemplate.class);
+
     private static final String MSG_FAIL_CHECKPOINT = "Consumer group '%s' of topic '%s' failed to checkpoint %s";
+
     private static final String MSG_SUCCESS_CHECKPOINT = "Consumer group '%s' of topic '%s' checkpointed %s in %s mode";
+
     private Set<Tuple<String, String>> nameAndConsumerGroups = Sets.newConcurrentHashSet();
 
     public ServiceBusTopicTemplate(ServiceBusTopicClientFactory clientFactory) {
@@ -61,7 +69,7 @@ public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicC
 
     @Override
     public boolean unsubscribe(String destination, String consumerGroup) {
-        //TODO: unregister message handler but service bus sdk unsupported
+        // TODO: unregister message handler but service bus sdk unsupported
 
         return nameAndConsumerGroups.remove(Tuple.of(destination, consumerGroup));
     }
@@ -75,9 +83,19 @@ public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicC
 
         try {
             subscriptionClient.setPrefetchCount(this.clientConfig.getPrefetchCount());
-            subscriptionClient
-                    .registerMessageHandler(new TopicMessageHandler(consumer, payloadType, subscriptionClient),
-                            buildHandlerOptions(), buildHandlerExecutors(threadPrefix));
+
+            // Register SessionHandler id sessions are enabled. 
+            // Handlers are mutually exclusive.
+            if (this.clientConfig.isSessionsEnabled()) {
+                subscriptionClient.registerSessionHandler(
+                        new TopicMessageHandler(consumer, payloadType, subscriptionClient),
+                        buildSessionHandlerOptions(),
+                        buildHandlerExecutors(threadPrefix));
+            } else {
+                subscriptionClient.registerMessageHandler(
+                        new TopicMessageHandler(consumer, payloadType, subscriptionClient), buildHandlerOptions(),
+                        buildHandlerExecutors(threadPrefix));
+            }
         } catch (ServiceBusException | InterruptedException e) {
             log.error("Failed to register topic message handler", e);
             throw new ServiceBusRuntimeException("Failed to register topic message handler", e);
@@ -89,13 +107,13 @@ public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicC
         this.clientConfig = clientConfig;
     }
 
-    protected class TopicMessageHandler<U> extends ServiceBusMessageHandler<U> {
+    protected class TopicMessageHandler<U> extends ServiceBusMessageHandler<U> implements ISessionHandler {
         private final ISubscriptionClient subscriptionClient;
 
         public TopicMessageHandler(Consumer<Message<U>> consumer, Class<U> payloadType,
                 ISubscriptionClient subscriptionClient) {
-            super(consumer, payloadType, ServiceBusTopicTemplate.this.getCheckpointConfig(), ServiceBusTopicTemplate
-                    .this.getMessageConverter());
+            super(consumer, payloadType, ServiceBusTopicTemplate.this.getCheckpointConfig(),
+                    ServiceBusTopicTemplate.this.getMessageConverter());
             this.subscriptionClient = subscriptionClient;
         }
 
@@ -120,5 +138,18 @@ public class ServiceBusTopicTemplate extends ServiceBusTemplate<ServiceBusTopicC
             return String.format(MSG_SUCCESS_CHECKPOINT, subscriptionClient.getSubscriptionName(),
                     subscriptionClient.getTopicName(), message, getCheckpointConfig().getCheckpointMode());
         }
+
+        // ISessionHandler
+        @Override
+        public CompletableFuture<Void> onMessageAsync(IMessageSession session, IMessage message) {
+            return super.onMessageAsync(message);
+        }
+
+        @Override
+        public CompletableFuture<Void> OnCloseSessionAsync(IMessageSession session) {
+            log.info("Closed session '" + session.getSessionId() + "' for subscription: " + session.getEntityPath());
+            return CompletableFuture.completedFuture(null);
+        }
     }
+
 }
