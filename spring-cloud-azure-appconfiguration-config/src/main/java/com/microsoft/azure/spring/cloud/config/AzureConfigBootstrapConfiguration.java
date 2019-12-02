@@ -46,11 +46,14 @@ public class AzureConfigBootstrapConfiguration {
                 pool.put(store.getName(), new Connection(store.getConnectionString()));
             } else if (StringUtils.hasText(store.getName())) {
                 AzureManagedIdentityProperties msiProps = properties.getManagedIdentity();
-                Connection connection = new Connection();
+                
+                String endpoint = "https://" + store.getName() + ".azconfig.io";
                 if (msiProps != null && msiProps.getClientId() != null) {
-                    connection.setClientId(msiProps.getClientId());
+                    pool.put(store.getName(), new Connection(endpoint, msiProps.getClientId()));
+                } else {
+                    pool.put(store.getName(), new Connection(endpoint, ""));
                 }
-                pool.put(store.getName(), connection);
+                
             }
         }
 

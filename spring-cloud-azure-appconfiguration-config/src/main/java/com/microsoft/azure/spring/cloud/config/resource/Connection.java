@@ -25,7 +25,7 @@ public class Connection {
 
     private final String connectionString;
 
-    private String clientId;
+    private final String clientId;
 
     public Connection(String connectionString) {
         Assert.hasText(connectionString, String.format("Connection string cannot be empty."));
@@ -40,10 +40,12 @@ public class Connection {
         Assert.hasText(endpoint, String.format(NON_EMPTY_MSG, "Endpoint"));
         
         this.connectionString = connectionString;
+        this.clientId = "";
     }
     
-    public Connection() {
-        this.endpoint = "";
+    public Connection(String endpoint, String clientId) {
+        this.endpoint = endpoint;
+        this.clientId = clientId;
         this.connectionString = "";
     }
 
@@ -60,11 +62,6 @@ public class Connection {
      */
     public String getClientId() {
         return clientId;
-    }
-
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-        
     }
 
 }

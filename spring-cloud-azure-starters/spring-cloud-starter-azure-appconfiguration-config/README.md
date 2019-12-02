@@ -109,22 +109,38 @@ Failfast feature decides whether throw RuntimeException or not when exception ha
 spring.cloud.azure.appconfiguration.fail-fast=false
 ```
 
-### Use Azure Managed Identity/Service Principle to load the connection string
+### Use Managed Identity to access App Configuration
 
-[Managed service identity](https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview) allows application to access [Azure Active Directory](https://azure.microsoft.com/services/active-directory/) protected resource on [Azure](https://azure.microsoft.com).
+[Managed identity](https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview) allows application to access [Azure Active Directory][azure_active_directory] protected resource on [Azure][azure].
 
 In this library, [Azure Identity SDK][azure_identity_sdk] is used to access Azure App Configuration and optionally Azure Key Vault, for secrets. The connection string is not required and will be ignored if Managed Identity is being used.
 
-Follow below steps to enable managed service identity feature:
+Follow the below steps to enable accessing App Configuration with managed identity:
 
-1. [Enable managed identities service](https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview#how-can-i-use-managed-identities-for-azure-resources) for virtual machine or App Service, on which the application will be deployed
+1. [Enable managed identities](https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview#how-can-i-use-managed-identities-for-azure-resources) for the [supported Azure services](https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/services-support-managed-identities), for example, virtual machine or App Service, on which the application will be deployed.
 
-1. Configure the [Azure RBAC](https://docs.microsoft.com/azure/role-based-access-control/role-assignments-portal) to allow application running on VM or App Service to access the configuration store. When prompted for the Role select App Configuration Data Reader, App Configuration Data Owner is not required but can be used if needed.
+1. Configure the [Azure RBAC][azure_rbac] of your Application store to grant access to the Azure service where your application is running. Select the App Configuration Data Reader. The App Configuration Data Owner role is not required but can be used if needed.
 
-1. Choose Configuration option:
-    1. Environment variables, only supports System Assigned Managed Identity and Service Principle.
+1. Choose a configuration option:
+    1. Set the Environment variable; AZURE_CLIENT_ID.
     1. Create a TokenCredentialProvider and supply any valid TokenCredential and supply it via a Bean.
     1. Configure bootstrap.properties(or .yaml) in the Spring Boot application.
+
+The configuration store name must be configured when `connection-string` is empty, the connection string for the configuration store will be loaded automatically.
+
+### Use service principle to access App Configuration
+
+A [service principle](https://docs.microsoft.com/azure/active-directory/develop/app-objects-and-service-principals) allows application to access [Azure Active Directory][azure_active_directory] protected resource on [Azure][azure].
+
+In this library, [Azure Identity SDK][azure_identity_sdk] is used to access Azure App Configuration and optionally Azure Key Vault, for secrets. The connection string is not required and will be ignored if a Service Principle is being used.
+
+Follow the below steps to enable accessing App Configuration with Service Principle:
+
+1. [Enable Service principle](https://docs.microsoft.com/azure/active-directory/develop/app-objects-and-service-principals#application-registration) for virtual machine or App Service, on which the application will be deployed
+
+1. Configure the [Azure RBAC][azure_rbac] of your Application store to grant access to the Azure service where your application is running. Select the App Configuration Data Reader. The App Configuration Data Owner role is not required but can be used if needed.
+
+1. Set the Environment variables; AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_CLIENT_SECRET.
 
 The configuration store name must be configured when `connection-string` is empty, the connection string for the configuration store will be loaded automatically.
 
@@ -162,4 +178,7 @@ spring.cloud.azure.appconfiguration.managed-identity.client-id=[client-id]
 ```
 
 <!-- LINKS -->
+[azure]: https://azure.microsoft.com
+[azure_active_directory]: https://azure.microsoft.com/services/active-directory/
 [azure_identity_sdk]: https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/identity/azure-identity
+[azure_rbac]: https://docs.microsoft.com/azure/role-based-access-control/role-assignments-portal
