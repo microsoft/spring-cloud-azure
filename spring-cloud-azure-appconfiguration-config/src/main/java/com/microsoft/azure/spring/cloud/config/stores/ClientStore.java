@@ -53,7 +53,6 @@ public class ClientStore {
 
         TokenCredential tokenCredential = null;
         Connection connection = pool.get(store);
-        LOGGER.error("Connection: " + connection);
 
         String endpoint = connection.getEndpoint();
 
