@@ -254,8 +254,10 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
                 // exactly the same... It should never be the case of Conditional On, and
                 // no filters coming from Azure, but it is a valid way from the config
                 // file, which should result in false being returned.
-                if (feature.getEnabledFor().size() == 0 && featureItem.getEnabled() == true) {
+                if (feature.getEnabledFor().size() == 0 && featureItem.getEnabled()) {
                     return true;
+                } else if (!featureItem.getEnabled()) {
+                    return false;
                 }
                 return feature;
 
