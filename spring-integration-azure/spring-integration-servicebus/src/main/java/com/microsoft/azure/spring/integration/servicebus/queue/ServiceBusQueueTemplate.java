@@ -7,7 +7,10 @@
 package com.microsoft.azure.spring.integration.servicebus.queue;
 
 import com.google.common.collect.Sets;
+import com.microsoft.azure.servicebus.IMessage;
+import com.microsoft.azure.servicebus.IMessageSession;
 import com.microsoft.azure.servicebus.IQueueClient;
+import com.microsoft.azure.servicebus.ISessionHandler;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusClientConfig;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusMessageHandler;
@@ -29,12 +32,16 @@ import java.util.function.Consumer;
  * Default implementation of {@link ServiceBusQueueOperation}.
  *
  * @author Warren Zhu
+ * @author Eduardo Sciullo
  */
 public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueClientFactory>
         implements ServiceBusQueueOperation {
     private static final Logger log = LoggerFactory.getLogger(ServiceBusQueueTemplate.class);
+
     private static final String MSG_FAIL_CHECKPOINT = "Failed to checkpoint %s in queue '%s'";
+
     private static final String MSG_SUCCESS_CHECKPOINT = "Checkpointed %s in queue '%s' in %s mode";
+
     private final Set<String> subscribedQueues = Sets.newConcurrentHashSet();
 
     public ServiceBusQueueTemplate(ServiceBusQueueClientFactory clientFactory) {
@@ -61,7 +68,7 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
     @Override
     public boolean unsubscribe(String destination) {
 
-        //TODO: unregister message handler but service bus sdk unsupported
+        // TODO: unregister message handler but service bus sdk unsupported
 
         return subscribedQueues.remove(destination);
     }
@@ -75,8 +82,17 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
 
         try {
             queueClient.setPrefetchCount(this.clientConfig.getPrefetchCount());
-            queueClient.registerMessageHandler(new QueueMessageHandler(consumer, payloadType, queueClient),
-                    buildHandlerOptions(), buildHandlerExecutors(threadPrefix));
+
+            // Register SessionHandler if sessions are enabled. 
+            // Handlers are mutually exclusive.
+            if (this.clientConfig.isSessionsEnabled()) {
+                queueClient.registerSessionHandler(
+                        new QueueMessageHandler(consumer, payloadType, queueClient), buildSessionHandlerOptions(),
+                        buildHandlerExecutors(threadPrefix));
+            } else {
+                queueClient.registerMessageHandler(new QueueMessageHandler(consumer, payloadType, queueClient),
+                        buildHandlerOptions(), buildHandlerExecutors(threadPrefix));
+            }
         } catch (ServiceBusException | InterruptedException e) {
             log.error("Failed to register queue message handler", e);
             throw new ServiceBusRuntimeException("Failed to register queue message handler", e);
@@ -88,12 +104,12 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
         this.clientConfig = clientConfig;
     }
 
-    protected class QueueMessageHandler<U> extends ServiceBusMessageHandler<U> {
+    protected class QueueMessageHandler<U> extends ServiceBusMessageHandler<U> implements ISessionHandler {
         private final IQueueClient queueClient;
 
         public QueueMessageHandler(Consumer<Message<U>> consumer, Class<U> payloadType, IQueueClient queueClient) {
-            super(consumer, payloadType, ServiceBusQueueTemplate.this.getCheckpointConfig(), ServiceBusQueueTemplate
-                    .this.getMessageConverter());
+            super(consumer, payloadType, ServiceBusQueueTemplate.this.getCheckpointConfig(),
+                    ServiceBusQueueTemplate.this.getMessageConverter());
             this.queueClient = queueClient;
         }
 
@@ -117,5 +133,18 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
             return String.format(MSG_SUCCESS_CHECKPOINT, message, queueClient.getQueueName(),
                     getCheckpointConfig().getCheckpointMode());
         }
+
+        // ISessionHandler
+        @Override
+        public CompletableFuture<Void> onMessageAsync(IMessageSession session, IMessage message) {
+            return super.onMessageAsync(message);
+        }
+
+        @Override
+        public CompletableFuture<Void> OnCloseSessionAsync(IMessageSession session) {
+            log.info("Closed session '" + session.getSessionId() + "' for subscription: " + session.getEntityPath());
+            return CompletableFuture.completedFuture(null);
+        }
     }
+
 }
