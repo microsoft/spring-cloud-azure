@@ -28,6 +28,11 @@
         <qpid-jms-client.version>0.43.0</qpid-jms-client.version>
         <spring.cloud.azure.version>1.1.0-SNAPSHOT</spring.cloud.azure.version>
         <okhttp3.version>3.11.0</okhttp3.version>
+		<azure-core.version>1.1.0</azure-core.version>
+		<azure-data-appconfiguration.version>1.0.0-beta.7</azure-data-appconfiguration.version>
+		<azure-identity.version>1.0.1</azure-identity.version>
+		<azure-security-keyvault-secrets.version>4.0.0</azure-security-keyvault-secrets.version>
+		<azure-core-http-netty.version>1.1.0</azure-core-http-netty.version>
     </properties>
 
     <dependencyManagement>
@@ -278,6 +283,33 @@
                 <artifactId>qpid-jms-client</artifactId>
                 <version>${qpid-jms-client.version}</version>
             </dependency>
+			
+			<!--Azure SDK-->
+			<dependency>
+				<groupId>com.azure</groupId>
+				<artifactId>azure-core</artifactId>
+				<version>${azure-core.version}</version>
+			</dependency>
+            <dependency>
+                <groupId>com.azure</groupId>
+                <artifactId>azure-core-http-netty</artifactId>
+                <version>${azure-core-http-netty.version}</version>
+            </dependency>
+			<dependency>
+				<groupId>com.azure</groupId>
+				<artifactId>azure-data-appconfiguration</artifactId>
+				<version>${azure-data-appconfiguration.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.azure</groupId>
+				<artifactId>azure-identity</artifactId>
+				<version>${azure-identity.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.azure</groupId>
+				<artifactId>azure-security-keyvault-secrets</artifactId>
+				<version>${azure-security-keyvault-secrets.version}</version>
+			</dependency>
         </dependencies>
     </dependencyManagement>
 

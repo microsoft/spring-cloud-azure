@@ -8,8 +8,12 @@ package com.microsoft.azure.spring.cloud.config.stores;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import com.azure.core.credential.TokenCredential;
 import com.azure.core.http.policy.ExponentialBackoff;
@@ -18,7 +22,6 @@ import com.azure.data.appconfiguration.ConfigurationAsyncClient;
 import com.azure.data.appconfiguration.ConfigurationClientBuilder;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
-import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.azure.identity.ManagedIdentityCredentialBuilder;
 import com.microsoft.azure.spring.cloud.config.AppConfigProviderProperties;
 import com.microsoft.azure.spring.cloud.config.TokenCredentialProvider;
@@ -41,7 +44,7 @@ public class ClientStore {
         this.tokenCredentialProvider = tokenCredentialProvider;
     }
 
-    private ConfigurationAsyncClient buildClient(String store) {
+    private ConfigurationAsyncClient buildClient(String store) throws IllegalArgumentException {
         ConfigurationClientBuilder builder = new ConfigurationClientBuilder();
         ExponentialBackoff retryPolicy = new ExponentialBackoff(appProperties.getMaxRetries(),
                 Duration.ofMillis(800), Duration.ofSeconds(8));
@@ -51,21 +54,34 @@ public class ClientStore {
         TokenCredential tokenCredential = null;
         Connection connection = pool.get(store);
 
+        String endpoint = connection.getEndpoint();
+
         if (tokenCredentialProvider != null) {
-            tokenCredential = tokenCredentialProvider.credentialForAppConfig();
+            tokenCredential = tokenCredentialProvider.credentialForAppConfig(endpoint);
         }
+        if ((tokenCredential != null
+                || (connection.getClientId() != null && StringUtils.isNotEmpty(connection.getClientId())))
+                && (connection != null && StringUtils.isNotEmpty(connection.getConnectionString()))) {
+            throw new IllegalArgumentException(
+                    "More than 1 Conncetion method was set for connecting to App Configuration.");
+        } else if (tokenCredential != null && connection != null && connection.getClientId() != null
+                && StringUtils.isNotEmpty(connection.getClientId())) {
+            throw new IllegalArgumentException(
+                    "More than 1 Conncetion method was set for connecting to App Configuration.");
+        }
+
         if (tokenCredential != null) {
             builder.credential(tokenCredential);
-        } else if (connection.getClientId() != null) {
+        } else if ((connection.getClientId() != null && StringUtils.isNotEmpty(connection.getClientId()))
+                && connection.getEndpoint() != null) {
             ManagedIdentityCredentialBuilder micBuilder = new ManagedIdentityCredentialBuilder()
                     .clientId(connection.getClientId());
             builder.credential(micBuilder.build());
         } else if (StringUtils.isNotEmpty(connection.getConnectionString())) {
             builder.connectionString(connection.getConnectionString());
         } else {
-            builder.credential(new DefaultAzureCredentialBuilder().build());
+            throw new IllegalArgumentException("No Configuration method was set for connecting to App Configuration");
         }
-        String endpoint = "https://" + store + ".azconfig.io";
         return builder.endpoint(endpoint).buildAsyncClient();
     }
 
@@ -93,8 +109,44 @@ public class ClientStore {
      * @param storeName Name of the App Configuration store to query against.
      * @return List of Configuration Settings.
      */
+    public final List<ConfigurationSetting> listSettings(SettingSelector settingSelector, String storeName)
+            throws IOException {
+        ConfigurationAsyncClient client = buildClient(storeName);
 
         return client.listConfigurationSettings(settingSelector).collectList().block();
     }
 
+    /**
+     * Composite watched key names separated by comma, the key names is made up of:
+     * prefix, context and key name pattern e.g., prefix: /config, context: /application,
+     * watched key: my.watch.key will return: /config/application/my.watch.key
+     *
+     * The returned watched key will be one key pattern, one or multiple specific keys
+     * e.g., 1) * 2) /application/abc* 3) /application/abc 4) /application/abc,xyz
+     *
+     * @param store the {@code store} for which to composite watched key names
+     * @param storeContextsMap map storing store name and List of context key-value pair
+     * @return the full name of the key mapping to the configuration store
+     */
+    public String watchedKeyNames(ConfigStore store, Map<String, List<String>> storeContextsMap) {
+        String watchedKey = store.getWatchedKey().trim();
+        List<String> contexts = storeContextsMap.get(store.getName());
+
+        String watchedKeys = contexts.stream().map(ctx -> genKey(ctx, watchedKey))
+                .collect(Collectors.joining(","));
+
+        if (watchedKeys.contains(",") && watchedKeys.contains("*")) {
+            // Multi keys including one or more key patterns is not supported by API, will
+            // watch all keys(*) instead
+            watchedKeys = "*";
+        }
+
+        return watchedKeys;
+    }
+
+    private String genKey(@NonNull String context, @Nullable String watchedKey) {
+        String trimmedWatchedKey = StringUtils.isNoneEmpty(watchedKey) ? watchedKey.trim() : "*";
+
+        return String.format("%s%s", context, trimmedWatchedKey);
+    }
 }

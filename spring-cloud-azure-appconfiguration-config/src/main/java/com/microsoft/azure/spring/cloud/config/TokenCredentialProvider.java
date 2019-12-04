@@ -9,8 +9,8 @@ import com.azure.core.credential.TokenCredential;
 
 public interface TokenCredentialProvider {
 
-    public TokenCredential credentialForAppConfig();
+    public TokenCredential credentialForAppConfig(String uri);
 
-    public TokenCredential credentialForKeyVault();
+    public TokenCredential credentialForKeyVault(String uri);
 
 }

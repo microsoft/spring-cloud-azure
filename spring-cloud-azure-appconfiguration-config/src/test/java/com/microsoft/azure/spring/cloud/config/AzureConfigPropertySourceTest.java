@@ -31,9 +31,11 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Before;
@@ -54,6 +56,7 @@ import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureFilterEvaluationContext;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
+import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -146,8 +149,14 @@ public class AzureConfigPropertySourceTest {
         azureProperties = new AzureCloudConfigProperties();
         azureProperties.setFailFast(true);
         appProperties = new AppConfigProviderProperties();
-        propertySource = new AzureConfigPropertySource(TEST_CONTEXT, TEST_STORE_NAME, "\0",
-                azureProperties, clientStoreMock, appProperties, tokenCredentialProvider);
+        ConfigStore configStore = new ConfigStore();
+        configStore.setName(TEST_STORE_NAME);
+        Map<String, List<String>> storeContextsMap = new HashMap<String, List<String>>();
+        ArrayList<String> contexts = new ArrayList<String>();
+        contexts.add("/application/*");
+        storeContextsMap.put(TEST_STORE_NAME, contexts);
+        propertySource = new AzureConfigPropertySource(TEST_CONTEXT, configStore, "\0",
+                azureProperties, clientStoreMock, appProperties, tokenCredentialProvider, storeContextsMap);
 
         testItems = new ArrayList<ConfigurationSetting>();
         testItems.add(item1);

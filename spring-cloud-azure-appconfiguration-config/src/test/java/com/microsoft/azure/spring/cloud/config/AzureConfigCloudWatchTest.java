@@ -5,6 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import static com.microsoft.azure.spring.cloud.config.Constants.CONFIGURATION_SUFFIX;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_ETAG;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME;
@@ -117,6 +118,8 @@ public class AzureConfigCloudWatchTest {
         assertFalse(configWatch.refreshConfigurations().get());
         verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
 
+        StateHolder.setState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, new ConfigurationSetting());
+
         // If there is a change it should update
         assertTrue(configWatch.refreshConfigurations().get());
         verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
@@ -124,6 +127,11 @@ public class AzureConfigCloudWatchTest {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("store1_configuration", "fake-etag-updated");
         map.put("store1_feature", "fake-etag-updated");
+
+        ConfigurationSetting updated = new ConfigurationSetting();
+        updated.setETag("fake-etag-updated");
+
+        StateHolder.setState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, updated);
 
         // If there is no change it shouldn't update
         assertFalse(configWatch.refreshConfigurations().get());

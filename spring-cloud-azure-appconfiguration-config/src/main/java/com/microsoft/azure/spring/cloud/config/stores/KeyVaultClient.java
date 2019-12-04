@@ -8,12 +8,16 @@ package com.microsoft.azure.spring.cloud.config.stores;
 import java.net.URI;
 import java.time.Duration;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.azure.core.credential.TokenCredential;
-import com.azure.identity.DefaultAzureCredentialBuilder;
+import com.azure.identity.ManagedIdentityCredentialBuilder;
 import com.azure.security.keyvault.secrets.SecretAsyncClient;
 import com.azure.security.keyvault.secrets.SecretClientBuilder;
 import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
+import com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties;
 import com.microsoft.azure.spring.cloud.config.TokenCredentialProvider;
+import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
 
 public class KeyVaultClient {
 
@@ -25,13 +29,22 @@ public class KeyVaultClient {
      * @param uri Key Vault URI
      * @param tokenCredentialProvider user created credentials for authenticating to Key Vault
      */
-    public KeyVaultClient(URI uri, TokenCredentialProvider tokenCredentialProvider) {
+    public KeyVaultClient(URI uri, TokenCredentialProvider tokenCredentialProvider,
+            AzureCloudConfigProperties properties) {
         TokenCredential tokenCredential = null;
         if (tokenCredentialProvider != null) {
-            tokenCredential = tokenCredentialProvider.credentialForKeyVault();
+            tokenCredential = tokenCredentialProvider.credentialForKeyVault("https://" + uri.getHost());
         }
+        AzureManagedIdentityProperties msiProps = properties.getManagedIdentity();
+        if (tokenCredential != null && msiProps != null) {
+            throw new IllegalArgumentException("More than 1 Conncetion method was set for connecting to Key Vault.");
+        }
+        if (tokenCredential == null && msiProps != null && StringUtils.isNotEmpty(msiProps.getClientId())) {
+            tokenCredential = new ManagedIdentityCredentialBuilder().clientId(msiProps.getClientId()).build();
+        }
+
         if (tokenCredential == null) {
-            tokenCredential = new DefaultAzureCredentialBuilder().build();
+            throw new IllegalArgumentException("No Configuration method was set for connecting to Key Vault");
         }
         secretClient = new SecretClientBuilder().vaultUrl("https://" + uri.getHost()).credential(tokenCredential)
                 .buildAsyncClient();

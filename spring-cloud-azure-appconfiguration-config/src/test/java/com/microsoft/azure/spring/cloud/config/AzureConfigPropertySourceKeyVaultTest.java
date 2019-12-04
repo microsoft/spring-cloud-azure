@@ -30,8 +30,10 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -52,6 +54,7 @@ import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
+import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 import com.microsoft.azure.spring.cloud.config.stores.KeyVaultClient;
 
 import reactor.core.publisher.Flux;
@@ -128,8 +131,14 @@ public class AzureConfigPropertySourceKeyVaultTest {
         azureProperties.setFailFast(true);
         appProperties = new AppConfigProviderProperties();
         appProperties.setMaxRetryTime(0);
-        propertySource = new AzureConfigPropertySource(TEST_CONTEXT, TEST_STORE_NAME, "\0",
-                azureProperties, clientStoreMock, appProperties, tokenCredentialProvider);
+        ConfigStore testStore = new ConfigStore();
+        testStore.setName(TEST_STORE_NAME);
+        Map<String, List<String>> storeContextsMap = new HashMap<String, List<String>>();
+        ArrayList<String> contexts = new ArrayList<String>();
+        contexts.add("/application/*");
+        storeContextsMap.put(TEST_STORE_NAME, contexts);
+        propertySource = new AzureConfigPropertySource(TEST_CONTEXT, testStore, "\0",
+                azureProperties, clientStoreMock, appProperties, tokenCredentialProvider, storeContextsMap);
 
         testItems = new ArrayList<ConfigurationSetting>();
         testItems.add(item1);
@@ -145,7 +154,7 @@ public class AzureConfigPropertySourceKeyVaultTest {
         KeyVaultClient client = Mockito.mock(KeyVaultClient.class);
         PowerMockito.whenNew(KeyVaultClient.class).withAnyArguments().thenReturn(client);
 
-        KeyVaultSecret secret = new KeyVaultSecret("mySecret", "mySecret");
+        KeyVaultSecret secret = new KeyVaultSecret("mySecret", "mySecretValue");
         given(client.getSecret(Mockito.any(URI.class), Mockito.anyInt())).willReturn(secret);
 
         FeatureSet featureSet = new FeatureSet();
@@ -165,6 +174,6 @@ public class AzureConfigPropertySourceKeyVaultTest {
         assertThat(propertySource.getProperty(TEST_KEY_1)).isEqualTo(TEST_VALUE_1);
         assertThat(propertySource.getProperty(TEST_KEY_2)).isEqualTo(TEST_VALUE_2);
         assertThat(propertySource.getProperty(TEST_KEY_3)).isEqualTo(TEST_VALUE_3);
-        assertThat(propertySource.getProperty(TEST_KEY_VAULT_1)).isEqualTo("mySecret");
+        assertThat(propertySource.getProperty(TEST_KEY_VAULT_1)).isEqualTo("mySecretValue");
     }
 }
