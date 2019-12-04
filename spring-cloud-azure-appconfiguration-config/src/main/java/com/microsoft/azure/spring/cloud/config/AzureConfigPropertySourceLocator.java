@@ -184,8 +184,6 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
      * @param initFeatures determines if Feature Management is set in the PropertySource.
      * When generating more than one it needs to be in the last one.
      * @return a list of AzureConfigPropertySources
-     * @throws IOException
-     * @throws URISyntaxException
      */
     private List<AzureConfigPropertySource> create(String context, ConfigStore store,
             Map<String, List<String>> storeContextsMap, boolean initFeatures, FeatureSet featureSet) throws Exception {
