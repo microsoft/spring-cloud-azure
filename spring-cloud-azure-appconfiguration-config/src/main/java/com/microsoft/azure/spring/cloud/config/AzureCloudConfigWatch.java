@@ -54,6 +54,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
         this.configStores = properties.getStores();
         this.storeContextsMap = storeContextsMap;
         this.delay = properties.getWatch().getDelay();
+        this.lastCheckedTime = new Date();
         this.clientStore = clientStore;
         this.eventDataInfo = "";
     }

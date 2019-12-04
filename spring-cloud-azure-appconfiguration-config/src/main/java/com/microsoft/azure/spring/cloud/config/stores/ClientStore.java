@@ -108,6 +108,7 @@ public class ClientStore {
      * results, key value...
      * @param storeName Name of the App Configuration store to query against.
      * @return List of Configuration Settings.
+     * @throws IOException thrown when failed to retrieve values.
      */
     public final List<ConfigurationSetting> listSettings(SettingSelector settingSelector, String storeName)
             throws IOException {

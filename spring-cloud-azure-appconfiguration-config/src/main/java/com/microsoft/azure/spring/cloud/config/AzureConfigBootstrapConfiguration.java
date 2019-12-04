@@ -79,7 +79,7 @@ public class AzureConfigBootstrapConfiguration {
                 throw e;
             }
         } catch (NoSuchBeanDefinitionException e) {
-            LOGGER.info("No TokenCredentialProvider found. " + e.getMessage());
+            LOGGER.info("No TokenCredentialProvider found.");
         }
         return new AzureConfigPropertySourceLocator(properties, appProperties, clients, tokenCredentialProvider);
     }

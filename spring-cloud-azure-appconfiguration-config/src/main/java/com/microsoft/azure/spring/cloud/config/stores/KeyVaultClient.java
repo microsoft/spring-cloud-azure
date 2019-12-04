@@ -28,6 +28,7 @@ public class KeyVaultClient {
      * 
      * @param uri Key Vault URI
      * @param tokenCredentialProvider user created credentials for authenticating to Key Vault
+     * @param properties Azure Configuration Managed Identity credentials
      */
     public KeyVaultClient(URI uri, TokenCredentialProvider tokenCredentialProvider,
             AzureCloudConfigProperties properties) {
