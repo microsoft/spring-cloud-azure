@@ -44,7 +44,7 @@ public class WebController {
         this.storageQueueOperation.setMessagePayloadType(String.class);
         this.storageQueueOperation.setCheckpointMode(CheckpointMode.MANUAL);
         Message<?> message = this.storageQueueOperation.receiveAsync(STORAGE_QUEUE_NAME).get();
-        if(message == null) {
+        if (message == null) {
             log.info("You have no new messages.");
             return null;
         }

@@ -17,7 +17,7 @@ public class TestComponent {
     private FeatureManager featureManager;
     
     public String test() {
-        if(featureManager.isEnabled("Beta")) {
+        if (featureManager.isEnabled("Beta")) {
             return "Beta";
         }
         return "Original";
