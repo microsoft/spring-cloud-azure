@@ -73,14 +73,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
      * right away as <b>false</b>.
      */
     public Future<Boolean> refreshConfigurations() {
-        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
-
-        Executors.newCachedThreadPool().submit(() -> {
-            completableFuture.complete(refreshStores());
-            return null;
-        });
-
-        return completableFuture;
+        return CompletableFuture.supplyAsync(() -> refreshStores());
     }
 
     /**
