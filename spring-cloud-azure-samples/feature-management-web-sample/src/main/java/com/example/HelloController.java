@@ -34,7 +34,7 @@ public class HelloController {
         return "privacy";
     }
 
-    @GetMapping(value= {"/Beta","/BetaA"})
+    @GetMapping(value = {"/Beta", "/BetaA"})
     @FeatureGate(feature = "BetaAB", fallback = "/BetaB")
     public String getRedirect(Model model) {
         return "BetaA";
@@ -45,7 +45,7 @@ public class HelloController {
         return "BetaB";
     }
 
-    @GetMapping(value= {"", "/", "/welcome"})
+    @GetMapping(value = {"", "/", "/welcome"})
     public String mainWithParam(Model model) {
         model.addAttribute("Beta", featureManager.isEnabled("Beta"));
         return "welcome";
