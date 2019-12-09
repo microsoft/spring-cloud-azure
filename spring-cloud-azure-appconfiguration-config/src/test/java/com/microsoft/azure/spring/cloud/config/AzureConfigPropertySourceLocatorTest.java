@@ -17,7 +17,7 @@ import static com.microsoft.azure.spring.cloud.config.TestUtils.createItem;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import java.rmi.ServerException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -35,11 +35,13 @@ import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertySource;
 
-import com.azure.core.http.rest.PagedIterable;
+import com.azure.core.http.rest.PagedFlux;
 import com.azure.core.http.rest.PagedResponse;
-import com.azure.data.appconfiguration.ConfigurationClient;
+import com.azure.data.appconfiguration.ConfigurationAsyncClient;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
+
+import reactor.core.publisher.Flux;
 
 public class AzureConfigPropertySourceLocatorTest {
     private static final String APPLICATION_NAME = "foo";
@@ -54,6 +56,7 @@ public class AzureConfigPropertySourceLocatorTest {
 
     private static final ConfigurationSetting featureItem = createItem(".appconfig.featureflag/", "Alpha",
             FEATURE_VALUE, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
+
     @Rule
     public ExpectedException expected = ExpectedException.none();
 
@@ -64,16 +67,19 @@ public class AzureConfigPropertySourceLocatorTest {
     private ClientStore configStoreMock;
 
     @Mock
-    private ConfigurationClient configClientMock;
+    private ConfigurationAsyncClient configClientMock;
 
     @Mock
-    private PagedIterable<ConfigurationSetting> settingsMock;
+    private PagedFlux<ConfigurationSetting> settingsMock;
 
     @Mock
-    private Iterable<PagedResponse<ConfigurationSetting>>  iterableMock;
-    
+    private Iterable<PagedResponse<ConfigurationSetting>> iterableMock;
+
     @Mock
     private Iterator<PagedResponse<ConfigurationSetting>> iteratorMock;
+
+    @Mock
+    private Flux<PagedResponse<ConfigurationSetting>> pageMock;
 
     @Mock
     private PagedResponse<ConfigurationSetting> pagedMock;
@@ -84,6 +90,8 @@ public class AzureConfigPropertySourceLocatorTest {
 
     private AppConfigProviderProperties appProperties;
 
+    private TokenCredentialProvider tokenCredentialProvider = null;
+
     @BeforeClass
     public static void init() {
         FEATURE_ITEMS.add(featureItem);
@@ -93,29 +101,28 @@ public class AzureConfigPropertySourceLocatorTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         when(environment.getActiveProfiles()).thenReturn(new String[] { PROFILE_NAME_1, PROFILE_NAME_2 });
-        when(configStoreMock.getConfigurationClient(Mockito.anyString())).thenReturn(configClientMock);
 
         properties = new AzureCloudConfigProperties();
         TestUtils.addStore(properties, TEST_STORE_NAME, TEST_CONN_STRING);
         properties.setName(APPLICATION_NAME);
-        
-        when(configClientMock.listSettings(Mockito.any())).thenReturn(settingsMock);
-        when(settingsMock.iterableByPage()).thenReturn(iterableMock);
+
+        when(configClientMock.listConfigurationSettings(Mockito.any())).thenReturn(settingsMock);
+        when(settingsMock.byPage()).thenReturn(pageMock);
         when(iterableMock.iterator()).thenReturn(iteratorMock);
         when(iteratorMock.hasNext()).thenReturn(true).thenReturn(false);
         when(iteratorMock.next()).thenReturn(pagedMock);
         when(pagedMock.getItems()).thenReturn(new ArrayList<ConfigurationSetting>());
-        
+
         appProperties = new AppConfigProviderProperties();
         appProperties.setVersion("1.0");
         appProperties.setMaxRetries(12);
         appProperties.setMaxRetryTime(0);
-        appProperties.setKeyVaultWaitTime(0);
     }
 
     @Test
     public void compositeSourceIsCreated() {
-        locator = new AzureConfigPropertySourceLocator(properties, appProperties, configStoreMock);
+        locator = new AzureConfigPropertySourceLocator(properties, appProperties, configStoreMock,
+                tokenCredentialProvider);
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
 
@@ -133,7 +140,8 @@ public class AzureConfigPropertySourceLocatorTest {
     @Test
     public void compositeSourceIsCreatedForPrefixedConfig() {
         properties.getStores().get(0).setPrefix(PREFIX);
-        locator = new AzureConfigPropertySourceLocator(properties, appProperties, configStoreMock);
+        locator = new AzureConfigPropertySourceLocator(properties, appProperties, configStoreMock,
+                tokenCredentialProvider);
 
         PropertySource<?> source = locator.locate(environment);
 
@@ -157,7 +165,7 @@ public class AzureConfigPropertySourceLocatorTest {
         when(environment.getProperty("spring.application.name")).thenReturn(null);
         properties.setName(null);
         locator = new AzureConfigPropertySourceLocator(properties, appProperties,
-                configStoreMock);
+                configStoreMock, tokenCredentialProvider);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
@@ -176,7 +184,7 @@ public class AzureConfigPropertySourceLocatorTest {
         when(environment.getProperty("spring.application.name")).thenReturn("");
         properties.setName("");
         locator = new AzureConfigPropertySourceLocator(properties, appProperties,
-                configStoreMock);
+                configStoreMock, tokenCredentialProvider);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
@@ -190,11 +198,11 @@ public class AzureConfigPropertySourceLocatorTest {
     }
 
     @Test
-    public void defaultFailFastThrowException() throws ServerException {
+    public void defaultFailFastThrowException() throws IOException {
         expected.expect(RuntimeException.class);
 
         locator = new AzureConfigPropertySourceLocator(properties, appProperties,
-                configStoreMock);
+                configStoreMock, tokenCredentialProvider);
 
         when(configStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenThrow(new RuntimeException());
         assertThat(properties.isFailFast()).isTrue();
@@ -205,7 +213,7 @@ public class AzureConfigPropertySourceLocatorTest {
     public void notFailFastShouldPass() {
         properties.setFailFast(false);
         locator = new AzureConfigPropertySourceLocator(properties, appProperties,
-                configStoreMock);
+                configStoreMock, tokenCredentialProvider);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
@@ -220,7 +228,7 @@ public class AzureConfigPropertySourceLocatorTest {
         TestUtils.addStore(properties, TEST_STORE_NAME_2, TEST_CONN_STRING_2);
 
         locator = new AzureConfigPropertySourceLocator(properties, appProperties,
-                configStoreMock);
+                configStoreMock, tokenCredentialProvider);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
