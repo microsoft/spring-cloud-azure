@@ -7,6 +7,8 @@ package com.microsoft.azure.spring.cloud.feature.manager;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,21 +26,17 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 @Component
 public class FeatureHandler extends HandlerInterceptorAdapter {
 
-    private static Logger logger = LoggerFactory.getLogger(FeatureHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FeatureHandler.class);
 
     private FeatureManager featureManager;
 
     private FeatureManagerSnapshot featureManagerSnapshot;
 
     private IDisabledFeaturesHandler disabledFeaturesHandler;
-    
-    private FeatureManagementConfigProperties properties;
-    
-    public FeatureHandler(FeatureManager featureManager, FeatureManagerSnapshot featureManagerSnapshot, 
-            FeatureManagementConfigProperties properties) {
+
+    public FeatureHandler(FeatureManager featureManager, FeatureManagerSnapshot featureManagerSnapshot) {
         this.featureManager = featureManager;
         this.featureManagerSnapshot = featureManagerSnapshot;
-        this.properties = properties;
     }
 
     /**
@@ -60,29 +58,34 @@ public class FeatureHandler extends HandlerInterceptorAdapter {
             if (featureOn != null) {
                 String feature = featureOn.feature();
                 boolean snapshot = featureOn.snapshot();
-                boolean enabled = false;
+                Future<Boolean> enabled;
 
                 if (!snapshot) {
-                    enabled = featureManager.isEnabled(feature);
+                    enabled = featureManager.isEnabledAsync(feature);
                 } else {
-                    enabled = featureManagerSnapshot.isEnabled(feature);
+                    enabled = featureManagerSnapshot.isEnabledAsync(feature);
                 }
+                boolean isEnabled = false;
+                try {
+                    isEnabled = enabled.get();
 
-                if (!enabled && !featureOn.fallback().isEmpty()) {
-                    try {
+                    if (!isEnabled && !featureOn.fallback().isEmpty()) {
                         response.sendRedirect(featureOn.fallback());
-                    } catch (IOException e) {
-                        logger.info("Unable to send redirect.");
-                        if (properties.isFailFast()) {
-                            logger.error("Fail fast is set and there was an error redirecting to an endpoint.");
-                            ReflectionUtils.rethrowRuntimeException(e);
-                        }
                     }
+                } catch (InterruptedException e) {
+                    LOGGER.info("Feature {} was interrupted and unable to complete.", feature);
+                    ReflectionUtils.rethrowRuntimeException(e);
+                } catch (ExecutionException e) {
+                    LOGGER.info("Feature {} failed when retreving result.", feature);
+                    ReflectionUtils.rethrowRuntimeException(e);
+                } catch (IOException e) {
+                    LOGGER.info("Unable to send redirect.");
+                    ReflectionUtils.rethrowRuntimeException(e);
                 }
-                if (!enabled && disabledFeaturesHandler != null) {
+                if (!isEnabled && disabledFeaturesHandler != null) {
                     response = disabledFeaturesHandler.handleDisabledFeatures(request, response);
                 }
-                return enabled;
+                return isEnabled;
             }
         }
         return true;

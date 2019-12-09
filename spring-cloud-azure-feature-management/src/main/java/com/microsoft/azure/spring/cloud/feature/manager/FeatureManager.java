@@ -5,19 +5,18 @@
  */
 package com.microsoft.azure.spring.cloud.feature.manager;
 
-import java.util.LinkedHashMap;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.spring.cloud.feature.manager.entities.Feature;
 import com.microsoft.azure.spring.cloud.feature.manager.entities.FeatureFilterEvaluationContext;
 import com.microsoft.azure.spring.cloud.feature.manager.entities.FeatureSet;
@@ -27,27 +26,20 @@ import com.microsoft.azure.spring.cloud.feature.manager.entities.FeatureSet;
  * enabled.
  */
 @Component("FeatureManager")
-@ConfigurationProperties(prefix = "feature-management")
 public class FeatureManager {
 
-    private static Logger logger = LoggerFactory.getLogger(FeatureManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FeatureManager.class);
 
     private FeatureSet featureManagement;
-
-    // This is used to enable mapping both different types of read in.
-    @SuppressWarnings("unused")
-    @JsonProperty("featureSet")
-    private FeatureSet featureSet;
-
-    private ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
     private ApplicationContext context;
 
     private FeatureManagementConfigProperties properties;
 
-    public FeatureManager(FeatureManagementConfigProperties properties) {
+    public FeatureManager(FeatureManagementConfigProperties properties, FeatureSet featureManagement) {
         this.properties = properties;
+        this.featureManagement = featureManagement;
     }
 
     /**
@@ -59,7 +51,11 @@ public class FeatureManager {
      * @param feature Feature being checked.
      * @return state of the feature
      */
-    public boolean isEnabled(String feature) {
+    public Future<Boolean> isEnabledAsync(String feature) {
+        return CompletableFuture.supplyAsync(() -> checkFeatures(feature));
+    }
+
+    private boolean checkFeatures(String feature) {
         boolean enabled = false;
         if (featureManagement == null || featureManagement.getFeatureManagement() == null ||
                 featureManagement.getOnOff() == null) {
@@ -79,14 +75,20 @@ public class FeatureManager {
             if (filter != null && filter.getName() != null) {
                 try {
                     FeatureFilter featureFilter = (FeatureFilter) context.getBean(filter.getName());
-                    enabled = featureFilter.evaluate(filter);
+                    enabled = CompletableFuture.supplyAsync(() -> featureFilter.evaluate(filter)).get();
                 } catch (NoSuchBeanDefinitionException e) {
-                    logger.error("Was unable to find Filter " + filter.getName()
+                    LOGGER.error("Was unable to find Filter " + filter.getName()
                             + ". Does the class exist and set as an @Component?");
                     if (properties.isFailFast()) {
                         String message = "Fail fast is set and a Filter was unable to be found.";
                         ReflectionUtils.rethrowRuntimeException(new FilterNotFoundException(message, e, filter));
                     }
+                } catch (InterruptedException e) {
+                    LOGGER.error("Filter {} was interrupted and unable to complete.", filter.getName());
+                    ReflectionUtils.rethrowRuntimeException(e);
+                } catch (ExecutionException e) {
+                    LOGGER.error("Filter {} failed when retreving result.", filter.getName());
+                    ReflectionUtils.rethrowRuntimeException(e);
                 }
             }
             if (enabled) {
@@ -94,27 +96,5 @@ public class FeatureManager {
             }
         }
         return enabled;
-    }
-
-    /**
-     * @return the featureManagement
-     */
-    public FeatureSet getFeatureManagement() {
-        return featureManagement;
-    }
-
-    /**
-     * Converts LinkedHashMap to a Feature Set.
-     * @param featureSet the featureSet to set
-     */
-    public void setFeatureManagement(LinkedHashMap<String, ?> featureSet) {
-        this.featureManagement = mapper.convertValue(featureSet, FeatureSet.class);
-    }
-
-    /**
-     * @param featureSet the featureSet to set
-     */
-    public void setFeatureSet(FeatureSet featureSet) {
-        this.featureManagement = featureSet;
     }
 }

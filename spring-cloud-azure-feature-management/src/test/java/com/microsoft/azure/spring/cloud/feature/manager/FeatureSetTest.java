@@ -25,7 +25,7 @@ public class FeatureSetTest {
         features.put("Beta", featurePart);
 
         FeatureSet featureSet = new FeatureSet();
-        featureSet.setFeatures(features);
+        featureSet.putAll(features);
 
         assertEquals(1, featureSet.getOnOff().size());
         assertTrue(featureSet.getOnOff().get("Beta.A"));
@@ -39,7 +39,7 @@ public class FeatureSetTest {
         features.put("Beta", featurePart);
         
         FeatureSet featureSet = new FeatureSet();
-        featureSet.setFeatures(features);
+        featureSet.putAll(features);
 
         assertEquals(0, featureSet.getOnOff().size());
         

@@ -5,6 +5,10 @@
  */
 package com.example;
 
+import java.util.concurrent.ExecutionException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Controller;
@@ -20,13 +24,15 @@ import com.microsoft.azure.spring.cloud.feature.manager.FeatureManagerSnapshot;
 @Controller
 @ConfigurationProperties("controller")
 public class HelloController {
-    
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(HelloController.class);
+
     @Autowired
     private MessageProperties properties;
 
     @Autowired
     private FeatureManager featureManager;
-    
+
     @Autowired
     private FeatureManagerSnapshot featureManagerSnapshot;
 
@@ -39,20 +45,20 @@ public class HelloController {
     public String getMessage() {
         return "Message: " + properties.getMessage();
     }
-    
+
     @GetMapping("/requestBased")
     @ResponseBody
-    public String getRequestBased() {
+    public String getRequestBased() throws InterruptedException, ExecutionException {
         String result = "";
-        for(int i = 0; i < 100; i++) {
-            result += " " + featureManagerSnapshot.isEnabled("FeatureV");
+        for (int i = 0; i < 100; i++) {
+            result += " " + featureManagerSnapshot.isEnabledAsync("FeatureV").get();
         }
         return result;
     }
 
     @GetMapping("/test")
     @ResponseBody
-    public String getTest() {
+    public String getTest() throws InterruptedException, ExecutionException {
         return testComponent.test();
     }
 
@@ -71,11 +77,11 @@ public class HelloController {
 
     @GetMapping("/welcome")
     public String mainWithParam(
-            @RequestParam(name = "name", required = false, defaultValue = "") String name, Model model) {
-        if (featureManager.isEnabled("FeatureV")) {
+            @RequestParam(name = "name", required = false, defaultValue = "") String name, Model model)
+            throws InterruptedException, ExecutionException {
+        if (featureManager.isEnabledAsync("FeatureV").get()) {
             model.addAttribute("message", "Beta User");
-        }
-        else {
+        } else {
             model.addAttribute("message", name);
         }
         return "welcome";

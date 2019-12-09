@@ -6,6 +6,7 @@
 package com.example;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -23,7 +24,7 @@ import com.microsoft.azure.spring.cloud.feature.manager.FeatureManager;
 @Component
 public class FeatureFilter implements Filter {
     
-    private static Logger logger = LoggerFactory.getLogger(FeatureFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FeatureFilter.class);
     
     @Autowired
     private FeatureManager featureManager;
@@ -31,12 +32,16 @@ public class FeatureFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        if(!featureManager.isEnabled("Beta")) {
-            logger.info("skip new Beta filter");
-            chain.doFilter(request, response);
-            return;
+        try {
+            if(!featureManager.isEnabledAsync("Beta").get()) {
+                LOGGER.info("skip new Beta filter");
+                chain.doFilter(request, response);
+                return;
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            LOGGER.error("Request failed.", e);
         }
-        logger.info("Run the Beta filter");
+        LOGGER.info("Run the Beta filter");
         chain.doFilter(request, response); 
     }
 }

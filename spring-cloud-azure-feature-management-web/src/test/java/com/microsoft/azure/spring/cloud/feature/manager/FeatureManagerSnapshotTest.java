@@ -10,6 +10,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Before;
@@ -39,13 +42,14 @@ public class FeatureManagerSnapshotTest {
     }
 
     @Test
-    public void setAttribute() {
-        when(featureManager.isEnabled(Mockito.matches("setAttribute"))).thenReturn(true);
+    public void setAttribute() throws InterruptedException, ExecutionException {
+        when(featureManager.isEnabledAsync(Mockito.matches("setAttribute")))
+                .thenReturn(CompletableFuture.supplyAsync(() -> true));
         when(request.getAttribute(Mockito.matches("setAttribute"))).thenReturn(null).thenReturn(true).thenReturn(true);
 
-        assertTrue(featureManagerSnapshot.isEnabled("setAttribute"));
-        assertTrue(featureManagerSnapshot.isEnabled("setAttribute"));
-        verify(featureManager, times(1)).isEnabled("setAttribute");
+        assertTrue(featureManagerSnapshot.isEnabledAsync("setAttribute").get());
+        assertTrue(featureManagerSnapshot.isEnabledAsync("setAttribute").get());
+        verify(featureManager, times(1)).isEnabledAsync("setAttribute");
     }
 
 }

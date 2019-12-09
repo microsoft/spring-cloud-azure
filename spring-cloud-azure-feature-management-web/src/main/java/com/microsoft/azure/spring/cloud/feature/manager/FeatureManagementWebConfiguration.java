@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.context.annotation.RequestScope;
 
 @Configuration
 @EnableConfigurationProperties
@@ -16,14 +17,14 @@ import org.springframework.context.annotation.Configuration;
 public class FeatureManagementWebConfiguration {
     
     @Bean
+    @RequestScope
     public FeatureManagerSnapshot featureManagerSnapshot(FeatureManager featureManager) {
         return new FeatureManagerSnapshot(featureManager);
     }
     
     @Bean
-    public FeatureHandler featureHandler(FeatureManager featureManager, FeatureManagerSnapshot snapshot, 
-            FeatureManagementConfigProperties properties) {
-        return new FeatureHandler(featureManager, snapshot, properties);
+    public FeatureHandler featureHandler(FeatureManager featureManager, FeatureManagerSnapshot snapshot) {
+        return new FeatureHandler(featureManager, snapshot);
     }
     
     @Bean
