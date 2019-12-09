@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 /**

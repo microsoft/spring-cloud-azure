@@ -33,7 +33,7 @@ public class FeatureFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         try {
-            if(!featureManager.isEnabledAsync("Beta").get()) {
+            if (!featureManager.isEnabledAsync("Beta").get()) {
                 chain.doFilter(request, response);
                 return;
             }

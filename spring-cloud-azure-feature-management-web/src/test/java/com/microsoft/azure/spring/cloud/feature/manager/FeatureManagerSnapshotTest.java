@@ -45,7 +45,6 @@ public class FeatureManagerSnapshotTest {
     public void setAttribute() throws InterruptedException, ExecutionException {
         when(featureManager.isEnabledAsync(Mockito.matches("setAttribute")))
                 .thenReturn(CompletableFuture.supplyAsync(() -> true));
-        when(request.getAttribute(Mockito.matches("setAttribute"))).thenReturn(null).thenReturn(true).thenReturn(true);
 
         assertTrue(featureManagerSnapshot.isEnabledAsync("setAttribute").get());
         assertTrue(featureManagerSnapshot.isEnabledAsync("setAttribute").get());

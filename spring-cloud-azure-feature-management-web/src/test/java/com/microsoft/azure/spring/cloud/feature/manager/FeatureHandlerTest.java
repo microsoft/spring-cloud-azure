@@ -62,7 +62,7 @@ public class FeatureHandlerTest {
 
         assertTrue(featureHandler.preHandle(request, response, handlerMethod));
     }
-    
+
     @Test
     public void preHandlFeatureOn() throws NoSuchMethodException, SecurityException {
         Method method = TestClass.class.getMethod("featureOnAnnotation");
@@ -72,7 +72,7 @@ public class FeatureHandlerTest {
 
         assertTrue(featureHandler.preHandle(request, response, handlerMethod));
     }
-    
+
     @Test
     public void preHandlFeatureOnSnapshot() throws NoSuchMethodException, SecurityException {
         Method method = TestClass.class.getMethod("featureOnAnnotationSnapshot");
@@ -82,7 +82,7 @@ public class FeatureHandlerTest {
 
         assertTrue(featureHandler.preHandle(request, response, handlerMethod));
     }
-    
+
     @Test
     public void preHandlFeatureOnNotEnabled() throws NoSuchMethodException, SecurityException {
         Method method = TestClass.class.getMethod("featureOnAnnotation");
@@ -92,29 +92,33 @@ public class FeatureHandlerTest {
 
         assertFalse(featureHandler.preHandle(request, response, handlerMethod));
     }
-    
+
     @Test
     public void preHandlFeatureOnRedirect() throws NoSuchMethodException, SecurityException {
         Method method = TestClass.class.getMethod("featureOnAnnotaitonRedirected");
         when(handlerMethod.getMethod()).thenReturn(method);
         when(featureManager.isEnabledAsync(Mockito.matches("test")))
-        
+                .thenReturn(CompletableFuture.supplyAsync(() -> false));
 
         assertFalse(featureHandler.preHandle(request, response, handlerMethod));
     }
 
     protected class TestClass {
 
-        public void noAnnotation() {}
-        
+        public void noAnnotation() {
+        }
+
         @FeatureGate(feature = "test")
-        public void featureOnAnnotation() {}
-        
+        public void featureOnAnnotation() {
+        }
+
         @FeatureGate(feature = "test", snapshot = true)
-        public void featureOnAnnotationSnapshot() {}
-        
+        public void featureOnAnnotationSnapshot() {
+        }
+
         @FeatureGate(feature = "test", fallback = "/redirected")
-        public void featureOnAnnotaitonRedirected() {}
+        public void featureOnAnnotaitonRedirected() {
+        }
 
     }
 
