@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License. See LICENSE in the project root for
+ * license information.
+ */
 package com.example;
 
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
@@ -24,7 +29,7 @@ public class ReceiveController {
 
     @Bean
     @InboundChannelAdapter(channel = INPUT_CHANNEL, poller = @Poller(fixedDelay = "1000"))
-    public StorageQueueMessageSource StorageQueueMessageSource(StorageQueueOperation storageQueueOperation) {
+    public StorageQueueMessageSource storageQueueMessageSource(StorageQueueOperation storageQueueOperation) {
         storageQueueOperation.setCheckpointMode(CheckpointMode.MANUAL);
         storageQueueOperation.setVisibilityTimeoutInSeconds(10);
 

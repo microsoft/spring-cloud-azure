@@ -15,6 +15,7 @@ import com.microsoft.azure.spring.integration.eventhub.inbound.EventHubInboundCh
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.integration.channel.DirectChannel;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,5 +53,10 @@ public class ReceiveController {
                 eventhubOperation, CONSUMER_GROUP);
         adapter.setOutputChannel(inputChannel);
         return adapter;
+    }
+
+    @Bean
+    public MessageChannel input() {
+        return new DirectChannel();
     }
 }

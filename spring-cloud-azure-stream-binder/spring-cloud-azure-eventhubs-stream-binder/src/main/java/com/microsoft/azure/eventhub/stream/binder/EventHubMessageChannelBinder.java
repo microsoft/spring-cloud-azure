@@ -69,7 +69,9 @@ public class EventHubMessageChannelBinder extends
         this.eventHubOperation.setStartPosition(properties.getExtension().getStartPosition());
         CheckpointConfig checkpointConfig =
                 CheckpointConfig.builder().checkpointMode(properties.getExtension().getCheckpointMode())
-                                .checkpointCount(properties.getExtension().getCheckpointCount()).build();
+                                .checkpointCount(properties.getExtension().getCheckpointCount())
+                                .checkpointInterval(properties.getExtension().getCheckpointInterval())
+                                .build();
         this.eventHubOperation.setCheckpointConfig(checkpointConfig);
 
         boolean anonymous = !StringUtils.hasText(group);

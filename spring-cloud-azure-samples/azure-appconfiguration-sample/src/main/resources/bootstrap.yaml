@@ -6,4 +6,3 @@ spring:
       appconfiguration:
         stores:
           - connection-string: ${CONFIG_STORE_CONNECTION_STRING}
-          

@@ -98,3 +98,9 @@ Default: `1`
 Controls the max concurrent calls of service bus message handler and the size of fixed thread pool that handles user's business logic
 
 Default: `1`
+
+**_sessionEnabled_**
+
+Controls if is a session aware consumer. Set it to `true` if is a queue with sessions enabled.
+
+Default: `false`

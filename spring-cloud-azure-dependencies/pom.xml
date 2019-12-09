@@ -6,27 +6,60 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.microsoft.azure</groupId>
     <artifactId>spring-cloud-azure-dependencies</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Azure dependencies BOM</name>
     <description>BOM for Spring Cloud Azure dependencies</description>
+    <url>https://github.com/microsoft/spring-cloud-azure</url>
+
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>https://github.com/microsoft/spring-cloud-azure/blob/master/LICENSE.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>XiaoluDai</id>
+            <name>Xiaolu Dai</name>
+            <email>xiada@microsoft.com</email>
+        </developer>
+
+        <developer>
+            <id>ZhouLiu</id>
+            <name>Zhou Liu</name>
+            <email>liuzhou@microsoft.com</email>
+        </developer>
+    </developers>
+
+    <organization>
+        <name>Microsoft</name>
+        <url>https://www.microsoft.com</url>
+    </organization>
+
+    <scm>
+        <connection>scm:git:git://github.com/Microsoft/spring-cloud-azure.git</connection>
+        <developerConnection>scm:git:ssh://github.com:Microsoft/spring-cloud-azure.git</developerConnection>
+        <url>https://github.com/Microsoft/spring-cloud-azure/tree/master</url>
+    </scm>
 
     <properties>
         <powermock.version>1.7.1</powermock.version>
         <mockito.version>2.8.9</mockito.version>
-        <spring.cloud.version>Greenwich.RELEASE</spring.cloud.version>
-        <spring.boot.version>2.1.2.RELEASE</spring.boot.version>
+        <spring.cloud.version>Hoxton.RELEASE</spring.cloud.version>
+        <spring.boot.version>2.2.0.RELEASE</spring.boot.version>
+        <spring.cloud.azure.version>1.2.0-SNAPSHOT</spring.cloud.azure.version>
         <commons.io.version>2.6</commons.io.version>
         <hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
         <google.guava.version>20.0</google.guava.version>
         <azure.sdk.version>1.23.0</azure.sdk.version>
         <azure.eventhubs.eph.version>2.4.0</azure.eventhubs.eph.version>
         <azure.keyvault.version>1.0.0</azure.keyvault.version>
-        <azure.servicebus.version>1.2.8</azure.servicebus.version>
+        <azure.servicebus.version>3.1.1</azure.servicebus.version>
         <javax.jms-api.version>2.0.1</javax.jms-api.version>
-        <spring-jms.version>5.1.8.RELEASE</spring-jms.version>
         <qpid-jms-client.version>0.43.0</qpid-jms-client.version>
-        <spring.cloud.azure.version>1.1.0-SNAPSHOT</spring.cloud.azure.version>
         <okhttp3.version>3.11.0</okhttp3.version>
     </properties>
 
@@ -181,6 +214,12 @@
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>azure-servicebus</artifactId>
                 <version>${azure.servicebus.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
@@ -265,12 +304,6 @@
                 <groupId>org.hibernate.validator</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>${hibernate.validator.version}</version>
-            </dependency>
-            <!--Spring JMS-->
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-jms</artifactId>
-                <version>${spring-jms.version}</version>
             </dependency>
             <!--Qpid-->
             <dependency>

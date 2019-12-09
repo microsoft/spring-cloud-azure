@@ -6,14 +6,17 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
@@ -26,6 +29,9 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.google.common.collect.Lists;
+import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
+import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
+import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigPropertySourceLocator.class);
@@ -36,8 +42,6 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
     private static final String PATH_SPLITTER = "/";
 
-    private final ConfigServiceOperations operations;
-
     private final AzureCloudConfigProperties properties;
 
     private final String profileSeparator;
@@ -46,17 +50,17 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
     private final Map<String, List<String>> storeContextsMap = new ConcurrentHashMap<>();
 
-    private PropertyCache propertyCache;
     private AppConfigProviderProperties appProperties;
 
-    public AzureConfigPropertySourceLocator(ConfigServiceOperations operations, AzureCloudConfigProperties properties,
-            PropertyCache propertyCache, AppConfigProviderProperties appProperties) {
-        this.operations = operations;
+    private ClientStore clients;
+
+    public AzureConfigPropertySourceLocator(AzureCloudConfigProperties properties,
+            AppConfigProviderProperties appProperties, ClientStore clients) {
         this.properties = properties;
         this.appProperties = appProperties;
         this.profileSeparator = properties.getProfileSeparator();
         this.configStores = properties.getStores();
-        this.propertyCache = propertyCache;
+        this.clients = clients;
     }
 
     @Override
@@ -115,13 +119,16 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         contexts.addAll(generateContexts(this.properties.getDefaultContext(), profiles, store));
         contexts.addAll(generateContexts(applicationName, profiles, store));
 
+        // There is only one Feature Set for all AzureConfigPropertySources
+        FeatureSet featureSet = new FeatureSet();
+
         // Reverse in order to add Profile specific properties earlier, and last profile
         // comes first
         Collections.reverse(contexts);
         for (String sourceContext : contexts) {
             try {
                 List<AzureConfigPropertySource> sourceList = create(sourceContext, store, storeContextsMap,
-                        initFeatures);
+                        initFeatures, featureSet);
                 sourceList.forEach(composite::addPropertySource);
                 LOGGER.debug("PropertySource context [{}] is added.", sourceContext);
             } catch (Exception e) {
@@ -174,21 +181,28 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
      * When generating more than one it needs to be in the last one.
      * @return a list of AzureConfigPropertySources
      * @throws IOException
+     * @throws URISyntaxException
      */
     private List<AzureConfigPropertySource> create(String context, ConfigStore store,
-            Map<String, List<String>> storeContextsMap, boolean initFeatures) throws IOException {
+            Map<String, List<String>> storeContextsMap, boolean initFeatures, FeatureSet featureSet) throws Exception {
         List<AzureConfigPropertySource> sourceList = new ArrayList<>();
 
-        for (String label : store.getLabels()) {
-            AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, operations,
-                    store.getName(), label, properties, appProperties);
+        try {
+            for (String label : store.getLabels()) {
+                AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, store.getName(),
+                        label,
+                        properties, appProperties, clients);
 
-            propertySource.initProperties(propertyCache);
-            if (initFeatures) {
-                propertySource.initFeatures(propertyCache);
+                propertySource.initProperties(featureSet);
+                if (initFeatures) {
+                    propertySource.initFeatures(featureSet);
+                }
+                sourceList.add(propertySource);
+                putStoreContext(store.getName(), context, storeContextsMap);
             }
-            sourceList.add(propertySource);
-            putStoreContext(store.getName(), context, storeContextsMap);
+        } catch (Exception e) {
+            delayException();
+            throw e;
         }
 
         return sourceList;
@@ -214,5 +228,19 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         }
 
         storeContextsMap.put(storeName, contexts);
+    }
+
+    private void delayException() {
+        Date currentDate = new Date();
+        Date maxRetryDate = DateUtils.addSeconds(appProperties.getStartDate(),
+                appProperties.getPrekillTime());
+        if (currentDate.before(maxRetryDate)) {
+            long diffInMillies = Math.abs(maxRetryDate.getTime() - currentDate.getTime());
+            try {
+                Thread.sleep(diffInMillies);
+            } catch (InterruptedException e) {
+                LOGGER.error("Failed to wait before fast fail.");
+            }
+        }
     }
 }
