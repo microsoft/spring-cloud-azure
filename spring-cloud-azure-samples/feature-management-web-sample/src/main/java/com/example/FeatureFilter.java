@@ -31,7 +31,7 @@ public class FeatureFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        if(!featureManager.isEnabled("Beta")) {
+        if (!featureManager.isEnabled("Beta")) {
             logger.info("skip new Beta filter");
             chain.doFilter(request, response);
             return;
