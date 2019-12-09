@@ -34,7 +34,6 @@ public class FeatureFilter implements Filter {
             throws IOException, ServletException {
         try {
             if(!featureManager.isEnabledAsync("Beta").get()) {
-                LOGGER.info("skip new Beta filter");
                 chain.doFilter(request, response);
                 return;
             }

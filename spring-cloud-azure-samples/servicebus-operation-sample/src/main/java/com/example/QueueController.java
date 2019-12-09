@@ -41,7 +41,8 @@ public class QueueController {
 
     @PostConstruct
     public void subscribe(){
-        this.queueOperation.setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.MANUAL).build());
+        this.queueOperation.setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.MANUAL)
+                .build());
         this.queueOperation.subscribe(QUEUE_NAME, this::messageReceiver, String.class);
     }
 

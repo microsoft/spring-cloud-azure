@@ -19,7 +19,7 @@ import static com.microsoft.azure.spring.cloud.config.TestConstants.WATCHED_KEY_
 import static com.microsoft.azure.spring.cloud.config.TestConstants.WATCH_DELAY_PROP;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.WATCH_ENABLED_PROP;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.propPair;
-import static com.microsoft.azure.spring.cloud.config.resource.ConnectionString.ENDPOINT_ERR_MSG;
+import static com.microsoft.azure.spring.cloud.config.resource.Connection.ENDPOINT_ERR_MSG;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
