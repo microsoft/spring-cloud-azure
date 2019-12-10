@@ -9,6 +9,40 @@
     <packaging>pom</packaging>
     <name>Spring Cloud Azure</name>
     <description>Spring Cloud Azure</description>
+    <url>https://github.com/microsoft/spring-cloud-azure</url>
+
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>https://github.com/microsoft/spring-cloud-azure/blob/master/LICENSE.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>XiaoluDai</id>
+            <name>Xiaolu Dai</name>
+            <email>xiada@microsoft.com</email>
+        </developer>
+
+        <developer>
+            <id>ZhouLiu</id>
+            <name>Zhou Liu</name>
+            <email>liuzhou@microsoft.com</email>
+        </developer>
+    </developers>
+
+    <organization>
+        <name>Microsoft</name>
+        <url>https://www.microsoft.com</url>
+    </organization>
+
+    <scm>
+        <connection>scm:git:git://github.com/Microsoft/spring-cloud-azure.git</connection>
+        <developerConnection>scm:git:ssh://github.com:Microsoft/spring-cloud-azure.git</developerConnection>
+        <url>https://github.com/Microsoft/spring-cloud-azure/tree/master</url>
+    </scm>
 
     <parent>
         <groupId>org.springframework.cloud</groupId>
