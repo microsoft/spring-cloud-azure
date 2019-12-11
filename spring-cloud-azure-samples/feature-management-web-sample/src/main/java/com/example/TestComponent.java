@@ -19,7 +19,7 @@ public class TestComponent {
     private FeatureManager featureManager;
     
     public String test() throws InterruptedException, ExecutionException {
-        if (featureManager.isEnabledAsync("Beta").get()) {
+        if (featureManager.isEnabledAsync("Beta").block()) {
             return "Beta";
         }
         return "Original";

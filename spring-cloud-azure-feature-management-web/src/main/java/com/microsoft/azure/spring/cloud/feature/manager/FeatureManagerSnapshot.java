@@ -6,11 +6,10 @@
 package com.microsoft.azure.spring.cloud.feature.manager;
 
 import java.util.HashMap;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
+
+import reactor.core.publisher.Mono;
 
 /**
  * Holds information on Feature Management properties and can check if a given feature is
@@ -40,12 +39,11 @@ public class FeatureManagerSnapshot {
      * @param feature Feature being checked.
      * @return state of the feature
      */
-    public Future<Boolean> isEnabledAsync(String feature) {
+    public Mono<Boolean> isEnabledAsync(String feature) {
         if (requestMap.get(feature) != null) {
-            return CompletableFuture.supplyAsync(() -> (boolean) requestMap.get(feature));
+            return Mono.just((boolean) requestMap.get(feature));
         }
 
-        return ((CompletableFuture<Boolean>) featureManager.isEnabledAsync(feature))
-                .whenComplete((enabled, exception) -> requestMap.put(feature, enabled));
+        return featureManager.isEnabledAsync(feature).doOnSuccess((enabled) -> requestMap.put(feature, enabled));
     }
 }

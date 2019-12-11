@@ -10,7 +10,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
-import java.util.concurrent.CompletableFuture;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +21,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.web.method.HandlerMethod;
+
+import reactor.core.publisher.Mono;
 
 /**
  * Unit test for simple App.
@@ -67,8 +68,7 @@ public class FeatureHandlerTest {
     public void preHandlFeatureOn() throws NoSuchMethodException, SecurityException {
         Method method = TestClass.class.getMethod("featureOnAnnotation");
         when(handlerMethod.getMethod()).thenReturn(method);
-        when(featureManager.isEnabledAsync(Mockito.matches("test")))
-                .thenReturn(CompletableFuture.supplyAsync(() -> true));
+        when(featureManager.isEnabledAsync(Mockito.matches("test"))).thenReturn(Mono.just(true));
 
         assertTrue(featureHandler.preHandle(request, response, handlerMethod));
     }
@@ -77,8 +77,7 @@ public class FeatureHandlerTest {
     public void preHandlFeatureOnSnapshot() throws NoSuchMethodException, SecurityException {
         Method method = TestClass.class.getMethod("featureOnAnnotationSnapshot");
         when(handlerMethod.getMethod()).thenReturn(method);
-        when(featureManagerSnapshot.isEnabledAsync(Mockito.matches("test")))
-                .thenReturn(CompletableFuture.supplyAsync(() -> true));
+        when(featureManagerSnapshot.isEnabledAsync(Mockito.matches("test"))).thenReturn(Mono.just(true));
 
         assertTrue(featureHandler.preHandle(request, response, handlerMethod));
     }
@@ -87,8 +86,7 @@ public class FeatureHandlerTest {
     public void preHandlFeatureOnNotEnabled() throws NoSuchMethodException, SecurityException {
         Method method = TestClass.class.getMethod("featureOnAnnotation");
         when(handlerMethod.getMethod()).thenReturn(method);
-        when(featureManager.isEnabledAsync(Mockito.matches("test")))
-                .thenReturn(CompletableFuture.supplyAsync(() -> false));
+        when(featureManager.isEnabledAsync(Mockito.matches("test"))).thenReturn(Mono.just(false));
 
         assertFalse(featureHandler.preHandle(request, response, handlerMethod));
     }
@@ -97,8 +95,7 @@ public class FeatureHandlerTest {
     public void preHandlFeatureOnRedirect() throws NoSuchMethodException, SecurityException {
         Method method = TestClass.class.getMethod("featureOnAnnotaitonRedirected");
         when(handlerMethod.getMethod()).thenReturn(method);
-        when(featureManager.isEnabledAsync(Mockito.matches("test")))
-                .thenReturn(CompletableFuture.supplyAsync(() -> false));
+        when(featureManager.isEnabledAsync(Mockito.matches("test"))).thenReturn(Mono.just(false));
 
         assertFalse(featureHandler.preHandle(request, response, handlerMethod));
     }

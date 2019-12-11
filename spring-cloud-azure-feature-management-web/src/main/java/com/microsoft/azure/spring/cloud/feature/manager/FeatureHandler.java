@@ -7,8 +7,6 @@ package com.microsoft.azure.spring.cloud.feature.manager;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +17,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import reactor.core.publisher.Mono;
 
 /**
  * Intercepter for Requests to check if they should be run.
@@ -58,7 +58,7 @@ public class FeatureHandler extends HandlerInterceptorAdapter {
             if (featureOn != null) {
                 String feature = featureOn.feature();
                 boolean snapshot = featureOn.snapshot();
-                Future<Boolean> enabled;
+                Mono<Boolean> enabled;
 
                 if (!snapshot) {
                     enabled = featureManager.isEnabledAsync(feature);
@@ -67,17 +67,11 @@ public class FeatureHandler extends HandlerInterceptorAdapter {
                 }
                 boolean isEnabled = false;
                 try {
-                    isEnabled = enabled.get();
+                    isEnabled = enabled.block();
 
                     if (!isEnabled && !featureOn.fallback().isEmpty()) {
                         response.sendRedirect(featureOn.fallback());
                     }
-                } catch (InterruptedException e) {
-                    LOGGER.info("Feature {} was interrupted and unable to complete.", feature);
-                    ReflectionUtils.rethrowRuntimeException(e);
-                } catch (ExecutionException e) {
-                    LOGGER.info("Feature {} failed when retreving result.", feature);
-                    ReflectionUtils.rethrowRuntimeException(e);
                 } catch (IOException e) {
                     LOGGER.info("Unable to send redirect.");
                     ReflectionUtils.rethrowRuntimeException(e);

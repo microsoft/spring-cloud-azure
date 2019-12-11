@@ -51,7 +51,7 @@ public class HelloController {
     public String getRequestBased() throws InterruptedException, ExecutionException {
         String result = "";
         for (int i = 0; i < 100; i++) {
-            result += " " + featureManagerSnapshot.isEnabledAsync("FeatureV").get();
+            result += " " + featureManagerSnapshot.isEnabledAsync("FeatureV").block();
         }
         return result;
     }
@@ -79,7 +79,7 @@ public class HelloController {
     public String mainWithParam(
             @RequestParam(name = "name", required = false, defaultValue = "") String name, Model model)
             throws InterruptedException, ExecutionException {
-        if (featureManager.isEnabledAsync("FeatureV").get()) {
+        if (featureManager.isEnabledAsync("FeatureV").block()) {
             model.addAttribute("message", "Beta User");
         } else {
             model.addAttribute("message", name);

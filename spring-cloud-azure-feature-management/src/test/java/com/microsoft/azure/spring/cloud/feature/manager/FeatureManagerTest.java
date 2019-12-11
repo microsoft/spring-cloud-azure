@@ -105,7 +105,7 @@ public class FeatureManagerTest {
         featureSet.putAll(features);
         FeatureManager featureManager = new FeatureManager(null, featureSet);
 
-        assertFalse(featureManager.isEnabledAsync("Non Existed Feature").get());
+        assertFalse(featureManager.isEnabledAsync("Non Existed Feature").block());
     }
 
     @Test
@@ -116,7 +116,7 @@ public class FeatureManagerTest {
         featureSet.putAll(features);
         FeatureManager featureManager = new FeatureManager(null, featureSet);
 
-        assertFalse(featureManager.isEnabledAsync("Off").get());
+        assertFalse(featureManager.isEnabledAsync("Off").block());
     }
 
     @Test
@@ -130,7 +130,7 @@ public class FeatureManagerTest {
         featureSet.putAll(features);
         FeatureManager featureManager = new FeatureManager(null, featureSet);
 
-        assertFalse(featureManager.isEnabledAsync("NoFilters").get());
+        assertFalse(featureManager.isEnabledAsync("NoFilters").block());
     }
 
     @Test
@@ -151,7 +151,7 @@ public class FeatureManagerTest {
 
         when(context.getBean(Mockito.matches("AlwaysOn"))).thenReturn(new AlwaysOn());
 
-        assertTrue(featureManager.isEnabledAsync("On").get());
+        assertTrue(featureManager.isEnabledAsync("On").block());
     }
 
     @Test
@@ -162,13 +162,13 @@ public class FeatureManagerTest {
         featureSet.putAll(features);
         FeatureManager featureManager = new FeatureManager(null, featureSet);
 
-        assertTrue(featureManager.isEnabledAsync("On").get());
+        assertTrue(featureManager.isEnabledAsync("On").block());
     }
 
     @Test
     public void featureManagerNotEnabledCorrectly() throws InterruptedException, ExecutionException {
         FeatureManager featureManager = new FeatureManager(null, null);
-        assertFalse(featureManager.isEnabledAsync("").get());
+        assertFalse(featureManager.isEnabledAsync("").block());
     }
 
     @Test

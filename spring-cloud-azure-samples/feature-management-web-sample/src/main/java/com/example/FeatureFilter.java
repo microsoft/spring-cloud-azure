@@ -6,7 +6,6 @@
 package com.example;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -32,15 +31,11 @@ public class FeatureFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        try {
-            if (!featureManager.isEnabledAsync("Beta").get()) {
-                chain.doFilter(request, response);
-                return;
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            LOGGER.error("Request failed.", e);
+        if (!featureManager.isEnabledAsync("Beta").block()) {
+            chain.doFilter(request, response);
+            return;
         }
         LOGGER.info("Run the Beta filter");
-        chain.doFilter(request, response); 
+        chain.doFilter(request, response);
     }
 }

@@ -10,8 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.microsoft.azure.spring.cloud.feature.manager.entities.FeatureSet;
-import com.microsoft.azure.spring.cloud.feature.manager.feature.filters.PercentageFilter;
-import com.microsoft.azure.spring.cloud.feature.manager.feature.filters.TimeWindowFilter;
 
 @Configuration
 @EnableConfigurationProperties({ FeatureManagementConfigProperties.class, FeatureSet.class })
@@ -20,16 +18,6 @@ public class FeatureManagementConfiguration {
     @Bean
     public FeatureManager featureManager(FeatureManagementConfigProperties properties, FeatureSet featureSet) {
         return new FeatureManager(properties, featureSet);
-    }
-
-    @Bean
-    public PercentageFilter percentageFilter() {
-        return new PercentageFilter();
-    }
-
-    @Bean
-    public TimeWindowFilter timeWindowFilter() {
-        return new TimeWindowFilter();
     }
 
 }
