@@ -87,6 +87,7 @@ In this section, you clone a containerized Spring Boot application and test it l
    azure.cosmosdb.uri=your-cosmosdb-uri
    azure.cosmosdb.key=your-cosmosdb-key
    azure.cosmosdb.database=your-cosmosdb-databasename
+
    ```
 
 ### Run the sample
@@ -181,6 +182,7 @@ In this section, you clone a containerized Spring Boot application and test it l
 
     ```properties
         spring.cloud.azure.appconfiguration.stores[0].connection-string=${CONFIG_STORE_CONNECTION_STRING}
+
     ```
 
 1. Update the pom.xml file to now include.
