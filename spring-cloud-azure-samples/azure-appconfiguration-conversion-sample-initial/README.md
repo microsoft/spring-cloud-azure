@@ -4,9 +4,9 @@ This sample shows how to convert a Spring Cloud Application with Cosmos DB to be
 
 ## Prerequisite
 
-* An Azure subscription; if you don't already have an Azure subscription, you can activate your [MSDN subscriber benefits](https://azure.microsoft.com/en-us/pricing/member-offers/msdn-benefits-details/) or sign up for a [free Azure account](https://azure.microsoft.com/en-us/free/).
+* An Azure subscription; if you don't already have an Azure subscription, you can activate your [MSDN subscriber benefits](https://azure.microsoft.com/pricing/member-offers/msdn-benefits-details/) or sign up for a [free Azure account](https://azure.microsoft.com/free/).
 
-* A [Java Development Kit (JDK)](http://www.oracle.com/technetwork/java/javase/downloads/), version 1.8.
+* A [Java Development Kit (JDK)](https://docs.microsoft.com/java/azure/jdk/?view=azure-java-stable), version 8.
 
 * [Apache Maven](http://maven.apache.org/), version 3.0 or later.
 
@@ -14,7 +14,7 @@ This sample shows how to convert a Spring Cloud Application with Cosmos DB to be
 
 ### Create an Azure Cosmos DB on Azure
 
-1. Use the Azure CLI [az cosmosdb create](https://docs.microsoft.com/en-us/cli/azure/cosmosdb?view=azure-cli-latest#az-cosmosdb-create).
+1. Use the Azure CLI [az cosmosdb create](https://docs.microsoft.com/cli/azure/cosmosdb?view=azure-cli-latest#az-cosmosdb-create).
 
     ```azurecli
     az cosmosdb create --name my-cosmos-db --resource-group MyResourceGroup
@@ -30,7 +30,7 @@ This sample shows how to convert a Spring Cloud Application with Cosmos DB to be
     }
     ```
 
-1. Then use the [az cosmosdb keys list](https://docs.microsoft.com/en-us/cli/azure/cosmosdb/keys?view=azure-cli-latest#az-cosmosdb-keys-list).
+1. Then use the [az cosmosdb keys list](https://docs.microsoft.com/cli/azure/cosmosdb/keys?view=azure-cli-latest#az-cosmosdb-keys-list).
 
     ```azurecli
         az cosmosdb keys list --name my-cosmos-db -g MyResourceGroup
@@ -109,13 +109,13 @@ In this section, you clone a containerized Spring Boot application and test it l
 
 ### Convert to Using App Configuration
 
-1. Use the Azure CLI [az keyvault create](https://docs.microsoft.com/en-us/cli/azure/cosmosdb?view=azure-cli-latest#az-cosmosdb-create)
+1. Use the Azure CLI [az keyvault create](https://docs.microsoft.com/cli/azure/cosmosdb?view=azure-cli-latest#az-cosmosdb-create)
 
     ```azurecli
     az keyvault create --name myVaultName -g MyResourceGroup
     ```
 
-1. Use the Azure CLI [az keyvault create](https://docs.microsoft.com/en-us/cli/azure/cosmosdb?view=azure-cli-latest#az-cosmosdb-create)
+1. Use the Azure CLI [az keyvault create](https://docs.microsoft.com/cli/azure/appconfig?view=azure-cli-latest#az-appconfig-create)
 
     ```azurecli
     az appconfig create --name myConfigStoreName -g MyResourceGroup -l eastus
@@ -124,7 +124,7 @@ In this section, you clone a containerized Spring Boot application and test it l
 1. For this tutorial, you'll use a service principal for authentication to KeyVault. To create this service principal, use the Azure CLI [az ad sp create-for-rbac](/cli/azure/ad/sp?view=azure-cli-latest#az-ad-sp-create-for-rbac) command:
 
     ```azurecli
-    az ad sp create-for-rbac -n "http://mySP" --sdk-auth
+    az ad sp create-for-rbac -n "<unique uri>" --sdk-auth
     ```
 
     This operation will return a series of key / value pairs.
@@ -153,7 +153,7 @@ In this section, you clone a containerized Spring Boot application and test it l
 1. Upload your Cosmos DB key to Key Vault.
 
     ```azurecli
-        az keyvault secret set --vault-name myKeyCaultName --name "COSMOSDB-KEY" --value yourCosmosDBKey
+        az keyvault secret set --vault-name myVaultName --name "COSMOSDB-KEY" --value yourCosmosDBKey
     ```
 
 1. Upload your Configurations Cosmos DB name and URI to App Configuration
@@ -166,7 +166,7 @@ In this section, you clone a containerized Spring Boot application and test it l
 1. Add a Key Vault Reference to App Configuration, make sure to update the uri with your config store name.
 
     ```azurecli
-        az appconfig kv set --name myConfigStoreName --key "/application/azure.cosmosdb.key" --value "{\"uri\":\"https://myConfigStoreName.vault.azure.net/secrets/COSMOSDB-KEY\"}" --content-type "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8" --yes
+        az appconfig kv set --name myConfigStoreName --key "/application/azure.cosmosdb.key" --value "{\"uri\":\"https://myVaultName.vault.azure.net/secrets/COSMOSDB-KEY\"}" --content-type "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8" --yes
     ```
 
 1. Get a connection string to App Configuration.
@@ -193,7 +193,7 @@ In this section, you clone a containerized Spring Boot application and test it l
     </dependency>
     ```
 
-1. Create the following Environment Variables with there respective values: AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID, CONFIG_STORE_CONNECTION_STRING.
+1. Create the following Environment Variables with their respective values: AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID, CONFIG_STORE_CONNECTION_STRING.
 
 ### Run the updated sample
 
