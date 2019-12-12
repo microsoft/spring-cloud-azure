@@ -74,7 +74,7 @@ In this section, you clone a containerized Spring Boot application and test it l
 1. Change directory to the initial project; for example:
 
    ```shell
-   cd spring-cloud-azure/spring-cloud-azure-samples/azure-appconfiguration-conversion-sample/initial
+   cd spring-cloud-azure/spring-cloud-azure-samples/azure-appconfiguration-conversion-sample-initial
    ```
 
 ### Config the sample
@@ -154,14 +154,14 @@ In this section, you clone a containerized Spring Boot application and test it l
 1. Upload your Cosmos DB key to Key Vault.
 
     ```azurecli
-        az keyvault secret set --vault-name myVaultName --name "COSMOSDB-KEY" --value yourCosmosDBKey
+        az keyvault secret set --vault-name myVaultName --name "COSMOSDB-KEY" --value your-cosmosdb-key
     ```
 
 1. Upload your Configurations Cosmos DB name and URI to App Configuration
 
     ```azurecli
-        az appconfig kv set --name myConfigStoreName --key "/application/azure.cosmosdb.database" --value myCosmosDBName --content-type " " --yes
-        az appconfig kv set --name myConfigStoreName --key "/application/azure.cosmosdb.uri" --value myCosmosDBUri --content-type " " --yes
+        az appconfig kv set --name myConfigStoreName --key "/application/azure.cosmosdb.database" --value your-cosmos-db-databasename --content-type " " --yes
+        az appconfig kv set --name myConfigStoreName --key "/application/azure.cosmosdb.uri" --value your-cosmosdb-uri --content-type " " --yes
     ```
 
 1. Add a Key Vault Reference to App Configuration, make sure to update the uri with your config store name.
@@ -191,7 +191,7 @@ In this section, you clone a containerized Spring Boot application and test it l
     <dependency>
         <groupId>com.microsoft.azure</groupId>
         <artifactId>spring-cloud-starter-azure-appconfiguration-config</artifactId>
-        <version>1.1.0.M4</version>
+        <version>1.1.0.M6</version>
     </dependency>
     ```
 
