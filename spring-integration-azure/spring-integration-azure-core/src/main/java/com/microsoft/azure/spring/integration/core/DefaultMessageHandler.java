@@ -22,6 +22,7 @@ import org.springframework.integration.support.ErrorMessageStrategy;
 import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageDeliveryException;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.util.concurrent.ListenableFutureCallback;
@@ -70,7 +71,7 @@ public class DefaultMessageHandler extends AbstractMessageProducingHandler {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void handleMessageInternal(Message<?> message) throws Exception {
+    protected void handleMessageInternal(Message<?> message) {
 
         PartitionSupplier partitionSupplier = toPartitionSupplier(message);
         String destination = toDestination(message);
@@ -113,11 +114,14 @@ public class DefaultMessageHandler extends AbstractMessageProducingHandler {
         });
     }
 
-    private void waitingSendResponse(CompletableFuture future, Message<?> message)
-            throws InterruptedException, ExecutionException {
+    private void waitingSendResponse(CompletableFuture future, Message<?> message) {
         Long sendTimeout = this.sendTimeoutExpression.getValue(this.evaluationContext, message, Long.class);
         if (sendTimeout < 0) {
-            future.get();
+            try {
+                future.get();
+            } catch (Exception e) {
+                throw new MessageDeliveryException(e.getMessage());
+            }
         } else {
             try {
                 future.get(sendTimeout, TimeUnit.MILLISECONDS);
@@ -126,6 +130,8 @@ public class DefaultMessageHandler extends AbstractMessageProducingHandler {
                 }
             } catch (TimeoutException e) {
                 throw new MessageTimeoutException(message, "Timeout waiting for send event hub response", e);
+            } catch (Exception e) {
+                throw new MessageDeliveryException(e.getMessage());
             }
         }
     }

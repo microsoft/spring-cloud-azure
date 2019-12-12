@@ -44,7 +44,7 @@ public class HelloController {
     @ResponseBody
     public String getRequestBased() {
         String result = "";
-        for(int i = 0; i < 100; i++) {
+        for (int i = 0; i < 100; i++) {
             result += " " + featureManagerSnapshot.isEnabled("FeatureV");
         }
         return result;
@@ -74,8 +74,7 @@ public class HelloController {
             @RequestParam(name = "name", required = false, defaultValue = "") String name, Model model) {
         if (featureManager.isEnabled("FeatureV")) {
             model.addAttribute("message", "Beta User");
-        }
-        else {
+        } else {
             model.addAttribute("message", name);
         }
         return "welcome";
