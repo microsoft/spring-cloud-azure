@@ -28,10 +28,10 @@ import java.util.function.Consumer;
 
 public abstract class ServiceBusMessageHandler<U> implements IMessageHandler {
     private static final Logger log = LoggerFactory.getLogger(ServiceBusMessageHandler.class);
-    private final Consumer<Message<U>> consumer;
-    private final Class<U> payloadType;
-    private final CheckpointConfig checkpointConfig;
-    private final ServiceBusMessageConverter messageConverter;
+    protected final Consumer<Message<U>> consumer;
+    protected final Class<U> payloadType;
+    protected final CheckpointConfig checkpointConfig;
+    protected final ServiceBusMessageConverter messageConverter;
 
     public ServiceBusMessageHandler(Consumer<Message<U>> consumer, Class<U> payloadType,
             CheckpointConfig checkpointConfig, ServiceBusMessageConverter messageConverter) {
