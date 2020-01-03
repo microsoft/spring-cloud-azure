@@ -97,7 +97,7 @@ public class AzureConfigBootstrapConfiguration {
 
     @Bean
     public CloseableHttpClient closeableHttpClient() {
-        return HttpClients.createDefault();
+        return HttpClients.createSystem();
     }
 
     @Bean
