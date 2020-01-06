@@ -23,8 +23,8 @@ import com.azure.data.appconfiguration.ConfigurationClientBuilder;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import com.azure.identity.ManagedIdentityCredentialBuilder;
+import com.microsoft.azure.spring.cloud.config.AppConfigCredentialProvider;
 import com.microsoft.azure.spring.cloud.config.AppConfigProviderProperties;
-import com.microsoft.azure.spring.cloud.config.TokenCredentialProvider;
 import com.microsoft.azure.spring.cloud.config.pipline.policies.BaseAppConfigurationPolicy;
 import com.microsoft.azure.spring.cloud.config.resource.Connection;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionPool;
@@ -35,10 +35,10 @@ public class ClientStore {
 
     private ConnectionPool pool;
 
-    private TokenCredentialProvider tokenCredentialProvider;
+    private AppConfigCredentialProvider tokenCredentialProvider;
 
     public ClientStore(AppConfigProviderProperties appProperties,
-            ConnectionPool pool, TokenCredentialProvider tokenCredentialProvider) {
+            ConnectionPool pool, AppConfigCredentialProvider tokenCredentialProvider) {
         this.appProperties = appProperties;
         this.pool = pool;
         this.tokenCredentialProvider = tokenCredentialProvider;
@@ -57,7 +57,7 @@ public class ClientStore {
         String endpoint = connection.getEndpoint();
 
         if (tokenCredentialProvider != null) {
-            tokenCredential = tokenCredentialProvider.credentialForAppConfig(endpoint);
+            tokenCredential = tokenCredentialProvider.getAppConfigCredential(endpoint);
         }
         if ((tokenCredential != null
                 || (connection.getClientId() != null && StringUtils.isNotEmpty(connection.getClientId())))
@@ -69,16 +69,23 @@ public class ClientStore {
             throw new IllegalArgumentException(
                     "More than 1 Conncetion method was set for connecting to App Configuration.");
         }
-
+        
         if (tokenCredential != null) {
+            // User Provided Token Credential
             builder.credential(tokenCredential);
         } else if ((connection.getClientId() != null && StringUtils.isNotEmpty(connection.getClientId()))
                 && connection.getEndpoint() != null) {
+            // User Assigned Identity - Client ID through configuration file.
             ManagedIdentityCredentialBuilder micBuilder = new ManagedIdentityCredentialBuilder()
                     .clientId(connection.getClientId());
             builder.credential(micBuilder.build());
         } else if (StringUtils.isNotEmpty(connection.getConnectionString())) {
+            // Connection String
             builder.connectionString(connection.getConnectionString());
+        } else if (connection.getEndpoint() != null) {
+            // System Assigned Identity. Needs to be checked last as all of the above should have a Endpoint.
+            ManagedIdentityCredentialBuilder micBuilder = new ManagedIdentityCredentialBuilder();
+            builder.credential(micBuilder.build());
         } else {
             throw new IllegalArgumentException("No Configuration method was set for connecting to App Configuration");
         }
@@ -131,7 +138,7 @@ public class ClientStore {
      */
     public String watchedKeyNames(ConfigStore store, Map<String, List<String>> storeContextsMap) {
         String watchedKey = store.getWatchedKey().trim();
-        List<String> contexts = storeContextsMap.get(store.getName());
+        List<String> contexts = storeContextsMap.get(store.getEndpoint());
 
         String watchedKeys = contexts.stream().map(ctx -> genKey(ctx, watchedKey))
                 .collect(Collectors.joining(","));

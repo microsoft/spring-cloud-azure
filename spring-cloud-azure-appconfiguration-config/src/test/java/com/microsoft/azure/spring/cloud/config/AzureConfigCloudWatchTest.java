@@ -37,7 +37,7 @@ import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationEventPublisher;
 
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
-import com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties.Watch;
+import com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties.AutoRefresh;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
@@ -55,10 +55,10 @@ public class AzureConfigCloudWatchTest {
     @Mock
     private Map<String, List<String>> contextsMap;
 
-    private AzureCloudConfigWatch configWatch;
-
     @Mock
-    private Watch watch;
+    private AutoRefresh refresh;
+
+    AzureCloudConfigRefresh configRefresh;
 
     @Mock
     private Date date;
@@ -71,12 +71,14 @@ public class AzureConfigCloudWatchTest {
         MockitoAnnotations.initMocks(this);
 
         ConfigStore store = new ConfigStore();
-        store.setName(TEST_STORE_NAME);
+        store.setEndpoint(TEST_STORE_NAME);
         store.setConnectionString(TEST_CONN_STRING);
         store.setWatchedKey("/application/*");
-        when(properties.getStores()).thenReturn(Arrays.asList(store));
-        when(properties.getWatch()).thenReturn(watch);
-        when(watch.getDelay()).thenReturn(Duration.ofSeconds(-60));
+        
+        properties = new AzureCloudConfigProperties();
+        properties.setStores(Arrays.asList(store));
+
+        properties.getAutoRefresh().setInterval(Duration.ofSeconds(-60));
 
         contextsMap = new ConcurrentHashMap<>();
         contextsMap.put(TEST_STORE_NAME, Arrays.asList(TEST_ETAG));
@@ -89,19 +91,19 @@ public class AzureConfigCloudWatchTest {
         ConfigurationSetting item = new ConfigurationSetting();
         item.setKey("fake-etag/application/test.key");
         item.setETag("fake-etag");
-
-        configWatch = new AzureCloudConfigWatch(properties, contextsMap, clientStoreMock);
+        
+        configRefresh = new AzureCloudConfigRefresh(properties, contextsMap, clientStoreMock);
     }
 
     @Test
     public void firstCallShouldPublishEvent() throws Exception {
         PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
-        configWatch.setApplicationEventPublisher(eventPublisher);
+        configRefresh.setApplicationEventPublisher(eventPublisher);
 
         when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(initialResponse());
 
         when(date.after(Mockito.any(Date.class))).thenReturn(true);
-        configWatch.refreshConfigurations();
+        configRefresh.refreshConfigurations();
         verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
     }
 
@@ -110,18 +112,18 @@ public class AzureConfigCloudWatchTest {
         PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
         when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(initialResponse())
                 .thenReturn(updatedResponse());
-        configWatch.setApplicationEventPublisher(eventPublisher);
+        configRefresh.setApplicationEventPublisher(eventPublisher);
 
         when(date.after(Mockito.any(Date.class))).thenReturn(true);
 
         // The first time an action happens it can't update
-        assertFalse(configWatch.refreshConfigurations().get());
+        assertFalse(configRefresh.refreshConfigurations().get());
         verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
 
         StateHolder.setState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, new ConfigurationSetting());
 
         // If there is a change it should update
-        assertTrue(configWatch.refreshConfigurations().get());
+        assertTrue(configRefresh.refreshConfigurations().get());
         verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
 
         HashMap<String, String> map = new HashMap<String, String>();
@@ -134,15 +136,15 @@ public class AzureConfigCloudWatchTest {
         StateHolder.setState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, updated);
 
         // If there is no change it shouldn't update
-        assertFalse(configWatch.refreshConfigurations().get());
+        assertFalse(configRefresh.refreshConfigurations().get());
         verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
     }
 
     @Test
     public void notRefreshTime() throws Exception {
-        properties.getWatch().setDelay(Duration.ofSeconds(60));
-        AzureCloudConfigWatch watchLargeDelay = new AzureCloudConfigWatch(properties, contextsMap, clientStoreMock);
-
+        properties.getAutoRefresh().setInterval(Duration.ofSeconds(60));
+        AzureCloudConfigRefresh watchLargeDelay = new AzureCloudConfigRefresh(properties, contextsMap, clientStoreMock);
+        
         PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
         watchLargeDelay.setApplicationEventPublisher(eventPublisher);
 

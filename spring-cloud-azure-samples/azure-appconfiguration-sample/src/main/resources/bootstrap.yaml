@@ -4,5 +4,6 @@ spring:
   cloud:
     azure:
       appconfiguration:
+        fail-fast: false
         stores:
-          - connection-string: ${CONFIG_STORE_CONNECTION_STRING}
+          - name: mametcal-app-config

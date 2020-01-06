@@ -132,7 +132,7 @@ public class AzureConfigPropertySourceTest {
     
     private AppConfigProviderProperties appProperties;
     
-    private TokenCredentialProvider tokenCredentialProvider = null;
+    private KeyVaultCredentialProvider tokenCredentialProvider = null;
 
     @BeforeClass
     public static void init() {
@@ -150,13 +150,13 @@ public class AzureConfigPropertySourceTest {
         azureProperties.setFailFast(true);
         appProperties = new AppConfigProviderProperties();
         ConfigStore configStore = new ConfigStore();
-        configStore.setName(TEST_STORE_NAME);
+        configStore.setEndpoint(TEST_STORE_NAME);
         Map<String, List<String>> storeContextsMap = new HashMap<String, List<String>>();
         ArrayList<String> contexts = new ArrayList<String>();
         contexts.add("/application/*");
         storeContextsMap.put(TEST_STORE_NAME, contexts);
         propertySource = new AzureConfigPropertySource(TEST_CONTEXT, configStore, "\0",
-                azureProperties, clientStoreMock, appProperties, tokenCredentialProvider, storeContextsMap);
+                azureProperties, clientStoreMock, appProperties, tokenCredentialProvider);
 
         testItems = new ArrayList<ConfigurationSetting>();
         testItems.add(item1);

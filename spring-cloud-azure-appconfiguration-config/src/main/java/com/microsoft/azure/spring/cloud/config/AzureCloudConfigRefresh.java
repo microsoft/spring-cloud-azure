@@ -23,14 +23,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.util.StringUtils;
 
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
-public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AzureCloudConfigWatch.class);
+public class AzureCloudConfigRefresh implements ApplicationEventPublisherAware {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AzureCloudConfigRefresh.class);
 
     private final AtomicBoolean running = new AtomicBoolean(false);
 
@@ -48,11 +49,11 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
 
     private String eventDataInfo;
 
-    public AzureCloudConfigWatch(AzureCloudConfigProperties properties, Map<String, List<String>> storeContextsMap,
+    public AzureCloudConfigRefresh(AzureCloudConfigProperties properties, Map<String, List<String>> storeContextsMap,
             ClientStore clientStore) {
         this.configStores = properties.getStores();
         this.storeContextsMap = storeContextsMap;
-        this.delay = properties.getWatch().getDelay();
+        this.delay = properties.getAutoRefresh().getInterval();
         this.lastCheckedTime = new Date();
         this.clientStore = clientStore;
         this.eventDataInfo = "";
@@ -128,10 +129,11 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
      * @return Refresh event was triggered. No other sources need to be checked.
      */
     private boolean refresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
-        String storeNameWithSuffix = store.getName() + storeSuffix;
-        SettingSelector settingSelector = new SettingSelector().setKeys(watchedKeyNames).setLabels(store.getLabels());
+        String storeNameWithSuffix = store.getEndpoint() + storeSuffix;
+        SettingSelector settingSelector = new SettingSelector().setKeyFilter(watchedKeyNames)
+                .setLabelFilter(StringUtils.arrayToCommaDelimitedString(store.getLabels()));
 
-        List<ConfigurationSetting> items = clientStore.listSettingRevisons(settingSelector, store.getName());
+        List<ConfigurationSetting> items = clientStore.listSettingRevisons(settingSelector, store.getEndpoint());
 
         String etag = "";
         // If there is no result, etag will be considered empty.
@@ -146,7 +148,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
 
         if (!etag.equals(StateHolder.getState(storeNameWithSuffix).getETag())) {
             LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
-                    store.getName(), watchedKeyNames);
+                    store.getEndpoint(), watchedKeyNames);
             if (eventDataInfo.isEmpty()) {
                 eventDataInfo = watchedKeyNames;
             } else {

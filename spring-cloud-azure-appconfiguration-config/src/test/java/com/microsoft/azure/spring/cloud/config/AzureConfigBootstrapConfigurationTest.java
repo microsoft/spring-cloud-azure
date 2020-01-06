@@ -7,7 +7,7 @@ package com.microsoft.azure.spring.cloud.config;
 
 import static com.microsoft.azure.spring.cloud.config.TestConstants.CONN_STRING_PROP;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FAIL_FAST_PROP;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.STORE_NAME_PROP;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.STORE_ENDPOINT_PROP;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.propPair;
@@ -47,7 +47,7 @@ import com.microsoft.rest.RestClient.Builder;
 public class AzureConfigBootstrapConfigurationTest {
     private static final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
             .withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
-                    propPair(STORE_NAME_PROP, TEST_STORE_NAME))
+                    propPair(STORE_ENDPOINT_PROP, TEST_STORE_NAME))
             .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class));
 
     @Mock

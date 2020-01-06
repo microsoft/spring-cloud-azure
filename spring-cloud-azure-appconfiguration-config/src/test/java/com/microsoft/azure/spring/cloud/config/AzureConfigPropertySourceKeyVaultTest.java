@@ -115,7 +115,7 @@ public class AzureConfigPropertySourceKeyVaultTest {
     @Rule
     public ExpectedException expected = ExpectedException.none();
     
-    private TokenCredentialProvider tokenCredentialProvider = null;
+    private KeyVaultCredentialProvider tokenCredentialProvider = null;
 
     @BeforeClass
     public static void init() {
@@ -132,13 +132,13 @@ public class AzureConfigPropertySourceKeyVaultTest {
         appProperties = new AppConfigProviderProperties();
         appProperties.setMaxRetryTime(0);
         ConfigStore testStore = new ConfigStore();
-        testStore.setName(TEST_STORE_NAME);
+        testStore.setEndpoint(TEST_STORE_NAME);
         Map<String, List<String>> storeContextsMap = new HashMap<String, List<String>>();
         ArrayList<String> contexts = new ArrayList<String>();
         contexts.add("/application/*");
         storeContextsMap.put(TEST_STORE_NAME, contexts);
         propertySource = new AzureConfigPropertySource(TEST_CONTEXT, testStore, "\0",
-                azureProperties, clientStoreMock, appProperties, tokenCredentialProvider, storeContextsMap);
+                azureProperties, clientStoreMock, appProperties, tokenCredentialProvider);
 
         testItems = new ArrayList<ConfigurationSetting>();
         testItems.add(item1);
