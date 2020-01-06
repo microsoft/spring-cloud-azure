@@ -53,7 +53,7 @@ public class AzureCloudConfigProperties {
 
     private boolean failFast = true;
 
-    private Watch watch = new Watch();
+    private AutoRefresh autoRefresh = new AutoRefresh();
 
     public boolean isEnabled() {
         return enabled;
@@ -112,17 +112,18 @@ public class AzureCloudConfigProperties {
         this.failFast = failFast;
     }
 
-    public Watch getWatch() {
-        return watch;
+    public AutoRefresh getAutoRefresh() {
+        return autoRefresh;
     }
 
     /**
-     * The minimum watch time between refresh checks. The minimum valid watch time is 1s.
+     * The minimum interval time between automatic refresh checks. The minimum valid
+     * interval time is 1s. The default interval time is 30s.
      * 
-     * @param watch minimum time between refresh checks
+     * @param autoRefresh minimum time between refresh checks
      */
-    public void setWatch(Watch watch) {
-        this.watch = watch;
+    public void setAutoRefresh(AutoRefresh autoRefresh) {
+        this.autoRefresh = autoRefresh;
     }
 
     @PostConstruct
@@ -130,22 +131,24 @@ public class AzureCloudConfigProperties {
         Assert.notEmpty(this.stores, "At least one config store has to be configured.");
 
         this.stores.forEach(store -> {
-            Assert.isTrue(StringUtils.hasText(store.getName()) ||
-                        StringUtils.hasText(store.getConnectionString()),
+            Assert.isTrue(StringUtils.hasText(store.getEndpoint()) ||
+                    StringUtils.hasText(store.getConnectionString()),
                     "Either configuration store name or connection string should be configured.");
             store.validateAndInit();
         });
 
-        int uniqueStoreSize = this.stores.stream().map(s -> s.getName()).distinct().collect(Collectors.toList()).size();
+        int uniqueStoreSize = this.stores.stream().map(s -> s.getEndpoint()).distinct().collect(Collectors.toList())
+                .size();
         Assert.isTrue(this.stores.size() == uniqueStoreSize, "Duplicate store name exists.");
-        Assert.isTrue(watch.delay.getSeconds()  >= 1, "Minimum Watch time is 1 Second.");
+        Assert.isTrue(autoRefresh.interval.getSeconds() >= 1, "Minimum Watch time is 1 Second.");
     }
 
-    class Watch {
+    class AutoRefresh {
         private boolean enabled = false;
-        private Duration delay = Duration.ofSeconds(30);
 
-        public Watch() {
+        private Duration interval = Duration.ofSeconds(30);
+
+        public AutoRefresh() {
         }
 
         public boolean isEnabled() {
@@ -156,12 +159,12 @@ public class AzureCloudConfigProperties {
             this.enabled = enabled;
         }
 
-        public Duration getDelay() {
-            return delay;
+        public Duration getInterval() {
+            return interval;
         }
 
-        public void setDelay(Duration delay) {
-            this.delay = delay;
+        public void setInterval(Duration interval) {
+            this.interval = interval;
         }
     }
 }

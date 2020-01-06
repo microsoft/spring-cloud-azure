@@ -58,13 +58,13 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
 
     private ClientStore clients;
 
-    private TokenCredentialProvider tokenCredentialProvider;
+    private KeyVaultCredentialProvider keyVaultCredentialProvider;
     
     private AppConfigProviderProperties appProperties;
 
     AzureConfigPropertySource(String context, String storeName, String label,
             AzureCloudConfigProperties azureProperties, ClientStore clients,
-            AppConfigProviderProperties appProperties, TokenCredentialProvider tokenCredentialProvider) {
+            AppConfigProviderProperties appProperties, KeyVaultCredentialProvider keyVaultCredentialProvider) {
         // The context alone does not uniquely define a PropertySource, append storeName
         // and label to uniquely define a PropertySource
         super(context + storeName + "/" + label);
@@ -75,7 +75,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
         this.appProperties = appProperties;
         this.keyVaultClients = new HashMap<String, KeyVaultClient>();
         this.clients = clients;
-        this.tokenCredentialProvider = tokenCredentialProvider;
+        this.keyVaultCredentialProvider = keyVaultCredentialProvider;
     }
 
     @Override
@@ -109,11 +109,11 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
         Date date = new Date();
         SettingSelector settingSelector = new SettingSelector();
         if (!label.equals("%00")) {
-            settingSelector.setLabels(label);
+            settingSelector.setLabelFilter(label);
         }
 
         // * for wildcard match
-        settingSelector.setKeys(context + "*");
+        settingSelector.setKeyFilter(context + "*");
         List<ConfigurationSetting> settings = clients.listSettings(settingSelector, storeName);
         if (settings == null) {
             if (!azureProperties.isFailFast()) {
@@ -138,7 +138,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
         }
 
         // Reading In Features
-        settingSelector.setKeys(".appconfig*");
+        settingSelector.setKeyFilter(".appconfig*");
         settings = clients.listSettings(settingSelector, storeName);
 
         return addToFeatureSet(featureSet, settings, date);
@@ -183,7 +183,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
             // Check if we already have a client for this key vault, if not we will make
             // one
             if (!keyVaultClients.containsKey(uri.getHost())) {
-                KeyVaultClient client = new KeyVaultClient(uri, tokenCredentialProvider, azureProperties);
+                KeyVaultClient client = new KeyVaultClient(uri, keyVaultCredentialProvider, azureProperties);
                 keyVaultClients.put(uri.getHost(), client);
             }
             KeyVaultSecret secret = keyVaultClients.get(uri.getHost()).getSecret(uri, appProperties.getMaxRetryTime());

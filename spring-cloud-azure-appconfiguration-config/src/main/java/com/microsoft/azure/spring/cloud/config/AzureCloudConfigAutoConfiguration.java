@@ -19,16 +19,17 @@ public class AzureCloudConfigAutoConfiguration {
 
     @Configuration
     @ConditionalOnClass(RefreshEndpoint.class)
-    @ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "watch.enabled")
     static class CloudWatchAutoConfiguration {
+
         @Bean
-        public AzureCloudConfigWatch getConfigWatch(AzureCloudConfigProperties properties,
+        public AzureCloudConfigRefresh getConfigWatch(AzureCloudConfigProperties properties,
                 AzureConfigPropertySourceLocator sourceLocator, ClientStore clientStore) {
-            return new AzureCloudConfigWatch(properties, sourceLocator.getStoreContextsMap(), clientStore);
+            return new AzureCloudConfigRefresh(properties, sourceLocator.getStoreContextsMap(), clientStore);
         }
 
         @Bean
-        public ConfigListener configListener(AzureCloudConfigWatch azureCloudConfigWatch) {
+        @ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "auto-refresh.enabled")
+        public ConfigListener configListener(AzureCloudConfigRefresh azureCloudConfigWatch) {
             return new ConfigListener(azureCloudConfigWatch);
         }
     }
