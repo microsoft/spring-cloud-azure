@@ -37,16 +37,15 @@ spring.cloud.azure.appconfiguration.default-context | Default context path to lo
 spring.cloud.azure.appconfiguration.name | Alternative to Spring application name, if not configured, fallback to default Spring application name | No | ${spring.application.name}
 spring.cloud.azure.appconfiguration.profile-separator | Profile separator for the key name, e.g., /foo-app_dev/db.connection.key, must follow format `^[a-zA-Z0-9_@]+$` | No | `_`
 spring.cloud.azure.appconfiguration.fail-fast | Whether throw RuntimeException or not when exception occurs | No |  true
-spring.cloud.azure.appconfiguration.watch.enabled | Whether enable watch feature or not | No | false
-spring.cloud.azure.appconfiguration.watch.delay | Polling interval of type [Duration](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-conversion-duration) between each scheduled polling | No | 30s
+spring.cloud.azure.appconfiguration.auto-refresh.enabled | Whether enable auto refresh feature or not | No | false
+spring.cloud.azure.appconfiguration.auto-refresh.interval | Minimum interval of type [Duration](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-conversion-duration) between two refresh checks | No | 30s
 spring.cloud.azure.appconfiguration.managed-identity.client-id | Client id of the user assigned managed identity, only required when choosing to use user assigned managed identity on Azure | No | null
-spring.cloud.azure.appconfiguration.managed-identity.object-id | Object id of the user assigned managed identity, only required when choosing to use user assigned managed identity on Azure. **DEPRECATED in 1.0.0.M6**, only client-id is needed. | No | null
 
 `spring.cloud.azure.appconfiguration.stores` is a List of stores, for each store should follow below format:
 
 Name | Description | Required | Default
 ---|---|---|---
-spring.cloud.azure.appconfiguration.stores[0].name | Name of the configuration store, required when `connection-string` is empty. If `connection-string` is empty and application is deployed on Azure VM or App Service with managed identity enabled, will try to load `connection-string` from Azure Resource Management. | Conditional | null
+spring.cloud.azure.appconfiguration.stores[0].endpoint | Endpoint of the configuration store, required when `connection-string` is empty. If `connection-string` is empty and application is deployed on Azure VM or App Service with managed identity enabled, will try to load `connection-string` from Azure Resource Management. | Conditional | null
 spring.cloud.azure.appconfiguration.stores[0].prefix | The prefix of the key name in the configuration store, e.g., /my-prefix/application/key.name | No |  null
 spring.cloud.azure.appconfiguration.stores[0].connection-string | Required when `name` is empty, otherwise, can be loaded automatically on Azure Virtual Machine or App Service | Conditional | null
 spring.cloud.azure.appconfiguration.stores[0].label | Comma separated list of label values, by default will query empty labeled value. If you want to specify *empty*(null) label explicitly, use `%00`, e.g., spring.cloud.azure.appconfiguration.stores[0].label=%00,v0 | No |  null
@@ -78,14 +77,14 @@ spring.cloud.azure.appconfiguration.stores[0].label=[my-label1], [my-label2]
 
 Multiple labels can be separated with comma, if duplicate keys exists for multiple labels, the last label has highest priority.
 
-### Watch configuration change
+### Auto Refresh configuration change
 
-Watch feature allows the application to load the latest property value from configuration store automatically, without restarting the application.
+Auto Refresh feature allows the application to load the latest property value from configuration store automatically, without restarting the application.
 
-By default, the watch feature is disabled. It can be enabled with below configuration:
+By default, the auto refresh feature is disabled. It can be enabled with below configuration:
 
 ```properties
-spring.cloud.azure.appconfiguration.watch.enabled=true
+spring.cloud.azure.appconfiguration.auto-refresh.enabled=true
 ```
 
 Change certain property key in the configuration store on Azure Portal, e.g., /application/config.message, log similar with below will be printed on the console.
@@ -113,7 +112,7 @@ spring.cloud.azure.appconfiguration.fail-fast=false
 
 [Managed identity](https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview) allows application to access [Azure Active Directory][azure_active_directory] protected resource on [Azure][azure].
 
-In this library, [Azure Identity SDK][azure_identity_sdk] is used to access Azure App Configuration and optionally Azure Key Vault, for secrets. The connection string is not required and will be ignored if Managed Identity is being used.
+In this library, [Azure Identity SDK][azure_identity_sdk] is used to access Azure App Configuration and optionally Azure Key Vault, for secrets. Only one method of authentication can be set at one time.
 
 Follow the below steps to enable accessing App Configuration with managed identity:
 
@@ -126,28 +125,12 @@ Follow the below steps to enable accessing App Configuration with managed identi
     1. Create a TokenCredentialProvider and supply any valid TokenCredential and supply it via a Bean.
     1. Configure bootstrap.properties(or .yaml) in the Spring Boot application.
 
-The configuration store name must be configured when `connection-string` is empty, the connection string for the configuration store will be loaded automatically.
-
-### Use service principle to access App Configuration
-
-A [service principle](https://docs.microsoft.com/azure/active-directory/develop/app-objects-and-service-principals) allows application to access [Azure Active Directory][azure_active_directory] protected resource on [Azure][azure].
-
-In this library, [Azure Identity SDK][azure_identity_sdk] is used to access Azure App Configuration and optionally Azure Key Vault, for secrets. The connection string is not required and will be ignored if a Service Principle is being used.
-
-Follow the below steps to enable accessing App Configuration with Service Principle:
-
-1. [Enable Service principle](https://docs.microsoft.com/azure/active-directory/develop/app-objects-and-service-principals#application-registration) for virtual machine or App Service, on which the application will be deployed
-
-1. Configure the [Azure RBAC][azure_rbac] of your Application store to grant access to the Azure service where your application is running. Select the App Configuration Data Reader. The App Configuration Data Owner role is not required but can be used if needed.
-
-1. Set the Environment variables; AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_CLIENT_SECRET.
-
-The configuration store name must be configured when `connection-string` is empty, the connection string for the configuration store will be loaded automatically.
+The configuration store name must be configured when `connection-string` is empty.
 
 ### Token Credential Provider
 
 ```java
-public class MyCredentials implements TokenCredentialProvider {
+public class MyCredentials implements AppConfigCredentialProvider, KeyVaultCredentialProvider {
 
     @Override
     public TokenCredential credentialForAppConfig() {
@@ -160,9 +143,7 @@ public class MyCredentials implements TokenCredentialProvider {
     }
 
     TokenCredential buildCredential() {
-            return new ManagedIdentityCredentialBuilder()
-                    .clientId("bf2043ad-c58a-4800-ad35-9a7bc8ddfdea")
-                    .build();
+            return new DefaultAzureCredentialBuilder().build();
     }
 
 }
@@ -171,7 +152,7 @@ public class MyCredentials implements TokenCredentialProvider {
 ### bootstrap.application
 
 ```application
-spring.cloud.azure.appconfiguration.stores[0].name=[config-store-name]
+spring.cloud.azure.appconfiguration.stores[0].endpoint=[config-store-endpoint]
 
 #If Using option 3
 spring.cloud.azure.appconfiguration.managed-identity.client-id=[client-id]
