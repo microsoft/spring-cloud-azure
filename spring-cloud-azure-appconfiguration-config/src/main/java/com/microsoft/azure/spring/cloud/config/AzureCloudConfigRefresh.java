@@ -28,8 +28,8 @@ import com.azure.data.appconfiguration.models.SettingSelector;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
-public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AzureCloudConfigWatch.class);
+public class AzureCloudConfigRefresh implements ApplicationEventPublisherAware {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AzureCloudConfigRefresh.class);
 
     private final Map<String, String> storeEtagMap = new ConcurrentHashMap<>();
 
@@ -57,11 +57,11 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
 
     private Date lastCheckedTime;
 
-    public AzureCloudConfigWatch(AzureCloudConfigProperties properties, Map<String, List<String>> storeContextsMap,
+    public AzureCloudConfigRefresh(AzureCloudConfigProperties properties, Map<String, List<String>> storeContextsMap,
             ClientStore clientStore) {
         this.configStores = properties.getStores();
         this.storeContextsMap = storeContextsMap;
-        this.delay = properties.getWatch().getDelay();
+        this.delay = properties.getAutoRefresh().getInterval();
         this.lastCheckedTime = new Date();
         this.clientStore = clientStore;
     }
@@ -111,10 +111,11 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
      * @return Refresh event was triggered. No other sources need to be checked.
      */
     private Boolean refresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
-        String storeNameWithSuffix = store.getName() + storeSuffix;
-        SettingSelector settingSelector = new SettingSelector().setKeys(watchedKeyNames).setLabels(store.getLabels());
+        String storeNameWithSuffix = store.getEndpoint() + storeSuffix;
+        SettingSelector settingSelector = new SettingSelector().setKeyFilter(watchedKeyNames)
+                .setLabelFilter(StringUtils.arrayToCommaDelimitedString(store.getLabels()));
 
-        List<ConfigurationSetting> items = clientStore.listSettingRevisons(settingSelector, store.getName());
+        List<ConfigurationSetting> items = clientStore.listSettingRevisons(settingSelector, store.getEndpoint());
 
         if (items == null || items.isEmpty()) {
             return false;
@@ -129,7 +130,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
 
         if (!etag.equals(storeEtagMap.get(storeNameWithSuffix))) {
             LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
-                    store.getName(), watchedKeyNames);
+                    store.getEndpoint(), watchedKeyNames);
             storeEtagMap.put(storeNameWithSuffix, etag);
             RefreshEventData eventData = new RefreshEventData(watchedKeyNames);
             publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
@@ -172,7 +173,7 @@ public class AzureCloudConfigWatch implements ApplicationEventPublisherAware {
      */
     private String watchedKeyNames(ConfigStore store, Map<String, List<String>> storeContextsMap) {
         String watchedKey = store.getWatchedKey().trim();
-        List<String> contexts = storeContextsMap.get(store.getName());
+        List<String> contexts = storeContextsMap.get(store.getEndpoint());
 
         String watchedKeys = contexts.stream().map(ctx -> genKey(ctx, watchedKey))
                 .collect(Collectors.joining(","));

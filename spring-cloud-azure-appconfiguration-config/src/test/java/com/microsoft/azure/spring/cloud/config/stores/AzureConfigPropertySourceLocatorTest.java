@@ -26,7 +26,7 @@ import org.springframework.core.env.Environment;
 import com.microsoft.azure.spring.cloud.config.AppConfigProviderProperties;
 import com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties;
 import com.microsoft.azure.spring.cloud.config.AzureConfigPropertySourceLocator;
-import com.microsoft.azure.spring.cloud.config.TokenCredentialProvider;
+import com.microsoft.azure.spring.cloud.config.KeyVaultCredentialProvider;
 
 public class AzureConfigPropertySourceLocatorTest {
 
@@ -44,7 +44,7 @@ public class AzureConfigPropertySourceLocatorTest {
 
     private AzureConfigPropertySourceLocator azureConfigPropertySourceLocator;
 
-    private TokenCredentialProvider tokenCredentialProvider = null;
+    private KeyVaultCredentialProvider tokenCredentialProvider = null;
 
     @Before
     public void setup() {

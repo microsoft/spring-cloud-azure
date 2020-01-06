@@ -7,10 +7,8 @@ package com.microsoft.azure.spring.cloud.config;
 
 import com.azure.core.credential.TokenCredential;
 
-public interface TokenCredentialProvider {
+public interface AppConfigCredentialProvider {
 
-    public TokenCredential credentialForAppConfig(String uri);
-
-    public TokenCredential credentialForKeyVault(String uri);
+    public TokenCredential getAppConfigCredential(String uri);
 
 }

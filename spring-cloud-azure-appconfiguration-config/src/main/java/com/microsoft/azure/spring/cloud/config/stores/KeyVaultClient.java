@@ -16,7 +16,7 @@ import com.azure.security.keyvault.secrets.SecretAsyncClient;
 import com.azure.security.keyvault.secrets.SecretClientBuilder;
 import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
 import com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties;
-import com.microsoft.azure.spring.cloud.config.TokenCredentialProvider;
+import com.microsoft.azure.spring.cloud.config.KeyVaultCredentialProvider;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
 
 public class KeyVaultClient {
@@ -27,28 +27,34 @@ public class KeyVaultClient {
      * Builds an Async client to a Key Vaults Secrets
      * 
      * @param uri Key Vault URI
-     * @param tokenCredentialProvider user created credentials for authenticating to Key Vault
+     * @param tokenCredentialProvider user created credentials for authenticating to Key
+     * Vault
      * @param properties Azure Configuration Managed Identity credentials
      */
-    public KeyVaultClient(URI uri, TokenCredentialProvider tokenCredentialProvider,
+    public KeyVaultClient(URI uri, KeyVaultCredentialProvider tokenCredentialProvider,
             AzureCloudConfigProperties properties) {
+        SecretClientBuilder builder = new SecretClientBuilder();
         TokenCredential tokenCredential = null;
         if (tokenCredentialProvider != null) {
-            tokenCredential = tokenCredentialProvider.credentialForKeyVault("https://" + uri.getHost());
+            tokenCredential = tokenCredentialProvider.getKeyVaultCredential("https://" + uri.getHost());
         }
+
         AzureManagedIdentityProperties msiProps = properties.getManagedIdentity();
         if (tokenCredential != null && msiProps != null) {
             throw new IllegalArgumentException("More than 1 Conncetion method was set for connecting to Key Vault.");
         }
-        if (tokenCredential == null && msiProps != null && StringUtils.isNotEmpty(msiProps.getClientId())) {
-            tokenCredential = new ManagedIdentityCredentialBuilder().clientId(msiProps.getClientId()).build();
-        }
 
-        if (tokenCredential == null) {
-            throw new IllegalArgumentException("No Configuration method was set for connecting to Key Vault");
+        if (tokenCredential != null) {
+            // User Provided Token Credential
+            builder.credential(tokenCredential);
+        } else if (tokenCredential == null && msiProps != null && StringUtils.isNotEmpty(msiProps.getClientId())) {
+            // User Assigned Identity - Client ID through configuration file.
+            builder.credential(new ManagedIdentityCredentialBuilder().clientId(msiProps.getClientId()).build());
+        } else if (tokenCredential == null) {
+            // System Assigned Identity.
+            builder.credential(new ManagedIdentityCredentialBuilder().build());
         }
-        secretClient = new SecretClientBuilder().vaultUrl("https://" + uri.getHost()).credential(tokenCredential)
-                .buildAsyncClient();
+        secretClient = builder.vaultUrl("https://" + uri.getHost()).buildAsyncClient();
     }
 
     /**
