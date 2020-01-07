@@ -13,7 +13,13 @@ feature-management:
   featureSet:
     features:
       Beta: true
-      FeatureV:
+      DarkTheme:
+        EnabledFor:
+          -
+            name: Random
+            parameters:
+              chance: "50"
+      BetaAB:
         EnabledFor:
           -
             name: Random

@@ -3,8 +3,9 @@
 This sample describes how to use [spring-cloud-starter-azure-appconfiguration-config](../../spring-cloud-azure-starters/spring-cloud-starter-azure-appconfiguration-config/) to load configuration properties from Azure Configuration Service to Spring Environment.
 
 ## Prerequisite
- - Java 8
- - Maven 3
+
+* A [Java Development Kit (JDK)](https://docs.microsoft.com/java/azure/jdk/?view=azure-java-stable), version 8.
+* [Apache Maven](http://maven.apache.org/), version 3.0 or later.
 
 ## How to run
 
@@ -23,23 +24,27 @@ Change the connection-string value with the Access Key value of the Configuratio
 Start the application and access http://localhost:8080 to check the returned value. Different commands for different scenarios are listed below.
 
 1. Load properties similar with from application.properties, i.e., keys starting with /application/
-```
-$ mvn spring-boot:run
+
+```console
+mvn spring-boot:run
 ```
 
-2. Load properties similar with from application_dev.properties, i.e., keys starting with /application_dev
-```
-$ mvn -Dspring.profiles.active=dev spring-boot:run
+1. Load properties similar with from application_dev.properties, i.e., keys starting with /application_dev
+
+```console
+mvn -Dspring.profiles.active=dev spring-boot:run
 ```
 
-3. Load properties similar with from foo.properties, i.e., keys starting with /foo/
-```
-$ mvn -Dspring.application.name=foo spring-boot:run
+1. Load properties similar with from foo.properties, i.e., keys starting with /foo/
+
+```console
+mvn -Dspring.application.name=foo spring-boot:run
 ```
 
-4. Load properties similar with from foo_dev.properties, i.e., keys starting with /foo_dev/
-```
-$ mvn -Dspring.application.name=foo -Dspring.profiles.active=dev spring-boot:run
+1. Load properties similar with from foo_dev.properties, i.e., keys starting with /foo_dev/
+
+```console
+mvn -Dspring.application.name=foo -Dspring.profiles.active=dev spring-boot:run
 ```
 
 ## More details
