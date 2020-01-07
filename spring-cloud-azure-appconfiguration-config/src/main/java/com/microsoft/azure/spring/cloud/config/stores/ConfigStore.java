@@ -22,7 +22,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import com.microsoft.azure.spring.cloud.config.resource.ConnectionString;
+import com.microsoft.azure.spring.cloud.config.resource.Connection;
 
 public class ConfigStore {
     private static final String[] EMPTY_LABEL_ONLY = {"\0"};
@@ -92,7 +92,7 @@ public class ConfigStore {
         }
 
         if (StringUtils.hasText(connectionString)) {
-            String endpoint = ConnectionString.of(connectionString).getEndpoint();
+            String endpoint = (new Connection(connectionString)).getEndpoint();
             try {
                 URI uri = new URI(endpoint);
                 this.name = uri.getHost().split("\\.")[0];

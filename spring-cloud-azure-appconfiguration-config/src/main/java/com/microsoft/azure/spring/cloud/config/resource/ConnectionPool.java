@@ -14,25 +14,25 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Container for connection string of stores
  */
-public class ConnectionStringPool {
-    private Map<String, ConnectionString> connectionStringMap = new ConcurrentHashMap<>();
+public class ConnectionPool {
+    private Map<String, Connection> connectionStringMap = new ConcurrentHashMap<>();
 
-    public void put(String endpoint, ConnectionString connectionString) {
+    public void put(String endpoint, Connection connectionString) {
         Assert.hasText(endpoint, "Config store endpoint cannot be null or empty.");
         Assert.notNull(connectionString, "Connection string should not be null.");
         this.connectionStringMap.put(endpoint, connectionString);
     }
 
     public void put(String endpoint, String connectionString) {
-        this.put(endpoint, ConnectionString.of(connectionString));
+        this.put(endpoint, new Connection(connectionString));
     }
 
     @Nullable
-    public ConnectionString get(String endpoint) {
+    public Connection get(String endpoint) {
         return this.connectionStringMap.get(endpoint);
     }
 
-    public Map<String, ConnectionString> getAll() {
+    public Map<String, Connection> getAll() {
         return this.connectionStringMap;
     }
 }

@@ -26,30 +26,32 @@ import org.springframework.core.env.Environment;
 import com.microsoft.azure.spring.cloud.config.AppConfigProviderProperties;
 import com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties;
 import com.microsoft.azure.spring.cloud.config.AzureConfigPropertySourceLocator;
-
+import com.microsoft.azure.spring.cloud.config.TokenCredentialProvider;
 
 public class AzureConfigPropertySourceLocatorTest {
-    
+
     @Mock
     private AppConfigProviderProperties appProperties;
 
     @Mock
     private AzureCloudConfigProperties properties;
-    
+
     @Mock
     private ClientStore clients;
-    
+
     @Mock
     private ConfigStore configStore;
-    
+
     private AzureConfigPropertySourceLocator azureConfigPropertySourceLocator;
+
+    private TokenCredentialProvider tokenCredentialProvider = null;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        
+
     }
-    
+
     @Test
     public void awaitOnError() throws Exception {
         List<ConfigStore> configStores = new ArrayList<ConfigStore>();
@@ -58,21 +60,21 @@ public class AzureConfigPropertySourceLocatorTest {
         properties.setProfileSeparator("_");
         properties.setName("TestStoreName");
         properties.setStores(configStores);
-        
+
         appProperties.setPrekillTime(5);
-        
+
         Environment env = Mockito.mock(ConfigurableEnvironment.class);
         String[] array = {};
         when(env.getActiveProfiles()).thenReturn(array);
-        String[] labels = {""};
+        String[] labels = { "" };
         when(configStore.getLabels()).thenReturn(labels);
         when(clients.listSettings(Mockito.any(), Mockito.any())).thenThrow(new ServerException(""));
         when(appProperties.getPrekillTime()).thenReturn(-60);
         when(appProperties.getStartDate()).thenReturn(new Date());
-        
-        azureConfigPropertySourceLocator = new AzureConfigPropertySourceLocator(properties, appProperties, clients);
 
-        
+        azureConfigPropertySourceLocator = new AzureConfigPropertySourceLocator(properties, appProperties, clients,
+                tokenCredentialProvider);
+
         boolean threwException = false;
         try {
             azureConfigPropertySourceLocator.locate(env);
