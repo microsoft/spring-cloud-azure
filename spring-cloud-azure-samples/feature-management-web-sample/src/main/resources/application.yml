@@ -1,13 +1,29 @@
 spring:
   thymeleaf:
     cache: false
+  cloud:
+    azure:
+      appconfiguration:
+        watch:
+          enabled: True
+          delay: 5s
 config:
-   message: "Hi"
+  message: Hi
 FeatureManagement:
   Beta: true
-  FeatureV:
+  DarkTheme:
     EnabledFor:
       -
-        Name: percentageFilter
+        Name: Random
         Parameters:
-          PercentageFilterSetting: "50"
+          chance: "50"
+  BetaAB:
+    EnabledFor:
+      -
+        Name: Random
+        Parameters:
+          chance: "50"
+      -
+        Name: ClientFilter
+        Parameters:
+          clientIp: 10.0.0.1 
