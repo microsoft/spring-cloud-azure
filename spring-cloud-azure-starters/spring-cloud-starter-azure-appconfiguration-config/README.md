@@ -37,8 +37,7 @@ spring.cloud.azure.appconfiguration.default-context | Default context path to lo
 spring.cloud.azure.appconfiguration.name | Alternative to Spring application name, if not configured, fallback to default Spring application name | No | ${spring.application.name}
 spring.cloud.azure.appconfiguration.profile-separator | Profile separator for the key name, e.g., /foo-app_dev/db.connection.key, must follow format `^[a-zA-Z0-9_@]+$` | No | `_`
 spring.cloud.azure.appconfiguration.fail-fast | Whether throw RuntimeException or not when exception occurs | No |  true
-spring.cloud.azure.appconfiguration.auto-refresh.enabled | Whether enable auto refresh feature or not | No | false
-spring.cloud.azure.appconfiguration.auto-refresh.interval | Minimum interval of type [Duration](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-conversion-duration) between two refresh checks | No | 30s
+spring.cloud.azure.appconfiguration.cache.expiration | Amount of time, of type [Duration](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-conversion-duration), configurations are stored before a check can occur. | No | 30s
 spring.cloud.azure.appconfiguration.managed-identity.client-id | Client id of the user assigned managed identity, only required when choosing to use user assigned managed identity on Azure | No | null
 
 `spring.cloud.azure.appconfiguration.stores` is a List of stores, for each store should follow below format:
@@ -77,29 +76,25 @@ spring.cloud.azure.appconfiguration.stores[0].label=[my-label1], [my-label2]
 
 Multiple labels can be separated with comma, if duplicate keys exists for multiple labels, the last label has highest priority.
 
-### Auto Refresh configuration change
+### Configuration Refresh
 
-Auto Refresh feature allows the application to load the latest property value from configuration store automatically, without restarting the application.
+Configuration Refresh feature allows the application to load the latest property value from configuration store automatically, without restarting the application.
 
-By default, the auto refresh feature is disabled. It can be enabled with below configuration:
-
-```properties
-spring.cloud.azure.appconfiguration.auto-refresh.enabled=true
-
-```properties
-
-Change certain property key in the configuration store on Azure Portal, e.g., /application/config.message, log similar with below will be printed on the console.
+Changing a property key in the configuration store on Azure Portal, e.g., /application/config.message, log similar with below will be printed on the console.
 
 ```console
 INFO 17496 --- [TaskScheduler-1] o.s.c.e.event.RefreshEventListener       : Refresh keys changed: [config.message]
 ```
 
 The application now will be using the updated properties. By default, `@ConfigurationProperties` annotated beans will be automatically refreshed. Use `@RefreshScope` on beans which are required to be refreshed when properties are changed.
+
 By default, all the keys in a configuration store will be watched. To prevent configuration changes are picked up in the middle of an update of multiple keys, you are recommended to use the watched-key property to watch a specific key that signals the completion of your update so all configuration changes can be refreshed together.
 
 ```properties
 spring.cloud.azure.appconfiguration.stores[0].watched-key=[my-watched-key]
 ```
+
+For web applications a refresh will be attempted whenever a ServletRequestHandledEvent occurs after the cache expiration time. Otherwise, calling refreshConfiguration on `AzureCloudConfigRefresh` will result in a refresh if the cache has expired.
 
 ### Failfast
 

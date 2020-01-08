@@ -27,9 +27,10 @@ import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentity
 
 @Validated
 @ConfigurationProperties(prefix = AzureCloudConfigProperties.CONFIG_PREFIX)
-@Import({AppConfigProviderProperties.class})
+@Import({ AppConfigProviderProperties.class })
 public class AzureCloudConfigProperties {
     public static final String CONFIG_PREFIX = "spring.cloud.azure.appconfiguration";
+
     public static final String LABEL_SEPARATOR = ",";
 
     private boolean enabled = true;
@@ -39,7 +40,8 @@ public class AzureCloudConfigProperties {
     @NotEmpty
     private String defaultContext = "application";
 
-    // Alternative to Spring application name, if not configured, fallback to default Spring application name
+    // Alternative to Spring application name, if not configured, fallback to default
+    // Spring application name
     @Nullable
     private String name;
 
@@ -53,7 +55,7 @@ public class AzureCloudConfigProperties {
 
     private boolean failFast = true;
 
-    private AutoRefresh autoRefresh = new AutoRefresh();
+    private CacheExperation cache = new CacheExperation();
 
     public boolean isEnabled() {
         return enabled;
@@ -112,18 +114,18 @@ public class AzureCloudConfigProperties {
         this.failFast = failFast;
     }
 
-    public AutoRefresh getAutoRefresh() {
-        return autoRefresh;
+    public CacheExperation getCacheExperation() {
+        return cache;
     }
 
     /**
-     * The minimum interval time between automatic refresh checks. The minimum valid
-     * interval time is 1s. The default interval time is 30s.
+     * The minimum time between checks. The minimum valid cache time is 1s. The default
+     * cache time is 30s.
      * 
-     * @param autoRefresh minimum time between refresh checks
+     * @param cache minimum time between refresh checks
      */
-    public void setAutoRefresh(AutoRefresh autoRefresh) {
-        this.autoRefresh = autoRefresh;
+    public void setCacheExperation(CacheExperation cache) {
+        this.cache = cache;
     }
 
     @PostConstruct
@@ -140,31 +142,22 @@ public class AzureCloudConfigProperties {
         int uniqueStoreSize = this.stores.stream().map(s -> s.getEndpoint()).distinct().collect(Collectors.toList())
                 .size();
         Assert.isTrue(this.stores.size() == uniqueStoreSize, "Duplicate store name exists.");
-        Assert.isTrue(autoRefresh.interval.getSeconds() >= 1, "Minimum Watch time is 1 Second.");
+        Assert.isTrue(cache.expiration.getSeconds() >= 1, "Minimum Watch time is 1 Second.");
     }
 
-    class AutoRefresh {
-        private boolean enabled = false;
+    class CacheExperation {
 
-        private Duration interval = Duration.ofSeconds(30);
+        private Duration expiration = Duration.ofSeconds(30);
 
-        public AutoRefresh() {
+        public CacheExperation() {
         }
 
-        public boolean isEnabled() {
-            return enabled;
+        public Duration getExpiration() {
+            return expiration;
         }
 
-        public void setEnabled(boolean enabled) {
-            this.enabled = enabled;
-        }
-
-        public Duration getInterval() {
-            return interval;
-        }
-
-        public void setInterval(Duration interval) {
-            this.interval = interval;
+        public void setExpiration(Duration expiration) {
+            this.expiration = expiration;
         }
     }
 }
