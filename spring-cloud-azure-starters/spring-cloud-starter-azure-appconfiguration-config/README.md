@@ -85,7 +85,8 @@ By default, the auto refresh feature is disabled. It can be enabled with below c
 
 ```properties
 spring.cloud.azure.appconfiguration.auto-refresh.enabled=true
-```
+
+```properties
 
 Change certain property key in the configuration store on Azure Portal, e.g., /application/config.message, log similar with below will be printed on the console.
 
@@ -153,6 +154,9 @@ public class MyCredentials implements AppConfigCredentialProvider, KeyVaultCrede
 
 ```application
 spring.cloud.azure.appconfiguration.stores[0].endpoint=[config-store-endpoint]
+
+#If Using option 3
+spring.cloud.azure.appconfiguration.managed-identity.client-id=[client-id]
 
 #If Using option 3
 spring.cloud.azure.appconfiguration.managed-identity.client-id=[client-id]

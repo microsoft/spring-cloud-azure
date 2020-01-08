@@ -23,22 +23,22 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="/welcome">Home<span class="sr-only">(current)</span></a>
+            <li class="nav-item">
+            <a class="nav-link" href="/welcome">Home</a>
             </li>
-            <li class="nav-item" th:if="${Beta}">
-                <a class="nav-link" href="/Beta">Beta</a>
+            <li class="nav-item active">
+            <a class="nav-link" href="/BetaB">Beta<span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/privacy">Privacy</a>
+            <a class="nav-link" href="/privacy">Privacy</a>
             </li>
         </ul>
         </div>
     </nav>
     </header>
     <div class="container body-content">
-        <h1 class="mt-5">Welcome</h1>
-        <p>Learn more about <a href="https://github.com/microsoft/spring-cloud-azure/blob/master/spring-cloud-azure-feature-management/README.md">Feature Management with Spring Cloud Azure</a></p>
+        <h1 class="mt-5">Beta Feature with B Design</h1>
+        <p>The BetaB.html page is reached when the FeatureGate feature flag returns false, so the user is redirected to the BetaB endpoint.</p>
 
     </div>
     <footer class="footer">
