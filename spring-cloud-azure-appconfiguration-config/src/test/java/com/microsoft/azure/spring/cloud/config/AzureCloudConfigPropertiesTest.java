@@ -103,7 +103,7 @@ public class AzureCloudConfigPropertiesTest {
         try {
             PowerMockito.whenNew(ObjectMapper.class).withAnyArguments().thenReturn(mockObjectMapper);
             when(mockClosableHttpResponse.getStatusLine())
-                    .thenReturn(new BasicStatusLine(new ProtocolVersion("", 0, 0), 200, ""));
+                .thenReturn(new BasicStatusLine(new ProtocolVersion("", 0, 0), 200, ""));
             when(mockClosableHttpResponse.getEntity()).thenReturn(mockHttpEntity);
             when(mockHttpEntity.getContent()).thenReturn(mockInputStream);
         } catch (Exception e) {

@@ -94,6 +94,7 @@ public class ConfigStore {
         if (StringUtils.hasText(connectionString)) {
             String endpoint = (new Connection(connectionString)).getEndpoint();
             try {
+                // new URI is used to validate the endpoint as a valid URI
                 new URI(endpoint);
                 this.endpoint = endpoint;
             } catch (URISyntaxException e) {
