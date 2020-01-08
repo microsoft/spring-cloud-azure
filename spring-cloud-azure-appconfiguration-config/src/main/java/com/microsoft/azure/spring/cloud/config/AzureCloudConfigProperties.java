@@ -55,7 +55,7 @@ public class AzureCloudConfigProperties {
 
     private boolean failFast = true;
 
-    private CacheExperation cache = new CacheExperation();
+    private Duration cacheExpiration = Duration.ofSeconds(30);
 
     public boolean isEnabled() {
         return enabled;
@@ -114,8 +114,8 @@ public class AzureCloudConfigProperties {
         this.failFast = failFast;
     }
 
-    public CacheExperation getCacheExperation() {
-        return cache;
+    public Duration getCacheExpiration() {
+        return cacheExpiration;
     }
 
     /**
@@ -124,8 +124,8 @@ public class AzureCloudConfigProperties {
      * 
      * @param cache minimum time between refresh checks
      */
-    public void setCacheExperation(CacheExperation cache) {
-        this.cache = cache;
+    public void setCacheExpiration(Duration cacheExpiration) {
+        this.cacheExpiration = cacheExpiration;
     }
 
     @PostConstruct
@@ -142,22 +142,6 @@ public class AzureCloudConfigProperties {
         int uniqueStoreSize = this.stores.stream().map(s -> s.getEndpoint()).distinct().collect(Collectors.toList())
                 .size();
         Assert.isTrue(this.stores.size() == uniqueStoreSize, "Duplicate store name exists.");
-        Assert.isTrue(cache.expiration.getSeconds() >= 1, "Minimum Watch time is 1 Second.");
-    }
-
-    class CacheExperation {
-
-        private Duration expiration = Duration.ofSeconds(30);
-
-        public CacheExperation() {
-        }
-
-        public Duration getExpiration() {
-            return expiration;
-        }
-
-        public void setExpiration(Duration expiration) {
-            this.expiration = expiration;
-        }
+        Assert.isTrue(cacheExpiration.getSeconds() >= 1, "Minimum Watch time is 1 Second.");
     }
 }

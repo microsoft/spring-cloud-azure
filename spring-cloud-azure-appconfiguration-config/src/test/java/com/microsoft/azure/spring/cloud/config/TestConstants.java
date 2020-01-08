@@ -24,8 +24,7 @@ public class TestConstants {
 
     public static final String DEFAULT_CONTEXT_PROP = "spring.cloud.azure.appconfiguration.default-context";
     public static final String CONFIG_ENABLED_PROP = "spring.cloud.azure.appconfiguration.enabled";
-    public static final String AUTO_REFRESH_ENABLED_PROP = "spring.cloud.azure.appconfiguration.auto-refresh.enabled";
-    public static final String AUTO_REFRESH_DELAY_PROP = "spring.cloud.azure.appconfiguration.auto-refresh.interval";
+    public static final String CACHE_EXPIRATION_PROP = "spring.cloud.azure.appconfiguration.cache-expiration";
     public static final String SEPARATOR_PROP = "spring.cloud.azure.appconfiguration.profile-separator";
     
     public static final String FAIL_FAST_PROP = "spring.cloud.azure.appconfiguration.failFast";
