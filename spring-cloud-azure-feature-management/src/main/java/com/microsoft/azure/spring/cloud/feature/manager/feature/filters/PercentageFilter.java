@@ -29,10 +29,6 @@ public class PercentageFilter implements FeatureFilter {
      */
     @Override
     public boolean evaluate(FeatureFilterEvaluationContext context) {
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-        }
         String value = (String) context.getParameters().get(PERCENTAGE_FILTER_SETTING);
 
         boolean result = true;

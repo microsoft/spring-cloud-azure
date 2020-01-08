@@ -46,8 +46,12 @@ public class TimeWindowFilter implements FeatureFilter {
             return false;
         }
 
-        ZonedDateTime startTime = ZonedDateTime.parse(start, DateTimeFormatter.RFC_1123_DATE_TIME);
-        ZonedDateTime endTime = ZonedDateTime.parse(end, DateTimeFormatter.RFC_1123_DATE_TIME);
+        ZonedDateTime startTime = StringUtils.hasText(start)
+                ? ZonedDateTime.parse(start, DateTimeFormatter.RFC_1123_DATE_TIME)
+                : null;
+        ZonedDateTime endTime = StringUtils.hasText(end)
+                ? ZonedDateTime.parse(end, DateTimeFormatter.RFC_1123_DATE_TIME)
+                : null;
 
         return (!StringUtils.hasText(start) || now.isAfter(startTime))
                 && (!StringUtils.hasText(end) || now.isBefore(endTime));
