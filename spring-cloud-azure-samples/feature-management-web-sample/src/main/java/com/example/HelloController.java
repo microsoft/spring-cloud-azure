@@ -5,6 +5,8 @@
  */
 package com.example;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Controller;
@@ -18,6 +20,7 @@ import com.microsoft.azure.spring.cloud.feature.manager.FeatureManagerSnapshot;
 @Controller
 @ConfigurationProperties("controller")
 public class HelloController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(HelloController.class);
 
     @Autowired
     private FeatureManager featureManager;
@@ -27,10 +30,10 @@ public class HelloController {
     
     @GetMapping("/privacy")
     public String getRequestBased(Model model) {
-        model.addAttribute("Beta", featureManager.isEnabled("Beta"));
-        model.addAttribute("isDarkThemeS1", featureManagerSnapshot.isEnabled("DarkTheme"));
-        model.addAttribute("isDarkThemeS2", featureManagerSnapshot.isEnabled("DarkTheme"));
-        model.addAttribute("isDarkThemeS3", featureManagerSnapshot.isEnabled("DarkTheme"));
+        model.addAttribute("Beta", featureManager.isEnabledAsync("Beta").block());
+        model.addAttribute("isDarkThemeS1", featureManagerSnapshot.isEnabledAsync("DarkTheme").block());
+        model.addAttribute("isDarkThemeS2", featureManagerSnapshot.isEnabledAsync("DarkTheme").block());
+        model.addAttribute("isDarkThemeS3", featureManagerSnapshot.isEnabledAsync("DarkTheme").block());
         return "privacy";
     }
 
@@ -47,7 +50,7 @@ public class HelloController {
 
     @GetMapping(value = {"", "/", "/welcome"})
     public String mainWithParam(Model model) {
-        model.addAttribute("Beta", featureManager.isEnabled("Beta"));
+        model.addAttribute("Beta", featureManager.isEnabledAsync("Beta").block());
         return "welcome";
     }
 }

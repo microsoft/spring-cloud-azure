@@ -7,34 +7,33 @@ package com.microsoft.azure.spring.cloud.feature.manager.entities;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.spring.cloud.feature.manager.FeatureManager;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FeatureSet {
+@ConfigurationProperties(prefix = "feature-management")
+public class FeatureSet extends HashMap<String, Object> {
+
+    private static final long serialVersionUID = -4565743301696064767L;
 
     private static Logger logger = LoggerFactory.getLogger(FeatureManager.class);
 
-    @JsonProperty("FeatureManagement")
-    private HashMap<String, Feature> featureManagement;
+    public HashMap<String, Feature> featureManagement;
 
-    private HashMap<String, Boolean> onOff;
-
-    @JsonProperty("features")
-    private HashMap<String, Object> features;
+    public HashMap<String, Boolean> onOff;
 
     private ObjectMapper mapper = new ObjectMapper();
 
     public FeatureSet() {
         featureManagement = new HashMap<String, Feature>();
         onOff = new HashMap<String, Boolean>();
-        features = new HashMap<String, Object>();
     }
 
     /**
@@ -44,28 +43,18 @@ public class FeatureSet {
         return featureManagement;
     }
 
-    /**
-     * @param featureManagement the featureManagement to set
-     */
-    public void setFeatureManagement(HashMap<String, Object> featureManagement) {
-        setFeatures(featureManagement);
+    public void setFeatureManagement(HashMap<String, Feature> featureManagement) {
+        this.featureManagement = featureManagement;
     }
 
     public void addFeature(Feature feature) {
-        featureManagement.put(feature.getKey(), feature);
-    }
-
-    public void setFeatures(HashMap<String, Object> features) {
-        if (features == null) {
-            return;
-        }
-        for (String key : features.keySet()) {
-            addToFeatures(features, key, "");
-        }
+        HashMap<String, Object> features = new HashMap<String, Object>();
+        features.put(feature.getKey(), feature);
+        addToFeatures(features, feature.getKey(), "");
     }
 
     @SuppressWarnings("unchecked")
-    private void addToFeatures(HashMap<String, Object> features, String key, String combined) {
+    private void addToFeatures(Map<? extends String, ? extends Object> features, String key, String combined) {
         Object featureKey = features.get(key);
         if (!combined.isEmpty() && !combined.endsWith(".")) {
             combined += ".";
@@ -89,7 +78,10 @@ public class FeatureSet {
                     }
                 }
             } else {
-                featureManagement.put(key, feature);
+                if (feature != null) {
+                    feature.setKey(key);
+                    featureManagement.put(key, feature);
+                }
             }
         }
     }
@@ -101,10 +93,13 @@ public class FeatureSet {
         return onOff;
     }
 
-    /**
-     * @param onOff the onOff to set
-     */
-    public void setOnOff(HashMap<String, Boolean> onOff) {
-        this.onOff = onOff;
+    @Override
+    public void putAll(Map<? extends String, ? extends Object> m) {
+        if (m == null) {
+            return;
+        }
+        for (String key : m.keySet()) {
+            addToFeatures(m, key, "");
+        }
     }
 }

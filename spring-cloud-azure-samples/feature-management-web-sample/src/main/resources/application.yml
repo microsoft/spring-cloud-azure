@@ -9,23 +9,21 @@ spring:
           delay: 5s
 config:
   message: Hi
-feature-management:
-  featureSet:
-    features:
-      Beta: true
-      DarkTheme:
-        EnabledFor:
-          -
-            name: Random
-            parameters:
-              chance: "50"
-      BetaAB:
-        EnabledFor:
-          -
-            name: Random
-            parameters:
-              chance: "50"
-          -
-            name: ClientFilter
-            parameters:
-              clientIp: 10.0.0.1 
+FeatureManagement:
+  Beta: true
+  DarkTheme:
+    EnabledFor:
+      -
+        Name: Random
+        Parameters:
+          chance: "50"
+  BetaAB:
+    EnabledFor:
+      -
+        Name: Random
+        Parameters:
+          chance: "50"
+      -
+        Name: ClientFilter
+        Parameters:
+          clientIp: 10.0.0.1 
