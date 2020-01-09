@@ -50,7 +50,7 @@ public class AzureConfigCloudWatchTest {
     @Mock
     private Map<String, List<String>> contextsMap;
 
-    AzureCloudConfigWatch watch;
+    AzureCloudConfigRefresh watch;
 
     @Mock
     private Date date;
@@ -63,13 +63,13 @@ public class AzureConfigCloudWatchTest {
         MockitoAnnotations.initMocks(this);
 
         ConfigStore store = new ConfigStore();
-        store.setName(TEST_STORE_NAME);
+        store.setEndpoint(TEST_STORE_NAME);
         store.setConnectionString(TEST_CONN_STRING);
         store.setWatchedKey("/application/*");
         properties = new AzureCloudConfigProperties();
         properties.setStores(Arrays.asList(store));
 
-        properties.getWatch().setDelay(Duration.ofSeconds(-60));
+        properties.setCacheExpiration(Duration.ofSeconds(-60));
 
         contextsMap = new ConcurrentHashMap<>();
         contextsMap.put(TEST_STORE_NAME, Arrays.asList(TEST_ETAG));
@@ -83,7 +83,7 @@ public class AzureConfigCloudWatchTest {
         item.setKey("fake-etag/application/test.key");
         item.setETag("fake-etag");
 
-        watch = new AzureCloudConfigWatch(properties, contextsMap, clientStoreMock);
+        watch = new AzureCloudConfigRefresh(properties, contextsMap, clientStoreMock);
     }
 
     @Test
@@ -123,8 +123,8 @@ public class AzureConfigCloudWatchTest {
     
     @Test
     public void notRefreshTime() throws Exception {
-        properties.getWatch().setDelay(Duration.ofSeconds(60));
-        AzureCloudConfigWatch watchLargeDelay = new AzureCloudConfigWatch(properties, contextsMap, clientStoreMock);
+        properties.setCacheExpiration(Duration.ofSeconds(60));
+        AzureCloudConfigRefresh watchLargeDelay = new AzureCloudConfigRefresh(properties, contextsMap, clientStoreMock);
         
         PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
         watchLargeDelay.setApplicationEventPublisher(eventPublisher);

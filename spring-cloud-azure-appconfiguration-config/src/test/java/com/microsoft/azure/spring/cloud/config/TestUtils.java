@@ -40,7 +40,7 @@ public class TestUtils {
         List<ConfigStore> stores = properties.getStores();
         ConfigStore store = new ConfigStore();
         store.setConnectionString(connectionString);
-        store.setName(storeName);
+        store.setEndpoint(storeName);
         store.setLabel(label);
         stores.add(store);
         properties.setStores(stores);

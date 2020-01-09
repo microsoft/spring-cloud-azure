@@ -26,7 +26,7 @@ import com.microsoft.azure.spring.cloud.config.resource.Connection;
 
 public class ConfigStore {
     private static final String[] EMPTY_LABEL_ONLY = {"\0"};
-    private String name; // Config store name
+    private String endpoint; // Config store endpoint
 
     @Nullable
     @Pattern(regexp = "(/[a-zA-Z0-9.\\-_]+)*")
@@ -45,12 +45,12 @@ public class ConfigStore {
     public ConfigStore() {
     }
 
-    public String getName() {
-        return this.name;
+    public String getEndpoint() {
+        return this.endpoint;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
     }
 
     public String getPrefix() {
@@ -94,8 +94,9 @@ public class ConfigStore {
         if (StringUtils.hasText(connectionString)) {
             String endpoint = (new Connection(connectionString)).getEndpoint();
             try {
-                URI uri = new URI(endpoint);
-                this.name = uri.getHost().split("\\.")[0];
+                // new URI is used to validate the endpoint as a valid URI
+                new URI(endpoint);
+                this.endpoint = endpoint;
             } catch (URISyntaxException e) {
                 throw new IllegalStateException("Endpoint in connection string is not a valid URI.", e);
             }

@@ -112,7 +112,7 @@ public class AzureConfigPropertySourceKeyVaultTest {
     @Rule
     public ExpectedException expected = ExpectedException.none();
     
-    private TokenCredentialProvider tokenCredentialProvider = null;
+    private KeyVaultCredentialProvider tokenCredentialProvider = null;
 
     @BeforeClass
     public static void init() {
