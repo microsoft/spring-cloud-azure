@@ -19,6 +19,8 @@
 
     <modules>
         <module>cache-sample</module>
+        <module>azure-appconfiguration-conversion-sample-initial</module>
+        <module>azure-appconfiguration-conversion-sample-complete</module>
         <module>azure-appconfiguration-sample</module>
         <module>storage-resource-sample</module>
         <module>eventhubs-operation-sample</module>

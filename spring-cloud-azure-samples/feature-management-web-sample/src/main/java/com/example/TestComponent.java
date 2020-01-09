@@ -5,6 +5,8 @@
  */
 package com.example;
 
+import java.util.concurrent.ExecutionException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +18,8 @@ public class TestComponent {
     @Autowired
     private FeatureManager featureManager;
     
-    public String test() {
-        if(featureManager.isEnabled("Beta")) {
+    public String test() throws InterruptedException, ExecutionException {
+        if (featureManager.isEnabledAsync("Beta").block()) {
             return "Beta";
         }
         return "Original";

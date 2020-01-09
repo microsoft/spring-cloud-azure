@@ -8,6 +8,7 @@ package com.microsoft.azure.spring.cloud.config;
 import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_FLAG_CONTENT_TYPE;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_LABEL;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_VALUE;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_BOOLEAN_VALUE;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONTEXT;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_KEY_1;
@@ -30,9 +31,11 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Before;
@@ -53,6 +56,7 @@ import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureFilterEvaluationContext;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
+import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -82,6 +86,9 @@ public class AzureConfigPropertySourceTest {
 
     private static final ConfigurationSetting featureItem = createItem(".appconfig.featureflag/", "Alpha",
             FEATURE_VALUE, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
+    
+    private static final ConfigurationSetting featureItem2 = createItem(".appconfig.featureflag/", "Beta",
+            FEATURE_BOOLEAN_VALUE, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
 
     private static final ConfigurationSetting featureItemNull = createItem(".appconfig.featureflag/", "Alpha",
             FEATURE_VALUE,
@@ -125,7 +132,7 @@ public class AzureConfigPropertySourceTest {
     
     private AppConfigProviderProperties appProperties;
     
-    private TokenCredentialProvider tokenCredentialProvider = null;
+    private KeyVaultCredentialProvider tokenCredentialProvider = null;
 
     @BeforeClass
     public static void init() {
@@ -133,6 +140,7 @@ public class AzureConfigPropertySourceTest {
 
         featureItem.setContentType(FEATURE_FLAG_CONTENT_TYPE);
         FEATURE_ITEMS.add(featureItem);
+        FEATURE_ITEMS.add(featureItem2);
     }
 
     @Before
@@ -141,7 +149,13 @@ public class AzureConfigPropertySourceTest {
         azureProperties = new AzureCloudConfigProperties();
         azureProperties.setFailFast(true);
         appProperties = new AppConfigProviderProperties();
-        propertySource = new AzureConfigPropertySource(TEST_CONTEXT, TEST_STORE_NAME, "\0",
+        ConfigStore configStore = new ConfigStore();
+        configStore.setEndpoint(TEST_STORE_NAME);
+        Map<String, List<String>> storeContextsMap = new HashMap<String, List<String>>();
+        ArrayList<String> contexts = new ArrayList<String>();
+        contexts.add("/application/*");
+        storeContextsMap.put(TEST_STORE_NAME, contexts);
+        propertySource = new AzureConfigPropertySource(TEST_CONTEXT, configStore, "\0",
                 azureProperties, clientStoreMock, appProperties, tokenCredentialProvider);
 
         testItems = new ArrayList<ConfigurationSetting>();
@@ -227,6 +241,7 @@ public class AzureConfigPropertySourceTest {
         filters.add(ffec);
         feature.setEnabledFor(filters);
         featureSetExpected.addFeature("Alpha", feature);
+        featureSetExpected.addFeature("Beta", true);
         LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected, LinkedHashMap.class);
 
         assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));
@@ -263,6 +278,7 @@ public class AzureConfigPropertySourceTest {
         filters.add(ffec);
         feature.setEnabledFor(filters);
         featureSetExpected.addFeature("Alpha", feature);
+        featureSetExpected.addFeature("Beta", true);
         LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected, LinkedHashMap.class);
 
         assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));

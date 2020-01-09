@@ -12,9 +12,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 @EnableAutoConfiguration
 public class FeatureManagerWebApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(FeatureManagerWebApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(FeatureManagerWebApplication.class, args);
+    }
 
 }
+

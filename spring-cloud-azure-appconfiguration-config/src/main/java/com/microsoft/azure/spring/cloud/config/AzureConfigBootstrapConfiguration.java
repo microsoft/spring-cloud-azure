@@ -42,18 +42,16 @@ public class AzureConfigBootstrapConfiguration {
         List<ConfigStore> stores = properties.getStores();
 
         for (ConfigStore store : stores) {
-            if (StringUtils.hasText(store.getName()) && StringUtils.hasText(store.getConnectionString())) {
-                pool.put(store.getName(), new Connection(store.getConnectionString()));
-            } else if (StringUtils.hasText(store.getName())) {
+            if (StringUtils.hasText(store.getEndpoint()) && StringUtils.hasText(store.getConnectionString())) {
+                pool.put(store.getEndpoint(), new Connection(store.getConnectionString()));
+            } else if (StringUtils.hasText(store.getEndpoint())) {
                 AzureManagedIdentityProperties msiProps = properties.getManagedIdentity();
-                
-                String endpoint = "https://" + store.getName() + ".azconfig.io";
                 if (msiProps != null && msiProps.getClientId() != null) {
-                    pool.put(store.getName(), new Connection(endpoint, msiProps.getClientId()));
+                    pool.put(store.getEndpoint(), new Connection(store.getEndpoint(), msiProps.getClientId()));
                 } else {
-                    pool.put(store.getName(), new Connection(endpoint, ""));
+                    pool.put(store.getEndpoint(), new Connection(store.getEndpoint(), ""));
                 }
-                
+
             }
         }
 
@@ -70,9 +68,9 @@ public class AzureConfigBootstrapConfiguration {
     @Bean
     public AzureConfigPropertySourceLocator sourceLocator(AzureCloudConfigProperties properties,
             AppConfigProviderProperties appProperties, ClientStore clients, ApplicationContext context) {
-        TokenCredentialProvider tokenCredentialProvider = null;
+        KeyVaultCredentialProvider keyVaultCredentialProvider = null;
         try {
-            tokenCredentialProvider = context.getBean(TokenCredentialProvider.class);
+            keyVaultCredentialProvider = context.getBean(KeyVaultCredentialProvider.class);
         } catch (NoUniqueBeanDefinitionException e) {
             LOGGER.error("Failed to find unique TokenCredentialProvider Bean for authentication.", e);
             if (properties.isFailFast()) {
@@ -81,15 +79,15 @@ public class AzureConfigBootstrapConfiguration {
         } catch (NoSuchBeanDefinitionException e) {
             LOGGER.info("No TokenCredentialProvider found.");
         }
-        return new AzureConfigPropertySourceLocator(properties, appProperties, clients, tokenCredentialProvider);
+        return new AzureConfigPropertySourceLocator(properties, appProperties, clients, keyVaultCredentialProvider);
     }
 
     @Bean
     public ClientStore buildClientStores(AzureCloudConfigProperties properties,
             AppConfigProviderProperties appProperties, ConnectionPool pool, ApplicationContext context) {
-        TokenCredentialProvider tokenCredentialProvider = null;
+        AppConfigCredentialProvider tokenCredentialProvider = null;
         try {
-            tokenCredentialProvider = context.getBean(TokenCredentialProvider.class);
+            tokenCredentialProvider = context.getBean(AppConfigCredentialProvider.class);
         } catch (NoUniqueBeanDefinitionException e) {
             LOGGER.error("Failed to find unique TokenCredentialProvider Bean for authentication.", e);
             if (properties.isFailFast()) {

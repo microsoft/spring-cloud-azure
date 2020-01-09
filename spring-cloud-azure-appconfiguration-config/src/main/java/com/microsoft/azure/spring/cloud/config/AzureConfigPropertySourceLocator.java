@@ -5,8 +5,6 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,17 +52,17 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
     private ClientStore clients;
 
-    private TokenCredentialProvider tokenCredentialProvider;
+    private KeyVaultCredentialProvider keyVaultCredentialProvider;
 
     public AzureConfigPropertySourceLocator(AzureCloudConfigProperties properties,
             AppConfigProviderProperties appProperties, ClientStore clients,
-            TokenCredentialProvider tokenCredentialProvider) {
+            KeyVaultCredentialProvider keyVaultCredentialProvider) {
         this.properties = properties;
         this.appProperties = appProperties;
         this.profileSeparator = properties.getProfileSeparator();
         this.configStores = properties.getStores();
         this.clients = clients;
-        this.tokenCredentialProvider = tokenCredentialProvider;
+        this.keyVaultCredentialProvider = keyVaultCredentialProvider;
     }
 
     @Override
@@ -191,15 +189,15 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
         try {
             for (String label : store.getLabels()) {
-                AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, store.getName(),
-                        label, properties, clients, appProperties, tokenCredentialProvider);
+                AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, store,
+                        label, properties, clients, appProperties, keyVaultCredentialProvider);
 
                 propertySource.initProperties(featureSet);
                 if (initFeatures) {
                     propertySource.initFeatures(featureSet);
                 }
                 sourceList.add(propertySource);
-                putStoreContext(store.getName(), context, storeContextsMap);
+                putStoreContext(store.getEndpoint(), context, storeContextsMap);
             }
         } catch (Exception e) {
             delayException();

@@ -5,7 +5,12 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import static com.microsoft.azure.spring.cloud.config.Constants.CONFIGURATION_SUFFIX;
 import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_FLAG_CONTENT_TYPE;
+import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_FLAG_PREFIX;
+import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_MANAGEMENT_KEY;
+import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_STORE_WATCH_KEY;
+import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_SUFFIX;
 import static com.microsoft.azure.spring.cloud.config.Constants.KEY_VAULT_CONTENT_TYPE;
 
 import java.io.IOException;
@@ -22,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
 
 import com.azure.data.appconfiguration.ConfigurationClient;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
@@ -33,6 +39,7 @@ import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureManagementItem;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
+import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 import com.microsoft.azure.spring.cloud.config.stores.KeyVaultClient;
 
 public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigurationClient> {
@@ -42,40 +49,38 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
 
     private Map<String, Object> properties = new LinkedHashMap<>();
 
-    private final String storeName;
-
     private final String label;
 
     private AzureCloudConfigProperties azureProperties;
 
     private static ObjectMapper mapper = new ObjectMapper();
 
-    private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
-
-    private static final String FEATURE_FLAG_PREFIX = ".appconfig.featureflag/";
-
     private HashMap<String, KeyVaultClient> keyVaultClients;
 
     private ClientStore clients;
 
-    private TokenCredentialProvider tokenCredentialProvider;
-    
+    private KeyVaultCredentialProvider keyVaultCredentialProvider;
+
     private AppConfigProviderProperties appProperties;
 
-    AzureConfigPropertySource(String context, String storeName, String label,
+    private ConfigStore configStore;
+
+    private Map<String, List<String>> storeContextsMap;
+
+    AzureConfigPropertySource(String context, ConfigStore configStore, String label,
             AzureCloudConfigProperties azureProperties, ClientStore clients,
-            AppConfigProviderProperties appProperties, TokenCredentialProvider tokenCredentialProvider) {
+            AppConfigProviderProperties appProperties, KeyVaultCredentialProvider keyVaultCredentialProvider) {
         // The context alone does not uniquely define a PropertySource, append storeName
         // and label to uniquely define a PropertySource
-        super(context + storeName + "/" + label);
+        super(context + configStore.getEndpoint() + "/" + label);
         this.context = context;
-        this.storeName = storeName;
+        this.configStore = configStore;
         this.label = label;
         this.azureProperties = azureProperties;
         this.appProperties = appProperties;
         this.keyVaultClients = new HashMap<String, KeyVaultClient>();
         this.clients = clients;
-        this.tokenCredentialProvider = tokenCredentialProvider;
+        this.keyVaultCredentialProvider = keyVaultCredentialProvider;
     }
 
     @Override
@@ -106,15 +111,21 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
      * @return Updated Feature Set from Property Source
      */
     FeatureSet initProperties(FeatureSet featureSet) throws IOException {
+        String storeName = configStore.getEndpoint();
         Date date = new Date();
         SettingSelector settingSelector = new SettingSelector();
         if (!label.equals("%00")) {
-            settingSelector.setLabels(label);
+            settingSelector.setLabelFilter(label);
         }
 
         // * for wildcard match
-        settingSelector.setKeys(context + "*");
+        settingSelector.setKeyFilter(context + "*");
         List<ConfigurationSetting> settings = clients.listSettings(settingSelector, storeName);
+
+        // Reading In Features
+        settingSelector.setKeyFilter(".appconfig*");
+        List<ConfigurationSetting> features = clients.listSettings(settingSelector, storeName);
+
         if (settings == null) {
             if (!azureProperties.isFailFast()) {
                 return featureSet;
@@ -134,14 +145,31 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
             } else {
                 properties.put(key, setting.getValue());
             }
-
         }
 
-        // Reading In Features
-        settingSelector.setKeys(".appconfig*");
-        settings = clients.listSettings(settingSelector, storeName);
+        featureSet = addToFeatureSet(featureSet, features, date);
 
-        return addToFeatureSet(featureSet, settings, date);
+        // Setting new ETag values for Watch
+        String watchedKeyNames = clients.watchedKeyNames(configStore, storeContextsMap);
+        settingSelector = new SettingSelector().setKeyFilter(watchedKeyNames)
+                .setLabelFilter(StringUtils.arrayToCommaDelimitedString(configStore.getLabels()));
+
+        List<ConfigurationSetting> configurationRevisions = clients.listSettingRevisons(settingSelector, storeName);
+
+        settingSelector = new SettingSelector().setKeyFilter(FEATURE_STORE_WATCH_KEY)
+                .setLabelFilter(StringUtils.arrayToCommaDelimitedString(configStore.getLabels()));
+
+        List<ConfigurationSetting> featureRevisions = clients.listSettingRevisons(settingSelector, storeName);
+
+        if (configurationRevisions != null && !configurationRevisions.isEmpty()) {
+            StateHolder.setState(configStore.getEndpoint() + CONFIGURATION_SUFFIX, configurationRevisions.get(0));
+        }
+
+        if (featureRevisions != null && !featureRevisions.isEmpty()) {
+            StateHolder.setState(configStore.getEndpoint() + FEATURE_SUFFIX, featureRevisions.get(0));
+        }
+
+        return featureSet;
     }
 
     /**
@@ -183,7 +211,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
             // Check if we already have a client for this key vault, if not we will make
             // one
             if (!keyVaultClients.containsKey(uri.getHost())) {
-                KeyVaultClient client = new KeyVaultClient(uri, tokenCredentialProvider, azureProperties);
+                KeyVaultClient client = new KeyVaultClient(uri, keyVaultCredentialProvider, azureProperties);
                 keyVaultClients.put(uri.getHost(), client);
             }
             KeyVaultSecret secret = keyVaultClients.get(uri.getHost()).getSecret(uri, appProperties.getMaxRetryTime());

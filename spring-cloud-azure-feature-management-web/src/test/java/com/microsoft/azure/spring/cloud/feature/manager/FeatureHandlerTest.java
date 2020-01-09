@@ -22,6 +22,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.web.method.HandlerMethod;
 
+import reactor.core.publisher.Mono;
+
 /**
  * Unit test for simple App.
  */
@@ -61,56 +63,59 @@ public class FeatureHandlerTest {
 
         assertTrue(featureHandler.preHandle(request, response, handlerMethod));
     }
-    
+
     @Test
     public void preHandlFeatureOn() throws NoSuchMethodException, SecurityException {
         Method method = TestClass.class.getMethod("featureOnAnnotation");
         when(handlerMethod.getMethod()).thenReturn(method);
-        when(featureManager.isEnabled(Mockito.matches("test"))).thenReturn(true);
+        when(featureManager.isEnabledAsync(Mockito.matches("test"))).thenReturn(Mono.just(true));
 
         assertTrue(featureHandler.preHandle(request, response, handlerMethod));
     }
-    
+
     @Test
     public void preHandlFeatureOnSnapshot() throws NoSuchMethodException, SecurityException {
         Method method = TestClass.class.getMethod("featureOnAnnotationSnapshot");
         when(handlerMethod.getMethod()).thenReturn(method);
-        when(featureManagerSnapshot.isEnabled(Mockito.matches("test"))).thenReturn(true);
+        when(featureManagerSnapshot.isEnabledAsync(Mockito.matches("test"))).thenReturn(Mono.just(true));
 
         assertTrue(featureHandler.preHandle(request, response, handlerMethod));
     }
-    
+
     @Test
     public void preHandlFeatureOnNotEnabled() throws NoSuchMethodException, SecurityException {
         Method method = TestClass.class.getMethod("featureOnAnnotation");
         when(handlerMethod.getMethod()).thenReturn(method);
-        when(featureManager.isEnabled(Mockito.matches("test"))).thenReturn(false);
+        when(featureManager.isEnabledAsync(Mockito.matches("test"))).thenReturn(Mono.just(false));
 
         assertFalse(featureHandler.preHandle(request, response, handlerMethod));
     }
-    
+
     @Test
     public void preHandlFeatureOnRedirect() throws NoSuchMethodException, SecurityException {
         Method method = TestClass.class.getMethod("featureOnAnnotaitonRedirected");
         when(handlerMethod.getMethod()).thenReturn(method);
-        when(featureManager.isEnabled(Mockito.matches("test"))).thenReturn(false);
-        
+        when(featureManager.isEnabledAsync(Mockito.matches("test"))).thenReturn(Mono.just(false));
 
         assertFalse(featureHandler.preHandle(request, response, handlerMethod));
     }
 
     protected class TestClass {
 
-        public void noAnnotation() {}
-        
+        public void noAnnotation() {
+        }
+
         @FeatureGate(feature = "test")
-        public void featureOnAnnotation() {}
-        
+        public void featureOnAnnotation() {
+        }
+
         @FeatureGate(feature = "test", snapshot = true)
-        public void featureOnAnnotationSnapshot() {}
-        
+        public void featureOnAnnotationSnapshot() {
+        }
+
         @FeatureGate(feature = "test", fallback = "/redirected")
-        public void featureOnAnnotaitonRedirected() {}
+        public void featureOnAnnotaitonRedirected() {
+        }
 
     }
 

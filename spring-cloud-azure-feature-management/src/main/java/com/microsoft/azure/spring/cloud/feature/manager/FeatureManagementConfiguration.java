@@ -9,13 +9,15 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.microsoft.azure.spring.cloud.feature.manager.entities.FeatureSet;
+
 @Configuration
-@EnableConfigurationProperties(FeatureManagementConfigProperties.class)
+@EnableConfigurationProperties({ FeatureManagementConfigProperties.class, FeatureSet.class })
 public class FeatureManagementConfiguration {
     
     @Bean
-    public FeatureManager featureManager(FeatureManagementConfigProperties properties) {
-        return new FeatureManager(properties);
+    public FeatureManager featureManager(FeatureManagementConfigProperties properties, FeatureSet featureSet) {
+        return new FeatureManager(properties, featureSet);
     }
 
 }
