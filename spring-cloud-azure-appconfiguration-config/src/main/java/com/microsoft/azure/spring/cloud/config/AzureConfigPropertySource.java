@@ -149,26 +149,24 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
 
         featureSet = addToFeatureSet(featureSet, features, date);
 
-        if (azureProperties.getAutoRefresh().isEnabled()) {
-            // Setting new ETag values for Watch
-            String watchedKeyNames = clients.watchedKeyNames(configStore, storeContextsMap);
-            settingSelector = new SettingSelector().setKeyFilter(watchedKeyNames)
-                    .setLabelFilter(StringUtils.arrayToCommaDelimitedString(configStore.getLabels()));
+        // Setting new ETag values for Watch
+        String watchedKeyNames = clients.watchedKeyNames(configStore, storeContextsMap);
+        settingSelector = new SettingSelector().setKeyFilter(watchedKeyNames)
+                .setLabelFilter(StringUtils.arrayToCommaDelimitedString(configStore.getLabels()));
 
-            List<ConfigurationSetting> configurationRevisions = clients.listSettingRevisons(settingSelector, storeName);
+        List<ConfigurationSetting> configurationRevisions = clients.listSettingRevisons(settingSelector, storeName);
 
-            settingSelector = new SettingSelector().setKeyFilter(FEATURE_STORE_WATCH_KEY)
-                    .setLabelFilter(StringUtils.arrayToCommaDelimitedString(configStore.getLabels()));
+        settingSelector = new SettingSelector().setKeyFilter(FEATURE_STORE_WATCH_KEY)
+                .setLabelFilter(StringUtils.arrayToCommaDelimitedString(configStore.getLabels()));
 
-            List<ConfigurationSetting> featureRevisions = clients.listSettingRevisons(settingSelector, storeName);
+        List<ConfigurationSetting> featureRevisions = clients.listSettingRevisons(settingSelector, storeName);
 
-            if (configurationRevisions != null && !configurationRevisions.isEmpty()) {
-                StateHolder.setState(configStore.getEndpoint() + CONFIGURATION_SUFFIX, configurationRevisions.get(0));
-            }
+        if (configurationRevisions != null && !configurationRevisions.isEmpty()) {
+            StateHolder.setState(configStore.getEndpoint() + CONFIGURATION_SUFFIX, configurationRevisions.get(0));
+        }
 
-            if (featureRevisions != null && !featureRevisions.isEmpty()) {
-                StateHolder.setState(configStore.getEndpoint() + FEATURE_SUFFIX, featureRevisions.get(0));
-            }
+        if (featureRevisions != null && !featureRevisions.isEmpty()) {
+            StateHolder.setState(configStore.getEndpoint() + FEATURE_SUFFIX, featureRevisions.get(0));
         }
 
         return featureSet;

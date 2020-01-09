@@ -37,12 +37,11 @@ import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationEventPublisher;
 
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
-import com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties.AutoRefresh;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 @RunWith(PowerMockRunner.class)
-public class AzureConfigCloudWatchTest {
+public class AzureConfigCloudRefreshTest {
 
     @Mock
     private ApplicationEventPublisher eventPublisher;
@@ -54,9 +53,6 @@ public class AzureConfigCloudWatchTest {
 
     @Mock
     private Map<String, List<String>> contextsMap;
-
-    @Mock
-    private AutoRefresh refresh;
 
     AzureCloudConfigRefresh configRefresh;
 
