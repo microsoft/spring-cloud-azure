@@ -69,7 +69,7 @@ public class ClientStore {
             throw new IllegalArgumentException(
                     "More than 1 Conncetion method was set for connecting to App Configuration.");
         }
-        
+
         if (tokenCredential != null) {
             // User Provided Token Credential
             builder.credential(tokenCredential);

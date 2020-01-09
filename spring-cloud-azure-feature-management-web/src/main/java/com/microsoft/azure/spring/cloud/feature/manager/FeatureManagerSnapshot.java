@@ -5,10 +5,11 @@
  */
 package com.microsoft.azure.spring.cloud.feature.manager;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+
+import reactor.core.publisher.Mono;
 
 /**
  * Holds information on Feature Management properties and can check if a given feature is
@@ -19,11 +20,11 @@ public class FeatureManagerSnapshot {
 
     private FeatureManager featureManager;
 
-    @Autowired
-    private HttpServletRequest request;
-    
+    private HashMap<String, Boolean> requestMap;
+
     public FeatureManagerSnapshot(FeatureManager featureManager) {
         this.featureManager = featureManager;
+        this.requestMap = new HashMap<String, Boolean>();
     }
 
     /**
@@ -38,19 +39,11 @@ public class FeatureManagerSnapshot {
      * @param feature Feature being checked.
      * @return state of the feature
      */
-    public boolean isEnabled(String feature) {
-        if (request.getAttribute(feature) != null) {
-            return (boolean) request.getAttribute(feature);
+    public Mono<Boolean> isEnabledAsync(String feature) {
+        if (requestMap.get(feature) != null) {
+            return Mono.just((boolean) requestMap.get(feature));
         }
-        boolean enabled = featureManager.isEnabled(feature);
-        request.setAttribute(feature, enabled);
-        return enabled;
-    }
 
-    /**
-     * @param request the request to set
-     */
-    public void setRequest(HttpServletRequest request) {
-        this.request = request;
+        return featureManager.isEnabledAsync(feature).doOnSuccess((enabled) -> requestMap.put(feature, enabled));
     }
 }

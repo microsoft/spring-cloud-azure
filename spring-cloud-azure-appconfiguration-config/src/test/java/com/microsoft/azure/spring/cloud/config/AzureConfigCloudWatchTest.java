@@ -78,7 +78,7 @@ public class AzureConfigCloudWatchTest {
         properties = new AzureCloudConfigProperties();
         properties.setStores(Arrays.asList(store));
 
-        properties.getAutoRefresh().setInterval(Duration.ofSeconds(-60));
+        properties.setCacheExpiration(Duration.ofSeconds(-60));
 
         contextsMap = new ConcurrentHashMap<>();
         contextsMap.put(TEST_STORE_NAME, Arrays.asList(TEST_ETAG));
@@ -142,7 +142,7 @@ public class AzureConfigCloudWatchTest {
 
     @Test
     public void notRefreshTime() throws Exception {
-        properties.getAutoRefresh().setInterval(Duration.ofSeconds(60));
+        properties.setCacheExpiration(Duration.ofSeconds(60));
         AzureCloudConfigRefresh watchLargeDelay = new AzureCloudConfigRefresh(properties, contextsMap, clientStoreMock);
         
         PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);

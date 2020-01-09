@@ -53,7 +53,7 @@ public class AzureCloudConfigRefresh implements ApplicationEventPublisherAware {
             ClientStore clientStore) {
         this.configStores = properties.getStores();
         this.storeContextsMap = storeContextsMap;
-        this.delay = properties.getAutoRefresh().getInterval();
+        this.delay = properties.getCacheExpiration();
         this.lastCheckedTime = new Date();
         this.clientStore = clientStore;
         this.eventDataInfo = "";

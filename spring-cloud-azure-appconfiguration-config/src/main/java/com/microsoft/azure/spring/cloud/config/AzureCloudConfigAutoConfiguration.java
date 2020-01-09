@@ -28,7 +28,6 @@ public class AzureCloudConfigAutoConfiguration {
         }
 
         @Bean
-        @ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "auto-refresh.enabled")
         public ConfigListener configListener(AzureCloudConfigRefresh azureCloudConfigWatch) {
             return new ConfigListener(azureCloudConfigWatch);
         }

@@ -5,8 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import static com.microsoft.azure.spring.cloud.config.TestConstants.AUTO_REFRESH_DELAY_PROP;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.AUTO_REFRESH_ENABLED_PROP;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.CACHE_EXPIRATION_PROP;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.CONN_STRING_PROP;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.CONN_STRING_PROP_NEW;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.DEFAULT_CONTEXT_PROP;
@@ -104,7 +103,7 @@ public class AzureCloudConfigPropertiesTest {
         try {
             PowerMockito.whenNew(ObjectMapper.class).withAnyArguments().thenReturn(mockObjectMapper);
             when(mockClosableHttpResponse.getStatusLine())
-                    .thenReturn(new BasicStatusLine(new ProtocolVersion("", 0, 0), 200, ""));
+                .thenReturn(new BasicStatusLine(new ProtocolVersion("", 0, 0), 200, ""));
             when(mockClosableHttpResponse.getEntity()).thenReturn(mockHttpEntity);
             when(mockHttpEntity.getContent()).thenReturn(mockInputStream);
         } catch (Exception e) {
@@ -211,8 +210,7 @@ public class AzureCloudConfigPropertiesTest {
     @Test
     public void invalidWatchTime() {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING))
-                .withPropertyValues(propPair(AUTO_REFRESH_ENABLED_PROP, "true"),
-                        propPair(AUTO_REFRESH_DELAY_PROP, "99ms"))
+                .withPropertyValues(propPair(CACHE_EXPIRATION_PROP, "99ms"))
                 .run(context -> {
                     assertThat(context).getFailure().hasStackTraceContaining("Minimum Watch time is 1 Second.");
                 });
@@ -221,8 +219,7 @@ public class AzureCloudConfigPropertiesTest {
     @Test
     public void minValidWatchTime() {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING))
-                .withPropertyValues(propPair(AUTO_REFRESH_ENABLED_PROP, "true"),
-                        propPair(AUTO_REFRESH_DELAY_PROP, "1s"))
+                .withPropertyValues(propPair(CACHE_EXPIRATION_PROP, "1s"))
                 .run(context -> {
                     assertThat(context).hasSingleBean(AzureCloudConfigProperties.class);
                 });

@@ -15,10 +15,10 @@ import org.springframework.web.context.support.ServletRequestHandledEvent;
 public class ConfigListener implements ApplicationListener<ServletRequestHandledEvent> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigListener.class);
 
-    private AzureCloudConfigRefresh azureCloudConfigWatch;
+    private AzureCloudConfigRefresh azureCloudConfigRefresh;
 
-    public ConfigListener(AzureCloudConfigRefresh azureCloudConfigWatch) {
-        this.azureCloudConfigWatch = azureCloudConfigWatch;
+    public ConfigListener(AzureCloudConfigRefresh azureCloudConfigRefresh) {
+        this.azureCloudConfigRefresh = azureCloudConfigRefresh;
     }
 
     @Override
