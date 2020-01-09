@@ -103,6 +103,8 @@ public class AzureCloudConfigRefresh implements ApplicationEventPublisherAware {
                         needsRefresh = refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY) ? true
                                 : needsRefresh;
                     }
+                    // Resetting last Checked date to now.
+                    lastCheckedTime = new Date();
                 }
                 if (needsRefresh) {
                     // Only one refresh Event needs to be call to update all of the
@@ -110,8 +112,6 @@ public class AzureCloudConfigRefresh implements ApplicationEventPublisherAware {
                     RefreshEventData eventData = new RefreshEventData(eventDataInfo);
                     publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
                 }
-                // Resetting last Checked date to now.
-                lastCheckedTime = new Date();
             } finally {
                 running.set(false);
             }

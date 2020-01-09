@@ -68,8 +68,8 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
     private Map<String, List<String>> storeContextsMap;
 
     AzureConfigPropertySource(String context, ConfigStore configStore, String label,
-            AzureCloudConfigProperties azureProperties, ClientStore clients,
-            AppConfigProviderProperties appProperties, KeyVaultCredentialProvider keyVaultCredentialProvider) {
+            AzureCloudConfigProperties azureProperties, ClientStore clients, AppConfigProviderProperties appProperties,
+            KeyVaultCredentialProvider keyVaultCredentialProvider, Map<String, List<String>> storeContextsMap) {
         // The context alone does not uniquely define a PropertySource, append storeName
         // and label to uniquely define a PropertySource
         super(context + configStore.getEndpoint() + "/" + label);
@@ -81,6 +81,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
         this.keyVaultClients = new HashMap<String, KeyVaultClient>();
         this.clients = clients;
         this.keyVaultCredentialProvider = keyVaultCredentialProvider;
+        this.storeContextsMap = storeContextsMap;
     }
 
     @Override

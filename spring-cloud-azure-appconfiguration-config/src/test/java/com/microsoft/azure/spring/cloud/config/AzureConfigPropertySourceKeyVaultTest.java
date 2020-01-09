@@ -138,7 +138,7 @@ public class AzureConfigPropertySourceKeyVaultTest {
         contexts.add("/application/*");
         storeContextsMap.put(TEST_STORE_NAME, contexts);
         propertySource = new AzureConfigPropertySource(TEST_CONTEXT, testStore, "\0",
-                azureProperties, clientStoreMock, appProperties, tokenCredentialProvider);
+                azureProperties, clientStoreMock, appProperties, tokenCredentialProvider, storeContextsMap);
 
         testItems = new ArrayList<ConfigurationSetting>();
         testItems.add(item1);
