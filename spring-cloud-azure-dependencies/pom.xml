@@ -6,10 +6,44 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.microsoft.azure</groupId>
     <artifactId>spring-cloud-azure-dependencies</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Azure dependencies BOM</name>
     <description>BOM for Spring Cloud Azure dependencies</description>
+    <url>https://github.com/microsoft/spring-cloud-azure</url>
+
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>https://github.com/microsoft/spring-cloud-azure/blob/master/LICENSE.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>XiaoluDai</id>
+            <name>Xiaolu Dai</name>
+            <email>xiada@microsoft.com</email>
+        </developer>
+
+        <developer>
+            <id>ZhouLiu</id>
+            <name>Zhou Liu</name>
+            <email>liuzhou@microsoft.com</email>
+        </developer>
+    </developers>
+
+    <organization>
+        <name>Microsoft</name>
+        <url>https://www.microsoft.com</url>
+    </organization>
+
+    <scm>
+        <connection>scm:git:git://github.com/Microsoft/spring-cloud-azure.git</connection>
+        <developerConnection>scm:git:ssh://github.com:Microsoft/spring-cloud-azure.git</developerConnection>
+        <url>https://github.com/Microsoft/spring-cloud-azure/tree/master</url>
+    </scm>
 
     <properties>
         <powermock.version>1.7.1</powermock.version>
@@ -26,7 +60,7 @@
         <javax.jms-api.version>2.0.1</javax.jms-api.version>
         <spring-jms.version>5.1.8.RELEASE</spring-jms.version>
         <qpid-jms-client.version>0.43.0</qpid-jms-client.version>
-        <spring.cloud.azure.version>1.1.0-SNAPSHOT</spring.cloud.azure.version>
+        <spring.cloud.azure.version>1.1.1-SNAPSHOT</spring.cloud.azure.version>
         <okhttp3.version>3.11.0</okhttp3.version>
 		<azure-core.version>1.2.0</azure-core.version>
 		<azure-data-appconfiguration.version>1.0.1</azure-data-appconfiguration.version>

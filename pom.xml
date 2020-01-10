@@ -5,10 +5,44 @@
 
     <groupId>com.microsoft.azure</groupId>
     <artifactId>spring-cloud-azure</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Azure</name>
     <description>Spring Cloud Azure</description>
+    <url>https://github.com/microsoft/spring-cloud-azure</url>
+
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>https://github.com/microsoft/spring-cloud-azure/blob/master/LICENSE.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>XiaoluDai</id>
+            <name>Xiaolu Dai</name>
+            <email>xiada@microsoft.com</email>
+        </developer>
+
+        <developer>
+            <id>ZhouLiu</id>
+            <name>Zhou Liu</name>
+            <email>liuzhou@microsoft.com</email>
+        </developer>
+    </developers>
+
+    <organization>
+        <name>Microsoft</name>
+        <url>https://www.microsoft.com</url>
+    </organization>
+
+    <scm>
+        <connection>scm:git:git://github.com/Microsoft/spring-cloud-azure.git</connection>
+        <developerConnection>scm:git:ssh://github.com:Microsoft/spring-cloud-azure.git</developerConnection>
+        <url>https://github.com/Microsoft/spring-cloud-azure/tree/master</url>
+    </scm>
 
     <parent>
         <groupId>org.springframework.cloud</groupId>
@@ -36,7 +70,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <dependency.bom.version>1.1.0-SNAPSHOT</dependency.bom.version>
+        <dependency.bom.version>1.1.1-SNAPSHOT</dependency.bom.version>
     </properties>
 
     <dependencyManagement>
