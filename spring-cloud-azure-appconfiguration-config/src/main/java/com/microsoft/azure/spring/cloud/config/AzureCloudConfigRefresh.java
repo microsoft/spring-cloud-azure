@@ -83,7 +83,7 @@ public class AzureCloudConfigRefresh implements ApplicationEventPublisherAware {
      * @return If a refresh event is called.
      */
     private boolean refreshStores() {
-        boolean needsRefresh = false;
+        boolean willRefresh = false;
         if (running.compareAndSet(false, true)) {
             try {
                 Date notCachedTime = null;
@@ -97,26 +97,26 @@ public class AzureCloudConfigRefresh implements ApplicationEventPublisherAware {
                 if (notCachedTime == null || date.after(notCachedTime)) {
                     for (ConfigStore configStore : configStores) {
                         String watchedKeyNames = clientStore.watchedKeyNames(configStore, storeContextsMap);
-                        needsRefresh = refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames) ? true
-                                : needsRefresh;
+                        willRefresh = refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames) ? true
+                                : willRefresh;
                         // Refresh Feature Flags
-                        needsRefresh = refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY) ? true
-                                : needsRefresh;
+                        willRefresh = refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY) ? true
+                                : willRefresh;
                     }
+                    // Resetting last Checked date to now.
+                    lastCheckedTime = new Date();
                 }
-                if (needsRefresh) {
+                if (willRefresh) {
                     // Only one refresh Event needs to be call to update all of the
                     // stores, not one for each.
                     RefreshEventData eventData = new RefreshEventData(eventDataInfo);
                     publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
                 }
-                // Resetting last Checked date to now.
-                lastCheckedTime = new Date();
             } finally {
                 running.set(false);
             }
         }
-        return needsRefresh;
+        return willRefresh;
     }
 
     /**
