@@ -74,6 +74,8 @@ public class TestConstants {
     public static final String FEATURE_KEY = "feature-management.featureManagement";
     public static final String FEATURE_VALUE = "{\"id\":\"Alpha\",\"description\":\"\",\"enabled\":true,"
             + "\"conditions\":{\"client_filters\":[{\"Name\":\"TestFilter\"}]}}";
+    public static final String FEATURE_BOOLEAN_VALUE = "{\"id\":\"Beta\",\"description\":\"\",\"enabled\":true,"
+            + "\"conditions\":{\"client_filters\":[]}}";
     public static final String FEATURE_LABEL = "";
 
     public static final String LIST_KEY_1 = "test.list[0].key";

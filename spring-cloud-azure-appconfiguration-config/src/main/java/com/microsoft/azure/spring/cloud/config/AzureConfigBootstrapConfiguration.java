@@ -46,13 +46,12 @@ public class AzureConfigBootstrapConfiguration {
                 pool.put(store.getEndpoint(), new Connection(store.getConnectionString()));
             } else if (StringUtils.hasText(store.getEndpoint())) {
                 AzureManagedIdentityProperties msiProps = properties.getManagedIdentity();
-                
                 if (msiProps != null && msiProps.getClientId() != null) {
                     pool.put(store.getEndpoint(), new Connection(store.getEndpoint(), msiProps.getClientId()));
                 } else {
                     pool.put(store.getEndpoint(), new Connection(store.getEndpoint(), ""));
                 }
-                
+
             }
         }
 
