@@ -10,7 +10,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.rmi.ServerException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +25,7 @@ import org.springframework.core.env.Environment;
 import com.microsoft.azure.spring.cloud.config.AppConfigProviderProperties;
 import com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties;
 import com.microsoft.azure.spring.cloud.config.AzureConfigPropertySourceLocator;
-import com.microsoft.azure.spring.cloud.config.TokenCredentialProvider;
+import com.microsoft.azure.spring.cloud.config.KeyVaultCredentialProvider;
 
 public class AzureConfigPropertySourceLocatorTest {
 
@@ -44,7 +43,7 @@ public class AzureConfigPropertySourceLocatorTest {
 
     private AzureConfigPropertySourceLocator azureConfigPropertySourceLocator;
 
-    private TokenCredentialProvider tokenCredentialProvider = null;
+    private KeyVaultCredentialProvider tokenCredentialProvider = null;
 
     @Before
     public void setup() {
@@ -68,7 +67,7 @@ public class AzureConfigPropertySourceLocatorTest {
         when(env.getActiveProfiles()).thenReturn(array);
         String[] labels = { "" };
         when(configStore.getLabels()).thenReturn(labels);
-        when(clients.listSettings(Mockito.any(), Mockito.any())).thenThrow(new ServerException(""));
+        when(clients.listSettings(Mockito.any(), Mockito.any())).thenThrow(new NullPointerException(""));
         when(appProperties.getPrekillTime()).thenReturn(-60);
         when(appProperties.getStartDate()).thenReturn(new Date());
 

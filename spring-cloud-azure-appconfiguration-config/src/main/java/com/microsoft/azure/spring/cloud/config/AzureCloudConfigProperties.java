@@ -27,9 +27,10 @@ import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentity
 
 @Validated
 @ConfigurationProperties(prefix = AzureCloudConfigProperties.CONFIG_PREFIX)
-@Import({AppConfigProviderProperties.class})
+@Import({ AppConfigProviderProperties.class })
 public class AzureCloudConfigProperties {
     public static final String CONFIG_PREFIX = "spring.cloud.azure.appconfiguration";
+
     public static final String LABEL_SEPARATOR = ",";
 
     private boolean enabled = true;
@@ -39,7 +40,8 @@ public class AzureCloudConfigProperties {
     @NotEmpty
     private String defaultContext = "application";
 
-    // Alternative to Spring application name, if not configured, fallback to default Spring application name
+    // Alternative to Spring application name, if not configured, fallback to default
+    // Spring application name
     @Nullable
     private String name;
 
@@ -53,7 +55,7 @@ public class AzureCloudConfigProperties {
 
     private boolean failFast = true;
 
-    private Watch watch = new Watch();
+    private Duration cacheExpiration = Duration.ofSeconds(30);
 
     public boolean isEnabled() {
         return enabled;
@@ -112,17 +114,18 @@ public class AzureCloudConfigProperties {
         this.failFast = failFast;
     }
 
-    public Watch getWatch() {
-        return watch;
+    public Duration getCacheExpiration() {
+        return cacheExpiration;
     }
 
     /**
-     * The minimum watch time between refresh checks. The minimum valid watch time is 1s.
+     * The minimum time between checks. The minimum valid cache time is 1s. The default
+     * cache time is 30s.
      * 
-     * @param watch minimum time between refresh checks
+     * @param cache minimum time between refresh checks
      */
-    public void setWatch(Watch watch) {
-        this.watch = watch;
+    public void setCacheExpiration(Duration cacheExpiration) {
+        this.cacheExpiration = cacheExpiration;
     }
 
     @PostConstruct
@@ -130,38 +133,15 @@ public class AzureCloudConfigProperties {
         Assert.notEmpty(this.stores, "At least one config store has to be configured.");
 
         this.stores.forEach(store -> {
-            Assert.isTrue(StringUtils.hasText(store.getName()) ||
-                        StringUtils.hasText(store.getConnectionString()),
+            Assert.isTrue(StringUtils.hasText(store.getEndpoint()) ||
+                    StringUtils.hasText(store.getConnectionString()),
                     "Either configuration store name or connection string should be configured.");
             store.validateAndInit();
         });
 
-        int uniqueStoreSize = this.stores.stream().map(s -> s.getName()).distinct().collect(Collectors.toList()).size();
+        int uniqueStoreSize = this.stores.stream().map(s -> s.getEndpoint()).distinct().collect(Collectors.toList())
+                .size();
         Assert.isTrue(this.stores.size() == uniqueStoreSize, "Duplicate store name exists.");
-        Assert.isTrue(watch.delay.getSeconds()  >= 1, "Minimum Watch time is 1 Second.");
-    }
-
-    class Watch {
-        private boolean enabled = false;
-        private Duration delay = Duration.ofSeconds(30);
-
-        public Watch() {
-        }
-
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public void setEnabled(boolean enabled) {
-            this.enabled = enabled;
-        }
-
-        public Duration getDelay() {
-            return delay;
-        }
-
-        public void setDelay(Duration delay) {
-            this.delay = delay;
-        }
+        Assert.isTrue(cacheExpiration.getSeconds() >= 1, "Minimum Watch time is 1 Second.");
     }
 }

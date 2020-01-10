@@ -90,7 +90,7 @@ public class AzureConfigPropertySourceLocatorTest {
 
     private AppConfigProviderProperties appProperties;
 
-    private TokenCredentialProvider tokenCredentialProvider = null;
+    private KeyVaultCredentialProvider tokenCredentialProvider = null;
 
     @BeforeClass
     public static void init() {

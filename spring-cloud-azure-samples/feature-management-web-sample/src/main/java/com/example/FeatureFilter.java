@@ -23,7 +23,7 @@ import com.microsoft.azure.spring.cloud.feature.manager.FeatureManager;
 @Component
 public class FeatureFilter implements Filter {
     
-    private static Logger logger = LoggerFactory.getLogger(FeatureFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FeatureFilter.class);
     
     @Autowired
     private FeatureManager featureManager;
@@ -31,12 +31,11 @@ public class FeatureFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        if(!featureManager.isEnabled("Beta")) {
-            logger.info("skip new Beta filter");
+        if (!featureManager.isEnabledAsync("Beta").block()) {
             chain.doFilter(request, response);
             return;
         }
-        logger.info("Run the Beta filter");
-        chain.doFilter(request, response); 
+        LOGGER.info("Run the Beta filter");
+        chain.doFilter(request, response);
     }
 }

@@ -30,8 +30,10 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -52,6 +54,7 @@ import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
+import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 import com.microsoft.azure.spring.cloud.config.stores.KeyVaultClient;
 
 import reactor.core.publisher.Flux;
@@ -112,7 +115,7 @@ public class AzureConfigPropertySourceKeyVaultTest {
     @Rule
     public ExpectedException expected = ExpectedException.none();
     
-    private TokenCredentialProvider tokenCredentialProvider = null;
+    private KeyVaultCredentialProvider tokenCredentialProvider = null;
 
     @BeforeClass
     public static void init() {
@@ -128,8 +131,14 @@ public class AzureConfigPropertySourceKeyVaultTest {
         azureProperties.setFailFast(true);
         appProperties = new AppConfigProviderProperties();
         appProperties.setMaxRetryTime(0);
-        propertySource = new AzureConfigPropertySource(TEST_CONTEXT, TEST_STORE_NAME, "\0",
-                azureProperties, clientStoreMock, appProperties, tokenCredentialProvider);
+        ConfigStore testStore = new ConfigStore();
+        testStore.setEndpoint(TEST_STORE_NAME);
+        Map<String, List<String>> storeContextsMap = new HashMap<String, List<String>>();
+        ArrayList<String> contexts = new ArrayList<String>();
+        contexts.add("/application/*");
+        storeContextsMap.put(TEST_STORE_NAME, contexts);
+        propertySource = new AzureConfigPropertySource(TEST_CONTEXT, testStore, "\0",
+                azureProperties, clientStoreMock, appProperties, tokenCredentialProvider, storeContextsMap);
 
         testItems = new ArrayList<ConfigurationSetting>();
         testItems.add(item1);
