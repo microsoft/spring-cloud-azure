@@ -6,6 +6,7 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import static com.microsoft.azure.spring.cloud.config.Constants.CONFIGURATION_SUFFIX;
+import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_SUFFIX;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_ETAG;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME;
@@ -25,13 +26,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -61,6 +62,8 @@ public class AzureConfigCloudRefreshTest {
 
     @Mock
     private ClientStore clientStoreMock;
+    
+    private static final String WATCHED_KEYS = "/application/*";
 
     @Before
     public void setup() {
@@ -69,12 +72,12 @@ public class AzureConfigCloudRefreshTest {
         ConfigStore store = new ConfigStore();
         store.setEndpoint(TEST_STORE_NAME);
         store.setConnectionString(TEST_CONN_STRING);
-        store.setWatchedKey("/application/*");
-        
+        store.setWatchedKey(WATCHED_KEYS);
+
         properties = new AzureCloudConfigProperties();
         properties.setStores(Arrays.asList(store));
 
-        properties.setCacheExpiration(Duration.ofSeconds(-60));
+        properties.setCacheExpiration(Duration.ofMinutes(-60));
 
         contextsMap = new ConcurrentHashMap<>();
         contextsMap.put(TEST_STORE_NAME, Arrays.asList(TEST_ETAG));
@@ -88,39 +91,50 @@ public class AzureConfigCloudRefreshTest {
         item.setKey("fake-etag/application/test.key");
         item.setETag("fake-etag");
         
+        when(clientStoreMock.watchedKeyNames(Mockito.any(), Mockito.any())).thenReturn(WATCHED_KEYS);
+
         configRefresh = new AzureCloudConfigRefresh(properties, contextsMap, clientStoreMock);
     }
 
+    @After
+    public void cleanupMethod() {
+        StateHolder.setState(TEST_STORE_NAME + CONFIGURATION_SUFFIX,  new ConfigurationSetting());
+        StateHolder.setState(TEST_STORE_NAME + FEATURE_SUFFIX,  new ConfigurationSetting());
+    }
+
     @Test
-    public void firstCallShouldPublishEvent() throws Exception {
-        PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
+    public void nonUpdatedEtagShouldntPublishEvent() throws Exception {
+        StateHolder.setState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, initialResponse().get(0));
+        StateHolder.setState(TEST_STORE_NAME + FEATURE_SUFFIX, initialResponse().get(0));
+
         configRefresh.setApplicationEventPublisher(eventPublisher);
 
         when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(initialResponse());
 
-        when(date.after(Mockito.any(Date.class))).thenReturn(true);
-        configRefresh.refreshConfigurations();
+        configRefresh.refreshConfigurations().get();
         verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
     }
 
     @Test
     public void updatedEtagShouldPublishEvent() throws Exception {
-        PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
-        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(initialResponse())
-                .thenReturn(updatedResponse());
+        StateHolder.setState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, initialResponse().get(0));
+        StateHolder.setState(TEST_STORE_NAME + FEATURE_SUFFIX, initialResponse().get(0));
+        
+        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(initialResponse());
         configRefresh.setApplicationEventPublisher(eventPublisher);
-
-        when(date.after(Mockito.any(Date.class))).thenReturn(true);
 
         // The first time an action happens it can't update
         assertFalse(configRefresh.refreshConfigurations().get());
         verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
 
-        StateHolder.setState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, new ConfigurationSetting());
+        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(updatedResponse());
 
         // If there is a change it should update
         assertTrue(configRefresh.refreshConfigurations().get());
         verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
+        
+        StateHolder.setState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, updatedResponse().get(0));
+        StateHolder.setState(TEST_STORE_NAME + FEATURE_SUFFIX, updatedResponse().get(0));
 
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("store1_configuration", "fake-etag-updated");
@@ -138,14 +152,14 @@ public class AzureConfigCloudRefreshTest {
 
     @Test
     public void notRefreshTime() throws Exception {
-        properties.setCacheExpiration(Duration.ofSeconds(60));
-        AzureCloudConfigRefresh watchLargeDelay = new AzureCloudConfigRefresh(properties, contextsMap, clientStoreMock);
+        StateHolder.setState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, initialResponse().get(0));
+        StateHolder.setState(TEST_STORE_NAME + FEATURE_SUFFIX, initialResponse().get(0));
         
-        PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
-        watchLargeDelay.setApplicationEventPublisher(eventPublisher);
+        properties.setCacheExpiration(Duration.ofMinutes(60));
+        AzureCloudConfigRefresh watchLargeDelay = new AzureCloudConfigRefresh(properties, contextsMap, clientStoreMock);
 
-        when(date.after(Mockito.any(Date.class))).thenReturn(true);
-        watchLargeDelay.refreshConfigurations();
+        watchLargeDelay.setApplicationEventPublisher(eventPublisher);
+        watchLargeDelay.refreshConfigurations().get();
 
         // The first time an action happens it can update
         verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));

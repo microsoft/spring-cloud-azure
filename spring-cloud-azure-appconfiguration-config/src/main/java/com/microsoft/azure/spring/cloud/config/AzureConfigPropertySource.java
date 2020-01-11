@@ -238,7 +238,8 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
      * @param featureSet Feature Flag info to be set to this property source.
      */
     void initFeatures(FeatureSet featureSet) {
-        properties.put(FEATURE_MANAGEMENT_KEY, mapper.convertValue(featureSet, LinkedHashMap.class));
+        properties.put(FEATURE_MANAGEMENT_KEY,
+                mapper.convertValue(featureSet.getFeatureManagement(), LinkedHashMap.class));
     }
 
     /**
