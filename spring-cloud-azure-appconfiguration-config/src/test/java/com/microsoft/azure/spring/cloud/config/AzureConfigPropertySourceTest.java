@@ -61,267 +61,266 @@ import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-
 public class AzureConfigPropertySourceTest {
-    private static final String EMPTY_CONTENT_TYPE = "";
+	private static final String EMPTY_CONTENT_TYPE = "";
 
-    private static final AzureCloudConfigProperties TEST_PROPS = new AzureCloudConfigProperties();
+	private static final AzureCloudConfigProperties TEST_PROPS = new AzureCloudConfigProperties();
 
-    public static final List<ConfigurationSetting> TEST_ITEMS = new ArrayList<>();
+	public static final List<ConfigurationSetting> TEST_ITEMS = new ArrayList<>();
 
-    public static final List<ConfigurationSetting> FEATURE_ITEMS = new ArrayList<>();
+	public static final List<ConfigurationSetting> FEATURE_ITEMS = new ArrayList<>();
 
-    private static final ConfigurationSetting item1 = createItem(TEST_CONTEXT, TEST_KEY_1, TEST_VALUE_1, TEST_LABEL_1,
-            EMPTY_CONTENT_TYPE);
+	private static final ConfigurationSetting item1 = createItem(TEST_CONTEXT, TEST_KEY_1, TEST_VALUE_1, TEST_LABEL_1,
+			EMPTY_CONTENT_TYPE);
 
-    private static final ConfigurationSetting item2 = createItem(TEST_CONTEXT, TEST_KEY_2, TEST_VALUE_2, TEST_LABEL_2,
-            EMPTY_CONTENT_TYPE);
+	private static final ConfigurationSetting item2 = createItem(TEST_CONTEXT, TEST_KEY_2, TEST_VALUE_2, TEST_LABEL_2,
+			EMPTY_CONTENT_TYPE);
 
-    private static final ConfigurationSetting item3 = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3, TEST_LABEL_3,
-            EMPTY_CONTENT_TYPE);
+	private static final ConfigurationSetting item3 = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3, TEST_LABEL_3,
+			EMPTY_CONTENT_TYPE);
 
-    private static final ConfigurationSetting item3Null = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3,
-            TEST_LABEL_3,
-            null);
+	private static final ConfigurationSetting item3Null = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3,
+			TEST_LABEL_3, null);
 
-    private static final ConfigurationSetting featureItem = createItem(".appconfig.featureflag/", "Alpha",
-            FEATURE_VALUE, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
-    
-    private static final ConfigurationSetting featureItem2 = createItem(".appconfig.featureflag/", "Beta",
-            FEATURE_BOOLEAN_VALUE, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
+	private static final ConfigurationSetting featureItem = createItem(".appconfig.featureflag/", "Alpha",
+			FEATURE_VALUE, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
 
-    private static final ConfigurationSetting featureItemNull = createItem(".appconfig.featureflag/", "Alpha",
-            FEATURE_VALUE,
-            FEATURE_LABEL, null);
+	private static final ConfigurationSetting featureItem2 = createItem(".appconfig.featureflag/", "Beta",
+			FEATURE_BOOLEAN_VALUE, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
 
-    public List<ConfigurationSetting> testItems = new ArrayList<>();
+	private static final ConfigurationSetting featureItemNull = createItem(".appconfig.featureflag/", "Alpha",
+			FEATURE_VALUE, FEATURE_LABEL, null);
 
-    private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
+	public List<ConfigurationSetting> testItems = new ArrayList<>();
 
-    private AzureConfigPropertySource propertySource;
+	private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
 
-    private static ObjectMapper mapper = new ObjectMapper();
+	private AzureConfigPropertySource propertySource;
 
-    private AzureCloudConfigProperties azureProperties;
-    @Mock
-    private ClientStore clientStoreMock;
+	private static ObjectMapper mapper = new ObjectMapper();
 
-    @Mock
-    private ConfigurationAsyncClient configClientMock;
+	private AzureCloudConfigProperties azureProperties;
+	@Mock
+	private ClientStore clientStoreMock;
 
-    @Mock
-    private PagedFlux<ConfigurationSetting> settingsMock;
+	@Mock
+	private ConfigurationAsyncClient configClientMock;
 
-    @Mock
-    private Flux<PagedResponse<ConfigurationSetting>> pageMock;
+	@Mock
+	private PagedFlux<ConfigurationSetting> settingsMock;
 
-    @Mock
-    private Mono<List<PagedResponse<ConfigurationSetting>>> collectionMock;
+	@Mock
+	private Flux<PagedResponse<ConfigurationSetting>> pageMock;
 
-    @Mock
-    private List<PagedResponse<ConfigurationSetting>> itemsMock;
+	@Mock
+	private Mono<List<PagedResponse<ConfigurationSetting>>> collectionMock;
 
-    @Mock
-    private Iterator<PagedResponse<ConfigurationSetting>> itemsIteratorMock;
+	@Mock
+	private List<PagedResponse<ConfigurationSetting>> itemsMock;
 
-    @Mock
-    private PagedResponse<ConfigurationSetting> pagedResponseMock;
+	@Mock
+	private Iterator<PagedResponse<ConfigurationSetting>> itemsIteratorMock;
 
-    @Rule
-    public ExpectedException expected = ExpectedException.none();
-    
-    private AppConfigProviderProperties appProperties;
-    
-    private KeyVaultCredentialProvider tokenCredentialProvider = null;
+	@Mock
+	private PagedResponse<ConfigurationSetting> pagedResponseMock;
 
-    @BeforeClass
-    public static void init() {
-        TestUtils.addStore(TEST_PROPS, TEST_STORE_NAME, TEST_CONN_STRING);
+	@Rule
+	public ExpectedException expected = ExpectedException.none();
 
-        featureItem.setContentType(FEATURE_FLAG_CONTENT_TYPE);
-        FEATURE_ITEMS.add(featureItem);
-        FEATURE_ITEMS.add(featureItem2);
-    }
+	private AppConfigProviderProperties appProperties;
 
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-        azureProperties = new AzureCloudConfigProperties();
-        azureProperties.setFailFast(true);
-        appProperties = new AppConfigProviderProperties();
-        ConfigStore configStore = new ConfigStore();
-        configStore.setEndpoint(TEST_STORE_NAME);
-        Map<String, List<String>> storeContextsMap = new HashMap<String, List<String>>();
-        ArrayList<String> contexts = new ArrayList<String>();
-        contexts.add("/application/*");
-        storeContextsMap.put(TEST_STORE_NAME, contexts);
-        propertySource = new AzureConfigPropertySource(TEST_CONTEXT, configStore, "\0",
-                azureProperties, clientStoreMock, appProperties, tokenCredentialProvider, storeContextsMap);
+	private KeyVaultCredentialProvider tokenCredentialProvider = null;
 
-        testItems = new ArrayList<ConfigurationSetting>();
-        testItems.add(item1);
-        testItems.add(item2);
-        testItems.add(item3);
+	@BeforeClass
+	public static void init() {
+		TestUtils.addStore(TEST_PROPS, TEST_STORE_NAME, TEST_CONN_STRING);
 
-        when(configClientMock.listConfigurationSettings(Mockito.any())).thenReturn(settingsMock);
-        when(settingsMock.byPage()).thenReturn(pageMock);
-        when(pageMock.collectList()).thenReturn(collectionMock);
-        when(collectionMock.block()).thenReturn(itemsMock);
-        when(itemsMock.iterator()).thenReturn(itemsIteratorMock);
-        when(itemsIteratorMock.next()).thenReturn(pagedResponseMock);
-    }
+		featureItem.setContentType(FEATURE_FLAG_CONTENT_TYPE);
+		FEATURE_ITEMS.add(featureItem);
+		FEATURE_ITEMS.add(featureItem2);
+	}
 
-    @Test
-    public void testPropCanBeInitAndQueried() throws IOException {
-        when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(testItems)
-                .thenReturn(FEATURE_ITEMS);
-        FeatureSet featureSet = new FeatureSet();
-        try {
-            propertySource.initProperties(featureSet);
-        } catch (IOException e) {
-            fail("Failed Reading in Feature Flags");
-        }
-        propertySource.initFeatures(featureSet);
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+		azureProperties = new AzureCloudConfigProperties();
+		azureProperties.setFailFast(true);
+		appProperties = new AppConfigProviderProperties();
+		ConfigStore configStore = new ConfigStore();
+		configStore.setEndpoint(TEST_STORE_NAME);
+		Map<String, List<String>> storeContextsMap = new HashMap<String, List<String>>();
+		ArrayList<String> contexts = new ArrayList<String>();
+		contexts.add("/application/*");
+		storeContextsMap.put(TEST_STORE_NAME, contexts);
+		propertySource = new AzureConfigPropertySource(TEST_CONTEXT, configStore, "\0", azureProperties,
+				clientStoreMock, appProperties, tokenCredentialProvider, storeContextsMap);
 
-        String[] keyNames = propertySource.getPropertyNames();
-        String[] expectedKeyNames = testItems.stream()
-                .map(t -> t.getKey().substring(TEST_CONTEXT.length())).toArray(String[]::new);
-        String[] allExpectedKeyNames = ArrayUtils.addAll(expectedKeyNames, FEATURE_MANAGEMENT_KEY);
+		testItems = new ArrayList<ConfigurationSetting>();
+		testItems.add(item1);
+		testItems.add(item2);
+		testItems.add(item3);
 
-        assertThat(keyNames).containsExactlyInAnyOrder(allExpectedKeyNames);
+		when(configClientMock.listConfigurationSettings(Mockito.any())).thenReturn(settingsMock);
+		when(settingsMock.byPage()).thenReturn(pageMock);
+		when(pageMock.collectList()).thenReturn(collectionMock);
+		when(collectionMock.block()).thenReturn(itemsMock);
+		when(itemsMock.iterator()).thenReturn(itemsIteratorMock);
+		when(itemsIteratorMock.next()).thenReturn(pagedResponseMock);
+	}
 
-        assertThat(propertySource.getProperty(TEST_KEY_1)).isEqualTo(TEST_VALUE_1);
-        assertThat(propertySource.getProperty(TEST_KEY_2)).isEqualTo(TEST_VALUE_2);
-        assertThat(propertySource.getProperty(TEST_KEY_3)).isEqualTo(TEST_VALUE_3);
-    }
+	@Test
+	public void testPropCanBeInitAndQueried() throws IOException {
+		when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(testItems)
+				.thenReturn(FEATURE_ITEMS);
+		FeatureSet featureSet = new FeatureSet();
+		try {
+			propertySource.initProperties(featureSet);
+		} catch (IOException e) {
+			fail("Failed Reading in Feature Flags");
+		}
+		propertySource.initFeatures(featureSet);
 
-    @Test
-    public void testPropertyNameSlashConvertedToDots() throws IOException {
-        ConfigurationSetting slashedProp = createItem(TEST_CONTEXT, TEST_SLASH_KEY, TEST_SLASH_VALUE, null,
-                EMPTY_CONTENT_TYPE);
-        List<ConfigurationSetting> settings = new ArrayList<ConfigurationSetting>();
-        settings.add(slashedProp);
-        when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(settings)
-                .thenReturn(new ArrayList<ConfigurationSetting>());
-        FeatureSet featureSet = new FeatureSet();
-        try {
-            propertySource.initProperties(featureSet);
-        } catch (IOException e) {
-            fail("Failed Reading in Feature Flags");
-        }
+		String[] keyNames = propertySource.getPropertyNames();
+		String[] expectedKeyNames = testItems.stream().map(t -> t.getKey().substring(TEST_CONTEXT.length()))
+				.toArray(String[]::new);
+		String[] allExpectedKeyNames = ArrayUtils.addAll(expectedKeyNames, FEATURE_MANAGEMENT_KEY);
 
-        String expectedKeyName = TEST_SLASH_KEY.replace('/', '.');
-        String[] actualKeyNames = propertySource.getPropertyNames();
+		assertThat(keyNames).containsExactlyInAnyOrder(allExpectedKeyNames);
 
-        assertThat(actualKeyNames.length).isEqualTo(1);
-        assertThat(actualKeyNames[0]).isEqualTo(expectedKeyName);
-        assertThat(propertySource.getProperty(TEST_SLASH_KEY)).isNull();
-        assertThat(propertySource.getProperty(expectedKeyName)).isEqualTo(TEST_SLASH_VALUE);
-    }
+		assertThat(propertySource.getProperty(TEST_KEY_1)).isEqualTo(TEST_VALUE_1);
+		assertThat(propertySource.getProperty(TEST_KEY_2)).isEqualTo(TEST_VALUE_2);
+		assertThat(propertySource.getProperty(TEST_KEY_3)).isEqualTo(TEST_VALUE_3);
+	}
 
-    @Test
-    public void testFeatureFlagCanBeInitedAndQueried() throws IOException {
-        when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString()))
-                .thenReturn(new ArrayList<ConfigurationSetting>()).thenReturn(FEATURE_ITEMS);
+	@Test
+	public void testPropertyNameSlashConvertedToDots() throws IOException {
+		ConfigurationSetting slashedProp = createItem(TEST_CONTEXT, TEST_SLASH_KEY, TEST_SLASH_VALUE, null,
+				EMPTY_CONTENT_TYPE);
+		List<ConfigurationSetting> settings = new ArrayList<ConfigurationSetting>();
+		settings.add(slashedProp);
+		when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(settings)
+				.thenReturn(new ArrayList<ConfigurationSetting>());
+		FeatureSet featureSet = new FeatureSet();
+		try {
+			propertySource.initProperties(featureSet);
+		} catch (IOException e) {
+			fail("Failed Reading in Feature Flags");
+		}
 
-        FeatureSet featureSet = new FeatureSet();
-        try {
-            propertySource.initProperties(featureSet);
-        } catch (IOException e) {
-            fail("Failed Reading in Feature Flags");
-        }
-        propertySource.initFeatures(featureSet);
+		String expectedKeyName = TEST_SLASH_KEY.replace('/', '.');
+		String[] actualKeyNames = propertySource.getPropertyNames();
 
-        FeatureSet featureSetExpected = new FeatureSet();
-        Feature feature = new Feature();
-        feature.setKey("Alpha");
-        ArrayList<FeatureFilterEvaluationContext> filters = new ArrayList<FeatureFilterEvaluationContext>();
-        FeatureFilterEvaluationContext ffec = new FeatureFilterEvaluationContext();
-        ffec.setName("TestFilter");
-        filters.add(ffec);
-        feature.setEnabledFor(filters);
-        featureSetExpected.addFeature("Alpha", feature);
-        featureSetExpected.addFeature("Beta", true);
-        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected, LinkedHashMap.class);
+		assertThat(actualKeyNames.length).isEqualTo(1);
+		assertThat(actualKeyNames[0]).isEqualTo(expectedKeyName);
+		assertThat(propertySource.getProperty(TEST_SLASH_KEY)).isNull();
+		assertThat(propertySource.getProperty(expectedKeyName)).isEqualTo(TEST_SLASH_VALUE);
+	}
 
-        assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));
-    }
+	@Test
+	public void testFeatureFlagCanBeInitedAndQueried() throws IOException {
+		when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString()))
+				.thenReturn(new ArrayList<ConfigurationSetting>()).thenReturn(FEATURE_ITEMS);
 
-    @Test
-    public void testFeatureFlagThrowError() throws IOException {
-        FeatureSet featureSet = new FeatureSet();
-        try {
-            propertySource.initProperties(featureSet);
-        } catch (IOException e) {
-            assertEquals("Found Feature Flag /foo/test_key_1 with invalid Content Type of ", e.getMessage());
-        }
-    }
+		FeatureSet featureSet = new FeatureSet();
+		try {
+			propertySource.initProperties(featureSet);
+		} catch (IOException e) {
+			fail("Failed Reading in Feature Flags");
+		}
+		propertySource.initFeatures(featureSet);
 
-    @Test
-    public void testFeatureFlagBuildError() throws IOException {
-        when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(FEATURE_ITEMS);
+		FeatureSet featureSetExpected = new FeatureSet();
+		Feature feature = new Feature();
+		feature.setKey("Alpha");
+		ArrayList<FeatureFilterEvaluationContext> filters = new ArrayList<FeatureFilterEvaluationContext>();
+		FeatureFilterEvaluationContext ffec = new FeatureFilterEvaluationContext();
+		ffec.setName("TestFilter");
+		filters.add(ffec);
+		feature.setEnabledFor(filters);
+		featureSetExpected.addFeature("Alpha", feature);
+		featureSetExpected.addFeature("Beta", true);
+		LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected.getFeatureManagement(),
+                LinkedHashMap.class);
 
-        FeatureSet featureSet = new FeatureSet();
-        try {
-            propertySource.initProperties(featureSet);
-        } catch (IOException e) {
-            fail();
-        }
-        propertySource.initFeatures(featureSet);
+		assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));
+	}
 
-        FeatureSet featureSetExpected = new FeatureSet();
-        Feature feature = new Feature();
-        feature.setKey("Alpha");
-        ArrayList<FeatureFilterEvaluationContext> filters = new ArrayList<FeatureFilterEvaluationContext>();
-        FeatureFilterEvaluationContext ffec = new FeatureFilterEvaluationContext();
-        ffec.setName("TestFilter");
-        filters.add(ffec);
-        feature.setEnabledFor(filters);
-        featureSetExpected.addFeature("Alpha", feature);
-        featureSetExpected.addFeature("Beta", true);
-        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected, LinkedHashMap.class);
+	@Test
+	public void testFeatureFlagThrowError() throws IOException {
+		FeatureSet featureSet = new FeatureSet();
+		try {
+			propertySource.initProperties(featureSet);
+		} catch (IOException e) {
+			assertEquals("Found Feature Flag /foo/test_key_1 with invalid Content Type of ", e.getMessage());
+		}
+	}
 
-        assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));
-    }
+	@Test
+	public void testFeatureFlagBuildError() throws IOException {
+		when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(FEATURE_ITEMS);
 
-    @Test
-    public void initNullValidContentTypeTest() throws IOException {
-        ArrayList<ConfigurationSetting> items = new ArrayList<ConfigurationSetting>();
-        items.add(item3Null);
-        when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(items)
-                .thenReturn(new ArrayList<ConfigurationSetting>());
+		FeatureSet featureSet = new FeatureSet();
+		try {
+			propertySource.initProperties(featureSet);
+		} catch (IOException e) {
+			fail();
+		}
+		propertySource.initFeatures(featureSet);
 
-        FeatureSet featureSet = new FeatureSet();
-        try {
-            propertySource.initProperties(featureSet);
-        } catch (IOException e) {
-            fail("Failed Reading in Feature Flags");
-        }
+		FeatureSet featureSetExpected = new FeatureSet();
+		Feature feature = new Feature();
+		feature.setKey("Alpha");
+		ArrayList<FeatureFilterEvaluationContext> filters = new ArrayList<FeatureFilterEvaluationContext>();
+		FeatureFilterEvaluationContext ffec = new FeatureFilterEvaluationContext();
+		ffec.setName("TestFilter");
+		filters.add(ffec);
+		feature.setEnabledFor(filters);
+		featureSetExpected.addFeature("Alpha", feature);
+		featureSetExpected.addFeature("Beta", true);
+		LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected.getFeatureManagement(),
+                LinkedHashMap.class);
 
-        String[] keyNames = propertySource.getPropertyNames();
-        String[] expectedKeyNames = items.stream()
-                .map(t -> t.getKey().substring(TEST_CONTEXT.length())).toArray(String[]::new);
+		assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));
+	}
 
-        assertThat(keyNames).containsExactlyInAnyOrder(expectedKeyNames);
-    }
+	@Test
+	public void initNullValidContentTypeTest() throws IOException {
+		ArrayList<ConfigurationSetting> items = new ArrayList<ConfigurationSetting>();
+		items.add(item3Null);
+		when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(items)
+				.thenReturn(new ArrayList<ConfigurationSetting>());
 
-    @Test
-    public void initNullInvalidContentTypeFeatureFlagTest() throws IOException {
-        ArrayList<ConfigurationSetting> items = new ArrayList<ConfigurationSetting>();
-        items.add(featureItemNull);
-        when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString()))
-                .thenReturn(new ArrayList<ConfigurationSetting>()).thenReturn(items);
+		FeatureSet featureSet = new FeatureSet();
+		try {
+			propertySource.initProperties(featureSet);
+		} catch (IOException e) {
+			fail("Failed Reading in Feature Flags");
+		}
 
-        FeatureSet featureSet = new FeatureSet();
-        try {
-            propertySource.initProperties(featureSet);
-        } catch (IOException e) {
+		String[] keyNames = propertySource.getPropertyNames();
+		String[] expectedKeyNames = items.stream().map(t -> t.getKey().substring(TEST_CONTEXT.length()))
+				.toArray(String[]::new);
 
-        }
+		assertThat(keyNames).containsExactlyInAnyOrder(expectedKeyNames);
+	}
 
-        String[] keyNames = propertySource.getPropertyNames();
-        String[] expectedKeyNames = {};
+	@Test
+	public void initNullInvalidContentTypeFeatureFlagTest() throws IOException {
+		ArrayList<ConfigurationSetting> items = new ArrayList<ConfigurationSetting>();
+		items.add(featureItemNull);
+		when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString()))
+				.thenReturn(new ArrayList<ConfigurationSetting>()).thenReturn(items);
 
-        assertThat(keyNames).containsExactlyInAnyOrder(expectedKeyNames);
-    }
+		FeatureSet featureSet = new FeatureSet();
+		try {
+			propertySource.initProperties(featureSet);
+		} catch (IOException e) {
+
+		}
+
+		String[] keyNames = propertySource.getPropertyNames();
+		String[] expectedKeyNames = {};
+
+		assertThat(keyNames).containsExactlyInAnyOrder(expectedKeyNames);
+	}
 }

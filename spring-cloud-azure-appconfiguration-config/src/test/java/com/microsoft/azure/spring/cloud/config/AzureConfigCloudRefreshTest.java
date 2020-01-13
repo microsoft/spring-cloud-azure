@@ -6,6 +6,7 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import static com.microsoft.azure.spring.cloud.config.Constants.CONFIGURATION_SUFFIX;
+import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_SUFFIX;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_ETAG;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,126 +45,139 @@ import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 @RunWith(PowerMockRunner.class)
 public class AzureConfigCloudRefreshTest {
 
-    @Mock
-    private ApplicationEventPublisher eventPublisher;
+	@Mock
+	private ApplicationEventPublisher eventPublisher;
 
-    @Mock
-    private AzureCloudConfigProperties properties;
+	@Mock
+	private AzureCloudConfigProperties properties;
 
-    private ArrayList<ConfigurationSetting> keys;
+	private ArrayList<ConfigurationSetting> keys;
 
-    @Mock
-    private Map<String, List<String>> contextsMap;
+	@Mock
+	private Map<String, List<String>> contextsMap;
 
-    AzureCloudConfigRefresh configRefresh;
+	AzureCloudConfigRefresh configRefresh;
 
-    @Mock
-    private Date date;
+	@Mock
+	private Date date;
 
-    @Mock
-    private ClientStore clientStoreMock;
+	@Mock
+	private ClientStore clientStoreMock;
 
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
+	private static final String WATCHED_KEYS = "/application/*";
 
-        ConfigStore store = new ConfigStore();
-        store.setEndpoint(TEST_STORE_NAME);
-        store.setConnectionString(TEST_CONN_STRING);
-        store.setWatchedKey("/application/*");
-        
-        properties = new AzureCloudConfigProperties();
-        properties.setStores(Arrays.asList(store));
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
 
-        properties.setCacheExpiration(Duration.ofSeconds(-60));
+		ConfigStore store = new ConfigStore();
+		store.setEndpoint(TEST_STORE_NAME);
+		store.setConnectionString(TEST_CONN_STRING);
+		store.setWatchedKey(WATCHED_KEYS);
 
-        contextsMap = new ConcurrentHashMap<>();
-        contextsMap.put(TEST_STORE_NAME, Arrays.asList(TEST_ETAG));
-        keys = new ArrayList<ConfigurationSetting>();
-        ConfigurationSetting kvi = new ConfigurationSetting();
-        kvi.setKey("fake-etag/application/test.key");
-        kvi.setValue("TestValue");
-        keys.add(kvi);
+		properties = new AzureCloudConfigProperties();
+		properties.setStores(Arrays.asList(store));
 
-        ConfigurationSetting item = new ConfigurationSetting();
-        item.setKey("fake-etag/application/test.key");
-        item.setETag("fake-etag");
-        
-        configRefresh = new AzureCloudConfigRefresh(properties, contextsMap, clientStoreMock);
-    }
+		properties.setCacheExpiration(Duration.ofMinutes(-60));
 
-    @Test
-    public void firstCallShouldPublishEvent() throws Exception {
-        PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
-        configRefresh.setApplicationEventPublisher(eventPublisher);
+		contextsMap = new ConcurrentHashMap<>();
+		contextsMap.put(TEST_STORE_NAME, Arrays.asList(TEST_ETAG));
+		keys = new ArrayList<ConfigurationSetting>();
+		ConfigurationSetting kvi = new ConfigurationSetting();
+		kvi.setKey("fake-etag/application/test.key");
+		kvi.setValue("TestValue");
+		keys.add(kvi);
 
-        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(initialResponse());
+		ConfigurationSetting item = new ConfigurationSetting();
+		item.setKey("fake-etag/application/test.key");
+		item.setETag("fake-etag");
 
-        when(date.after(Mockito.any(Date.class))).thenReturn(true);
-        configRefresh.refreshConfigurations();
-        verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
-    }
+		when(clientStoreMock.watchedKeyNames(Mockito.any(), Mockito.any())).thenReturn(WATCHED_KEYS);
 
-    @Test
-    public void updatedEtagShouldPublishEvent() throws Exception {
-        PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
-        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(initialResponse())
-                .thenReturn(updatedResponse());
-        configRefresh.setApplicationEventPublisher(eventPublisher);
+		configRefresh = new AzureCloudConfigRefresh(properties, contextsMap, clientStoreMock);
+	}
 
-        when(date.after(Mockito.any(Date.class))).thenReturn(true);
+	@After
+	public void cleanupMethod() {
+		StateHolder.setState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, new ConfigurationSetting());
+		StateHolder.setState(TEST_STORE_NAME + FEATURE_SUFFIX, new ConfigurationSetting());
+	}
 
-        // The first time an action happens it can't update
-        assertFalse(configRefresh.refreshConfigurations().get());
-        verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
+	@Test
+	public void nonUpdatedEtagShouldntPublishEvent() throws Exception {
+		StateHolder.setState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, initialResponse().get(0));
+		StateHolder.setState(TEST_STORE_NAME + FEATURE_SUFFIX, initialResponse().get(0));
 
-        StateHolder.setState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, new ConfigurationSetting());
+		configRefresh.setApplicationEventPublisher(eventPublisher);
 
-        // If there is a change it should update
-        assertTrue(configRefresh.refreshConfigurations().get());
-        verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
+		when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(initialResponse());
 
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put("store1_configuration", "fake-etag-updated");
-        map.put("store1_feature", "fake-etag-updated");
+		configRefresh.refreshConfigurations().get();
+		verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
+	}
 
-        ConfigurationSetting updated = new ConfigurationSetting();
-        updated.setETag("fake-etag-updated");
+	@Test
+	public void updatedEtagShouldPublishEvent() throws Exception {
+		StateHolder.setState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, initialResponse().get(0));
+		StateHolder.setState(TEST_STORE_NAME + FEATURE_SUFFIX, initialResponse().get(0));
 
-        StateHolder.setState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, updated);
+		when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(initialResponse());
+		configRefresh.setApplicationEventPublisher(eventPublisher);
 
-        // If there is no change it shouldn't update
-        assertFalse(configRefresh.refreshConfigurations().get());
-        verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
-    }
+		// The first time an action happens it can't update
+		assertFalse(configRefresh.refreshConfigurations().get());
+		verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
 
-    @Test
-    public void notRefreshTime() throws Exception {
-        properties.setCacheExpiration(Duration.ofSeconds(60));
+		when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(updatedResponse());
+
+		// If there is a change it should update
+		assertTrue(configRefresh.refreshConfigurations().get());
+		verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
+
+		StateHolder.setState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, updatedResponse().get(0));
+		StateHolder.setState(TEST_STORE_NAME + FEATURE_SUFFIX, updatedResponse().get(0));
+
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("store1_configuration", "fake-etag-updated");
+		map.put("store1_feature", "fake-etag-updated");
+
+		ConfigurationSetting updated = new ConfigurationSetting();
+		updated.setETag("fake-etag-updated");
+
+		StateHolder.setState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, updated);
+
+		// If there is no change it shouldn't update
+		assertFalse(configRefresh.refreshConfigurations().get());
+		verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
+	}
+
+	@Test
+	public void notRefreshTime() throws Exception {
+		StateHolder.setState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, initialResponse().get(0));
+		StateHolder.setState(TEST_STORE_NAME + FEATURE_SUFFIX, initialResponse().get(0));
+
+		properties.setCacheExpiration(Duration.ofMinutes(60));
         AzureCloudConfigRefresh watchLargeDelay = new AzureCloudConfigRefresh(properties, contextsMap, clientStoreMock);
-        
-        PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(date);
+
         watchLargeDelay.setApplicationEventPublisher(eventPublisher);
+        watchLargeDelay.refreshConfigurations().get();
 
-        when(date.after(Mockito.any(Date.class))).thenReturn(true);
-        watchLargeDelay.refreshConfigurations();
+		// The first time an action happens it can update
+		verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
+	}
 
-        // The first time an action happens it can update
-        verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
-    }
+	private List<ConfigurationSetting> initialResponse() {
+		ConfigurationSetting item = new ConfigurationSetting();
+		item.setETag("fake-etag");
 
-    private List<ConfigurationSetting> initialResponse() {
-        ConfigurationSetting item = new ConfigurationSetting();
-        item.setETag("fake-etag");
+		return Arrays.asList(item);
+	}
 
-        return Arrays.asList(item);
-    }
+	private List<ConfigurationSetting> updatedResponse() {
+		ConfigurationSetting item = new ConfigurationSetting();
+		item.setETag("fake-etag-updated");
 
-    private List<ConfigurationSetting> updatedResponse() {
-        ConfigurationSetting item = new ConfigurationSetting();
-        item.setETag("fake-etag-updated");
-
-        return Arrays.asList(item);
-    }
+		return Arrays.asList(item);
+	}
 
 }
