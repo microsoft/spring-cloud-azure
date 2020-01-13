@@ -61,7 +61,6 @@ import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-
 public class AzureConfigPropertySourceTest {
     private static final String EMPTY_CONTENT_TYPE = "";
 
@@ -86,7 +85,7 @@ public class AzureConfigPropertySourceTest {
 
     private static final ConfigurationSetting featureItem = createItem(".appconfig.featureflag/", "Alpha",
             FEATURE_VALUE, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
-    
+
     private static final ConfigurationSetting featureItem2 = createItem(".appconfig.featureflag/", "Beta",
             FEATURE_BOOLEAN_VALUE, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
 
@@ -103,6 +102,7 @@ public class AzureConfigPropertySourceTest {
     private static ObjectMapper mapper = new ObjectMapper();
 
     private AzureCloudConfigProperties azureProperties;
+
     @Mock
     private ClientStore clientStoreMock;
 
@@ -129,9 +129,9 @@ public class AzureConfigPropertySourceTest {
 
     @Rule
     public ExpectedException expected = ExpectedException.none();
-    
+
     private AppConfigProviderProperties appProperties;
-    
+
     private KeyVaultCredentialProvider tokenCredentialProvider = null;
 
     @BeforeClass
@@ -242,7 +242,8 @@ public class AzureConfigPropertySourceTest {
         feature.setEnabledFor(filters);
         featureSetExpected.addFeature("Alpha", feature);
         featureSetExpected.addFeature("Beta", true);
-        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected, LinkedHashMap.class);
+        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected.getFeatureManagement(),
+                LinkedHashMap.class);
 
         assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));
     }
@@ -279,7 +280,8 @@ public class AzureConfigPropertySourceTest {
         feature.setEnabledFor(filters);
         featureSetExpected.addFeature("Alpha", feature);
         featureSetExpected.addFeature("Beta", true);
-        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected, LinkedHashMap.class);
+        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected.getFeatureManagement(),
+                LinkedHashMap.class);
 
         assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));
     }

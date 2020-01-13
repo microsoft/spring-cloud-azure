@@ -108,33 +108,32 @@ spring.cloud.azure.appconfiguration.fail-fast=false
 
 [Managed identity](https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview) allows application to access [Azure Active Directory][azure_active_directory] protected resource on [Azure][azure].
 
-In this library, [Azure Identity SDK][azure_identity_sdk] is used to access Azure App Configuration and optionally Azure Key Vault, for secrets. Only one method of authentication can be set at one time.
+In this library, [Azure Identity SDK][azure_identity_sdk] is used to access Azure App Configuration and optionally Azure Key Vault, for secrets. Only one method of authentication can be set at one time. When not using the AppConfigCredentialProvider and/or KeyVaultCredentialProvider the same authentication method is used for both App Configuration and Key Vault.
 
 Follow the below steps to enable accessing App Configuration with managed identity:
 
 1. [Enable managed identities](https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview#how-can-i-use-managed-identities-for-azure-resources) for the [supported Azure services](https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/services-support-managed-identities), for example, virtual machine or App Service, on which the application will be deployed.
 
-1. Configure the [Azure RBAC][azure_rbac] of your Application store to grant access to the Azure service where your application is running. Select the App Configuration Data Reader. The App Configuration Data Owner role is not required but can be used if needed.
+1. Configure the [Azure RBAC][azure_rbac] of your App Configuration store to grant access to the Azure service where your application is running. Select the App Configuration Data Reader. The App Configuration Data Owner role is not required but can be used if needed.
 
-1. Choose a configuration option:
-    1. Set the Environment variable; AZURE_CLIENT_ID.
-    1. Create a TokenCredentialProvider and supply any valid TokenCredential and supply it via a Bean.
-    1. Configure bootstrap.properties(or .yaml) in the Spring Boot application.
+1. Configure bootstrap.properties(or .yaml) in the Spring Boot application.
 
-The configuration store name must be configured when `connection-string` is empty.
+The configuration store endpoint must be configured when `connection-string` is empty. When using a User Assigned Id the value `spring.cloud.azure.appconfiguration.managed-identity.client-id=[client-id]` must be set.
 
 ### Token Credential Provider
+
+Another method of authentication is using AppConfigCredentialProvider and/or KeyVaultCredentialProvider. By implementing either of these classes and providing and generating a @Bean of them will enable authentication through any method defined by the [Java Azure SDK][azure_identity_sdk].
 
 ```java
 public class MyCredentials implements AppConfigCredentialProvider, KeyVaultCredentialProvider {
 
     @Override
-    public TokenCredential credentialForAppConfig() {
+    public TokenCredential credentialForAppConfig(String uri) {
             return buildCredential();
     }
 
     @Override
-    public TokenCredential credentialForKeyVault() {
+    public TokenCredential credentialForKeyVault(String uri) {
             return buildCredential();
     }
 
@@ -149,9 +148,6 @@ public class MyCredentials implements AppConfigCredentialProvider, KeyVaultCrede
 
 ```application
 spring.cloud.azure.appconfiguration.stores[0].endpoint=[config-store-endpoint]
-
-#If Using option 3
-spring.cloud.azure.appconfiguration.managed-identity.client-id=[client-id]
 
 #If Using option 3
 spring.cloud.azure.appconfiguration.managed-identity.client-id=[client-id]

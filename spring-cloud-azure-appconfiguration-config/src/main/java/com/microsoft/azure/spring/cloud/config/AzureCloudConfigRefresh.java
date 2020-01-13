@@ -141,18 +141,23 @@ public class AzureCloudConfigRefresh implements ApplicationEventPublisherAware {
         if (items != null && !items.isEmpty()) {
             etag = items.get(0).getETag();
         }
-
+        
         if (StateHolder.getState(storeNameWithSuffix) == null) {
+            // Should never be the case as Property Source should set the state, but if
+            // etag != null return true.
+            if (etag != null) {
+                return true;
+            }
             return false;
         }
-
+        
         if (!etag.equals(StateHolder.getState(storeNameWithSuffix).getETag())) {
             LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
                     store.getEndpoint(), watchedKeyNames);
-            if (eventDataInfo.isEmpty()) {
-                eventDataInfo = watchedKeyNames;
+            if (this.eventDataInfo.isEmpty()) {
+                this.eventDataInfo = watchedKeyNames;
             } else {
-                eventDataInfo += ", " + watchedKeyNames;
+                this.eventDataInfo += ", " + watchedKeyNames;
             }
 
             // Don't need to refresh here will be done in Property Source
