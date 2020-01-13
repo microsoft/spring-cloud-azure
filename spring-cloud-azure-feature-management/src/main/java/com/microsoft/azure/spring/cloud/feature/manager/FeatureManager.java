@@ -39,7 +39,7 @@ public class FeatureManager extends HashMap<String, Object> {
     private ApplicationContext context;
 
     private FeatureManagementConfigProperties properties;
-    
+
     private HashMap<String, Feature> featureManagement;
 
     private HashMap<String, Boolean> onOff;
@@ -76,7 +76,8 @@ public class FeatureManager extends HashMap<String, Object> {
 
         if (boolFeature != null) {
             return boolFeature;
-        } else if (featureItem == null) {
+        }
+        else if (featureItem == null) {
             return false;
         }
 
@@ -85,7 +86,8 @@ public class FeatureManager extends HashMap<String, Object> {
                 try {
                     FeatureFilter featureFilter = (FeatureFilter) context.getBean(filter.getName());
                     enabled = Mono.just(featureFilter.evaluate(filter)).block();
-                } catch (NoSuchBeanDefinitionException e) {
+                }
+                catch (NoSuchBeanDefinitionException e) {
                     LOGGER.error("Was unable to find Filter " + filter.getName()
                             + ". Does the class exist and set as an @Component?");
                     if (properties.isFailFast()) {
@@ -100,7 +102,7 @@ public class FeatureManager extends HashMap<String, Object> {
         }
         return enabled;
     }
-    
+
     @SuppressWarnings("unchecked")
     private void addToFeatures(Map<? extends String, ? extends Object> features, String key, String combined) {
         Object featureKey = features.get(key);
@@ -109,11 +111,13 @@ public class FeatureManager extends HashMap<String, Object> {
         }
         if (featureKey instanceof Boolean) {
             onOff.put(combined + key, (Boolean) featureKey);
-        } else {
+        }
+        else {
             Feature feature = null;
             try {
                 feature = mapper.convertValue(featureKey, Feature.class);
-            } catch (IllegalArgumentException e) {
+            }
+            catch (IllegalArgumentException e) {
                 LOGGER.error("Found invalid feature {} with value {}.", combined + key, featureKey.toString());
             }
 
@@ -125,7 +129,8 @@ public class FeatureManager extends HashMap<String, Object> {
                         addToFeatures(features, fKey, combined + key);
                     }
                 }
-            } else {
+            }
+            else {
                 if (feature != null) {
                     feature.setKey(key);
                     featureManagement.put(key, feature);

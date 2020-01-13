@@ -63,7 +63,7 @@ public class FeatureManagerTest {
     public void loadFeatureManagerWithLinkedHashSet() {
         Feature f = new Feature();
         f.setKey(FEATURE_KEY);
-        
+
         LinkedHashMap<String, Object> testMap = new LinkedHashMap<String, Object>();
         LinkedHashMap<String, Object> testFeature = new LinkedHashMap<String, Object>();
         LinkedHashMap<String, Object> enabledFor = new LinkedHashMap<String, Object>();
@@ -154,8 +154,7 @@ public class FeatureManagerTest {
         HashMap<String, Object> features = new HashMap<String, Object>();
         features.put("FeatureU", false);
         Feature featureV = new Feature();
-        HashMap<Integer, FeatureFilterEvaluationContext> filterMapper = 
-                new HashMap<Integer, FeatureFilterEvaluationContext>();
+        HashMap<Integer, FeatureFilterEvaluationContext> filterMapper = new HashMap<Integer, FeatureFilterEvaluationContext>();
 
         FeatureFilterEvaluationContext enabledFor = new FeatureFilterEvaluationContext();
         enabledFor.setName("Random");
