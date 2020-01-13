@@ -61,7 +61,6 @@ import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-
 public class AzureConfigPropertySourceTest {
     private static final String EMPTY_CONTENT_TYPE = "";
 
@@ -81,18 +80,16 @@ public class AzureConfigPropertySourceTest {
             EMPTY_CONTENT_TYPE);
 
     private static final ConfigurationSetting item3Null = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3,
-            TEST_LABEL_3,
-            null);
+            TEST_LABEL_3, null);
 
     private static final ConfigurationSetting featureItem = createItem(".appconfig.featureflag/", "Alpha",
             FEATURE_VALUE, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
-    
+
     private static final ConfigurationSetting featureItem2 = createItem(".appconfig.featureflag/", "Beta",
             FEATURE_BOOLEAN_VALUE, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
 
     private static final ConfigurationSetting featureItemNull = createItem(".appconfig.featureflag/", "Alpha",
-            FEATURE_VALUE,
-            FEATURE_LABEL, null);
+            FEATURE_VALUE, FEATURE_LABEL, null);
 
     public List<ConfigurationSetting> testItems = new ArrayList<>();
 
@@ -103,6 +100,7 @@ public class AzureConfigPropertySourceTest {
     private static ObjectMapper mapper = new ObjectMapper();
 
     private AzureCloudConfigProperties azureProperties;
+
     @Mock
     private ClientStore clientStoreMock;
 
@@ -129,9 +127,9 @@ public class AzureConfigPropertySourceTest {
 
     @Rule
     public ExpectedException expected = ExpectedException.none();
-    
+
     private AppConfigProviderProperties appProperties;
-    
+
     private KeyVaultCredentialProvider tokenCredentialProvider = null;
 
     @BeforeClass
@@ -155,8 +153,8 @@ public class AzureConfigPropertySourceTest {
         ArrayList<String> contexts = new ArrayList<String>();
         contexts.add("/application/*");
         storeContextsMap.put(TEST_STORE_NAME, contexts);
-        propertySource = new AzureConfigPropertySource(TEST_CONTEXT, configStore, "\0",
-                azureProperties, clientStoreMock, appProperties, tokenCredentialProvider, storeContextsMap);
+        propertySource = new AzureConfigPropertySource(TEST_CONTEXT, configStore, "\0", azureProperties,
+                clientStoreMock, appProperties, tokenCredentialProvider, storeContextsMap);
 
         testItems = new ArrayList<ConfigurationSetting>();
         testItems.add(item1);
@@ -184,8 +182,8 @@ public class AzureConfigPropertySourceTest {
         propertySource.initFeatures(featureSet);
 
         String[] keyNames = propertySource.getPropertyNames();
-        String[] expectedKeyNames = testItems.stream()
-                .map(t -> t.getKey().substring(TEST_CONTEXT.length())).toArray(String[]::new);
+        String[] expectedKeyNames = testItems.stream().map(t -> t.getKey().substring(TEST_CONTEXT.length()))
+                .toArray(String[]::new);
         String[] allExpectedKeyNames = ArrayUtils.addAll(expectedKeyNames, FEATURE_MANAGEMENT_KEY);
 
         assertThat(keyNames).containsExactlyInAnyOrder(allExpectedKeyNames);
@@ -242,7 +240,8 @@ public class AzureConfigPropertySourceTest {
         feature.setEnabledFor(filters);
         featureSetExpected.addFeature("Alpha", feature);
         featureSetExpected.addFeature("Beta", true);
-        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected, LinkedHashMap.class);
+        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected.getFeatureManagement(),
+                LinkedHashMap.class);
 
         assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));
     }
@@ -279,7 +278,8 @@ public class AzureConfigPropertySourceTest {
         feature.setEnabledFor(filters);
         featureSetExpected.addFeature("Alpha", feature);
         featureSetExpected.addFeature("Beta", true);
-        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected, LinkedHashMap.class);
+        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected.getFeatureManagement(),
+                LinkedHashMap.class);
 
         assertEquals(convertedValue, propertySource.getProperty(FEATURE_MANAGEMENT_KEY));
     }
@@ -299,8 +299,8 @@ public class AzureConfigPropertySourceTest {
         }
 
         String[] keyNames = propertySource.getPropertyNames();
-        String[] expectedKeyNames = items.stream()
-                .map(t -> t.getKey().substring(TEST_CONTEXT.length())).toArray(String[]::new);
+        String[] expectedKeyNames = items.stream().map(t -> t.getKey().substring(TEST_CONTEXT.length()))
+                .toArray(String[]::new);
 
         assertThat(keyNames).containsExactlyInAnyOrder(expectedKeyNames);
     }

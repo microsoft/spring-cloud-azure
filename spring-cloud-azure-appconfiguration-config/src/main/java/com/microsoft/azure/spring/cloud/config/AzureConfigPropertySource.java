@@ -202,8 +202,8 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
             // If no entry found don't connect to Key Vault
             if (uri == null) {
                 if (azureProperties.isFailFast()) {
-                    ReflectionUtils.rethrowRuntimeException(
-                            new IOException("Invaid URI when parsing Key Vault Reference."));
+                    ReflectionUtils
+                            .rethrowRuntimeException(new IOException("Invaid URI when parsing Key Vault Reference."));
                 } else {
                     return null;
                 }
@@ -235,10 +235,12 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
      * Initializes Feature Management configurations. Only one
      * {@code AzureConfigPropertySource} can call this, and it needs to be done after the
      * rest have run initProperties.
+     * 
      * @param featureSet Feature Flag info to be set to this property source.
      */
     void initFeatures(FeatureSet featureSet) {
-        properties.put(FEATURE_MANAGEMENT_KEY, mapper.convertValue(featureSet, LinkedHashMap.class));
+        properties.put(FEATURE_MANAGEMENT_KEY,
+                mapper.convertValue(featureSet.getFeatureManagement(), LinkedHashMap.class));
     }
 
     /**

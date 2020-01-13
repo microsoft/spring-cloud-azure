@@ -80,6 +80,7 @@ public class AzureCloudConfigRefresh implements ApplicationEventPublisherAware {
      * Goes through each config store and checks if any of its keys need to be refreshed.
      * If any store has a value that needs to be updated a refresh event is called after
      * every store is checked.
+     * 
      * @return If a refresh event is called.
      */
     private boolean refreshStores() {
@@ -97,8 +98,7 @@ public class AzureCloudConfigRefresh implements ApplicationEventPublisherAware {
                 if (notCachedTime == null || date.after(notCachedTime)) {
                     for (ConfigStore configStore : configStores) {
                         String watchedKeyNames = clientStore.watchedKeyNames(configStore, storeContextsMap);
-                        willRefresh = refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames) ? true
-                                : willRefresh;
+                        willRefresh = refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames) ? true : willRefresh;
                         // Refresh Feature Flags
                         willRefresh = refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY) ? true
                                 : willRefresh;
@@ -143,16 +143,21 @@ public class AzureCloudConfigRefresh implements ApplicationEventPublisherAware {
         }
 
         if (StateHolder.getState(storeNameWithSuffix) == null) {
+            // Should never be the case as Property Source should set the state, but if
+            // etag != null return true.
+            if (etag != null) {
+                return true;
+            }
             return false;
         }
 
         if (!etag.equals(StateHolder.getState(storeNameWithSuffix).getETag())) {
             LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
                     store.getEndpoint(), watchedKeyNames);
-            if (eventDataInfo.isEmpty()) {
-                eventDataInfo = watchedKeyNames;
+            if (this.eventDataInfo.isEmpty()) {
+                this.eventDataInfo = watchedKeyNames;
             } else {
-                eventDataInfo += ", " + watchedKeyNames;
+                this.eventDataInfo += ", " + watchedKeyNames;
             }
 
             // Don't need to refresh here will be done in Property Source

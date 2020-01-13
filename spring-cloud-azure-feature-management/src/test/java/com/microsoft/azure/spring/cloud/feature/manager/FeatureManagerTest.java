@@ -29,7 +29,6 @@ import org.springframework.stereotype.Component;
 
 import com.microsoft.azure.spring.cloud.feature.manager.entities.Feature;
 import com.microsoft.azure.spring.cloud.feature.manager.entities.FeatureFilterEvaluationContext;
-import com.microsoft.azure.spring.cloud.feature.manager.entities.FeatureSet;
 
 /**
  * Unit tests for FeatureManager.
@@ -50,9 +49,6 @@ public class FeatureManagerTest {
 
     @Mock
     private ApplicationContext context;
-    
-    @Mock
-    private FeatureSet featureSet;
 
     @Before
     public void setup() {
@@ -65,12 +61,9 @@ public class FeatureManagerTest {
      */
     @Test
     public void loadFeatureManagerWithLinkedHashSet() {
-        FeatureSet set = new FeatureSet();
         Feature f = new Feature();
         f.setKey(FEATURE_KEY);
 
-        set.addFeature(f);
-        
         LinkedHashMap<String, Object> testMap = new LinkedHashMap<String, Object>();
         LinkedHashMap<String, Object> testFeature = new LinkedHashMap<String, Object>();
         LinkedHashMap<String, Object> enabledFor = new LinkedHashMap<String, Object>();
@@ -83,13 +76,12 @@ public class FeatureManagerTest {
         testFeature.put("EnabledFor", enabledFor);
         testMap.put(f.getKey(), testFeature);
 
-        FeatureSet featureManagement = new FeatureSet();
-        featureManagement.putAll(testMap);
-        assertNotNull(featureManagement);
-        assertNotNull(featureManagement.getFeatureManagement());
-        assertEquals(1, featureManagement.getFeatureManagement().size());
-        assertNotNull(featureManagement.getFeatureManagement().get(FEATURE_KEY));
-        Feature feature = featureManagement.getFeatureManagement().get(FEATURE_KEY);
+        featureManager.putAll(testMap);
+        assertNotNull(featureManager);
+        assertNotNull(featureManager.getFeatureManagement());
+        assertEquals(1, featureManager.getFeatureManagement().size());
+        assertNotNull(featureManager.getFeatureManagement().get(FEATURE_KEY));
+        Feature feature = featureManager.getFeatureManagement().get(FEATURE_KEY);
         assertEquals(FEATURE_KEY, feature.getKey());
         assertEquals(1, feature.getEnabledFor().size());
         FeatureFilterEvaluationContext zeroth = feature.getEnabledFor().get(0);
@@ -100,42 +92,32 @@ public class FeatureManagerTest {
 
     @Test
     public void isEnabledFeatureNotFound() throws InterruptedException, ExecutionException {
-        FeatureSet featureSet = new FeatureSet();
-        HashMap<String, Object> features = new HashMap<String, Object>();
-        featureSet.putAll(features);
-        FeatureManager featureManager = new FeatureManager(null, featureSet);
-
         assertFalse(featureManager.isEnabledAsync("Non Existed Feature").block());
     }
 
     @Test
     public void isEnabledFeatureOff() throws InterruptedException, ExecutionException {
-        FeatureSet featureSet = new FeatureSet();
         HashMap<String, Object> features = new HashMap<String, Object>();
         features.put("Off", false);
-        featureSet.putAll(features);
-        FeatureManager featureManager = new FeatureManager(null, featureSet);
+        featureManager.putAll(features);
 
         assertFalse(featureManager.isEnabledAsync("Off").block());
     }
 
     @Test
     public void isEnabledFeatureHasNoFilters() throws InterruptedException, ExecutionException {
-        FeatureSet featureSet = new FeatureSet();
         HashMap<String, Object> features = new HashMap<String, Object>();
         Feature noFilters = new Feature();
         noFilters.setKey("NoFilters");
         noFilters.setEnabledFor(new ArrayList<FeatureFilterEvaluationContext>());
         features.put("NoFilters", noFilters);
-        featureSet.putAll(features);
-        FeatureManager featureManager = new FeatureManager(null, featureSet);
+        featureManager.putAll(features);
 
         assertFalse(featureManager.isEnabledAsync("NoFilters").block());
     }
 
     @Test
     public void isEnabledON() throws InterruptedException, ExecutionException {
-        FeatureSet featureSet = new FeatureSet();
         HashMap<String, Object> features = new HashMap<String, Object>();
         Feature onFeature = new Feature();
         onFeature.setKey("On");
@@ -145,9 +127,7 @@ public class FeatureManagerTest {
         filters.add(alwaysOn);
         onFeature.setEnabledFor(filters);
         features.put("On", onFeature);
-        featureSet.putAll(features);
-        when(this.featureSet.getFeatureManagement()).thenReturn(featureSet.getFeatureManagement());
-        when(this.featureSet.getOnOff()).thenReturn(featureSet.getOnOff());
+        featureManager.putAll(features);
 
         when(context.getBean(Mockito.matches("AlwaysOn"))).thenReturn(new AlwaysOn());
 
@@ -156,29 +136,25 @@ public class FeatureManagerTest {
 
     @Test
     public void isEnabledOnBoolean() throws InterruptedException, ExecutionException {
-        FeatureSet featureSet = new FeatureSet();
         HashMap<String, Boolean> features = new HashMap<String, Boolean>();
         features.put("On", true);
-        featureSet.putAll(features);
-        FeatureManager featureManager = new FeatureManager(null, featureSet);
+        featureManager.putAll(features);
 
         assertTrue(featureManager.isEnabledAsync("On").block());
     }
 
     @Test
     public void featureManagerNotEnabledCorrectly() throws InterruptedException, ExecutionException {
-        FeatureManager featureManager = new FeatureManager(null, null);
+        FeatureManager featureManager = new FeatureManager(null);
         assertFalse(featureManager.isEnabledAsync("").block());
     }
 
     @Test
     public void bootstrapConfiguration() {
-        FeatureSet featureSet = new FeatureSet();
         HashMap<String, Object> features = new HashMap<String, Object>();
         features.put("FeatureU", false);
         Feature featureV = new Feature();
-        HashMap<Integer, FeatureFilterEvaluationContext> filterMapper = 
-                new HashMap<Integer, FeatureFilterEvaluationContext>();
+        HashMap<Integer, FeatureFilterEvaluationContext> filterMapper = new HashMap<Integer, FeatureFilterEvaluationContext>();
 
         FeatureFilterEvaluationContext enabledFor = new FeatureFilterEvaluationContext();
         enabledFor.setName("Random");
@@ -190,13 +166,13 @@ public class FeatureManagerTest {
         filterMapper.put(0, enabledFor);
         featureV.setFilterMapper(filterMapper);
         features.put("FeatureV", featureV);
-        featureSet.putAll(features);
+        featureManager.putAll(features);
 
-        assertNotNull(featureSet.getOnOff());
-        assertNotNull(featureSet.getFeatureManagement());
+        assertNotNull(featureManager.getOnOff());
+        assertNotNull(featureManager.getFeatureManagement());
 
-        assertEquals(featureSet.getOnOff().get("FeatureU"), false);
-        Feature feature = featureSet.getFeatureManagement().get("FeatureV");
+        assertEquals(featureManager.getOnOff().get("FeatureU"), false);
+        Feature feature = featureManager.getFeatureManagement().get("FeatureV");
         assertEquals(feature.getEnabledFor().size(), 1);
         FeatureFilterEvaluationContext ffec = feature.getEnabledFor().get(0);
         assertEquals(ffec.getName(), "Random");
