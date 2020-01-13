@@ -112,8 +112,7 @@ public class AzureCloudConfigRefresh implements ApplicationEventPublisherAware {
                     RefreshEventData eventData = new RefreshEventData(eventDataInfo);
                     publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
                 }
-            }
-            finally {
+            } finally {
                 running.set(false);
             }
         }
@@ -157,8 +156,7 @@ public class AzureCloudConfigRefresh implements ApplicationEventPublisherAware {
                     store.getEndpoint(), watchedKeyNames);
             if (this.eventDataInfo.isEmpty()) {
                 this.eventDataInfo = watchedKeyNames;
-            }
-            else {
+            } else {
                 this.eventDataInfo += ", " + watchedKeyNames;
             }
 
