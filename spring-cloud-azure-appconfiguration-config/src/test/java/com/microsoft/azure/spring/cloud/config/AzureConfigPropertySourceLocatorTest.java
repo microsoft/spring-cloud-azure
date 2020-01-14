@@ -15,11 +15,15 @@ import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_N
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME_2;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.createItem;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,6 +37,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
 
 import com.azure.core.http.rest.PagedFlux;
@@ -40,6 +45,7 @@ import com.azure.core.http.rest.PagedResponse;
 import com.azure.data.appconfiguration.ConfigurationAsyncClient;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
+import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 import reactor.core.publisher.Flux;
 
@@ -64,7 +70,10 @@ public class AzureConfigPropertySourceLocatorTest {
     private ConfigurableEnvironment environment;
 
     @Mock
-    private ClientStore configStoreMock;
+    private ClientStore clientStoreMock;
+    
+    @Mock
+    private ConfigStore configStore;
 
     @Mock
     private ConfigurationAsyncClient configClientMock;
@@ -89,6 +98,9 @@ public class AzureConfigPropertySourceLocatorTest {
     private AzureConfigPropertySourceLocator locator;
 
     private AppConfigProviderProperties appProperties;
+    
+    @Mock
+    private AppConfigProviderProperties appPropertiesMock;
 
     private KeyVaultCredentialProvider tokenCredentialProvider = null;
 
@@ -121,7 +133,7 @@ public class AzureConfigPropertySourceLocatorTest {
 
     @Test
     public void compositeSourceIsCreated() {
-        locator = new AzureConfigPropertySourceLocator(properties, appProperties, configStoreMock,
+        locator = new AzureConfigPropertySourceLocator(properties, appProperties, clientStoreMock,
                 tokenCredentialProvider);
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
@@ -140,7 +152,7 @@ public class AzureConfigPropertySourceLocatorTest {
     @Test
     public void compositeSourceIsCreatedForPrefixedConfig() {
         properties.getStores().get(0).setPrefix(PREFIX);
-        locator = new AzureConfigPropertySourceLocator(properties, appProperties, configStoreMock,
+        locator = new AzureConfigPropertySourceLocator(properties, appProperties, clientStoreMock,
                 tokenCredentialProvider);
 
         PropertySource<?> source = locator.locate(environment);
@@ -165,7 +177,7 @@ public class AzureConfigPropertySourceLocatorTest {
         when(environment.getProperty("spring.application.name")).thenReturn(null);
         properties.setName(null);
         locator = new AzureConfigPropertySourceLocator(properties, appProperties,
-                configStoreMock, tokenCredentialProvider);
+                clientStoreMock, tokenCredentialProvider);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
@@ -184,7 +196,7 @@ public class AzureConfigPropertySourceLocatorTest {
         when(environment.getProperty("spring.application.name")).thenReturn("");
         properties.setName("");
         locator = new AzureConfigPropertySourceLocator(properties, appProperties,
-                configStoreMock, tokenCredentialProvider);
+                clientStoreMock, tokenCredentialProvider);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
@@ -202,9 +214,9 @@ public class AzureConfigPropertySourceLocatorTest {
         expected.expect(RuntimeException.class);
 
         locator = new AzureConfigPropertySourceLocator(properties, appProperties,
-                configStoreMock, tokenCredentialProvider);
+                clientStoreMock, tokenCredentialProvider);
 
-        when(configStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenThrow(new RuntimeException());
+        when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenThrow(new RuntimeException());
         assertThat(properties.isFailFast()).isTrue();
         locator.locate(environment);
     }
@@ -213,7 +225,7 @@ public class AzureConfigPropertySourceLocatorTest {
     public void notFailFastShouldPass() {
         properties.setFailFast(false);
         locator = new AzureConfigPropertySourceLocator(properties, appProperties,
-                configStoreMock, tokenCredentialProvider);
+                clientStoreMock, tokenCredentialProvider);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
@@ -228,7 +240,7 @@ public class AzureConfigPropertySourceLocatorTest {
         TestUtils.addStore(properties, TEST_STORE_NAME_2, TEST_CONN_STRING_2);
 
         locator = new AzureConfigPropertySourceLocator(properties, appProperties,
-                configStoreMock, tokenCredentialProvider);
+                clientStoreMock, tokenCredentialProvider);
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
@@ -238,5 +250,38 @@ public class AzureConfigPropertySourceLocatorTest {
                 "/application/" + TEST_STORE_NAME_1 + "/\0" };
         assertThat(sources.size()).isEqualTo(2);
         assertThat(sources.stream().map(s -> s.getName()).toArray()).containsExactly(expectedSourceNames);
+    }
+    
+    @Test
+    public void awaitOnError() throws Exception {
+        List<ConfigStore> configStores = new ArrayList<ConfigStore>();
+        configStores.add(configStore);
+        AzureCloudConfigProperties properties = new AzureCloudConfigProperties();
+        properties.setProfileSeparator("_");
+        properties.setName("TestStoreName");
+        properties.setStores(configStores);
+
+        appPropertiesMock.setPrekillTime(5);
+
+        Environment env = Mockito.mock(ConfigurableEnvironment.class);
+        String[] array = {};
+        when(env.getActiveProfiles()).thenReturn(array);
+        String[] labels = { "" };
+        when(configStore.getLabels()).thenReturn(labels);
+        when(clientStoreMock.listSettings(Mockito.any(), Mockito.any())).thenThrow(new NullPointerException(""));
+        when(appPropertiesMock.getPrekillTime()).thenReturn(-60);
+        when(appPropertiesMock.getStartDate()).thenReturn(new Date());
+
+        locator = new AzureConfigPropertySourceLocator(properties, appPropertiesMock, clientStoreMock,
+                tokenCredentialProvider);
+
+        boolean threwException = false;
+        try {
+            locator.locate(env);
+        } catch (Exception e) {
+            threwException = true;
+        }
+        assertTrue(threwException);
+        verify(appPropertiesMock, times(1)).getPrekillTime();
     }
 }

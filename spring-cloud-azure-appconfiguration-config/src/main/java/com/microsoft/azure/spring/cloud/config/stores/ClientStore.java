@@ -45,7 +45,7 @@ public class ClientStore {
     }
 
     private ConfigurationAsyncClient buildClient(String store) throws IllegalArgumentException {
-        ConfigurationClientBuilder builder = new ConfigurationClientBuilder();
+        ConfigurationClientBuilder builder = getBuilder();
         ExponentialBackoff retryPolicy = new ExponentialBackoff(appProperties.getMaxRetries(),
                 Duration.ofMillis(800), Duration.ofSeconds(8));
         builder = builder.addPolicy(new BaseAppConfigurationPolicy()).retryPolicy(new RetryPolicy(
@@ -156,5 +156,9 @@ public class ClientStore {
         String trimmedWatchedKey = StringUtils.isNoneEmpty(watchedKey) ? watchedKey.trim() : "*";
 
         return String.format("%s%s", context, trimmedWatchedKey);
+    }
+
+    ConfigurationClientBuilder getBuilder() {
+        return new ConfigurationClientBuilder();
     }
 }

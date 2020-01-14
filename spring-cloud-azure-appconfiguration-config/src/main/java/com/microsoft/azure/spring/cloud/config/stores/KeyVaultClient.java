@@ -31,9 +31,9 @@ public class KeyVaultClient {
      * Vault
      * @param properties Azure Configuration Managed Identity credentials
      */
-    public KeyVaultClient(URI uri, KeyVaultCredentialProvider tokenCredentialProvider,
-            AzureCloudConfigProperties properties) {
-        SecretClientBuilder builder = new SecretClientBuilder();
+    public KeyVaultClient(AzureCloudConfigProperties properties, URI uri,
+            KeyVaultCredentialProvider tokenCredentialProvider) {
+        SecretClientBuilder builder = getBuilder();
         TokenCredential tokenCredential = null;
         if (tokenCredentialProvider != null) {
             tokenCredential = tokenCredentialProvider.getKeyVaultCredential("https://" + uri.getHost());
@@ -70,6 +70,10 @@ public class KeyVaultClient {
         String name = (tokens.length >= 3 ? tokens[2] : null);
         String version = (tokens.length >= 4 ? tokens[3] : null);
         return secretClient.getSecret(name, version).block(Duration.ofSeconds(timeout));
+    }
+
+    SecretClientBuilder getBuilder() {
+        return new SecretClientBuilder();
     }
 
 }

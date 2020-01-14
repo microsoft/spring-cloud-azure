@@ -1,4 +1,4 @@
-FeatureManagement:
+feature-management:
   Beta: true
   FeatureV:
     EnabledFor:
