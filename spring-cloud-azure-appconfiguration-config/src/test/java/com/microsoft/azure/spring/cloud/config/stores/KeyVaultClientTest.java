@@ -5,27 +5,30 @@
  */
 package com.microsoft.azure.spring.cloud.config.stores;
 
-import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_ENDPOINT;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.reactivestreams.Publisher;
 
 import com.azure.core.credential.TokenCredential;
 import com.azure.core.http.HttpHeaders;
@@ -39,12 +42,15 @@ import com.azure.data.appconfiguration.ConfigurationAsyncClient;
 import com.azure.data.appconfiguration.ConfigurationClientBuilder;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
-import com.microsoft.azure.spring.cloud.config.AppConfigCredentialProvider;
-import com.microsoft.azure.spring.cloud.config.AppConfigProviderProperties;
+import com.azure.security.keyvault.secrets.SecretAsyncClient;
+import com.azure.security.keyvault.secrets.SecretClientBuilder;
+import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
+import com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties;
+import com.microsoft.azure.spring.cloud.config.KeyVaultCredentialProvider;
 import com.microsoft.azure.spring.cloud.config.pipline.policies.BaseAppConfigurationPolicy;
-import com.microsoft.azure.spring.cloud.config.resource.Connection;
-import com.microsoft.azure.spring.cloud.config.resource.ConnectionPool;
+import com.microsoft.azure.spring.cloud.config.resource.AppConfigManagedIdentityProperties;
 
+import ch.qos.logback.core.util.Duration;
 import reactor.core.publisher.Mono;
 
 public class KeyVaultClientTest {
@@ -54,136 +60,82 @@ public class KeyVaultClientTest {
     static TokenCredential tokenCredential;
 
     @Mock
-    private ConfigurationClientBuilder builderMock;
+    private SecretClientBuilder builderMock;
 
     @Mock
-    private ConfigurationAsyncClient clientMock;
+    private SecretAsyncClient clientMock;
     
     @Mock
     private TokenCredential credentialMock;
+    
+    @Mock
+    private Mono<KeyVaultSecret> monoSecret;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    private List<PagedResponse<ConfigurationSetting>> pagedResponses;
+    private AzureCloudConfigProperties azureProperties;
 
-    private AppConfigProviderProperties appProperties;
-
-    private ConnectionPool pool;
-
-    @Before
-    public void init() {
-        appProperties = new AppConfigProviderProperties();
-        appProperties.setMaxRetries(0);
-        pool = new ConnectionPool();
-    }
-
-    @Test
-    public void connectWithConnectionString() throws IOException {
-        pool.put(TEST_ENDPOINT, TEST_CONN_STRING);
-
-        SettingSelector selector = new SettingSelector();
-
-        clientStore = new KeyVaultClient(appProperties, TEST_ENDPOINT, null);
+    @Test(expected = IllegalArgumentException.class)
+    public void multipleArguments() throws IOException, URISyntaxException {
+        azureProperties = new AzureCloudConfigProperties();
+        AppConfigManagedIdentityProperties msiProps = new AppConfigManagedIdentityProperties();
+        msiProps.setClientId("testclientid");
+        azureProperties.setManagedIdentity(msiProps);
+        
+        String keyVaultUri = "https://keyvault.vault.azure.net/secrets/mySecret";
+        
+        KeyVaultCredentialProvider provider = new KeyVaultCredentialProvider() {
+            
+            @Override
+            public TokenCredential getKeyVaultCredential(String uri) {
+                assertEquals("https://keyvault.vault.azure.net", uri);
+                return credentialMock;
+            }
+        };
+        
+        clientStore = new KeyVaultClient(azureProperties, new URI(keyVaultUri), provider);
+                
         KeyVaultClient test = Mockito.spy(clientStore);
         Mockito.doReturn(builderMock).when(test).getBuilder();
 
-        when(builderMock.addPolicy(Mockito.any(BaseAppConfigurationPolicy.class))).thenReturn(builderMock);
-        when(builderMock.retryPolicy(Mockito.any(RetryPolicy.class))).thenReturn(builderMock);
-
-        when(builderMock.endpoint(Mockito.eq(TEST_ENDPOINT))).thenReturn(builderMock);
-        when(builderMock.buildAsyncClient()).thenReturn(clientMock);
-
-        when(clientMock.listConfigurationSettings(Mockito.any(SettingSelector.class)))
-                .thenReturn(getConfigurationPagedFlux(1));
-
-        assertEquals(test.listSettings(selector, TEST_ENDPOINT).size(), 1);
+        test.build();
+        fail();
     }
 
     @Test
-    public void testPrivider() throws IOException {
-        pool.put(TEST_ENDPOINT, new Connection(TEST_ENDPOINT, ""));
-
-        SettingSelector selector = new SettingSelector();
-        AppConfigCredentialProvider provider = new AppConfigCredentialProvider() {
+    public void configClientIdAuth() throws IOException, URISyntaxException {
+        azureProperties = new AzureCloudConfigProperties();
+        AppConfigManagedIdentityProperties msiProps = null;
+        azureProperties.setManagedIdentity(msiProps);
+        
+        String keyVaultUri = "https://keyvault.vault.azure.net/secrets/mySecret";
+        
+        KeyVaultCredentialProvider provider = new KeyVaultCredentialProvider() {
             
             @Override
-            public TokenCredential getAppConfigCredential(String uri) {
-                assertEquals(TEST_ENDPOINT, uri);
+            public TokenCredential getKeyVaultCredential(String uri) {
+                assertEquals("https://keyvault.vault.azure.net", uri);
                 return credentialMock;
             }
         };
 
-        clientStore = new ClientStore(appProperties, pool, provider);
-        ClientStore test = Mockito.spy(clientStore);
+        clientStore = new KeyVaultClient(azureProperties, new URI(keyVaultUri), provider);
+        
+        KeyVaultClient test = Mockito.spy(clientStore);
         Mockito.doReturn(builderMock).when(test).getBuilder();
-
-        when(builderMock.addPolicy(Mockito.any(BaseAppConfigurationPolicy.class))).thenReturn(builderMock);
-        when(builderMock.retryPolicy(Mockito.any(RetryPolicy.class))).thenReturn(builderMock);
-
-        when(builderMock.endpoint(Mockito.eq(TEST_ENDPOINT))).thenReturn(builderMock);
-        when(builderMock.buildAsyncClient()).thenReturn(clientMock);
-
-        when(clientMock.listConfigurationSettings(Mockito.any(SettingSelector.class)))
-                .thenReturn(getConfigurationPagedFlux(1));
-
-        assertEquals(test.listSettings(selector, TEST_ENDPOINT).size(), 1);
-    }
-    
-    @Test
-    public void watchedKeyNamesWildcardTest() {
-        clientStore = new ClientStore(appProperties, pool, null);
-        ConfigStore store = new ConfigStore();
-        HashMap<String, List<String>> storeContextsMap = new HashMap<String, List<String>>();
         
-        store.setWatchedKey("*");
-        store.setEndpoint(TEST_ENDPOINT);
-        ArrayList<String> contexts = new ArrayList<String>();
-        contexts.add("/application/");
+        when(builderMock.vaultUrl(Mockito.any())).thenReturn(builderMock);
+        when(builderMock.buildAsyncClient()).thenReturn(clientMock);;
+
+        test.build();
         
-        storeContextsMap.put(TEST_ENDPOINT, contexts);
+        when(clientMock.getSecret(Mockito.any(), Mockito.any()))
+                .thenReturn(monoSecret);
+        when(monoSecret.block(Mockito.any())).thenReturn(new KeyVaultSecret("", ""));
         
-        assertEquals("/application/*", clientStore.watchedKeyNames(store, storeContextsMap));
-    }
-
-    private PagedFlux<ConfigurationSetting> getConfigurationPagedFlux(int noOfPages) throws MalformedURLException {
-        HttpHeaders httpHeaders = new HttpHeaders().put("header1", "value1")
-                .put("header2", "value2");
-        HttpRequest httpRequest = new HttpRequest(HttpMethod.GET, new URL("http://localhost"));
-
-        String deserializedHeaders = "header1,value1,header2,value2";
-
-        pagedResponses = IntStream.range(0, noOfPages)
-                .boxed()
-                .map(i -> createPagedResponse(httpRequest, httpHeaders, deserializedHeaders, i, noOfPages))
-                .collect(Collectors.toList());
-
-        return new PagedFlux<ConfigurationSetting>(
-                () -> pagedResponses.isEmpty() ? Mono.empty() : Mono.just(pagedResponses.get(0)),
-                continuationToken -> getNextPage(continuationToken, pagedResponses));
-    }
-
-    private PagedResponseBase<String, ConfigurationSetting> createPagedResponse(HttpRequest httpRequest,
-            HttpHeaders httpHeaders, String deserializedHeaders, int i, int noOfPages) {
-        return new PagedResponseBase<>(httpRequest, 200,
-                httpHeaders,
-                getItems(i),
-                i < noOfPages - 1 ? String.valueOf(i + 1) : null,
-                deserializedHeaders);
-    }
-
-    private Mono<PagedResponse<ConfigurationSetting>> getNextPage(String continuationToken,
-            List<PagedResponse<ConfigurationSetting>> pagedResponses) {
-        if (continuationToken == null || continuationToken.isEmpty()) {
-            return Mono.empty();
-        }
-        return Mono.just(pagedResponses.get(Integer.valueOf(continuationToken)));
-    }
-
-    private List<ConfigurationSetting> getItems(int i) {
-        ArrayList<ConfigurationSetting> lst = new ArrayList<ConfigurationSetting>();
-        lst.add(new ConfigurationSetting());
-        return lst;
+        assertNotNull(test.getSecret(new URI(keyVaultUri), 10));
+        assertEquals(test.getSecret(new URI(keyVaultUri), 10).getName(), "");
     }
 
 }

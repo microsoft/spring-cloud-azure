@@ -212,7 +212,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
             // Check if we already have a client for this key vault, if not we will make
             // one
             if (!keyVaultClients.containsKey(uri.getHost())) {
-                KeyVaultClient client = new KeyVaultClient(uri, keyVaultCredentialProvider, azureProperties);
+                KeyVaultClient client = new KeyVaultClient(azureProperties, uri, keyVaultCredentialProvider);
                 keyVaultClients.put(uri.getHost(), client);
             }
             KeyVaultSecret secret = keyVaultClients.get(uri.getHost()).getSecret(uri, appProperties.getMaxRetryTime());

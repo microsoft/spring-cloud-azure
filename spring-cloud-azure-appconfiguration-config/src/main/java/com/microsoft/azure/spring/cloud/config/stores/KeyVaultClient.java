@@ -17,11 +17,17 @@ import com.azure.security.keyvault.secrets.SecretClientBuilder;
 import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
 import com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties;
 import com.microsoft.azure.spring.cloud.config.KeyVaultCredentialProvider;
-import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
+import com.microsoft.azure.spring.cloud.config.resource.AppConfigManagedIdentityProperties;
 
 public class KeyVaultClient {
 
     private SecretAsyncClient secretClient;
+    
+    private AzureCloudConfigProperties properties;
+    
+    private URI uri;
+    
+    private TokenCredential tokenCredential;
 
     /**
      * Builds an Async client to a Key Vaults Secrets
@@ -33,13 +39,16 @@ public class KeyVaultClient {
      */
     public KeyVaultClient(AzureCloudConfigProperties properties, URI uri,
             KeyVaultCredentialProvider tokenCredentialProvider) {
-        SecretClientBuilder builder = getBuilder();
-        TokenCredential tokenCredential = null;
+        this.properties = properties;
+        this.uri = uri;
         if (tokenCredentialProvider != null) {
-            tokenCredential = tokenCredentialProvider.getKeyVaultCredential("https://" + uri.getHost());
+            this.tokenCredential = tokenCredentialProvider.getKeyVaultCredential("https://" + uri.getHost());
         }
-
-        AzureManagedIdentityProperties msiProps = properties.getManagedIdentity();
+    }
+    
+    KeyVaultClient build() {
+        SecretClientBuilder builder = getBuilder();
+        AppConfigManagedIdentityProperties msiProps = properties.getManagedIdentity();
         if (tokenCredential != null && msiProps != null) {
             throw new IllegalArgumentException("More than 1 Conncetion method was set for connecting to Key Vault.");
         }
@@ -54,7 +63,9 @@ public class KeyVaultClient {
             // System Assigned Identity.
             builder.credential(new ManagedIdentityCredentialBuilder().build());
         }
+        builder = builder.vaultUrl("https://" + uri.getHost());
         secretClient = builder.vaultUrl("https://" + uri.getHost()).buildAsyncClient();
+        return this;
     }
 
     /**

@@ -130,6 +130,54 @@ public class ClientStoreTest {
         assertEquals(test.listSettings(selector, TEST_ENDPOINT).size(), 1);
     }
     
+    @Test(expected = IllegalArgumentException.class)
+    public void multipleArgumentsClientIdProvider() throws IOException {
+        pool.put(TEST_ENDPOINT, new Connection(TEST_ENDPOINT, "testclientid"));
+
+        SettingSelector selector = new SettingSelector();
+        AppConfigCredentialProvider provider = new AppConfigCredentialProvider() {
+            
+            @Override
+            public TokenCredential getAppConfigCredential(String uri) {
+                assertEquals(TEST_ENDPOINT, uri);
+                return credentialMock;
+            }
+        };
+
+        clientStore = new ClientStore(appProperties, pool, provider);
+        ClientStore test = Mockito.spy(clientStore);
+        Mockito.doReturn(builderMock).when(test).getBuilder();
+
+        when(builderMock.addPolicy(Mockito.any(BaseAppConfigurationPolicy.class))).thenReturn(builderMock);
+        when(builderMock.retryPolicy(Mockito.any(RetryPolicy.class))).thenReturn(builderMock);
+
+        assertEquals(test.listSettings(selector, TEST_ENDPOINT).size(), 1);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void multipleArgumentsConnectionStringProvider() throws IOException {
+        pool.put(TEST_ENDPOINT, new Connection(TEST_CONN_STRING));
+
+        SettingSelector selector = new SettingSelector();
+        AppConfigCredentialProvider provider = new AppConfigCredentialProvider() {
+            
+            @Override
+            public TokenCredential getAppConfigCredential(String uri) {
+                assertEquals(TEST_ENDPOINT, uri);
+                return credentialMock;
+            }
+        };
+
+        clientStore = new ClientStore(appProperties, pool, provider);
+        ClientStore test = Mockito.spy(clientStore);
+        Mockito.doReturn(builderMock).when(test).getBuilder();
+
+        when(builderMock.addPolicy(Mockito.any(BaseAppConfigurationPolicy.class))).thenReturn(builderMock);
+        when(builderMock.retryPolicy(Mockito.any(RetryPolicy.class))).thenReturn(builderMock);
+
+        assertEquals(test.listSettings(selector, TEST_ENDPOINT).size(), 1);
+    }
+    
     @Test
     public void watchedKeyNamesWildcardTest() {
         clientStore = new ClientStore(appProperties, pool, null);
