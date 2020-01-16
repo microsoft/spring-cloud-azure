@@ -5,52 +5,26 @@
  */
 package com.microsoft.azure.spring.cloud.config.stores;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.Environment;
-
-import com.microsoft.azure.spring.cloud.config.AppConfigProviderProperties;
-import com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties;
-import com.microsoft.azure.spring.cloud.config.AzureConfigPropertySourceLocator;
-import com.microsoft.azure.spring.cloud.config.KeyVaultCredentialProvider;
 
 public class ConfigStoreTest {
 
-    @Mock
-    private AppConfigProviderProperties appProperties;
-
-    @Mock
-    private AzureCloudConfigProperties properties;
-
-    @Mock
-    private ClientStoreTest clients;
-
-    @Mock
-    private ConfigStore configStore;
-
-    private AzureConfigPropertySourceLocator azureConfigPropertySourceLocator;
-
-    private KeyVaultCredentialProvider tokenCredentialProvider = null;
-
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-
+    @Test(expected = IllegalArgumentException.class)
+    public void invalidLabel() {
+        ConfigStore configStore = new ConfigStore();
+        configStore.setLabel("*");
+        configStore.validateAndInit();
+        fail();
     }
 
-
+    @Test(expected = IllegalStateException.class)
+    public void invalidEndpoint() {
+        ConfigStore configStore = new ConfigStore();
+        configStore.setConnectionString("Endpoint=a^a;Id=fake-conn-id;Secret=ZmFrZS1jb25uLXNlY3JldA==");
+        configStore.validateAndInit();
+        fail();
+    }
 
 }

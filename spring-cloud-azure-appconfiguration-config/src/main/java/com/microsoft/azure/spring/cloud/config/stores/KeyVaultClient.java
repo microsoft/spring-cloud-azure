@@ -63,7 +63,6 @@ public class KeyVaultClient {
             // System Assigned Identity.
             builder.credential(new ManagedIdentityCredentialBuilder().build());
         }
-        builder = builder.vaultUrl("https://" + uri.getHost());
         secretClient = builder.vaultUrl("https://" + uri.getHost()).buildAsyncClient();
         return this;
     }

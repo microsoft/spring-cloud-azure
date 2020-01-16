@@ -9,6 +9,7 @@ import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_FLAG_CON
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_BOOLEAN_VALUE;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_LABEL;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_VALUE;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_VALUE_PARAMETERS;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONTEXT;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_KEY_1;
@@ -88,6 +89,9 @@ public class AzureConfigPropertySourceTest {
 
     private static final ConfigurationSetting featureItem2 = createItem(".appconfig.featureflag/", "Beta",
             FEATURE_BOOLEAN_VALUE, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
+    
+    private static final ConfigurationSetting featureItem3 = createItem(".appconfig.featureflag/", "Gamma",
+            FEATURE_VALUE_PARAMETERS, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
 
     private static final ConfigurationSetting featureItemNull = createItem(".appconfig.featureflag/", "Alpha",
             FEATURE_VALUE,
@@ -141,6 +145,7 @@ public class AzureConfigPropertySourceTest {
         featureItem.setContentType(FEATURE_FLAG_CONTENT_TYPE);
         FEATURE_ITEMS.add(featureItem);
         FEATURE_ITEMS.add(featureItem2);
+        FEATURE_ITEMS.add(featureItem3);
     }
 
     @Before
@@ -240,8 +245,19 @@ public class AzureConfigPropertySourceTest {
         ffec.setName("TestFilter");
         filters.add(ffec);
         feature.setEnabledFor(filters);
+        Feature gamma = new Feature();
+        gamma.setKey("Gamma");
+        filters = new ArrayList<FeatureFilterEvaluationContext>();
+        ffec = new FeatureFilterEvaluationContext();
+        ffec.setName("TestFilter");
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<String, Object>();
+        parameters.put("key", "value");
+        ffec.setParameters(parameters);
+        filters.add(ffec);
+        gamma.setEnabledFor(filters);
         featureSetExpected.addFeature("Alpha", feature);
         featureSetExpected.addFeature("Beta", true);
+        featureSetExpected.addFeature("Gamma", gamma);
         LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected.getFeatureManagement(),
                 LinkedHashMap.class);
 
@@ -278,8 +294,19 @@ public class AzureConfigPropertySourceTest {
         ffec.setName("TestFilter");
         filters.add(ffec);
         feature.setEnabledFor(filters);
+        Feature gamma = new Feature();
+        gamma.setKey("Gamma");
+        filters = new ArrayList<FeatureFilterEvaluationContext>();
+        ffec = new FeatureFilterEvaluationContext();
+        ffec.setName("TestFilter");
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<String, Object>();
+        parameters.put("key", "value");
+        ffec.setParameters(parameters);
+        filters.add(ffec);
+        gamma.setEnabledFor(filters);
         featureSetExpected.addFeature("Alpha", feature);
         featureSetExpected.addFeature("Beta", true);
+        featureSetExpected.addFeature("Gamma", gamma);
         LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected.getFeatureManagement(),
                 LinkedHashMap.class);
 

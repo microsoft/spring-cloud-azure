@@ -22,13 +22,6 @@ public class FeatureSet {
     public HashMap<String, Object> getFeatureManagement() {
         return featureManagement;
     }
-
-    /**
-     * @param featureManagement the featureManagement to set
-     */
-    public void setFeatureManagement(HashMap<String, Object> featureManagement) {
-        this.featureManagement = featureManagement;
-    }
     
     public void addFeature(String key, Object feature) {
         if (featureManagement == null) {

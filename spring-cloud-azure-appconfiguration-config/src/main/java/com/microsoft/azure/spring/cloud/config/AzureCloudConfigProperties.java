@@ -122,7 +122,7 @@ public class AzureCloudConfigProperties {
      * The minimum time between checks. The minimum valid cache time is 1s. The default
      * cache time is 30s.
      * 
-     * @param cache minimum time between refresh checks
+     * @param cacheExpiration minimum time between refresh checks
      */
     public void setCacheExpiration(Duration cacheExpiration) {
         this.cacheExpiration = cacheExpiration;
