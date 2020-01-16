@@ -5,9 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.feature.manager.entities;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -17,12 +15,9 @@ public class Feature {
 
     @JsonProperty("key")
     private String key;
-
-    @JsonProperty("enabledFor")
-    private List<FeatureFilterEvaluationContext> enabledFor;
     
-    @JsonProperty("EnabledFor")
-    private HashMap<Integer, HashMap<String, Object>> filterMapper;
+    @JsonProperty("enabled-for")
+    private HashMap<Integer, FeatureFilterEvaluationContext> enabledFor;
 
     /**
      * @return the key
@@ -41,29 +36,16 @@ public class Feature {
     /**
      * @return the enabledFor
      */
-    public List<FeatureFilterEvaluationContext> getEnabledFor() {
+    public HashMap<Integer, FeatureFilterEvaluationContext> getEnabledFor() {
         return enabledFor;
     }
 
     /**
      * @param enabledFor the enabledFor to set
      */
-    public void setEnabledFor(List<FeatureFilterEvaluationContext> enabledFor) {
+    public void setEnabledFor(HashMap<Integer, FeatureFilterEvaluationContext> enabledFor) {
+        System.out.println("Setting enabledFor: " + enabledFor.toString());
         this.enabledFor = enabledFor;
-    }
-    
-    public void setFilterMapper(HashMap<Integer, FeatureFilterEvaluationContext> filterMapper) {
-        if (filterMapper == null) {
-            return;
-        }
-        
-        if (enabledFor == null) {
-            enabledFor = new ArrayList<FeatureFilterEvaluationContext>();
-        }
-        
-        for (Integer key: filterMapper.keySet()) {
-            enabledFor.add(filterMapper.get(key));
-        }
     }
 
 }
