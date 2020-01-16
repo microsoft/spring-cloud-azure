@@ -44,7 +44,6 @@ public class Feature {
      * @param enabledFor the enabledFor to set
      */
     public void setEnabledFor(HashMap<Integer, FeatureFilterEvaluationContext> enabledFor) {
-        System.out.println("Setting enabledFor: " + enabledFor.toString());
         this.enabledFor = enabledFor;
     }
 
