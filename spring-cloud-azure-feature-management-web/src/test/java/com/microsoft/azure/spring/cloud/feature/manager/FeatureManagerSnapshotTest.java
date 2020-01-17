@@ -49,5 +49,17 @@ public class FeatureManagerSnapshotTest {
         assertTrue(featureManagerSnapshot.isEnabledAsync("setAttribute").block());
         verify(featureManager, times(1)).isEnabledAsync("setAttribute");
     }
+    
+    @Test
+    public void setSavedValue() throws InterruptedException, ExecutionException {
+        when(featureManager.isEnabledAsync(Mockito.matches("setAttribute"))).thenReturn(Mono.just(true));
+
+        assertTrue(featureManagerSnapshot.isEnabledAsync("setAttribute").block());
+        verify(featureManager, times(1)).isEnabledAsync("setAttribute");
+        
+        // The second time should return the same value, but not increase the non-snapshot count.
+        assertTrue(featureManagerSnapshot.isEnabledAsync("setAttribute").block());
+        verify(featureManager, times(1)).isEnabledAsync("setAttribute");
+    }
 
 }

@@ -13,11 +13,13 @@ import com.microsoft.azure.spring.cloud.feature.manager.entities.FeatureFilterEv
  * failfast is enabled, which is true by default.
  *
  */
-public class FilterNotFoundException extends Exception {
+public class FilterNotFoundException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
     private final FeatureFilterEvaluationContext filter;
+    
+    private final String message;
 
     /**
      * Creates a new instance of the FilterNotFoundException
@@ -28,15 +30,16 @@ public class FilterNotFoundException extends Exception {
      */
     public FilterNotFoundException(String message, Throwable cause, FeatureFilterEvaluationContext filter) {
         super(message, cause);
+        this.message = message;
         this.filter = filter;
     }
 
     @Override
     public String getMessage() {
         if (filter == null) {
-            return getCause().getMessage();
+            return getCause().getMessage() + ".";
         }
-        return getCause().getMessage() + ", " + filter.toString();
+        return this.message + ": " + filter.getName();
 
     }
 
