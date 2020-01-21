@@ -34,7 +34,8 @@ public class BaseAppConfigurationPolicy implements HttpPipelinePolicy {
     public Mono<HttpResponse> process(HttpPipelineCallContext context, HttpPipelineNextPolicy next) {
         String sdkUserAgent = context.getHttpRequest().getHeaders().get(HttpHeaders.USER_AGENT).getValue();
         context.getHttpRequest().getHeaders().put(HttpHeaders.USER_AGENT, USER_AGENT + " " + sdkUserAgent);
-        context.getHttpRequest().getHeaders().put("Correlation-Context", getTracingInfo(context.getHttpRequest()));
+        context.getHttpRequest().getHeaders().put(RequestTracingConstants.CORRELATION_CONTEXT_HEADER.toString(),
+                getTracingInfo(context.getHttpRequest()));
         return next.process();
     }
 
@@ -48,7 +49,7 @@ public class BaseAppConfigurationPolicy implements HttpPipelinePolicy {
      * @throws URISyntaxException
      */
     private static String getTracingInfo(HttpRequest request) {
-        String track = System.getenv(RequestTracingConstants.AZURE_APP_CONFIGURATION_TRACING_DISABLED.toString());
+        String track = System.getenv(RequestTracingConstants.REQUEST_TRACING_DISABLED_ENVIRONMENT_VARIABLE.toString());
         if (track != null && track.equalsIgnoreCase("false")) {
             return "";
         }
@@ -60,10 +61,14 @@ public class BaseAppConfigurationPolicy implements HttpPipelinePolicy {
         if (requestTypeValue.equals(RequestType.WATCH.toString())) {
             watchRequests = true;
         }
-        String requestType = RequestTracingConstants.REQUEST_TYPE.toString() + "=" + requestTypeValue;
-        String host = RequestTracingConstants.HOST + "=" + getHostType();
+        String tracingInfo = RequestTracingConstants.REQUEST_TYPE_KEY.toString() + "=" + requestTypeValue;
+        String hostType = getHostType();
 
-        return requestType + "," + host;
+        if (!hostType.isEmpty()) {
+            tracingInfo += "," + RequestTracingConstants.HOST_TYPE_KEY + "=" + getHostType();
+        }
+
+        return tracingInfo;
 
     }
 
@@ -73,12 +78,15 @@ public class BaseAppConfigurationPolicy implements HttpPipelinePolicy {
      * @return String of Host Type
      */
     private static String getHostType() {
-        String azureFunctionVersion = System.getenv(RequestTracingConstants.FUNCTIONS_EXTENSION_VERSION.toString());
-        String azureWebsiteVersion = System.getenv(RequestTracingConstants.WEBSITE_NODE_DEFAULT_VERSION.toString());
-        HostType hostType = azureFunctionVersion != null ? HostType.AZURE_FUNCTION
-                : azureWebsiteVersion != null
-                        ? HostType.AZURE_WEB_APP
-                        : HostType.NONE;
+        HostType hostType = HostType.UNIDENTIFIED;
+
+        if (System.getenv(RequestTracingConstants.AZURE_FUNCTIONS_ENVIRONMENT_VARIABLE.toString()) != null) {
+            hostType = HostType.AZURE_FUNCTION;
+        } else if (System.getenv(RequestTracingConstants.AZURE_WEB_APP_ENVIRONMENT_VARIABLE.toString()) != null) {
+            hostType = HostType.AZURE_WEB_APP;
+        } else if (System.getenv(RequestTracingConstants.KUBERNETES_ENVIRONMENT_VARIABLE.toString()) != null) {
+            hostType = HostType.KUBERNETES;
+        }
 
         return hostType.toString();
 
