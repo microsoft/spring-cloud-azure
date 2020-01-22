@@ -180,6 +180,8 @@ public class AzureConfigPropertySourceTest {
     public void testPropCanBeInitAndQueried() throws IOException {
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(testItems)
                 .thenReturn(FEATURE_ITEMS);
+        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(testItems)
+        .thenReturn(FEATURE_ITEMS);
         FeatureSet featureSet = new FeatureSet();
         try {
             propertySource.initProperties(featureSet);
