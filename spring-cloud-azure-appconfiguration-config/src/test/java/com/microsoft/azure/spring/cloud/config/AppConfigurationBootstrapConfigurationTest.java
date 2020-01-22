@@ -42,13 +42,13 @@ import com.microsoft.rest.RestClient;
 import com.microsoft.rest.RestClient.Builder;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(AzureConfigBootstrapConfiguration.class)
+@PrepareForTest(AppConfigurationBootstrapConfiguration.class)
 @PowerMockIgnore({ "javax.net.ssl.*", "javax.crypto.*" })
-public class AzureConfigBootstrapConfigurationTest {
+public class AppConfigurationBootstrapConfigurationTest {
     private static final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
             .withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                     propPair(STORE_ENDPOINT_PROP, TEST_STORE_NAME))
-            .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class));
+            .withConfiguration(AutoConfigurations.of(AppConfigurationBootstrapConfiguration.class));
 
     @Mock
     private MSICredentials msiCredentials;
@@ -97,7 +97,7 @@ public class AzureConfigBootstrapConfigurationTest {
     public void propertySourceLocatorBeanCreated() throws Exception {
         whenNew(ClientStore.class).withAnyArguments().thenReturn(clientStoreMock);
         contextRunner.withPropertyValues(propPair(FAIL_FAST_PROP, "false"))
-                .run(context -> assertThat(context).hasSingleBean(AzureConfigPropertySourceLocator.class));
+                .run(context -> assertThat(context).hasSingleBean(AppConfigurationPropertySourceLocator.class));
     }
 
     @Test

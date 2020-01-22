@@ -15,16 +15,16 @@ import org.springframework.web.context.support.ServletRequestHandledEvent;
 public class ConfigListener implements ApplicationListener<ServletRequestHandledEvent> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigListener.class);
 
-    private AzureCloudConfigRefresh azureCloudConfigRefresh;
+    private AppConfigurationRefresh appConfigurationRefresh;
 
-    public ConfigListener(AzureCloudConfigRefresh azureCloudConfigRefresh) {
-        this.azureCloudConfigRefresh = azureCloudConfigRefresh;
+    public ConfigListener(AppConfigurationRefresh appConfigurationRefresh) {
+        this.appConfigurationRefresh = appConfigurationRefresh;
     }
 
     @Override
     public void onApplicationEvent(ServletRequestHandledEvent event) {
         try {
-            azureCloudConfigRefresh.refreshConfigurations();
+            appConfigurationRefresh.refreshConfigurations();
         } catch (Exception e) {
             LOGGER.error("Refresh failed with unexpected exception.", e);
         }

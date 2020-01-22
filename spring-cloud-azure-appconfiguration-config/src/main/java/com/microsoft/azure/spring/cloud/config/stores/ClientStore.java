@@ -23,22 +23,22 @@ import com.azure.data.appconfiguration.ConfigurationClientBuilder;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import com.azure.identity.ManagedIdentityCredentialBuilder;
-import com.microsoft.azure.spring.cloud.config.AppConfigCredentialProvider;
-import com.microsoft.azure.spring.cloud.config.AppConfigProviderProperties;
+import com.microsoft.azure.spring.cloud.config.AppConfigurationCredentialProvider;
+import com.microsoft.azure.spring.cloud.config.AppConfigurationProviderProperties;
 import com.microsoft.azure.spring.cloud.config.pipline.policies.BaseAppConfigurationPolicy;
 import com.microsoft.azure.spring.cloud.config.resource.Connection;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionPool;
 
 public class ClientStore {
 
-    private AppConfigProviderProperties appProperties;
+    private AppConfigurationProviderProperties appProperties;
 
     private ConnectionPool pool;
 
-    private AppConfigCredentialProvider tokenCredentialProvider;
+    private AppConfigurationCredentialProvider tokenCredentialProvider;
 
-    public ClientStore(AppConfigProviderProperties appProperties,
-            ConnectionPool pool, AppConfigCredentialProvider tokenCredentialProvider) {
+    public ClientStore(AppConfigurationProviderProperties appProperties,
+            ConnectionPool pool, AppConfigurationCredentialProvider tokenCredentialProvider) {
         this.appProperties = appProperties;
         this.pool = pool;
         this.tokenCredentialProvider = tokenCredentialProvider;
