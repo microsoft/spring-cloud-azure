@@ -35,11 +35,7 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsoft.azure.credentials.MSICredentials;
-import com.microsoft.azure.keyvault.KeyVaultClient;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
-import com.microsoft.rest.RestClient;
-import com.microsoft.rest.RestClient.Builder;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(AzureConfigBootstrapConfiguration.class)
@@ -49,9 +45,6 @@ public class AzureConfigBootstrapConfigurationTest {
             .withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                     propPair(STORE_ENDPOINT_PROP, TEST_STORE_NAME))
             .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class));
-
-    @Mock
-    private MSICredentials msiCredentials;
     
     @Mock
     private CloseableHttpResponse mockClosableHttpResponse;
@@ -61,15 +54,6 @@ public class AzureConfigBootstrapConfigurationTest {
 
     @Mock
     InputStream mockInputStream;
-
-    @Mock
-    Builder builderMock;
-
-    @Mock
-    RestClient restClientMock;
-
-    @Mock
-    KeyVaultClient keyVaultClientMock;
 
     @Mock
     ObjectMapper mockObjectMapper;
@@ -86,8 +70,6 @@ public class AzureConfigBootstrapConfigurationTest {
                     .thenReturn(new BasicStatusLine(new ProtocolVersion("", 0, 0), 200, ""));
             when(mockClosableHttpResponse.getEntity()).thenReturn(mockHttpEntity);
             when(mockHttpEntity.getContent()).thenReturn(mockInputStream);
-            
-            whenNew(Builder.class).withNoArguments().thenReturn(builderMock);
         } catch (Exception e) {
             fail();
         }
