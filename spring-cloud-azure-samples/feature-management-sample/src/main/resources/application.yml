@@ -1,6 +1,6 @@
 feature-management:
   beta: true
-  FeatureV:
+  feature-v:
     enabled-for:
       -
         name: percentageFilter
