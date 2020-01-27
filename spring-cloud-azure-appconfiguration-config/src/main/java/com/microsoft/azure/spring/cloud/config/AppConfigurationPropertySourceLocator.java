@@ -97,9 +97,7 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
             }
         }
 
-        if (startup) {
-            startup = false;
-        }
+       startup = false;
 
         return composite;
     }

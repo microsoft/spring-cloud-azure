@@ -148,6 +148,7 @@ public class AppConfigurationPropertySourceLocatorTest {
         Field field = AppConfigurationPropertySourceLocator.class.getDeclaredField("startup");
         field.setAccessible(true);
         field.set(null, true);
+        StateHolder.setLoadState(TEST_STORE_NAME,  false);
     }
 
     @Test
@@ -259,6 +260,25 @@ public class AppConfigurationPropertySourceLocatorTest {
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenThrow(new RuntimeException());
         locator.locate(environment);
         verify(configStoreMock, times(1)).isFailFast();
+    }
+
+    @Test
+    public void refreshThrowException() throws IOException, NoSuchFieldException, SecurityException,
+            IllegalArgumentException, IllegalAccessException {
+        Field field = AppConfigurationPropertySourceLocator.class.getDeclaredField("startup");
+        field.setAccessible(true);
+        field.set(null, false);
+        StateHolder.setLoadState(TEST_STORE_NAME,  true);
+
+        expected.expect(NullPointerException.class);
+        
+        when(environment.getActiveProfiles()).thenReturn(new String[] {});
+        when(environment.getProperty("spring.application.name")).thenReturn(null);
+
+        locator = new AppConfigurationPropertySourceLocator(properties, appProperties,
+                clientStoreMock, tokenCredentialProvider);
+
+        locator.locate(environment);
     }
 
     @Test

@@ -103,7 +103,6 @@ public class ClientStore {
      */
     public final List<ConfigurationSetting> listSettingRevisons(SettingSelector settingSelector, String storeName) {
         ConfigurationAsyncClient client = buildClient(storeName);
-
         return client.listRevisions(settingSelector).collectList().block();
     }
 

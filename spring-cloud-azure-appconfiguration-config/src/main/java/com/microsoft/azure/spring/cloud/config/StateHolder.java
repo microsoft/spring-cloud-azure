@@ -38,7 +38,8 @@ final class StateHolder {
      * @return the loadState
      */
     public static Boolean getLoadState(String name) {
-        return loadState.get(name);
+        Boolean loadstate = loadState.get(name);
+        return loadstate == null ? false : loadstate;
     }
 
     /**
