@@ -22,11 +22,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import com.microsoft.azure.spring.cloud.config.resource.AzureManagedIdentityProperties;
 import com.microsoft.azure.spring.cloud.config.resource.Connection;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionPool;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
-import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
 
 @Configuration
 @EnableConfigurationProperties({ AzureCloudConfigProperties.class, AppConfigProviderProperties.class })

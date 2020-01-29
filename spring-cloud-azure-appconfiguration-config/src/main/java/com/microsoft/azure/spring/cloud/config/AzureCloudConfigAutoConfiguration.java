@@ -26,10 +26,5 @@ public class AzureCloudConfigAutoConfiguration {
                 AzureConfigPropertySourceLocator sourceLocator, ClientStore clientStore) {
             return new AzureCloudConfigRefresh(properties, sourceLocator.getStoreContextsMap(), clientStore);
         }
-
-        @Bean
-        public ConfigListener configListener(AzureCloudConfigRefresh azureCloudConfigWatch) {
-            return new ConfigListener(azureCloudConfigWatch);
-        }
     }
 }

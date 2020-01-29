@@ -26,7 +26,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-import com.google.common.collect.Lists;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
@@ -221,10 +220,9 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
         List<String> contexts = storeContextsMap.get(storeName);
         if (contexts == null) {
-            contexts = Lists.newArrayList(context);
-        } else {
-            contexts.add(context);
+            contexts = new ArrayList<String>();
         }
+        contexts.add(context);
 
         storeContextsMap.put(storeName, contexts);
     }

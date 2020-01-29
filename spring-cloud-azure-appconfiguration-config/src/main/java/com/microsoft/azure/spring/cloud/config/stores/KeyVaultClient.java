@@ -17,7 +17,7 @@ import com.azure.security.keyvault.secrets.SecretClientBuilder;
 import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
 import com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties;
 import com.microsoft.azure.spring.cloud.config.KeyVaultCredentialProvider;
-import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
+import com.microsoft.azure.spring.cloud.config.resource.AzureManagedIdentityProperties;
 
 public class KeyVaultClient {
 
