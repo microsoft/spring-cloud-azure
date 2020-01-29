@@ -13,13 +13,30 @@ Please use this [sample](../../spring-cloud-azure-samples/azure-appconfiguration
 ```xml
 <dependency>
     <groupId>com.microsoft.azure</groupId>
-    <artifactId>spring-cloud-starter-azure-appconfiguration-config</artifactId>
-    <version>{starter-version}</version>
+    <artifactId>spring-cloud-azure-appconfiguration-config</artifactId>
+    <version>{version}</version>
 </dependency>
+```
 
+or
+
+```xml
+<dependency>
+    <groupId>com.microsoft.azure</groupId>
+    <artifactId>spring-cloud-azure-appconfiguration-config-web</artifactId>
+    <version>{version}</version>
+</dependency>
 ```
 
 #### Gradle Coordinates
+
+```gradle
+dependencies {
+    compile group: 'com.microsoft.azure', name: 'spring-cloud-starter-azure-appconfiguration-config', version: '{starter-version}'
+}
+```
+
+or
 
 ```gradle
 dependencies {
@@ -94,7 +111,9 @@ By default, all the keys in a configuration store will be watched. To prevent co
 spring.cloud.azure.appconfiguration.stores[0].watched-key=[my-watched-key]
 ```
 
-For web applications a refresh will be attempted whenever a ServletRequestHandledEvent occurs after the cache expiration time. Otherwise, calling refreshConfiguration on `AzureCloudConfigRefresh` will result in a refresh if the cache has expired.
+When using the web library, applications will attempt a refresh whenever a servlet request occurs after the cache expiration time.
+
+In the console library calling refreshConfiguration on `AzureCloudConfigRefresh` will result in a refresh if the cache has expired. The web library can also use this method along with servlet request method.
 
 ### Failfast
 
