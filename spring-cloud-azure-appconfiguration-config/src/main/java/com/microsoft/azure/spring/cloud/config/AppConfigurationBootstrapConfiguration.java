@@ -74,7 +74,7 @@ public class AppConfigurationBootstrapConfiguration {
         } catch (NoUniqueBeanDefinitionException e) {
             throw new RuntimeException("Failed to find unique KeyVaultCredentialProvider Bean for authentication.", e);
         } catch (NoSuchBeanDefinitionException e) {
-            LOGGER.info("No KeyVaultCredentialProvider found.");
+            LOGGER.debug("No KeyVaultCredentialProvider found.");
         }
         return new AppConfigurationPropertySourceLocator(properties, appProperties, clients,
                 keyVaultCredentialProvider);
@@ -90,7 +90,7 @@ public class AppConfigurationBootstrapConfiguration {
             throw new RuntimeException(
                     "Failed to find unique AppConfigurationCredentialProvider Bean for authentication.", e);
         } catch (NoSuchBeanDefinitionException e) {
-            LOGGER.info("No AppConfigurationCredentialProvider found.");
+            LOGGER.debug("No AppConfigurationCredentialProvider found.");
         }
         return new ClientStore(appProperties, pool, tokenCredentialProvider);
     }
