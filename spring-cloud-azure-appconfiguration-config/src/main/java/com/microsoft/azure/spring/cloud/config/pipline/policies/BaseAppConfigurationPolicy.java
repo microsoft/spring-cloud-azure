@@ -73,7 +73,7 @@ public class BaseAppConfigurationPolicy implements HttpPipelinePolicy {
     }
 
     /**
-     * Gets the current host machines type; Azure Function, Azure Web App, or None.
+     * Gets the current host machines type; Azure Function, Azure Web App, Kubernetes, or Empty.
      * 
      * @return String of Host Type
      */
