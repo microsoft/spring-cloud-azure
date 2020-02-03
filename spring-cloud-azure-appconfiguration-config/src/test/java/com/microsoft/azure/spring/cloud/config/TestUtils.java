@@ -31,16 +31,16 @@ public class TestUtils {
         return item;
     }
 
-    static void addStore(AzureCloudConfigProperties properties, String storeName, String connectionString) {
-        addStore(properties, storeName, connectionString, null);
+    static void addStore(AppConfigurationProperties properties, String storeEndpoint, String connectionString) {
+        addStore(properties, storeEndpoint, connectionString, null);
     }
 
-    static void addStore(AzureCloudConfigProperties properties, String storeName, String connectionString,
+    static void addStore(AppConfigurationProperties properties, String storeEndpoint, String connectionString,
                          String label) {
         List<ConfigStore> stores = properties.getStores();
         ConfigStore store = new ConfigStore();
         store.setConnectionString(connectionString);
-        store.setEndpoint(storeName);
+        store.setEndpoint(storeEndpoint);
         store.setLabel(label);
         stores.add(store);
         properties.setStores(stores);

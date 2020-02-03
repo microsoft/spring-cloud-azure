@@ -43,8 +43,8 @@ import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 import com.microsoft.azure.spring.cloud.config.stores.KeyVaultClient;
 
-public class AzureConfigPropertySource extends EnumerablePropertySource<ConfigurationClient> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigPropertySource.class);
+public class AppConfigurationPropertySource extends EnumerablePropertySource<ConfigurationClient> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppConfigurationPropertySource.class);
 
     private final String context;
 
@@ -52,7 +52,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
 
     private final String label;
 
-    private AzureCloudConfigProperties azureProperties;
+    private AppConfigurationProperties appConfigurationProperties;
 
     private static ObjectMapper mapper = new ObjectMapper();
 
@@ -62,22 +62,25 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
 
     private KeyVaultCredentialProvider keyVaultCredentialProvider;
 
-    private AppConfigProviderProperties appProperties;
+    private AppConfigurationProviderProperties appProperties;
 
     private ConfigStore configStore;
 
     private Map<String, List<String>> storeContextsMap;
+    
+    private int count = 0;
 
-    AzureConfigPropertySource(String context, ConfigStore configStore, String label,
-            AzureCloudConfigProperties azureProperties, ClientStore clients, AppConfigProviderProperties appProperties,
-            KeyVaultCredentialProvider keyVaultCredentialProvider, Map<String, List<String>> storeContextsMap) {
+    AppConfigurationPropertySource(String context, ConfigStore configStore, String label,
+            AppConfigurationProperties appConfigurationProperties, ClientStore clients,
+            AppConfigurationProviderProperties appProperties, KeyVaultCredentialProvider keyVaultCredentialProvider,
+            Map<String, List<String>> storeContextsMap) {
         // The context alone does not uniquely define a PropertySource, append storeName
         // and label to uniquely define a PropertySource
         super(context + configStore.getEndpoint() + "/" + label);
         this.context = context;
         this.configStore = configStore;
         this.label = label;
-        this.azureProperties = azureProperties;
+        this.appConfigurationProperties = appConfigurationProperties;
         this.appProperties = appProperties;
         this.keyVaultClients = new HashMap<String, KeyVaultClient>();
         this.clients = clients;
@@ -104,7 +107,7 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
      * <p>
      * <b>Note</b>: Doesn't update Feature Management, just stores values in cache. Call
      * {@code initFeatures} to update Feature Management, but make sure its done in the
-     * last {@code AzureConfigPropertySource}
+     * last {@code AppConfigurationPropertySource}
      * </p>
      * 
      * @param featureSet The set of Feature Management Flags from various config stores.
@@ -128,12 +131,8 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
         settingSelector.setKeyFilter(".appconfig*");
         List<ConfigurationSetting> features = clients.listSettings(settingSelector, storeName);
 
-        if (settings == null) {
-            if (!azureProperties.isFailFast()) {
-                return featureSet;
-            } else {
-                throw new IOException("Unable to load properties from App Configuration Store.");
-            }
+        if (settings == null || features == null) {
+            throw new IOException("Unable to load properties from App Configuration Store.");
         }
         for (ConfigurationSetting setting : settings) {
             String key = setting.getKey().trim().substring(context.length()).replace('/', '.');
@@ -164,12 +163,17 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
         List<ConfigurationSetting> featureRevisions = clients.listSettingRevisons(settingSelector, storeName);
 
         if (configurationRevisions != null && !configurationRevisions.isEmpty()) {
-            StateHolder.setState(configStore.getEndpoint() + CONFIGURATION_SUFFIX, configurationRevisions.get(0));
+            StateHolder.setEtagState(configStore.getEndpoint() + CONFIGURATION_SUFFIX, configurationRevisions.get(0));
+        } else {
+            StateHolder.setEtagState(configStore.getEndpoint() + CONFIGURATION_SUFFIX, new ConfigurationSetting());
         }
 
         if (featureRevisions != null && !featureRevisions.isEmpty()) {
-            StateHolder.setState(configStore.getEndpoint() + FEATURE_SUFFIX, featureRevisions.get(0));
+            StateHolder.setEtagState(configStore.getEndpoint() + FEATURE_SUFFIX, featureRevisions.get(0));
+        } else {
+            StateHolder.setEtagState(configStore.getEndpoint() + FEATURE_SUFFIX, new ConfigurationSetting());
         }
+        StateHolder.setLoadState(configStore.getEndpoint(), true);
 
         return featureSet;
     }
@@ -192,28 +196,20 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
                 JsonNode kvReference = mapper.readTree(value);
                 uri = new URI(kvReference.at("/uri").asText());
             } catch (URISyntaxException e) {
-                if (azureProperties.isFailFast()) {
-                    LOGGER.error("Error Processing Key Vault Entry URI.");
-                    ReflectionUtils.rethrowRuntimeException(e);
-                } else {
-                    LOGGER.error("Error Processing Key Vault Entry URI.", e);
-                }
+                LOGGER.error("Error Processing Key Vault Entry URI.");
+                ReflectionUtils.rethrowRuntimeException(e);
             }
 
             // If no entry found don't connect to Key Vault
             if (uri == null) {
-                if (azureProperties.isFailFast()) {
-                    ReflectionUtils.rethrowRuntimeException(
-                            new IOException("Invaid URI when parsing Key Vault Reference."));
-                } else {
-                    return null;
-                }
+                ReflectionUtils.rethrowRuntimeException(
+                        new IOException("Invaid URI when parsing Key Vault Reference."));
             }
 
             // Check if we already have a client for this key vault, if not we will make
             // one
             if (!keyVaultClients.containsKey(uri.getHost())) {
-                KeyVaultClient client = new KeyVaultClient(uri, keyVaultCredentialProvider, azureProperties);
+                KeyVaultClient client = new KeyVaultClient(uri, keyVaultCredentialProvider, appConfigurationProperties);
                 keyVaultClients.put(uri.getHost(), client);
             }
             KeyVaultSecret secret = keyVaultClients.get(uri.getHost()).getSecret(uri, appProperties.getMaxRetryTime());
@@ -222,20 +218,16 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
             }
             secretValue = secret.getValue();
         } catch (RuntimeException | IOException e) {
-            if (!azureProperties.isFailFast()) {
-                LOGGER.error("Error Retreiving Key Vault Entry", e);
-            } else {
-                LOGGER.error("Error Retreiving Key Vault Entry");
-                ReflectionUtils.rethrowRuntimeException(e);
-            }
+            LOGGER.error("Error Retreiving Key Vault Entry");
+            ReflectionUtils.rethrowRuntimeException(e);
         }
         return secretValue;
     }
 
     /**
      * Initializes Feature Management configurations. Only one
-     * {@code AzureConfigPropertySource} can call this, and it needs to be done after the
-     * rest have run initProperties.
+     * {@code AppConfigurationPropertySource} can call this, and it needs to be done after
+     * the rest have run initProperties.
      * @param featureSet Feature Flag info to be set to this property source.
      */
     void initFeatures(FeatureSet featureSet) {
@@ -295,21 +287,13 @@ public class AzureConfigPropertySource extends EnumerablePropertySource<Configur
                 return feature;
 
             } catch (IOException e) {
-                LOGGER.error("Unabled to parse Feature Management values from Azure.", e);
-                if (azureProperties.isFailFast()) {
-                    throw e;
-                }
+                throw new IOException("Unabled to parse Feature Management values from Azure.", e);
             }
 
         } else {
             String message = String.format("Found Feature Flag %s with invalid Content Type of %s", item.getKey(),
                     item.getContentType());
-
-            if (azureProperties.isFailFast()) {
-                throw new IOException(message);
-            }
-            LOGGER.error(message);
+            throw new IOException(message);
         }
-        return feature;
     }
 }

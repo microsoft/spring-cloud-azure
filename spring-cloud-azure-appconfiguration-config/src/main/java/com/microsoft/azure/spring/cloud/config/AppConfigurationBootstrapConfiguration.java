@@ -29,15 +29,15 @@ import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
 
 @Configuration
-@EnableConfigurationProperties({ AzureCloudConfigProperties.class, AppConfigProviderProperties.class })
-@ConditionalOnClass(AzureConfigPropertySourceLocator.class)
-@ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "enabled", matchIfMissing = true)
-public class AzureConfigBootstrapConfiguration {
+@EnableConfigurationProperties({ AppConfigurationProperties.class, AppConfigurationProviderProperties.class })
+@ConditionalOnClass(AppConfigurationPropertySourceLocator.class)
+@ConditionalOnProperty(prefix = AppConfigurationProperties.CONFIG_PREFIX, name = "enabled", matchIfMissing = true)
+public class AppConfigurationBootstrapConfiguration {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigBootstrapConfiguration.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppConfigurationBootstrapConfiguration.class);
 
     @Bean
-    public ConnectionPool initConnectionString(AzureCloudConfigProperties properties) {
+    public ConnectionPool initConnectionString(AppConfigurationProperties properties) {
         ConnectionPool pool = new ConnectionPool();
         List<ConfigStore> stores = properties.getStores();
 
@@ -62,39 +62,35 @@ public class AzureConfigBootstrapConfiguration {
 
     @Bean
     public CloseableHttpClient closeableHttpClient() {
-        return HttpClients.createDefault();
+        return HttpClients.createSystem();
     }
 
     @Bean
-    public AzureConfigPropertySourceLocator sourceLocator(AzureCloudConfigProperties properties,
-            AppConfigProviderProperties appProperties, ClientStore clients, ApplicationContext context) {
+    public AppConfigurationPropertySourceLocator sourceLocator(AppConfigurationProperties properties,
+            AppConfigurationProviderProperties appProperties, ClientStore clients, ApplicationContext context) {
         KeyVaultCredentialProvider keyVaultCredentialProvider = null;
         try {
             keyVaultCredentialProvider = context.getBean(KeyVaultCredentialProvider.class);
         } catch (NoUniqueBeanDefinitionException e) {
-            LOGGER.error("Failed to find unique TokenCredentialProvider Bean for authentication.", e);
-            if (properties.isFailFast()) {
-                throw e;
-            }
+            throw new RuntimeException("Failed to find unique KeyVaultCredentialProvider Bean for authentication.", e);
         } catch (NoSuchBeanDefinitionException e) {
-            LOGGER.info("No TokenCredentialProvider found.");
+            LOGGER.debug("No KeyVaultCredentialProvider found.");
         }
-        return new AzureConfigPropertySourceLocator(properties, appProperties, clients, keyVaultCredentialProvider);
+        return new AppConfigurationPropertySourceLocator(properties, appProperties, clients,
+                keyVaultCredentialProvider);
     }
 
     @Bean
-    public ClientStore buildClientStores(AzureCloudConfigProperties properties,
-            AppConfigProviderProperties appProperties, ConnectionPool pool, ApplicationContext context) {
-        AppConfigCredentialProvider tokenCredentialProvider = null;
+    public ClientStore buildClientStores(AppConfigurationProperties properties,
+            AppConfigurationProviderProperties appProperties, ConnectionPool pool, ApplicationContext context) {
+        AppConfigurationCredentialProvider tokenCredentialProvider = null;
         try {
-            tokenCredentialProvider = context.getBean(AppConfigCredentialProvider.class);
+            tokenCredentialProvider = context.getBean(AppConfigurationCredentialProvider.class);
         } catch (NoUniqueBeanDefinitionException e) {
-            LOGGER.error("Failed to find unique TokenCredentialProvider Bean for authentication.", e);
-            if (properties.isFailFast()) {
-                throw e;
-            }
+            throw new RuntimeException(
+                    "Failed to find unique AppConfigurationCredentialProvider Bean for authentication.", e);
         } catch (NoSuchBeanDefinitionException e) {
-            LOGGER.info("No TokenCredentialProvider found.");
+            LOGGER.debug("No AppConfigurationCredentialProvider found.");
         }
         return new ClientStore(appProperties, pool, tokenCredentialProvider);
     }

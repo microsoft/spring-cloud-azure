@@ -62,10 +62,10 @@ import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public class AzureConfigPropertySourceTest {
+public class AppConfigurationPropertySourceTest {
     private static final String EMPTY_CONTENT_TYPE = "";
 
-    private static final AzureCloudConfigProperties TEST_PROPS = new AzureCloudConfigProperties();
+    private static final AppConfigurationProperties TEST_PROPS = new AppConfigurationProperties();
 
     public static final List<ConfigurationSetting> TEST_ITEMS = new ArrayList<>();
 
@@ -98,11 +98,11 @@ public class AzureConfigPropertySourceTest {
 
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
 
-    private AzureConfigPropertySource propertySource;
+    private AppConfigurationPropertySource propertySource;
 
     private static ObjectMapper mapper = new ObjectMapper();
 
-    private AzureCloudConfigProperties azureProperties;
+    private AppConfigurationProperties appConfigurationProperties;
 
     @Mock
     private ClientStore clientStoreMock;
@@ -131,7 +131,7 @@ public class AzureConfigPropertySourceTest {
     @Rule
     public ExpectedException expected = ExpectedException.none();
 
-    private AppConfigProviderProperties appProperties;
+    private AppConfigurationProviderProperties appProperties;
 
     private KeyVaultCredentialProvider tokenCredentialProvider = null;
 
@@ -148,17 +148,16 @@ public class AzureConfigPropertySourceTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        azureProperties = new AzureCloudConfigProperties();
-        azureProperties.setFailFast(true);
-        appProperties = new AppConfigProviderProperties();
+        appConfigurationProperties = new AppConfigurationProperties();
+        appProperties = new AppConfigurationProviderProperties();
         ConfigStore configStore = new ConfigStore();
         configStore.setEndpoint(TEST_STORE_NAME);
         Map<String, List<String>> storeContextsMap = new HashMap<String, List<String>>();
         ArrayList<String> contexts = new ArrayList<String>();
         contexts.add("/application/*");
         storeContextsMap.put(TEST_STORE_NAME, contexts);
-        propertySource = new AzureConfigPropertySource(TEST_CONTEXT, configStore, "\0",
-                azureProperties, clientStoreMock, appProperties, tokenCredentialProvider, storeContextsMap);
+        propertySource = new AppConfigurationPropertySource(TEST_CONTEXT, configStore, "\0",
+                appConfigurationProperties, clientStoreMock, appProperties, tokenCredentialProvider, storeContextsMap);
 
         testItems = new ArrayList<ConfigurationSetting>();
         testItems.add(item1);
