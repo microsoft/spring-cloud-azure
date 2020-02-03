@@ -9,21 +9,44 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 
-public final class StateHolder {
+final class StateHolder {
 
     private StateHolder() {
         throw new IllegalStateException("Should not be callable.");
     }
 
-    private static ConcurrentHashMap<String, ConfigurationSetting> state = 
+    private static ConcurrentHashMap<String, ConfigurationSetting> etagState = 
             new ConcurrentHashMap<String, ConfigurationSetting>();
 
-    public static ConfigurationSetting getState(String name) {
-        return state.get(name);
+    private static ConcurrentHashMap<String, Boolean> loadState = new ConcurrentHashMap<String, Boolean>();
+
+    /**
+     * @return the etagState
+     */
+    public static ConfigurationSetting getEtagState(String name) {
+        return etagState.get(name);
     }
 
-    public static void setState(String name, ConfigurationSetting setting) {
-        state.put(name, setting);
+    /**
+     * @param etagState the etagState to set
+     */
+    static void setEtagState(String name, ConfigurationSetting config) {
+        etagState.put(name, config);
+    }
+
+    /**
+     * @return the loadState
+     */
+    public static Boolean getLoadState(String name) {
+        Boolean loadstate = loadState.get(name);
+        return loadstate == null ? false : loadstate;
+    }
+
+    /**
+     * @param loadState the loadState to set
+     */
+    public static void setLoadState(String name, Boolean loaded) {
+        loadState.put(name, loaded);
     }
 
 }

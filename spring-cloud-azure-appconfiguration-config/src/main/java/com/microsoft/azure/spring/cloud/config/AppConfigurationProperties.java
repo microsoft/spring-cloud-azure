@@ -26,9 +26,9 @@ import com.microsoft.azure.spring.cloud.config.resource.AppConfigManagedIdentity
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 @Validated
-@ConfigurationProperties(prefix = AzureCloudConfigProperties.CONFIG_PREFIX)
-@Import({ AppConfigProviderProperties.class })
-public class AzureCloudConfigProperties {
+@ConfigurationProperties(prefix = AppConfigurationProperties.CONFIG_PREFIX)
+@Import({ AppConfigurationProviderProperties.class })
+public class AppConfigurationProperties {
     public static final String CONFIG_PREFIX = "spring.cloud.azure.appconfiguration";
 
     public static final String LABEL_SEPARATOR = ",";
@@ -52,8 +52,6 @@ public class AzureCloudConfigProperties {
     @NotEmpty
     @Pattern(regexp = "^[a-zA-Z0-9_@]+$")
     private String profileSeparator = "_";
-
-    private boolean failFast = true;
 
     private Duration cacheExpiration = Duration.ofSeconds(30);
 
@@ -104,14 +102,6 @@ public class AzureCloudConfigProperties {
 
     public void setProfileSeparator(String profileSeparator) {
         this.profileSeparator = profileSeparator;
-    }
-
-    public boolean isFailFast() {
-        return failFast;
-    }
-
-    public void setFailFast(boolean failFast) {
-        this.failFast = failFast;
     }
 
     public Duration getCacheExpiration() {

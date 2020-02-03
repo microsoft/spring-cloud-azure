@@ -15,7 +15,7 @@ import com.azure.identity.ManagedIdentityCredentialBuilder;
 import com.azure.security.keyvault.secrets.SecretAsyncClient;
 import com.azure.security.keyvault.secrets.SecretClientBuilder;
 import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
-import com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties;
+import com.microsoft.azure.spring.cloud.config.AppConfigurationProperties;
 import com.microsoft.azure.spring.cloud.config.KeyVaultCredentialProvider;
 import com.microsoft.azure.spring.cloud.config.resource.AppConfigManagedIdentityProperties;
 
@@ -23,7 +23,7 @@ public class KeyVaultClient {
 
     private SecretAsyncClient secretClient;
     
-    private AzureCloudConfigProperties properties;
+    private AppConfigurationProperties properties;
     
     private URI uri;
     
@@ -37,7 +37,7 @@ public class KeyVaultClient {
      * Vault
      * @param properties Azure Configuration Managed Identity credentials
      */
-    public KeyVaultClient(AzureCloudConfigProperties properties, URI uri,
+    public KeyVaultClient(AppConfigurationProperties properties, URI uri,
             KeyVaultCredentialProvider tokenCredentialProvider) {
         this.properties = properties;
         this.uri = uri;

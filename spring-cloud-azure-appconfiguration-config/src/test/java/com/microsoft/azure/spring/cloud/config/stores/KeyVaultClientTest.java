@@ -27,7 +27,7 @@ import com.azure.core.credential.TokenCredential;
 import com.azure.security.keyvault.secrets.SecretAsyncClient;
 import com.azure.security.keyvault.secrets.SecretClientBuilder;
 import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
-import com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties;
+import com.microsoft.azure.spring.cloud.config.AppConfigurationProperties;
 import com.microsoft.azure.spring.cloud.config.KeyVaultCredentialProvider;
 import com.microsoft.azure.spring.cloud.config.resource.AppConfigManagedIdentityProperties;
 
@@ -54,11 +54,11 @@ public class KeyVaultClientTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    private AzureCloudConfigProperties azureProperties;
+    private AppConfigurationProperties azureProperties;
 
     @Test(expected = IllegalArgumentException.class)
     public void multipleArguments() throws IOException, URISyntaxException {
-        azureProperties = new AzureCloudConfigProperties();
+        azureProperties = new AppConfigurationProperties();
         AppConfigManagedIdentityProperties msiProps = new AppConfigManagedIdentityProperties();
         msiProps.setClientId("testclientid");
         azureProperties.setManagedIdentity(msiProps);
@@ -85,7 +85,7 @@ public class KeyVaultClientTest {
 
     @Test
     public void configProviderAuth() throws IOException, URISyntaxException {
-        azureProperties = new AzureCloudConfigProperties();
+        azureProperties = new AppConfigurationProperties();
         AppConfigManagedIdentityProperties msiProps = null;
         azureProperties.setManagedIdentity(msiProps);
         
@@ -120,7 +120,7 @@ public class KeyVaultClientTest {
     
     @Test
     public void configClientIdAuth() throws IOException, URISyntaxException {
-        azureProperties = new AzureCloudConfigProperties();
+        azureProperties = new AppConfigurationProperties();
         AppConfigManagedIdentityProperties msiProps = new AppConfigManagedIdentityProperties();
         msiProps.setClientId("testClientId");
         AppConfigManagedIdentityProperties test2 = Mockito.spy(msiProps);

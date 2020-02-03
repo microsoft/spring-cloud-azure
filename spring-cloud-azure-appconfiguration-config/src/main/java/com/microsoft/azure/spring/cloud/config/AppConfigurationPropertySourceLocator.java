@@ -30,8 +30,8 @@ import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
-public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AzureConfigPropertySourceLocator.class);
+public class AppConfigurationPropertySourceLocator implements PropertySourceLocator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppConfigurationPropertySourceLocator.class);
 
     private static final String SPRING_APP_NAME_PROP = "spring.application.name";
 
@@ -39,7 +39,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
     private static final String PATH_SPLITTER = "/";
 
-    private final AzureCloudConfigProperties properties;
+    private final AppConfigurationProperties properties;
 
     private final String profileSeparator;
 
@@ -47,14 +47,16 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
 
     private final Map<String, List<String>> storeContextsMap = new ConcurrentHashMap<>();
 
-    private AppConfigProviderProperties appProperties;
+    private AppConfigurationProviderProperties appProperties;
 
     private ClientStore clients;
 
     private KeyVaultCredentialProvider keyVaultCredentialProvider;
 
-    public AzureConfigPropertySourceLocator(AzureCloudConfigProperties properties,
-            AppConfigProviderProperties appProperties, ClientStore clients,
+    private static Boolean startup = true;
+
+    public AppConfigurationPropertySourceLocator(AppConfigurationProperties properties,
+            AppConfigurationProviderProperties appProperties, ClientStore clients,
             KeyVaultCredentialProvider keyVaultCredentialProvider) {
         this.properties = properties;
         this.appProperties = appProperties;
@@ -86,9 +88,15 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         // Feature Management needs to be set in the last config store.
         while (configStoreIterator.hasNext()) {
             ConfigStore configStore = configStoreIterator.next();
-            addPropertySource(composite, configStore, applicationName, profiles, storeContextsMap,
-                    !configStoreIterator.hasNext());
+            if (startup || (!startup && StateHolder.getLoadState(configStore.getEndpoint()))) {
+                addPropertySource(composite, configStore, applicationName, profiles, storeContextsMap,
+                        !configStoreIterator.hasNext());
+            } else {
+                LOGGER.warn("Not loading configurations from {} as it failed on startup.", configStore.getEndpoint());
+            }
         }
+
+       startup = false;
 
         return composite;
     }
@@ -120,7 +128,7 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         contexts.addAll(generateContexts(this.properties.getDefaultContext(), profiles, store));
         contexts.addAll(generateContexts(applicationName, profiles, store));
 
-        // There is only one Feature Set for all AzureConfigPropertySources
+        // There is only one Feature Set for all AppConfigurationPropertySources
         FeatureSet featureSet = new FeatureSet();
 
         // Reverse in order to add Profile specific properties earlier, and last profile
@@ -128,17 +136,20 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
         Collections.reverse(contexts);
         for (String sourceContext : contexts) {
             try {
-                List<AzureConfigPropertySource> sourceList = create(sourceContext, store, storeContextsMap,
+                List<AppConfigurationPropertySource> sourceList = create(sourceContext, store, storeContextsMap,
                         initFeatures, featureSet);
                 sourceList.forEach(composite::addPropertySource);
                 LOGGER.debug("PropertySource context [{}] is added.", sourceContext);
             } catch (Exception e) {
-                if (properties.isFailFast()) {
-                    LOGGER.error("Fail fast is set and there was an error reading configuration from Azure Config " +
-                            "Service for " + sourceContext);
+                if (store.isFailFast() || !startup) {
+                    LOGGER.error(
+                            "Fail fast is set and there was an error reading configuration from Azure App "
+                                    + "Configuration Service for " + sourceContext);
                     ReflectionUtils.rethrowRuntimeException(e);
                 } else {
-                    LOGGER.warn("Unable to load configuration from Azure Config Service for " + sourceContext, e);
+                    LOGGER.warn("Unable to load configuration from Azure AppConfiguration Service for " + sourceContext,
+                            e);
+                    StateHolder.setLoadState(store.getEndpoint(), false);
                 }
             }
         }
@@ -173,23 +184,23 @@ public class AzureConfigPropertySourceLocator implements PropertySourceLocator {
     }
 
     /**
-     * Creates a new set of AzureConfigProertySources, 1 per Label.
+     * Creates a new set of AppConfigurationProertySources, 1 per Label.
      * 
      * @param context Context of the application, part of uniquely define a PropertySource
      * @param store Config Store the PropertySource is being generated from
      * @param storeContextsMap the Map storing the storeName -> List of contexts map
      * @param initFeatures determines if Feature Management is set in the PropertySource.
      * When generating more than one it needs to be in the last one.
-     * @return a list of AzureConfigPropertySources
+     * @return a list of AppConfigurationPropertySources
      */
-    private List<AzureConfigPropertySource> create(String context, ConfigStore store,
+    private List<AppConfigurationPropertySource> create(String context, ConfigStore store,
             Map<String, List<String>> storeContextsMap, boolean initFeatures, FeatureSet featureSet) throws Exception {
-        List<AzureConfigPropertySource> sourceList = new ArrayList<>();
+        List<AppConfigurationPropertySource> sourceList = new ArrayList<>();
 
         try {
             for (String label : store.getLabels()) {
                 putStoreContext(store.getEndpoint(), context, storeContextsMap);
-                AzureConfigPropertySource propertySource = new AzureConfigPropertySource(context, store,
+                AppConfigurationPropertySource propertySource = new AppConfigurationPropertySource(context, store,
                         label, properties, clients, appProperties, keyVaultCredentialProvider, storeContextsMap);
 
                 propertySource.initProperties(featureSet);
