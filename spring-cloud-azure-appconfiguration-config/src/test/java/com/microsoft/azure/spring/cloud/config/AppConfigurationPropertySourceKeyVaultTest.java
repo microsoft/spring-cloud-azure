@@ -61,11 +61,11 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ AzureConfigPropertySource.class })
-public class AzureConfigPropertySourceKeyVaultTest {
+@PrepareForTest({ AppConfigurationPropertySource.class })
+public class AppConfigurationPropertySourceKeyVaultTest {
     private static final String EMPTY_CONTENT_TYPE = "";
 
-    private static final AzureCloudConfigProperties TEST_PROPS = new AzureCloudConfigProperties();
+    private static final AppConfigurationProperties TEST_PROPS = new AppConfigurationProperties();
 
     public static final List<ConfigurationSetting> TEST_ITEMS = new ArrayList<>();
 
@@ -85,11 +85,11 @@ public class AzureConfigPropertySourceKeyVaultTest {
 
     public List<ConfigurationSetting> testItems = new ArrayList<>();
 
-    private AzureConfigPropertySource propertySource;
+    private AppConfigurationPropertySource propertySource;
 
-    private AzureCloudConfigProperties azureProperties;
+    private AppConfigurationProperties appConfigurationProperties;
 
-    private AppConfigProviderProperties appProperties;
+    private AppConfigurationProviderProperties appProperties;
 
     @Mock
     private ClientStore clientStoreMock;
@@ -114,7 +114,7 @@ public class AzureConfigPropertySourceKeyVaultTest {
 
     @Rule
     public ExpectedException expected = ExpectedException.none();
-    
+
     private KeyVaultCredentialProvider tokenCredentialProvider = null;
 
     @BeforeClass
@@ -127,9 +127,8 @@ public class AzureConfigPropertySourceKeyVaultTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        azureProperties = new AzureCloudConfigProperties();
-        azureProperties.setFailFast(true);
-        appProperties = new AppConfigProviderProperties();
+        appConfigurationProperties = new AppConfigurationProperties();
+        appProperties = new AppConfigurationProviderProperties();
         appProperties.setMaxRetryTime(0);
         ConfigStore testStore = new ConfigStore();
         testStore.setEndpoint(TEST_STORE_NAME);
@@ -137,8 +136,8 @@ public class AzureConfigPropertySourceKeyVaultTest {
         ArrayList<String> contexts = new ArrayList<String>();
         contexts.add("/application/*");
         storeContextsMap.put(TEST_STORE_NAME, contexts);
-        propertySource = new AzureConfigPropertySource(TEST_CONTEXT, testStore, "\0",
-                azureProperties, clientStoreMock, appProperties, tokenCredentialProvider, storeContextsMap);
+        propertySource = new AppConfigurationPropertySource(TEST_CONTEXT, testStore, "\0",
+                appConfigurationProperties, clientStoreMock, appProperties, tokenCredentialProvider, storeContextsMap);
 
         testItems = new ArrayList<ConfigurationSetting>();
         testItems.add(item1);

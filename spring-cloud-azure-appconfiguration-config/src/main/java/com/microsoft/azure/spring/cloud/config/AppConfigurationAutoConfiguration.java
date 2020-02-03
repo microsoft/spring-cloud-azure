@@ -14,22 +14,22 @@ import org.springframework.context.annotation.Configuration;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 
 @Configuration
-@ConditionalOnProperty(prefix = AzureCloudConfigProperties.CONFIG_PREFIX, name = "enabled", matchIfMissing = true)
-public class AzureCloudConfigAutoConfiguration {
+@ConditionalOnProperty(prefix = AppConfigurationProperties.CONFIG_PREFIX, name = "enabled", matchIfMissing = true)
+public class AppConfigurationAutoConfiguration {
 
     @Configuration
     @ConditionalOnClass(RefreshEndpoint.class)
-    static class CloudWatchAutoConfiguration {
+    static class AppConfigurationWatchAutoConfiguration {
 
         @Bean
-        public AzureCloudConfigRefresh getConfigWatch(AzureCloudConfigProperties properties,
-                AzureConfigPropertySourceLocator sourceLocator, ClientStore clientStore) {
-            return new AzureCloudConfigRefresh(properties, sourceLocator.getStoreContextsMap(), clientStore);
+        public AppConfigurationRefresh getConfigWatch(AppConfigurationProperties properties,
+                AppConfigurationPropertySourceLocator sourceLocator, ClientStore clientStore) {
+            return new AppConfigurationRefresh(properties, sourceLocator.getStoreContextsMap(), clientStore);
         }
 
         @Bean
-        public ConfigListener configListener(AzureCloudConfigRefresh azureCloudConfigWatch) {
-            return new ConfigListener(azureCloudConfigWatch);
+        public ConfigListener configListener(AppConfigurationRefresh appConfigurationRefresh) {
+            return new ConfigListener(appConfigurationRefresh);
         }
     }
 }
