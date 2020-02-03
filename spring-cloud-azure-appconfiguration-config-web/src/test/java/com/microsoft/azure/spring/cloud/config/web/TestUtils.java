@@ -8,7 +8,7 @@ package com.microsoft.azure.spring.cloud.config.web;
 import java.util.List;
 
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
-import com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties;
+import com.microsoft.azure.spring.cloud.config.AppConfigurationProperties;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 /**
@@ -32,11 +32,11 @@ public class TestUtils {
         return item;
     }
 
-    static void addStore(AzureCloudConfigProperties properties, String storeEndpoint, String connectionString) {
+    static void addStore(AppConfigurationProperties properties, String storeEndpoint, String connectionString) {
         addStore(properties, storeEndpoint, connectionString, null);
     }
 
-    static void addStore(AzureCloudConfigProperties properties, String storeEndpoint, String connectionString,
+    static void addStore(AppConfigurationProperties properties, String storeEndpoint, String connectionString,
                          String label) {
         List<ConfigStore> stores = properties.getStores();
         ConfigStore store = new ConfigStore();

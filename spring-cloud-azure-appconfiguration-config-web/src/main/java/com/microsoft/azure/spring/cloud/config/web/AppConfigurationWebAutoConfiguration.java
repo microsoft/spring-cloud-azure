@@ -10,7 +10,7 @@ import org.springframework.cloud.endpoint.RefreshEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.microsoft.azure.spring.cloud.config.AzureCloudConfigRefresh;
+import com.microsoft.azure.spring.cloud.config.AppConfigurationRefresh;
 
 @Configuration
 public class AppConfigurationWebAutoConfiguration {
@@ -20,7 +20,7 @@ public class AppConfigurationWebAutoConfiguration {
     static class AppConfigurationWatchAutoConfiguration {
 
         @Bean
-        public ConfigListener configListener(AzureCloudConfigRefresh appConfigurationRefresh) {
+        public ConfigListener configListener(AppConfigurationRefresh appConfigurationRefresh) {
             return new ConfigListener(appConfigurationRefresh);
         }
     }

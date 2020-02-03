@@ -19,8 +19,8 @@ import org.springframework.validation.annotation.Validated;
 @Configuration
 @Validated
 @PropertySource("classpath:appConfiguration.yaml")
-@ConfigurationProperties(prefix = AppConfigProviderProperties.CONFIG_PREFIX)
-public class AppConfigProviderProperties {
+@ConfigurationProperties(prefix = AppConfigurationProviderProperties.CONFIG_PREFIX)
+public class AppConfigurationProviderProperties {
     public static final String CONFIG_PREFIX = "spring.cloud.appconfiguration";
 
     @NotEmpty

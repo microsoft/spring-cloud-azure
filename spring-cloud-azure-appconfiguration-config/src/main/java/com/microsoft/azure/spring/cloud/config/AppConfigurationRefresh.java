@@ -30,8 +30,8 @@ import com.azure.data.appconfiguration.models.SettingSelector;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
-public class AzureCloudConfigRefresh implements ApplicationEventPublisherAware {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AzureCloudConfigRefresh.class);
+public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppConfigurationRefresh.class);
 
     private final AtomicBoolean running = new AtomicBoolean(false);
 
@@ -49,7 +49,7 @@ public class AzureCloudConfigRefresh implements ApplicationEventPublisherAware {
 
     private String eventDataInfo;
 
-    public AzureCloudConfigRefresh(AzureCloudConfigProperties properties, Map<String, List<String>> storeContextsMap,
+    public AppConfigurationRefresh(AppConfigurationProperties properties, Map<String, List<String>> storeContextsMap,
             ClientStore clientStore) {
         this.configStores = properties.getStores();
         this.storeContextsMap = storeContextsMap;
@@ -96,12 +96,14 @@ public class AzureCloudConfigRefresh implements ApplicationEventPublisherAware {
                 Date date = new Date();
                 if (notCachedTime == null || date.after(notCachedTime)) {
                     for (ConfigStore configStore : configStores) {
-                        String watchedKeyNames = clientStore.watchedKeyNames(configStore, storeContextsMap);
-                        willRefresh = refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames) ? true
-                                : willRefresh;
-                        // Refresh Feature Flags
-                        willRefresh = refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY) ? true
-                                : willRefresh;
+                        if (StateHolder.getLoadState(configStore.getEndpoint())) {
+                            String watchedKeyNames = clientStore.watchedKeyNames(configStore, storeContextsMap);
+                            willRefresh = refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames) ? true
+                                    : willRefresh;
+                            // Refresh Feature Flags
+                            willRefresh = refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY) ? true
+                                    : willRefresh;
+                        }
                     }
                     // Resetting last Checked date to now.
                     lastCheckedTime = new Date();
@@ -141,8 +143,8 @@ public class AzureCloudConfigRefresh implements ApplicationEventPublisherAware {
         if (items != null && !items.isEmpty()) {
             etag = items.get(0).getETag();
         }
-        
-        if (StateHolder.getState(storeNameWithSuffix) == null) {
+
+        if (StateHolder.getEtagState(storeNameWithSuffix) == null) {
             // Should never be the case as Property Source should set the state, but if
             // etag != null return true.
             if (etag != null) {
@@ -150,8 +152,8 @@ public class AzureCloudConfigRefresh implements ApplicationEventPublisherAware {
             }
             return false;
         }
-        
-        if (!etag.equals(StateHolder.getState(storeNameWithSuffix).getETag())) {
+
+        if (!etag.equals(StateHolder.getEtagState(storeNameWithSuffix).getETag())) {
             LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
                     store.getEndpoint(), watchedKeyNames);
             if (this.eventDataInfo.isEmpty()) {

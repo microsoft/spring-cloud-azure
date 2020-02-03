@@ -53,7 +53,6 @@ spring.cloud.azure.appconfiguration.enabled | Whether enable spring-cloud-azure-
 spring.cloud.azure.appconfiguration.default-context | Default context path to load properties from | No | application
 spring.cloud.azure.appconfiguration.name | Alternative to Spring application name, if not configured, fallback to default Spring application name | No | ${spring.application.name}
 spring.cloud.azure.appconfiguration.profile-separator | Profile separator for the key name, e.g., /foo-app_dev/db.connection.key, must follow format `^[a-zA-Z0-9_@]+$` | No | `_`
-spring.cloud.azure.appconfiguration.fail-fast | Whether throw RuntimeException or not when exception occurs | No |  true
 spring.cloud.azure.appconfiguration.cache-expiration | Amount of time, of type [Duration](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-conversion-duration), configurations are stored before a check can occur. | No | 30s
 spring.cloud.azure.appconfiguration.managed-identity.client-id | Client id of the user assigned managed identity, only required when choosing to use user assigned managed identity on Azure | No | null
 
@@ -65,6 +64,7 @@ spring.cloud.azure.appconfiguration.stores[0].endpoint | Endpoint of the configu
 spring.cloud.azure.appconfiguration.stores[0].prefix | The prefix of the key name in the configuration store, e.g., /my-prefix/application/key.name | No |  null
 spring.cloud.azure.appconfiguration.stores[0].connection-string | Required when `name` is empty, otherwise, can be loaded automatically on Azure Virtual Machine or App Service | Conditional | null
 spring.cloud.azure.appconfiguration.stores[0].label | Comma separated list of label values, by default will query empty labeled value. If you want to specify *empty*(null) label explicitly, use `%00`, e.g., spring.cloud.azure.appconfiguration.stores[0].label=%00,v0 | No |  null
+spring.cloud.azure.appconfiguration.stores[0].fail-fast | Whether throw RuntimeException or not when exception occurs. If an exception does occur when false the store is skipped. | No |  true
 spring.cloud.azure.appconfiguration.stores[0].watched-key | The single watched key(or by default *) used to indicate configuration change.  | No | *
 
 ## Advanced usage
@@ -117,7 +117,7 @@ In the console library calling refreshConfiguration on `AzureCloudConfigRefresh`
 
 ### Failfast
 
-Failfast feature decides whether throw RuntimeException or not when exception happens. By default, failfast is enabled, it can be disabled with below configuration:
+Failfast feature decides whether throw RuntimeException or not when exception happens. If an exception does occur when false the store is skipped. Any store skipped on startup will be automatically skipped on Refresh. By default, failfast is enabled, it can be disabled with below configuration:
 
 ```properties
 spring.cloud.azure.appconfiguration.fail-fast=false

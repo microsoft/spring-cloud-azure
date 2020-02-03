@@ -54,12 +54,12 @@ import org.springframework.context.annotation.Configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(AzureConfigBootstrapConfiguration.class)
+@PrepareForTest(AppConfigurationBootstrapConfiguration.class)
 @PowerMockIgnore({ "javax.net.ssl.*", "javax.crypto.*", "org.mockito.*" })
-public class AzureCloudConfigPropertiesTest {
+public class AppConfigurationPropertiesTest {
     @InjectMocks
     private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class));
+            .withConfiguration(AutoConfigurations.of(AppConfigurationBootstrapConfiguration.class));
 
     private static final String NO_ENDPOINT_CONN_STRING = "Id=fake-conn-id;Secret=ZmFrZS1jb25uLXNlY3JldA==";
 
@@ -115,7 +115,7 @@ public class AzureCloudConfigPropertiesTest {
     public void validInputShouldCreatePropertiesBean() {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING))
                 .withPropertyValues(propPair(FAIL_FAST_PROP, "false")).run(context -> {
-                    assertThat(context).hasSingleBean(AzureCloudConfigProperties.class);
+                    assertThat(context).hasSingleBean(AppConfigurationProperties.class);
                 });
     }
 
@@ -192,7 +192,7 @@ public class AzureCloudConfigPropertiesTest {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                 propPair(STORE_ENDPOINT_PROP, "")).withPropertyValues(propPair(FAIL_FAST_PROP, "false"))
                 .run(context -> {
-                    AzureCloudConfigProperties properties = context.getBean(AzureCloudConfigProperties.class);
+                    AppConfigurationProperties properties = context.getBean(AppConfigurationProperties.class);
                     assertThat(properties.getStores()).isNotNull();
                     assertThat(properties.getStores().size()).isEqualTo(1);
                     assertThat(properties.getStores().get(0).getEndpoint()).isEqualTo("https://fake.test.config.io");
@@ -221,7 +221,7 @@ public class AzureCloudConfigPropertiesTest {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING))
                 .withPropertyValues(propPair(CACHE_EXPIRATION_PROP, "1s"))
                 .run(context -> {
-                    assertThat(context).hasSingleBean(AzureCloudConfigProperties.class);
+                    assertThat(context).hasSingleBean(AppConfigurationProperties.class);
                 });
     }
 
@@ -233,7 +233,7 @@ public class AzureCloudConfigPropertiesTest {
 }
 
 @Configuration
-@EnableConfigurationProperties(AzureCloudConfigProperties.class)
+@EnableConfigurationProperties(AppConfigurationProperties.class)
 class PropertiesTestConfiguration {
     // Do nothing
 }

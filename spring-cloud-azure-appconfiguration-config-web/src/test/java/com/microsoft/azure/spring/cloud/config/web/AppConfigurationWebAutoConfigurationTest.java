@@ -16,15 +16,15 @@ import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
-import com.microsoft.azure.spring.cloud.config.AzureCloudConfigAutoConfiguration;
-import com.microsoft.azure.spring.cloud.config.AzureConfigBootstrapConfiguration;
+import com.microsoft.azure.spring.cloud.config.AppConfigurationAutoConfiguration;
+import com.microsoft.azure.spring.cloud.config.AppConfigurationBootstrapConfiguration;
 
 public class AppConfigurationWebAutoConfigurationTest {
     private static final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
             .withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                     propPair(STORE_ENDPOINT_PROP, TEST_STORE_NAME))
-            .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class,
-                    AzureCloudConfigAutoConfiguration.class, AppConfigurationWebAutoConfiguration.class));
+            .withConfiguration(AutoConfigurations.of(AppConfigurationBootstrapConfiguration.class,
+                    AppConfigurationAutoConfiguration.class, AppConfigurationWebAutoConfiguration.class));
 
     @Test
     public void watchEnabledNotConfiguredShouldNotCreateWatch() {

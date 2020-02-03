@@ -11,15 +11,15 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.ServletRequestHandledEvent;
 
-import com.microsoft.azure.spring.cloud.config.AzureCloudConfigRefresh;
+import com.microsoft.azure.spring.cloud.config.AppConfigurationRefresh;
 
 @Component
 public class ConfigListener implements ApplicationListener<ServletRequestHandledEvent> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigListener.class);
 
-    private AzureCloudConfigRefresh appConfigurationRefresh;
+    private AppConfigurationRefresh appConfigurationRefresh;
 
-    public ConfigListener(AzureCloudConfigRefresh appConfigurationRefresh) {
+    public ConfigListener(AppConfigurationRefresh appConfigurationRefresh) {
         this.appConfigurationRefresh = appConfigurationRefresh;
     }
 
