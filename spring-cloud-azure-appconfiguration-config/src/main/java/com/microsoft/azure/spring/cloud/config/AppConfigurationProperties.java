@@ -22,8 +22,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
+import com.microsoft.azure.spring.cloud.config.resource.AzureManagedIdentityProperties;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
-import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
 
 @Validated
 @ConfigurationProperties(prefix = AppConfigurationProperties.CONFIG_PREFIX)
