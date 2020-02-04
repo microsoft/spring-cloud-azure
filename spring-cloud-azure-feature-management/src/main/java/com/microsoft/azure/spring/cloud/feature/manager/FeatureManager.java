@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.microsoft.azure.spring.cloud.feature.manager.entities.Feature;
 import com.microsoft.azure.spring.cloud.feature.manager.entities.FeatureFilterEvaluationContext;
 
@@ -50,6 +51,7 @@ public class FeatureManager extends HashMap<String, Object> {
         this.properties = properties;
         featureManagement = new HashMap<String, Feature>();
         onOff = new HashMap<String, Boolean>();
+        mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
     }
 
     /**
@@ -80,7 +82,7 @@ public class FeatureManager extends HashMap<String, Object> {
             return false;
         }
 
-        for (FeatureFilterEvaluationContext filter : featureItem.getEnabledFor()) {
+        for (FeatureFilterEvaluationContext filter : featureItem.getEnabledFor().values()) {
             if (filter != null && filter.getName() != null) {
                 try {
                     FeatureFilter featureFilter = (FeatureFilter) context.getBean(filter.getName());

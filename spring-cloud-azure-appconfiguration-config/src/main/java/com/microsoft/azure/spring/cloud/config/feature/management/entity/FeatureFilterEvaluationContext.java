@@ -14,12 +14,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FeatureFilterEvaluationContext {
     
-    @JsonProperty("Name")
-    @JsonAlias("name")
+    @JsonProperty("name")
+    @JsonAlias("Name")
     private String name;
     
-    @JsonProperty("Parameters")
-    @JsonAlias("parameters")
+    @JsonProperty("parameters")
+    @JsonAlias("Parameters")
     private LinkedHashMap<String, Object> parameters;
     
     /**

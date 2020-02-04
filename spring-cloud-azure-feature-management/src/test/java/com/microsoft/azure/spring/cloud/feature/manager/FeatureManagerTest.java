@@ -11,7 +11,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.concurrent.ExecutionException;
@@ -69,11 +68,11 @@ public class FeatureManagerTest {
         LinkedHashMap<String, Object> enabledFor = new LinkedHashMap<String, Object>();
         LinkedHashMap<String, Object> ffec = new LinkedHashMap<String, Object>();
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<String, Object>();
-        ffec.put("Name", FILTER_NAME);
+        ffec.put("name", FILTER_NAME);
         parameters.put(PARAM_1_NAME, PARAM_1_VALUE);
-        ffec.put("Parameters", parameters);
+        ffec.put("parameters", parameters);
         enabledFor.put("0", ffec);
-        testFeature.put("EnabledFor", enabledFor);
+        testFeature.put("enabled-for", enabledFor);
         testMap.put(f.getKey(), testFeature);
 
         featureManager.putAll(testMap);
@@ -109,7 +108,7 @@ public class FeatureManagerTest {
         HashMap<String, Object> features = new HashMap<String, Object>();
         Feature noFilters = new Feature();
         noFilters.setKey("NoFilters");
-        noFilters.setEnabledFor(new ArrayList<FeatureFilterEvaluationContext>());
+        noFilters.setEnabledFor(new HashMap<Integer, FeatureFilterEvaluationContext>());
         features.put("NoFilters", noFilters);
         featureManager.putAll(features);
 
@@ -121,10 +120,11 @@ public class FeatureManagerTest {
         HashMap<String, Object> features = new HashMap<String, Object>();
         Feature onFeature = new Feature();
         onFeature.setKey("On");
-        ArrayList<FeatureFilterEvaluationContext> filters = new ArrayList<FeatureFilterEvaluationContext>();
+        HashMap<Integer, FeatureFilterEvaluationContext> filters = 
+                new HashMap<Integer, FeatureFilterEvaluationContext>();
         FeatureFilterEvaluationContext alwaysOn = new FeatureFilterEvaluationContext();
         alwaysOn.setName("AlwaysOn");
-        filters.add(alwaysOn);
+        filters.put(0, alwaysOn);
         onFeature.setEnabledFor(filters);
         features.put("On", onFeature);
         featureManager.putAll(features);
@@ -165,7 +165,7 @@ public class FeatureManagerTest {
 
         enabledFor.setParameters(parameters);
         filterMapper.put(0, enabledFor);
-        featureV.setFilterMapper(filterMapper);
+        featureV.setEnabledFor(filterMapper);
         features.put("FeatureV", featureV);
         featureManager.putAll(features);
 
