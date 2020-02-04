@@ -90,7 +90,7 @@ public class AppConfigurationPropertySourceTest {
 
     private static final ConfigurationSetting featureItem2 = createItem(".appconfig.featureflag/", "Beta",
             FEATURE_BOOLEAN_VALUE, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
-    
+
     private static final ConfigurationSetting featureItem3 = createItem(".appconfig.featureflag/", "Gamma",
             FEATURE_VALUE_PARAMETERS, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
 
@@ -182,7 +182,7 @@ public class AppConfigurationPropertySourceTest {
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(testItems)
                 .thenReturn(FEATURE_ITEMS);
         when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(testItems)
-        .thenReturn(FEATURE_ITEMS);
+                .thenReturn(FEATURE_ITEMS);
         FeatureSet featureSet = new FeatureSet();
         try {
             propertySource.initProperties(featureSet);
@@ -243,7 +243,8 @@ public class AppConfigurationPropertySourceTest {
         FeatureSet featureSetExpected = new FeatureSet();
         Feature feature = new Feature();
         feature.setKey("Alpha");
-        HashMap<Integer, FeatureFilterEvaluationContext> filters = new HashMap<Integer, FeatureFilterEvaluationContext>();
+        HashMap<Integer, FeatureFilterEvaluationContext> filters = 
+                new HashMap<Integer, FeatureFilterEvaluationContext>();
         FeatureFilterEvaluationContext ffec = new FeatureFilterEvaluationContext();
         ffec.setName("TestFilter");
         filters.put(0, ffec);
@@ -290,34 +291,34 @@ public class AppConfigurationPropertySourceTest {
         propertySource.initFeatures(featureSet);
 
         FeatureSet featureSetExpected = new FeatureSet();
-        
+
         HashMap<Integer, FeatureFilterEvaluationContext> filters = 
                 new HashMap<Integer, FeatureFilterEvaluationContext>();
         FeatureFilterEvaluationContext ffec = new FeatureFilterEvaluationContext();
         ffec.setName("TestFilter");
-        
+
         filters.put(0, ffec);
-        
+
         Feature alpha = new Feature();
         alpha.setKey("Alpha");
         alpha.setEnabledFor(filters);
-        
+
         HashMap<Integer, FeatureFilterEvaluationContext> filters2 = 
                 new HashMap<Integer, FeatureFilterEvaluationContext>();
         FeatureFilterEvaluationContext ffec2 = new FeatureFilterEvaluationContext();
         ffec2.setName("TestFilter");
-        
+
         filters2.put(0, ffec2);
-        
+
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<String, Object>();
         parameters.put("key", "value");
         ffec2.setParameters(parameters);
-        
+
         Feature gamma = new Feature();
         gamma.setKey("Gamma");
         gamma.setEnabledFor(filters2);
         filters2.put(0, ffec2);
-        
+
         featureSetExpected.addFeature("Alpha", alpha);
         featureSetExpected.addFeature("Beta", true);
         featureSetExpected.addFeature("Gamma", gamma);

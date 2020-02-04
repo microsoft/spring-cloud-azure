@@ -228,7 +228,8 @@ public class FeatureManagerTest {
         HashMap<String, Object> features = new HashMap<String, Object>();
         Feature onFeature = new Feature();
         onFeature.setKey("Off");
-        HashMap<Integer, FeatureFilterEvaluationContext> filters = new HashMap<Integer, FeatureFilterEvaluationContext>();
+        HashMap<Integer, FeatureFilterEvaluationContext> filters = 
+                new HashMap<Integer, FeatureFilterEvaluationContext>();
         FeatureFilterEvaluationContext alwaysOn = new FeatureFilterEvaluationContext();
         alwaysOn.setName("AlwaysOff");
         filters.put(0, alwaysOn);
