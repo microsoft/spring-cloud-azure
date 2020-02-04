@@ -24,22 +24,15 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicStatusLine;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(AppConfigurationBootstrapConfiguration.class)
-@PowerMockIgnore({ "javax.net.ssl.*", "javax.crypto.*" })
 public class AppConfigurationBootstrapConfigurationTest {
     private static final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
             .withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
