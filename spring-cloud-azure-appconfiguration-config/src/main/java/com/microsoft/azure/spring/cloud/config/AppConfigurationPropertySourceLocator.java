@@ -232,10 +232,8 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
         List<String> contexts = storeContextsMap.get(storeName);
         if (contexts == null) {
             contexts = new ArrayList<String>();
-            contexts.add(context);
-        } else {
-            contexts.add(context);
         }
+        contexts.add(context);
 
         storeContextsMap.put(storeName, contexts);
     }

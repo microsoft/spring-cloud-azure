@@ -53,6 +53,7 @@ import com.azure.core.http.rest.PagedResponse;
 import com.azure.data.appconfiguration.ConfigurationAsyncClient;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureFilterEvaluationContext;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
@@ -146,6 +147,7 @@ public class AppConfigurationPropertySourceTest {
         FEATURE_ITEMS.add(featureItem);
         FEATURE_ITEMS.add(featureItem2);
         FEATURE_ITEMS.add(featureItem3);
+        mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
     }
 
     @Before
@@ -241,20 +243,20 @@ public class AppConfigurationPropertySourceTest {
         FeatureSet featureSetExpected = new FeatureSet();
         Feature feature = new Feature();
         feature.setKey("Alpha");
-        ArrayList<FeatureFilterEvaluationContext> filters = new ArrayList<FeatureFilterEvaluationContext>();
+        HashMap<Integer, FeatureFilterEvaluationContext> filters = new HashMap<Integer, FeatureFilterEvaluationContext>();
         FeatureFilterEvaluationContext ffec = new FeatureFilterEvaluationContext();
         ffec.setName("TestFilter");
-        filters.add(ffec);
+        filters.put(0, ffec);
         feature.setEnabledFor(filters);
         Feature gamma = new Feature();
         gamma.setKey("Gamma");
-        filters = new ArrayList<FeatureFilterEvaluationContext>();
+        filters = new HashMap<Integer, FeatureFilterEvaluationContext>();
         ffec = new FeatureFilterEvaluationContext();
         ffec.setName("TestFilter");
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<String, Object>();
         parameters.put("key", "value");
         ffec.setParameters(parameters);
-        filters.add(ffec);
+        filters.put(0, ffec);
         gamma.setEnabledFor(filters);
         featureSetExpected.addFeature("Alpha", feature);
         featureSetExpected.addFeature("Beta", true);
@@ -288,24 +290,35 @@ public class AppConfigurationPropertySourceTest {
         propertySource.initFeatures(featureSet);
 
         FeatureSet featureSetExpected = new FeatureSet();
-        Feature feature = new Feature();
-        feature.setKey("Alpha");
-        ArrayList<FeatureFilterEvaluationContext> filters = new ArrayList<FeatureFilterEvaluationContext>();
+        
+        HashMap<Integer, FeatureFilterEvaluationContext> filters = 
+                new HashMap<Integer, FeatureFilterEvaluationContext>();
         FeatureFilterEvaluationContext ffec = new FeatureFilterEvaluationContext();
         ffec.setName("TestFilter");
-        filters.add(ffec);
-        feature.setEnabledFor(filters);
-        Feature gamma = new Feature();
-        gamma.setKey("Gamma");
-        filters = new ArrayList<FeatureFilterEvaluationContext>();
-        ffec = new FeatureFilterEvaluationContext();
-        ffec.setName("TestFilter");
+        
+        filters.put(0, ffec);
+        
+        Feature alpha = new Feature();
+        alpha.setKey("Alpha");
+        alpha.setEnabledFor(filters);
+        
+        HashMap<Integer, FeatureFilterEvaluationContext> filters2 = 
+                new HashMap<Integer, FeatureFilterEvaluationContext>();
+        FeatureFilterEvaluationContext ffec2 = new FeatureFilterEvaluationContext();
+        ffec2.setName("TestFilter");
+        
+        filters2.put(0, ffec2);
+        
         LinkedHashMap<String, Object> parameters = new LinkedHashMap<String, Object>();
         parameters.put("key", "value");
-        ffec.setParameters(parameters);
-        filters.add(ffec);
-        gamma.setEnabledFor(filters);
-        featureSetExpected.addFeature("Alpha", feature);
+        ffec2.setParameters(parameters);
+        
+        Feature gamma = new Feature();
+        gamma.setKey("Gamma");
+        gamma.setEnabledFor(filters2);
+        filters2.put(0, ffec2);
+        
+        featureSetExpected.addFeature("Alpha", alpha);
         featureSetExpected.addFeature("Beta", true);
         featureSetExpected.addFeature("Gamma", gamma);
         LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected.getFeatureManagement(),

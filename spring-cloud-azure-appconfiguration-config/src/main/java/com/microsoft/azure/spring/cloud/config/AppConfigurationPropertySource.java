@@ -35,6 +35,7 @@ import com.azure.data.appconfiguration.models.SettingSelector;
 import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureManagementItem;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
@@ -228,8 +229,10 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
      * @param featureSet Feature Flag info to be set to this property source.
      */
     void initFeatures(FeatureSet featureSet) {
+        ObjectMapper featureMapper = new ObjectMapper();
+        featureMapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
         properties.put(FEATURE_MANAGEMENT_KEY,
-                mapper.convertValue(featureSet.getFeatureManagement(), LinkedHashMap.class));
+                featureMapper.convertValue(featureSet.getFeatureManagement(), LinkedHashMap.class));
     }
 
     /**
