@@ -143,6 +143,15 @@ Failfast feature decides whether throw RuntimeException or not when exception ha
 spring.cloud.azure.appconfiguration.stores[0].fail-fast=false
 ```
 
+### Placeholders in App Configuration
+
+THe values in App Configuration are filtered through the existing Environment when they are used. Placeholders can be used just like in `application.properties`, but with the added benefit of support for key vault references. Example with kafka:
+
+```properties
+/application/kafka.password=[Key Vault reference]
+/application/spring.cloud.stream.kafka.binder.configuration.sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString" password=${kafka.password};
+```
+
 ### Use Managed Identity to access App Configuration
 
 [Managed identity](https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview) allows application to access [Azure Active Directory][azure_active_directory] protected resource on [Azure][azure].
