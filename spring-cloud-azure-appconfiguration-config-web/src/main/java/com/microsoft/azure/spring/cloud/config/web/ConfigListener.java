@@ -3,13 +3,15 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config;
+package com.microsoft.azure.spring.cloud.config.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.ServletRequestHandledEvent;
+
+import com.microsoft.azure.spring.cloud.config.AppConfigurationRefresh;
 
 @Component
 public class ConfigListener implements ApplicationListener<ServletRequestHandledEvent> {

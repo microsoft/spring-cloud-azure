@@ -26,10 +26,5 @@ public class AppConfigurationAutoConfiguration {
                 AppConfigurationPropertySourceLocator sourceLocator, ClientStore clientStore) {
             return new AppConfigurationRefresh(properties, sourceLocator.getStoreContextsMap(), clientStore);
         }
-
-        @Bean
-        public ConfigListener configListener(AppConfigurationRefresh appConfigurationRefresh) {
-            return new ConfigListener(appConfigurationRefresh);
-        }
     }
 }

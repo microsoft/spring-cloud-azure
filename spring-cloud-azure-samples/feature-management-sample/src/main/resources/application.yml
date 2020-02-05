@@ -1,13 +1,13 @@
-FeatureManagement:
-  Beta: true
-  FeatureV:
-    EnabledFor:
+feature-management:
+  beta: true
+  feature-v:
+    enabled-for:
       -
-        Name: percentageFilter
-        Parameters:
-          PercentageFilterSetting: "50"
+        name: percentageFilter
+        parameters:
+          percentage-filter-setting: "50"
       -
-        Name: timeWindowFilter
-        Parameters:
-          TimeWindowFilterSettingStart: "Fri, 6 Dec 2019 00:59:30 GMT"
-          TimeWindowFilterSettingEnd: "Sat, 2 May 2020 22:59:30 GMT"
+        name: timeWindowFilter
+        parameters:
+          time-window-filter-setting-start: "Fri, 6 Dec 2019 00:59:30 GMT"
+          time-window-filter-setting-end: "Sat, 2 May 2020 22:59:30 GMT"
