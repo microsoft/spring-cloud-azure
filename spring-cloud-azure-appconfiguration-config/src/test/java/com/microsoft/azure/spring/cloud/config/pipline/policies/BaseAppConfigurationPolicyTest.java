@@ -51,7 +51,7 @@ public class BaseAppConfigurationPolicyTest {
         String userAgent = contextMock.getHttpRequest().getHeaders().get(HttpHeaders.USER_AGENT).getValue();
         assertEquals("null/null " + PRE_USER_AGENT, userAgent);
 
-        assertEquals("RequestType=Startup,Host=None",
+        assertEquals("RequestType=Startup",
                 contextMock.getHttpRequest().getHeaders().get("Correlation-Context").getValue());
     }
     
@@ -69,7 +69,7 @@ public class BaseAppConfigurationPolicyTest {
         String userAgent = contextMock.getHttpRequest().getHeaders().get(HttpHeaders.USER_AGENT).getValue();
         assertEquals("null/null " + PRE_USER_AGENT, userAgent);
 
-        assertEquals("RequestType=Startup,Host=None",
+        assertEquals("RequestType=Startup",
                 contextMock.getHttpRequest().getHeaders().get("Correlation-Context").getValue());
         
         url = new URL("https://www.test.url/revisions");
@@ -82,7 +82,7 @@ public class BaseAppConfigurationPolicyTest {
 
         assertEquals("null/null " + PRE_USER_AGENT, userAgent);
 
-        assertEquals("RequestType=Watch,Host=None",
+        assertEquals("RequestType=Watch",
                 contextMock.getHttpRequest().getHeaders().get("Correlation-Context").getValue());
         
         url = new URL("https://www.test.url/kv");
@@ -94,7 +94,7 @@ public class BaseAppConfigurationPolicyTest {
         policy.process(contextMock, nextMock);
         assertEquals("null/null " + PRE_USER_AGENT, userAgent);
 
-        assertEquals("RequestType=Watch,Host=None",
+        assertEquals("RequestType=Watch",
                 contextMock.getHttpRequest().getHeaders().get("Correlation-Context").getValue());
     }
 
