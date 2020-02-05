@@ -15,6 +15,7 @@ import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_N
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME_2;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.createItem;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -37,6 +39,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
 
 import com.azure.core.http.rest.PagedFlux;
@@ -70,6 +73,9 @@ public class AppConfigurationPropertySourceLocatorTest {
 
     @Mock
     private ClientStore clientStoreMock;
+    
+    @Mock
+    private ConfigStore configStore;
 
     @Mock
     private ConfigurationAsyncClient configClientMock;
@@ -97,6 +103,9 @@ public class AppConfigurationPropertySourceLocatorTest {
 
     @Mock
     private Iterator<ConfigStore> configStoreIterator;
+    
+    @Mock
+    private AppConfigurationProviderProperties appPropertiesMock;
 
     @Mock
     private AppConfigurationProperties properties;
@@ -319,5 +328,38 @@ public class AppConfigurationPropertySourceLocatorTest {
                 "/application/" + TEST_STORE_NAME_1 + "/\0" };
         assertThat(sources.size()).isEqualTo(2);
         assertThat(sources.stream().map(s -> s.getName()).toArray()).containsExactly(expectedSourceNames);
+    }
+    
+    @Test
+    public void awaitOnError() throws Exception {
+        List<ConfigStore> configStores = new ArrayList<ConfigStore>();
+        configStores.add(configStore);
+        AppConfigurationProperties properties = new AppConfigurationProperties();
+        properties.setProfileSeparator("_");
+        properties.setName("TestStoreName");
+        properties.setStores(configStores);
+
+        appPropertiesMock.setPrekillTime(5);
+
+        Environment env = Mockito.mock(ConfigurableEnvironment.class);
+        String[] array = {};
+        when(env.getActiveProfiles()).thenReturn(array);
+        String[] labels = { "" };
+        when(configStore.getLabels()).thenReturn(labels);
+        when(clientStoreMock.listSettings(Mockito.any(), Mockito.any())).thenThrow(new NullPointerException(""));
+        when(appPropertiesMock.getPrekillTime()).thenReturn(-60);
+        when(appPropertiesMock.getStartDate()).thenReturn(new Date());
+
+        locator = new AppConfigurationPropertySourceLocator(properties, appPropertiesMock, clientStoreMock,
+                tokenCredentialProvider);
+
+        boolean threwException = false;
+        try {
+            locator.locate(env);
+        } catch (Exception e) {
+            threwException = true;
+        }
+        assertTrue(threwException);
+        verify(appPropertiesMock, times(1)).getPrekillTime();
     }
 }

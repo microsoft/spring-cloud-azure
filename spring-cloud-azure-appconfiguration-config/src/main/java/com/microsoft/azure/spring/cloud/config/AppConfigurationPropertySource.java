@@ -67,8 +67,6 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
     private ConfigStore configStore;
 
     private Map<String, List<String>> storeContextsMap;
-    
-    private int count = 0;
 
     AppConfigurationPropertySource(String context, ConfigStore configStore, String label,
             AppConfigurationProperties appConfigurationProperties, ClientStore clients,
@@ -209,7 +207,7 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
             // Check if we already have a client for this key vault, if not we will make
             // one
             if (!keyVaultClients.containsKey(uri.getHost())) {
-                KeyVaultClient client = new KeyVaultClient(uri, keyVaultCredentialProvider, appConfigurationProperties);
+                KeyVaultClient client = new KeyVaultClient(appConfigurationProperties, uri, keyVaultCredentialProvider);
                 keyVaultClients.put(uri.getHost(), client);
             }
             KeyVaultSecret secret = keyVaultClients.get(uri.getHost()).getSecret(uri, appProperties.getMaxRetryTime());

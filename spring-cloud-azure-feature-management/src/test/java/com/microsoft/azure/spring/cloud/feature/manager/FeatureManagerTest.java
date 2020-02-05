@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
@@ -16,13 +17,16 @@ import java.util.LinkedHashMap;
 import java.util.concurrent.ExecutionException;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -49,9 +53,16 @@ public class FeatureManagerTest {
     @Mock
     private ApplicationContext context;
 
+    @Mock
+    private FeatureManagementConfigProperties properties;
+    
+    @Rule
+    public ExpectedException expectedEx = ExpectedException.none();
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
+        when(properties.isFailFast()).thenReturn(true);
     }
 
     /**
@@ -90,12 +101,12 @@ public class FeatureManagerTest {
     }
 
     @Test
-    public void isEnabledFeatureNotFound() throws InterruptedException, ExecutionException {
+    public void isEnabledFeatureNotFound() throws InterruptedException, ExecutionException, FilterNotFoundException {
         assertFalse(featureManager.isEnabledAsync("Non Existed Feature").block());
     }
 
     @Test
-    public void isEnabledFeatureOff() throws InterruptedException, ExecutionException {
+    public void isEnabledFeatureOff() throws InterruptedException, ExecutionException, FilterNotFoundException {
         HashMap<String, Object> features = new HashMap<String, Object>();
         features.put("Off", false);
         featureManager.putAll(features);
@@ -104,7 +115,8 @@ public class FeatureManagerTest {
     }
 
     @Test
-    public void isEnabledFeatureHasNoFilters() throws InterruptedException, ExecutionException {
+    public void isEnabledFeatureHasNoFilters()
+            throws InterruptedException, ExecutionException, FilterNotFoundException {
         HashMap<String, Object> features = new HashMap<String, Object>();
         Feature noFilters = new Feature();
         noFilters.setKey("NoFilters");
@@ -116,7 +128,7 @@ public class FeatureManagerTest {
     }
 
     @Test
-    public void isEnabledON() throws InterruptedException, ExecutionException {
+    public void isEnabledON() throws InterruptedException, ExecutionException, FilterNotFoundException {
         HashMap<String, Object> features = new HashMap<String, Object>();
         Feature onFeature = new Feature();
         onFeature.setKey("On");
@@ -133,9 +145,36 @@ public class FeatureManagerTest {
 
         assertTrue(featureManager.isEnabledAsync("On").block());
     }
+    
+    @Test
+    public void isEnabledPeriodSplit() throws InterruptedException, ExecutionException, FilterNotFoundException {
+        LinkedHashMap<String, Object> features = new LinkedHashMap<String, Object>();
+        LinkedHashMap<String, Object> featuresOn = new LinkedHashMap<String, Object>();
+        
+        featuresOn.put("A", true);
+        features.put("Beta", featuresOn);
+        
+        featureManager.putAll(features);
+
+        assertTrue(featureManager.isEnabledAsync("Beta.A").block());
+    }
+    
+    @Test
+    public void isEnabledInvalid() throws InterruptedException, ExecutionException, FilterNotFoundException {
+        LinkedHashMap<String, Object> features = new LinkedHashMap<String, Object>();
+        LinkedHashMap<String, Object> featuresOn = new LinkedHashMap<String, Object>();
+        
+        featuresOn.put("A", 5);
+        features.put("Beta", featuresOn);
+        
+        featureManager.putAll(features);
+
+        assertFalse(featureManager.isEnabledAsync("Beta.A").block());
+        assertEquals(0, featureManager.size());
+    }
 
     @Test
-    public void isEnabledOnBoolean() throws InterruptedException, ExecutionException {
+    public void isEnabledOnBoolean() throws InterruptedException, ExecutionException, FilterNotFoundException {
         HashMap<String, Boolean> features = new HashMap<String, Boolean>();
         features.put("On", true);
         featureManager.putAll(features);
@@ -144,7 +183,8 @@ public class FeatureManagerTest {
     }
 
     @Test
-    public void featureManagerNotEnabledCorrectly() throws InterruptedException, ExecutionException {
+    public void featureManagerNotEnabledCorrectly()
+            throws InterruptedException, ExecutionException, FilterNotFoundException {
         FeatureManager featureManager = new FeatureManager(null);
         assertFalse(featureManager.isEnabledAsync("").block());
     }
@@ -180,6 +220,28 @@ public class FeatureManagerTest {
         assertEquals(ffec.getParameters().size(), 1);
         assertEquals(ffec.getParameters().get("chance"), "50");
         assertEquals(2, featureManager.getAllFeatureNames().size());
+    }
+
+    @Test
+    public void noFilter() throws FilterNotFoundException {
+        expectedEx.expect(FilterNotFoundException.class);
+        expectedEx.expectMessage("Fail fast is set and a Filter was unable to be found: AlwaysOff");
+        HashMap<String, Object> features = new HashMap<String, Object>();
+        Feature onFeature = new Feature();
+        onFeature.setKey("Off");
+        HashMap<Integer, FeatureFilterEvaluationContext> filters = 
+                new HashMap<Integer, FeatureFilterEvaluationContext>();
+        FeatureFilterEvaluationContext alwaysOn = new FeatureFilterEvaluationContext();
+        alwaysOn.setName("AlwaysOff");
+        filters.put(0, alwaysOn);
+        onFeature.setEnabledFor(filters);
+        features.put("Off", onFeature);
+        featureManager.putAll(features);
+
+        when(context.getBean(Mockito.matches("AlwaysOff"))).thenThrow(new NoSuchBeanDefinitionException(""));
+
+        featureManager.isEnabledAsync("Off").block();
+        fail();
     }
 
     @Component

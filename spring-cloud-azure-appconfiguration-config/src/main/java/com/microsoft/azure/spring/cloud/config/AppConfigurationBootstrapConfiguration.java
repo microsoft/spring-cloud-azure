@@ -22,7 +22,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import com.microsoft.azure.spring.cloud.config.resource.AzureManagedIdentityProperties;
+import com.microsoft.azure.spring.cloud.config.resource.AppConfigManagedIdentityProperties;
 import com.microsoft.azure.spring.cloud.config.resource.Connection;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionPool;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
@@ -45,7 +45,7 @@ public class AppConfigurationBootstrapConfiguration {
             if (StringUtils.hasText(store.getEndpoint()) && StringUtils.hasText(store.getConnectionString())) {
                 pool.put(store.getEndpoint(), new Connection(store.getConnectionString()));
             } else if (StringUtils.hasText(store.getEndpoint())) {
-                AzureManagedIdentityProperties msiProps = properties.getManagedIdentity();
+                AppConfigManagedIdentityProperties msiProps = properties.getManagedIdentity();
                 if (msiProps != null && msiProps.getClientId() != null) {
                     pool.put(store.getEndpoint(), new Connection(store.getEndpoint(), msiProps.getClientId()));
                 } else {

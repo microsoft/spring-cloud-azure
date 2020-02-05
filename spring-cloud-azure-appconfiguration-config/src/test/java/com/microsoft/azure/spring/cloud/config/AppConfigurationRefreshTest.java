@@ -41,7 +41,6 @@ import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
-@RunWith(PowerMockRunner.class)
 public class AppConfigurationRefreshTest {
 
     @Mock

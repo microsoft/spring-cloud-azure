@@ -35,27 +35,17 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicStatusLine;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBindException;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.assertj.AssertableApplicationContext;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(AppConfigurationBootstrapConfiguration.class)
-@PowerMockIgnore({ "javax.net.ssl.*", "javax.crypto.*", "org.mockito.*" })
 public class AppConfigurationPropertiesTest {
     @InjectMocks
     private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
@@ -101,7 +91,6 @@ public class AppConfigurationPropertiesTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         try {
-            PowerMockito.whenNew(ObjectMapper.class).withAnyArguments().thenReturn(mockObjectMapper);
             when(mockClosableHttpResponse.getStatusLine())
                 .thenReturn(new BasicStatusLine(new ProtocolVersion("", 0, 0), 200, ""));
             when(mockClosableHttpResponse.getEntity()).thenReturn(mockHttpEntity);
@@ -230,10 +219,4 @@ public class AppConfigurationPropertiesTest {
         assertThat(context).getFailure()
                 .hasStackTraceContaining(String.format("field '%s': rejected value", fieldName));
     }
-}
-
-@Configuration
-@EnableConfigurationProperties(AppConfigurationProperties.class)
-class PropertiesTestConfiguration {
-    // Do nothing
 }
