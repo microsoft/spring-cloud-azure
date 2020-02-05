@@ -17,11 +17,17 @@ import com.azure.security.keyvault.secrets.SecretClientBuilder;
 import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationProperties;
 import com.microsoft.azure.spring.cloud.config.KeyVaultCredentialProvider;
-import com.microsoft.azure.spring.cloud.config.resource.AzureManagedIdentityProperties;
+import com.microsoft.azure.spring.cloud.config.resource.AppConfigManagedIdentityProperties;
 
 public class KeyVaultClient {
 
     private SecretAsyncClient secretClient;
+    
+    private AppConfigurationProperties properties;
+    
+    private URI uri;
+    
+    private TokenCredential tokenCredential;
 
     /**
      * Builds an Async client to a Key Vaults Secrets
@@ -31,15 +37,18 @@ public class KeyVaultClient {
      * Vault
      * @param properties Azure Configuration Managed Identity credentials
      */
-    public KeyVaultClient(URI uri, KeyVaultCredentialProvider tokenCredentialProvider,
-            AppConfigurationProperties properties) {
-        SecretClientBuilder builder = new SecretClientBuilder();
-        TokenCredential tokenCredential = null;
+    public KeyVaultClient(AppConfigurationProperties properties, URI uri,
+            KeyVaultCredentialProvider tokenCredentialProvider) {
+        this.properties = properties;
+        this.uri = uri;
         if (tokenCredentialProvider != null) {
-            tokenCredential = tokenCredentialProvider.getKeyVaultCredential("https://" + uri.getHost());
+            this.tokenCredential = tokenCredentialProvider.getKeyVaultCredential("https://" + uri.getHost());
         }
-
-        AzureManagedIdentityProperties msiProps = properties.getManagedIdentity();
+    }
+    
+    KeyVaultClient build() {
+        SecretClientBuilder builder = getBuilder();
+        AppConfigManagedIdentityProperties msiProps = properties.getManagedIdentity();
         if (tokenCredential != null && msiProps != null) {
             throw new IllegalArgumentException("More than 1 Conncetion method was set for connecting to Key Vault.");
         }
@@ -55,6 +64,7 @@ public class KeyVaultClient {
             builder.credential(new ManagedIdentityCredentialBuilder().build());
         }
         secretClient = builder.vaultUrl("https://" + uri.getHost()).buildAsyncClient();
+        return this;
     }
 
     /**
@@ -70,6 +80,10 @@ public class KeyVaultClient {
         String name = (tokens.length >= 3 ? tokens[2] : null);
         String version = (tokens.length >= 4 ? tokens[3] : null);
         return secretClient.getSecret(name, version).block(Duration.ofSeconds(timeout));
+    }
+
+    SecretClientBuilder getBuilder() {
+        return new SecretClientBuilder();
     }
 
 }

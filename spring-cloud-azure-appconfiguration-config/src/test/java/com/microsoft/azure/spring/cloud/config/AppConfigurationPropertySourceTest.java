@@ -6,9 +6,10 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_FLAG_CONTENT_TYPE;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_BOOLEAN_VALUE;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_LABEL;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_VALUE;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_BOOLEAN_VALUE;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_VALUE_PARAMETERS;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONTEXT;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_KEY_1;
@@ -90,6 +91,9 @@ public class AppConfigurationPropertySourceTest {
     private static final ConfigurationSetting featureItem2 = createItem(".appconfig.featureflag/", "Beta",
             FEATURE_BOOLEAN_VALUE, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
 
+    private static final ConfigurationSetting featureItem3 = createItem(".appconfig.featureflag/", "Gamma",
+            FEATURE_VALUE_PARAMETERS, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
+
     private static final ConfigurationSetting featureItemNull = createItem(".appconfig.featureflag/", "Alpha",
             FEATURE_VALUE,
             FEATURE_LABEL, null);
@@ -142,6 +146,7 @@ public class AppConfigurationPropertySourceTest {
         featureItem.setContentType(FEATURE_FLAG_CONTENT_TYPE);
         FEATURE_ITEMS.add(featureItem);
         FEATURE_ITEMS.add(featureItem2);
+        FEATURE_ITEMS.add(featureItem3);
         mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
     }
 
@@ -175,6 +180,8 @@ public class AppConfigurationPropertySourceTest {
     @Test
     public void testPropCanBeInitAndQueried() throws IOException {
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(testItems)
+                .thenReturn(FEATURE_ITEMS);
+        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(testItems)
                 .thenReturn(FEATURE_ITEMS);
         FeatureSet featureSet = new FeatureSet();
         try {
@@ -242,8 +249,19 @@ public class AppConfigurationPropertySourceTest {
         ffec.setName("TestFilter");
         filters.put(0, ffec);
         feature.setEnabledFor(filters);
+        Feature gamma = new Feature();
+        gamma.setKey("Gamma");
+        filters = new HashMap<Integer, FeatureFilterEvaluationContext>();
+        ffec = new FeatureFilterEvaluationContext();
+        ffec.setName("TestFilter");
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<String, Object>();
+        parameters.put("key", "value");
+        ffec.setParameters(parameters);
+        filters.put(0, ffec);
+        gamma.setEnabledFor(filters);
         featureSetExpected.addFeature("Alpha", feature);
         featureSetExpected.addFeature("Beta", true);
+        featureSetExpected.addFeature("Gamma", gamma);
         LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected.getFeatureManagement(),
                 LinkedHashMap.class);
 
@@ -273,16 +291,37 @@ public class AppConfigurationPropertySourceTest {
         propertySource.initFeatures(featureSet);
 
         FeatureSet featureSetExpected = new FeatureSet();
-        Feature feature = new Feature();
-        feature.setKey("Alpha");
+
         HashMap<Integer, FeatureFilterEvaluationContext> filters = 
                 new HashMap<Integer, FeatureFilterEvaluationContext>();
         FeatureFilterEvaluationContext ffec = new FeatureFilterEvaluationContext();
         ffec.setName("TestFilter");
+
         filters.put(0, ffec);
-        feature.setEnabledFor(filters);
-        featureSetExpected.addFeature("Alpha", feature);
+
+        Feature alpha = new Feature();
+        alpha.setKey("Alpha");
+        alpha.setEnabledFor(filters);
+
+        HashMap<Integer, FeatureFilterEvaluationContext> filters2 = 
+                new HashMap<Integer, FeatureFilterEvaluationContext>();
+        FeatureFilterEvaluationContext ffec2 = new FeatureFilterEvaluationContext();
+        ffec2.setName("TestFilter");
+
+        filters2.put(0, ffec2);
+
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<String, Object>();
+        parameters.put("key", "value");
+        ffec2.setParameters(parameters);
+
+        Feature gamma = new Feature();
+        gamma.setKey("Gamma");
+        gamma.setEnabledFor(filters2);
+        filters2.put(0, ffec2);
+
+        featureSetExpected.addFeature("Alpha", alpha);
         featureSetExpected.addFeature("Beta", true);
+        featureSetExpected.addFeature("Gamma", gamma);
         LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected.getFeatureManagement(),
                 LinkedHashMap.class);
 

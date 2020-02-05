@@ -22,7 +22,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
-import com.microsoft.azure.spring.cloud.config.resource.AzureManagedIdentityProperties;
+import com.microsoft.azure.spring.cloud.config.resource.AppConfigManagedIdentityProperties;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 @Validated
@@ -46,7 +46,7 @@ public class AppConfigurationProperties {
     private String name;
 
     @NestedConfigurationProperty
-    private AzureManagedIdentityProperties managedIdentity;
+    private AppConfigManagedIdentityProperties managedIdentity;
 
     // Profile separator for the key name, e.g., /foo-app_dev/db.connection.key
     @NotEmpty
@@ -88,11 +88,11 @@ public class AppConfigurationProperties {
         this.name = name;
     }
 
-    public AzureManagedIdentityProperties getManagedIdentity() {
+    public AppConfigManagedIdentityProperties getManagedIdentity() {
         return managedIdentity;
     }
 
-    public void setManagedIdentity(AzureManagedIdentityProperties managedIdentity) {
+    public void setManagedIdentity(AppConfigManagedIdentityProperties managedIdentity) {
         this.managedIdentity = managedIdentity;
     }
 
