@@ -179,6 +179,7 @@ public class FeatureManagerTest {
         assertEquals(ffec.getName(), "Random");
         assertEquals(ffec.getParameters().size(), 1);
         assertEquals(ffec.getParameters().get("chance"), "50");
+        assertEquals(2, featureManager.getAllFeatureNames().size());
     }
 
     @Component

@@ -6,8 +6,10 @@
 package com.microsoft.azure.spring.cloud.feature.manager;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,20 +138,27 @@ public class FeatureManager extends HashMap<String, Object> {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void putAll(Map<? extends String, ? extends Object> m) {
         if (m == null) {
             return;
         }
         
-        if (m.size() == 1 && m.get("featureManagement") != null) {
-            m = (Map<? extends String, ? extends Object>) m.get("featureManagement");
-        }
-        
         for (String key : m.keySet()) {
             addToFeatures(m, key, "");
         }
+    }
+    
+    /**
+     * Returns the names of all features flags
+     * @return a set of all feature names
+     */
+    public Set<String> getAllFeatureNames() {
+        Set<String> allFeatures = new HashSet<String>();
+        
+        allFeatures.addAll(onOff.keySet());
+        allFeatures.addAll(featureManagement.keySet());
+        return allFeatures;
     }
 
     /**
