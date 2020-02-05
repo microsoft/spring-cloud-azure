@@ -60,13 +60,13 @@ The simplest use case for feature flags is to do a conditional check for whether
 
 ### Feature Check
 
-The basic form of feature management is checking if a feature is enabled and then performing actions based on the result. This is done through the autowiring `FeatureManager` and calling it's `isEnabled` method.
+The basic form of feature management is checking if a feature is enabled and then performing actions based on the result. This is done through the autowiring `FeatureManager` and calling it's `isEnabledAsync` method.
 
 ```java
 @Autowired
 FeatureManager featureManager;
 
-if(featureManager.isEnabled("feature-t")) {
+if(featureManager.isEnabledAsync("feature-t").block()) {
     // Do Something
 }
 ```
@@ -75,7 +75,7 @@ if(featureManager.isEnabled("feature-t")) {
 
 ### Controllers
 
-When using the Feature Management Web library you can require that a given feature  is enabled in order to execute. This can be done by using the `@FeatureOn` annotation.
+When using the Feature Management Web library you can require that a given feature is enabled in order to execute. This can be done by using the `@FeatureOn` annotation.
 
 ```java
 @GetMapping("/featureT")
@@ -127,13 +127,13 @@ public String oldEndpoint() {
 
 ## Implementing a Feature Filter
 
-Creating a feature filter provides a way to enable features bassed on criteria that you define. To implement a feature filter, the `FeatureFilter` interface must be implemented. `FeatureFilter` has a single method `evaluate`. When a feature specifies that it can be enabled with a feature filter, the `evaluate` method is called. If `evaluate` returns `true` it means the feature should be enabled. If `false` it will continue evaluating the Feature's filters until one returns true. If all return `false` then the feature is off.
+Creating a feature filter provides a way to enable features based on criteria that you define. To implement a feature filter, the `FeatureFilter` interface must be implemented. `FeatureFilter` has a single method `evaluate`. When a feature specifies that it can be enabled with a feature filter, the `evaluate` method is called. If `evaluate` returns `true` it means the feature should be enabled. If `false` it will continue evaluating the Feature's filters until one returns true. If all return `false` then the feature is off.
 
 Feature filters are found by being defined as `@Component` where there name matches the expected filter defined in the configuration.
 
 ```java
 @Component("Random")
-public class Random implements FeatureFilter{
+public class Random implements FeatureFilter {
 
     @Override
     public boolean evaluate(FeatureFilterEvaluationContext context) {

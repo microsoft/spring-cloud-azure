@@ -32,7 +32,7 @@ or
 
 ```gradle
 dependencies {
-    compile group: 'com.microsoft.azure', name: 'spring-cloud-starter-azure-appconfiguration-config', version: '{starter-version}'
+    compile group: 'com.microsoft.azure', name: 'spring-cloud-azure-appconfiguration-config', version: '{starter-version}'
 }
 ```
 
@@ -40,7 +40,7 @@ or
 
 ```gradle
 dependencies {
-    compile group: 'com.microsoft.azure', name: 'spring-cloud-starter-azure-appconfiguration-config', version: '{starter-version}'
+    compile group: 'com.microsoft.azure', name: 'spring-cloud-azure-appconfiguration-config-web', version: '{starter-version}'
 }
 ```
 
@@ -60,11 +60,11 @@ spring.cloud.azure.appconfiguration.managed-identity.client-id | Client id of th
 
 Name | Description | Required | Default
 ---|---|---|---
-spring.cloud.azure.appconfiguration.stores[0].endpoint | Endpoint of the configuration store, required when `connection-string` is empty. If `connection-string` is empty and application is deployed on Azure VM or App Service with managed identity enabled, will try to load `connection-string` from Azure Resource Management. | Conditional | null
+spring.cloud.azure.appconfiguration.stores[0].endpoint | Endpoint of the configuration store, required when `connection-string` is empty. If `connection-string` is empty alternate connection methods will be attempted based on configuration, such as System Assigned Identity, or User Assigned Identity if the client-id value is set. | Conditional | null
 spring.cloud.azure.appconfiguration.stores[0].prefix | The prefix of the key name in the configuration store, e.g., /my-prefix/application/key.name | No |  null
-spring.cloud.azure.appconfiguration.stores[0].connection-string | Required when `name` is empty, otherwise, can be loaded automatically on Azure Virtual Machine or App Service | Conditional | null
+spring.cloud.azure.appconfiguration.stores[0].connection-string | Required when `endpoint` is empty, otherwise, can be loaded automatically on Azure Virtual Machine or App Service | Conditional | null
 spring.cloud.azure.appconfiguration.stores[0].label | Comma separated list of label values, by default will query empty labeled value. If you want to specify *empty*(null) label explicitly, use `%00`, e.g., spring.cloud.azure.appconfiguration.stores[0].label=%00,v0 | No |  null
-spring.cloud.azure.appconfiguration.stores[0].fail-fast | Whether throw RuntimeException or not when exception occurs. If an exception does occur when false the store is skipped. | No |  true
+spring.cloud.azure.appconfiguration.stores[0].fail-fast | Whether throw RuntimeException or not when exception occurs. If an exception does occur during startup when set to false the store is skipped. | No |  true
 spring.cloud.azure.appconfiguration.stores[0].watched-key | The single watched key(or by default *) used to indicate configuration change.  | No | *
 
 ## Advanced usage
@@ -93,6 +93,26 @@ spring.cloud.azure.appconfiguration.stores[0].label=[my-label1], [my-label2]
 
 Multiple labels can be separated with comma, if duplicate keys exists for multiple labels, the last label has highest priority.
 
+### Spring Profiles
+
+Spring Profiles are supported by adding the profile to your configurations. An example of a standard configuration is:
+
+```properties
+/application/config.message
+```
+
+where application is the name of your application. When a Spring Profile is set in addition to the standard configuration the profile is also used.
+
+```properties
+/application_dev/config.message
+```
+
+In this case the dev profile was set. If there are any duplicate keys the one with a profile is used over the standard configuration. The value used to separate the application name can be configured using:
+
+```properties
+spring.cloud.azure.appconfiguration.profile-separator=-
+```
+
 ### Configuration Refresh
 
 Configuration Refresh feature allows the application to load the latest property value from configuration store automatically, without restarting the application.
@@ -120,7 +140,7 @@ In the console library calling refreshConfiguration on `AzureCloudConfigRefresh`
 Failfast feature decides whether throw RuntimeException or not when exception happens. If an exception does occur when false the store is skipped. Any store skipped on startup will be automatically skipped on Refresh. By default, failfast is enabled, it can be disabled with below configuration:
 
 ```properties
-spring.cloud.azure.appconfiguration.fail-fast=false
+spring.cloud.azure.appconfiguration.stores[0].fail-fast=false
 ```
 
 ### Use Managed Identity to access App Configuration
@@ -147,12 +167,12 @@ Another method of authentication is using AppConfigCredentialProvider and/or Key
 public class MyCredentials implements AppConfigCredentialProvider, KeyVaultCredentialProvider {
 
     @Override
-    public TokenCredential credentialForAppConfig(String uri) {
+    public TokenCredential getAppConfigCredential(String uri) {
             return buildCredential();
     }
 
     @Override
-    public TokenCredential credentialForKeyVault(String uri) {
+    public TokenCredential getKeyVaultCredential(String uri) {
             return buildCredential();
     }
 
@@ -168,7 +188,7 @@ public class MyCredentials implements AppConfigCredentialProvider, KeyVaultCrede
 ```application
 spring.cloud.azure.appconfiguration.stores[0].endpoint=[config-store-endpoint]
 
-#If Using option 3
+#If Using User Assigned Identity
 spring.cloud.azure.appconfiguration.managed-identity.client-id=[client-id]
 ```
 
