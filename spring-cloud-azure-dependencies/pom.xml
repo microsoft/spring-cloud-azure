@@ -52,7 +52,7 @@
         <spring.boot.version>2.2.0.RELEASE</spring.boot.version>
         <spring.cloud.azure.version>1.2.2-SNAPSHOT</spring.cloud.azure.version>
         <commons.io.version>2.6</commons.io.version>
-        <hibernate.validator.version>6.0.18</hibernate.validator.version>
+        <hibernate.validator.version>6.0.18.Final</hibernate.validator.version>
         <google.guava.version>20.0</google.guava.version>
         <azure.sdk.version>1.23.0</azure.sdk.version>
         <azure.eventhubs.eph.version>2.4.0</azure.eventhubs.eph.version>
