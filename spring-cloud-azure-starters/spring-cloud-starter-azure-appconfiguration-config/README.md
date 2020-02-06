@@ -95,22 +95,10 @@ Multiple labels can be separated with comma, if duplicate keys exists for multip
 
 ### Spring Profiles
 
-Spring Profiles are supported by adding the profile to your configurations. An example of a standard configuration is:
+Spring Profiles are supported by setting labels on your configurations that match your profile. Then set your label on your config store:
 
 ```properties
-/application/config.message
-```
-
-where application is the name of your application. When a Spring Profile is set in addition to the standard configuration the profile is also used.
-
-```properties
-/application_dev/config.message
-```
-
-In this case the dev profile was set. If there are any duplicate keys the one with a profile is used over the standard configuration. The value used to separate the application name can be configured using:
-
-```properties
-spring.cloud.azure.appconfiguration.profile-separator=-
+spring.cloud.azure.appconfiguration.stores[0].label=${spring.profiles.active}
 ```
 
 ### Configuration Refresh
