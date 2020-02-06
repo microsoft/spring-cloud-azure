@@ -75,6 +75,9 @@ public class KeyVaultClient {
      * @return Secret values that matches the secretIdentifier
      */
     public KeyVaultSecret getSecret(URI secretIdentifier, int timeout) {
+        if (secretClient == null) {
+            build();
+        }
         String[] tokens = secretIdentifier.getPath().split("/");
 
         String name = (tokens.length >= 3 ? tokens[2] : null);
