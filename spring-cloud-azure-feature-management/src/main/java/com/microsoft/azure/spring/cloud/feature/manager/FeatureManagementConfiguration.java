@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties({ FeatureManagementConfigProperties.class })
 public class FeatureManagementConfiguration {
-
+    
     @Bean
     public FeatureManager featureManager(FeatureManagementConfigProperties properties) {
         return new FeatureManager(properties);

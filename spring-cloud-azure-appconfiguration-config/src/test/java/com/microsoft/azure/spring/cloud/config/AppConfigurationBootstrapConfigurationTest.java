@@ -24,34 +24,20 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicStatusLine;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsoft.azure.credentials.MSICredentials;
-import com.microsoft.azure.keyvault.KeyVaultClient;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
-import com.microsoft.rest.RestClient;
-import com.microsoft.rest.RestClient.Builder;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(AzureConfigBootstrapConfiguration.class)
-@PowerMockIgnore({ "javax.net.ssl.*", "javax.crypto.*" })
-public class AzureConfigBootstrapConfigurationTest {
+public class AppConfigurationBootstrapConfigurationTest {
     private static final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
             .withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                     propPair(STORE_ENDPOINT_PROP, TEST_STORE_NAME))
-            .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class));
-
-    @Mock
-    private MSICredentials msiCredentials;
+            .withConfiguration(AutoConfigurations.of(AppConfigurationBootstrapConfiguration.class));
     
     @Mock
     private CloseableHttpResponse mockClosableHttpResponse;
@@ -61,15 +47,6 @@ public class AzureConfigBootstrapConfigurationTest {
 
     @Mock
     InputStream mockInputStream;
-
-    @Mock
-    Builder builderMock;
-
-    @Mock
-    RestClient restClientMock;
-
-    @Mock
-    KeyVaultClient keyVaultClientMock;
 
     @Mock
     ObjectMapper mockObjectMapper;
@@ -86,8 +63,6 @@ public class AzureConfigBootstrapConfigurationTest {
                     .thenReturn(new BasicStatusLine(new ProtocolVersion("", 0, 0), 200, ""));
             when(mockClosableHttpResponse.getEntity()).thenReturn(mockHttpEntity);
             when(mockHttpEntity.getContent()).thenReturn(mockInputStream);
-            
-            whenNew(Builder.class).withNoArguments().thenReturn(builderMock);
         } catch (Exception e) {
             fail();
         }
@@ -97,7 +72,7 @@ public class AzureConfigBootstrapConfigurationTest {
     public void propertySourceLocatorBeanCreated() throws Exception {
         whenNew(ClientStore.class).withAnyArguments().thenReturn(clientStoreMock);
         contextRunner.withPropertyValues(propPair(FAIL_FAST_PROP, "false"))
-                .run(context -> assertThat(context).hasSingleBean(AzureConfigPropertySourceLocator.class));
+                .run(context -> assertThat(context).hasSingleBean(AppConfigurationPropertySourceLocator.class));
     }
 
     @Test

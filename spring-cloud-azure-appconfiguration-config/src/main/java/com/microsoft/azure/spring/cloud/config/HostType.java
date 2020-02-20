@@ -10,9 +10,10 @@ package com.microsoft.azure.spring.cloud.config;
  */
 public enum HostType {
     
-    NONE("None"),
+    UNIDENTIFIED(""),
     AZURE_WEB_APP("AzureWebApp"),
-    AZURE_FUNCTION("AzureFunction");
+    AZURE_FUNCTION("AzureFunction"),
+    KUBERNETES("Kubernetes");
     
     private final String text;
     

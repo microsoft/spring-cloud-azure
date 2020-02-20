@@ -30,15 +30,15 @@ public class HelloController {
     
     @GetMapping("/privacy")
     public String getRequestBased(Model model) {
-        model.addAttribute("Beta", featureManager.isEnabledAsync("Beta").block());
-        model.addAttribute("isDarkThemeS1", featureManagerSnapshot.isEnabledAsync("DarkTheme").block());
-        model.addAttribute("isDarkThemeS2", featureManagerSnapshot.isEnabledAsync("DarkTheme").block());
-        model.addAttribute("isDarkThemeS3", featureManagerSnapshot.isEnabledAsync("DarkTheme").block());
+        model.addAttribute("Beta", featureManager.isEnabledAsync("beta").block());
+        model.addAttribute("isDarkThemeS1", featureManagerSnapshot.isEnabledAsync("dark-theme").block());
+        model.addAttribute("isDarkThemeS2", featureManagerSnapshot.isEnabledAsync("dark-theme").block());
+        model.addAttribute("isDarkThemeS3", featureManagerSnapshot.isEnabledAsync("dark-theme").block());
         return "privacy";
     }
 
     @GetMapping(value = {"/Beta", "/BetaA"})
-    @FeatureGate(feature = "BetaAB", fallback = "/BetaB")
+    @FeatureGate(feature = "beta-ab", fallback = "/BetaB")
     public String getRedirect(Model model) {
         return "BetaA";
     }
@@ -50,7 +50,7 @@ public class HelloController {
 
     @GetMapping(value = {"", "/", "/welcome"})
     public String mainWithParam(Model model) {
-        model.addAttribute("Beta", featureManager.isEnabledAsync("Beta").block());
+        model.addAttribute("Beta", featureManager.isEnabledAsync("beta").block());
         return "welcome";
     }
 }

@@ -6,9 +6,10 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_FLAG_CONTENT_TYPE;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_BOOLEAN_VALUE;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_LABEL;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_VALUE;
-import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_BOOLEAN_VALUE;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_VALUE_PARAMETERS;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONTEXT;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_KEY_1;
@@ -52,6 +53,7 @@ import com.azure.core.http.rest.PagedResponse;
 import com.azure.data.appconfiguration.ConfigurationAsyncClient;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureFilterEvaluationContext;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
@@ -61,10 +63,10 @@ import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public class AzureConfigPropertySourceTest {
+public class AppConfigurationPropertySourceTest {
     private static final String EMPTY_CONTENT_TYPE = "";
 
-    private static final AzureCloudConfigProperties TEST_PROPS = new AzureCloudConfigProperties();
+    private static final AppConfigurationProperties TEST_PROPS = new AppConfigurationProperties();
 
     public static final List<ConfigurationSetting> TEST_ITEMS = new ArrayList<>();
 
@@ -80,7 +82,8 @@ public class AzureConfigPropertySourceTest {
             EMPTY_CONTENT_TYPE);
 
     private static final ConfigurationSetting item3Null = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3,
-            TEST_LABEL_3, null);
+            TEST_LABEL_3,
+            null);
 
     private static final ConfigurationSetting featureItem = createItem(".appconfig.featureflag/", "Alpha",
             FEATURE_VALUE, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
@@ -88,18 +91,22 @@ public class AzureConfigPropertySourceTest {
     private static final ConfigurationSetting featureItem2 = createItem(".appconfig.featureflag/", "Beta",
             FEATURE_BOOLEAN_VALUE, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
 
+    private static final ConfigurationSetting featureItem3 = createItem(".appconfig.featureflag/", "Gamma",
+            FEATURE_VALUE_PARAMETERS, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
+
     private static final ConfigurationSetting featureItemNull = createItem(".appconfig.featureflag/", "Alpha",
-            FEATURE_VALUE, FEATURE_LABEL, null);
+            FEATURE_VALUE,
+            FEATURE_LABEL, null);
 
     public List<ConfigurationSetting> testItems = new ArrayList<>();
 
     private static final String FEATURE_MANAGEMENT_KEY = "feature-management.featureManagement";
 
-    private AzureConfigPropertySource propertySource;
+    private AppConfigurationPropertySource propertySource;
 
     private static ObjectMapper mapper = new ObjectMapper();
 
-    private AzureCloudConfigProperties azureProperties;
+    private AppConfigurationProperties appConfigurationProperties;
 
     @Mock
     private ClientStore clientStoreMock;
@@ -128,7 +135,7 @@ public class AzureConfigPropertySourceTest {
     @Rule
     public ExpectedException expected = ExpectedException.none();
 
-    private AppConfigProviderProperties appProperties;
+    private AppConfigurationProviderProperties appProperties;
 
     private KeyVaultCredentialProvider tokenCredentialProvider = null;
 
@@ -139,22 +146,23 @@ public class AzureConfigPropertySourceTest {
         featureItem.setContentType(FEATURE_FLAG_CONTENT_TYPE);
         FEATURE_ITEMS.add(featureItem);
         FEATURE_ITEMS.add(featureItem2);
+        FEATURE_ITEMS.add(featureItem3);
+        mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
     }
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        azureProperties = new AzureCloudConfigProperties();
-        azureProperties.setFailFast(true);
-        appProperties = new AppConfigProviderProperties();
+        appConfigurationProperties = new AppConfigurationProperties();
+        appProperties = new AppConfigurationProviderProperties();
         ConfigStore configStore = new ConfigStore();
         configStore.setEndpoint(TEST_STORE_NAME);
         Map<String, List<String>> storeContextsMap = new HashMap<String, List<String>>();
         ArrayList<String> contexts = new ArrayList<String>();
         contexts.add("/application/*");
         storeContextsMap.put(TEST_STORE_NAME, contexts);
-        propertySource = new AzureConfigPropertySource(TEST_CONTEXT, configStore, "\0", azureProperties,
-                clientStoreMock, appProperties, tokenCredentialProvider, storeContextsMap);
+        propertySource = new AppConfigurationPropertySource(TEST_CONTEXT, configStore, "\0",
+                appConfigurationProperties, clientStoreMock, appProperties, tokenCredentialProvider, storeContextsMap);
 
         testItems = new ArrayList<ConfigurationSetting>();
         testItems.add(item1);
@@ -173,6 +181,8 @@ public class AzureConfigPropertySourceTest {
     public void testPropCanBeInitAndQueried() throws IOException {
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(testItems)
                 .thenReturn(FEATURE_ITEMS);
+        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(testItems)
+                .thenReturn(FEATURE_ITEMS);
         FeatureSet featureSet = new FeatureSet();
         try {
             propertySource.initProperties(featureSet);
@@ -182,8 +192,8 @@ public class AzureConfigPropertySourceTest {
         propertySource.initFeatures(featureSet);
 
         String[] keyNames = propertySource.getPropertyNames();
-        String[] expectedKeyNames = testItems.stream().map(t -> t.getKey().substring(TEST_CONTEXT.length()))
-                .toArray(String[]::new);
+        String[] expectedKeyNames = testItems.stream()
+                .map(t -> t.getKey().substring(TEST_CONTEXT.length())).toArray(String[]::new);
         String[] allExpectedKeyNames = ArrayUtils.addAll(expectedKeyNames, FEATURE_MANAGEMENT_KEY);
 
         assertThat(keyNames).containsExactlyInAnyOrder(allExpectedKeyNames);
@@ -233,13 +243,25 @@ public class AzureConfigPropertySourceTest {
         FeatureSet featureSetExpected = new FeatureSet();
         Feature feature = new Feature();
         feature.setKey("Alpha");
-        ArrayList<FeatureFilterEvaluationContext> filters = new ArrayList<FeatureFilterEvaluationContext>();
+        HashMap<Integer, FeatureFilterEvaluationContext> filters = 
+                new HashMap<Integer, FeatureFilterEvaluationContext>();
         FeatureFilterEvaluationContext ffec = new FeatureFilterEvaluationContext();
         ffec.setName("TestFilter");
-        filters.add(ffec);
+        filters.put(0, ffec);
         feature.setEnabledFor(filters);
+        Feature gamma = new Feature();
+        gamma.setKey("Gamma");
+        filters = new HashMap<Integer, FeatureFilterEvaluationContext>();
+        ffec = new FeatureFilterEvaluationContext();
+        ffec.setName("TestFilter");
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<String, Object>();
+        parameters.put("key", "value");
+        ffec.setParameters(parameters);
+        filters.put(0, ffec);
+        gamma.setEnabledFor(filters);
         featureSetExpected.addFeature("Alpha", feature);
         featureSetExpected.addFeature("Beta", true);
+        featureSetExpected.addFeature("Gamma", gamma);
         LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected.getFeatureManagement(),
                 LinkedHashMap.class);
 
@@ -269,15 +291,37 @@ public class AzureConfigPropertySourceTest {
         propertySource.initFeatures(featureSet);
 
         FeatureSet featureSetExpected = new FeatureSet();
-        Feature feature = new Feature();
-        feature.setKey("Alpha");
-        ArrayList<FeatureFilterEvaluationContext> filters = new ArrayList<FeatureFilterEvaluationContext>();
+
+        HashMap<Integer, FeatureFilterEvaluationContext> filters = 
+                new HashMap<Integer, FeatureFilterEvaluationContext>();
         FeatureFilterEvaluationContext ffec = new FeatureFilterEvaluationContext();
         ffec.setName("TestFilter");
-        filters.add(ffec);
-        feature.setEnabledFor(filters);
-        featureSetExpected.addFeature("Alpha", feature);
+
+        filters.put(0, ffec);
+
+        Feature alpha = new Feature();
+        alpha.setKey("Alpha");
+        alpha.setEnabledFor(filters);
+
+        HashMap<Integer, FeatureFilterEvaluationContext> filters2 = 
+                new HashMap<Integer, FeatureFilterEvaluationContext>();
+        FeatureFilterEvaluationContext ffec2 = new FeatureFilterEvaluationContext();
+        ffec2.setName("TestFilter");
+
+        filters2.put(0, ffec2);
+
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<String, Object>();
+        parameters.put("key", "value");
+        ffec2.setParameters(parameters);
+
+        Feature gamma = new Feature();
+        gamma.setKey("Gamma");
+        gamma.setEnabledFor(filters2);
+        filters2.put(0, ffec2);
+
+        featureSetExpected.addFeature("Alpha", alpha);
         featureSetExpected.addFeature("Beta", true);
+        featureSetExpected.addFeature("Gamma", gamma);
         LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected.getFeatureManagement(),
                 LinkedHashMap.class);
 
@@ -299,8 +343,8 @@ public class AzureConfigPropertySourceTest {
         }
 
         String[] keyNames = propertySource.getPropertyNames();
-        String[] expectedKeyNames = items.stream().map(t -> t.getKey().substring(TEST_CONTEXT.length()))
-                .toArray(String[]::new);
+        String[] expectedKeyNames = items.stream()
+                .map(t -> t.getKey().substring(TEST_CONTEXT.length())).toArray(String[]::new);
 
         assertThat(keyNames).containsExactlyInAnyOrder(expectedKeyNames);
     }

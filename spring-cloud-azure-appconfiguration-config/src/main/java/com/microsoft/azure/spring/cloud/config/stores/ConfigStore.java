@@ -5,7 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.config.stores;
 
-import static com.microsoft.azure.spring.cloud.config.AzureCloudConfigProperties.LABEL_SEPARATOR;
+import static com.microsoft.azure.spring.cloud.config.AppConfigurationProperties.LABEL_SEPARATOR;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,6 +41,8 @@ public class ConfigStore {
     // The keys to be watched, won't take effect if watch not enabled
     @NotEmpty
     private String watchedKey = "*";
+    
+    private boolean failFast = true;
 
     public ConfigStore() {
     }
@@ -83,6 +85,14 @@ public class ConfigStore {
 
     public void setWatchedKey(String watchedKey) {
         this.watchedKey = watchedKey;
+    }
+    
+    public boolean isFailFast() {
+        return failFast;
+    }
+
+    public void setFailFast(boolean failFast) {
+        this.failFast = failFast;
     }
 
     @PostConstruct

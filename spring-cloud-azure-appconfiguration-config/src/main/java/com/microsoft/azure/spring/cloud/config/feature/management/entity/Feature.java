@@ -5,6 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.config.feature.management.entity;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
@@ -17,14 +18,20 @@ public class Feature {
     @JsonProperty("key")
     private String key;
 
-    @JsonAlias("EnabledFor")
-    private List<FeatureFilterEvaluationContext> enabledFor;
+    @JsonAlias("enabled-for")
+    private HashMap<Integer, FeatureFilterEvaluationContext> enabledFor;
     
     public Feature() {}
     
     public Feature(String key, FeatureManagementItem featureItem) {
         this.key = key;
-        this.enabledFor = featureItem.getConditions().getClientFilters();
+        List<FeatureFilterEvaluationContext> filterMapper = featureItem.getConditions().getClientFilters();
+        
+        enabledFor = new HashMap<Integer, FeatureFilterEvaluationContext>();
+        
+        for (int i = 0; i < filterMapper.size(); i++) {
+            enabledFor.put(i, filterMapper.get(i));
+        }
     }
 
     /**
@@ -44,14 +51,14 @@ public class Feature {
     /**
      * @return the enabledFor
      */
-    public List<FeatureFilterEvaluationContext> getEnabledFor() {
+    public HashMap<Integer, FeatureFilterEvaluationContext> getEnabledFor() {
         return enabledFor;
     }
 
     /**
      * @param enabledFor the enabledFor to set
      */
-    public void setEnabledFor(List<FeatureFilterEvaluationContext> enabledFor) {
+    public void setEnabledFor(HashMap<Integer, FeatureFilterEvaluationContext> enabledFor) {
         this.enabledFor = enabledFor;
     }
 
