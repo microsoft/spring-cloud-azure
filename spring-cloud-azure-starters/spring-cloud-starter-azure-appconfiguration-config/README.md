@@ -8,6 +8,8 @@ Please use this [sample](../../spring-cloud-azure-samples/azure-appconfiguration
 
 ### Dependency Management
 
+There are two libraries that can be used spring-cloud-azure-appconfiguration-config and spring-cloud-azure-appconfiguration-config-web. There are two differences between them the first being the web version takes on spring-web as a dependency, and the web version will attempt a refresh when the application is active when the cache expires. For more information on refresh see the [Configuration Refresh](#Configuration-Refresh) section.
+
 #### Maven Coordinates
 
 ```xml
@@ -133,11 +135,11 @@ spring.cloud.azure.appconfiguration.stores[0].fail-fast=false
 
 ### Placeholders in App Configuration
 
-THe values in App Configuration are filtered through the existing Environment when they are used. Placeholders can be used just like in `application.properties`, but with the added benefit of support for key vault references. Example with kafka:
+The values in App Configuration are filtered through the existing Environment when they are used. Placeholders can be used just like in `application.properties`, but with the added benefit of support for key vault references. Example with kafka:
 
 ```properties
-/application/kafka.password=[Key Vault reference]
-/application/spring.cloud.stream.kafka.binder.configuration.sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString" password=${kafka.password};
+/application/app.name=MyApp
+/application/app.description=${app.name} is configured with Azure App Configuration
 ```
 
 ### Use Managed Identity to access App Configuration
@@ -156,9 +158,18 @@ Follow the below steps to enable accessing App Configuration with managed identi
 
 The configuration store endpoint must be configured when `connection-string` is empty. When using a User Assigned Id the value `spring.cloud.azure.appconfiguration.managed-identity.client-id=[client-id]` must be set.
 
+#### bootstrap.application
+
+```application
+spring.cloud.azure.appconfiguration.stores[0].endpoint=[config-store-endpoint]
+
+#If Using User Assigned Identity
+spring.cloud.azure.appconfiguration.managed-identity.client-id=[client-id]
+```
+
 ### Token Credential Provider
 
-Another method of authentication is using AppConfigCredentialProvider and/or KeyVaultCredentialProvider. By implementing either of these classes and providing and generating a @Bean of them will enable authentication through any method defined by the [Java Azure SDK][azure_identity_sdk].
+Another method of authentication is using AppConfigCredentialProvider and/or KeyVaultCredentialProvider. By implementing either of these classes and providing and generating a @Bean of them will enable authentication through any method defined by the [Java Azure SDK][azure_identity_sdk]. The uri value is the endpoint/dns name of the connection service, so if needed different credentials can be used per config store/key vault.
 
 ```java
 public class MyCredentials implements AppConfigCredentialProvider, KeyVaultCredentialProvider {
@@ -178,15 +189,6 @@ public class MyCredentials implements AppConfigCredentialProvider, KeyVaultCrede
     }
 
 }
-```
-
-### bootstrap.application
-
-```application
-spring.cloud.azure.appconfiguration.stores[0].endpoint=[config-store-endpoint]
-
-#If Using User Assigned Identity
-spring.cloud.azure.appconfiguration.managed-identity.client-id=[client-id]
 ```
 
 <!-- LINKS -->
