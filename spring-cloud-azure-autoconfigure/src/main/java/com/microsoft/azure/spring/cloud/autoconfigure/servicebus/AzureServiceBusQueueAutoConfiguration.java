@@ -31,7 +31,7 @@ import javax.annotation.PostConstruct;
  */
 @Configuration
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
-@ConditionalOnClass(QueueClient.class)
+@ConditionalOnClass(value = {QueueClient.class, ServiceBusQueueClientFactory.class})
 @ConditionalOnProperty(value = "spring.cloud.azure.servicebus.enabled", matchIfMissing = true)
 public class AzureServiceBusQueueAutoConfiguration {
     private static final String SERVICE_BUS_QUEUE = "ServiceBusQueue";
