@@ -34,9 +34,11 @@ public class FeatureHandler extends HandlerInterceptorAdapter {
 
     private IDisabledFeaturesHandler disabledFeaturesHandler;
 
-    public FeatureHandler(FeatureManager featureManager, FeatureManagerSnapshot featureManagerSnapshot) {
+    public FeatureHandler(FeatureManager featureManager, FeatureManagerSnapshot featureManagerSnapshot,
+            IDisabledFeaturesHandler disabledFeaturesHandler) {
         this.featureManager = featureManager;
         this.featureManagerSnapshot = featureManagerSnapshot;
+        this.disabledFeaturesHandler = disabledFeaturesHandler;
     }
 
     /**
@@ -78,6 +80,13 @@ public class FeatureHandler extends HandlerInterceptorAdapter {
                 }
                 if (!isEnabled && disabledFeaturesHandler != null) {
                     response = disabledFeaturesHandler.handleDisabledFeatures(request, response);
+                } else if (!isEnabled) {
+                    try {
+                        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    } catch (IOException e) {
+                        LOGGER.error("Error thrown while returning 404 on false feature.", e);
+                        return false;
+                    }
                 }
                 return isEnabled;
             }

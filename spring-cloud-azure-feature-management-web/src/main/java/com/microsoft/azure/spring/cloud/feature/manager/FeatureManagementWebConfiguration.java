@@ -5,6 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.feature.manager;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -23,8 +24,9 @@ public class FeatureManagementWebConfiguration {
     }
     
     @Bean
-    public FeatureHandler featureHandler(FeatureManager featureManager, FeatureManagerSnapshot snapshot) {
-        return new FeatureHandler(featureManager, snapshot);
+    public FeatureHandler featureHandler(FeatureManager featureManager, FeatureManagerSnapshot snapshot,
+            @Autowired(required = false) IDisabledFeaturesHandler disabledFeaturesHandler) {
+        return new FeatureHandler(featureManager, snapshot, disabledFeaturesHandler);
     }
     
     @Bean
