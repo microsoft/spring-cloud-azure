@@ -19,7 +19,7 @@ import com.microsoft.azure.spring.cloud.feature.manager.FeatureManager;
 @EnableAutoConfiguration
 public class ConsoleApplication implements CommandLineRunner {
 
-    private static Logger logger = LoggerFactory
+    private static final Logger LOGGER = LoggerFactory
             .getLogger(ConsoleApplication.class);
 
     @Autowired
@@ -31,12 +31,12 @@ public class ConsoleApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        logger.info("EXECUTING : command line runner");
+        LOGGER.info("EXECUTING : command line runner");
 
-        if (featureManager.isEnabledAsync("Beta").block()) {
-            System.out.println("Running Beta");
+        if (featureManager.isEnabledAsync("beta").block()) {
+            LOGGER.info("RUNNING : beta");
         } else {
-            System.out.println("Running Application");
+            LOGGER.info("RUNNING : application");
         }
     }
     

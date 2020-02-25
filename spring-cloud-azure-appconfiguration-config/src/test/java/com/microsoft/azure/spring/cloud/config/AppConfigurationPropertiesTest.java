@@ -35,31 +35,21 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicStatusLine;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBindException;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.assertj.AssertableApplicationContext;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(AzureConfigBootstrapConfiguration.class)
-@PowerMockIgnore({ "javax.net.ssl.*", "javax.crypto.*", "org.mockito.*" })
-public class AzureCloudConfigPropertiesTest {
+public class AppConfigurationPropertiesTest {
     @InjectMocks
     private ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations.of(AzureConfigBootstrapConfiguration.class));
+            .withConfiguration(AutoConfigurations.of(AppConfigurationBootstrapConfiguration.class));
 
     private static final String NO_ENDPOINT_CONN_STRING = "Id=fake-conn-id;Secret=ZmFrZS1jb25uLXNlY3JldA==";
 
@@ -101,7 +91,6 @@ public class AzureCloudConfigPropertiesTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         try {
-            PowerMockito.whenNew(ObjectMapper.class).withAnyArguments().thenReturn(mockObjectMapper);
             when(mockClosableHttpResponse.getStatusLine())
                 .thenReturn(new BasicStatusLine(new ProtocolVersion("", 0, 0), 200, ""));
             when(mockClosableHttpResponse.getEntity()).thenReturn(mockHttpEntity);
@@ -115,7 +104,7 @@ public class AzureCloudConfigPropertiesTest {
     public void validInputShouldCreatePropertiesBean() {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING))
                 .withPropertyValues(propPair(FAIL_FAST_PROP, "false")).run(context -> {
-                    assertThat(context).hasSingleBean(AzureCloudConfigProperties.class);
+                    assertThat(context).hasSingleBean(AppConfigurationProperties.class);
                 });
     }
 
@@ -192,7 +181,7 @@ public class AzureCloudConfigPropertiesTest {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                 propPair(STORE_ENDPOINT_PROP, "")).withPropertyValues(propPair(FAIL_FAST_PROP, "false"))
                 .run(context -> {
-                    AzureCloudConfigProperties properties = context.getBean(AzureCloudConfigProperties.class);
+                    AppConfigurationProperties properties = context.getBean(AppConfigurationProperties.class);
                     assertThat(properties.getStores()).isNotNull();
                     assertThat(properties.getStores().size()).isEqualTo(1);
                     assertThat(properties.getStores().get(0).getEndpoint()).isEqualTo("https://fake.test.config.io");
@@ -221,7 +210,7 @@ public class AzureCloudConfigPropertiesTest {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING))
                 .withPropertyValues(propPair(CACHE_EXPIRATION_PROP, "1s"))
                 .run(context -> {
-                    assertThat(context).hasSingleBean(AzureCloudConfigProperties.class);
+                    assertThat(context).hasSingleBean(AppConfigurationProperties.class);
                 });
     }
 
@@ -230,10 +219,4 @@ public class AzureCloudConfigPropertiesTest {
         assertThat(context).getFailure()
                 .hasStackTraceContaining(String.format("field '%s': rejected value", fieldName));
     }
-}
-
-@Configuration
-@EnableConfigurationProperties(AzureCloudConfigProperties.class)
-class PropertiesTestConfiguration {
-    // Do nothing
 }

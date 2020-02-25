@@ -22,13 +22,13 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
+import com.microsoft.azure.spring.cloud.config.resource.AppConfigManagedIdentityProperties;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
-import com.microsoft.azure.spring.cloud.context.core.config.AzureManagedIdentityProperties;
 
 @Validated
-@ConfigurationProperties(prefix = AzureCloudConfigProperties.CONFIG_PREFIX)
-@Import({ AppConfigProviderProperties.class })
-public class AzureCloudConfigProperties {
+@ConfigurationProperties(prefix = AppConfigurationProperties.CONFIG_PREFIX)
+@Import({ AppConfigurationProviderProperties.class })
+public class AppConfigurationProperties {
     public static final String CONFIG_PREFIX = "spring.cloud.azure.appconfiguration";
 
     public static final String LABEL_SEPARATOR = ",";
@@ -46,14 +46,12 @@ public class AzureCloudConfigProperties {
     private String name;
 
     @NestedConfigurationProperty
-    private AzureManagedIdentityProperties managedIdentity;
+    private AppConfigManagedIdentityProperties managedIdentity;
 
     // Profile separator for the key name, e.g., /foo-app_dev/db.connection.key
     @NotEmpty
     @Pattern(regexp = "^[a-zA-Z0-9_@]+$")
     private String profileSeparator = "_";
-
-    private boolean failFast = true;
 
     private Duration cacheExpiration = Duration.ofSeconds(30);
 
@@ -90,11 +88,11 @@ public class AzureCloudConfigProperties {
         this.name = name;
     }
 
-    public AzureManagedIdentityProperties getManagedIdentity() {
+    public AppConfigManagedIdentityProperties getManagedIdentity() {
         return managedIdentity;
     }
 
-    public void setManagedIdentity(AzureManagedIdentityProperties managedIdentity) {
+    public void setManagedIdentity(AppConfigManagedIdentityProperties managedIdentity) {
         this.managedIdentity = managedIdentity;
     }
 
@@ -106,14 +104,6 @@ public class AzureCloudConfigProperties {
         this.profileSeparator = profileSeparator;
     }
 
-    public boolean isFailFast() {
-        return failFast;
-    }
-
-    public void setFailFast(boolean failFast) {
-        this.failFast = failFast;
-    }
-
     public Duration getCacheExpiration() {
         return cacheExpiration;
     }
@@ -122,7 +112,7 @@ public class AzureCloudConfigProperties {
      * The minimum time between checks. The minimum valid cache time is 1s. The default
      * cache time is 30s.
      * 
-     * @param cache minimum time between refresh checks
+     * @param cacheExpiration minimum time between refresh checks
      */
     public void setCacheExpiration(Duration cacheExpiration) {
         this.cacheExpiration = cacheExpiration;
