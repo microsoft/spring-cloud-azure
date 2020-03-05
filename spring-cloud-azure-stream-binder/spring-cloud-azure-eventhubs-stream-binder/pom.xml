@@ -19,9 +19,11 @@
             <groupId>com.microsoft.azure</groupId>
             <artifactId>spring-cloud-starter-azure-eventhubs</artifactId>
         </dependency>
+
+        <!-- Contains Azure Storage Blobs checkpoint store when using EventProcessorClient -->
         <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>azure-eventhubs-eph</artifactId>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-messaging-eventhubs-checkpointstore-blob</artifactId>
         </dependency>
 
         <dependency>

@@ -6,14 +6,10 @@
 
 package com.microsoft.azure.spring.integration.eventhub;
 
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-
-import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
-import com.microsoft.azure.eventprocessorhost.EventProcessorOptions;
-import com.microsoft.azure.eventprocessorhost.IEventProcessorFactory;
+import com.azure.messaging.eventhubs.EventProcessorClient;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
+import com.microsoft.azure.spring.integration.eventhub.impl.EventHubProcessor;
 import com.microsoft.azure.spring.integration.eventhub.impl.EventHubTemplate;
 import com.microsoft.azure.spring.integration.test.support.SubscribeByGroupOperationTest;
 import org.junit.Before;
@@ -21,8 +17,16 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EventHubTemplateSubscribeTest extends SubscribeByGroupOperationTest<EventHubOperation> {
@@ -31,40 +35,39 @@ public class EventHubTemplateSubscribeTest extends SubscribeByGroupOperationTest
     private EventHubClientFactory mockClientFactory;
 
     @Mock
-    private EventProcessorHost host;
+    private EventProcessorClient eventProcessorClient;
 
     @Before
     public void setUp() {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        future.complete(null);
         this.subscribeByGroupOperation = new EventHubTemplate(mockClientFactory);
-        when(this.mockClientFactory.getOrCreateEventProcessorHost(anyString(), anyString())).thenReturn(this.host);
-        when(this.mockClientFactory.getEventProcessorHost(anyString(), anyString())).thenReturn(Optional.of(this.host));
-        when(this.host
-                .registerEventProcessorFactory(isA(IEventProcessorFactory.class), isA(EventProcessorOptions.class)))
-                .thenReturn(future);
-        when(this.host.unregisterEventProcessor()).thenReturn(future);
+        when(this.mockClientFactory.createEventProcessorClient(anyString(), anyString(), isA(EventHubProcessor.class)))
+                .thenReturn(this.eventProcessorClient);
+        when(this.mockClientFactory.getEventProcessorClient(anyString(), anyString()))
+                .thenReturn(Optional.of(this.eventProcessorClient));
+        doNothing().when(this.eventProcessorClient).stop();
+        doNothing().when(this.eventProcessorClient).start();
     }
 
     @Override
     protected void verifySubscriberCreatorCalled() {
-        verify(this.mockClientFactory, atLeastOnce()).getOrCreateEventProcessorHost(anyString(), anyString());
+        verify(this.mockClientFactory, atLeastOnce()).createEventProcessorClient(anyString(), anyString(),
+                isA(EventHubProcessor.class));
     }
 
     @Override
     protected void verifySubscriberCreatorNotCalled() {
-        verify(this.mockClientFactory, never()).getOrCreateEventProcessorHost(anyString(), anyString());
+        verify(this.mockClientFactory, never()).createEventProcessorClient(anyString(), anyString(),
+                isA(EventHubProcessor.class));
     }
 
     @Override
     protected void verifySubscriberRegistered(int times) {
-        verify(this.host, times(times))
-                .registerEventProcessorFactory(isA(IEventProcessorFactory.class), isA(EventProcessorOptions.class));
+        verify(this.eventProcessorClient, times(times)).start();
     }
 
     @Override
     protected void verifySubscriberUnregistered(int times) {
-        verify(this.mockClientFactory, times(times)).removeEventProcessorHost(anyString(), anyString());
-        verify(this.host, times(times)).unregisterEventProcessor();
+        verify(this.mockClientFactory, times(times)).removeEventProcessorClient(anyString(), anyString());
+        verify(this.eventProcessorClient, times(times)).stop();
     }
 }

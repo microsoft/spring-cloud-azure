@@ -11,16 +11,17 @@ import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubRxOperation;
 import org.springframework.messaging.Message;
+import reactor.core.publisher.Mono;
 import rx.Observable;
 import rx.subscriptions.Subscriptions;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Default implementation of {@link EventHubRxOperation}.
  *
  * @author Warren Zhu
+ * @author Xiaolu Dai
  */
 public class EventHubRxTemplate extends AbstractEventHubTemplate implements EventHubRxOperation {
 
@@ -31,8 +32,8 @@ public class EventHubRxTemplate extends AbstractEventHubTemplate implements Even
         super(clientFactory);
     }
 
-    private static <T> Observable<T> toObservable(CompletableFuture<T> future) {
-        return Observable.create(subscriber -> future.whenComplete((result, error) -> {
+    private static <T> Observable<T> toObservable(Mono<T> mono) {
+        return Observable.create(subscriber -> mono.toFuture().whenComplete((result, error) -> {
             if (error != null) {
                 subscriber.onError(error);
             } else {
@@ -47,15 +48,17 @@ public class EventHubRxTemplate extends AbstractEventHubTemplate implements Even
         return toObservable(sendAsync(destination, message, partitionSupplier));
     }
 
+
     @Override
     public Observable<Message<?>> subscribe(String destination, String consumerGroup, Class<?> messagePayloadType) {
         Tuple<String, String> nameAndConsumerGroup = Tuple.of(destination, consumerGroup);
 
         subjectByNameAndGroup.computeIfAbsent(nameAndConsumerGroup, k -> Observable.<Message<?>>create(subscriber -> {
-            this.register(destination, consumerGroup,
-                    new EventHubProcessor(subscriber::onNext, messagePayloadType, getCheckpointConfig(),
-                            getMessageConverter()));
-            subscriber.add(Subscriptions.create(() -> unregister(destination, consumerGroup)));
+            final EventHubProcessor eventHubProcessor = new EventHubProcessor(subscriber::onNext, messagePayloadType,
+                    getCheckpointConfig(), getMessageConverter());
+            this.createEventProcessorClient(destination, consumerGroup, eventHubProcessor);
+            this.startEventProcessorClient(destination, consumerGroup);
+            subscriber.add(Subscriptions.create(() -> this.stopEventProcessorClient(destination, consumerGroup)));
         }).share());
 
         return subjectByNameAndGroup.get(nameAndConsumerGroup);

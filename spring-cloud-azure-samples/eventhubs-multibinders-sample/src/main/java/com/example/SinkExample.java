@@ -7,7 +7,7 @@
 package com.example;
 
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
-import com.microsoft.azure.spring.integration.core.api.Checkpointer;
+import com.microsoft.azure.spring.integration.core.api.reactor.Checkpointer;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -20,23 +20,21 @@ public class SinkExample {
     @StreamListener(CustomProcessor.INPUT)
     public void handleMessage(String message, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
         System.out.println(String.format("[1] New message received: '%s'", message));
-        checkpointer.success().handle((r, ex) -> {
-            if (ex == null) {
-                System.out.println(String.format("[1] Message '%s' successfully checkpointed", message));
-            }
-            return null;
-        });
+        checkpointer.success()
+                .doOnSuccess(s -> System.out.println(String.format("[1] Message '%s' successfully checkpointed",
+                        message)))
+                .doOnError(System.out::println)
+                .subscribe();
     }
 
     @StreamListener(CustomProcessor.INPUT1)
     public void handleMessage1(String message, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
         System.out.println(String.format("[2] New message received: '%s'", message));
-        checkpointer.success().handle((r, ex) -> {
-            if (ex == null) {
-                System.out.println(String.format("[2] Message '%s' successfully checkpointed", message));
-            }
-            return null;
-        });
+        checkpointer.success()
+                .doOnSuccess(s -> System.out.println(String.format("[2] Message '%s' successfully checkpointed",
+                        message)))
+                .doOnError(System.out::println)
+                .subscribe();
     }
 
     // Replace destination with spring.cloud.stream.bindings.input.destination

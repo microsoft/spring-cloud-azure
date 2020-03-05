@@ -6,32 +6,30 @@
 
 package com.microsoft.azure.spring.integration.eventhub.impl;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
-import org.springframework.messaging.Message;
-import org.springframework.util.Assert;
-
-import com.google.common.base.Strings;
-import com.microsoft.azure.eventhubs.EventData;
-import com.microsoft.azure.eventhubs.EventHubClient;
-import com.microsoft.azure.eventhubs.EventPosition;
-import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
-import com.microsoft.azure.eventprocessorhost.EventProcessorOptions;
+import com.azure.core.amqp.exception.AmqpException;
+import com.azure.messaging.eventhubs.EventData;
+import com.azure.messaging.eventhubs.EventHubProducerAsyncClient;
+import com.azure.messaging.eventhubs.EventProcessorClient;
+import com.azure.messaging.eventhubs.models.CreateBatchOptions;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.converter.EventHubMessageConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
+import org.springframework.messaging.Message;
+import org.springframework.util.Assert;
+import reactor.core.publisher.Mono;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Abstract base implementation of event hub template.
@@ -40,9 +38,12 @@ import com.microsoft.azure.spring.integration.eventhub.converter.EventHubMessage
  * The main event hub component for sending to and consuming from event hub
  *
  * @author Warren Zhu
+ * @author Xiaolu Dai
  */
 public class AbstractEventHubTemplate {
-    private static final Logger log = LoggerFactory.getLogger(AbstractEventHubTemplate.class);
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEventHubTemplate.class);
+
     private final EventHubClientFactory clientFactory;
 
     private EventHubMessageConverter messageConverter = new EventHubMessageConverter();
@@ -55,24 +56,12 @@ public class AbstractEventHubTemplate {
         this.clientFactory = clientFactory;
     }
 
-    private static EventProcessorOptions buildEventProcessorOptions(StartPosition startPosition) {
-        EventProcessorOptions options = EventProcessorOptions.getDefaultOptions();
-
-        if (startPosition == StartPosition.EARLIEST) {
-            options.setInitialPositionProvider((s) -> EventPosition.fromStartOfStream());
-        } else /* StartPosition.LATEST */ {
-            options.setInitialPositionProvider((s) -> EventPosition.fromEndOfStream());
-        }
-
-        return options;
-    }
-
-    public <T> CompletableFuture<Void> sendAsync(String eventHubName, @NonNull Message<T> message,
-            PartitionSupplier partitionSupplier) {
+    public <T> Mono<Void> sendAsync(String eventHubName, @NonNull Message<T> message,
+                                    PartitionSupplier partitionSupplier) {
         return sendAsync(eventHubName, Collections.singleton(message), partitionSupplier);
     }
 
-    public <T> CompletableFuture<Void> sendAsync(String eventHubName, Collection<Message<T>> messages,
+    public <T> Mono<Void> sendAsync(String eventHubName, Collection<Message<T>> messages,
             PartitionSupplier partitionSupplier) {
         Assert.hasText(eventHubName, "eventHubName can't be null or empty");
         List<EventData> eventData = messages.stream().map(m -> messageConverter.fromMessage(m, EventData.class))
@@ -80,50 +69,43 @@ public class AbstractEventHubTemplate {
         return doSend(eventHubName, partitionSupplier, eventData);
     }
 
-    private CompletableFuture<Void> doSend(String eventHubName, PartitionSupplier partitionSupplier,
-            List<EventData> eventData) {
-        try {
-            EventHubClient client = this.clientFactory.getOrCreateClient(eventHubName);
+    private Mono<Void> doSend(String eventHubName, PartitionSupplier partitionSupplier,
+                              List<EventData> events) {
 
-            if (partitionSupplier == null) {
-                return client.send(eventData);
-            } else if (!Strings.isNullOrEmpty(partitionSupplier.getPartitionId())) {
-                return this.clientFactory.getOrCreatePartitionSender(eventHubName, partitionSupplier.getPartitionId())
-                                         .send(eventData);
-            } else if (!Strings.isNullOrEmpty(partitionSupplier.getPartitionKey())) {
-                return client.send(eventData, partitionSupplier.getPartitionKey());
-            } else {
-                return client.send(eventData);
+        EventHubProducerAsyncClient producer = this.clientFactory.getOrCreateProducerClient(eventHubName);
+
+        CreateBatchOptions options = buildCreateBatchOptions(partitionSupplier);
+
+        return producer.createBatch(options).flatMap(batch -> {
+            for (EventData event : events) {
+                try {
+                    batch.tryAdd(event);
+                } catch (AmqpException e) {
+                    LOGGER.error("Event is larger than maximum allowed size. Exception: " + e);
+                }
             }
-        } catch (EventHubRuntimeException e) {
-            log.error(String.format("Failed to send to '%s' ", eventHubName), e);
-            CompletableFuture<Void> future = new CompletableFuture<>();
-            future.completeExceptionally(e);
-            return future;
-        }
+            return producer.send(batch);
+        });
     }
 
-    protected void register(String name, String consumerGroup, EventHubProcessor eventProcessor) {
-        EventProcessorHost host = this.clientFactory.getOrCreateEventProcessorHost(name, consumerGroup);
-        host.registerEventProcessorFactory(context -> eventProcessor, buildEventProcessorOptions(startPosition));
+    private CreateBatchOptions buildCreateBatchOptions(PartitionSupplier partitionSupplier) {
+        return new CreateBatchOptions()
+                    .setPartitionId(partitionSupplier != null ? partitionSupplier.getPartitionId() : null)
+                    .setPartitionKey(partitionSupplier != null ? partitionSupplier.getPartitionKey() : null);
     }
 
-    protected void unregister(String name, String consumerGroup) {
-        this.clientFactory
-        .getEventProcessorHost(name, consumerGroup)
-        .ifPresent(eventProcessorHost -> unregisterEventProcessor(eventProcessorHost, name, consumerGroup));
+    protected void createEventProcessorClient(String name, String consumerGroup, EventHubProcessor eventHubProcessor) {
+        this.clientFactory.createEventProcessorClient(name, consumerGroup, eventHubProcessor);
     }
 
-    private void unregisterEventProcessor(EventProcessorHost eventProcessorHost, String name, String consumerGroup) {
-        this.clientFactory.removeEventProcessorHost(name, consumerGroup);
+    protected void startEventProcessorClient(String name, String consumerGroup) {
+        this.clientFactory.getEventProcessorClient(name, consumerGroup).ifPresent(EventProcessorClient::start);
+    }
 
-        eventProcessorHost
-        .unregisterEventProcessor()
-        .whenComplete((s, t) -> {
-            if (t != null) {
-                log.warn(String.format("Failed to unregister consumer '%s' with group '%s'", name,
-                        consumerGroup), t);
-            }
+    protected void stopEventProcessorClient(String name, String consumerGroup) {
+        this.clientFactory.getEventProcessorClient(name, consumerGroup).ifPresent(eventProcessor -> {
+            this.clientFactory.removeEventProcessorClient(name, consumerGroup);
+            eventProcessor.stop();
         });
     }
 
@@ -148,7 +130,7 @@ public class AbstractEventHubTemplate {
     }
 
     public void setStartPosition(StartPosition startPosition) {
-        log.info("EventHubTemplate startPosition becomes: {}", startPosition);
+        LOGGER.info("EventHubTemplate startPosition becomes: {}", startPosition);
         this.startPosition = startPosition;
     }
 
@@ -157,7 +139,8 @@ public class AbstractEventHubTemplate {
     }
 
     public void setCheckpointConfig(CheckpointConfig checkpointConfig) {
-        log.info("EventHubTemplate checkpoint config becomes: {}", checkpointConfig);
+        LOGGER.info("EventHubTemplate checkpoint config becomes: {}", checkpointConfig);
         this.checkpointConfig = checkpointConfig;
     }
+
 }
