@@ -6,8 +6,9 @@
 
 package com.microsoft.azure.spring.integration.eventhub;
 
-import com.microsoft.azure.eventhubs.EventData;
-import com.microsoft.azure.eventprocessorhost.PartitionContext;
+import com.azure.messaging.eventhubs.EventData;
+import com.azure.messaging.eventhubs.models.EventContext;
+import com.azure.messaging.eventhubs.models.PartitionContext;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
@@ -20,39 +21,42 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EventHubRxOperationSendSubscribeTest extends RxSendSubscribeByGroupOperationTest<EventHubRxOperation> {
 
     @Mock
-    PartitionContext context;
+    EventContext eventContext;
+
+    @Mock
+    PartitionContext partitionContext;
 
     @Before
     @Override
     public void setUp() {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        future.complete(null);
-        when(this.context.getPartitionId()).thenReturn("1");
-        when(this.context.checkpoint()).thenReturn(future);
-        when(this.context.checkpoint(isA(EventData.class))).thenReturn(future);
+        when(this.eventContext.updateCheckpointAsync(isA(EventData.class))).thenReturn(Mono.empty());
+        when(this.eventContext.getPartitionContext()).thenReturn(this.partitionContext);
+        when(this.partitionContext.getPartitionId()).thenReturn(this.partitionId);
 
-        this.sendSubscribeOperation = new RxEventHubTestOperation(null, () -> context);
+        this.sendSubscribeOperation = new RxEventHubTestOperation(null, () -> eventContext);
     }
 
     @Override
     protected void verifyCheckpointSuccessCalled(int times) {
-        verify(this.context, times(times)).checkpoint(isA(EventData.class));
+        verify(this.eventContext, times(times)).updateCheckpointAsync(isA(EventData.class));
     }
 
     @Override
     protected void verifyCheckpointBatchSuccessCalled(int times) {
-        verify(this.context, times(times)).checkpoint();
+
     }
 
     @Test

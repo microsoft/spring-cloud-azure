@@ -19,9 +19,10 @@ Running this sample will be charged by Azure. You can check the usage and bill a
 # Fill event hub namespace connection string copied from portal
 spring.cloud.azure.eventhub.connection-string=[eventhub-namespace-connection-string]
 
-# Fill checkpoint storage account name and accese key
+# Fill checkpoint storage account name, accese key and container
 spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-account]
 spring.cloud.azure.eventhub.checkpoint-access-key=[checkpoint-accesskey]
+spring.cloud.azure.eventhub.checkpoint-container=[checkpoint-container]
 ....
 
 == Credential file based usage
@@ -61,6 +62,7 @@ spring.cloud.azure.resource-group=[resource-group]
 
 spring.cloud.azure.eventhub.namespace=[eventhub-namespace]
 spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-account]
+spring.cloud.azure.eventhub.checkpoint-container=[checkpoint-container]
 ....
 
 == MSI credential based usage
@@ -131,6 +133,8 @@ spring.cloud.azure.resource-group=[resource-group]
 
 # Fill checkpoint storage account name
 spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-account]
+# Fill checkpoint storage container
+spring.cloud.azure.eventhub.checkpoint-container=[checkpoint-container]
 
 # Fill event hub namespace
 spring.cloud.azure.eventhub.namespace=[eventhub-namespace]

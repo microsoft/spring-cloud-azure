@@ -9,7 +9,7 @@ package com.example;
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
-import com.microsoft.azure.spring.integration.core.api.Checkpointer;
+import com.microsoft.azure.spring.integration.core.api.reactor.Checkpointer;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import com.microsoft.azure.spring.integration.eventhub.inbound.EventHubInboundChannelAdapter;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,12 +36,10 @@ public class ReceiveController {
     public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
         String message = new String(payload);
         System.out.println(String.format("New message received: '%s'", message));
-        checkpointer.success().handle((r, ex) -> {
-            if (ex == null) {
-                System.out.println(String.format("Message '%s' successfully checkpointed", message));
-            }
-            return null;
-        });
+        checkpointer.success()
+                .doOnSuccess(s -> System.out.println(String.format("Message '%s' successfully checkpointed", message)))
+                .doOnError(System.out::println)
+                .subscribe();
     }
 
     @Bean

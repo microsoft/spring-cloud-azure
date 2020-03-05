@@ -28,7 +28,7 @@ public class WebController {
 
     @PostMapping("/messages")
     public User send(@RequestBody User user) {
-        this.eventHubOperation.sendAsync(EVENT_HUB_NAME, MessageBuilder.withPayload(user).build());
+        this.eventHubOperation.sendAsync(EVENT_HUB_NAME, MessageBuilder.withPayload(user).build()).block();
         return user;
     }
 

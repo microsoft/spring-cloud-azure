@@ -4,13 +4,13 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.integration.test.support;
+package com.microsoft.azure.spring.integration.test.support.reactor;
 
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
-import com.microsoft.azure.spring.integration.core.api.Checkpointer;
-import com.microsoft.azure.spring.integration.core.api.SendOperation;
+import com.microsoft.azure.spring.integration.core.api.reactor.Checkpointer;
+import com.microsoft.azure.spring.integration.core.api.reactor.SendOperation;
 import com.microsoft.azure.spring.integration.test.support.pojo.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -102,10 +102,11 @@ public abstract class SendSubscribeOperationTest<T extends SendOperation> {
     }
 
     @Before
-    public abstract void setUp() throws Exception;
+    public abstract void setUp();
 
     protected abstract void verifyCheckpointSuccessCalled(int times);
 
+    @Deprecated
     protected abstract void verifyCheckpointBatchSuccessCalled(int times);
 
     protected abstract void verifyCheckpointFailureCalled(int times);

@@ -6,16 +6,15 @@
 
 package com.microsoft.azure.spring.integration.eventhub.checkpoint;
 
-import com.microsoft.azure.eventhubs.EventData;
-import com.microsoft.azure.eventprocessorhost.PartitionContext;
+import com.azure.messaging.eventhubs.EventData;
+import com.azure.messaging.eventhubs.models.EventContext;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
-import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.eventhub.util.EventDataHelper;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Warren Zhu
+ * @author Xiaolu Dai
  */
 public abstract class CheckpointManager {
     private static final String CHECKPOINT_FAIL_MSG = "Consumer group '%s' failed to checkpoint %s on partition %s";
@@ -44,27 +43,31 @@ public abstract class CheckpointManager {
         this.checkpointConfig = checkpointConfig;
     }
 
-    public void onMessage(PartitionContext context, EventData eventData) {
+    public void onMessage(EventContext context, EventData eventData) {
         // no-op
     }
 
-    public void completeBatch(PartitionContext context) {
+    @Deprecated
+    public void completeBatch(EventContext context) {
         // no-op
     }
 
-    void logCheckpointFail(PartitionContext context, EventData eventData, Throwable t) {
+    void logCheckpointFail(EventContext context, EventData eventData, Throwable t) {
         if (getLogger().isWarnEnabled()) {
             getLogger().warn(String
-                    .format(CHECKPOINT_FAIL_MSG, context.getConsumerGroupName(), EventDataHelper.toString(eventData),
-                            context.getPartitionId()), t);
+                    .format(CHECKPOINT_FAIL_MSG, context.getPartitionContext().getConsumerGroup(),
+                            EventDataHelper.toString(eventData),
+                            context.getPartitionContext().getPartitionId()), t);
         }
     }
 
-    void logCheckpointSuccess(PartitionContext context, EventData eventData) {
+    void logCheckpointSuccess(EventContext context, EventData eventData) {
         if (getLogger().isDebugEnabled()) {
             getLogger().debug(String
-                    .format(CHECKPOINT_SUCCESS_MSG, context.getConsumerGroupName(), EventDataHelper.toString(eventData),
-                            context.getPartitionId(), this.checkpointConfig.getCheckpointMode()));
+                    .format(CHECKPOINT_SUCCESS_MSG, context.getPartitionContext().getConsumerGroup(),
+                            EventDataHelper.toString(eventData),
+                            context.getPartitionContext().getPartitionId(),
+                            this.checkpointConfig.getCheckpointMode()));
         }
     }
 

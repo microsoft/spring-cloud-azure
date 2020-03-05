@@ -30,6 +30,8 @@ public class AzureEventHubProperties {
 
     private String checkpointAccessKey;
 
+    private String checkpointContainer;
+
     public String getNamespace() {
         return namespace;
     }
@@ -60,6 +62,14 @@ public class AzureEventHubProperties {
 
     public void setCheckpointAccessKey(String checkpointAccessKey) {
         this.checkpointAccessKey = checkpointAccessKey;
+    }
+
+    public String getCheckpointContainer() {
+        return checkpointContainer;
+    }
+
+    public void setCheckpointContainer(String checkpointContainer) {
+        this.checkpointContainer = checkpointContainer;
     }
 
     @PostConstruct
