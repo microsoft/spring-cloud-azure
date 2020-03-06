@@ -11,6 +11,7 @@ import com.azure.messaging.eventhubs.EventData;
 import com.azure.messaging.eventhubs.EventHubProducerAsyncClient;
 import com.azure.messaging.eventhubs.EventProcessorClient;
 import com.azure.messaging.eventhubs.models.CreateBatchOptions;
+import com.azure.messaging.eventhubs.models.EventPosition;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
@@ -95,6 +96,7 @@ public class AbstractEventHubTemplate {
     }
 
     protected void createEventProcessorClient(String name, String consumerGroup, EventHubProcessor eventHubProcessor) {
+        eventHubProcessor.setEventPosition(buildEventPosition(startPosition));
         this.clientFactory.createEventProcessorClient(name, consumerGroup, eventHubProcessor);
     }
 
@@ -141,6 +143,10 @@ public class AbstractEventHubTemplate {
     public void setCheckpointConfig(CheckpointConfig checkpointConfig) {
         LOGGER.info("EventHubTemplate checkpoint config becomes: {}", checkpointConfig);
         this.checkpointConfig = checkpointConfig;
+    }
+
+    private static EventPosition buildEventPosition(StartPosition startPosition) {
+        return StartPosition.EARLIEST.equals(startPosition) ? EventPosition.earliest() : EventPosition.latest();
     }
 
 }

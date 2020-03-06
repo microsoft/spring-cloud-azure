@@ -10,6 +10,7 @@ import com.azure.messaging.eventhubs.EventData;
 import com.azure.messaging.eventhubs.models.CloseContext;
 import com.azure.messaging.eventhubs.models.ErrorContext;
 import com.azure.messaging.eventhubs.models.EventContext;
+import com.azure.messaging.eventhubs.models.EventPosition;
 import com.azure.messaging.eventhubs.models.InitializationContext;
 import com.azure.messaging.eventhubs.models.PartitionContext;
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
@@ -40,6 +41,7 @@ public class EventHubProcessor {
     protected final CheckpointConfig checkpointConfig;
     protected final EventHubMessageConverter messageConverter;
     protected final CheckpointManager checkpointManager;
+    protected EventPosition eventPosition = EventPosition.latest();
 
     public EventHubProcessor(Consumer<Message<?>> consumer, Class<?> payloadType, CheckpointConfig checkpointConfig,
             EventHubMessageConverter messageConverter) {
@@ -51,6 +53,7 @@ public class EventHubProcessor {
     }
 
     public void onInitialize(InitializationContext context) {
+        context.setInitialPosition(eventPosition);
         LOGGER.info("Started receiving on partition: {}", context.getPartitionContext().getPartitionId());
     }
 
@@ -79,5 +82,9 @@ public class EventHubProcessor {
     public void onError(ErrorContext context) {
         LOGGER.error("Error occurred on partition: {}. Error: {}", context.getPartitionContext().getPartitionId(),
                 context.getThrowable());
+    }
+
+    public void setEventPosition(EventPosition eventPosition) {
+        this.eventPosition = eventPosition;
     }
 }
