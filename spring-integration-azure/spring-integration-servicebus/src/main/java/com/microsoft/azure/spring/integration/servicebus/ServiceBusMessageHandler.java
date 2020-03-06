@@ -73,7 +73,7 @@ public abstract class ServiceBusMessageHandler<U> implements IMessageHandler {
 
     protected abstract String buildCheckpointSuccessMessage(Message<?> message);
 
-    private void checkpointHandler(Message<?> message, Throwable t) {
+    protected void checkpointHandler(Message<?> message, Throwable t) {
         if (t != null) {
             if (log.isWarnEnabled()) {
                 log.warn(buildCheckpointFailMessage(message), t);
