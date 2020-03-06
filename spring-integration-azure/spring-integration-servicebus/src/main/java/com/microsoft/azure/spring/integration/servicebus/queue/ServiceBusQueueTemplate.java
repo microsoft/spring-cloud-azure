@@ -146,13 +146,15 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
         public CompletableFuture<Void> onMessageAsync(IMessageSession session, IMessage serviceBusMessage) {
             Map<String, Object> headers = new HashMap<>();
 
-            Checkpointer checkpointer = new AzureCheckpointer(() -> session.completeAsync(serviceBusMessage.getLockToken()),
+            Checkpointer checkpointer = new AzureCheckpointer(
+                    () -> session.completeAsync(serviceBusMessage.getLockToken()),
                     () -> session.abandonAsync(serviceBusMessage.getLockToken()));
             if (checkpointConfig.getCheckpointMode() == CheckpointMode.MANUAL) {
                 headers.put(AzureHeaders.CHECKPOINTER, checkpointer);
             }
 
-            Message<U> message = messageConverter.toMessage(serviceBusMessage, new MessageHeaders(headers), payloadType);
+            Message<U> message = messageConverter.toMessage(serviceBusMessage,
+                    new MessageHeaders(headers), payloadType);
             consumer.accept(message);
 
             if (checkpointConfig.getCheckpointMode() == CheckpointMode.RECORD) {
