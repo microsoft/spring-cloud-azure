@@ -69,20 +69,20 @@ public class ServiceBusMessageConverter extends AbstractAzureMessageConverter<IM
 
             if (contentType instanceof MimeType) {
                 serviceBusMessage.setContentType(((MimeType) contentType).toString());
-            } else /* contentType is String */ {
+            } else {
                 serviceBusMessage.setContentType((String) contentType);
             }
         }
 
         if (headers.containsKey(MessageHeaders.ID)) {
-            serviceBusMessage.setMessageId(headers.get(MessageHeaders.ID, UUID.class).toString());
+            serviceBusMessage.setMessageId(String.valueOf(headers.get(MessageHeaders.ID, UUID.class)));
         }
 
         if (headers.containsKey(MessageHeaders.REPLY_CHANNEL)) {
             serviceBusMessage.setReplyTo(headers.get(MessageHeaders.REPLY_CHANNEL, String.class));
         }
 
-        headers.entrySet().forEach(e->serviceBusMessage.getProperties().put(e.getKey(), e.getValue().toString()));
+        headers.forEach((key, value) -> serviceBusMessage.getProperties().put(key, value.toString()));
     }
 
     @Override
