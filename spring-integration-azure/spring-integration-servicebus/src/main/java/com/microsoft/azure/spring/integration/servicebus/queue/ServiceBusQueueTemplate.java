@@ -7,11 +7,13 @@
 package com.microsoft.azure.spring.integration.servicebus.queue;
 
 import com.google.common.collect.Sets;
+import com.microsoft.azure.servicebus.ExceptionPhase;
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.IMessageSession;
 import com.microsoft.azure.servicebus.IQueueClient;
 import com.microsoft.azure.servicebus.ISessionHandler;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
+import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusClientConfig;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusMessageHandler;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
@@ -21,8 +23,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.util.Assert;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -83,7 +88,7 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
         try {
             queueClient.setPrefetchCount(this.clientConfig.getPrefetchCount());
 
-            // Register SessionHandler if sessions are enabled. 
+            // Register SessionHandler if sessions are enabled.
             // Handlers are mutually exclusive.
             if (this.clientConfig.isSessionsEnabled()) {
                 queueClient.registerSessionHandler(
@@ -136,8 +141,21 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
 
         // ISessionHandler
         @Override
-        public CompletableFuture<Void> onMessageAsync(IMessageSession session, IMessage message) {
-            return super.onMessageAsync(message);
+        public CompletableFuture<Void> onMessageAsync(IMessageSession session, IMessage serviceBusMessage) {
+            
+            Map<String, Object> headers = new HashMap<>();
+            
+            Message<U> message = messageConverter.toMessage(serviceBusMessage, new MessageHeaders(headers),
+                    payloadType);
+            consumer.accept(message);
+            
+            try {
+                session.complete(serviceBusMessage.getLockToken());
+            } catch (InterruptedException | ServiceBusException e) {
+                this.notifyException(e, ExceptionPhase.COMPLETE);
+            }
+
+            return CompletableFuture.completedFuture(null);
         }
 
         @Override
