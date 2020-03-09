@@ -6,150 +6,170 @@
 
 package com.microsoft.azure.spring.integration.eventhub;
 
-import java.util.Optional;
-
-import com.microsoft.azure.AzureEnvironment;
-import com.microsoft.azure.eventhubs.EventHubClient;
-import com.microsoft.azure.eventhubs.PartitionSender;
-import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
-import com.microsoft.azure.management.storage.StorageAccount;
-import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
-import com.microsoft.azure.spring.cloud.context.core.impl.StorageAccountManager;
-import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
+import com.azure.messaging.eventhubs.EventHubClientBuilder;
+import com.azure.messaging.eventhubs.EventHubConsumerAsyncClient;
+import com.azure.messaging.eventhubs.EventHubProducerAsyncClient;
+import com.azure.messaging.eventhubs.EventProcessorClient;
+import com.azure.messaging.eventhubs.EventProcessorClientBuilder;
+import com.azure.storage.blob.BlobContainerAsyncClient;
+import com.azure.storage.blob.BlobContainerClientBuilder;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.factory.DefaultEventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.factory.EventHubConnectionStringProvider;
+import com.microsoft.azure.spring.integration.eventhub.impl.EventHubProcessor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
+import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.spy;
+import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.spy;
+import static org.powermock.api.mockito.PowerMockito.verifyPrivate;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({EventHubClient.class, StorageConnectionStringProvider.class,
-    EventProcessorHost.class, DefaultEventHubClientFactory.class })
+@PrepareForTest({ DefaultEventHubClientFactory.class })
 public class DefaultEventHubClientFactoryTest {
 
     @Mock
-    ResourceManagerProvider resourceManagerProvider;
+    EventHubConsumerAsyncClient eventHubConsumerClient;
 
     @Mock
-    StorageAccountManager storageAccountManager;
+    EventHubProducerAsyncClient eventHubProducerClient;
 
     @Mock
-    EventHubClient eventHubClient;
+    BlobContainerAsyncClient blobContainerClient;
 
     @Mock
-    PartitionSender partitionSender;
+    EventProcessorClient eventProcessorClient;
+
 
     @Mock
-    EventProcessorHost eventProcessorHost;
-
-    @Mock
-    StorageAccount storageAccount;
+    EventHubProcessor eventHubProcessor;
 
     @Mock
     EventHubConnectionStringProvider connectionStringProvider;
-
-    @Mock
-    StorageConnectionStringProvider storageConnectionStringProvider;
 
     private EventHubClientFactory clientFactory;
     private String eventHubName = "eventHub";
     private String consumerGroup = "group";
     private String connectionString = "conStr";
-    private String partitionId = "1";
+    private String container = "container";
 
     @Before
-    public void setUp() throws Exception {
-        PowerMockito.mockStatic(EventHubClient.class);
-        when(EventHubClient.createSync(eq(connectionString), any())).thenReturn(eventHubClient);
-        when(eventHubClient.createPartitionSenderSync(eq(partitionId))).thenReturn(partitionSender);
-        when(connectionStringProvider.getConnectionString(eq(eventHubName))).thenReturn(connectionString);
+    public void setUp() {
+        EventHubClientBuilder eventHubClientBuilder = mock(EventHubClientBuilder.class, BuilderReturn.self);
+        BlobContainerClientBuilder blobContainerClientBuilder = mock(BlobContainerClientBuilder.class,
+                BuilderReturn.self);
+        EventProcessorClientBuilder eventProcessorClientBuilder = mock(EventProcessorClientBuilder.class,
+                BuilderReturn.self);
+        try {
+            whenNew(EventHubClientBuilder.class).withNoArguments().thenReturn(eventHubClientBuilder);
+            whenNew(BlobContainerClientBuilder.class).withNoArguments().thenReturn(blobContainerClientBuilder);
+            whenNew(EventProcessorClientBuilder.class).withNoArguments().thenReturn(eventProcessorClientBuilder);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        PowerMockito.mockStatic(StorageConnectionStringProvider.class);
-        when(StorageConnectionStringProvider
-                .getConnectionString(isA(StorageAccount.class), isA(AzureEnvironment.class)))
-        .thenReturn(connectionString);
-        when(StorageConnectionStringProvider
-                .getConnectionString(isA(StorageAccount.class), isA(AzureEnvironment.class)))
-        .thenReturn(connectionString);
-        when(resourceManagerProvider.getStorageAccountManager()).thenReturn(storageAccountManager);
-        when(storageAccountManager.getOrCreate(any())).thenReturn(storageAccount);
-        PowerMockito.whenNew(EventProcessorHost.class).withAnyArguments().thenReturn(eventProcessorHost);
+        when(eventHubClientBuilder.buildAsyncConsumerClient()).thenReturn(this.eventHubConsumerClient);
+        when(eventHubClientBuilder.buildAsyncProducerClient()).thenReturn(this.eventHubProducerClient);
+        when(blobContainerClientBuilder.buildAsyncClient()).thenReturn(this.blobContainerClient);
+        when(eventProcessorClientBuilder.buildEventProcessorClient()).thenReturn(this.eventProcessorClient);
+        when(connectionStringProvider.getConnectionString()).thenReturn(connectionString);
 
-        this.clientFactory = spy(new DefaultEventHubClientFactory(connectionStringProvider, connectionString));
+        this.clientFactory = spy(new DefaultEventHubClientFactory(connectionStringProvider, connectionString,
+                container));
     }
 
     @Test
-    public void testGetEventHubClient() {
-        EventHubClient client = clientFactory.getOrCreateClient(eventHubName);
+    public void testGetEventHubConsumerClient() {
+        EventHubConsumerAsyncClient client = clientFactory.getOrCreateConsumerClient(eventHubName, consumerGroup);
         assertNotNull(client);
-        EventHubClient another = clientFactory.getOrCreateClient(eventHubName);
+        EventHubConsumerAsyncClient another = clientFactory.getOrCreateConsumerClient(eventHubName, consumerGroup);
         assertEquals(client, another);
     }
 
     @Test
-    public void testGetPartitionSender() {
-        PartitionSender sender = clientFactory.getOrCreatePartitionSender(this.eventHubName, partitionId);
+    public void testGetEventHubProducerClient() {
+        EventHubProducerAsyncClient sender = clientFactory.getOrCreateProducerClient(eventHubName);
         assertNotNull(sender);
-        PartitionSender another = clientFactory.getOrCreatePartitionSender(eventHubName, partitionId);
+        EventHubProducerAsyncClient another = clientFactory.getOrCreateProducerClient(eventHubName);
         assertEquals(sender, another);
     }
 
     @Test
-    public void testGetEventProcessorHost() throws Exception {
-        clientFactory.getOrCreateEventProcessorHost(eventHubName, consumerGroup);
-        Optional<EventProcessorHost> optionalEph = clientFactory.getEventProcessorHost(eventHubName, consumerGroup);
+    public void testGetEventProcessorClient() {
+        clientFactory.createEventProcessorClient(eventHubName, consumerGroup, eventHubProcessor);
+        Optional<EventProcessorClient> optionalEph = clientFactory.getEventProcessorClient(eventHubName, consumerGroup);
 
         assertTrue(optionalEph.isPresent());
     }
 
     @Test
-    public void testGetNullEventProcessorHost() {
-        Optional<EventProcessorHost> optionalEph = clientFactory.getEventProcessorHost(eventHubName, consumerGroup);
+    public void testGetNullEventProcessorClient() {
+        Optional<EventProcessorClient> optionalEph = clientFactory.getEventProcessorClient(eventHubName, consumerGroup);
         assertFalse(optionalEph.isPresent());
     }
 
     @Test
-    public void testRemoveEventProcessorHost() {
-        EventProcessorHost host = clientFactory.getOrCreateEventProcessorHost(eventHubName, consumerGroup);
-        EventProcessorHost another = clientFactory.removeEventProcessorHost(eventHubName, consumerGroup);
+    public void testRemoveEventProcessorClient() {
+        EventProcessorClient client = clientFactory.createEventProcessorClient(eventHubName, consumerGroup,
+                eventHubProcessor);
+        EventProcessorClient another = clientFactory.removeEventProcessorClient(eventHubName, consumerGroup);
 
-        assertSame(host, another);
+        assertSame(client, another);
     }
 
     @Test
-    public void testRemoveAbsentEventProcessorHost() {
-        EventProcessorHost eventProcessorHost = clientFactory.removeEventProcessorHost(eventHubName, consumerGroup);
-        assertNull(eventProcessorHost);
+    public void testRemoveAbsentEventProcessorClient() {
+        EventProcessorClient client = clientFactory.removeEventProcessorClient(eventHubName, consumerGroup);
+        assertNull(client);
     }
 
     @Test
-    public void testGetOrCreateEventProcessorHost() throws Exception {
-        EventProcessorHost host = clientFactory.getOrCreateEventProcessorHost(eventHubName, consumerGroup);
-        assertNotNull(host);
-        clientFactory.getOrCreateEventProcessorHost(eventHubName, consumerGroup);
+    public void testGetOrCreateEventProcessorClient() throws Exception {
+        EventProcessorClient client = clientFactory.createEventProcessorClient(eventHubName, consumerGroup,
+                eventHubProcessor);
+        assertNotNull(client);
+        clientFactory.createEventProcessorClient(eventHubName, consumerGroup, eventHubProcessor);
         
-        verifyPrivate(clientFactory).invoke("createEventProcessorHost", eventHubName, consumerGroup);
+        verifyPrivate(clientFactory).invoke("createEventProcessorClientInternal", eventHubName, consumerGroup,
+                eventHubProcessor);
     }
     
     @Test
-    public void testRecreateEventProcessorHost() throws Exception {
-        EventProcessorHost host = clientFactory.getOrCreateEventProcessorHost(eventHubName, consumerGroup);
-        assertNotNull(host);
-        clientFactory.removeEventProcessorHost(eventHubName, consumerGroup);
-        clientFactory.getOrCreateEventProcessorHost(eventHubName, consumerGroup);
-        
-        verifyPrivate(clientFactory, times(2)).invoke("createEventProcessorHost", eventHubName, consumerGroup);
+    public void testRecreateEventProcessorClient() throws Exception {
+        final EventProcessorClient client = clientFactory.createEventProcessorClient(eventHubName, consumerGroup,
+                eventHubProcessor);
+        assertNotNull(client);
+        clientFactory.removeEventProcessorClient(eventHubName, consumerGroup);
+        clientFactory.createEventProcessorClient(eventHubName, consumerGroup, eventHubProcessor);
+        verifyPrivate(clientFactory, times(2))
+                .invoke("createEventProcessorClientInternal", eventHubName, consumerGroup, eventHubProcessor);
+
     }
+
+    public static class BuilderReturn {
+        public static Answer<?> self = (Answer<Object>) invocation -> {
+            if (invocation.getMethod().getReturnType().isAssignableFrom(invocation.getMock().getClass())) {
+                return invocation.getMock();
+            }
+
+            return null;
+        };
+    }
+
 }

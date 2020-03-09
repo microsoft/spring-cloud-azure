@@ -38,7 +38,6 @@ public class EventHubMultiBindersApplicationIT {
     public OutputCapture capture = new OutputCapture();
 
     @Test
-    @Ignore
     public void testSendAndReceiveMessage() throws Exception {
         String message = UUID.randomUUID().toString();
 
@@ -70,7 +69,6 @@ public class EventHubMultiBindersApplicationIT {
     }
 
     @Test
-    @Ignore
     public void testSendAndReceiveMessage_2() throws Exception {
         String message = UUID.randomUUID().toString();
 

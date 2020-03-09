@@ -6,14 +6,15 @@
 
 package com.microsoft.azure.spring.integration.eventhub.converter;
 
-import com.microsoft.azure.eventhubs.EventData;
+import com.azure.messaging.eventhubs.EventData;
 import com.microsoft.azure.spring.integration.core.converter.AzureMessageConverter;
 import com.microsoft.azure.spring.integration.test.support.AzureMessageConverterTest;
 
 public class EventHubMessageConverterTest extends AzureMessageConverterTest<EventData> {
+
     @Override
     protected EventData getInstance() {
-        return EventData.create(this.payload.getBytes());
+        return new EventData(this.payload.getBytes());
     }
 
     @Override

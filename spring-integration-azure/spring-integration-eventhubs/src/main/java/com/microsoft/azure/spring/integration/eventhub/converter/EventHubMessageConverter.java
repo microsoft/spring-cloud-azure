@@ -6,7 +6,7 @@
 
 package com.microsoft.azure.spring.integration.eventhub.converter;
 
-import com.microsoft.azure.eventhubs.EventData;
+import com.azure.messaging.eventhubs.EventData;
 import com.microsoft.azure.spring.integration.core.converter.AbstractAzureMessageConverter;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
@@ -23,23 +23,23 @@ public class EventHubMessageConverter extends AbstractAzureMessageConverter<Even
 
     @Override
     protected byte[] getPayload(EventData azureMessage) {
-        return azureMessage.getBytes();
+        return azureMessage.getBody();
     }
 
     @Override
     protected EventData fromString(String payload) {
-        return EventData.create(payload.getBytes(Charset.defaultCharset()));
+        return new EventData(payload.getBytes(Charset.defaultCharset()));
     }
 
     @Override
     protected EventData fromByte(byte[] payload) {
-        return EventData.create(payload);
+        return new EventData(payload);
     }
 
     @Override
     protected void setCustomHeaders(MessageHeaders headers, EventData azureMessage) {
         super.setCustomHeaders(headers, azureMessage);
-        headers.entrySet().forEach(e->azureMessage.getProperties().put(e.getKey(), e.getValue().toString()));
+        headers.forEach((key, value) -> azureMessage.getProperties().put(key, value.toString()));
     }
 
     @Override

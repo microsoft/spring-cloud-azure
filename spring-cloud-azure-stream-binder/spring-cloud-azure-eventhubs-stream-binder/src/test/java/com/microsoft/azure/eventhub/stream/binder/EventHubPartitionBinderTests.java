@@ -6,9 +6,11 @@
 
 package com.microsoft.azure.eventhub.stream.binder;
 
+import com.azure.messaging.eventhubs.EventData;
+import com.azure.messaging.eventhubs.models.EventContext;
+import com.azure.messaging.eventhubs.models.PartitionContext;
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubConsumerProperties;
 import com.microsoft.azure.eventhub.stream.binder.properties.EventHubProducerProperties;
-import com.microsoft.azure.eventprocessorhost.PartitionContext;
 import com.microsoft.azure.servicebus.stream.binder.test.AzurePartitionBinderTests;
 import com.microsoft.azure.spring.integration.core.api.StartPosition;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
@@ -16,13 +18,14 @@ import com.microsoft.azure.spring.integration.eventhub.support.EventHubTestOpera
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.binder.HeaderMode;
+import reactor.core.publisher.Mono;
 
-import java.util.concurrent.CompletableFuture;
-
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.when;
 
 /**
@@ -30,7 +33,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Warren Zhu
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(EventContext.class)
 public class EventHubPartitionBinderTests extends
         AzurePartitionBinderTests<EventHubTestBinder, ExtendedConsumerProperties<EventHubConsumerProperties>,
                 ExtendedProducerProperties<EventHubProducerProperties>> {
@@ -39,17 +43,21 @@ public class EventHubPartitionBinderTests extends
     EventHubClientFactory clientFactory;
 
     @Mock
-    PartitionContext context;
+    EventContext eventContext;
+
+    @Mock
+    PartitionContext partitionContext;
+
 
     private EventHubTestBinder binder;
 
     @Before
     public void setUp() {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        future.complete(null);
-        when(this.context.getPartitionId()).thenReturn("1");
-        when(this.context.checkpoint()).thenReturn(future);
-        this.binder = new EventHubTestBinder(new EventHubTestOperation(clientFactory, () -> context));
+        when(this.eventContext.updateCheckpointAsync(isA(EventData.class))).thenReturn(Mono.empty());
+        when(this.eventContext.getPartitionContext()).thenReturn(this.partitionContext);
+        when(this.partitionContext.getPartitionId()).thenReturn("1");
+
+        this.binder = new EventHubTestBinder(new EventHubTestOperation(clientFactory, () -> eventContext));
     }
 
     @Override

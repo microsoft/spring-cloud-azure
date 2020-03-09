@@ -23,9 +23,10 @@ Running this sample will be charged by Azure. You can check the usage and bill a
 # Configuration for default binder. Currently, the limitation is default binder must be provided
 # Fill the first event hub namespace connection string copied from portal
 spring.cloud.azure.eventhub.connection-string=[eventhub-namespace-1-connection-string]
-# Fill checkpoint storage account name and access key
+# Fill checkpoint storage account name, access key and container
 spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-account]
 spring.cloud.azure.eventhub.checkpoint-access-key=[checkpoint-accesskey]
+spring.cloud.azure.eventhub.checkpoint-container=[checkpoint-container]
 
 
 # Configuration for another binder
@@ -35,6 +36,7 @@ spring.cloud.stream.binders.eventhub2.defaultCandidate=false
 spring.cloud.stream.binders.eventhub2.environment.spring.cloud.azure.eventhub.connection-string=[eventhub-namespace-2-connection-string]
 spring.cloud.stream.binders.eventhub2.environment.spring.cloud.azure.eventhub.checkpoint-storage-account=[checkpoint-storage-account]
 spring.cloud.stream.binders.eventhub2.environment.spring.cloud.azure.eventhub.checkpoint-access-key=[checkpoint-accesskey]
+spring.cloud.stream.binders.eventhub2.environment.spring.cloud.azure.eventhub.checkpoint-container=[checkpoint-container]
 
 ....
 
