@@ -7,7 +7,6 @@
 package com.microsoft.azure.spring.integration.servicebus.topic;
 
 import com.microsoft.azure.management.servicebus.ServiceBusSubscription;
-import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import com.microsoft.azure.spring.integration.core.api.SendOperation;
 import com.microsoft.azure.spring.integration.core.api.SubscribeByGroupOperation;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusClientConfig;

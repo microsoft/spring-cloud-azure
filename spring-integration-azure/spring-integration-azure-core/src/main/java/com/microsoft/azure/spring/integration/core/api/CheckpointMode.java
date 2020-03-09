@@ -22,6 +22,7 @@ public enum CheckpointMode {
     /**
      * Checkpoint after each processed batch of records.
      */
+    @Deprecated
     BATCH,
 
     /**

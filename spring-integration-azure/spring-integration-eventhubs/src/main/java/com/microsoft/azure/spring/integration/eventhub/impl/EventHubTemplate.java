@@ -21,6 +21,7 @@ import java.util.function.Consumer;
  * Default implementation of {@link EventHubOperation}.
  *
  * @author Warren Zhu
+ * @author Xiaolu Dai
  */
 public class EventHubTemplate extends AbstractEventHubTemplate implements EventHubOperation {
     private static final Logger log = LoggerFactory.getLogger(EventHubTemplate.class);
@@ -37,8 +38,10 @@ public class EventHubTemplate extends AbstractEventHubTemplate implements EventH
     public boolean subscribe(String destination, String consumerGroup, Consumer<Message<?>> consumer,
             Class<?> messagePayloadType) {
         if (subscribedNameAndGroup.putIfAbsent(Tuple.of(destination, consumerGroup), true) == null) {
-            this.register(destination, consumerGroup,
-                    new EventHubProcessor(consumer, messagePayloadType, getCheckpointConfig(), getMessageConverter()));
+            this.createEventProcessorClient(destination, consumerGroup, createEventProcessor(consumer,
+                    messagePayloadType));
+
+            this.startEventProcessorClient(destination, consumerGroup);
             log.info("Consumer subscribed to destination '{}' with consumer group '{}'", destination, consumerGroup);
             return true;
         }
@@ -49,12 +52,16 @@ public class EventHubTemplate extends AbstractEventHubTemplate implements EventH
     @Override
     public boolean unsubscribe(String destination, String consumerGroup) {
         if (subscribedNameAndGroup.remove(Tuple.of(destination, consumerGroup), true)) {
-            unregister(destination, consumerGroup);
+            stopEventProcessorClient(destination, consumerGroup);
             log.info("Consumer unsubscribed from destination '{}' with consumer group '{}'", destination,
                     consumerGroup);
             return true;
         }
 
         return false;
+    }
+
+    public EventHubProcessor createEventProcessor(Consumer<Message<?>> consumer, Class<?> messagePayloadType) {
+        return new EventHubProcessor(consumer, messagePayloadType, getCheckpointConfig(), getMessageConverter());
     }
 }

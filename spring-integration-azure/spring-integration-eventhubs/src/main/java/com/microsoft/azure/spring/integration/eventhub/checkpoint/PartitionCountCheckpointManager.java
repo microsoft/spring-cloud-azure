@@ -6,8 +6,8 @@
 
 package com.microsoft.azure.spring.integration.eventhub.checkpoint;
 
-import com.microsoft.azure.eventhubs.EventData;
-import com.microsoft.azure.eventprocessorhost.PartitionContext;
+import com.azure.messaging.eventhubs.EventData;
+import com.azure.messaging.eventhubs.models.EventContext;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import org.slf4j.Logger;
@@ -33,19 +33,18 @@ class PartitionCountCheckpointManager extends CheckpointManager {
                 () -> "PartitionCountCheckpointManager should have checkpointMode partition_count");
     }
 
-    public void onMessage(PartitionContext context, EventData eventData) {
-        String partitionId = context.getPartitionId();
+    public void onMessage(EventContext context, EventData eventData) {
+        String partitionId = context.getPartitionContext().getPartitionId();
         this.countByPartition.computeIfAbsent(partitionId, (k) -> new AtomicInteger(0));
         AtomicInteger count = this.countByPartition.get(partitionId);
         if (count.incrementAndGet() >= checkpointConfig.getCheckpointCount()) {
-            context.checkpoint(eventData).whenComplete((v, t) -> {
-                if (t != null) {
-                    logCheckpointFail(context, eventData, t);
-                } else {
-                    logCheckpointSuccess(context, eventData);
-                    count.set(0);
-                }
-            });
+            context.updateCheckpointAsync(eventData)
+                    .doOnError(t -> logCheckpointFail(context, eventData, t))
+                    .doOnSuccess(v -> {
+                        logCheckpointSuccess(context, eventData);
+                        count.set(0);
+                    })
+                    .subscribe();
         }
     }
 

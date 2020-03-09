@@ -6,10 +6,10 @@
 
 package com.microsoft.azure.spring.integration.eventhub.outbound;
 
-import com.microsoft.azure.spring.integration.core.DefaultMessageHandler;
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
+import com.microsoft.azure.spring.integration.core.api.reactor.DefaultMessageHandler;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
-import com.microsoft.azure.spring.integration.test.support.MessageHandlerTest;
+import com.microsoft.azure.spring.integration.test.support.reactor.MessageHandlerTest;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -27,13 +27,12 @@ public class EventHubMessageHandlerTest extends MessageHandlerTest<EventHubOpera
     @Override
     @SuppressWarnings("unchecked")
     public void setUp() {
-        this.future.complete(null);
         this.sendOperation = mock(EventHubOperation.class);
         when(this.sendOperation.sendAsync(eq(this.destination), isA(Message.class), isA(PartitionSupplier.class)))
-                .thenReturn(future);
+                .thenReturn(mono);
         when(this.sendOperation
                 .sendAsync(eq(this.dynamicDestination), isA(Message.class), isA(PartitionSupplier.class)))
-                .thenReturn(future);
+                .thenReturn(mono);
         this.handler = new DefaultMessageHandler(this.destination, this.sendOperation);
     }
 

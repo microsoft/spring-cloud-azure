@@ -6,17 +6,17 @@
 
 package com.microsoft.azure.spring.integration.eventhub.support;
 
-import com.microsoft.azure.eventprocessorhost.PartitionContext;
+import com.azure.messaging.eventhubs.models.EventContext;
 import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubRxOperation;
 import com.microsoft.azure.spring.integration.eventhub.impl.EventHubProcessor;
 import org.springframework.messaging.Message;
+import reactor.core.publisher.Mono;
 import rx.Observable;
 import rx.subscriptions.Subscriptions;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
@@ -24,13 +24,12 @@ public class RxEventHubTestOperation extends EventHubTestOperation implements Ev
     private final ConcurrentHashMap<Tuple<String, String>, Observable<Message<?>>> subjectByNameAndGroup =
             new ConcurrentHashMap<>();
 
-    public RxEventHubTestOperation(EventHubClientFactory clientFactory,
-            Supplier<PartitionContext> partitionContextSupplier) {
-        super(clientFactory, partitionContextSupplier);
+    public RxEventHubTestOperation(EventHubClientFactory clientFactory, Supplier<EventContext> eventContextSupplier) {
+        super(clientFactory, eventContextSupplier);
     }
 
-    private static <T> Observable<T> toObservable(CompletableFuture<T> future) {
-        return Observable.create(subscriber -> future.whenComplete((result, error) -> {
+    private static <T> Observable<T> toObservable(Mono<T> mono) {
+        return Observable.create(subscriber -> mono.toFuture().whenComplete((result, error) -> {
             if (error != null) {
                 subscriber.onError(error);
             } else {
@@ -50,10 +49,10 @@ public class RxEventHubTestOperation extends EventHubTestOperation implements Ev
         Tuple<String, String> nameAndConsumerGroup = Tuple.of(destination, consumerGroup);
 
         subjectByNameAndGroup.computeIfAbsent(nameAndConsumerGroup, k -> Observable.<Message<?>>create(subscriber -> {
-            this.register(destination, consumerGroup,
-                    new EventHubProcessor(subscriber::onNext, messagePayloadType, getCheckpointConfig(),
-                            getMessageConverter()));
-            subscriber.add(Subscriptions.create(() -> unregister(destination, consumerGroup)));
+            final EventHubProcessor eventHubProcessor = createEventProcessor(subscriber::onNext, messagePayloadType);
+            this.createEventProcessorClient(destination, consumerGroup, eventHubProcessor);
+            this.startEventProcessorClient(destination, consumerGroup);
+            subscriber.add(Subscriptions.create(() -> this.stopEventProcessorClient(destination, consumerGroup)));
         }).share());
 
         return subjectByNameAndGroup.get(nameAndConsumerGroup);

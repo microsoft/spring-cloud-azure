@@ -6,19 +6,15 @@
 
 package com.microsoft.azure.spring.integration.eventhub.factory;
 
-import com.microsoft.azure.eventhubs.ConnectionStringBuilder;
 import com.microsoft.azure.management.eventhub.AuthorizationRule;
 import com.microsoft.azure.management.eventhub.EventHubAuthorizationKey;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
-import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
 import com.microsoft.azure.spring.integration.eventhub.impl.EventHubRuntimeException;
 import org.springframework.lang.NonNull;
 
-import java.util.function.Function;
-
 public class EventHubConnectionStringProvider {
+
     private String connectionString;
-    private final Function<String, String> connectionStringProvider = Memoizer.memoize(this::buildConnectionString);
 
     public EventHubConnectionStringProvider(@NonNull EventHubNamespace eventHubNamespace) {
         this(toConnectionString(eventHubNamespace));
@@ -36,11 +32,8 @@ public class EventHubConnectionStringProvider {
                                         eventHubNamespace.name()), null));
     }
 
-    private String buildConnectionString(String eventhub) {
-        return new ConnectionStringBuilder(this.connectionString).setEventHubName(eventhub).toString();
+    public String getConnectionString() {
+        return this.connectionString;
     }
 
-    public String getConnectionString(String eventHub) {
-        return connectionStringProvider.apply(eventHub);
-    }
 }

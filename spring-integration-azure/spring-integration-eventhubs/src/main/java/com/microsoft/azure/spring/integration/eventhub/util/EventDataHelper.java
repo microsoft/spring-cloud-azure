@@ -6,7 +6,7 @@
 
 package com.microsoft.azure.spring.integration.eventhub.util;
 
-import com.microsoft.azure.eventhubs.EventData;
+import com.azure.messaging.eventhubs.EventData;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -16,10 +16,10 @@ public class EventDataHelper {
     public static String toString(EventData eventData) {
         Map<String, Object> map = new LinkedHashMap<>();
 
-        map.put("body", eventData.getObject());
-        map.put("offset", eventData.getSystemProperties().getOffset());
-        map.put("sequenceNumber", eventData.getSystemProperties().getSequenceNumber());
-        map.put("enqueuedTime", eventData.getSystemProperties().getEnqueuedTime());
+        map.put("body", eventData.getBodyAsString());
+        map.put("offset", eventData.getOffset());
+        map.put("sequenceNumber", eventData.getSequenceNumber());
+        map.put("enqueuedTime", eventData.getEnqueuedTime());
 
         return map.toString();
     }

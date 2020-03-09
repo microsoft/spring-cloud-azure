@@ -6,7 +6,7 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.eventhub;
 
-import com.microsoft.azure.eventhubs.EventHubClient;
+import com.azure.messaging.eventhubs.EventHubConsumerAsyncClient;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import com.microsoft.azure.spring.integration.eventhub.factory.EventHubConnectionStringProvider;
@@ -33,7 +33,7 @@ public class AzureEventHubAutoConfigurationTest {
 
     @Test
     public void testWithoutEventHubClient() {
-        this.contextRunner.withClassLoader(new FilteredClassLoader(EventHubClient.class))
+        this.contextRunner.withClassLoader(new FilteredClassLoader(EventHubConsumerAsyncClient.class))
                           .run(context -> assertThat(context).doesNotHaveBean(AzureEventHubProperties.class));
     }
 

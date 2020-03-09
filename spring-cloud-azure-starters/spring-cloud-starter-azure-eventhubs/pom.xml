@@ -27,10 +27,7 @@
             <groupId>com.microsoft.azure</groupId>
             <artifactId>spring-cloud-azure-messaging</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>azure-eventhubs-eph</artifactId>
-        </dependency>
+
     </dependencies>
 
 </project>
