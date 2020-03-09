@@ -45,6 +45,7 @@ public abstract class ServiceBusMessageChannelBinder<T extends ServiceBusExtende
         handler.setBeanFactory(getBeanFactory());
         handler.setSync(producerProperties.getExtension().isSync());
         handler.setSendTimeout(producerProperties.getExtension().getSendTimeout());
+        handler.setSendFailureChannel(errorChannel);
         if (producerProperties.isPartitioned()) {
             handler.setPartitionKeyExpressionString(
                     "'partitionKey-' + headers['" + BinderHeaders.PARTITION_HEADER + "']");
