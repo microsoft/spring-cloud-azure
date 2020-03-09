@@ -6,24 +6,26 @@
 
 package com.microsoft.azure.spring.integration.storage.queue;
 
+import com.azure.storage.queue.models.QueueMessageItem;
 import com.microsoft.azure.spring.integration.core.converter.AzureMessageConverter;
 import com.microsoft.azure.spring.integration.storage.queue.converter.StorageQueueMessageConverter;
 import com.microsoft.azure.spring.integration.test.support.AzureMessageConverterTest;
-import com.microsoft.azure.storage.queue.CloudQueueMessage;
 
-public class StorageQueueMessageConverterTest extends AzureMessageConverterTest<CloudQueueMessage> {
+public class StorageQueueMessageConverterTest extends AzureMessageConverterTest<QueueMessageItem> {
     @Override
-    protected CloudQueueMessage getInstance() {
-        return new CloudQueueMessage(this.payload.getBytes());
+    protected QueueMessageItem getInstance() {
+        final QueueMessageItem queueMessageItem = new QueueMessageItem();
+        queueMessageItem.setMessageText(this.payload);
+        return queueMessageItem;
     }
 
     @Override
-    protected AzureMessageConverter<CloudQueueMessage> getConverter() {
+    protected AzureMessageConverter<QueueMessageItem> getConverter() {
         return new StorageQueueMessageConverter();
     }
 
     @Override
-    protected Class<CloudQueueMessage> getTargetClass() {
-        return CloudQueueMessage.class;
+    protected Class<QueueMessageItem> getTargetClass() {
+        return QueueMessageItem.class;
     }
 }

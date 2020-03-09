@@ -6,9 +6,9 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 
-import com.microsoft.azure.storage.CloudStorageAccount;
+import com.azure.storage.blob.BlobServiceClientBuilder;
+import com.azure.storage.file.share.ShareServiceClientBuilder;
 import org.junit.Test;
-
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -30,7 +30,7 @@ public class AzureStorageAutoConfigurationTest {
 
     @Test
     public void testWithoutStorageClient() {
-        this.contextRunner.withClassLoader(new FilteredClassLoader(CloudStorageAccount.class))
+        this.contextRunner.withClassLoader(new FilteredClassLoader(BlobServiceClientBuilder.class))
                           .run(context -> assertThat(context).doesNotHaveBean(AzureStorageProperties.class));
     }
 
@@ -73,8 +73,13 @@ public class AzureStorageAutoConfigurationTest {
     static class TestConfiguration {
 
         @Bean
-        CloudStorageAccount cloudStorageAccount() {
-            return mock(CloudStorageAccount.class);
+        BlobServiceClientBuilder blobServiceClientBuilder() {
+            return mock(BlobServiceClientBuilder.class);
+        }
+
+        @Bean
+        ShareServiceClientBuilder shareServiceClientBuilder() {
+            return mock(ShareServiceClientBuilder.class);
         }
 
     }

@@ -57,6 +57,9 @@
         <azure.sdk.version>1.23.0</azure.sdk.version>
         <azure.eventhubs.version>5.0.0-beta.6</azure.eventhubs.version>
         <azure.eventhubs.checkpoint.store.version>1.0.0-beta.4</azure.eventhubs.checkpoint.store.version>
+        <azure.storage.blob.version>12.4.0</azure.storage.blob.version>
+        <azure.storage.file.version>12.3.0</azure.storage.file.version>
+        <azure.storage.queue.version>12.4.0</azure.storage.queue.version>
         <azure.keyvault.version>1.0.0</azure.keyvault.version>
         <azure.servicebus.version>3.1.1</azure.servicebus.version>
         <javax.jms-api.version>2.0.1</javax.jms-api.version>
@@ -228,6 +231,27 @@
                 <artifactId>azure-messaging-eventhubs-checkpointstore-blob</artifactId>
                 <version>${azure.eventhubs.checkpoint.store.version}</version>
             </dependency>
+
+            <!-- Storage -->
+            <dependency>
+                <groupId>com.azure</groupId>
+                <artifactId>azure-storage-blob</artifactId>
+                <version>${azure.storage.blob.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.azure</groupId>
+                <artifactId>azure-storage-file-share</artifactId>
+                <version>${azure.storage.file.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.azure</groupId>
+                <artifactId>azure-storage-queue</artifactId>
+                <version>${azure.storage.queue.version}</version>
+            </dependency>
+
+
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>azure-servicebus</artifactId>

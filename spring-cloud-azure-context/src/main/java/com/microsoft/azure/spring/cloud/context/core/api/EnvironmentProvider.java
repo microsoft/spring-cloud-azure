@@ -9,7 +9,7 @@ package com.microsoft.azure.spring.cloud.context.core.api;
 import com.microsoft.azure.AzureEnvironment;
 
 /**
- * Interface to provide the {@link Environment}
+ * Interface to provide the {@link AzureEnvironment}
  *
  * @author Warren Zhu
  */

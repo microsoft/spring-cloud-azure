@@ -36,6 +36,12 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-storage-queue</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- Cloud SQL -->
         <dependency>
             <groupId>org.springframework</groupId>

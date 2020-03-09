@@ -6,50 +6,42 @@
 
 package com.microsoft.azure.spring.integration.storage.queue.factory;
 
-import com.microsoft.azure.spring.cloud.context.core.api.ResourceManager;
+import com.azure.storage.queue.QueueAsyncClient;
+import com.azure.storage.queue.QueueClientBuilder;
+import com.azure.storage.queue.models.QueueStorageException;
 import com.microsoft.azure.spring.cloud.context.core.util.Memoizer;
-import com.microsoft.azure.spring.cloud.context.core.util.Tuple;
-import com.microsoft.azure.storage.CloudStorageAccount;
-import com.microsoft.azure.storage.StorageException;
-import com.microsoft.azure.storage.queue.CloudQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 
-import java.net.URISyntaxException;
 import java.util.function.Function;
 
 public class DefaultStorageQueueClientFactory implements StorageQueueClientFactory {
     private static final Logger log = LoggerFactory.getLogger(DefaultStorageQueueClientFactory.class);
-    private final CloudStorageAccount cloudStorageAccount;
-    private ResourceManager<CloudQueue, Tuple<CloudStorageAccount, String>> storageQueueManager;
-    private final Function<String, CloudQueue> cloudQueueCreator = Memoizer.memoize(this::createCloudQueue);
+    private final Function<String, QueueAsyncClient> queueClientCreator = Memoizer.memoize(this::createQueueClient);
+    private String connectionString;
 
-    public DefaultStorageQueueClientFactory(@NonNull CloudStorageAccount cloudStorageAccount) {
-        this.cloudStorageAccount = cloudStorageAccount;
+    public DefaultStorageQueueClientFactory(@NonNull String connectionString) {
+        this.connectionString = connectionString;
     }
+
 
     @Override
-    public CloudQueue getOrCreateQueueClient(String queueName) {
-        return this.cloudQueueCreator.apply(queueName);
+    public QueueAsyncClient getOrCreateQueueClient(String queueName) {
+        return this.queueClientCreator.apply(queueName);
     }
 
-    private CloudQueue createCloudQueue(String queueName) {
-        if (storageQueueManager != null) {
-            storageQueueManager.getOrCreate(Tuple.of(this.cloudStorageAccount, queueName));
-        }
+    private QueueAsyncClient createQueueClient(String queueName) {
+        final QueueAsyncClient queueClient = new QueueClientBuilder()
+                .connectionString(this.connectionString)
+                .queueName(queueName)
+                .buildAsyncClient();
 
-        try {
-            return cloudStorageAccount.createCloudQueueClient().getQueueReference(queueName);
-        } catch (URISyntaxException | StorageException e) {
-            String message = String.format("Failed to create cloud queue '%s'", queueName);
-            log.error(message, e);
-            throw new RuntimeException(message, e);
-        }
+        queueClient.create()
+                .onErrorContinue(QueueStorageException.class, (e, r) -> log.error(e.getMessage()))
+                .subscribe();
+
+        return queueClient;
     }
 
-    public void setStorageQueueManager(
-            ResourceManager<CloudQueue, Tuple<CloudStorageAccount, String>> storageQueueManager) {
-        this.storageQueueManager = storageQueueManager;
-    }
 }

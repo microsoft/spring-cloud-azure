@@ -39,6 +39,8 @@ public class StorageQueueOperationApplicationIT {
         mvc.perform(post("/messages?message=" + message)).andExpect(status().isOk())
            .andExpect(content().string(message));
 
+        Thread.sleep(1_000L);
+
         mvc.perform(get("/messages")
                 .contentType(MediaType.APPLICATION_JSON))
            .andExpect(status().isOk())
