@@ -6,7 +6,7 @@
 
 package com.example;
 
-import com.microsoft.azure.spring.integration.core.DefaultMessageHandler;
+import com.microsoft.azure.spring.integration.core.api.reactor.DefaultMessageHandler;
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueOperation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

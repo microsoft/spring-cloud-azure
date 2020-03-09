@@ -4,25 +4,26 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.integration.core.api;
+package com.microsoft.azure.spring.integration.core.api.reactor;
 
+import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import org.springframework.messaging.Message;
-
-import java.util.concurrent.CompletableFuture;
+import reactor.core.publisher.Mono;
 
 /**
  * Operations for receiving {@link Message<?>} from a destination.
  * Received message contain payload of type specified by {@link #setMessagePayloadType(Class)}}
  *
  * @author Warren Zhu
+ * @author Xiaolu Dai
  */
 public interface ReceiveOperation {
 
     /**
      * Receive a message from destination async.
-     * @return {@link CompletableFuture} of the next available {@link Message} or {@code null} if empty
+     * @return {@link Mono} of the next available {@link Message} or {@code null} if empty
      */
-    CompletableFuture<Message<?>> receiveAsync(String destination);
+    Mono<Message<?>> receiveAsync(String destination);
 
     /**
      * Set message payload type. Default is {@link byte[]}

@@ -6,6 +6,8 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 
+import com.azure.storage.blob.BlobServiceClientBuilder;
+import com.azure.storage.file.share.ShareServiceClientBuilder;
 import com.microsoft.azure.management.storage.StorageAccount;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
@@ -13,7 +15,6 @@ import com.microsoft.azure.spring.cloud.context.core.api.EnvironmentProvider;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
 import com.microsoft.azure.spring.cloud.storage.AzureStorageProtocolResolver;
-import com.microsoft.azure.storage.CloudStorageAccount;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import javax.annotation.PostConstruct;
-import java.net.URISyntaxException;
-import java.security.InvalidKeyException;
 
 /**
  * An auto-configuration for Azure Storage Account
@@ -37,7 +36,7 @@ import java.security.InvalidKeyException;
  */
 @Configuration
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
-@ConditionalOnClass(CloudStorageAccount.class)
+@ConditionalOnClass({ BlobServiceClientBuilder.class, ShareServiceClientBuilder.class })
 @ConditionalOnProperty(name = "spring.cloud.azure.storage.account")
 @EnableConfigurationProperties(AzureStorageProperties.class)
 public class AzureStorageAutoConfiguration {
@@ -55,8 +54,37 @@ public class AzureStorageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public CloudStorageAccount storageAccount(AzureStorageProperties storageProperties,
+    public BlobServiceClientBuilder blobServiceClientBuilder(AzureStorageProperties storageProperties,
             EnvironmentProvider environmentProvider) {
+        String connectionString;
+
+        if (resourceManagerProvider != null) {
+            String accountName = storageProperties.getAccount();
+
+            StorageAccount storageAccount = resourceManagerProvider.getStorageAccountManager().getOrCreate(accountName);
+            connectionString = StorageConnectionStringProvider.getConnectionString(storageAccount,
+                    environmentProvider.getEnvironment(), storageProperties.isSecureTransfer());
+        } else {
+            connectionString = StorageConnectionStringProvider
+                    .getConnectionString(storageProperties.getAccount(), storageProperties.getAccessKey(),
+                            environmentProvider.getEnvironment());
+            TelemetryCollector.getInstance().addProperty(STORAGE, ACCOUNT_NAME, storageProperties.getAccount());
+        }
+
+
+        return new BlobServiceClientBuilder().connectionString(connectionString);
+//        try {
+//            return CloudStorageAccount.parse(connectionString);
+//        } catch (URISyntaxException | InvalidKeyException e) {
+//            log.error("Failed to parse storage connection string" + connectionString, e);
+//            throw new RuntimeException("Failed to parse storage connection string" + connectionString, e);
+//        }
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ShareServiceClientBuilder shareServiceClientBuilder(AzureStorageProperties storageProperties,
+                                                    EnvironmentProvider environmentProvider) {
         String connectionString;
 
         if (resourceManagerProvider != null) {
@@ -74,12 +102,8 @@ public class AzureStorageAutoConfiguration {
             TelemetryCollector.getInstance().addProperty(STORAGE, ACCOUNT_NAME, storageProperties.getAccount());
         }
 
-        try {
-            return CloudStorageAccount.parse(connectionString);
-        } catch (URISyntaxException | InvalidKeyException e) {
-            log.error("Failed to parse storage connection string" + connectionString, e);
-            throw new RuntimeException("Failed to parse storage connection string" + connectionString, e);
-        }
+
+        return new ShareServiceClientBuilder().connectionString(connectionString);
     }
 
     @Configuration

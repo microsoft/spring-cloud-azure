@@ -6,8 +6,6 @@
 
 package com.microsoft.azure.spring.cloud.storage;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.WritableResource;
 import org.springframework.lang.NonNull;
@@ -33,7 +31,7 @@ abstract class AzureStorageResource extends AbstractResource implements Writable
         return location.substring(getProtocolPrefix().length(), containerEndIndex);
     }
 
-    String getFileName(String location) {
+    String getFilename(String location) {
         assertIsAzureStorageLocation(location);
         int containerEndIndex = assertContainerValid(location);
 
@@ -41,7 +39,7 @@ abstract class AzureStorageResource extends AbstractResource implements Writable
             return location.substring(++containerEndIndex, location.length() - 1);
         }
 
-        return location.substring(++containerEndIndex, location.length());
+        return location.substring(++containerEndIndex);
     }
 
     void assertIsAzureStorageLocation(String location) {
