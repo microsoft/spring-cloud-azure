@@ -30,7 +30,7 @@ class RecordCheckpointManager extends CheckpointManager {
     }
 
     public void onMessage(EventContext context, EventData eventData) {
-        context.updateCheckpointAsync(eventData)
+        context.updateCheckpointAsync()
                 .doOnError(t -> logCheckpointFail(context, eventData, t))
                 .doOnSuccess(v -> logCheckpointSuccess(context, eventData))
                 .subscribe();
