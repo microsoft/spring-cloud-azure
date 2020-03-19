@@ -74,4 +74,8 @@ public abstract class AzureMessageConverterTest<T> {
     protected abstract AzureMessageConverter<T> getConverter();
 
     protected abstract Class<T> getTargetClass();
+
+    public static void main(String[] args) {
+
+    }
 }

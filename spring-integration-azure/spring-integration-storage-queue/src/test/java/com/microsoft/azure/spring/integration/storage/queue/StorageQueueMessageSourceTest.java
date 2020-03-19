@@ -15,8 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
-
-import java.util.concurrent.CompletableFuture;
+import reactor.core.publisher.Mono;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -33,7 +32,6 @@ public class StorageQueueMessageSourceTest {
 
     private String destination = "test-destination";
     private StorageQueueMessageSource messageSource;
-    private CompletableFuture<Message<?>> future = new CompletableFuture<>();
 
     @Before
     public void setup() {
@@ -42,22 +40,20 @@ public class StorageQueueMessageSourceTest {
 
     @Test
     public void testDoReceiveWhenHaveNoMessage() {
-        future.complete(null);
-        when(this.mockOperation.receiveAsync(eq(destination))).thenReturn(future);
+        when(this.mockOperation.receiveAsync(eq(destination))).thenReturn(Mono.empty());
         assertNull(messageSource.doReceive());
     }
 
     @Test(expected = StorageQueueRuntimeException.class)
     public void testReceiveFailure() {
-        future.completeExceptionally(new StorageQueueRuntimeException("Failed to receive message."));
-        when(this.mockOperation.receiveAsync(eq(destination))).thenReturn(future);
+        when(this.mockOperation.receiveAsync(eq(destination))).thenReturn(Mono.error(
+                new StorageQueueRuntimeException("Failed to receive message.")));
         messageSource.doReceive();
     }
 
     @Test
     public void testDoReceiveSuccess() {
-        future.complete(message);
-        when(this.mockOperation.receiveAsync(eq(destination))).thenReturn(future);
+        when(this.mockOperation.receiveAsync(eq(destination))).thenReturn(Mono.just(message));
         Message<?> receivedMessage = (Message<?>) messageSource.doReceive();
         assertEquals(message, receivedMessage);
     }

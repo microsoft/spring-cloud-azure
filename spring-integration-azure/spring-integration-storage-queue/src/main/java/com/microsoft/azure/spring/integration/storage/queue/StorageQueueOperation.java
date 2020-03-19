@@ -6,8 +6,8 @@
 
 package com.microsoft.azure.spring.integration.storage.queue;
 
-import com.microsoft.azure.spring.integration.core.api.ReceiveOperation;
-import com.microsoft.azure.spring.integration.core.api.SendOperation;
+import com.microsoft.azure.spring.integration.core.api.reactor.ReceiveOperation;
+import com.microsoft.azure.spring.integration.core.api.reactor.SendOperation;
 
 /**
  * Azure storage queue operation to support send and receive

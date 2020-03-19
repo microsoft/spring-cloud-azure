@@ -6,15 +6,17 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 
+import com.azure.storage.queue.QueueServiceClient;
+import com.microsoft.azure.management.storage.StorageAccount;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
+import com.microsoft.azure.spring.cloud.context.core.api.EnvironmentProvider;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
+import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueOperation;
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueTemplate;
 import com.microsoft.azure.spring.integration.storage.queue.factory.DefaultStorageQueueClientFactory;
 import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueClientFactory;
-import com.microsoft.azure.storage.CloudStorageAccount;
-import com.microsoft.azure.storage.queue.CloudQueueClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -28,12 +30,14 @@ import javax.annotation.PostConstruct;
 
 @Configuration
 @AutoConfigureAfter(AzureContextAutoConfiguration.class)
-@ConditionalOnClass({CloudQueueClient.class, StorageQueueClientFactory.class})
+@ConditionalOnClass({QueueServiceClient.class, StorageQueueClientFactory.class})
 @ConditionalOnProperty(name = "spring.cloud.azure.storage.account")
 @EnableConfigurationProperties(AzureStorageProperties.class)
 public class AzureStorageQueueAutoConfiguration {
 
     private static final String STORAGE_QUEUE = "StorageQueue";
+    private static final String STORAGE = "Storage";
+    private static final String ACCOUNT_NAME = "AccountName";
 
     @Autowired(required = false)
     private ResourceManagerProvider resourceManagerProvider;
@@ -45,14 +49,26 @@ public class AzureStorageQueueAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    StorageQueueClientFactory storageQueueClientFactory(CloudStorageAccount cloudStorageAccount) {
-        DefaultStorageQueueClientFactory clientFactory = new DefaultStorageQueueClientFactory(cloudStorageAccount);
+    StorageQueueClientFactory storageQueueClientFactory(AzureStorageProperties storageProperties,
+                                                        EnvironmentProvider environmentProvider) {
+
+        String connectionString;
 
         if (resourceManagerProvider != null) {
-            clientFactory.setStorageQueueManager(resourceManagerProvider.getStorageQueueManager());
+            String accountName = storageProperties.getAccount();
+
+            StorageAccount storageAccount = resourceManagerProvider.getStorageAccountManager().getOrCreate(accountName);
+
+            connectionString = StorageConnectionStringProvider
+                    .getConnectionString(storageAccount, environmentProvider.getEnvironment(),
+                            storageProperties.isSecureTransfer());
+        } else {
+            connectionString = StorageConnectionStringProvider
+                    .getConnectionString(storageProperties.getAccount(), storageProperties.getAccessKey(),
+                            environmentProvider.getEnvironment());
         }
 
-        return clientFactory;
+        return new DefaultStorageQueueClientFactory(connectionString);
     }
 
     @Bean

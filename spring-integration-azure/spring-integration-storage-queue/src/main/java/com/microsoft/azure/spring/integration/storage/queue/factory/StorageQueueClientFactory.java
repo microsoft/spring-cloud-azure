@@ -6,12 +6,12 @@
 
 package com.microsoft.azure.spring.integration.storage.queue.factory;
 
-import com.microsoft.azure.storage.queue.CloudQueue;
+import com.azure.storage.queue.QueueAsyncClient;
 
 /**
  * @author Miao Cao
  */
 public interface StorageQueueClientFactory {
 
-    CloudQueue getOrCreateQueueClient(String queueName);
+    QueueAsyncClient getOrCreateQueueClient(String queueName);
 }

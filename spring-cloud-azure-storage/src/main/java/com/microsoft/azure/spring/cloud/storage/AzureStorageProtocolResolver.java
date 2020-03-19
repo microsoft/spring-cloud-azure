@@ -6,7 +6,8 @@
 
 package com.microsoft.azure.spring.cloud.storage;
 
-import com.microsoft.azure.storage.CloudStorageAccount;
+import com.azure.storage.blob.BlobServiceClientBuilder;
+import com.azure.storage.file.share.ShareServiceClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -26,7 +27,8 @@ import org.springframework.core.io.ResourceLoader;
 public class AzureStorageProtocolResolver implements ProtocolResolver, BeanFactoryPostProcessor, ResourceLoaderAware {
     private static final Logger log = LoggerFactory.getLogger(AzureStorageProtocolResolver.class);
     private ConfigurableListableBeanFactory beanFactory;
-    private CloudStorageAccount cloudStorageAccount;
+    private BlobServiceClientBuilder blobServiceClientBuilder;
+    private ShareServiceClientBuilder shareServiceClientBuilder;
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
@@ -45,19 +47,27 @@ public class AzureStorageProtocolResolver implements ProtocolResolver, BeanFacto
     @Override
     public Resource resolve(String location, ResourceLoader resourceLoader) {
         if (AzureStorageUtils.isAzureStorageResource(location, StorageType.BLOB)) {
-            return new BlobStorageResource(getCloudStorageAccount().createCloudBlobClient(), location, true);
+            return new BlobStorageResource(getBlobServiceClientBuilder().buildClient(), location, true);
         } else if (AzureStorageUtils.isAzureStorageResource(location, StorageType.FILE)) {
-            return new FileStorageResource(getCloudStorageAccount().createCloudFileClient(), location, true);
+            return new FileStorageResource(getShareServiceClientBuilder().buildClient(), location, true);
         }
 
         return null;
     }
 
-    private CloudStorageAccount getCloudStorageAccount() {
-        if (cloudStorageAccount == null) {
-            this.cloudStorageAccount = this.beanFactory.getBean(CloudStorageAccount.class);
+    private BlobServiceClientBuilder getBlobServiceClientBuilder() {
+        if (blobServiceClientBuilder == null) {
+            this.blobServiceClientBuilder = this.beanFactory.getBean(BlobServiceClientBuilder.class);
         }
 
-        return cloudStorageAccount;
+        return blobServiceClientBuilder;
+    }
+
+    private ShareServiceClientBuilder getShareServiceClientBuilder() {
+        if (shareServiceClientBuilder == null) {
+            this.shareServiceClientBuilder = this.beanFactory.getBean(ShareServiceClientBuilder.class);
+        }
+
+        return shareServiceClientBuilder;
     }
 }

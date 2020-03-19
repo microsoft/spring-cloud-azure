@@ -8,7 +8,7 @@ package com.example;
 
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
-import com.microsoft.azure.spring.integration.core.api.Checkpointer;
+import com.microsoft.azure.spring.integration.core.api.reactor.Checkpointer;
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.concurrent.ExecutionException;
 
 /**
  * @author Miao Cao
@@ -35,28 +33,26 @@ public class WebController {
 
     @PostMapping("/messages")
     public String send(@RequestParam("message") String message) {
-        this.storageQueueOperation.sendAsync(STORAGE_QUEUE_NAME, MessageBuilder.withPayload(message).build());
+        this.storageQueueOperation.sendAsync(STORAGE_QUEUE_NAME, MessageBuilder.withPayload(message).build())
+                .subscribe();
         return message;
     }
 
     @GetMapping("/messages")
-    public String receive() throws ExecutionException, InterruptedException {
+    public String receive() {
         this.storageQueueOperation.setMessagePayloadType(String.class);
         this.storageQueueOperation.setCheckpointMode(CheckpointMode.MANUAL);
-        Message<?> message = this.storageQueueOperation.receiveAsync(STORAGE_QUEUE_NAME).get();
-        if(message == null) {
+        Message<?> message = this.storageQueueOperation.receiveAsync(STORAGE_QUEUE_NAME).block();
+        if (message == null) {
             log.info("You have no new messages.");
             return null;
         }
         log.info("Message arrived! Payload: " + message.getPayload());
 
         Checkpointer checkpointer = message.getHeaders().get(AzureHeaders.CHECKPOINTER, Checkpointer.class);
-        checkpointer.success().handle((r, ex) -> {
-            if (ex == null) {
-                log.info("Message '{}' successfully checkpointed", message.getPayload());
-            }
-            return null;
-        });
+        checkpointer.success()
+                .doOnError(e -> log.info("Message '{}' successfully checkpointed", message.getPayload()))
+                .subscribe();
 
         return (String) message.getPayload();
     }
