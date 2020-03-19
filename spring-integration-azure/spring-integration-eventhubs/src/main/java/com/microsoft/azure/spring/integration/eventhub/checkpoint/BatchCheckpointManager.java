@@ -42,7 +42,7 @@ class BatchCheckpointManager extends CheckpointManager {
     public void completeBatch(EventContext context) {
         EventData eventData = this.lastEventByPartition.get(context.getPartitionContext().getPartitionId());
 
-        context.updateCheckpointAsync(eventData)
+        context.updateCheckpointAsync()
                 .doOnError(t -> logCheckpointFail(context, eventData, t))
                 .doOnSuccess(v -> logCheckpointSuccess(context, eventData))
                 .subscribe();

@@ -53,7 +53,6 @@ public class EventHubProcessor {
     }
 
     public void onInitialize(InitializationContext context) {
-        context.setInitialPosition(eventPosition);
         LOGGER.info("Started receiving on partition: {}", context.getPartitionContext().getPartitionId());
     }
 
@@ -70,7 +69,7 @@ public class EventHubProcessor {
 
         final EventData event = context.getEventData();
 
-        Checkpointer checkpointer = new AzureCheckpointer(() -> context.updateCheckpointAsync(context.getEventData()));
+        Checkpointer checkpointer = new AzureCheckpointer(context::updateCheckpointAsync);
         if (this.checkpointConfig.getCheckpointMode() == CheckpointMode.MANUAL) {
             headers.put(AzureHeaders.CHECKPOINTER, checkpointer);
         }

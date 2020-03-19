@@ -53,7 +53,7 @@ public class EventHubPartitionBinderTests extends
 
     @Before
     public void setUp() {
-        when(this.eventContext.updateCheckpointAsync(isA(EventData.class))).thenReturn(Mono.empty());
+        when(this.eventContext.updateCheckpointAsync()).thenReturn(Mono.empty());
         when(this.eventContext.getPartitionContext()).thenReturn(this.partitionContext);
         when(this.partitionContext.getPartitionId()).thenReturn("1");
 

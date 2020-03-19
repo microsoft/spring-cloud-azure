@@ -38,7 +38,7 @@ class PartitionCountCheckpointManager extends CheckpointManager {
         this.countByPartition.computeIfAbsent(partitionId, (k) -> new AtomicInteger(0));
         AtomicInteger count = this.countByPartition.get(partitionId);
         if (count.incrementAndGet() >= checkpointConfig.getCheckpointCount()) {
-            context.updateCheckpointAsync(eventData)
+            context.updateCheckpointAsync()
                     .doOnError(t -> logCheckpointFail(context, eventData, t))
                     .doOnSuccess(v -> {
                         logCheckpointSuccess(context, eventData);
