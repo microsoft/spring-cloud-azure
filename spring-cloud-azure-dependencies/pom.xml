@@ -54,8 +54,8 @@
         <hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
         <google.guava.version>20.0</google.guava.version>
         <azure.sdk.version>1.23.0</azure.sdk.version>
-        <azure.eventhubs.version>5.0.0-beta.6</azure.eventhubs.version>
-        <azure.eventhubs.checkpoint.store.version>1.0.0-beta.4</azure.eventhubs.checkpoint.store.version>
+        <azure.eventhubs.version>5.0.2</azure.eventhubs.version>
+        <azure.eventhubs.checkpoint.store.version>1.0.2</azure.eventhubs.checkpoint.store.version>
         <azure.storage.blob.version>12.4.0</azure.storage.blob.version>
         <azure.storage.file.version>12.3.0</azure.storage.file.version>
         <azure.storage.queue.version>12.4.0</azure.storage.queue.version>

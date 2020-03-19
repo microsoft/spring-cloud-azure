@@ -100,6 +100,7 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
             blobClient.create().block(Duration.ofMinutes(5L));
         }
 
+        // TODO (xiada): set up event processing position for each partition
         return new EventProcessorClientBuilder()
                 .connectionString(connectionStringProvider.getConnectionString(), eventHubName)
                 .consumerGroup(consumerGroup)

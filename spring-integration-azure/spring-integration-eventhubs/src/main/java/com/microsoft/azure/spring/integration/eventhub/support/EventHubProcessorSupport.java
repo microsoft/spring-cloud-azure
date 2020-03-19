@@ -42,7 +42,7 @@ public class EventHubProcessorSupport extends EventHubProcessor {
         Map<String, Object> headers = new HashMap<>();
         headers.put(AzureHeaders.RAW_PARTITION_ID, partition.getPartitionId());
 
-        Checkpointer checkpointer = new AzureCheckpointer(() -> context.updateCheckpointAsync(eventData));
+        Checkpointer checkpointer = new AzureCheckpointer(context::updateCheckpointAsync);
         if (checkpointConfig.getCheckpointMode() == CheckpointMode.MANUAL) {
             headers.put(AzureHeaders.CHECKPOINTER, checkpointer);
         }

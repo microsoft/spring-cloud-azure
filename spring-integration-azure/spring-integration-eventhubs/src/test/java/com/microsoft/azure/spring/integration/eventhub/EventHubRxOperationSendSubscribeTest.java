@@ -6,7 +6,6 @@
 
 package com.microsoft.azure.spring.integration.eventhub;
 
-import com.azure.messaging.eventhubs.EventData;
 import com.azure.messaging.eventhubs.models.EventContext;
 import com.azure.messaging.eventhubs.models.PartitionContext;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
@@ -25,7 +24,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 
-import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -42,7 +40,7 @@ public class EventHubRxOperationSendSubscribeTest extends RxSendSubscribeByGroup
     @Before
     @Override
     public void setUp() {
-        when(this.eventContext.updateCheckpointAsync(isA(EventData.class))).thenReturn(Mono.empty());
+        when(this.eventContext.updateCheckpointAsync()).thenReturn(Mono.empty());
         when(this.eventContext.getPartitionContext()).thenReturn(this.partitionContext);
         when(this.partitionContext.getPartitionId()).thenReturn(this.partitionId);
 
@@ -51,7 +49,7 @@ public class EventHubRxOperationSendSubscribeTest extends RxSendSubscribeByGroup
 
     @Override
     protected void verifyCheckpointSuccessCalled(int times) {
-        verify(this.eventContext, times(times)).updateCheckpointAsync(isA(EventData.class));
+        verify(this.eventContext, times(times)).updateCheckpointAsync();
     }
 
     @Override

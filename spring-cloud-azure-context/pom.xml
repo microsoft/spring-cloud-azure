@@ -36,12 +36,6 @@
         <dependency>
             <groupId>com.microsoft.azure</groupId>
             <artifactId>azure</artifactId> <!-- We may not need include all azure management sdks in a batch -->
-<!--            <exclusions>-->
-<!--                <exclusion>-->
-<!--                    <groupId>com.microsoft.azure</groupId>-->
-<!--                    <artifactId>azure-storage</artifactId>-->
-<!--                </exclusion>-->
-<!--            </exclusions>-->
         </dependency>
 
     </dependencies>
