@@ -7,13 +7,15 @@
 package com.microsoft.azure.spring.integration.servicebus.queue;
 
 import com.google.common.collect.Sets;
-import com.microsoft.azure.servicebus.ExceptionPhase;
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.IMessageSession;
 import com.microsoft.azure.servicebus.IQueueClient;
 import com.microsoft.azure.servicebus.ISessionHandler;
 import com.microsoft.azure.servicebus.primitives.ServiceBusException;
+import com.microsoft.azure.spring.integration.core.AzureCheckpointer;
+import com.microsoft.azure.spring.integration.core.AzureHeaders;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
+import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusClientConfig;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusMessageHandler;
 import com.microsoft.azure.spring.integration.servicebus.ServiceBusRuntimeException;
@@ -142,19 +144,22 @@ public class ServiceBusQueueTemplate extends ServiceBusTemplate<ServiceBusQueueC
         // ISessionHandler
         @Override
         public CompletableFuture<Void> onMessageAsync(IMessageSession session, IMessage serviceBusMessage) {
-            
             Map<String, Object> headers = new HashMap<>();
-            
-            Message<U> message = messageConverter.toMessage(serviceBusMessage, new MessageHeaders(headers),
-                    payloadType);
-            consumer.accept(message);
-            
-            try {
-                session.complete(serviceBusMessage.getLockToken());
-            } catch (InterruptedException | ServiceBusException e) {
-                this.notifyException(e, ExceptionPhase.COMPLETE);
+
+            Checkpointer checkpointer = new AzureCheckpointer(
+                    () -> session.completeAsync(serviceBusMessage.getLockToken()),
+                    () -> session.abandonAsync(serviceBusMessage.getLockToken()));
+            if (checkpointConfig.getCheckpointMode() == CheckpointMode.MANUAL) {
+                headers.put(AzureHeaders.CHECKPOINTER, checkpointer);
             }
 
+            Message<U> message = messageConverter.toMessage(serviceBusMessage,
+                    new MessageHeaders(headers), payloadType);
+            consumer.accept(message);
+
+            if (checkpointConfig.getCheckpointMode() == CheckpointMode.RECORD) {
+                return checkpointer.success().whenComplete((v, t) -> super.checkpointHandler(message, t));
+            }
             return CompletableFuture.completedFuture(null);
         }
 
