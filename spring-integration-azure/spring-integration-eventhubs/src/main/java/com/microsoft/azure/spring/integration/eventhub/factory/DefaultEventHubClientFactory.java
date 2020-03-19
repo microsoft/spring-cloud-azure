@@ -24,6 +24,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -82,10 +83,22 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
 
     private EventProcessorClient createEventProcessorClientInternal(String eventHubName, String consumerGroup,
                                                             EventHubProcessor eventHubProcessor) {
+
+        // We set eventHubName as the container name when we use track1 library, and the EventHubProcessor will create
+        // the container automatically if not exists
+        String containerName = checkpointStorageContainer == null ? eventHubName : checkpointStorageContainer;
+
         BlobContainerAsyncClient blobClient = new BlobContainerClientBuilder()
                 .connectionString(checkpointStorageConnectionString)
-                .containerName(checkpointStorageContainer)
+                .containerName(containerName)
                 .buildAsyncClient();
+
+        final Boolean isContainerExist = blobClient.exists().block();
+        if (isContainerExist == null || !isContainerExist) {
+            LOGGER.warn("Will create storage blob {}, the auto creation might be deprecated in later versions.",
+                    containerName);
+            blobClient.create().block(Duration.ofMinutes(5L));
+        }
 
         return new EventProcessorClientBuilder()
                 .connectionString(connectionStringProvider.getConnectionString(), eventHubName)

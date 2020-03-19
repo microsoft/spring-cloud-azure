@@ -24,6 +24,7 @@ import org.mockito.Mock;
 import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
@@ -87,6 +88,7 @@ public class DefaultEventHubClientFactoryTest {
         when(eventHubClientBuilder.buildAsyncConsumerClient()).thenReturn(this.eventHubConsumerClient);
         when(eventHubClientBuilder.buildAsyncProducerClient()).thenReturn(this.eventHubProducerClient);
         when(blobContainerClientBuilder.buildAsyncClient()).thenReturn(this.blobContainerClient);
+        when(this.blobContainerClient.exists()).thenReturn(Mono.just(true));
         when(eventProcessorClientBuilder.buildEventProcessorClient()).thenReturn(this.eventProcessorClient);
         when(connectionStringProvider.getConnectionString()).thenReturn(connectionString);
 
