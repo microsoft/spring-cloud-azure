@@ -46,7 +46,7 @@ public class EventHubOperationSendSubscribeTest extends SendSubscribeByGroupOper
     @Before
     @Override
     public void setUp() {
-        when(this.eventContext.updateCheckpointAsync(isA(EventData.class))).thenReturn(Mono.empty());
+        when(this.eventContext.updateCheckpointAsync()).thenReturn(Mono.empty());
         when(this.eventContext.getPartitionContext()).thenReturn(this.partitionContext);
         when(this.partitionContext.getPartitionId()).thenReturn(this.partitionId);
 
@@ -55,7 +55,7 @@ public class EventHubOperationSendSubscribeTest extends SendSubscribeByGroupOper
 
     @Override
     protected void verifyCheckpointSuccessCalled(int times) {
-        verify(this.eventContext, times(times)).updateCheckpointAsync(isA(EventData.class));
+        verify(this.eventContext, times(times)).updateCheckpointAsync();
     }
 
     @Override

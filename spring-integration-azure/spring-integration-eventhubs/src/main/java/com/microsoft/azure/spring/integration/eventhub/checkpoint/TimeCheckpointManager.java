@@ -38,7 +38,7 @@ class TimeCheckpointManager extends CheckpointManager {
         LocalDateTime now = LocalDateTime.now();
         if (Duration.between(now, this.lastCheckpointTime.get())
                     .compareTo(this.checkpointConfig.getCheckpointInterval()) > 0) {
-            context.updateCheckpointAsync(context.getEventData())
+            context.updateCheckpointAsync()
                     .doOnError(t -> logCheckpointFail(context, eventData, t))
                     .doOnSuccess(v -> {
                         logCheckpointSuccess(context, eventData);
