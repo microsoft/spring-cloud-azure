@@ -6,27 +6,28 @@
 
 package com.microsoft.azure.spring.integration.storage.queue;
 
-import com.microsoft.azure.spring.integration.core.AzureCheckpointer;
+import com.azure.storage.queue.QueueAsyncClient;
+import com.azure.storage.queue.models.QueueMessageItem;
+import com.azure.storage.queue.models.QueueStorageException;
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
-import com.microsoft.azure.spring.integration.core.api.Checkpointer;
 import com.microsoft.azure.spring.integration.core.api.PartitionSupplier;
+import com.microsoft.azure.spring.integration.core.api.reactor.AzureCheckpointer;
+import com.microsoft.azure.spring.integration.core.api.reactor.Checkpointer;
 import com.microsoft.azure.spring.integration.storage.queue.converter.StorageQueueMessageConverter;
 import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueClientFactory;
 import com.microsoft.azure.spring.integration.storage.queue.util.StorageQueueHelper;
-import com.microsoft.azure.storage.StorageException;
-import com.microsoft.azure.storage.queue.CloudQueue;
-import com.microsoft.azure.storage.queue.CloudQueueMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.util.Assert;
+import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public class StorageQueueTemplate implements StorageQueueOperation {
     private static final Logger log = LoggerFactory.getLogger(StorageQueueTemplate.class);
@@ -49,22 +50,17 @@ public class StorageQueueTemplate implements StorageQueueOperation {
     }
 
     @Override
-    public <T> CompletableFuture<Void> sendAsync(String queueName, @NonNull Message<T> message,
-            PartitionSupplier partitionSupplier) {
+    public <T> Mono<Void> sendAsync(String queueName, @NonNull Message<T> message,
+                                    PartitionSupplier partitionSupplier) {
         Assert.hasText(queueName, "queueName can't be null or empty");
-        CloudQueueMessage cloudQueueMessage = messageConverter.fromMessage(message, CloudQueueMessage.class);
-        CloudQueue cloudQueue = storageQueueClientFactory.getOrCreateQueueClient(queueName);
-        return CompletableFuture.runAsync(() -> {
-            try {
-                cloudQueue.addMessage(cloudQueueMessage);
-            } catch (StorageException e) {
-                throw new StorageQueueRuntimeException("Failed to send message to storage queue", e);
-            }
-        });
+        QueueMessageItem queueMessageItem = messageConverter.fromMessage(message, QueueMessageItem.class);
+        QueueAsyncClient queueClient = storageQueueClientFactory.getOrCreateQueueClient(queueName);
+
+        return queueClient.sendMessage(queueMessageItem.getMessageText()).then();
     }
 
     @Override
-    public CompletableFuture<Message<?>> receiveAsync(String queueName) {
+    public Mono<Message<?>> receiveAsync(String queueName) {
         return this.receiveAsync(queueName, visibilityTimeoutInSeconds);
     }
 
@@ -89,44 +85,47 @@ public class StorageQueueTemplate implements StorageQueueOperation {
         log.info("StorageQueueTemplate VisibilityTimeoutInSeconds becomes: {}", this.visibilityTimeoutInSeconds);
     }
 
-    private CompletableFuture<Message<?>> receiveAsync(String queueName, int visibilityTimeoutInSeconds) {
+    private Mono<Message<?>> receiveAsync(String queueName, int visibilityTimeoutInSeconds) {
         Assert.hasText(queueName, "queueName can't be null or empty");
 
-        return CompletableFuture.supplyAsync(() -> receiveMessage(queueName, visibilityTimeoutInSeconds));
+
+        QueueAsyncClient queueClient = storageQueueClientFactory.getOrCreateQueueClient(queueName);
+
+
+        return queueClient.receiveMessages(1, Duration.ofSeconds(visibilityTimeoutInSeconds))
+                .onErrorMap(QueueStorageException.class, e ->
+                        new StorageQueueRuntimeException("Failed to send message to storage queue", e))
+                .next()
+                .map(messageItem -> {
+
+                    Map<String, Object> headers = new HashMap<>();
+                    Checkpointer checkpointer = new AzureCheckpointer(() -> checkpoint(queueClient, messageItem));
+
+                    if (checkpointMode == CheckpointMode.RECORD) {
+                        checkpointer.success().subscribe();
+                    } else if (checkpointMode == CheckpointMode.MANUAL) {
+                        headers.put(AzureHeaders.CHECKPOINTER, checkpointer);
+                    }
+
+                    return messageConverter.toMessage(messageItem, new MessageHeaders(headers), messagePayloadType);
+                });
+
+
     }
 
-    private Message<?> receiveMessage(String queueName, int visibilityTimeoutInSeconds) {
-        CloudQueue cloudQueue = storageQueueClientFactory.getOrCreateQueueClient(queueName);
-        CloudQueueMessage cloudQueueMessage;
-        try {
-            cloudQueueMessage = cloudQueue.retrieveMessage(visibilityTimeoutInSeconds, null, null);
-        } catch (StorageException e) {
-            throw new StorageQueueRuntimeException("Failed to receive message from storage queue", e);
-        }
-
-        Map<String, Object> headers = new HashMap<>();
-        Checkpointer checkpointer = new AzureCheckpointer(() -> checkpoint(cloudQueue, cloudQueueMessage));
-
-        if (checkpointMode == CheckpointMode.RECORD) {
-            checkpointer.success().whenComplete((v, t) -> checkpointHandler(cloudQueueMessage, queueName, t));
-        } else if (checkpointMode == CheckpointMode.MANUAL) {
-            headers.put(AzureHeaders.CHECKPOINTER, checkpointer);
-        }
-
-        if (cloudQueueMessage == null) {
-            return null;
-        }
-        return messageConverter.toMessage(cloudQueueMessage, new MessageHeaders(headers), messagePayloadType);
-    }
-
-    private CompletableFuture<Void> checkpoint(CloudQueue cloudQueue, CloudQueueMessage cloudQueueMessage) {
-        return CompletableFuture.runAsync(() -> {
-            try {
-                cloudQueue.deleteMessage(cloudQueueMessage);
-            } catch (StorageException e) {
-                throw new StorageQueueRuntimeException("Failed to checkpoint message from storage queue", e);
-            }
-        });
+    private Mono<Void> checkpoint(QueueAsyncClient queueClient, QueueMessageItem messageItem) {
+        return queueClient
+                .deleteMessage(messageItem.getMessageId(), messageItem.getPopReceipt())
+                .doOnSuccess(v -> {
+                    if (log.isDebugEnabled()) {
+                        log.debug(buildCheckpointSuccessMessage(messageItem, queueClient.getQueueName()));
+                    }
+                })
+                .doOnError(t -> {
+                    if (log.isWarnEnabled()) {
+                        log.warn(buildCheckpointFailMessage(messageItem, queueClient.getQueueName()), t);
+                    }
+                });
     }
 
     private Map<String, Object> buildProperties() {
@@ -143,7 +142,7 @@ public class StorageQueueTemplate implements StorageQueueOperation {
         return checkpointMode == CheckpointMode.MANUAL || checkpointMode == CheckpointMode.RECORD;
     }
 
-    private void checkpointHandler(CloudQueueMessage message, String queueName, Throwable t) {
+    private void checkpointHandler(QueueMessageItem message, String queueName, Throwable t) {
         if (t != null) {
             if (log.isWarnEnabled()) {
                 log.warn(buildCheckpointFailMessage(message, queueName), t);
@@ -153,11 +152,11 @@ public class StorageQueueTemplate implements StorageQueueOperation {
         }
     }
 
-    private String buildCheckpointFailMessage(CloudQueueMessage cloudQueueMessage, String queueName) {
+    private String buildCheckpointFailMessage(QueueMessageItem cloudQueueMessage, String queueName) {
         return String.format(MSG_FAIL_CHECKPOINT, StorageQueueHelper.toString(cloudQueueMessage), queueName);
     }
 
-    private String buildCheckpointSuccessMessage(CloudQueueMessage cloudQueueMessage, String queueName) {
+    private String buildCheckpointSuccessMessage(QueueMessageItem cloudQueueMessage, String queueName) {
         return String.format(MSG_SUCCESS_CHECKPOINT, StorageQueueHelper.toString(cloudQueueMessage), queueName,
                 checkpointMode);
     }

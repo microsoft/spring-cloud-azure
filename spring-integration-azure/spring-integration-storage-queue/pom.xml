@@ -26,5 +26,9 @@
             <version>${spring.integration.azure.test.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-storage-queue</artifactId>
+        </dependency>
     </dependencies>
 </project>
