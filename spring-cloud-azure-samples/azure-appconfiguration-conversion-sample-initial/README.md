@@ -110,32 +110,26 @@ In this section, you clone a containerized Spring Boot application and test it l
 
 ### Convert to Using App Configuration
 
-1. Use the Azure CLI [az keyvault create](https://docs.microsoft.com/cli/azure/cosmosdb?view=azure-cli-latest#az-cosmosdb-create)
+1. Use the Azure CLI [az keyvault create](https://docs.microsoft.com/cli/azure/keyvault?view=azure-cli-latest#az-keyvault-create)
 
     ```azurecli
     az keyvault create --name myVaultName -g MyResourceGroup
     ```
 
-1. Use the Azure CLI [az keyvault create](https://docs.microsoft.com/cli/azure/appconfig?view=azure-cli-latest#az-appconfig-create)
+1. Use the Azure CLI [az ad sp](https://docs.microsoft.com/cli/azure/ad/sp?view=azure-cli-latest#az-ad-sp-create-for-rbac)
 
     ```azurecli
-    az appconfig create --name myConfigStoreName -g MyResourceGroup -l eastus
+    az ad sp create-for-rbac -n "http://mySP" --sdk-auth
     ```
 
-1. For this tutorial, you'll use a service principal for authentication to KeyVault. To create this service principal, use the Azure CLI [az ad sp create-for-rbac](/cli/azure/ad/sp?view=azure-cli-latest#az-ad-sp-create-for-rbac) command:
-
-    ```azurecli
-    az ad sp create-for-rbac -n "<unique uri>" --sdk-auth
-    ```
-
-    This operation will return a series of key / value pairs.
+    This operation returns a series of key/value pairs:
 
     ```console
     {
-    "clientId": "iiiiiiii-iiii-iiii-iiii-iiiiiiiiiiii",
-    "clientSecret": "ssssssss-ssss-ssss-ssss-sssssssssss",
-    "subscriptionId": "bbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbb",
-    "tenantId": "ttttttt-tttt-tttt-tttt-ttttttttttt",
+    "clientId": "7da18cae-779c-41fc-992e-0527854c6583",
+    "clientSecret": "b421b443-1669-4cd7-b5b1-394d5c945002",
+    "subscriptionId": "443e30da-feca-47c4-b68f-1636b75e16b3",
+    "tenantId": "35ad10f1-7799-4766-9acf-f2d946161b77",
     "activeDirectoryEndpointUrl": "https://login.microsoftonline.com",
     "resourceManagerEndpointUrl": "https://management.azure.com/",
     "activeDirectoryGraphResourceId": "https://graph.windows.net/",
@@ -145,11 +139,30 @@ In this section, you clone a containerized Spring Boot application and test it l
     }
     ```
 
-1. Run the following command to allow the service principal to access your key vault:
+1. Run the following command to let the service principal access your key vault:
+
+    ```console
+    az keyvault set-policy -n <your-unique-keyvault-name> --spn <clientId-of-your-service-principal> --secret-permissions delete get
+    ```
+
+1. Use the Azure CLI [az appconfig create](https://docs.microsoft.com/cli/azure/appconfig?view=azure-cli-latest#az-appconfig-create)
 
     ```azurecli
-        az keyvault set-policy -n myVaultName --spn "iiiiiiii-iiii-iiii-iiii-iiiiiiiiiiii" --secret-permissions get
+    az appconfig create -n myAppconfigName -g MyResourceGroup -l westus --sku Standard
     ```
+
+1. Run the following command to get your object-id, then add it to App Configuration.
+
+    ```console
+    az ad sp show --id <clientId-of-your-service-principal>
+    az role assignment create --role "App Configuration Data Reader" --assignee-object-id <objectId-of-your-service-principal> --resource-group <your-resource-group>
+    ```
+
+1. Create the following environment variables, using the values for the service principal that were displayed in the previous step:
+
+    * **AZURE_CLIENT_ID**: *clientId*
+    * **AZURE_CLIENT_SECRET**: *clientSecret*
+    * **AZURE_TENANT_ID**: *tenantId*
 
 1. Upload your Cosmos DB key to Key Vault.
 
@@ -160,20 +173,14 @@ In this section, you clone a containerized Spring Boot application and test it l
 1. Upload your Configurations Cosmos DB name and URI to App Configuration
 
     ```azurecli
-        az appconfig kv set --name myConfigStoreName --key "/application/azure.cosmosdb.database" --value your-cosmos-db-databasename --content-type " " --yes
-        az appconfig kv set --name myConfigStoreName --key "/application/azure.cosmosdb.uri" --value your-cosmosdb-uri --content-type " " --yes
+        az appconfig kv set --name myConfigStoreName --key "/application/azure.cosmosdb.database" --value your-cosmos-db-databasename --yes
+        az appconfig kv set --name myConfigStoreName --key "/application/azure.cosmosdb.uri" --value your-cosmosdb-uri  --yes
     ```
 
 1. Add a Key Vault Reference to App Configuration, make sure to update the uri with your config store name.
 
     ```azurecli
-        az appconfig kv set --name myConfigStoreName --key "/application/azure.cosmosdb.key" --value "{\"uri\":\"https://myVaultName.vault.azure.net/secrets/COSMOSDB-KEY\"}" --content-type "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8" --yes
-    ```
-
-1. Get a connection string to App Configuration.
-
-    ```azurecli
-        az appconfig credential list -g MyResourceGroup --name myConfigStoreName
+        az appconfig kv set-keyvault --name myConfigStoreName --key "/application/azure.cosmosdb.key" --secret-identifier https://myVaultName.vault.azure.net/secrets/COSMOSDB-KEY --yes
     ```
 
 1. Delete `application.propertes` from `src/main/resources`.
@@ -181,7 +188,7 @@ In this section, you clone a containerized Spring Boot application and test it l
 1. Create a new file called `bootstrap.properties` in `src/main/resources`, and add the following.
 
     ```properties
-        spring.cloud.azure.appconfiguration.stores[0].connection-string=${CONFIG_STORE_CONNECTION_STRING}
+        spring.cloud.azure.appconfiguration.stores[0].endpoint=https://{my-configstore-name}.azconfig.io
 
     ```
 
@@ -191,11 +198,73 @@ In this section, you clone a containerized Spring Boot application and test it l
     <dependency>
         <groupId>com.microsoft.azure</groupId>
         <artifactId>spring-cloud-starter-azure-appconfiguration-config</artifactId>
-        <version>1.1.0.M6</version>
+        <version>1.2.2</version>
     </dependency>
     ```
 
-1. Create the following Environment Variables with their respective values: AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID, CONFIG_STORE_CONNECTION_STRING.
+1. Create a new file called *AzureCredentials.java* and add the code below.
+
+    ```java
+    /*
+     * Copyright (c) Microsoft Corporation. All rights reserved.
+     * Licensed under the MIT License. See LICENSE in the project root for
+     * license information.
+     */
+    package sample.convert;
+
+    import com.azure.core.credential.TokenCredential;
+    import com.azure.identity.EnvironmentCredentialBuilder;
+    import com.microsoft.azure.spring.cloud.config.AppConfigurationCredentialProvider;
+    import com.microsoft.azure.spring.cloud.config.KeyVaultCredentialProvider;
+
+    public class AzureCredentials implements AppConfigurationCredentialProvider, KeyVaultCredentialProvider{
+
+        @Override
+        public TokenCredential getKeyVaultCredential(String uri) {
+            return getCredential();
+        }
+
+        @Override
+        public TokenCredential getAppConfigCredential(String uri) {
+            return getCredential();
+        }
+
+        private TokenCredential getCredential() {
+            return new EnvironmentCredentialBuilder().build();
+        }
+
+    }
+    ```
+
+    1. Create a new file called *AppConfiguration.java*. And add the code below.
+
+    ```java
+    /*
+     * Copyright (c) Microsoft Corporation. All rights reserved.
+     * Licensed under the MIT License. See LICENSE in the project root for
+     * license information.
+     */
+    package sample.convert;
+
+    import org.springframework.context.annotation.Bean;
+    import org.springframework.context.annotation.Configuration;
+
+    @Configuration
+    public class AppConfiguration {
+
+        @Bean
+        public AzureCredentials azureCredentials() {
+            return new AzureCredentials();
+        }
+    }
+    ```
+
+1. Create a new folder in your resources directory called META-INF. Then in that folder create a file called *spring.factories* and add.
+
+    ```factories
+    org.springframework.cloud.bootstrap.BootstrapConfiguration=\
+    sample.convert.AppConfiguration
+    ```
 
 ### Run the updated sample
 

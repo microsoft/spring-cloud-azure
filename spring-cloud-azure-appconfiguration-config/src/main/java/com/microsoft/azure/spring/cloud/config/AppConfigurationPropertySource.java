@@ -151,12 +151,12 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
         // Setting new ETag values for Watch
         String watchedKeyNames = clients.watchedKeyNames(configStore, storeContextsMap);
         settingSelector = new SettingSelector().setKeyFilter(watchedKeyNames)
-                .setLabelFilter(StringUtils.arrayToCommaDelimitedString(configStore.getLabels()));
+                .setLabelFilter(label);
 
         List<ConfigurationSetting> configurationRevisions = clients.listSettingRevisons(settingSelector, storeName);
 
         settingSelector = new SettingSelector().setKeyFilter(FEATURE_STORE_WATCH_KEY)
-                .setLabelFilter(StringUtils.arrayToCommaDelimitedString(configStore.getLabels()));
+                .setLabelFilter(label);
 
         List<ConfigurationSetting> featureRevisions = clients.listSettingRevisons(settingSelector, storeName);
 

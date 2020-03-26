@@ -35,10 +35,9 @@ import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 
 public class AppConfigurationBootstrapConfigurationTest {
     private static final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
-                    propPair(STORE_ENDPOINT_PROP, TEST_STORE_NAME))
+            .withPropertyValues(propPair(STORE_ENDPOINT_PROP, TEST_STORE_NAME))
             .withConfiguration(AutoConfigurations.of(AppConfigurationBootstrapConfiguration.class));
-    
+
     @Mock
     private CloseableHttpResponse mockClosableHttpResponse;
 
@@ -50,7 +49,7 @@ public class AppConfigurationBootstrapConfigurationTest {
 
     @Mock
     ObjectMapper mockObjectMapper;
-    
+
     @Mock
     ClientStore clientStoreMock;
 
@@ -69,16 +68,34 @@ public class AppConfigurationBootstrapConfigurationTest {
     }
 
     @Test
-    public void propertySourceLocatorBeanCreated() throws Exception {
+    public void iniConnectionStringSystemAssigned() throws Exception {
         whenNew(ClientStore.class).withAnyArguments().thenReturn(clientStoreMock);
         contextRunner.withPropertyValues(propPair(FAIL_FAST_PROP, "false"))
                 .run(context -> assertThat(context).hasSingleBean(AppConfigurationPropertySourceLocator.class));
     }
 
     @Test
+    public void iniConnectionStringUserAssigned() throws Exception {
+        whenNew(ClientStore.class).withAnyArguments().thenReturn(clientStoreMock);
+        contextRunner
+                .withPropertyValues(propPair(FAIL_FAST_PROP, "false"),
+                        propPair("spring.cloud.azure.appconfiguration.managed-identity.client-id", "client-id"))
+                .run(context -> assertThat(context).hasSingleBean(AppConfigurationPropertySourceLocator.class));
+    }
+
+    @Test
+    public void propertySourceLocatorBeanCreated() throws Exception {
+        whenNew(ClientStore.class).withAnyArguments().thenReturn(clientStoreMock);
+        contextRunner
+                .withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING), propPair(FAIL_FAST_PROP, "false"))
+                .run(context -> assertThat(context).hasSingleBean(AppConfigurationPropertySourceLocator.class));
+    }
+
+    @Test
     public void clientsBeanCreated() throws Exception {
         whenNew(ClientStore.class).withAnyArguments().thenReturn(clientStoreMock);
-        contextRunner.withPropertyValues(propPair(FAIL_FAST_PROP, "false"))
+        contextRunner
+                .withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING), propPair(FAIL_FAST_PROP, "false"))
                 .run(context -> {
                     assertThat(context).hasSingleBean(ClientStore.class);
                 });
