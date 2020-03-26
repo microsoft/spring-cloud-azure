@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
@@ -54,6 +53,8 @@ public class AppConfigurationProperties {
     private String profileSeparator = "_";
 
     private Duration cacheExpiration = Duration.ofSeconds(30);
+    
+    private boolean pushRefresh = true;
 
     public boolean isEnabled() {
         return enabled;
@@ -116,6 +117,20 @@ public class AppConfigurationProperties {
      */
     public void setCacheExpiration(Duration cacheExpiration) {
         this.cacheExpiration = cacheExpiration;
+    }
+
+    /**
+     * @return the pushRefresh
+     */
+    public Boolean getPushRefresh() {
+        return pushRefresh;
+    }
+
+    /**
+     * @param pullRefresh the pushRefresh to set
+     */
+    public void setPushRefresh(Boolean pushRefresh) {
+        this.pushRefresh = pushRefresh;
     }
 
     @PostConstruct

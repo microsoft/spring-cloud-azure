@@ -147,5 +147,35 @@ public class KeyVaultClientTest {
         
         verify(test2, times(2)).getClientId();
     }
+    
+    @Test
+    public void systemAssignedCredentials() throws IOException, URISyntaxException {
+        azureProperties = new AppConfigurationProperties();
+        AppConfigManagedIdentityProperties msiProps = new AppConfigManagedIdentityProperties();
+        msiProps.setClientId("");
+        AppConfigManagedIdentityProperties test2 = Mockito.spy(msiProps);
+        azureProperties.setManagedIdentity(test2);
+        
+        String keyVaultUri = "https://keyvault.vault.azure.net/secrets/mySecret";
+
+        clientStore = new KeyVaultClient(azureProperties, new URI(keyVaultUri), null);
+        
+        KeyVaultClient test = Mockito.spy(clientStore);
+        Mockito.doReturn(builderMock).when(test).getBuilder();
+        
+        when(builderMock.vaultUrl(Mockito.any())).thenReturn(builderMock);
+        when(builderMock.buildAsyncClient()).thenReturn(clientMock);;
+
+        test.build();
+        
+        when(clientMock.getSecret(Mockito.any(), Mockito.any()))
+                .thenReturn(monoSecret);
+        when(monoSecret.block(Mockito.any())).thenReturn(new KeyVaultSecret("", ""));
+        
+        assertNotNull(test.getSecret(new URI(keyVaultUri), 10));
+        assertEquals(test.getSecret(new URI(keyVaultUri), 10).getName(), "");
+        
+        verify(test2, times(1)).getClientId();
+    }
 
 }

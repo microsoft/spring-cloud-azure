@@ -12,10 +12,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import com.azure.core.credential.TokenCredential;
+import com.azure.core.exception.HttpResponseException;
 import com.azure.core.http.policy.ExponentialBackoff;
 import com.azure.core.http.policy.RetryPolicy;
 import com.azure.data.appconfiguration.ConfigurationAsyncClient;
@@ -82,8 +85,9 @@ public class ClientStore {
         } else if (StringUtils.isNotEmpty(connection.getConnectionString())) {
             // Connection String
             builder.connectionString(connection.getConnectionString());
-        } else if (connection.getEndpoint() != null) {
-            // System Assigned Identity. Needs to be checked last as all of the above should have a Endpoint.
+        } else if (StringUtils.isNotEmpty(connection.getEndpoint())) {
+            // System Assigned Identity. Needs to be checked last as all of the above
+            // should have a Endpoint.
             ManagedIdentityCredentialBuilder micBuilder = new ManagedIdentityCredentialBuilder();
             builder.credential(micBuilder.build());
         } else {

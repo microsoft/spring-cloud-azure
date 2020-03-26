@@ -5,14 +5,17 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import static com.microsoft.azure.spring.cloud.config.TestConstants.CLIENT_ID;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.CONN_STRING_PROP;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FAIL_FAST_PROP;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.STORE_ENDPOINT_PROP;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_ENDPOINT;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.propPair;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
@@ -31,6 +34,7 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.azure.spring.cloud.config.resource.ConnectionPool;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 
 public class AppConfigurationBootstrapConfigurationTest {
@@ -71,16 +75,44 @@ public class AppConfigurationBootstrapConfigurationTest {
     @Test
     public void propertySourceLocatorBeanCreated() throws Exception {
         whenNew(ClientStore.class).withAnyArguments().thenReturn(clientStoreMock);
-        contextRunner.withPropertyValues(propPair(FAIL_FAST_PROP, "false"))
+        contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
+                propPair(FAIL_FAST_PROP, "false"))
                 .run(context -> assertThat(context).hasSingleBean(AppConfigurationPropertySourceLocator.class));
     }
 
     @Test
     public void clientsBeanCreated() throws Exception {
         whenNew(ClientStore.class).withAnyArguments().thenReturn(clientStoreMock);
-        contextRunner.withPropertyValues(propPair(FAIL_FAST_PROP, "false"))
+        contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
+                propPair(FAIL_FAST_PROP, "false"))
                 .run(context -> {
                     assertThat(context).hasSingleBean(ClientStore.class);
+                    ConnectionPool pool = context.getBean(ConnectionPool.class);
+                    assertEquals(TEST_CONN_STRING, pool.get(TEST_ENDPOINT).getConnectionString());
+                });
+    }
+
+    @Test
+    public void buildConnectionPoolSystemAssigned() throws Exception {
+        whenNew(ClientStore.class).withAnyArguments().thenReturn(clientStoreMock);
+        contextRunner
+                .withPropertyValues(propPair(FAIL_FAST_PROP, "false"))
+                .run(context -> {
+                    assertThat(context).hasSingleBean(ConnectionPool.class);
+                    ConnectionPool pool = context.getBean(ConnectionPool.class);
+                    assertEquals("", pool.get(TEST_STORE_NAME).getClientId());
+                });
+    }
+
+    @Test
+    public void buildConnectionPoolUserAssigned() throws Exception {
+        whenNew(ClientStore.class).withAnyArguments().thenReturn(clientStoreMock);
+        contextRunner
+                .withPropertyValues(propPair(FAIL_FAST_PROP, "false"), propPair(CLIENT_ID, "1111-1111-1111-1111"))
+                .run(context -> {
+                    assertThat(context).hasSingleBean(ConnectionPool.class);
+                    ConnectionPool pool = context.getBean(ConnectionPool.class);
+                    assertEquals("1111-1111-1111-1111", pool.get(TEST_STORE_NAME).getClientId());
                 });
     }
 }

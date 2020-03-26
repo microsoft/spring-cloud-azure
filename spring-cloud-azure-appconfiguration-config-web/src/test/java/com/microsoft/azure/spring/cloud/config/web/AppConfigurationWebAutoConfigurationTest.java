@@ -13,8 +13,11 @@ import static com.microsoft.azure.spring.cloud.config.web.TestUtils.propPair;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
+import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
 
 import com.microsoft.azure.spring.cloud.config.AppConfigurationAutoConfiguration;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationBootstrapConfiguration;
@@ -24,12 +27,21 @@ public class AppConfigurationWebAutoConfigurationTest {
             .withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                     propPair(STORE_ENDPOINT_PROP, TEST_STORE_NAME))
             .withConfiguration(AutoConfigurations.of(AppConfigurationBootstrapConfiguration.class,
-                    AppConfigurationAutoConfiguration.class, AppConfigurationWebAutoConfiguration.class));
+                    AppConfigurationAutoConfiguration.class, AppConfigurationWebAutoConfiguration.class,
+                    RefreshAutoConfiguration.class));
 
     @Test
     public void watchEnabledNotConfiguredShouldNotCreateWatch() {
         contextRunner.run(context -> {
-            assertThat(context).hasSingleBean(ConfigListener.class);
+            assertThat(context).hasSingleBean(AppConfigurationRefreshEndpoint.class);
         });
+    }
+
+    @Test
+    public void bus() {
+        contextRunner
+                .withClassLoader(new FilteredClassLoader(WebEndpointProperties.class))
+                .run(context -> assertThat(context)
+                        .doesNotHaveBean("AppConfigurationRefreshEndpoint"));
     }
 }

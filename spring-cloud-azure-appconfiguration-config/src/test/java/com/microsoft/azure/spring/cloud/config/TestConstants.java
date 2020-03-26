@@ -21,6 +21,7 @@ public class TestConstants {
     public static final String LABEL_PROP = "spring.cloud.azure.appconfiguration.stores[0].label";
     public static final String PREFIX_PROP = "spring.cloud.azure.appconfiguration.stores[0].prefix";
     public static final String WATCHED_KEY_PROP = "spring.cloud.azure.appconfiguration.stores[0].watched-key";
+    public static final String CLIENT_ID = "spring.cloud.azure.appconfiguration.managed-identity.client-id";
 
     public static final String DEFAULT_CONTEXT_PROP = "spring.cloud.azure.appconfiguration.default-context";
     public static final String CONFIG_ENABLED_PROP = "spring.cloud.azure.appconfiguration.enabled";
@@ -28,15 +29,6 @@ public class TestConstants {
     public static final String SEPARATOR_PROP = "spring.cloud.azure.appconfiguration.profile-separator";
     
     public static final String FAIL_FAST_PROP = "spring.cloud.azure.appconfiguration.failFast";
-    
-    public static final String KEY_VAULT_STORE_1_CONNECTION = 
-            "spring.cloud.azure.appconfiguration.key_vault_stores[0].connection_url";
-    public static final String KEY_VAULT_STORE_1_CLIENT = 
-            "spring.cloud.azure.appconfiguration.key_vault_stores[0].client_id";
-    public static final String KEY_VAULT_STORE_1_DOMAIN = 
-            "spring.cloud.azure.appconfiguration.key_vault_stores[0].domain";
-    public static final String KEY_VAULT_STORE_1_SECRET = 
-            "spring.cloud.azure.appconfiguration.key_vault_stores[0].secret";
     
 
     public static final String TEST_CONN_STRING =

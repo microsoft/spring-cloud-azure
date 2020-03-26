@@ -172,6 +172,10 @@ spring.cloud.azure.appconfiguration.stores[0].endpoint=[config-store-endpoint]
 spring.cloud.azure.appconfiguration.managed-identity.client-id=[client-id]
 ```
 
+### Azure Function NoSuchMethodError
+
+When running an applicaiton in an Azure Function or local as an Azure function an Error can be seen that is `Exception: NoSuchMethodError: io.netty.handler.ssl.SslProvider.isAlpnSupported(Lio/netty/handler/ssl/SslProvider;)`. This is caused by a dependency conflict between the Azure SDK and Azure Function Java Worker, which runs Azure Functions. This can be solved by creating a [Sharded Jar](https://github.com/Azure/azure-sdk-for-java/wiki/Creating-a-Shaded-Jar). Because the conflict is with an external Jar the running application can be the sharded jar.
+
 <!-- LINKS -->
 [azure]: https://azure.microsoft.com
 [azure_active_directory]: https://azure.microsoft.com/services/active-directory/
