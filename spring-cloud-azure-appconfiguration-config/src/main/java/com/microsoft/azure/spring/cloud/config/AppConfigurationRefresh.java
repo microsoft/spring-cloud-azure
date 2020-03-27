@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.util.StringUtils;
 
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
@@ -133,7 +132,7 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
     private boolean refresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
         String storeNameWithSuffix = store.getEndpoint() + storeSuffix;
         SettingSelector settingSelector = new SettingSelector().setKeyFilter(watchedKeyNames)
-                .setLabelFilter(StringUtils.arrayToCommaDelimitedString(store.getLabels()));
+                .setLabelFilter("*");
 
         List<ConfigurationSetting> items = clientStore.listSettingRevisons(settingSelector, store.getEndpoint());
 

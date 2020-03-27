@@ -10,9 +10,19 @@ import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_LABE
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_VALUE;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING_2;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONTEXT;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_KEY_1;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_KEY_2;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_KEY_3;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_LABEL_1;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_LABEL_2;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_LABEL_3;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME_1;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_STORE_NAME_2;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_VALUE_1;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_VALUE_2;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_VALUE_3;
 import static com.microsoft.azure.spring.cloud.config.TestUtils.createItem;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -115,6 +125,19 @@ public class AppConfigurationPropertySourceLocatorTest {
     private AppConfigurationProviderProperties appProperties;
 
     private KeyVaultCredentialProvider tokenCredentialProvider = null;
+    
+    private static final String EMPTY_CONTENT_TYPE = "";
+    
+    public List<ConfigurationSetting> testItems = new ArrayList<>();
+    
+    private static final ConfigurationSetting item1 = createItem(TEST_CONTEXT, TEST_KEY_1, TEST_VALUE_1, TEST_LABEL_1,
+            EMPTY_CONTENT_TYPE);
+
+    private static final ConfigurationSetting item2 = createItem(TEST_CONTEXT, TEST_KEY_2, TEST_VALUE_2, TEST_LABEL_2,
+            EMPTY_CONTENT_TYPE);
+
+    private static final ConfigurationSetting item3 = createItem(TEST_CONTEXT, TEST_KEY_3, TEST_VALUE_3, TEST_LABEL_3,
+            EMPTY_CONTENT_TYPE);
 
     @BeforeClass
     public static void init() {
@@ -149,6 +172,11 @@ public class AppConfigurationPropertySourceLocatorTest {
         appProperties.setVersion("1.0");
         appProperties.setMaxRetries(12);
         appProperties.setMaxRetryTime(0);
+        
+        testItems = new ArrayList<ConfigurationSetting>();
+        testItems.add(item1);
+        testItems.add(item2);
+        testItems.add(item3);
     }
 
     @After
@@ -166,6 +194,31 @@ public class AppConfigurationPropertySourceLocatorTest {
         labels[0] = "\0";
         when(configStoreMock.getLabels()).thenReturn(labels);
         when(properties.getDefaultContext()).thenReturn("application");
+
+        locator = new AppConfigurationPropertySourceLocator(properties, appProperties, clientStoreMock,
+                tokenCredentialProvider);
+        PropertySource<?> source = locator.locate(environment);
+        assertThat(source).isInstanceOf(CompositePropertySource.class);
+
+        Collection<PropertySource<?>> sources = ((CompositePropertySource) source).getPropertySources();
+        // Application name: foo and active profile: dev,prod, should construct below
+        // composite Property Source:
+        // [/foo_prod/, /foo_dev/, /foo/, /application_prod/, /application_dev/,
+        // /application/]
+        String[] expectedSourceNames = new String[] { "/foo_prod/store1/\0", "/foo_dev/store1/\0", "/foo/store1/\0",
+                "/application_prod/store1/\0", "/application_dev/store1/\0", "/application/store1/\0" };
+        assertThat(sources.size()).isEqualTo(6);
+        assertThat(sources.stream().map(s -> s.getName()).toArray()).containsExactly(expectedSourceNames);
+    }
+    
+    @Test
+    public void revisionsCheck() {
+        String[] labels = new String[1];
+        labels[0] = "\0";
+        when(configStoreMock.getLabels()).thenReturn(labels);
+        when(properties.getDefaultContext()).thenReturn("application");
+        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(testItems)
+        .thenReturn(FEATURE_ITEMS);
 
         locator = new AppConfigurationPropertySourceLocator(properties, appProperties, clientStoreMock,
                 tokenCredentialProvider);

@@ -30,10 +30,8 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -132,12 +130,10 @@ public class AppConfigurationPropertySourceKeyVaultTest {
         appProperties.setMaxRetryTime(0);
         ConfigStore testStore = new ConfigStore();
         testStore.setEndpoint(TEST_STORE_NAME);
-        Map<String, List<String>> storeContextsMap = new HashMap<String, List<String>>();
         ArrayList<String> contexts = new ArrayList<String>();
         contexts.add("/application/*");
-        storeContextsMap.put(TEST_STORE_NAME, contexts);
         propertySource = new AppConfigurationPropertySource(TEST_CONTEXT, testStore, "\0",
-                appConfigurationProperties, clientStoreMock, appProperties, tokenCredentialProvider, storeContextsMap);
+                appConfigurationProperties, clientStoreMock, appProperties, tokenCredentialProvider);
 
         testItems = new ArrayList<ConfigurationSetting>();
         testItems.add(item1);
