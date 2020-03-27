@@ -10,6 +10,7 @@ import com.azure.core.http.HttpHeaders;
 import com.azure.core.http.HttpRequest;
 import com.azure.core.http.rest.PagedFlux;
 import com.azure.core.http.rest.PagedResponse;
+import com.azure.core.util.IterableStream;
 import com.azure.storage.queue.QueueAsyncClient;
 import com.azure.storage.queue.models.QueueMessageItem;
 import com.azure.storage.queue.models.QueueStorageException;
@@ -24,6 +25,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.messaging.Message;
+
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
@@ -97,6 +100,12 @@ public class StorageQueueTemplateReceiveTest {
             @Override
             public void close() {
 
+            }
+
+            @Override
+            public IterableStream<QueueMessageItem> getElements() {
+                Flux<QueueMessageItem> flux = Flux.just(queueMessage);
+                return new IterableStream<QueueMessageItem>(flux);
             }
         };
         when(this.mockClientFactory.getOrCreateQueueClient(eq(destination))).thenReturn(this.mockClient);
