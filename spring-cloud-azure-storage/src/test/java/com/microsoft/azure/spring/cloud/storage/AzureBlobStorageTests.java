@@ -6,8 +6,14 @@
 
 package com.microsoft.azure.spring.cloud.storage;
 
-import com.microsoft.azure.storage.CloudStorageAccount;
-import com.microsoft.azure.storage.blob.*;
+import com.azure.storage.blob.BlobClient;
+import com.azure.storage.blob.BlobContainerClient;
+import com.azure.storage.blob.BlobServiceClient;
+import com.azure.storage.blob.BlobServiceClientBuilder;
+import com.azure.storage.blob.models.BlobProperties;
+import com.azure.storage.blob.specialized.BlobInputStream;
+import com.azure.storage.blob.specialized.BlobOutputStream;
+import com.azure.storage.blob.specialized.BlockBlobClient;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +30,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.io.FileNotFoundException;
 import java.io.OutputStream;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -38,27 +45,28 @@ public class AzureBlobStorageTests {
     private static final String containerName = "container";
     private static final String nonExisting = "non-existing";
     private static final String blobName = "blob";
+    private static final long contentLength = 4096L;
 
     @Value("azure-blob://container/blob")
     private Resource remoteResource;
 
     @Autowired
-    private CloudBlobClient blobClient;
+    private BlobServiceClient blobServiceClient;
 
     @Test(expected = IllegalArgumentException.class)
     public void testEmptyPath() {
-        new BlobStorageResource(this.blobClient, "azure-blob://");
+        new BlobStorageResource(this.blobServiceClient, "azure-blob://");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSlashPath() {
-        new BlobStorageResource(this.blobClient, "azure-blob:///");
+        new BlobStorageResource(this.blobServiceClient, "azure-blob:///");
     }
 
     @Test
     public void testValidObject() throws Exception {
         Assert.assertTrue(this.remoteResource.exists());
-        Assert.assertEquals(4096L, this.remoteResource.contentLength());
+        Assert.assertEquals(contentLength, this.remoteResource.contentLength());
     }
 
     @Test
@@ -73,7 +81,7 @@ public class AzureBlobStorageTests {
     public void testWritableOutputStream() throws Exception {
         String location = "azure-blob://container/blob";
 
-        BlobStorageResource resource = new BlobStorageResource(blobClient, location);
+        BlobStorageResource resource = new BlobStorageResource(blobServiceClient, location);
         OutputStream os = resource.getOutputStream();
         Assert.assertNotNull(os);
     }
@@ -82,7 +90,7 @@ public class AzureBlobStorageTests {
     public void testWritableOutputStreamNoAutoCreateOnNullBlob() throws Exception {
         String location = "azure-blob://container/non-existing";
 
-        BlobStorageResource resource = new BlobStorageResource(this.blobClient, location);
+        BlobStorageResource resource = new BlobStorageResource(this.blobServiceClient, location);
         resource.getOutputStream();
     }
 
@@ -90,26 +98,28 @@ public class AzureBlobStorageTests {
     public void testGetInputStreamOnNullBlob() throws Exception {
         String location = "azure-blob://container/non-existing";
 
-        BlobStorageResource resource = new BlobStorageResource(blobClient, location);
+        BlobStorageResource resource = new BlobStorageResource(blobServiceClient, location);
         resource.getInputStream();
     }
 
     @Test
-    public void testGetFilenameOnNonExistingBlob() throws Exception {
+    public void testGetFilenameOnNonExistingBlob() {
         String location = "azure-blob://container/non-existing";
-        BlobStorageResource resource = new BlobStorageResource(blobClient, location);
+        BlobStorageResource resource = new BlobStorageResource(blobServiceClient, location);
         Assert.assertEquals(nonExisting, resource.getFilename());
     }
 
     @Test
     public void testContainerDoesNotExist() {
-        BlobStorageResource resource = new BlobStorageResource(this.blobClient, "azure-blob://non-existing/blob");
+        BlobStorageResource resource = new BlobStorageResource(this.blobServiceClient,
+                "azure-blob://non-existing/blob");
         Assert.assertFalse(resource.exists());
     }
 
     @Test
     public void testContainerExistsButResourceDoesNot() {
-        BlobStorageResource resource = new BlobStorageResource(this.blobClient, "azure-blob://container/non-existing");
+        BlobStorageResource resource = new BlobStorageResource(this.blobServiceClient,
+                "azure-blob://container/non-existing");
         Assert.assertFalse(resource.exists());
     }
 
@@ -118,37 +128,49 @@ public class AzureBlobStorageTests {
     static class StorageApplication {
 
         @Bean
-        public static CloudBlobClient cloudBlobClient() throws Exception {
-            return mockStorageAccount().createCloudBlobClient();
+        public static BlobServiceClient mockBlobServiceClient() {
+            return mockBlobServiceClientBuilder().buildClient();
         }
 
         @Bean
-        public static CloudStorageAccount mockStorageAccount() throws Exception {
-            CloudStorageAccount storageAccount = mock(CloudStorageAccount.class);
-            CloudBlobClient blobClient = mock(CloudBlobClient.class);
-            CloudBlobContainer blobContainer = mock(CloudBlobContainer.class);
-            CloudBlobContainer nonExistingContainer = mock(CloudBlobContainer.class);
-            CloudBlockBlob blockBlob = mock(CloudBlockBlob.class);
-            CloudBlockBlob nonExistingBlob = mock(CloudBlockBlob.class);
+        public static BlobServiceClientBuilder mockBlobServiceClientBuilder() {
+            BlobServiceClientBuilder serviceClientBuilder = mock(BlobServiceClientBuilder.class);
+
+            BlobServiceClient blobServiceClient = mock(BlobServiceClient.class);
+            BlobContainerClient blobContainer = mock(BlobContainerClient.class);
+            BlobContainerClient nonExistingBlobContainer = mock(BlobContainerClient.class);
+            BlobClient blob = mock(BlobClient.class);
+            BlobClient nonExistingBlob = mock(BlobClient.class);
+            BlockBlobClient blockBlob = mock(BlockBlobClient.class);
+            BlockBlobClient nonExistingBlockBlob = mock(BlockBlobClient.class);
             BlobProperties blobProperties = mock(BlobProperties.class);
 
-            when(storageAccount.createCloudBlobClient()).thenReturn(blobClient);
-            when(blockBlob.exists()).thenReturn(true);
-            when(nonExistingBlob.exists()).thenReturn(false);
-            when(blobContainer.exists()).thenReturn(true);
-            when(nonExistingContainer.exists()).thenReturn(false);
-            when(blockBlob.getProperties()).thenReturn(blobProperties);
-            when(blobProperties.getLength()).thenReturn(4096L);
-            when(blobClient.getContainerReference(eq(containerName))).thenReturn(blobContainer);
-            when(blobClient.getContainerReference(eq(nonExisting))).thenReturn(nonExistingContainer);
-            when(blobContainer.getBlockBlobReference(eq(blobName))).thenReturn(blockBlob);
-            when(blobContainer.getBlockBlobReference(eq(nonExisting))).thenReturn(nonExistingBlob);
-            when(blockBlob.getName()).thenReturn(blobName);
-            when(blockBlob.openInputStream()).thenReturn(mock(BlobInputStream.class));
-            when(blockBlob.openOutputStream()).thenReturn(mock(BlobOutputStream.class));
-            when(nonExistingBlob.getName()).thenReturn(nonExisting);
+            when(serviceClientBuilder.buildClient()).thenReturn(blobServiceClient);
+            when(blobServiceClient.getBlobContainerClient(eq(containerName))).thenReturn(blobContainer);
+            when(blobServiceClient.getBlobContainerClient(eq(nonExisting))).thenReturn(nonExistingBlobContainer);
+            when(blobContainer.getBlobClient(eq(blobName))).thenReturn(blob);
+            when(blobContainer.getBlobClient(eq(nonExisting))).thenReturn(nonExistingBlob);
+            when(nonExistingBlobContainer.getBlobClient(anyString())).thenReturn(nonExistingBlob);
+            when(blob.getBlockBlobClient()).thenReturn(blockBlob);
+            when(nonExistingBlob.getBlockBlobClient()).thenReturn(nonExistingBlockBlob);
 
-            return storageAccount;
+            when(blobContainer.exists()).thenReturn(true);
+            when(nonExistingBlobContainer.exists()).thenReturn(false);
+            when(blockBlob.exists()).thenReturn(true);
+            when(nonExistingBlockBlob.exists()).thenReturn(false);
+
+            when(blobContainer.getBlobContainerName()).thenReturn(containerName);
+            when(blockBlob.getContainerName()).thenReturn(containerName);
+            when(blockBlob.getBlobName()).thenReturn(blobName);
+            when(nonExistingBlockBlob.getBlobName()).thenReturn(nonExisting);
+
+            when(blockBlob.openInputStream()).thenReturn(mock(BlobInputStream.class));
+            when(blockBlob.getBlobOutputStream()).thenReturn(mock(BlobOutputStream.class));
+
+            when(blockBlob.getProperties()).thenReturn(blobProperties);
+            when(blobProperties.getBlobSize()).thenReturn(contentLength);
+
+            return serviceClientBuilder;
         }
 
     }

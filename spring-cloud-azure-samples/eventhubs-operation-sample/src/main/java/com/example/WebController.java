@@ -9,7 +9,7 @@ package com.example;
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
-import com.microsoft.azure.spring.integration.core.api.Checkpointer;
+import com.microsoft.azure.spring.integration.core.api.reactor.Checkpointer;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.support.MessageBuilder;
@@ -34,7 +34,7 @@ public class WebController {
 
     @PostMapping("/messages")
     public String send(@RequestParam("message") String message) {
-        this.eventHubOperation.sendAsync(EVENT_HUB_NAME, MessageBuilder.withPayload(message).build());
+        this.eventHubOperation.sendAsync(EVENT_HUB_NAME, MessageBuilder.withPayload(message).build()).block();
         return message;
     }
 
@@ -48,11 +48,10 @@ public class WebController {
     private void messageReceiver(Message<?> message) {
         System.out.println(String.format("New message received: '%s'", message.getPayload()));
         Checkpointer checkpointer = message.getHeaders().get(AzureHeaders.CHECKPOINTER, Checkpointer.class);
-        checkpointer.success().handle((r, ex) -> {
-            if (ex == null) {
-                System.out.println(String.format("Message '%s' successfully checkpointed", message.getPayload()));
-            }
-            return null;
-        });
+        checkpointer.success()
+                .doOnSuccess(s -> System.out.println(String.format("Message '%s' successfully checkpointed",
+                        message.getPayload())))
+                .doOnError(System.out::println)
+                .subscribe();
     }
 }

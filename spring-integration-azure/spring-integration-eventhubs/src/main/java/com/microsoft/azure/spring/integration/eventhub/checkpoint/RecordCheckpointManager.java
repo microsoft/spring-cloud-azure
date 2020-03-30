@@ -6,8 +6,8 @@
 
 package com.microsoft.azure.spring.integration.eventhub.checkpoint;
 
-import com.microsoft.azure.eventhubs.EventData;
-import com.microsoft.azure.eventprocessorhost.PartitionContext;
+import com.azure.messaging.eventhubs.EventData;
+import com.azure.messaging.eventhubs.models.EventContext;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import org.slf4j.Logger;
@@ -29,14 +29,11 @@ class RecordCheckpointManager extends CheckpointManager {
                 () -> "RecordCheckpointManager should have checkpointMode record");
     }
 
-    public void onMessage(PartitionContext context, EventData eventData) {
-        context.checkpoint(eventData).whenComplete((v, t) -> {
-            if (t != null) {
-                logCheckpointFail(context, eventData, t);
-            } else {
-                logCheckpointSuccess(context, eventData);
-            }
-        });
+    public void onMessage(EventContext context, EventData eventData) {
+        context.updateCheckpointAsync()
+                .doOnError(t -> logCheckpointFail(context, eventData, t))
+                .doOnSuccess(v -> logCheckpointSuccess(context, eventData))
+                .subscribe();
     }
 
     @Override

@@ -6,24 +6,19 @@
 
 package com.microsoft.azure.spring.integration.storage.queue.util;
 
-import com.microsoft.azure.spring.integration.storage.queue.StorageQueueRuntimeException;
-import com.microsoft.azure.storage.StorageException;
-import com.microsoft.azure.storage.queue.CloudQueueMessage;
+import com.azure.storage.queue.models.QueueMessageItem;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class StorageQueueHelper {
-    public static String toString(CloudQueueMessage cloudQueueMessage){
+
+    public static String toString(QueueMessageItem messageItem){
         Map<String, Object> map = new LinkedHashMap<>();
 
-        try {
-            map.put("body", cloudQueueMessage.getMessageContentAsString());
-        } catch (StorageException e) {
-            throw new StorageQueueRuntimeException("Failed to get storage queue message content", e);
-        }
-        map.put("dequeueCount", cloudQueueMessage.getDequeueCount());
-        map.put("id", cloudQueueMessage.getId());
+        map.put("id", messageItem.getMessageId());
+        map.put("body", messageItem.getMessageText());
+        map.put("dequeueCount", messageItem.getDequeueCount());
 
         return map.toString();
     }

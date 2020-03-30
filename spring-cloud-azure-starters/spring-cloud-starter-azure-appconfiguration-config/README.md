@@ -1,4 +1,4 @@
-# Spring Cloud Azure Config
+# Azure App Configuration for Spring Cloud
 
 This project allows Spring Application to load properties from Azure Configuration Store.
 
@@ -7,6 +7,8 @@ This project allows Spring Application to load properties from Azure Configurati
 Please use this [sample](../../spring-cloud-azure-samples/azure-appconfiguration-sample/) as a reference for how to use this starter.
 
 ### Dependency Management
+
+There are two libraries that can be used spring-cloud-azure-appconfiguration-config and spring-cloud-azure-appconfiguration-config-web. There are two differences between them the first being the web version takes on spring-web as a dependency, and the web version will attempt a refresh when the application is active when the cache expires. For more information on refresh see the [Configuration Refresh](#Configuration-Refresh) section.
 
 #### Maven Coordinates
 
@@ -32,7 +34,7 @@ or
 
 ```gradle
 dependencies {
-    compile group: 'com.microsoft.azure', name: 'spring-cloud-starter-azure-appconfiguration-config', version: '{starter-version}'
+    compile group: 'com.microsoft.azure', name: 'spring-cloud-azure-appconfiguration-config', version: '{starter-version}'
 }
 ```
 
@@ -40,7 +42,7 @@ or
 
 ```gradle
 dependencies {
-    compile group: 'com.microsoft.azure', name: 'spring-cloud-starter-azure-appconfiguration-config', version: '{starter-version}'
+    compile group: 'com.microsoft.azure', name: 'spring-cloud-azure-appconfiguration-config-web', version: '{starter-version}'
 }
 ```
 
@@ -60,11 +62,11 @@ spring.cloud.azure.appconfiguration.managed-identity.client-id | Client id of th
 
 Name | Description | Required | Default
 ---|---|---|---
-spring.cloud.azure.appconfiguration.stores[0].endpoint | Endpoint of the configuration store, required when `connection-string` is empty. If `connection-string` is empty and application is deployed on Azure VM or App Service with managed identity enabled, will try to load `connection-string` from Azure Resource Management. | Conditional | null
+spring.cloud.azure.appconfiguration.stores[0].endpoint | When the endpoint of an App Configuration store is specified, a managed identity or a token credential provided using `AppConfigCredentialProvider` will be used to connect to the App Configuration service. An `IllegalArgumentException` will be thrown if the endpoint and connection-string are specified at the same time. | Conditional | null
 spring.cloud.azure.appconfiguration.stores[0].prefix | The prefix of the key name in the configuration store, e.g., /my-prefix/application/key.name | No |  null
-spring.cloud.azure.appconfiguration.stores[0].connection-string | Required when `name` is empty, otherwise, can be loaded automatically on Azure Virtual Machine or App Service | Conditional | null
+spring.cloud.azure.appconfiguration.stores[0].connection-string | When the connection-string of an App Configuration store is specified, HMAC authentication will be used to connect to the App Configuration service. An `IllegalArgumentException` will be thrown if the endpoint and connection-string are specified at the same time. | Conditional | null
 spring.cloud.azure.appconfiguration.stores[0].label | Comma separated list of label values, by default will query empty labeled value. If you want to specify *empty*(null) label explicitly, use `%00`, e.g., spring.cloud.azure.appconfiguration.stores[0].label=%00,v0 | No |  null
-spring.cloud.azure.appconfiguration.stores[0].fail-fast | Whether throw RuntimeException or not when exception occurs. If an exception does occur when false the store is skipped. | No |  true
+spring.cloud.azure.appconfiguration.stores[0].fail-fast | Whether throw `RuntimeException` or not when fail to read App Configuration during application start-up. If an exception does occur during startup when set to false the store is skipped. | No |  true
 spring.cloud.azure.appconfiguration.stores[0].watched-key | The single watched key(or by default *) used to indicate configuration change.  | No | *
 
 ## Advanced usage
@@ -93,6 +95,14 @@ spring.cloud.azure.appconfiguration.stores[0].label=[my-label1], [my-label2]
 
 Multiple labels can be separated with comma, if duplicate keys exists for multiple labels, the last label has highest priority.
 
+### Spring Profiles
+
+Spring Profiles are supported by setting labels on your configurations that match your profile. Then set your label on your config store:
+
+```properties
+spring.cloud.azure.appconfiguration.stores[0].label=${spring.profiles.active}
+```
+
 ### Configuration Refresh
 
 Configuration Refresh feature allows the application to load the latest property value from configuration store automatically, without restarting the application.
@@ -120,7 +130,16 @@ In the console library calling refreshConfiguration on `AzureCloudConfigRefresh`
 Failfast feature decides whether throw RuntimeException or not when exception happens. If an exception does occur when false the store is skipped. Any store skipped on startup will be automatically skipped on Refresh. By default, failfast is enabled, it can be disabled with below configuration:
 
 ```properties
-spring.cloud.azure.appconfiguration.fail-fast=false
+spring.cloud.azure.appconfiguration.stores[0].fail-fast=false
+```
+
+### Placeholders in App Configuration
+
+The values in App Configuration are filtered through the existing Environment when they are used. Placeholders can be used just like in `application.properties`, but with the added benefit of support for key vault references. Example with kafka:
+
+```properties
+/application/app.name=MyApp
+/application/app.description=${app.name} is configured with Azure App Configuration
 ```
 
 ### Use Managed Identity to access App Configuration
@@ -139,20 +158,29 @@ Follow the below steps to enable accessing App Configuration with managed identi
 
 The configuration store endpoint must be configured when `connection-string` is empty. When using a User Assigned Id the value `spring.cloud.azure.appconfiguration.managed-identity.client-id=[client-id]` must be set.
 
+#### bootstrap.application
+
+```application
+spring.cloud.azure.appconfiguration.stores[0].endpoint=[config-store-endpoint]
+
+#If Using User Assigned Identity
+spring.cloud.azure.appconfiguration.managed-identity.client-id=[client-id]
+```
+
 ### Token Credential Provider
 
-Another method of authentication is using AppConfigCredentialProvider and/or KeyVaultCredentialProvider. By implementing either of these classes and providing and generating a @Bean of them will enable authentication through any method defined by the [Java Azure SDK][azure_identity_sdk].
+Another method of authentication is using AppConfigCredentialProvider and/or KeyVaultCredentialProvider. By implementing either of these classes and providing and generating a @Bean of them will enable authentication through any method defined by the [Java Azure SDK][azure_identity_sdk]. The uri value is the endpoint/dns name of the connection service, so if needed different credentials can be used per config store/key vault.
 
 ```java
 public class MyCredentials implements AppConfigCredentialProvider, KeyVaultCredentialProvider {
 
     @Override
-    public TokenCredential credentialForAppConfig(String uri) {
+    public TokenCredential getAppConfigCredential(String uri) {
             return buildCredential();
     }
 
     @Override
-    public TokenCredential credentialForKeyVault(String uri) {
+    public TokenCredential getKeyVaultCredential(String uri) {
             return buildCredential();
     }
 
@@ -162,19 +190,6 @@ public class MyCredentials implements AppConfigCredentialProvider, KeyVaultCrede
 
 }
 ```
-
-### bootstrap.application
-
-```application
-spring.cloud.azure.appconfiguration.stores[0].endpoint=[config-store-endpoint]
-
-#If Using option 3
-spring.cloud.azure.appconfiguration.managed-identity.client-id=[client-id]
-```
-
-### Azure Function NoSuchMethodError
-
-When running an applicaiton in an Azure Function or local as an Azure function an Error can be seen that is `Exception: NoSuchMethodError: io.netty.handler.ssl.SslProvider.isAlpnSupported(Lio/netty/handler/ssl/SslProvider;)`. This is caused by a dependency conflict between the Azure SDK and Azure Function Java Worker, which runs Azure Functions. This can be solved by creating a [Sharded Jar](https://github.com/Azure/azure-sdk-for-java/wiki/Creating-a-Shaded-Jar). Because the conflict is with an external Jar the running application can be the sharded jar.
 
 <!-- LINKS -->
 [azure]: https://azure.microsoft.com

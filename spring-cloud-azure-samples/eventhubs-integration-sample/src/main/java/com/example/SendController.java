@@ -6,7 +6,7 @@
 
 package com.example;
 
-import com.microsoft.azure.spring.integration.core.DefaultMessageHandler;
+import com.microsoft.azure.spring.integration.core.api.reactor.DefaultMessageHandler;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

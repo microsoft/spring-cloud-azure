@@ -9,7 +9,6 @@ package com.microsoft.azure.servicebus.stream.binder;
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusConsumerProperties;
 import com.microsoft.azure.servicebus.stream.binder.properties.ServiceBusTopicExtendedBindingProperties;
 import com.microsoft.azure.servicebus.stream.binder.provisioning.ServiceBusChannelProvisioner;
-import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.SendOperation;
 import com.microsoft.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter;
 import com.microsoft.azure.spring.integration.servicebus.topic.ServiceBusTopicOperation;
@@ -50,6 +49,8 @@ public class ServiceBusTopicMessageChannelBinder extends
         ServiceBusTopicInboundChannelAdapter inboundAdapter =
                 new ServiceBusTopicInboundChannelAdapter(destination.getName(), this.serviceBusTopicOperation, group);
         inboundAdapter.setBeanFactory(getBeanFactory());
+        ErrorInfrastructure errorInfrastructure = registerErrorInfrastructure(destination, group, properties);
+        inboundAdapter.setErrorChannel(errorInfrastructure.getErrorChannel());
         return inboundAdapter;
     }
 

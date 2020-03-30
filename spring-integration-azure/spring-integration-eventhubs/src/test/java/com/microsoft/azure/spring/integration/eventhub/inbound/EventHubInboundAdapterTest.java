@@ -6,26 +6,27 @@
 
 package com.microsoft.azure.spring.integration.eventhub.inbound;
 
-import com.microsoft.azure.eventprocessorhost.PartitionContext;
+import com.azure.messaging.eventhubs.CheckpointStore;
+import com.azure.messaging.eventhubs.models.EventContext;
+import com.azure.messaging.eventhubs.models.PartitionContext;
 import com.microsoft.azure.spring.integration.eventhub.support.EventHubTestOperation;
 import com.microsoft.azure.spring.integration.test.support.InboundChannelAdapterTest;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.concurrent.CompletableFuture;
-
 @RunWith(MockitoJUnitRunner.class)
 public class EventHubInboundAdapterTest extends InboundChannelAdapterTest<EventHubInboundChannelAdapter> {
 
     @Mock
-    PartitionContext context;
+    EventContext partitionContext;
+
+    @Mock
+    CheckpointStore checkpointStore;
 
     @Override
     public void setUp() {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        future.complete(null);
-        this.adapter = new EventHubInboundChannelAdapter(destination, new EventHubTestOperation(null, () -> context),
-                consumerGroup);
+        this.adapter = new EventHubInboundChannelAdapter(destination, new EventHubTestOperation(null,
+                () -> partitionContext), consumerGroup);
     }
 }

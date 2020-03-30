@@ -6,8 +6,8 @@
 
 package com.microsoft.azure.spring.integration.eventhub.checkpoint;
 
-import com.microsoft.azure.eventhubs.EventData;
-import com.microsoft.azure.eventprocessorhost.PartitionContext;
+import com.azure.messaging.eventhubs.EventData;
+import com.azure.messaging.eventhubs.models.EventContext;
 import com.microsoft.azure.spring.integration.core.api.CheckpointConfig;
 import com.microsoft.azure.spring.integration.core.api.CheckpointMode;
 import org.slf4j.Logger;
@@ -20,7 +20,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * Do checkpoint after each batch. Effective when {@link CheckpointMode#BATCH}
  *
  * @author Warren Zhu
+ * @author Xiaolu Dai
  */
+@Deprecated
 class BatchCheckpointManager extends CheckpointManager {
     private static final Logger log = LoggerFactory.getLogger(BatchCheckpointManager.class);
     private final ConcurrentHashMap<String, EventData> lastEventByPartition = new ConcurrentHashMap<>();
@@ -32,20 +34,18 @@ class BatchCheckpointManager extends CheckpointManager {
     }
 
     @Override
-    public void onMessage(PartitionContext context, EventData eventData) {
-        this.lastEventByPartition.put(context.getPartitionId(), eventData);
+    public void onMessage(EventContext context, EventData eventData) {
+        this.lastEventByPartition.put(context.getPartitionContext().getPartitionId(), eventData);
     }
 
     @Override
-    public void completeBatch(PartitionContext context) {
-        EventData eventData = this.lastEventByPartition.get(context.getPartitionId());
-        context.checkpoint().whenComplete((v, t) -> {
-            if (t != null) {
-                logCheckpointFail(context, eventData, t);
-            } else {
-                logCheckpointSuccess(context, eventData);
-            }
-        });
+    public void completeBatch(EventContext context) {
+        EventData eventData = this.lastEventByPartition.get(context.getPartitionContext().getPartitionId());
+
+        context.updateCheckpointAsync()
+                .doOnError(t -> logCheckpointFail(context, eventData, t))
+                .doOnSuccess(v -> logCheckpointSuccess(context, eventData))
+                .subscribe();
     }
 
     @Override

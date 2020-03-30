@@ -6,18 +6,20 @@
 
 package com.microsoft.azure.spring.cloud.storage;
 
-import com.microsoft.azure.storage.StorageException;
-import com.microsoft.azure.storage.file.CloudFile;
-import com.microsoft.azure.storage.file.CloudFileClient;
-import com.microsoft.azure.storage.file.CloudFileShare;
+import com.azure.storage.file.share.ShareClient;
+import com.azure.storage.file.share.ShareFileClient;
+import com.azure.storage.file.share.ShareServiceClient;
+import com.azure.storage.file.share.models.ShareStorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
 
-import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 
 /**
@@ -32,29 +34,24 @@ public class FileStorageResource extends AzureStorageResource {
     private static final String MSG_FAIL_OPEN_OUTPUT = "Failed to open output stream of file";
     private static final String MSG_FAIL_CHECK_EXIST = "Failed to check existence of file or container";
     private static final String MSG_FAIL_OPEN_INPUT = "Failed to open input stream of file";
-    private final CloudFileClient fileClient;
+    private final ShareServiceClient shareServiceClient;
+    private final ShareClient shareClient;
+    private final ShareFileClient shareFileClient;
     private final String location;
-    private final CloudFile cloudFile;
     private final boolean autoCreateFiles;
-    private final CloudFileShare fileShare;
 
-    public FileStorageResource(CloudFileClient fileClient, String location) {
-        this(fileClient, location, false);
+    public FileStorageResource(ShareServiceClient shareServiceClient, String location) {
+        this(shareServiceClient, location, false);
     }
 
-    FileStorageResource(CloudFileClient fileClient, String location, boolean autoCreateFiles) {
+    FileStorageResource(ShareServiceClient shareServiceClient, String location, boolean autoCreateFiles) {
         assertIsAzureStorageLocation(location);
         this.autoCreateFiles = autoCreateFiles;
-        this.fileClient = fileClient;
         this.location = location;
+        this.shareServiceClient = shareServiceClient;
 
-        try {
-            this.fileShare = fileClient.getShareReference(getContainerName(location));
-            this.cloudFile = fileShare.getRootDirectoryReference().getFileReference(getFileName(location));
-        } catch (URISyntaxException | StorageException e) {
-            log.error(MSG_FAIL_GET, e);
-            throw new RuntimeException(MSG_FAIL_GET, e);
-        }
+        this.shareClient = shareServiceClient.getShareClient(getContainerName(location));
+        this.shareFileClient = shareClient.getFileClient(getFilename(location));
     }
 
     @Override
@@ -67,8 +64,8 @@ public class FileStorageResource extends AzureStorageResource {
                     throw new FileNotFoundException("The file was not found: " + this.location);
                 }
             }
-            return this.cloudFile.openWriteExisting();
-        } catch (URISyntaxException | StorageException e) {
+            return this.shareFileClient.getFileOutputStream();
+        } catch (ShareStorageException e) {
             log.error(MSG_FAIL_OPEN_OUTPUT, e);
             throw new IOException(MSG_FAIL_OPEN_OUTPUT, e);
         }
@@ -76,62 +73,53 @@ public class FileStorageResource extends AzureStorageResource {
 
     @Override
     public boolean exists() {
-        try {
-            return this.fileShare.exists() && cloudFile.exists();
-        } catch (StorageException e) {
-            log.error(MSG_FAIL_CHECK_EXIST, e);
-            throw new StorageRuntimeException(MSG_FAIL_CHECK_EXIST, e);
-        }
+        return this.shareClient.exists() && shareFileClient.exists();
     }
 
     @Override
     public URL getURL() throws IOException {
-        return this.getURI().toURL();
+        return new URL(this.shareFileClient.getFileUrl());
     }
 
     @Override
-    public URI getURI() throws IOException {
-        return this.cloudFile.getStorageUri().getPrimaryUri();
-    }
-
-    @Override
-    public File getFile() throws IOException {
+    public File getFile() {
         throw new UnsupportedOperationException(getDescription() + " cannot be resolved to absolute file path");
     }
 
     @Override
-    public long contentLength() throws IOException {
-        return this.cloudFile.getProperties().getLength();
+    public long contentLength() {
+        return this.shareFileClient.getProperties().getContentLength();
     }
 
     @Override
-    public long lastModified() throws IOException {
-        return this.cloudFile.getProperties().getLastModified().getTime();
+    public long lastModified() {
+        return this.shareFileClient.getProperties().getLastModified().toEpochSecond() * 1000;
     }
 
     @Override
-    public Resource createRelative(String relativePath) throws IOException {
+    public Resource createRelative(String relativePath) {
         String newLocation = this.location + "/" + relativePath;
-        return new FileStorageResource(this.fileClient, newLocation, autoCreateFiles);
+        return new FileStorageResource(this.shareServiceClient, newLocation, autoCreateFiles);
     }
 
     @Override
     public String getFilename() {
-        return this.cloudFile.getName();
+        final String[] split = this.shareFileClient.getFilePath().split("/");
+        return split[split.length - 1];
     }
 
     @Override
     public String getDescription() {
         return String.format("Azure storage account file resource [container='%s', file='%s']",
-                this.fileShare.getName(), this.cloudFile.getName());
+                this.shareFileClient.getShareName(), this.getFilename());
     }
 
     @Override
     public InputStream getInputStream() throws IOException {
         try {
             assertExisted();
-            return this.cloudFile.openRead();
-        } catch (StorageException e) {
+            return this.shareFileClient.openInputStream();
+        } catch (ShareStorageException e) {
             log.error("Failed to open input stream of cloud file", e);
             throw new IOException("Failed to open input stream of cloud file");
         }
@@ -148,10 +136,13 @@ public class FileStorageResource extends AzureStorageResource {
         }
     }
 
-    private void create() throws StorageException, URISyntaxException {
-        this.fileShare.createIfNotExists();
-        //TODO: create method must provide file length, but we don't know actual
-        //file size when creating. Pending on github issue feedback.
-        this.cloudFile.create(1024);
+    private void create() throws ShareStorageException {
+        if (!shareClient.exists()) {
+            this.shareClient.create();
+        }
+        if (!shareFileClient.exists()) {
+            //TODO: create method must provide file length, but we don't know actual
+            this.shareFileClient.create(1024);
+        }
     }
 }

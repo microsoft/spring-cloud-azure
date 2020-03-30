@@ -26,7 +26,7 @@ import java.util.Map;
 public abstract class AbstractAzureMessageConverter<T> implements AzureMessageConverter<T> {
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    private static byte[] toPayload(Object object) {
+    protected static byte[] toPayload(Object object) {
         try {
             return objectMapper.writeValueAsBytes(object);
         } catch (JsonProcessingException e) {

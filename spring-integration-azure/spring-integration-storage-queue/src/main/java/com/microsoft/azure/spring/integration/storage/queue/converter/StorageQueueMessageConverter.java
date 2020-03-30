@@ -6,29 +6,30 @@
 
 package com.microsoft.azure.spring.integration.storage.queue.converter;
 
+import com.azure.storage.queue.models.QueueMessageItem;
 import com.microsoft.azure.spring.integration.core.converter.AbstractAzureMessageConverter;
-import com.microsoft.azure.spring.integration.core.converter.ConversionException;
-import com.microsoft.azure.storage.StorageException;
-import com.microsoft.azure.storage.queue.CloudQueueMessage;
 
-public class StorageQueueMessageConverter extends AbstractAzureMessageConverter<CloudQueueMessage> {
+import java.nio.charset.StandardCharsets;
+
+public class StorageQueueMessageConverter extends AbstractAzureMessageConverter<QueueMessageItem> {
+
     @Override
-    protected byte[] getPayload(CloudQueueMessage azureMessage) {
-        try {
-            return azureMessage.getMessageContentAsByte();
-        } catch (StorageException e) {
-            throw new ConversionException("Failed to get queue message content", e);
-        }
+    protected byte[] getPayload(QueueMessageItem azureMessage) {
+        return azureMessage.getMessageText().getBytes(StandardCharsets.UTF_8);
     }
 
     @Override
-    protected CloudQueueMessage fromString(String payload) {
-        return new CloudQueueMessage(payload);
+    protected QueueMessageItem fromString(String payload) {
+        final QueueMessageItem queueMessageItem = new QueueMessageItem();
+        queueMessageItem.setMessageText(payload);
+        return queueMessageItem;
     }
 
     @Override
-    protected CloudQueueMessage fromByte(byte[] payload) {
-        return new CloudQueueMessage(payload);
+    protected QueueMessageItem fromByte(byte[] payload) {
+        final QueueMessageItem queueMessageItem = new QueueMessageItem();
+        queueMessageItem.setMessageText(new String(payload, StandardCharsets.UTF_8));
+        return queueMessageItem;
     }
 
 }

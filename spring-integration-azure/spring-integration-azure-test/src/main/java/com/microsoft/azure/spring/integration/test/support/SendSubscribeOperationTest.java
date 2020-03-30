@@ -24,7 +24,9 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public abstract class SendSubscribeOperationTest<T extends SendOperation> {
 
@@ -100,7 +102,7 @@ public abstract class SendSubscribeOperationTest<T extends SendOperation> {
     }
 
     @Before
-    public abstract void setUp();
+    public abstract void setUp() throws Exception;
 
     protected abstract void verifyCheckpointSuccessCalled(int times);
 

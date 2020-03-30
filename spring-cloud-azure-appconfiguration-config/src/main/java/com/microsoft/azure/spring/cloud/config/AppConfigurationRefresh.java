@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.util.StringUtils;
 
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
@@ -133,11 +132,11 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
     private boolean refresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
         String storeNameWithSuffix = store.getEndpoint() + storeSuffix;
         SettingSelector settingSelector = new SettingSelector().setKeyFilter(watchedKeyNames)
-                .setLabelFilter(StringUtils.arrayToCommaDelimitedString(store.getLabels()));
+                .setLabelFilter("*");
 
         List<ConfigurationSetting> items = clientStore.listSettingRevisons(settingSelector, store.getEndpoint());
 
-        String etag = "";
+        String etag = null;
         // If there is no result, etag will be considered empty.
         // A refresh will trigger once the selector returns a value.
         if (items != null && !items.isEmpty()) {
@@ -145,15 +144,14 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
         }
 
         if (StateHolder.getEtagState(storeNameWithSuffix) == null) {
-            // Should never be the case as Property Source should set the state, but if
-            // etag != null return true.
+            // On startup there was no Configurations, but now there is.
             if (etag != null) {
                 return true;
             }
             return false;
         }
 
-        if (!etag.equals(StateHolder.getEtagState(storeNameWithSuffix).getETag())) {
+        if (etag != null && !etag.equals(StateHolder.getEtagState(storeNameWithSuffix).getETag())) {
             LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
                     store.getEndpoint(), watchedKeyNames);
             if (this.eventDataInfo.isEmpty()) {

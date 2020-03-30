@@ -8,6 +8,7 @@ package com.microsoft.azure.spring.integration.servicebus.converter;
 
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.Message;
+import com.microsoft.azure.servicebus.MessageBody;
 import com.microsoft.azure.spring.integration.core.AzureHeaders;
 import com.microsoft.azure.spring.integration.core.converter.AbstractAzureMessageConverter;
 import org.slf4j.Logger;
@@ -33,7 +34,21 @@ public class ServiceBusMessageConverter extends AbstractAzureMessageConverter<IM
 
     @Override
     protected byte[] getPayload(IMessage azureMessage) {
-        return azureMessage.getBody();
+        MessageBody messageBody = azureMessage.getMessageBody();
+        if (messageBody == null) {
+            return null;
+        }
+
+        switch (messageBody.getBodyType()) {
+            case BINARY:
+                return messageBody.getBinaryData().stream().findFirst().orElse(null);
+            case VALUE:
+                return String.valueOf(messageBody.getValueData()).getBytes();
+            case SEQUENCE:
+                return toPayload(messageBody.getSequenceData().stream().findFirst().orElse(null));
+            default:
+                return null;
+        }
     }
 
     @Override
@@ -54,20 +69,20 @@ public class ServiceBusMessageConverter extends AbstractAzureMessageConverter<IM
 
             if (contentType instanceof MimeType) {
                 serviceBusMessage.setContentType(((MimeType) contentType).toString());
-            } else /* contentType is String */ {
+            } else {
                 serviceBusMessage.setContentType((String) contentType);
             }
         }
 
         if (headers.containsKey(MessageHeaders.ID)) {
-            serviceBusMessage.setMessageId(headers.get(MessageHeaders.ID, UUID.class).toString());
+            serviceBusMessage.setMessageId(String.valueOf(headers.get(MessageHeaders.ID, UUID.class)));
         }
 
         if (headers.containsKey(MessageHeaders.REPLY_CHANNEL)) {
             serviceBusMessage.setReplyTo(headers.get(MessageHeaders.REPLY_CHANNEL, String.class));
         }
 
-        headers.entrySet().forEach(e->serviceBusMessage.getProperties().put(e.getKey(), e.getValue().toString()));
+        headers.forEach((key, value) -> serviceBusMessage.getProperties().put(key, value.toString()));
     }
 
     @Override

@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.microsoft.azure</groupId>
     <artifactId>spring-cloud-azure-dependencies</artifactId>
-    <version>1.2.2-SNAPSHOT</version>
+    <version>1.2.3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Azure dependencies BOM</name>
     <description>BOM for Spring Cloud Azure dependencies</description>
@@ -50,22 +50,26 @@
         <mockito.version>2.8.9</mockito.version>
         <spring.cloud.version>Hoxton.RELEASE</spring.cloud.version>
         <spring.boot.version>2.2.0.RELEASE</spring.boot.version>
-        <spring.cloud.azure.version>1.2.2-SNAPSHOT</spring.cloud.azure.version>
+        <spring.cloud.azure.version>1.2.3-SNAPSHOT</spring.cloud.azure.version>
         <commons.io.version>2.6</commons.io.version>
         <hibernate.validator.version>6.1.0.Final</hibernate.validator.version>
         <google.guava.version>20.0</google.guava.version>
         <azure.sdk.version>1.23.0</azure.sdk.version>
-        <azure.eventhubs.eph.version>2.4.0</azure.eventhubs.eph.version>
+        <azure.eventhubs.version>5.0.2</azure.eventhubs.version>
+        <azure.eventhubs.checkpoint.store.version>1.0.2</azure.eventhubs.checkpoint.store.version>
+        <azure.storage.blob.version>12.4.0</azure.storage.blob.version>
+        <azure.storage.file.version>12.3.0</azure.storage.file.version>
+        <azure.storage.queue.version>12.4.0</azure.storage.queue.version>
         <azure.keyvault.version>1.0.0</azure.keyvault.version>
         <azure.servicebus.version>3.1.1</azure.servicebus.version>
         <javax.jms-api.version>2.0.1</javax.jms-api.version>
         <qpid-jms-client.version>0.43.0</qpid-jms-client.version>
         <okhttp3.version>3.11.0</okhttp3.version>
-		<azure-core.version>1.2.0</azure-core.version>
-		<azure-data-appconfiguration.version>1.0.1</azure-data-appconfiguration.version>
-		<azure-identity.version>1.0.2</azure-identity.version>
-		<azure-security-keyvault-secrets.version>4.1.0</azure-security-keyvault-secrets.version>
-		<azure-core-http-netty.version>1.2.0</azure-core-http-netty.version>
+		<azure-core.version>1.3.0</azure-core.version>
+		<azure-data-appconfiguration.version>1.1.0</azure-data-appconfiguration.version>
+		<azure-identity.version>1.0.4</azure-identity.version>
+		<azure-security-keyvault-secrets.version>4.1.1</azure-security-keyvault-secrets.version>
+		<azure-core-http-netty.version>1.3.0</azure-core-http-netty.version>
     </properties>
 
     <dependencyManagement>
@@ -216,10 +220,38 @@
             </dependency>
 
             <dependency>
-                <groupId>com.microsoft.azure</groupId>
-                <artifactId>azure-eventhubs-eph</artifactId>
-                <version>${azure.eventhubs.eph.version}</version>
+                <groupId>com.azure</groupId>
+                <artifactId>azure-messaging-eventhubs</artifactId>
+                <version>${azure.eventhubs.version}</version>
             </dependency>
+
+            <!-- Contains Azure Storage Blobs checkpoint store when using EventProcessorClient -->
+            <dependency>
+                <groupId>com.azure</groupId>
+                <artifactId>azure-messaging-eventhubs-checkpointstore-blob</artifactId>
+                <version>${azure.eventhubs.checkpoint.store.version}</version>
+            </dependency>
+
+            <!-- Storage -->
+            <dependency>
+                <groupId>com.azure</groupId>
+                <artifactId>azure-storage-blob</artifactId>
+                <version>${azure.storage.blob.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.azure</groupId>
+                <artifactId>azure-storage-file-share</artifactId>
+                <version>${azure.storage.file.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.azure</groupId>
+                <artifactId>azure-storage-queue</artifactId>
+                <version>${azure.storage.queue.version}</version>
+            </dependency>
+
+
             <dependency>
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>azure-servicebus</artifactId>

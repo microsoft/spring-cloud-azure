@@ -6,26 +6,30 @@
 
 package com.microsoft.azure.spring.integration.eventhub.api;
 
-import java.util.Optional;
 
-import com.microsoft.azure.eventhubs.EventHubClient;
-import com.microsoft.azure.eventhubs.PartitionSender;
-import com.microsoft.azure.eventprocessorhost.EventProcessorHost;
+import com.azure.messaging.eventhubs.EventHubConsumerAsyncClient;
+import com.azure.messaging.eventhubs.EventHubProducerAsyncClient;
+import com.azure.messaging.eventhubs.EventProcessorClient;
+import com.microsoft.azure.spring.integration.eventhub.impl.EventHubProcessor;
+
+import java.util.Optional;
 
 /**
  * @author Warren Zhu
  * @author Domenico Sibilio
+ * @author Xiaolu Dai
  */
 public interface EventHubClientFactory {
 
-    EventHubClient getOrCreateClient(String name);
+    EventHubConsumerAsyncClient getOrCreateConsumerClient(String eventHubName, String consumerGroup);
 
-    PartitionSender getOrCreatePartitionSender(String eventhub, String partition);
+    EventHubProducerAsyncClient getOrCreateProducerClient(String eventHubName);
 
-    EventProcessorHost getOrCreateEventProcessorHost(String name, String consumerGroup);
+    EventProcessorClient createEventProcessorClient(String eventHubName, String consumerGroup,
+                                                    EventHubProcessor eventHubProcessor);
 
-    Optional<EventProcessorHost> getEventProcessorHost(String name, String consumerGroup);
+    Optional<EventProcessorClient> getEventProcessorClient(String eventHubName, String consumerGroup);
 
-    EventProcessorHost removeEventProcessorHost(String name, String consumerGroup);
+    EventProcessorClient removeEventProcessorClient(String eventHubName, String consumerGroup);
 
 }
