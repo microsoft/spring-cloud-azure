@@ -157,12 +157,10 @@ public class AppConfigurationPropertySourceTest {
         appProperties = new AppConfigurationProviderProperties();
         ConfigStore configStore = new ConfigStore();
         configStore.setEndpoint(TEST_STORE_NAME);
-        Map<String, List<String>> storeContextsMap = new HashMap<String, List<String>>();
         ArrayList<String> contexts = new ArrayList<String>();
         contexts.add("/application/*");
-        storeContextsMap.put(TEST_STORE_NAME, contexts);
         propertySource = new AppConfigurationPropertySource(TEST_CONTEXT, configStore, "\0",
-                appConfigurationProperties, clientStoreMock, appProperties, tokenCredentialProvider, storeContextsMap);
+                appConfigurationProperties, clientStoreMock, appProperties, tokenCredentialProvider);
 
         testItems = new ArrayList<ConfigurationSetting>();
         testItems.add(item1);
@@ -181,8 +179,7 @@ public class AppConfigurationPropertySourceTest {
     public void testPropCanBeInitAndQueried() throws IOException {
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(testItems)
                 .thenReturn(FEATURE_ITEMS);
-        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(testItems)
-                .thenReturn(FEATURE_ITEMS);
+        
         FeatureSet featureSet = new FeatureSet();
         try {
             propertySource.initProperties(featureSet);

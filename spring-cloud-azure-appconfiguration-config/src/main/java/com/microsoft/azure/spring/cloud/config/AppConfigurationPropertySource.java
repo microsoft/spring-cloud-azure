@@ -5,12 +5,9 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import static com.microsoft.azure.spring.cloud.config.Constants.CONFIGURATION_SUFFIX;
 import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_FLAG_CONTENT_TYPE;
 import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_FLAG_PREFIX;
 import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_MANAGEMENT_KEY;
-import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_STORE_WATCH_KEY;
-import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_SUFFIX;
 import static com.microsoft.azure.spring.cloud.config.Constants.KEY_VAULT_CONTENT_TYPE;
 
 import java.io.IOException;
@@ -27,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
 
 import com.azure.data.appconfiguration.ConfigurationClient;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
@@ -66,12 +62,9 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
 
     private ConfigStore configStore;
 
-    private Map<String, List<String>> storeContextsMap;
-
     AppConfigurationPropertySource(String context, ConfigStore configStore, String label,
             AppConfigurationProperties appConfigurationProperties, ClientStore clients,
-            AppConfigurationProviderProperties appProperties, KeyVaultCredentialProvider keyVaultCredentialProvider,
-            Map<String, List<String>> storeContextsMap) {
+            AppConfigurationProviderProperties appProperties, KeyVaultCredentialProvider keyVaultCredentialProvider) {
         // The context alone does not uniquely define a PropertySource, append storeName
         // and label to uniquely define a PropertySource
         super(context + configStore.getEndpoint() + "/" + label);
@@ -83,7 +76,6 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
         this.keyVaultClients = new HashMap<String, KeyVaultClient>();
         this.clients = clients;
         this.keyVaultCredentialProvider = keyVaultCredentialProvider;
-        this.storeContextsMap = storeContextsMap;
     }
 
     @Override
@@ -146,34 +138,7 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
             }
         }
 
-        featureSet = addToFeatureSet(featureSet, features, date);
-
-        // Setting new ETag values for Watch
-        String watchedKeyNames = clients.watchedKeyNames(configStore, storeContextsMap);
-        settingSelector = new SettingSelector().setKeyFilter(watchedKeyNames)
-                .setLabelFilter(StringUtils.arrayToCommaDelimitedString(configStore.getLabels()));
-
-        List<ConfigurationSetting> configurationRevisions = clients.listSettingRevisons(settingSelector, storeName);
-
-        settingSelector = new SettingSelector().setKeyFilter(FEATURE_STORE_WATCH_KEY)
-                .setLabelFilter(StringUtils.arrayToCommaDelimitedString(configStore.getLabels()));
-
-        List<ConfigurationSetting> featureRevisions = clients.listSettingRevisons(settingSelector, storeName);
-
-        if (configurationRevisions != null && !configurationRevisions.isEmpty()) {
-            StateHolder.setEtagState(configStore.getEndpoint() + CONFIGURATION_SUFFIX, configurationRevisions.get(0));
-        } else {
-            StateHolder.setEtagState(configStore.getEndpoint() + CONFIGURATION_SUFFIX, new ConfigurationSetting());
-        }
-
-        if (featureRevisions != null && !featureRevisions.isEmpty()) {
-            StateHolder.setEtagState(configStore.getEndpoint() + FEATURE_SUFFIX, featureRevisions.get(0));
-        } else {
-            StateHolder.setEtagState(configStore.getEndpoint() + FEATURE_SUFFIX, new ConfigurationSetting());
-        }
-        StateHolder.setLoadState(configStore.getEndpoint(), true);
-
-        return featureSet;
+        return addToFeatureSet(featureSet, features, date);
     }
 
     /**
