@@ -108,10 +108,7 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
     FeatureSet initProperties(FeatureSet featureSet) throws IOException {
         String storeName = configStore.getEndpoint();
         Date date = new Date();
-        SettingSelector settingSelector = new SettingSelector();
-        if (!label.equals("%00")) {
-            settingSelector.setLabelFilter(label);
-        }
+        SettingSelector settingSelector = new SettingSelector().setLabelFilter(label);
 
         // * for wildcard match
         settingSelector.setKeyFilter(context + "*");
