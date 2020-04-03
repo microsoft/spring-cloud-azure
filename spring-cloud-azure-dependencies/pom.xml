@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.microsoft.azure</groupId>
     <artifactId>spring-cloud-azure-dependencies</artifactId>
-    <version>1.1.3-SNAPSHOT</version>
+    <version>1.1.3</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Azure dependencies BOM</name>
     <description>BOM for Spring Cloud Azure dependencies</description>
@@ -56,7 +56,7 @@
         <azure.sdk.version>1.23.0</azure.sdk.version>
         <azure.eventhubs.version>5.0.2</azure.eventhubs.version>
         <azure.eventhubs.checkpoint.store.version>1.0.2</azure.eventhubs.checkpoint.store.version>
-        <azure.storage.blob.version>12.4.0</azure.storage.blob.version>
+        <azure.storage.blob.version>12.5.0</azure.storage.blob.version>
         <azure.storage.file.version>12.3.0</azure.storage.file.version>
         <azure.storage.queue.version>12.4.0</azure.storage.queue.version>
         <azure.keyvault.version>1.0.0</azure.keyvault.version>
@@ -64,7 +64,7 @@
         <javax.jms-api.version>2.0.1</javax.jms-api.version>
         <spring-jms.version>5.1.8.RELEASE</spring-jms.version>
         <qpid-jms-client.version>0.43.0</qpid-jms-client.version>
-        <spring.cloud.azure.version>1.1.3-SNAPSHOT</spring.cloud.azure.version>
+        <spring.cloud.azure.version>1.1.3</spring.cloud.azure.version>
         <okhttp3.version>3.11.0</okhttp3.version>
 		<azure-core.version>1.3.0</azure-core.version>
 		<azure-data-appconfiguration.version>1.1.0</azure-data-appconfiguration.version>
