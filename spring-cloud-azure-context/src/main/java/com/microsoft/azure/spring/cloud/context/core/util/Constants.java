@@ -8,12 +8,12 @@ package com.microsoft.azure.spring.cloud.context.core.util;
 public class Constants {
 
     // for the User-Agent header set in track2 SDKs
-    public static final String SPRINGCLOUD_VERSION = "1.2.3-SNAPSHOT";
-    public static final String SPRINGCLOUD_STORAGE_BLOB_APPLICATION_ID = "az-springcloud-storage-blob/"
+    public static final String SPRINGCLOUD_VERSION = "1.2.4-SNAP";
+    public static final String SPRINGCLOUD_STORAGE_BLOB_APPLICATION_ID = "az-sc-stor-b/"
             + SPRINGCLOUD_VERSION;
-    public static final String SPRINGCLOUD_STORAGE_FILE_SHARE_APPLICATION_ID = "az-springcloud-storage-file-share/"
+    public static final String SPRINGCLOUD_STORAGE_FILE_SHARE_APPLICATION_ID = "az-sc-stor-f/"
             + SPRINGCLOUD_VERSION;
-    public static final String SPRINGCLOUD_STORAGE_QUEUE_APPLICATION_ID = "az-springcloud-storage-queue/"
+    public static final String SPRINGCLOUD_STORAGE_QUEUE_APPLICATION_ID = "az-sc-stor-q/"
             + SPRINGCLOUD_VERSION;
 
 }
