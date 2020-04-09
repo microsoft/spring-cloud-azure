@@ -8,12 +8,30 @@ package com.microsoft.azure.spring.cloud.context.core.util;
 public class Constants {
 
     // for the User-Agent header set in track2 SDKs
-    public static final String SPRINGCLOUD_VERSION = "snapshot";
-    public static final String SPRINGCLOUD_STORAGE_BLOB_APPLICATION_ID = "az-sc-sb/"
-            + SPRINGCLOUD_VERSION;
-    public static final String SPRINGCLOUD_STORAGE_FILE_SHARE_APPLICATION_ID = "az-sc-sf/"
-            + SPRINGCLOUD_VERSION;
-    public static final String SPRINGCLOUD_STORAGE_QUEUE_APPLICATION_ID = "az-si-sq/"
-            + SPRINGCLOUD_VERSION;
+    private static final String SNAPSHOT_VERSION = "snapshot";
+    private static final String AZURE = "az";
+    private static final String SPRING_CLOUD = "sc";
+    private static final String SPRING_STREAMS = "ss";
+    private static final String SPRING_INTEGRATION = "si";
+    private static final String KEY_VAULT = "kv";
+    private static final String STORAGE_BLOBS = "sb";
+    private static final String STORAGE_FILE_SHARE = "sf";
+    private static final String STORAGE_QUEUE = "sq";
+    private static final String EVENT_HUB = "eh";
+    private static final String SERVICE_BUS = "bus";
+    private static final String APP_CONFIGURATION = "cfg";
+
+
+    public static final String SPRING_CLOUD_VERSION = SNAPSHOT_VERSION;
+
+    // the max length of application id is 24
+    public static final String SPRING_CLOUD_STORAGE_BLOB_APPLICATION_ID =
+            String.join("-", AZURE, SPRING_CLOUD, STORAGE_BLOBS) + "/" + SPRING_CLOUD_VERSION;
+
+    public static final String SPRING_CLOUD_STORAGE_FILE_SHARE_APPLICATION_ID =
+            String.join("-", AZURE, SPRING_CLOUD, STORAGE_FILE_SHARE) + "/" + SPRING_CLOUD_VERSION;
+
+    public static final String SPRING_INTEGRATION_STORAGE_QUEUE_APPLICATION_ID =
+            String.join("-", AZURE, SPRING_INTEGRATION, STORAGE_QUEUE) + "/" + SPRING_CLOUD_VERSION;
 
 }

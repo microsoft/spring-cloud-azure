@@ -30,8 +30,8 @@ import org.springframework.context.annotation.Import;
 
 import javax.annotation.PostConstruct;
 
-import static com.microsoft.azure.spring.cloud.context.core.util.Constants.SPRINGCLOUD_STORAGE_BLOB_APPLICATION_ID;
-import static com.microsoft.azure.spring.cloud.context.core.util.Constants.SPRINGCLOUD_STORAGE_FILE_SHARE_APPLICATION_ID;
+import static com.microsoft.azure.spring.cloud.context.core.util.Constants.SPRING_CLOUD_STORAGE_BLOB_APPLICATION_ID;
+import static com.microsoft.azure.spring.cloud.context.core.util.Constants.SPRING_CLOUD_STORAGE_FILE_SHARE_APPLICATION_ID;
 
 /**
  * An auto-configuration for Azure Storage Account
@@ -77,7 +77,7 @@ public class AzureStorageAutoConfiguration {
 
 
         return new BlobServiceClientBuilder().connectionString(connectionString)
-                .httpLogOptions(new HttpLogOptions().setApplicationId(SPRINGCLOUD_STORAGE_BLOB_APPLICATION_ID));
+                .httpLogOptions(new HttpLogOptions().setApplicationId(SPRING_CLOUD_STORAGE_BLOB_APPLICATION_ID));
     }
 
     @Bean
@@ -103,7 +103,7 @@ public class AzureStorageAutoConfiguration {
 
 
         return new ShareServiceClientBuilder().connectionString(connectionString)
-                .httpLogOptions(new HttpLogOptions().setApplicationId(SPRINGCLOUD_STORAGE_FILE_SHARE_APPLICATION_ID));
+                .httpLogOptions(new HttpLogOptions().setApplicationId(SPRING_CLOUD_STORAGE_FILE_SHARE_APPLICATION_ID));
     }
 
     @Configuration
