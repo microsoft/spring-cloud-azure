@@ -17,7 +17,7 @@ import org.springframework.lang.NonNull;
 
 import java.util.function.Function;
 
-import static com.microsoft.azure.spring.cloud.context.core.util.Constants.SPRINGCLOUD_STORAGE_QUEUE_APPLICATION_ID;
+import static com.microsoft.azure.spring.cloud.context.core.util.Constants.SPRING_INTEGRATION_STORAGE_QUEUE_APPLICATION_ID;
 
 public class DefaultStorageQueueClientFactory implements StorageQueueClientFactory {
     private static final Logger log = LoggerFactory.getLogger(DefaultStorageQueueClientFactory.class);
@@ -38,7 +38,7 @@ public class DefaultStorageQueueClientFactory implements StorageQueueClientFacto
         final QueueAsyncClient queueClient = new QueueClientBuilder()
                 .connectionString(this.connectionString)
                 .queueName(queueName)
-                .httpLogOptions(new HttpLogOptions().setApplicationId(SPRINGCLOUD_STORAGE_QUEUE_APPLICATION_ID))
+                .httpLogOptions(new HttpLogOptions().setApplicationId(SPRING_INTEGRATION_STORAGE_QUEUE_APPLICATION_ID))
                 .buildAsyncClient();
 
         queueClient.create()
