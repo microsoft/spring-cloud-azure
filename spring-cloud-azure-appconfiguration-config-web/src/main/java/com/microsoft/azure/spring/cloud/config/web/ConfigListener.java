@@ -19,16 +19,21 @@ public class ConfigListener implements ApplicationListener<ServletRequestHandled
 
     private AppConfigurationRefresh appConfigurationRefresh;
 
-    public ConfigListener(AppConfigurationRefresh appConfigurationRefresh) {
+    private boolean enabled;
+
+    public ConfigListener(AppConfigurationRefresh appConfigurationRefresh, boolean enabled) {
         this.appConfigurationRefresh = appConfigurationRefresh;
+        this.enabled = enabled;
     }
 
     @Override
     public void onApplicationEvent(ServletRequestHandledEvent event) {
-        try {
-            appConfigurationRefresh.refreshConfigurations();
-        } catch (Exception e) {
-            LOGGER.error("Refresh failed with unexpected exception.", e);
+        if (enabled) {
+            try {
+                appConfigurationRefresh.refreshConfigurations();
+            } catch (Exception e) {
+                LOGGER.error("Refresh failed with unexpected exception.", e);
+            }
         }
     }
 

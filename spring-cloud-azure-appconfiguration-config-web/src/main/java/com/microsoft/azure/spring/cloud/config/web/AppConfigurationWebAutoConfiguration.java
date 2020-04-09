@@ -57,9 +57,9 @@ public class AppConfigurationWebAutoConfiguration {
         if (context.containsBean("appConfigurationRefreshEndpoint")
                 || context.containsBean("appConfigurationRefreshBusEndpoint")) {
             // Only 1 Refresh Method is enabled at a time.
-            return null;
+            return new ConfigListener(appConfigurationRefresh, false);
         }
-        return new ConfigListener(appConfigurationRefresh);
+        return new ConfigListener(appConfigurationRefresh, true);
 
     }
 }
