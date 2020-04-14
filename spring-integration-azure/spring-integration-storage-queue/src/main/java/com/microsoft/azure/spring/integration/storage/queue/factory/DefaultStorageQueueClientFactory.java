@@ -6,6 +6,7 @@
 
 package com.microsoft.azure.spring.integration.storage.queue.factory;
 
+import com.azure.core.http.policy.HttpLogOptions;
 import com.azure.storage.queue.QueueAsyncClient;
 import com.azure.storage.queue.QueueClientBuilder;
 import com.azure.storage.queue.models.QueueStorageException;
@@ -15,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 
 import java.util.function.Function;
+
+import static com.microsoft.azure.spring.cloud.context.core.util.Constants.SPRING_INTEGRATION_STORAGE_QUEUE_APPLICATION_ID;
 
 public class DefaultStorageQueueClientFactory implements StorageQueueClientFactory {
     private static final Logger log = LoggerFactory.getLogger(DefaultStorageQueueClientFactory.class);
@@ -35,6 +38,7 @@ public class DefaultStorageQueueClientFactory implements StorageQueueClientFacto
         final QueueAsyncClient queueClient = new QueueClientBuilder()
                 .connectionString(this.connectionString)
                 .queueName(queueName)
+                .httpLogOptions(new HttpLogOptions().setApplicationId(SPRING_INTEGRATION_STORAGE_QUEUE_APPLICATION_ID))
                 .buildAsyncClient();
 
         queueClient.create()

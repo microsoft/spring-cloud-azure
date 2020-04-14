@@ -6,6 +6,7 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 
+import com.azure.core.http.policy.HttpLogOptions;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.file.share.ShareServiceClientBuilder;
 import com.microsoft.azure.management.storage.StorageAccount;
@@ -28,6 +29,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import javax.annotation.PostConstruct;
+
+import static com.microsoft.azure.spring.cloud.context.core.util.Constants.SPRING_CLOUD_STORAGE_BLOB_APPLICATION_ID;
+import static com.microsoft.azure.spring.cloud.context.core.util.Constants.SPRING_CLOUD_STORAGE_FILE_SHARE_APPLICATION_ID;
 
 /**
  * An auto-configuration for Azure Storage Account
@@ -72,13 +76,8 @@ public class AzureStorageAutoConfiguration {
         }
 
 
-        return new BlobServiceClientBuilder().connectionString(connectionString);
-//        try {
-//            return CloudStorageAccount.parse(connectionString);
-//        } catch (URISyntaxException | InvalidKeyException e) {
-//            log.error("Failed to parse storage connection string" + connectionString, e);
-//            throw new RuntimeException("Failed to parse storage connection string" + connectionString, e);
-//        }
+        return new BlobServiceClientBuilder().connectionString(connectionString)
+                .httpLogOptions(new HttpLogOptions().setApplicationId(SPRING_CLOUD_STORAGE_BLOB_APPLICATION_ID));
     }
 
     @Bean
@@ -103,7 +102,8 @@ public class AzureStorageAutoConfiguration {
         }
 
 
-        return new ShareServiceClientBuilder().connectionString(connectionString);
+        return new ShareServiceClientBuilder().connectionString(connectionString)
+                .httpLogOptions(new HttpLogOptions().setApplicationId(SPRING_CLOUD_STORAGE_FILE_SHARE_APPLICATION_ID));
     }
 
     @Configuration
