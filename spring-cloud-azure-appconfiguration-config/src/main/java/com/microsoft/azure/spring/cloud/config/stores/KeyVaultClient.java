@@ -11,6 +11,10 @@ import java.time.Duration;
 import org.apache.commons.lang3.StringUtils;
 
 import com.azure.core.credential.TokenCredential;
+import com.azure.core.http.HttpClient;
+import com.azure.core.http.ProxyOptions;
+import com.azure.core.http.netty.NettyAsyncHttpClientBuilder;
+import com.azure.core.util.Configuration;
 import com.azure.identity.ManagedIdentityCredentialBuilder;
 import com.azure.security.keyvault.secrets.SecretAsyncClient;
 import com.azure.security.keyvault.secrets.SecretClientBuilder;
@@ -52,6 +56,12 @@ public class KeyVaultClient {
         if (tokenCredential != null && msiProps != null) {
             throw new IllegalArgumentException("More than 1 Conncetion method was set for connecting to Key Vault.");
         }
+        
+        ProxyOptions proxyOptions = ProxyOptions.fromConfiguration(Configuration.getGlobalConfiguration());
+        HttpClient httpClient = new NettyAsyncHttpClientBuilder()
+                .proxy(proxyOptions)
+                .build();
+        builder.httpClient(httpClient);
 
         if (tokenCredential != null) {
             // User Provided Token Credential

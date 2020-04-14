@@ -12,12 +12,18 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import com.azure.core.credential.TokenCredential;
+import com.azure.core.http.HttpClient;
+import com.azure.core.http.ProxyOptions;
+import com.azure.core.http.netty.NettyAsyncHttpClientBuilder;
 import com.azure.core.http.policy.ExponentialBackoff;
 import com.azure.core.http.policy.RetryPolicy;
+import com.azure.core.util.Configuration;
 import com.azure.data.appconfiguration.ConfigurationAsyncClient;
 import com.azure.data.appconfiguration.ConfigurationClientBuilder;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
@@ -30,6 +36,8 @@ import com.microsoft.azure.spring.cloud.config.resource.Connection;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionPool;
 
 public class ClientStore {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientStore.class);
 
     private AppConfigurationProviderProperties appProperties;
 
@@ -50,6 +58,12 @@ public class ClientStore {
                 Duration.ofMillis(800), Duration.ofSeconds(8));
         builder = builder.addPolicy(new BaseAppConfigurationPolicy()).retryPolicy(new RetryPolicy(
                 retryPolicy));
+
+        ProxyOptions proxyOptions = ProxyOptions.fromConfiguration(Configuration.getGlobalConfiguration());
+        HttpClient httpClient = new NettyAsyncHttpClientBuilder()
+                .proxy(proxyOptions)
+                .build();
+        builder.httpClient(httpClient);
 
         TokenCredential tokenCredential = null;
         Connection connection = pool.get(store);
@@ -83,7 +97,8 @@ public class ClientStore {
             // Connection String
             builder.connectionString(connection.getConnectionString());
         } else if (connection.getEndpoint() != null) {
-            // System Assigned Identity. Needs to be checked last as all of the above should have a Endpoint.
+            // System Assigned Identity. Needs to be checked last as all of the above
+            // should have a Endpoint.
             ManagedIdentityCredentialBuilder micBuilder = new ManagedIdentityCredentialBuilder();
             builder.credential(micBuilder.build());
         } else {
