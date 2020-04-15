@@ -84,6 +84,7 @@ public class AppConfigurationBootstrapConfiguration {
     public ClientStore buildClientStores(AppConfigurationProperties properties,
             AppConfigurationProviderProperties appProperties, ConnectionPool pool, ApplicationContext context) {
         AppConfigurationCredentialProvider tokenCredentialProvider = null;
+        AppConfigurationClientProvider clientProvider = null;
         try {
             tokenCredentialProvider = context.getBean(AppConfigurationCredentialProvider.class);
         } catch (NoUniqueBeanDefinitionException e) {
@@ -92,6 +93,14 @@ public class AppConfigurationBootstrapConfiguration {
         } catch (NoSuchBeanDefinitionException e) {
             LOGGER.debug("No AppConfigurationCredentialProvider found.");
         }
-        return new ClientStore(appProperties, pool, tokenCredentialProvider);
+        try {
+            clientProvider = context.getBean(AppConfigurationClientProvider.class);
+        } catch (NoUniqueBeanDefinitionException e) {
+            throw new RuntimeException(
+                    "Failed to find unique AppConfigurationClientProvider Bean for credential build.", e);
+        } catch (NoSuchBeanDefinitionException e) {
+            LOGGER.debug("No AppConfigurationClientProvider found.");
+        }
+        return new ClientStore(appProperties, pool, tokenCredentialProvider, clientProvider);
     }
 }

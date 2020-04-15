@@ -12,8 +12,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -29,6 +27,7 @@ import com.azure.data.appconfiguration.ConfigurationClientBuilder;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import com.azure.identity.ManagedIdentityCredentialBuilder;
+import com.microsoft.azure.spring.cloud.config.AppConfigurationClientProvider;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationCredentialProvider;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationProviderProperties;
 import com.microsoft.azure.spring.cloud.config.pipline.policies.BaseAppConfigurationPolicy;
@@ -37,19 +36,20 @@ import com.microsoft.azure.spring.cloud.config.resource.ConnectionPool;
 
 public class ClientStore {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClientStore.class);
-
     private AppConfigurationProviderProperties appProperties;
 
     private ConnectionPool pool;
 
     private AppConfigurationCredentialProvider tokenCredentialProvider;
 
-    public ClientStore(AppConfigurationProviderProperties appProperties,
-            ConnectionPool pool, AppConfigurationCredentialProvider tokenCredentialProvider) {
+    private AppConfigurationClientProvider clientProvider;
+
+    public ClientStore(AppConfigurationProviderProperties appProperties, ConnectionPool pool,
+            AppConfigurationCredentialProvider tokenCredentialProvider, AppConfigurationClientProvider clientProvider) {
         this.appProperties = appProperties;
         this.pool = pool;
         this.tokenCredentialProvider = tokenCredentialProvider;
+        this.clientProvider = clientProvider;
     }
 
     private ConfigurationAsyncClient buildClient(String store) throws IllegalArgumentException {
@@ -58,12 +58,6 @@ public class ClientStore {
                 Duration.ofMillis(800), Duration.ofSeconds(8));
         builder = builder.addPolicy(new BaseAppConfigurationPolicy()).retryPolicy(new RetryPolicy(
                 retryPolicy));
-
-        ProxyOptions proxyOptions = ProxyOptions.fromConfiguration(Configuration.getGlobalConfiguration());
-        HttpClient httpClient = new NettyAsyncHttpClientBuilder()
-                .proxy(proxyOptions)
-                .build();
-        builder.httpClient(httpClient);
 
         TokenCredential tokenCredential = null;
         Connection connection = pool.get(store);
@@ -104,7 +98,14 @@ public class ClientStore {
         } else {
             throw new IllegalArgumentException("No Configuration method was set for connecting to App Configuration");
         }
-        return builder.endpoint(endpoint).buildAsyncClient();
+
+        builder.endpoint(endpoint);
+        
+        if (clientProvider != null) {
+            builder = clientProvider.modifyConfigurationClient(builder);
+        }
+
+        return builder.buildAsyncClient();
     }
 
     /**
