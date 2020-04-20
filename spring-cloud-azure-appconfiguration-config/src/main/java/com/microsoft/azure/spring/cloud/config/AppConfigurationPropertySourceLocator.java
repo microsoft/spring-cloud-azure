@@ -33,6 +33,7 @@ import org.springframework.util.StringUtils;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
+import com.microsoft.azure.spring.cloud.config.providers.KeyVaultClientProvider;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
@@ -58,18 +59,21 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
     private ClientStore clients;
 
     private KeyVaultCredentialProvider keyVaultCredentialProvider;
+    
+    private KeyVaultClientProvider keyVaultClientProvider;
 
     private static Boolean startup = true;
 
     public AppConfigurationPropertySourceLocator(AppConfigurationProperties properties,
             AppConfigurationProviderProperties appProperties, ClientStore clients,
-            KeyVaultCredentialProvider keyVaultCredentialProvider) {
+            KeyVaultCredentialProvider keyVaultCredentialProvider, KeyVaultClientProvider keyVaultClientProvider) {
         this.properties = properties;
         this.appProperties = appProperties;
         this.profileSeparator = properties.getProfileSeparator();
         this.configStores = properties.getStores();
         this.clients = clients;
         this.keyVaultCredentialProvider = keyVaultCredentialProvider;
+        this.keyVaultClientProvider = keyVaultClientProvider;
     }
 
     @Override
@@ -207,7 +211,7 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
             for (String label : store.getLabels()) {
                 putStoreContext(store.getEndpoint(), context, storeContextsMap);
                 AppConfigurationPropertySource propertySource = new AppConfigurationPropertySource(context, store,
-                        label, properties, clients, appProperties, keyVaultCredentialProvider);
+                        label, properties, clients, appProperties, keyVaultCredentialProvider, keyVaultClientProvider);
 
                 propertySource.initProperties(featureSet);
                 if (initFeatures) {

@@ -6,13 +6,12 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -22,6 +21,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import com.microsoft.azure.spring.cloud.config.providers.AppConfigurationClientProvider;
+import com.microsoft.azure.spring.cloud.config.providers.KeyVaultClientProvider;
 import com.microsoft.azure.spring.cloud.config.resource.AppConfigManagedIdentityProperties;
 import com.microsoft.azure.spring.cloud.config.resource.Connection;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionPool;
@@ -67,40 +68,50 @@ public class AppConfigurationBootstrapConfiguration {
 
     @Bean
     public AppConfigurationPropertySourceLocator sourceLocator(AppConfigurationProperties properties,
-            AppConfigurationProviderProperties appProperties, ClientStore clients, ApplicationContext context) {
+            AppConfigurationProviderProperties appProperties, ClientStore clients, ApplicationContext context,
+            Optional<KeyVaultCredentialProvider> keyVaultCredentialProviderOptional,
+            Optional<KeyVaultClientProvider> keyVaultClientProviderOptional) {
+        
         KeyVaultCredentialProvider keyVaultCredentialProvider = null;
-        try {
-            keyVaultCredentialProvider = context.getBean(KeyVaultCredentialProvider.class);
-        } catch (NoUniqueBeanDefinitionException e) {
-            throw new RuntimeException("Failed to find unique KeyVaultCredentialProvider Bean for authentication.", e);
-        } catch (NoSuchBeanDefinitionException e) {
+        KeyVaultClientProvider keyVaultClientProvider = null;
+        
+        if (!keyVaultCredentialProviderOptional.isPresent()) {
             LOGGER.debug("No KeyVaultCredentialProvider found.");
+        } else {
+           keyVaultCredentialProvider = keyVaultCredentialProviderOptional.get(); 
         }
+
+        if (!keyVaultClientProviderOptional.isPresent()) {
+            LOGGER.debug("No KeyVaultCredentialProvider found.");
+        } else {
+           keyVaultClientProvider = keyVaultClientProviderOptional.get(); 
+        }
+        
         return new AppConfigurationPropertySourceLocator(properties, appProperties, clients,
-                keyVaultCredentialProvider);
+                keyVaultCredentialProvider, keyVaultClientProvider);
     }
 
     @Bean
     public ClientStore buildClientStores(AppConfigurationProperties properties,
-            AppConfigurationProviderProperties appProperties, ConnectionPool pool, ApplicationContext context) {
+            AppConfigurationProviderProperties appProperties, ConnectionPool pool, ApplicationContext context,
+            Optional<AppConfigurationCredentialProvider> tokenCredentialProviderOptional,
+            Optional<AppConfigurationClientProvider> clientProviderOptional) {
+        
         AppConfigurationCredentialProvider tokenCredentialProvider = null;
         AppConfigurationClientProvider clientProvider = null;
-        try {
-            tokenCredentialProvider = context.getBean(AppConfigurationCredentialProvider.class);
-        } catch (NoUniqueBeanDefinitionException e) {
-            throw new RuntimeException(
-                    "Failed to find unique AppConfigurationCredentialProvider Bean for authentication.", e);
-        } catch (NoSuchBeanDefinitionException e) {
+        
+        if (!tokenCredentialProviderOptional.isPresent()) {
             LOGGER.debug("No AppConfigurationCredentialProvider found.");
+        } else {
+            tokenCredentialProvider = tokenCredentialProviderOptional.get();
         }
-        try {
-            clientProvider = context.getBean(AppConfigurationClientProvider.class);
-        } catch (NoUniqueBeanDefinitionException e) {
-            throw new RuntimeException(
-                    "Failed to find unique AppConfigurationClientProvider Bean for credential build.", e);
-        } catch (NoSuchBeanDefinitionException e) {
+        
+        if (!clientProviderOptional.isPresent()) {
             LOGGER.debug("No AppConfigurationClientProvider found.");
+        } else {
+            clientProvider = clientProviderOptional.get();
         }
+        
         return new ClientStore(appProperties, pool, tokenCredentialProvider, clientProvider);
     }
 }

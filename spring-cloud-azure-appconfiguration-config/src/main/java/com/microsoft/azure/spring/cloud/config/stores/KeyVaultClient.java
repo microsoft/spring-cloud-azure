@@ -21,6 +21,7 @@ import com.azure.security.keyvault.secrets.SecretClientBuilder;
 import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationProperties;
 import com.microsoft.azure.spring.cloud.config.KeyVaultCredentialProvider;
+import com.microsoft.azure.spring.cloud.config.providers.KeyVaultClientProvider;
 import com.microsoft.azure.spring.cloud.config.resource.AppConfigManagedIdentityProperties;
 
 public class KeyVaultClient {
@@ -28,6 +29,8 @@ public class KeyVaultClient {
     private SecretAsyncClient secretClient;
     
     private AppConfigurationProperties properties;
+    
+    private KeyVaultClientProvider keyVaultClientProvider;
     
     private URI uri;
     
@@ -42,12 +45,13 @@ public class KeyVaultClient {
      * @param properties Azure Configuration Managed Identity credentials
      */
     public KeyVaultClient(AppConfigurationProperties properties, URI uri,
-            KeyVaultCredentialProvider tokenCredentialProvider) {
+            KeyVaultCredentialProvider tokenCredentialProvider, KeyVaultClientProvider keyVaultClientProvider) {
         this.properties = properties;
         this.uri = uri;
         if (tokenCredentialProvider != null) {
             this.tokenCredential = tokenCredentialProvider.getKeyVaultCredential("https://" + uri.getHost());
         }
+        this.keyVaultClientProvider = keyVaultClientProvider;
     }
     
     KeyVaultClient build() {
@@ -74,6 +78,11 @@ public class KeyVaultClient {
             builder.credential(new ManagedIdentityCredentialBuilder().build());
         }
         secretClient = builder.vaultUrl("https://" + uri.getHost()).buildAsyncClient();
+        
+        if (keyVaultClientProvider != null) {
+            builder = keyVaultClientProvider.modifyKeyVaultClient(builder);
+        }
+        
         return this;
     }
 

@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureManagementItem;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
+import com.microsoft.azure.spring.cloud.config.providers.KeyVaultClientProvider;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 import com.microsoft.azure.spring.cloud.config.stores.KeyVaultClient;
@@ -58,13 +59,16 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
 
     private KeyVaultCredentialProvider keyVaultCredentialProvider;
 
+    private KeyVaultClientProvider keyVaultClientProvider;
+
     private AppConfigurationProviderProperties appProperties;
 
     private ConfigStore configStore;
 
     AppConfigurationPropertySource(String context, ConfigStore configStore, String label,
             AppConfigurationProperties appConfigurationProperties, ClientStore clients,
-            AppConfigurationProviderProperties appProperties, KeyVaultCredentialProvider keyVaultCredentialProvider) {
+            AppConfigurationProviderProperties appProperties, KeyVaultCredentialProvider keyVaultCredentialProvider,
+            KeyVaultClientProvider keyVaultClientProvider) {
         // The context alone does not uniquely define a PropertySource, append storeName
         // and label to uniquely define a PropertySource
         super(context + configStore.getEndpoint() + "/" + label);
@@ -76,6 +80,7 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
         this.keyVaultClients = new HashMap<String, KeyVaultClient>();
         this.clients = clients;
         this.keyVaultCredentialProvider = keyVaultCredentialProvider;
+        this.keyVaultClientProvider = keyVaultClientProvider;
     }
 
     @Override
@@ -172,7 +177,8 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
             // Check if we already have a client for this key vault, if not we will make
             // one
             if (!keyVaultClients.containsKey(uri.getHost())) {
-                KeyVaultClient client = new KeyVaultClient(appConfigurationProperties, uri, keyVaultCredentialProvider);
+                KeyVaultClient client = new KeyVaultClient(appConfigurationProperties, uri, keyVaultCredentialProvider,
+                        keyVaultClientProvider);
                 keyVaultClients.put(uri.getHost(), client);
             }
             KeyVaultSecret secret = keyVaultClients.get(uri.getHost()).getSecret(uri, appProperties.getMaxRetryTime());

@@ -16,21 +16,17 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import com.azure.core.credential.TokenCredential;
-import com.azure.core.http.HttpClient;
-import com.azure.core.http.ProxyOptions;
-import com.azure.core.http.netty.NettyAsyncHttpClientBuilder;
 import com.azure.core.http.policy.ExponentialBackoff;
 import com.azure.core.http.policy.RetryPolicy;
-import com.azure.core.util.Configuration;
 import com.azure.data.appconfiguration.ConfigurationAsyncClient;
 import com.azure.data.appconfiguration.ConfigurationClientBuilder;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import com.azure.identity.ManagedIdentityCredentialBuilder;
-import com.microsoft.azure.spring.cloud.config.AppConfigurationClientProvider;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationCredentialProvider;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationProviderProperties;
 import com.microsoft.azure.spring.cloud.config.pipline.policies.BaseAppConfigurationPolicy;
+import com.microsoft.azure.spring.cloud.config.providers.AppConfigurationClientProvider;
 import com.microsoft.azure.spring.cloud.config.resource.Connection;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionPool;
 
