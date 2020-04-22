@@ -102,6 +102,9 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
                             // Refresh Feature Flags
                             willRefresh = refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY) ? true
                                     : willRefresh;
+                        } else {
+                            LOGGER.debug("Skipping refresh check for " + configStore.getEndpoint()
+                                    + ". The store failed to load on startup.");
                         }
                     }
                     // Resetting last Checked date to now.
