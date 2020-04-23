@@ -3,12 +3,12 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config.providers;
+package com.microsoft.azure.spring.cloud.config;
 
 import com.azure.security.keyvault.secrets.SecretClientBuilder;
 
-public interface KeyVaultClientProvider {
+public interface SecretClientBuilderSetup {
 
-    public SecretClientBuilder modifyKeyVaultClient(SecretClientBuilder keyVaultClientBuilder);
+    public void setup(SecretClientBuilder builder, String uri);
 
 }

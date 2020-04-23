@@ -3,12 +3,13 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config.providers;
+package com.microsoft.azure.spring.cloud.config;
+
 
 import com.azure.data.appconfiguration.ConfigurationClientBuilder;
 
-public interface AppConfigurationClientProvider {
+public interface ConfigurationClientBuilderSetup {
 
-    public ConfigurationClientBuilder modifyConfigurationClient(ConfigurationClientBuilder configurationClientBuilder);
+    public void setup(ConfigurationClientBuilder builder, String endpoint);
 
 }

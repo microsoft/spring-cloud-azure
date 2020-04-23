@@ -21,8 +21,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import com.microsoft.azure.spring.cloud.config.providers.AppConfigurationClientProvider;
-import com.microsoft.azure.spring.cloud.config.providers.KeyVaultClientProvider;
 import com.microsoft.azure.spring.cloud.config.resource.AppConfigManagedIdentityProperties;
 import com.microsoft.azure.spring.cloud.config.resource.Connection;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionPool;
@@ -70,10 +68,10 @@ public class AppConfigurationBootstrapConfiguration {
     public AppConfigurationPropertySourceLocator sourceLocator(AppConfigurationProperties properties,
             AppConfigurationProviderProperties appProperties, ClientStore clients, ApplicationContext context,
             Optional<KeyVaultCredentialProvider> keyVaultCredentialProviderOptional,
-            Optional<KeyVaultClientProvider> keyVaultClientProviderOptional) {
+            Optional<SecretClientBuilderSetup> keyVaultClientProviderOptional) {
         
         KeyVaultCredentialProvider keyVaultCredentialProvider = null;
-        KeyVaultClientProvider keyVaultClientProvider = null;
+        SecretClientBuilderSetup keyVaultClientProvider = null;
         
         if (!keyVaultCredentialProviderOptional.isPresent()) {
             LOGGER.debug("No KeyVaultCredentialProvider found.");
@@ -95,10 +93,10 @@ public class AppConfigurationBootstrapConfiguration {
     public ClientStore buildClientStores(AppConfigurationProperties properties,
             AppConfigurationProviderProperties appProperties, ConnectionPool pool, ApplicationContext context,
             Optional<AppConfigurationCredentialProvider> tokenCredentialProviderOptional,
-            Optional<AppConfigurationClientProvider> clientProviderOptional) {
+            Optional<ConfigurationClientBuilderSetup> clientProviderOptional) {
         
         AppConfigurationCredentialProvider tokenCredentialProvider = null;
-        AppConfigurationClientProvider clientProvider = null;
+        ConfigurationClientBuilderSetup clientProvider = null;
         
         if (!tokenCredentialProviderOptional.isPresent()) {
             LOGGER.debug("No AppConfigurationCredentialProvider found.");

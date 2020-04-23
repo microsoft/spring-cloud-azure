@@ -23,10 +23,10 @@ import com.azure.data.appconfiguration.ConfigurationClientBuilder;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import com.azure.identity.ManagedIdentityCredentialBuilder;
+import com.microsoft.azure.spring.cloud.config.ConfigurationClientBuilderSetup;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationCredentialProvider;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationProviderProperties;
 import com.microsoft.azure.spring.cloud.config.pipline.policies.BaseAppConfigurationPolicy;
-import com.microsoft.azure.spring.cloud.config.providers.AppConfigurationClientProvider;
 import com.microsoft.azure.spring.cloud.config.resource.Connection;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionPool;
 
@@ -38,10 +38,11 @@ public class ClientStore {
 
     private AppConfigurationCredentialProvider tokenCredentialProvider;
 
-    private AppConfigurationClientProvider clientProvider;
+    private ConfigurationClientBuilderSetup clientProvider;
 
     public ClientStore(AppConfigurationProviderProperties appProperties, ConnectionPool pool,
-            AppConfigurationCredentialProvider tokenCredentialProvider, AppConfigurationClientProvider clientProvider) {
+            AppConfigurationCredentialProvider tokenCredentialProvider,
+            ConfigurationClientBuilderSetup clientProvider) {
         this.appProperties = appProperties;
         this.pool = pool;
         this.tokenCredentialProvider = tokenCredentialProvider;
@@ -96,9 +97,9 @@ public class ClientStore {
         }
 
         builder.endpoint(endpoint);
-        
+
         if (clientProvider != null) {
-            builder = clientProvider.modifyConfigurationClient(builder);
+            clientProvider.setup(builder, endpoint);
         }
 
         return builder.buildAsyncClient();

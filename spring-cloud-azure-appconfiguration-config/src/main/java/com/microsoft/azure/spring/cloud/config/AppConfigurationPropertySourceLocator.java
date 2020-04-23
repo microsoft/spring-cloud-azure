@@ -33,7 +33,6 @@ import org.springframework.util.StringUtils;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
-import com.microsoft.azure.spring.cloud.config.providers.KeyVaultClientProvider;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
@@ -60,13 +59,13 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
 
     private KeyVaultCredentialProvider keyVaultCredentialProvider;
     
-    private KeyVaultClientProvider keyVaultClientProvider;
+    private SecretClientBuilderSetup keyVaultClientProvider;
 
     private static Boolean startup = true;
 
     public AppConfigurationPropertySourceLocator(AppConfigurationProperties properties,
             AppConfigurationProviderProperties appProperties, ClientStore clients,
-            KeyVaultCredentialProvider keyVaultCredentialProvider, KeyVaultClientProvider keyVaultClientProvider) {
+            KeyVaultCredentialProvider keyVaultCredentialProvider, SecretClientBuilderSetup keyVaultClientProvider) {
         this.properties = properties;
         this.appProperties = appProperties;
         this.profileSeparator = properties.getProfileSeparator();

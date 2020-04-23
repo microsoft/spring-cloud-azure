@@ -20,8 +20,8 @@ import com.azure.security.keyvault.secrets.SecretAsyncClient;
 import com.azure.security.keyvault.secrets.SecretClientBuilder;
 import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationProperties;
+import com.microsoft.azure.spring.cloud.config.SecretClientBuilderSetup;
 import com.microsoft.azure.spring.cloud.config.KeyVaultCredentialProvider;
-import com.microsoft.azure.spring.cloud.config.providers.KeyVaultClientProvider;
 import com.microsoft.azure.spring.cloud.config.resource.AppConfigManagedIdentityProperties;
 
 public class KeyVaultClient {
@@ -30,7 +30,7 @@ public class KeyVaultClient {
     
     private AppConfigurationProperties properties;
     
-    private KeyVaultClientProvider keyVaultClientProvider;
+    private SecretClientBuilderSetup keyVaultClientProvider;
     
     private URI uri;
     
@@ -45,7 +45,7 @@ public class KeyVaultClient {
      * @param properties Azure Configuration Managed Identity credentials
      */
     public KeyVaultClient(AppConfigurationProperties properties, URI uri,
-            KeyVaultCredentialProvider tokenCredentialProvider, KeyVaultClientProvider keyVaultClientProvider) {
+            KeyVaultCredentialProvider tokenCredentialProvider, SecretClientBuilderSetup keyVaultClientProvider) {
         this.properties = properties;
         this.uri = uri;
         if (tokenCredentialProvider != null) {
@@ -57,6 +57,8 @@ public class KeyVaultClient {
     KeyVaultClient build() {
         SecretClientBuilder builder = getBuilder();
         AppConfigManagedIdentityProperties msiProps = properties.getManagedIdentity();
+        String fullUri = "https://" + uri.getHost();
+        
         if (tokenCredential != null && msiProps != null) {
             throw new IllegalArgumentException("More than 1 Conncetion method was set for connecting to Key Vault.");
         }
@@ -77,10 +79,10 @@ public class KeyVaultClient {
             // System Assigned Identity.
             builder.credential(new ManagedIdentityCredentialBuilder().build());
         }
-        secretClient = builder.vaultUrl("https://" + uri.getHost()).buildAsyncClient();
+        secretClient = builder.vaultUrl(fullUri).buildAsyncClient();
         
         if (keyVaultClientProvider != null) {
-            builder = keyVaultClientProvider.modifyKeyVaultClient(builder);
+            keyVaultClientProvider.setup(builder, fullUri);
         }
         
         return this;

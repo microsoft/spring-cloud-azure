@@ -35,7 +35,6 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureManagementItem;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
-import com.microsoft.azure.spring.cloud.config.providers.KeyVaultClientProvider;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 import com.microsoft.azure.spring.cloud.config.stores.KeyVaultClient;
@@ -59,7 +58,7 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
 
     private KeyVaultCredentialProvider keyVaultCredentialProvider;
 
-    private KeyVaultClientProvider keyVaultClientProvider;
+    private SecretClientBuilderSetup keyVaultClientProvider;
 
     private AppConfigurationProviderProperties appProperties;
 
@@ -68,7 +67,7 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
     AppConfigurationPropertySource(String context, ConfigStore configStore, String label,
             AppConfigurationProperties appConfigurationProperties, ClientStore clients,
             AppConfigurationProviderProperties appProperties, KeyVaultCredentialProvider keyVaultCredentialProvider,
-            KeyVaultClientProvider keyVaultClientProvider) {
+            SecretClientBuilderSetup keyVaultClientProvider) {
         // The context alone does not uniquely define a PropertySource, append storeName
         // and label to uniquely define a PropertySource
         super(context + configStore.getEndpoint() + "/" + label);
