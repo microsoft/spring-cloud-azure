@@ -107,7 +107,7 @@ Please refer to https://docs.microsoft.com/en-us/azure/active-directory/managed-
 
 === Role Assignment
 
-1. Add role assignment to event hub and storage account. You should add managed identity to the `Contributor` role for event hub, and add managed identity to the `Storage Account Key Operator Service Role` role for storage account.
+1. Add role assignment to event hub, storage account and resource group. You should add managed identity to the `Contributor` role for event hub, and add managed identity to the `Storage Account Key Operator Service Role` role for storage account and add managed identity to the `Reader` role for resource group.
 +
 --
 For how to add role assignment to event hub, please see https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-managed-service-identity[Managed identities for Azure resources with Event Hubs]. Adding role assignment to storage account is almost similar, you can set it in `Access Control (IAM)` page in Azure Portal of your storage account resource by imitating the steps of adding role assignment for event hub.
