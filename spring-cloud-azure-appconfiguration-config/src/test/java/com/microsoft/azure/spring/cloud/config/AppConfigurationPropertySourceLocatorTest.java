@@ -328,7 +328,9 @@ public class AppConfigurationPropertySourceLocatorTest {
 
         PropertySource<?> source = locator.locate(environment);
         assertThat(source).isInstanceOf(CompositePropertySource.class);
-        verify(configStoreMock, times(3)).isFailFast();
+        
+        // Once a store fails it should stop attempting to load
+        verify(configStoreMock, times(1)).isFailFast();
     }
 
     @Test
