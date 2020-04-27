@@ -25,15 +25,14 @@ import com.azure.data.appconfiguration.ConfigurationClientBuilder;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import com.azure.identity.ManagedIdentityCredentialBuilder;
+import com.microsoft.azure.spring.cloud.config.ConfigurationClientBuilderSetup;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationCredentialProvider;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationProviderProperties;
-import com.microsoft.azure.spring.cloud.config.AppConfigurationRefresh;
 import com.microsoft.azure.spring.cloud.config.pipline.policies.BaseAppConfigurationPolicy;
 import com.microsoft.azure.spring.cloud.config.resource.Connection;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionPool;
 
 public class ClientStore {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClientStore.class);
 
     private AppConfigurationProviderProperties appProperties;
 
@@ -41,11 +40,15 @@ public class ClientStore {
 
     private AppConfigurationCredentialProvider tokenCredentialProvider;
 
-    public ClientStore(AppConfigurationProviderProperties appProperties,
-            ConnectionPool pool, AppConfigurationCredentialProvider tokenCredentialProvider) {
+    private ConfigurationClientBuilderSetup clientProvider;
+
+    public ClientStore(AppConfigurationProviderProperties appProperties, ConnectionPool pool,
+            AppConfigurationCredentialProvider tokenCredentialProvider,
+            ConfigurationClientBuilderSetup clientProvider) {
         this.appProperties = appProperties;
         this.pool = pool;
         this.tokenCredentialProvider = tokenCredentialProvider;
+        this.clientProvider = clientProvider;
     }
 
     private ConfigurationAsyncClient buildClient(String store) throws IllegalArgumentException {
@@ -76,30 +79,32 @@ public class ClientStore {
 
         if (tokenCredential != null) {
             // User Provided Token Credential
-            LOGGER.debug("Connecting to " + endpoint + " using AppConfigurationCredentialProvider.");
             builder.credential(tokenCredential);
         } else if ((connection.getClientId() != null && StringUtils.isNotEmpty(connection.getClientId()))
                 && connection.getEndpoint() != null) {
             // User Assigned Identity - Client ID through configuration file.
-            LOGGER.debug("Connecting to " + endpoint + " using Client ID from configuration file.");
             ManagedIdentityCredentialBuilder micBuilder = new ManagedIdentityCredentialBuilder()
                     .clientId(connection.getClientId());
             builder.credential(micBuilder.build());
         } else if (StringUtils.isNotEmpty(connection.getConnectionString())) {
             // Connection String
-            LOGGER.debug("Connecting to " + endpoint + " using Connecting String.");
             builder.connectionString(connection.getConnectionString());
         } else if (connection.getEndpoint() != null) {
             // System Assigned Identity. Needs to be checked last as all of the above
             // should have a Endpoint.
-            LOGGER.debug("Connecting to " + endpoint
-                    + " using Azure System Assigned Identity or Azure User Assigned Identity.");
             ManagedIdentityCredentialBuilder micBuilder = new ManagedIdentityCredentialBuilder();
             builder.credential(micBuilder.build());
         } else {
             throw new IllegalArgumentException("No Configuration method was set for connecting to App Configuration");
         }
-        return builder.endpoint(endpoint).buildAsyncClient();
+
+        builder.endpoint(endpoint);
+
+        if (clientProvider != null) {
+            clientProvider.setup(builder, endpoint);
+        }
+
+        return builder.buildAsyncClient();
     }
 
     /**

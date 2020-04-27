@@ -133,7 +133,7 @@ public class AppConfigurationPropertySourceKeyVaultTest {
         ArrayList<String> contexts = new ArrayList<String>();
         contexts.add("/application/*");
         propertySource = new AppConfigurationPropertySource(TEST_CONTEXT, testStore, "\0",
-                appConfigurationProperties, clientStoreMock, appProperties, tokenCredentialProvider);
+                appConfigurationProperties, clientStoreMock, appProperties, tokenCredentialProvider, null);
 
         testItems = new ArrayList<ConfigurationSetting>();
         testItems.add(item1);

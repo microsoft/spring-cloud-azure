@@ -74,7 +74,7 @@ public class KeyVaultClientTest {
             }
         };
         
-        clientStore = new KeyVaultClient(azureProperties, new URI(keyVaultUri), provider);
+        clientStore = new KeyVaultClient(azureProperties, new URI(keyVaultUri), provider, null);
                 
         KeyVaultClient test = Mockito.spy(clientStore);
         Mockito.doReturn(builderMock).when(test).getBuilder();
@@ -100,7 +100,7 @@ public class KeyVaultClientTest {
             }
         };
 
-        clientStore = new KeyVaultClient(azureProperties, new URI(keyVaultUri), provider);
+        clientStore = new KeyVaultClient(azureProperties, new URI(keyVaultUri), provider, null);
         
         KeyVaultClient test = Mockito.spy(clientStore);
         Mockito.doReturn(builderMock).when(test).getBuilder();
@@ -128,7 +128,7 @@ public class KeyVaultClientTest {
         
         String keyVaultUri = "https://keyvault.vault.azure.net/secrets/mySecret";
 
-        clientStore = new KeyVaultClient(azureProperties, new URI(keyVaultUri), null);
+        clientStore = new KeyVaultClient(azureProperties, new URI(keyVaultUri), null, null);
         
         KeyVaultClient test = Mockito.spy(clientStore);
         Mockito.doReturn(builderMock).when(test).getBuilder();

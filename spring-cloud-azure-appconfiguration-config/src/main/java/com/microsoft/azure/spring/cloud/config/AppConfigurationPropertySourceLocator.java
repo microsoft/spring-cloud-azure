@@ -58,18 +58,21 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
     private ClientStore clients;
 
     private KeyVaultCredentialProvider keyVaultCredentialProvider;
+    
+    private SecretClientBuilderSetup keyVaultClientProvider;
 
     private static Boolean startup = true;
 
     public AppConfigurationPropertySourceLocator(AppConfigurationProperties properties,
             AppConfigurationProviderProperties appProperties, ClientStore clients,
-            KeyVaultCredentialProvider keyVaultCredentialProvider) {
+            KeyVaultCredentialProvider keyVaultCredentialProvider, SecretClientBuilderSetup keyVaultClientProvider) {
         this.properties = properties;
         this.appProperties = appProperties;
         this.profileSeparator = properties.getProfileSeparator();
         this.configStores = properties.getStores();
         this.clients = clients;
         this.keyVaultCredentialProvider = keyVaultCredentialProvider;
+        this.keyVaultClientProvider = keyVaultClientProvider;
     }
 
     @Override
@@ -214,7 +217,7 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
             for (String label : store.getLabels()) {
                 putStoreContext(store.getEndpoint(), context, storeContextsMap);
                 AppConfigurationPropertySource propertySource = new AppConfigurationPropertySource(context, store,
-                        label, properties, clients, appProperties, keyVaultCredentialProvider);
+                        label, properties, clients, appProperties, keyVaultCredentialProvider, keyVaultClientProvider);
 
                 propertySource.initProperties(featureSet);
                 if (initFeatures) {
