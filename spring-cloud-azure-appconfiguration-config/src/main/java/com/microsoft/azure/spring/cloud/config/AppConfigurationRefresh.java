@@ -142,13 +142,13 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
         SettingSelector settingSelector = new SettingSelector().setKeyFilter(watchedKeyNames)
                 .setLabelFilter("*");
 
-        List<ConfigurationSetting> items = clientStore.listSettingRevisons(settingSelector, store.getEndpoint());
+        ConfigurationSetting revision = clientStore.getRevison(settingSelector, store.getEndpoint());
 
         String etag = null;
         // If there is no result, etag will be considered empty.
         // A refresh will trigger once the selector returns a value.
-        if (items != null && !items.isEmpty()) {
-            etag = items.get(0).getETag();
+        if (revision != null) {
+            etag = revision.getETag();
         }
 
         if (StateHolder.getEtagState(storeNameWithSuffix) == null) {

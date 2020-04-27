@@ -102,12 +102,12 @@ public class AppConfigurationRefreshTest {
 
     @Test
     public void nonUpdatedEtagShouldntPublishEvent() throws Exception {
-        StateHolder.setEtagState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, initialResponse().get(0));
-        StateHolder.setEtagState(TEST_STORE_NAME + FEATURE_SUFFIX, initialResponse().get(0));
+        StateHolder.setEtagState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, initialResponse());
+        StateHolder.setEtagState(TEST_STORE_NAME + FEATURE_SUFFIX, initialResponse());
 
         configRefresh.setApplicationEventPublisher(eventPublisher);
 
-        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(initialResponse());
+        when(clientStoreMock.getRevison(Mockito.any(), Mockito.anyString())).thenReturn(initialResponse());
 
         configRefresh.refreshConfigurations().get();
         verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
@@ -115,24 +115,24 @@ public class AppConfigurationRefreshTest {
 
     @Test
     public void updatedEtagShouldPublishEvent() throws Exception {
-        StateHolder.setEtagState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, initialResponse().get(0));
-        StateHolder.setEtagState(TEST_STORE_NAME + FEATURE_SUFFIX, initialResponse().get(0));
+        StateHolder.setEtagState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, initialResponse());
+        StateHolder.setEtagState(TEST_STORE_NAME + FEATURE_SUFFIX, initialResponse());
 
-        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(initialResponse());
+        when(clientStoreMock.getRevison(Mockito.any(), Mockito.anyString())).thenReturn(initialResponse());
         configRefresh.setApplicationEventPublisher(eventPublisher);
 
         // The first time an action happens it can't update
         assertFalse(configRefresh.refreshConfigurations().get());
         verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
 
-        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(updatedResponse());
+        when(clientStoreMock.getRevison(Mockito.any(), Mockito.anyString())).thenReturn(updatedResponse());
 
         // If there is a change it should update
         assertTrue(configRefresh.refreshConfigurations().get());
         verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
 
-        StateHolder.setEtagState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, updatedResponse().get(0));
-        StateHolder.setEtagState(TEST_STORE_NAME + FEATURE_SUFFIX, updatedResponse().get(0));
+        StateHolder.setEtagState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, updatedResponse());
+        StateHolder.setEtagState(TEST_STORE_NAME + FEATURE_SUFFIX, updatedResponse());
 
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("store1_configuration", "fake-etag-updated");
@@ -150,11 +150,11 @@ public class AppConfigurationRefreshTest {
 
     @Test
     public void noEtagReturned() throws Exception {
-        StateHolder.setEtagState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, initialResponse().get(0));
-        StateHolder.setEtagState(TEST_STORE_NAME + FEATURE_SUFFIX, initialResponse().get(0));
+        StateHolder.setEtagState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, initialResponse());
+        StateHolder.setEtagState(TEST_STORE_NAME + FEATURE_SUFFIX, initialResponse());
 
-        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString()))
-                .thenReturn(new ArrayList<ConfigurationSetting>());
+        when(clientStoreMock.getRevison(Mockito.any(), Mockito.anyString()))
+                .thenReturn(null);
         configRefresh.setApplicationEventPublisher(eventPublisher);
 
         // The first time an action happens it can't update
@@ -164,10 +164,10 @@ public class AppConfigurationRefreshTest {
 
     @Test
     public void nullItemsReturned() throws Exception {
-        StateHolder.setEtagState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, initialResponse().get(0));
-        StateHolder.setEtagState(TEST_STORE_NAME + FEATURE_SUFFIX, initialResponse().get(0));
+        StateHolder.setEtagState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, initialResponse());
+        StateHolder.setEtagState(TEST_STORE_NAME + FEATURE_SUFFIX, initialResponse());
 
-        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(null);
+        when(clientStoreMock.getRevison(Mockito.any(), Mockito.anyString())).thenReturn(null);
         configRefresh.setApplicationEventPublisher(eventPublisher);
 
         // The first time an action happens it can't update
@@ -189,7 +189,7 @@ public class AppConfigurationRefreshTest {
         AppConfigurationRefresh configRefreshLost = new AppConfigurationRefresh(propertiesLost, contextsMap,
                 clientStoreMock);
         StateHolder.setLoadState(TEST_STORE_NAME + "_LOST", true);
-        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(null);
+        when(clientStoreMock.getRevison(Mockito.any(), Mockito.anyString())).thenReturn(null);
         configRefreshLost.setApplicationEventPublisher(eventPublisher);
 
         // The first time an action happens it can't update
@@ -212,7 +212,7 @@ public class AppConfigurationRefreshTest {
                 clientStoreMock);
         StateHolder.setLoadState(TEST_STORE_NAME + "_LOST", true);
         
-        when(clientStoreMock.listSettingRevisons(Mockito.any(), Mockito.anyString())).thenReturn(updatedResponse());
+        when(clientStoreMock.getRevison(Mockito.any(), Mockito.anyString())).thenReturn(updatedResponse());
         configRefreshLost.setApplicationEventPublisher(eventPublisher);
 
         // The first time an action happens it can't update
@@ -222,8 +222,8 @@ public class AppConfigurationRefreshTest {
 
     @Test
     public void notRefreshTime() throws Exception {
-        StateHolder.setEtagState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, initialResponse().get(0));
-        StateHolder.setEtagState(TEST_STORE_NAME + FEATURE_SUFFIX, initialResponse().get(0));
+        StateHolder.setEtagState(TEST_STORE_NAME + CONFIGURATION_SUFFIX, initialResponse());
+        StateHolder.setEtagState(TEST_STORE_NAME + FEATURE_SUFFIX, initialResponse());
 
         properties.setCacheExpiration(Duration.ofMinutes(60));
         AppConfigurationRefresh watchLargeDelay = new AppConfigurationRefresh(properties, contextsMap, clientStoreMock);
@@ -235,18 +235,12 @@ public class AppConfigurationRefreshTest {
         verify(eventPublisher, times(0)).publishEvent(any(RefreshEvent.class));
     }
 
-    private List<ConfigurationSetting> initialResponse() {
-        ConfigurationSetting item = new ConfigurationSetting();
-        item.setETag("fake-etag");
-
-        return Arrays.asList(item);
+    private ConfigurationSetting initialResponse() {
+        return new ConfigurationSetting().setETag("fake-etag");
     }
 
-    private List<ConfigurationSetting> updatedResponse() {
-        ConfigurationSetting item = new ConfigurationSetting();
-        item.setETag("fake-etag-updated");
-
-        return Arrays.asList(item);
+    private ConfigurationSetting updatedResponse() {
+        return new ConfigurationSetting().setETag("fake-etag-updated");
     }
 
 }

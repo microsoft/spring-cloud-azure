@@ -227,23 +227,22 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
             String watchedKeyNames = clients.watchedKeyNames(store, storeContextsMap);
             SettingSelector settingSelector = new SettingSelector().setKeyFilter(watchedKeyNames).setLabelFilter("*");
 
-            List<ConfigurationSetting> configurationRevisions = clients.listSettingRevisons(settingSelector,
+            ConfigurationSetting configurationRevision = clients.getRevison(settingSelector,
                     store.getEndpoint());
 
             settingSelector = new SettingSelector().setKeyFilter(FEATURE_STORE_WATCH_KEY).setLabelFilter("*");
 
-            List<ConfigurationSetting> featureRevisions = clients.listSettingRevisons(settingSelector,
+            ConfigurationSetting featureRevision = clients.getRevison(settingSelector,
                     store.getEndpoint());
 
-            if (configurationRevisions != null && !configurationRevisions.isEmpty()) {
-                StateHolder.setEtagState(store.getEndpoint() + CONFIGURATION_SUFFIX,
-                        configurationRevisions.get(0));
+            if (configurationRevision != null) {
+                StateHolder.setEtagState(store.getEndpoint() + CONFIGURATION_SUFFIX, configurationRevision);
             } else {
                 StateHolder.setEtagState(store.getEndpoint() + CONFIGURATION_SUFFIX, new ConfigurationSetting());
             }
 
-            if (featureRevisions != null && !featureRevisions.isEmpty()) {
-                StateHolder.setEtagState(store.getEndpoint() + FEATURE_SUFFIX, featureRevisions.get(0));
+            if (featureRevision != null) {
+                StateHolder.setEtagState(store.getEndpoint() + FEATURE_SUFFIX, featureRevision);
             } else {
                 StateHolder.setEtagState(store.getEndpoint() + FEATURE_SUFFIX, new ConfigurationSetting());
             }
