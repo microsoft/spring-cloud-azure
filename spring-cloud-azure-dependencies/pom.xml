@@ -49,12 +49,12 @@
         <powermock.version>1.7.1</powermock.version>
         <mockito.version>2.8.9</mockito.version>
         <spring.cloud.version>Hoxton.RELEASE</spring.cloud.version>
-        <spring.boot.version>2.2.0.RELEASE</spring.boot.version>
+        <spring.boot.version>2.2.5.RELEASE</spring.boot.version>
         <spring.cloud.azure.version>1.2.4</spring.cloud.azure.version>
         <commons.io.version>2.6</commons.io.version>
         <hibernate.validator.version>6.1.0.Final</hibernate.validator.version>
         <google.guava.version>20.0</google.guava.version>
-        <azure.sdk.version>1.23.0</azure.sdk.version>
+        <azure.sdk.version>1.33.0</azure.sdk.version>
         <azure.eventhubs.version>5.0.2</azure.eventhubs.version>
         <azure.eventhubs.checkpoint.store.version>1.0.2</azure.eventhubs.checkpoint.store.version>
         <azure.storage.blob.version>12.5.0</azure.storage.blob.version>
@@ -64,7 +64,6 @@
         <azure.servicebus.version>3.1.1</azure.servicebus.version>
         <javax.jms-api.version>2.0.1</javax.jms-api.version>
         <qpid-jms-client.version>0.43.0</qpid-jms-client.version>
-        <okhttp3.version>3.11.0</okhttp3.version>
 		<azure-core.version>1.3.0</azure-core.version>
 		<azure-data-appconfiguration.version>1.1.0</azure-data-appconfiguration.version>
 		<azure-identity.version>1.0.4</azure-identity.version>
@@ -200,24 +199,7 @@
                 </exclusions>
             </dependency>
 
-            <!-- azure client runtime use okhttp 3.11.0 and spring-cloud dependency introduces 3.8.1 -->
-            <dependency>
-                <groupId>com.squareup.okhttp3</groupId>
-                <artifactId>okhttp</artifactId>
-                <version>${okhttp3.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.squareup.okhttp3</groupId>
-                <artifactId>logging-interceptor</artifactId>
-                <version>${okhttp3.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.squareup.okhttp3</groupId>
-                <artifactId>okhttp-urlconnection</artifactId>
-                <version>${okhttp3.version}</version>
-            </dependency>
+            <!-- spring-cloud dependency introduces 3.8.1 -->
 
             <dependency>
                 <groupId>com.azure</groupId>
