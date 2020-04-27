@@ -58,13 +58,16 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
 
     private KeyVaultCredentialProvider keyVaultCredentialProvider;
 
+    private SecretClientBuilderSetup keyVaultClientProvider;
+
     private AppConfigurationProviderProperties appProperties;
 
     private ConfigStore configStore;
 
     AppConfigurationPropertySource(String context, ConfigStore configStore, String label,
             AppConfigurationProperties appConfigurationProperties, ClientStore clients,
-            AppConfigurationProviderProperties appProperties, KeyVaultCredentialProvider keyVaultCredentialProvider) {
+            AppConfigurationProviderProperties appProperties, KeyVaultCredentialProvider keyVaultCredentialProvider,
+            SecretClientBuilderSetup keyVaultClientProvider) {
         // The context alone does not uniquely define a PropertySource, append storeName
         // and label to uniquely define a PropertySource
         super(context + configStore.getEndpoint() + "/" + label);
@@ -76,6 +79,7 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
         this.keyVaultClients = new HashMap<String, KeyVaultClient>();
         this.clients = clients;
         this.keyVaultCredentialProvider = keyVaultCredentialProvider;
+        this.keyVaultClientProvider = keyVaultClientProvider;
     }
 
     @Override
@@ -108,10 +112,7 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
     FeatureSet initProperties(FeatureSet featureSet) throws IOException {
         String storeName = configStore.getEndpoint();
         Date date = new Date();
-        SettingSelector settingSelector = new SettingSelector();
-        if (!label.equals("%00")) {
-            settingSelector.setLabelFilter(label);
-        }
+        SettingSelector settingSelector = new SettingSelector().setLabelFilter(label);
 
         // * for wildcard match
         settingSelector.setKeyFilter(context + "*");
@@ -172,7 +173,8 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
             // Check if we already have a client for this key vault, if not we will make
             // one
             if (!keyVaultClients.containsKey(uri.getHost())) {
-                KeyVaultClient client = new KeyVaultClient(appConfigurationProperties, uri, keyVaultCredentialProvider);
+                KeyVaultClient client = new KeyVaultClient(appConfigurationProperties, uri, keyVaultCredentialProvider,
+                        keyVaultClientProvider);
                 keyVaultClients.put(uri.getHost(), client);
             }
             KeyVaultSecret secret = keyVaultClients.get(uri.getHost()).getSecret(uri, appProperties.getMaxRetryTime());

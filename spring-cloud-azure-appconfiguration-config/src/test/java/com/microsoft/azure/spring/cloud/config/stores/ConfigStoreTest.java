@@ -5,6 +5,7 @@
  */
 package com.microsoft.azure.spring.cloud.config.stores;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
@@ -25,6 +26,22 @@ public class ConfigStoreTest {
         configStore.setConnectionString("Endpoint=a^a;Id=fake-conn-id;Secret=ZmFrZS1jb25uLXNlY3JldA==");
         configStore.validateAndInit();
         fail();
+    }
+    
+    @Test
+    public void getLabelsTest() {
+        ConfigStore configStore = new ConfigStore();
+        assertEquals(configStore.getLabels()[0], "\0");
+        
+        configStore.setLabel("dev");
+        assertEquals(configStore.getLabels()[0], "dev");
+        
+        configStore.setLabel("dev,test");
+        assertEquals(configStore.getLabels()[0], "test");
+        assertEquals(configStore.getLabels()[1], "dev");
+        
+        configStore.setLabel(",");
+        assertEquals(configStore.getLabels()[0], "\0");
     }
 
 }
