@@ -25,7 +25,8 @@ import org.springframework.util.StringUtils;
 import com.microsoft.azure.spring.cloud.config.resource.Connection;
 
 public class ConfigStore {
-    private static final String[] EMPTY_LABEL_ONLY = {"\0"};
+    private static final String EMPTY_LABEL = "\0";
+    private static final String[] EMPTY_LABEL_ARRAY = {EMPTY_LABEL};
     private String endpoint; // Config store endpoint
 
     @Nullable
@@ -131,21 +132,32 @@ public class ConfigStore {
      */
     public String[] getLabels() {
         if (!StringUtils.hasText(this.getLabel())) {
-            return EMPTY_LABEL_ONLY;
+            return EMPTY_LABEL_ARRAY;
         }
 
+        // The use of trim makes label= dev,prod and label= dev, prod equal.
         List<String> labels =  Arrays.stream(this.getLabel().split(LABEL_SEPARATOR))
-                .filter(StringUtils::hasText)
-                .map(String::trim)
+                .map(label -> mapLabel(label))
                 .distinct()
                 .collect(Collectors.toList());
-
+        
+        if (this.getLabel().endsWith(",")) {
+            labels.add(EMPTY_LABEL);
+        }
+        
         Collections.reverse(labels);
         if (labels.isEmpty()) {
-            return EMPTY_LABEL_ONLY;
+            return EMPTY_LABEL_ARRAY;
         } else {
             String[] t = new String[labels.size()];
             return labels.toArray(t);
         }
+    }
+    
+    private String mapLabel(String label) {
+        if (label == null || label.equals("")) {
+            return EMPTY_LABEL;
+        }
+        return label.trim();
     }
 }
