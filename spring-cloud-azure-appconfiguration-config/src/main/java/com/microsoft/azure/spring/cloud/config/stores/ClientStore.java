@@ -106,7 +106,7 @@ public class ClientStore {
     }
 
     /**
-     * Gets a list of Configuration Settings from the revisions given config store that
+     * Gets the latest Configuration Setting from the revisions given config store that
      * match the Setting Selector criteria.
      * 
      * @param settingSelector Information on which setting to pull. i.e. number of
@@ -114,9 +114,9 @@ public class ClientStore {
      * @param storeName Name of the App Configuration store to query against.
      * @return List of Configuration Settings.
      */
-    public final List<ConfigurationSetting> listSettingRevisons(SettingSelector settingSelector, String storeName) {
+    public final ConfigurationSetting getRevison(SettingSelector settingSelector, String storeName) {
         ConfigurationAsyncClient client = buildClient(storeName);
-        return client.listRevisions(settingSelector).collectList().block();
+        return client.listRevisions(settingSelector).blockFirst();
     }
 
     /**
