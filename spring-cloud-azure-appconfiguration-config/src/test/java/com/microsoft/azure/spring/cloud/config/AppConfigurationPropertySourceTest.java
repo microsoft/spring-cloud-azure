@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Before;
@@ -160,7 +159,7 @@ public class AppConfigurationPropertySourceTest {
         ArrayList<String> contexts = new ArrayList<String>();
         contexts.add("/application/*");
         propertySource = new AppConfigurationPropertySource(TEST_CONTEXT, configStore, "\0",
-                appConfigurationProperties, clientStoreMock, appProperties, tokenCredentialProvider);
+                appConfigurationProperties, clientStoreMock, appProperties, tokenCredentialProvider, null);
 
         testItems = new ArrayList<ConfigurationSetting>();
         testItems.add(item1);
@@ -179,7 +178,7 @@ public class AppConfigurationPropertySourceTest {
     public void testPropCanBeInitAndQueried() throws IOException {
         when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString())).thenReturn(testItems)
                 .thenReturn(FEATURE_ITEMS);
-        
+
         FeatureSet featureSet = new FeatureSet();
         try {
             propertySource.initProperties(featureSet);

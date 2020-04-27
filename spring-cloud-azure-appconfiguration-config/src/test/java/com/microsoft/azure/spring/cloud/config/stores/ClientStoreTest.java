@@ -84,7 +84,7 @@ public class ClientStoreTest {
 
         SettingSelector selector = new SettingSelector();
 
-        clientStore = new ClientStore(appProperties, pool, null);
+        clientStore = new ClientStore(appProperties, pool, null, null);
         ClientStore test = Mockito.spy(clientStore);
         Mockito.doReturn(builderMock).when(test).getBuilder();
 
@@ -114,7 +114,7 @@ public class ClientStoreTest {
             }
         };
 
-        clientStore = new ClientStore(appProperties, pool, provider);
+        clientStore = new ClientStore(appProperties, pool, provider, null);
         ClientStore test = Mockito.spy(clientStore);
         Mockito.doReturn(builderMock).when(test).getBuilder();
 
@@ -144,7 +144,7 @@ public class ClientStoreTest {
             }
         };
 
-        clientStore = new ClientStore(appProperties, pool, provider);
+        clientStore = new ClientStore(appProperties, pool, provider, null);
         ClientStore test = Mockito.spy(clientStore);
         Mockito.doReturn(builderMock).when(test).getBuilder();
 
@@ -168,7 +168,7 @@ public class ClientStoreTest {
             }
         };
 
-        clientStore = new ClientStore(appProperties, pool, provider);
+        clientStore = new ClientStore(appProperties, pool, provider, null);
         ClientStore test = Mockito.spy(clientStore);
         Mockito.doReturn(builderMock).when(test).getBuilder();
 
@@ -180,7 +180,7 @@ public class ClientStoreTest {
     
     @Test
     public void watchedKeyNamesWildcardTest() {
-        clientStore = new ClientStore(appProperties, pool, null);
+        clientStore = new ClientStore(appProperties, pool, null, null);
         ConfigStore store = new ConfigStore();
         HashMap<String, List<String>> storeContextsMap = new HashMap<String, List<String>>();
         

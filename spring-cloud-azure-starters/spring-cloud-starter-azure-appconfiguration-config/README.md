@@ -191,6 +191,38 @@ public class MyCredentials implements AppConfigCredentialProvider, KeyVaultCrede
 }
 ```
 
+### Modifying Connection Client
+
+In some situations the client connection needs to be modified, such as adding proxy configurations. Using the AppConfigurationClientProvider and/or KeyVaultClientProvider. By implementing either of these classes and providing and generating a @Bean of them will enable client modification following [App Configuration SDK](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/appconfiguration/azure-data-appconfiguration#key-concepts) and [Key Vault SDK](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/keyvault/azure-security-keyvault-secrets#key-concepts).
+
+```java
+public class MyClients implements AppConfigurationClientProvider, KeyVaultClientProvider {
+
+    @Override
+    public SecretClientBuilder modifyKeyVaultClient(SecretClientBuilder keyVaultClientBuilder) {
+        return keyVaultClientBuilder.httpClient(buildHttpClient());
+    }
+
+    @Override
+    public ConfigurationClientBuilder modifyConfigurationClient(ConfigurationClientBuilder configurationClientBuilder) {
+        return configurationClientBuilder.httpClient(buildHttpClient());
+    }
+
+    private HttpClient buildHttpClient() {
+        String hostname = System.getProperty("https.proxyHosts");
+        String portString = System.getProperty("https.proxyPort");
+        int port = Integer.valueOf(portString);
+
+        ProxyOptions proxyOptions = new ProxyOptions(ProxyOptions.Type.HTTP,
+                new InetSocketAddress(hostname, port));
+        return new NettyAsyncHttpClientBuilder()
+                .proxy(proxyOptions)
+                .build();
+    }
+
+}
+```
+
 <!-- LINKS -->
 [azure]: https://azure.microsoft.com
 [azure_active_directory]: https://azure.microsoft.com/services/active-directory/
