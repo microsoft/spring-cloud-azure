@@ -16,8 +16,8 @@ import com.azure.security.keyvault.secrets.SecretAsyncClient;
 import com.azure.security.keyvault.secrets.SecretClientBuilder;
 import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationProperties;
-import com.microsoft.azure.spring.cloud.config.SecretClientBuilderSetup;
 import com.microsoft.azure.spring.cloud.config.KeyVaultCredentialProvider;
+import com.microsoft.azure.spring.cloud.config.SecretClientBuilderSetup;
 import com.microsoft.azure.spring.cloud.config.resource.AppConfigManagedIdentityProperties;
 
 public class KeyVaultClient {
@@ -69,11 +69,13 @@ public class KeyVaultClient {
             // System Assigned Identity.
             builder.credential(new ManagedIdentityCredentialBuilder().build());
         }
-        secretClient = builder.vaultUrl(fullUri).buildAsyncClient();
+        builder.vaultUrl(fullUri);
         
         if (keyVaultClientProvider != null) {
             keyVaultClientProvider.setup(builder, fullUri);
         }
+        
+        secretClient = builder.buildAsyncClient();
         
         return this;
     }
