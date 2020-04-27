@@ -146,6 +146,7 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
         if (StateHolder.getEtagState(storeNameWithSuffix) == null) {
             // On startup there was no Configurations, but now there is.
             if (etag != null) {
+                LOGGER.info("There was no keys on startup, but now there are keys.");
                 return true;
             }
             return false;
