@@ -140,28 +140,35 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
         // There is only one Feature Set for all AppConfigurationPropertySources
         FeatureSet featureSet = new FeatureSet();
 
+        List<AppConfigurationPropertySource> sourceList = new ArrayList<AppConfigurationPropertySource>();
+
         // Reverse in order to add Profile specific properties earlier, and last profile
         // comes first
         Collections.reverse(contexts);
         for (String sourceContext : contexts) {
             try {
-                List<AppConfigurationPropertySource> sourceList = create(sourceContext, store, storeContextsMap,
-                        initFeatures, featureSet);
-                sourceList.forEach(composite::addPropertySource);
+                sourceList.addAll(create(sourceContext, store, storeContextsMap, initFeatures, featureSet));
+
                 LOGGER.debug("PropertySource context [{}] is added.", sourceContext);
             } catch (Exception e) {
                 if (store.isFailFast() || !startup) {
                     LOGGER.error(
                             "Fail fast is set and there was an error reading configuration from Azure App "
-                                    + "Configuration Service for " + sourceContext);
+                                    + "Configuration store " + store.getEndpoint()
+                                    + ". The configuration starting with " + sourceContext + " failed to load.");
                     ReflectionUtils.rethrowRuntimeException(e);
                 } else {
-                    LOGGER.warn("Unable to load configuration from Azure AppConfiguration Service for " + sourceContext,
+                    LOGGER.warn(
+                            "Unable to load configuration from Azure AppConfiguration store " + store.getEndpoint()
+                                    + ". The configurations starting with " + sourceContext + "failed to load.",
                             e);
                     StateHolder.setLoadState(store.getEndpoint(), false);
                 }
+                // If anything breaks we skip out on loading the rest of the store.
+                return;
             }
         }
+        sourceList.forEach(composite::addPropertySource);
     }
 
     private List<String> generateContexts(String applicationName, List<String> profiles, ConfigStore configStore) {
