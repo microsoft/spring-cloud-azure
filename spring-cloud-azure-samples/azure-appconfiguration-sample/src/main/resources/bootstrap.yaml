@@ -4,6 +4,5 @@ spring:
   cloud:
     azure:
       appconfiguration:
-        cache-expiration: "60000"
         stores:
-          - connection-string: Endpoint=https://mametcal-app-config.azconfig.io;Id=CwzF-l3-s0:IwMKr+zTOO+RO2nHrXT0;Secret=2RdyHYymXZ2Z3SzxBs28GX4Y5mIV2oL1HeYzX8vdj4I=
+          - connection-string: ${CONFIG_STORE_CONNECTION_STRING}
