@@ -102,6 +102,9 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
                             // Refresh Feature Flags
                             willRefresh = refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY) ? true
                                     : willRefresh;
+                        } else {
+                            LOGGER.debug("Skipping refresh check for " + configStore.getEndpoint()
+                                    + ". The store failed to load on startup.");
                         }
                     }
                     // Resetting last Checked date to now.
@@ -110,6 +113,11 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
                 if (willRefresh) {
                     // Only one refresh Event needs to be call to update all of the
                     // stores, not one for each.
+                    if (eventDataInfo.equals("*")) {
+                        LOGGER.info("Configuration Refresh event triggered by store modification.");
+                    } else {
+                        LOGGER.info("Configuration Refresh Event triggered by " + eventDataInfo);
+                    }
                     RefreshEventData eventData = new RefreshEventData(eventDataInfo);
                     publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
                 }
@@ -146,6 +154,7 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
         if (StateHolder.getEtagState(storeNameWithSuffix) == null) {
             // On startup there was no Configurations, but now there is.
             if (etag != null) {
+                LOGGER.info("The store " + store.getEndpoint() + " had no keys on startup, but now has keys to load.");
                 return true;
             }
             return false;

@@ -38,6 +38,7 @@
         <module>storage-queue-integration-sample</module>
         <module>azure-messaging-sample</module>
         <module>servicebus-jms-sample</module>
+        <module>servicebus-queue-multibinders-sample</module>
     </modules>
 
     <build>

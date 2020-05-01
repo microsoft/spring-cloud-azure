@@ -58,18 +58,21 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
     private ClientStore clients;
 
     private KeyVaultCredentialProvider keyVaultCredentialProvider;
+    
+    private SecretClientBuilderSetup keyVaultClientProvider;
 
     private static Boolean startup = true;
 
     public AppConfigurationPropertySourceLocator(AppConfigurationProperties properties,
             AppConfigurationProviderProperties appProperties, ClientStore clients,
-            KeyVaultCredentialProvider keyVaultCredentialProvider) {
+            KeyVaultCredentialProvider keyVaultCredentialProvider, SecretClientBuilderSetup keyVaultClientProvider) {
         this.properties = properties;
         this.appProperties = appProperties;
         this.profileSeparator = properties.getProfileSeparator();
         this.configStores = properties.getStores();
         this.clients = clients;
         this.keyVaultCredentialProvider = keyVaultCredentialProvider;
+        this.keyVaultClientProvider = keyVaultClientProvider;
     }
 
     @Override
@@ -137,28 +140,35 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
         // There is only one Feature Set for all AppConfigurationPropertySources
         FeatureSet featureSet = new FeatureSet();
 
+        List<AppConfigurationPropertySource> sourceList = new ArrayList<AppConfigurationPropertySource>();
+
         // Reverse in order to add Profile specific properties earlier, and last profile
         // comes first
         Collections.reverse(contexts);
         for (String sourceContext : contexts) {
             try {
-                List<AppConfigurationPropertySource> sourceList = create(sourceContext, store, storeContextsMap,
-                        initFeatures, featureSet);
-                sourceList.forEach(composite::addPropertySource);
+                sourceList.addAll(create(sourceContext, store, storeContextsMap, initFeatures, featureSet));
+
                 LOGGER.debug("PropertySource context [{}] is added.", sourceContext);
             } catch (Exception e) {
                 if (store.isFailFast() || !startup) {
                     LOGGER.error(
                             "Fail fast is set and there was an error reading configuration from Azure App "
-                                    + "Configuration Service for " + sourceContext);
+                                    + "Configuration store " + store.getEndpoint()
+                                    + ". The configuration starting with " + sourceContext + " failed to load.");
                     ReflectionUtils.rethrowRuntimeException(e);
                 } else {
-                    LOGGER.warn("Unable to load configuration from Azure AppConfiguration Service for " + sourceContext,
+                    LOGGER.warn(
+                            "Unable to load configuration from Azure AppConfiguration store " + store.getEndpoint()
+                                    + ". The configurations starting with " + sourceContext + "failed to load.",
                             e);
                     StateHolder.setLoadState(store.getEndpoint(), false);
                 }
+                // If anything breaks we skip out on loading the rest of the store.
+                return;
             }
         }
+        sourceList.forEach(composite::addPropertySource);
     }
 
     private List<String> generateContexts(String applicationName, List<String> profiles, ConfigStore configStore) {
@@ -207,7 +217,7 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
             for (String label : store.getLabels()) {
                 putStoreContext(store.getEndpoint(), context, storeContextsMap);
                 AppConfigurationPropertySource propertySource = new AppConfigurationPropertySource(context, store,
-                        label, properties, clients, appProperties, keyVaultCredentialProvider);
+                        label, properties, clients, appProperties, keyVaultCredentialProvider, keyVaultClientProvider);
 
                 propertySource.initProperties(featureSet);
                 if (initFeatures) {
