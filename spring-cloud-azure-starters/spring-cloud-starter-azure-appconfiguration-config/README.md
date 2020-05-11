@@ -193,7 +193,7 @@ public class MyCredentials implements AppConfigCredentialProvider, KeyVaultCrede
 
 ### Modifying Connection Client
 
-In some situations the client connection needs to be modified, such as adding proxy configurations. Using the AppConfigurationClientProvider and/or KeyVaultClientProvider. By implementing either of these classes and providing and generating a @Bean of them will enable client modification following [App Configuration SDK](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/appconfiguration/azure-data-appconfiguration#key-concepts) and [Key Vault SDK](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/keyvault/azure-security-keyvault-secrets#key-concepts).
+In some situations the client connection needs to be modified, such as adding proxy configurations. Using the ConfigurationClientBuilderSetup and/or SecretClientBuilderSetup. By implementing either of these classes and providing and generating a @Bean of them will enable client modification following [App Configuration SDK](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/appconfiguration/azure-data-appconfiguration#key-concepts) and [Key Vault SDK](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/keyvault/azure-security-keyvault-secrets#key-concepts).
 
 ```java
 public class MyClients implements ConfigurationClientBuilderSetup, SecretClientBuilderSetup {
