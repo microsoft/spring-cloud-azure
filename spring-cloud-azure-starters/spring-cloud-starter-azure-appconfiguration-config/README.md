@@ -211,12 +211,12 @@ For example, the following implementation of `MyClient` replaces the default `Ht
 public class MyClient implements ConfigurationClientBuilderSetup, SecretClientBuilderSetup {
 
     @Override
-    public void setup(SecretClientBuilder builder, String uri) {
+    public void setup(ConfigurationClientBuilder builder, String endpoint) {
         builder.httpClient(buildHttpClient());
     }
 
     @Override
-    public void setup(ConfigurationClientBuilder builder, String endpoint) {
+    public void setup(SecretClientBuilder builder, String uri) {
         builder.httpClient(buildHttpClient());
     }
 
