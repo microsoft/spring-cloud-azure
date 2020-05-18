@@ -10,6 +10,7 @@ import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_BOOL
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_LABEL;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_VALUE;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_VALUE_PARAMETERS;
+import static com.microsoft.azure.spring.cloud.config.TestConstants.FEATURE_VALUE_TARGETING;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONTEXT;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_KEY_1;
@@ -65,11 +66,19 @@ import reactor.core.publisher.Mono;
 public class AppConfigurationPropertySourceTest {
     private static final String EMPTY_CONTENT_TYPE = "";
 
+    private static final String USERS = "users";
+
+    private static final String GROUPS = "groups";
+
+    private static final String DEFAULT_ROLLOUT_PERCENTAGE = "defaultRolloutPercentage";
+
     private static final AppConfigurationProperties TEST_PROPS = new AppConfigurationProperties();
 
     public static final List<ConfigurationSetting> TEST_ITEMS = new ArrayList<>();
 
     public static final List<ConfigurationSetting> FEATURE_ITEMS = new ArrayList<>();
+
+    public static final List<ConfigurationSetting> FEATURE_ITEMS_TARGETING = new ArrayList<>();
 
     private static final ConfigurationSetting item1 = createItem(TEST_CONTEXT, TEST_KEY_1, TEST_VALUE_1, TEST_LABEL_1,
             EMPTY_CONTENT_TYPE);
@@ -96,6 +105,9 @@ public class AppConfigurationPropertySourceTest {
     private static final ConfigurationSetting featureItemNull = createItem(".appconfig.featureflag/", "Alpha",
             FEATURE_VALUE,
             FEATURE_LABEL, null);
+
+    private static final ConfigurationSetting featureItemTargeting = createItem(".appconfig.featureflag/", "target",
+            FEATURE_VALUE_TARGETING, FEATURE_LABEL, FEATURE_FLAG_CONTENT_TYPE);
 
     public List<ConfigurationSetting> testItems = new ArrayList<>();
 
@@ -147,6 +159,8 @@ public class AppConfigurationPropertySourceTest {
         FEATURE_ITEMS.add(featureItem2);
         FEATURE_ITEMS.add(featureItem3);
         mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
+
+        FEATURE_ITEMS_TARGETING.add(featureItemTargeting);
     }
 
     @Before
@@ -363,5 +377,60 @@ public class AppConfigurationPropertySourceTest {
         String[] expectedKeyNames = {};
 
         assertThat(keyNames).containsExactlyInAnyOrder(expectedKeyNames);
+    }
+
+    @Test
+    public void testFeatureFlagTargeting() throws IOException {
+        when(clientStoreMock.listSettings(Mockito.any(), Mockito.anyString()))
+                .thenReturn(new ArrayList<ConfigurationSetting>()).thenReturn(FEATURE_ITEMS_TARGETING);
+
+        FeatureSet featureSet = new FeatureSet();
+        try {
+            propertySource.initProperties(featureSet);
+        } catch (IOException e) {
+            fail("Failed Reading in Feature Flags");
+        }
+        propertySource.initFeatures(featureSet);
+
+        FeatureSet featureSetExpected = new FeatureSet();
+        Feature feature = new Feature();
+        feature.setKey("target");
+        HashMap<Integer, FeatureFilterEvaluationContext> filters = 
+                new HashMap<Integer, FeatureFilterEvaluationContext>();
+        FeatureFilterEvaluationContext ffec = new FeatureFilterEvaluationContext();
+        ffec.setName("targetingFilter");
+
+        LinkedHashMap<String, Object> parameters = new LinkedHashMap<String, Object>();
+
+        LinkedHashMap<String, String> users = new LinkedHashMap<>();
+        users.put("0", "Jeff");
+        users.put("1", "Alicia");
+
+        LinkedHashMap<String, Object> groups = new LinkedHashMap<>();
+        LinkedHashMap<String, String> ring0 = new LinkedHashMap<>();
+        LinkedHashMap<String, String> ring1 = new LinkedHashMap<>();
+
+        ring0.put("name", "Ring0");
+        ring0.put("rolloutPercentage", "100");
+
+        ring1.put("name", "Ring1");
+        ring1.put("rolloutPercentage", "100");
+
+        groups.put("0", ring0);
+        groups.put("1", ring1);
+
+        parameters.put(USERS, users);
+        parameters.put(GROUPS, groups);
+        parameters.put(DEFAULT_ROLLOUT_PERCENTAGE, 50);
+
+        ffec.setParameters(parameters);
+        filters.put(0, ffec);
+        feature.setEnabledFor(filters);
+
+        featureSetExpected.addFeature("target", feature);
+        LinkedHashMap<?, ?> convertedValue = mapper.convertValue(featureSetExpected.getFeatureManagement(),
+                LinkedHashMap.class);
+
+        assertEquals(convertedValue.toString(), propertySource.getProperty(FEATURE_MANAGEMENT_KEY).toString());
     }
 }

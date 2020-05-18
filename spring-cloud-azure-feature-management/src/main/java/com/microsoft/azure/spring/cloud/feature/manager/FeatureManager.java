@@ -89,6 +89,7 @@ public class FeatureManager extends HashMap<String, Object> {
             if (filter != null && filter.getName() != null) {
                 try {
                     FeatureFilter featureFilter = (FeatureFilter) context.getBean(filter.getName());
+                    filter.setFeatureName(feature);
                     enabled = Mono.just(featureFilter.evaluate(filter)).block();
                 } catch (NoSuchBeanDefinitionException e) {
                     LOGGER.error("Was unable to find Filter " + filter.getName()
@@ -144,7 +145,11 @@ public class FeatureManager extends HashMap<String, Object> {
         if (m == null) {
             return;
         }
-        
+
+        if (m.size() == 1 && m.get("featureManagement") != null) {
+            m = (Map<? extends String, ? extends Object>) m.get("featureManagement");
+        }
+
         for (String key : m.keySet()) {
             addToFeatures(m, key, "");
         }
@@ -175,6 +180,5 @@ public class FeatureManager extends HashMap<String, Object> {
     HashMap<String, Boolean> getOnOff() {
         return onOff;
     }
-    
-    
+
 }

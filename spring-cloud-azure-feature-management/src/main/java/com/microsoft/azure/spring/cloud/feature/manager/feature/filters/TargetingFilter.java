@@ -1,0 +1,191 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License. See LICENSE in the project root for
+ * license information.
+ */
+package com.microsoft.azure.spring.cloud.feature.manager.feature.filters;
+
+import java.nio.ByteBuffer;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.azure.spring.cloud.feature.manager.FeatureFilter;
+import com.microsoft.azure.spring.cloud.feature.manager.TargetingException;
+import com.microsoft.azure.spring.cloud.feature.manager.entities.FeatureFilterEvaluationContext;
+import com.microsoft.azure.spring.cloud.feature.manager.targeting.Audience;
+import com.microsoft.azure.spring.cloud.feature.manager.targeting.GroupRollout;
+import com.microsoft.azure.spring.cloud.feature.manager.targeting.ITargetingContextAccessor;
+import com.microsoft.azure.spring.cloud.feature.manager.targeting.TargetingContext;
+import com.microsoft.azure.spring.cloud.feature.manager.targeting.TargetingEvaluationOptions;
+import com.microsoft.azure.spring.cloud.feature.manager.targeting.TargetingFilterSettings;
+
+public class TargetingFilter implements FeatureFilter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TargetingFilter.class);
+    
+    private static final String USERS = "users";
+    private static final String GROUPS = "groups";
+    private static final String AUDIENCE = "Audience";
+    
+    private static final String OUT_OF_RANGE = "The value is out of the accepted range.";
+    private static final String REQUIRED_PARAMETER = "Value cannot be null.";
+
+    private ITargetingContextAccessor contextAccessor;
+
+    private TargetingEvaluationOptions options;
+    
+    public TargetingFilter(ITargetingContextAccessor contextAccessor) {
+        this.contextAccessor = contextAccessor;
+        this.options = new TargetingEvaluationOptions();
+    }
+
+    public TargetingFilter(ITargetingContextAccessor contextAccessor, TargetingEvaluationOptions options) {
+        this.contextAccessor = contextAccessor;
+        this.options = options;
+    }
+
+    @Override
+    public boolean evaluate(FeatureFilterEvaluationContext context) {
+        if (context == null) {
+            throw new IllegalArgumentException("Targeting Context not configured.");
+        }
+
+        TargetingContext targetingContext = contextAccessor.getContextAsync().block();
+
+        if (targetingContext == null) {
+            LOGGER.warn("No targeting context available for targeting evaluation.");
+            return false;
+        }
+
+        TargetingFilterSettings settings = new TargetingFilterSettings();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+        
+        LinkedHashMap<String, Object> parameters = context.getParameters();
+
+        if (parameters != null) {
+            Object audienceObject = parameters.get(AUDIENCE);
+            if (audienceObject != null) {
+                parameters = (LinkedHashMap<String, Object>) audienceObject;
+            }
+            
+            Object usersObject = parameters.get(USERS);
+            Object audiencesObject = parameters.get(GROUPS);
+            
+            if (usersObject instanceof Map) {
+                List<String> users = ((Map<String, String>) usersObject).values().stream()
+                        .collect(Collectors.toList());
+                parameters.put(USERS, users);
+            }
+            
+            if (audiencesObject instanceof Map) {
+                List<Object> audiences = ((Map<String, Object>) audiencesObject).values().stream()
+                        .collect(Collectors.toList());
+                parameters.put(GROUPS, audiences);
+            }
+
+            settings.setAudience(mapper.convertValue(parameters, Audience.class));
+        }
+
+        tryValidateSettings(settings);
+
+        if (targetingContext.getUserId() != null && settings.getAudience().getUsers() != null &&
+                settings.getAudience().getUsers().stream()
+                        .anyMatch(user -> compairStrings(targetingContext.getUserId(), user))) {
+            return true;
+        }
+
+        if (targetingContext.getGroups() != null && settings.getAudience().getGroups() != null) {
+            for (String group : targetingContext.getGroups()) {
+                Optional<GroupRollout> groupRollout = settings.getAudience().getGroups().stream()
+                        .filter(g -> compairStrings(g.getName(), group)).findFirst();
+
+                if (groupRollout.isPresent()) {
+                    String audienceContextId = targetingContext.getUserId() + "\n" + context.getName() + "\n" + group;
+
+                    if (isTargeted(audienceContextId, groupRollout.get().getRolloutPercentage())) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        String defaultContextId = targetingContext.getUserId() + "\n" + context.getFeatureName();
+
+        return isTargeted(defaultContextId, settings.getAudience().getDefaultRolloutPercentage());
+    }
+
+    private boolean isTargeted(String contextId, double percentage) {
+        byte[] hash = null;
+
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            hash = digest.digest(contextId.getBytes());
+        } catch (NoSuchAlgorithmException e) {
+            throw new TargetingException("Unable to find SHA-256 for targeting.", e);
+        }
+
+        if (hash == null) {
+            throw new TargetingException("Unable to create Targeting Hash for " + contextId);
+        }
+        
+        ByteBuffer wrapped = ByteBuffer.wrap(hash);
+        int contextMarker = Math.abs(wrapped.getInt());
+
+        double contextPercentage = (contextMarker / (double) Integer.MAX_VALUE) * 100;
+        return contextPercentage < percentage;
+    }
+
+    private boolean tryValidateSettings(TargetingFilterSettings settings) {
+        String paramName = "";
+        String reason = "";
+
+        if (settings.getAudience() == null) {
+            paramName = AUDIENCE;
+            reason = REQUIRED_PARAMETER;
+            
+            throw new TargetingException(paramName + " : " + reason);
+        }
+
+        Audience audience = settings.getAudience();
+        if (audience.getDefaultRolloutPercentage() < 0
+                || audience.getDefaultRolloutPercentage() > 100) {
+            paramName = AUDIENCE + "." + audience.getDefaultRolloutPercentage();
+            reason = OUT_OF_RANGE;
+
+            throw new TargetingException(paramName + " : " + reason);
+        }
+
+        List<GroupRollout> groups = audience.getGroups();
+        if (groups != null) {
+            int index = 0;
+
+            for (GroupRollout groupRollout : groups) {
+                if (groupRollout.getRolloutPercentage() < 0 || groupRollout.getRolloutPercentage() > 100) {
+                    paramName = AUDIENCE + "[" + index + "]." + groups.get(index).getRolloutPercentage();
+                    reason = OUT_OF_RANGE;
+
+                    throw new TargetingException(paramName + " : " + reason);
+                }
+                index++;
+            }
+        }
+        return true;
+    }
+
+    private boolean compairStrings(String s1, String s2) {
+        if (options.isIgnoreCase()) {
+            return s1.equalsIgnoreCase(s2);
+        }
+        return s1.equals(s2);
+    }
+}

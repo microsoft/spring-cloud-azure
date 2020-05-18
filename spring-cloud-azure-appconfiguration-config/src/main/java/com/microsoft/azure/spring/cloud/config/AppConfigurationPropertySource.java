@@ -13,6 +13,7 @@ import static com.microsoft.azure.spring.cloud.config.Constants.KEY_VAULT_CONTEN
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -30,9 +31,11 @@ import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.Feature;
+import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureFilterEvaluationContext;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureManagementItem;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
@@ -41,6 +44,22 @@ import com.microsoft.azure.spring.cloud.config.stores.KeyVaultClient;
 
 public class AppConfigurationPropertySource extends EnumerablePropertySource<ConfigurationClient> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppConfigurationPropertySource.class);
+
+    private static final String USERS = "users";
+
+    private static final String USERS_CAPS = "Users";
+
+    private static final String AUDIENCE = "Audience";
+
+    private static final String GROUPS = "groups";
+
+    private static final String GROUPS_CAPS = "Groups";
+
+    private static final String TARGETING_FILTER = "targetingFilter";
+
+    private static final String DEFAULT_ROLLOUT_PERCENTAGE = "defaultRolloutPercentage";
+
+    private static final String DEFAULT_ROLLOUT_PERCENTAGE_CAPS = "DefaultRolloutPercentage";
 
     private final String context;
 
@@ -122,7 +141,11 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
         settingSelector.setKeyFilter(".appconfig*");
         List<ConfigurationSetting> features = clients.listSettings(settingSelector, storeName);
 
-        if (settings == null || features == null) {
+        if (features == null) {
+            throw new IOException("Unable to load properties from App Configuration Store.");
+        }
+
+        if (settings == null) {
             throw new IOException("Unable to load properties from App Configuration Store.");
         }
         for (ConfigurationSetting setting : settings) {
@@ -249,6 +272,56 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
                 } else if (!featureItem.getEnabled()) {
                     return false;
                 }
+                mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+                for (int filter = 0; filter < feature.getEnabledFor().size(); filter++) {
+                    if (feature.getEnabledFor().get(filter).getName().equals(TARGETING_FILTER)) {
+                        FeatureFilterEvaluationContext context = feature.getEnabledFor().get(filter);
+
+                        LinkedHashMap<String, Object> parameters = context.getParameters();
+
+                        if (parameters != null) {
+                            Object audienceObject = parameters.get(AUDIENCE);
+                            if (audienceObject != null) {
+                                parameters = (LinkedHashMap<String, Object>) audienceObject;
+                            }
+
+                            List<Object> users = new ArrayList<Object>();
+                            List<Object> groupRollouts = new ArrayList<Object>();
+
+                            users = mapper.convertValue(parameters.get(USERS_CAPS), users.getClass());
+                            groupRollouts = mapper.convertValue(parameters.get(GROUPS_CAPS), groupRollouts.getClass());
+
+                            Map<String, Object> userMap = new HashMap<String, Object>();
+                            Map<String, Object> rolloutMap = new HashMap<String, Object>();
+
+                            if (users != null) {
+                                for (int i = 0; i < users.size(); i++) {
+                                    userMap.put(String.valueOf(i), users.get(i));
+                                }
+                            }
+                            if (groupRollouts != null) {
+                                for (int i = 0; i < groupRollouts.size(); i++) {
+                                    rolloutMap.put(String.valueOf(i), groupRollouts.get(i));
+                                }
+                            }
+
+                            parameters.put(USERS, userMap);
+                            parameters.remove(USERS_CAPS);
+
+                            parameters.put(GROUPS, rolloutMap);
+                            parameters.remove(GROUPS_CAPS);
+
+                            parameters.put(DEFAULT_ROLLOUT_PERCENTAGE, parameters.get(DEFAULT_ROLLOUT_PERCENTAGE_CAPS));
+                            parameters.remove(DEFAULT_ROLLOUT_PERCENTAGE_CAPS);
+
+                            context.setParameters(parameters);
+                            HashMap<Integer, FeatureFilterEvaluationContext> enabledFor = feature.getEnabledFor();
+                            enabledFor.put(filter, context);
+                            feature.setEnabledFor(enabledFor);
+                        }
+                    }
+                }
+                mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, false);
                 return feature;
 
             } catch (IOException e) {
