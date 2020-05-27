@@ -13,7 +13,6 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -23,12 +22,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.stereotype.Component;
 
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
+@Component
 public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppConfigurationRefresh.class);
 
@@ -71,8 +74,9 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
      * refreshConfigurations is currently being run elsewhere this method will return
      * right away as <b>false</b>.
      */
+    @Async
     public Future<Boolean> refreshConfigurations() {
-        return CompletableFuture.supplyAsync(() -> refreshStores());
+        return new AsyncResult<Boolean>(refreshStores());
     }
 
     /**
