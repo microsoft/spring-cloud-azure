@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -64,47 +65,48 @@ public class FeatureManager extends HashMap<String, Object> {
      * 
      * @param feature Feature being checked.
      * @return state of the feature
-     * @throws FilterNotFoundException 
+     * @throws FilterNotFoundException
      */
     public Mono<Boolean> isEnabledAsync(String feature) throws FilterNotFoundException {
         return Mono.just(checkFeatures(feature));
     }
 
     private boolean checkFeatures(String feature) throws FilterNotFoundException {
-        boolean enabled = false;
         if (featureManagement == null || onOff == null) {
             return false;
         }
 
-        Feature featureItem = featureManagement.get(feature);
         Boolean boolFeature = onOff.get(feature);
 
         if (boolFeature != null) {
             return boolFeature;
-        } else if (featureItem == null) {
+        }
+
+        Feature featureItem = featureManagement.get(feature);
+        if (featureItem == null) {
             return false;
         }
 
-        for (FeatureFilterEvaluationContext filter : featureItem.getEnabledFor().values()) {
-            if (filter != null && filter.getName() != null) {
-                try {
-                    FeatureFilter featureFilter = (FeatureFilter) context.getBean(filter.getName());
-                    filter.setFeatureName(feature);
-                    enabled = Mono.just(featureFilter.evaluate(filter)).block();
-                } catch (NoSuchBeanDefinitionException e) {
-                    LOGGER.error("Was unable to find Filter " + filter.getName()
-                            + ". Does the class exist and set as an @Component?");
-                    if (properties.isFailFast()) {
-                        String message = "Fail fast is set and a Filter was unable to be found";
-                        ReflectionUtils.rethrowRuntimeException(new FilterNotFoundException(message, e, filter));
-                    }
-                }
-            }
-            if (enabled) {
-                return enabled;
+        return featureItem.getEnabledFor().values().stream().filter(Objects::nonNull)
+                .filter(featureFilter -> featureFilter.getName() != null)
+                .map(featureFilter -> isFeatureOn(featureFilter, feature)).findAny().orElse(false);
+    }
+
+    private boolean isFeatureOn(FeatureFilterEvaluationContext filter, String feature) {
+        try {
+            FeatureFilter featureFilter = (FeatureFilter) context.getBean(filter.getName());
+            filter.setFeatureName(feature);
+
+            return Mono.just(featureFilter.evaluate(filter)).block();
+        } catch (NoSuchBeanDefinitionException e) {
+            LOGGER.error("Was unable to find Filter " + filter.getName()
+                    + ". Does the class exist and set as an @Component?");
+            if (properties.isFailFast()) {
+                String message = "Fail fast is set and a Filter was unable to be found";
+                ReflectionUtils.rethrowRuntimeException(new FilterNotFoundException(message, e, filter));
             }
         }
-        return enabled;
+        return false;
     }
 
     @SuppressWarnings("unchecked")
@@ -146,7 +148,7 @@ public class FeatureManager extends HashMap<String, Object> {
             return;
         }
 
-        if (m.size() == 1 && m.get("featureManagement") != null) {
+        if (m.size() == 1 && m.containsKey("featureManagement")) {
             m = (Map<? extends String, ? extends Object>) m.get("featureManagement");
         }
 
@@ -154,14 +156,14 @@ public class FeatureManager extends HashMap<String, Object> {
             addToFeatures(m, key, "");
         }
     }
-    
+
     /**
      * Returns the names of all features flags
      * @return a set of all feature names
      */
     public Set<String> getAllFeatureNames() {
         Set<String> allFeatures = new HashSet<String>();
-        
+
         allFeatures.addAll(onOff.keySet());
         allFeatures.addAll(featureManagement.keySet());
         return allFeatures;

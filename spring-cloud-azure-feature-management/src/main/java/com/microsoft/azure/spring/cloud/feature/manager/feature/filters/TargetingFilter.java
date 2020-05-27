@@ -31,18 +31,24 @@ import com.microsoft.azure.spring.cloud.feature.manager.targeting.TargetingFilte
 
 public class TargetingFilter implements FeatureFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(TargetingFilter.class);
-    
+
     private static final String USERS = "users";
+
     private static final String GROUPS = "groups";
+
     private static final String AUDIENCE = "Audience";
-    
+
     private static final String OUT_OF_RANGE = "The value is out of the accepted range.";
+
     private static final String REQUIRED_PARAMETER = "Value cannot be null.";
 
-    private ITargetingContextAccessor contextAccessor;
+    private final ITargetingContextAccessor contextAccessor;
 
-    private TargetingEvaluationOptions options;
-    
+    private final TargetingEvaluationOptions options;
+
+    private static final ObjectMapper mapper = new ObjectMapper()
+            .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+
     public TargetingFilter(ITargetingContextAccessor contextAccessor) {
         this.contextAccessor = contextAccessor;
         this.options = new TargetingEvaluationOptions();
@@ -67,9 +73,7 @@ public class TargetingFilter implements FeatureFilter {
         }
 
         TargetingFilterSettings settings = new TargetingFilterSettings();
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
-        
+
         LinkedHashMap<String, Object> parameters = context.getParameters();
 
         if (parameters != null) {
@@ -77,21 +81,9 @@ public class TargetingFilter implements FeatureFilter {
             if (audienceObject != null) {
                 parameters = (LinkedHashMap<String, Object>) audienceObject;
             }
-            
-            Object usersObject = parameters.get(USERS);
-            Object audiencesObject = parameters.get(GROUPS);
-            
-            if (usersObject instanceof Map) {
-                List<String> users = ((Map<String, String>) usersObject).values().stream()
-                        .collect(Collectors.toList());
-                parameters.put(USERS, users);
-            }
-            
-            if (audiencesObject instanceof Map) {
-                List<Object> audiences = ((Map<String, Object>) audiencesObject).values().stream()
-                        .collect(Collectors.toList());
-                parameters.put(GROUPS, audiences);
-            }
+
+            this.<String>updateValueFromMapToList(parameters, USERS);
+            updateValueFromMapToList(parameters, GROUPS);
 
             settings.setAudience(mapper.convertValue(parameters, Audience.class));
         }
@@ -137,7 +129,7 @@ public class TargetingFilter implements FeatureFilter {
         if (hash == null) {
             throw new TargetingException("Unable to create Targeting Hash for " + contextId);
         }
-        
+
         ByteBuffer wrapped = ByteBuffer.wrap(hash);
         int contextMarker = Math.abs(wrapped.getInt());
 
@@ -145,14 +137,14 @@ public class TargetingFilter implements FeatureFilter {
         return contextPercentage < percentage;
     }
 
-    private boolean tryValidateSettings(TargetingFilterSettings settings) {
+    private void tryValidateSettings(TargetingFilterSettings settings) {
         String paramName = "";
         String reason = "";
 
         if (settings.getAudience() == null) {
             paramName = AUDIENCE;
             reason = REQUIRED_PARAMETER;
-            
+
             throw new TargetingException(paramName + " : " + reason);
         }
 
@@ -167,19 +159,16 @@ public class TargetingFilter implements FeatureFilter {
 
         List<GroupRollout> groups = audience.getGroups();
         if (groups != null) {
-            int index = 0;
-
-            for (GroupRollout groupRollout : groups) {
+            for (int index = 0; index < groups.size(); index++) {
+                GroupRollout groupRollout = groups.get(index);
                 if (groupRollout.getRolloutPercentage() < 0 || groupRollout.getRolloutPercentage() > 100) {
                     paramName = AUDIENCE + "[" + index + "]." + groups.get(index).getRolloutPercentage();
                     reason = OUT_OF_RANGE;
 
                     throw new TargetingException(paramName + " : " + reason);
                 }
-                index++;
             }
         }
-        return true;
     }
 
     private boolean compairStrings(String s1, String s2) {
@@ -187,5 +176,13 @@ public class TargetingFilter implements FeatureFilter {
             return s1.equalsIgnoreCase(s2);
         }
         return s1.equals(s2);
+    }
+
+    private <T> void updateValueFromMapToList(LinkedHashMap<String, Object> parameters, String key) {
+        Object objectMap = parameters.get(key);
+        if (objectMap instanceof Map) {
+            List<T> toType = ((Map<String, T>) objectMap).values().stream().collect(Collectors.toList());
+            parameters.put(key, toType);
+        }
     }
 }

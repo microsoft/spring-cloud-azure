@@ -74,8 +74,6 @@ public class AppConfigurationPropertySourceTest {
 
     private static final AppConfigurationProperties TEST_PROPS = new AppConfigurationProperties();
 
-    public static final List<ConfigurationSetting> TEST_ITEMS = new ArrayList<>();
-
     public static final List<ConfigurationSetting> FEATURE_ITEMS = new ArrayList<>();
 
     public static final List<ConfigurationSetting> FEATURE_ITEMS_TARGETING = new ArrayList<>();

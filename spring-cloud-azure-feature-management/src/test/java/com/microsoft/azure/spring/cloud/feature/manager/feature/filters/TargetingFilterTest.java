@@ -14,10 +14,10 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import com.microsoft.azure.spring.cloud.feature.manager.TargetingException;
 import com.microsoft.azure.spring.cloud.feature.manager.entities.FeatureFilterEvaluationContext;
@@ -27,6 +27,7 @@ import com.microsoft.azure.spring.cloud.feature.manager.targeting.TargetingEvalu
 
 import reactor.core.publisher.Mono;
 
+@RunWith(MockitoJUnitRunner.class)
 public class TargetingFilterTest {
 
     private static final String USERS = "users";
@@ -43,11 +44,6 @@ public class TargetingFilterTest {
 
     @Mock
     private ITargetingContextAccessor contextAccessor;
-
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void targetedUser() {

@@ -9,17 +9,19 @@ import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_FLAG_CON
 import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_FLAG_PREFIX;
 import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_MANAGEMENT_KEY;
 import static com.microsoft.azure.spring.cloud.config.Constants.KEY_VAULT_CONTENT_TYPE;
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toMap;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +32,7 @@ import com.azure.data.appconfiguration.ConfigurationClient;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -69,7 +72,10 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
 
     private AppConfigurationProperties appConfigurationProperties;
 
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    private static final ObjectMapper CASE_INSENSITIVE_MAPPER = new ObjectMapper()
+            .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);;
 
     private HashMap<String, KeyVaultClient> keyVaultClients;
 
@@ -180,7 +186,7 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
 
             // Parsing Key Vault Reference for URI
             try {
-                JsonNode kvReference = mapper.readTree(value);
+                JsonNode kvReference = MAPPER.readTree(value);
                 uri = new URI(kvReference.at("/uri").asText());
             } catch (URISyntaxException e) {
                 LOGGER.error("Error Processing Key Vault Entry URI.");
@@ -254,84 +260,78 @@ public class AppConfigurationPropertySource extends EnumerablePropertySource<Con
      * @throws IOException
      */
     private Object createFeature(ConfigurationSetting item) throws IOException {
-        Feature feature = null;
-        if (item.getContentType() != null && item.getContentType().equals(FEATURE_FLAG_CONTENT_TYPE)) {
-            try {
-                String key = item.getKey().trim().substring(FEATURE_FLAG_PREFIX.length());
-                FeatureManagementItem featureItem = mapper.readValue(item.getValue(), FeatureManagementItem.class);
-                feature = new Feature(key, featureItem);
-
-                // Setting Enabled For to null, but enabled = true will result in the
-                // feature being on. This is the case of a feature is on/off and set to
-                // on. This is to tell the difference between conditional/off which looks
-                // exactly the same... It should never be the case of Conditional On, and
-                // no filters coming from Azure, but it is a valid way from the config
-                // file, which should result in false being returned.
-                if (feature.getEnabledFor().size() == 0 && featureItem.getEnabled()) {
-                    return true;
-                } else if (!featureItem.getEnabled()) {
-                    return false;
-                }
-                mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
-                for (int filter = 0; filter < feature.getEnabledFor().size(); filter++) {
-                    if (feature.getEnabledFor().get(filter).getName().equals(TARGETING_FILTER)) {
-                        FeatureFilterEvaluationContext context = feature.getEnabledFor().get(filter);
-
-                        LinkedHashMap<String, Object> parameters = context.getParameters();
-
-                        if (parameters != null) {
-                            Object audienceObject = parameters.get(AUDIENCE);
-                            if (audienceObject != null) {
-                                parameters = (LinkedHashMap<String, Object>) audienceObject;
-                            }
-
-                            List<Object> users = new ArrayList<Object>();
-                            List<Object> groupRollouts = new ArrayList<Object>();
-
-                            users = mapper.convertValue(parameters.get(USERS_CAPS), users.getClass());
-                            groupRollouts = mapper.convertValue(parameters.get(GROUPS_CAPS), groupRollouts.getClass());
-
-                            Map<String, Object> userMap = new HashMap<String, Object>();
-                            Map<String, Object> rolloutMap = new HashMap<String, Object>();
-
-                            if (users != null) {
-                                for (int i = 0; i < users.size(); i++) {
-                                    userMap.put(String.valueOf(i), users.get(i));
-                                }
-                            }
-                            if (groupRollouts != null) {
-                                for (int i = 0; i < groupRollouts.size(); i++) {
-                                    rolloutMap.put(String.valueOf(i), groupRollouts.get(i));
-                                }
-                            }
-
-                            parameters.put(USERS, userMap);
-                            parameters.remove(USERS_CAPS);
-
-                            parameters.put(GROUPS, rolloutMap);
-                            parameters.remove(GROUPS_CAPS);
-
-                            parameters.put(DEFAULT_ROLLOUT_PERCENTAGE, parameters.get(DEFAULT_ROLLOUT_PERCENTAGE_CAPS));
-                            parameters.remove(DEFAULT_ROLLOUT_PERCENTAGE_CAPS);
-
-                            context.setParameters(parameters);
-                            HashMap<Integer, FeatureFilterEvaluationContext> enabledFor = feature.getEnabledFor();
-                            enabledFor.put(filter, context);
-                            feature.setEnabledFor(enabledFor);
-                        }
-                    }
-                }
-                mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, false);
-                return feature;
-
-            } catch (IOException e) {
-                throw new IOException("Unabled to parse Feature Management values from Azure.", e);
-            }
-
-        } else {
+        if (item.getContentType() == null || !item.getContentType().equals(FEATURE_FLAG_CONTENT_TYPE)) {
             String message = String.format("Found Feature Flag %s with invalid Content Type of %s", item.getKey(),
                     item.getContentType());
             throw new IOException(message);
         }
+        String key = getFeatureSimpleName(item);
+        try {
+            FeatureManagementItem featureItem = MAPPER.readValue(item.getValue(), FeatureManagementItem.class);
+            Feature feature = new Feature(key, featureItem);
+            HashMap<Integer, FeatureFilterEvaluationContext> featureEnabledFor = feature.getEnabledFor();
+
+            // Setting Enabled For to null, but enabled = true will result in the feature
+            // being on. This is the case of a feature is on/off and set to on. This is to
+            // tell the difference between conditional/off which looks exactly the same...
+            // It should never be the case of Conditional On, and no filters coming from
+            // Azure, but it is a valid way from the config file, which should result in
+            // false being returned.
+            if (featureEnabledFor.size() == 0 && featureItem.getEnabled()) {
+                return true;
+            } else if (!featureItem.getEnabled()) {
+                return false;
+            }
+            for (int filter = 0; filter < feature.getEnabledFor().size(); filter++) {
+                FeatureFilterEvaluationContext featureFilterEvaluationContext = featureEnabledFor.get(filter);
+                LinkedHashMap<String, Object> parameters = featureFilterEvaluationContext.getParameters();
+
+                if (parameters == null || !featureEnabledFor.get(filter).getName().equals(TARGETING_FILTER)) {
+                    continue;
+                }
+
+                Object audienceObject = parameters.get(AUDIENCE);
+                if (audienceObject != null) {
+                    parameters = (LinkedHashMap<String, Object>) audienceObject;
+                }
+
+                List<Object> users = convertToListOrEmptyList(parameters, USERS_CAPS);
+                List<Object> groupRollouts = convertToListOrEmptyList(parameters, GROUPS_CAPS);
+
+                switchKeyValues(parameters, USERS_CAPS, USERS, mapValuesByIndex(users));
+                switchKeyValues(parameters, GROUPS_CAPS, GROUPS, mapValuesByIndex(groupRollouts));
+                switchKeyValues(parameters, DEFAULT_ROLLOUT_PERCENTAGE_CAPS, DEFAULT_ROLLOUT_PERCENTAGE,
+                        parameters.get(DEFAULT_ROLLOUT_PERCENTAGE_CAPS));
+
+                featureFilterEvaluationContext.setParameters(parameters);
+                featureEnabledFor.put(filter, featureFilterEvaluationContext);
+                feature.setEnabledFor(featureEnabledFor);
+            }
+            return feature;
+
+        } catch (IOException e) {
+            throw new IOException("Unabled to parse Feature Management values from Azure.", e);
+        }
+
+    }
+
+    private String getFeatureSimpleName(ConfigurationSetting setting) {
+        return setting.getKey().trim().substring(FEATURE_FLAG_PREFIX.length());
+    }
+
+    private Map<String, Object> mapValuesByIndex(List<Object> users) {
+        return IntStream.range(0, users.size()).boxed().collect(toMap(String::valueOf, users::get));
+    }
+
+    private List<Object> convertToListOrEmptyList(LinkedHashMap<String, Object> parameters, String key) {
+        List<Object> listObjects = CASE_INSENSITIVE_MAPPER.convertValue(parameters.get(key),
+                new TypeReference<List<Object>>() {
+                });
+        return listObjects == null ? emptyList() : listObjects;
+    }
+
+    private void switchKeyValues(Map<String, Object> parameters, String oldKey, String newKey, Object value) {
+        parameters.put(newKey, value);
+        parameters.remove(oldKey);
     }
 }
