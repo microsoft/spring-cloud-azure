@@ -3,9 +3,8 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config;
+package com.microsoft.azure.spring.cloud.config.properties;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +22,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
 import com.microsoft.azure.spring.cloud.config.resource.AppConfigManagedIdentityProperties;
-import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 @Validated
 @ConfigurationProperties(prefix = AppConfigurationProperties.CONFIG_PREFIX)
@@ -52,8 +50,6 @@ public class AppConfigurationProperties {
     @NotEmpty
     @Pattern(regexp = "^[a-zA-Z0-9_@]+$")
     private String profileSeparator = "_";
-
-    private Duration cacheExpiration = Duration.ofSeconds(30);
     
     private boolean pushRefresh = true;
 
@@ -106,20 +102,6 @@ public class AppConfigurationProperties {
         this.profileSeparator = profileSeparator;
     }
 
-    public Duration getCacheExpiration() {
-        return cacheExpiration;
-    }
-
-    /**
-     * The minimum time between checks. The minimum valid cache time is 1s. The default
-     * cache time is 30s.
-     * 
-     * @param cacheExpiration minimum time between refresh checks
-     */
-    public void setCacheExpiration(Duration cacheExpiration) {
-        this.cacheExpiration = cacheExpiration;
-    }
-
     /**
      * @return the pushRefresh
      */
@@ -148,6 +130,5 @@ public class AppConfigurationProperties {
         int uniqueStoreSize = this.stores.stream().map(s -> s.getEndpoint()).distinct().collect(Collectors.toList())
                 .size();
         Assert.isTrue(this.stores.size() == uniqueStoreSize, "Duplicate store name exists.");
-        Assert.isTrue(cacheExpiration.getSeconds() >= 1, "Minimum Watch time is 1 Second.");
     }
 }

@@ -33,8 +33,10 @@ import org.springframework.util.StringUtils;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProviderProperties;
+import com.microsoft.azure.spring.cloud.config.properties.ConfigStore;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
-import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 public class AppConfigurationPropertySourceLocator implements PropertySourceLocator {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppConfigurationPropertySourceLocator.class);
@@ -217,7 +219,6 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
             }
 
             // Setting new ETag values for Watch
-            String watchedKeyNames = clients.watchedKeyNames(store, storeContextsMap);
             SettingSelector settingSelector = new SettingSelector().setKeyFilter(watchedKeyNames).setLabelFilter("*");
 
             List<ConfigurationSetting> configurationRevisions = clients.listSettingRevisons(settingSelector,
@@ -234,12 +235,7 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
             } else {
                 StateHolder.setEtagState(store.getEndpoint() + CONFIGURATION_SUFFIX, new ConfigurationSetting());
             }
-
-            if (featureRevisions != null && !featureRevisions.isEmpty()) {
-                StateHolder.setEtagState(store.getEndpoint() + FEATURE_SUFFIX, featureRevisions.get(0));
-            } else {
-                StateHolder.setEtagState(store.getEndpoint() + FEATURE_SUFFIX, new ConfigurationSetting());
-            }
+            
             StateHolder.setLoadState(store.getEndpoint(), true);
         } catch (Exception e) {
             delayException();

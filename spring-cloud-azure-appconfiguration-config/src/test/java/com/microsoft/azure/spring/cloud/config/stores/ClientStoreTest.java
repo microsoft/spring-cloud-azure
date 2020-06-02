@@ -40,8 +40,8 @@ import com.azure.data.appconfiguration.ConfigurationClientBuilder;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationCredentialProvider;
-import com.microsoft.azure.spring.cloud.config.AppConfigurationProviderProperties;
 import com.microsoft.azure.spring.cloud.config.pipline.policies.BaseAppConfigurationPolicy;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProviderProperties;
 import com.microsoft.azure.spring.cloud.config.resource.Connection;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionPool;
 

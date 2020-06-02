@@ -14,9 +14,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.microsoft.azure.spring.cloud.config.AppConfigurationProperties;
-import com.microsoft.azure.spring.cloud.config.AppConfigurationProviderProperties;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationRefresh;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProviderProperties;
 
 @Configuration
 public class AppConfigurationWebAutoConfiguration {

@@ -45,6 +45,7 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.ApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
 
 public class AppConfigurationPropertiesTest {
     @InjectMocks

@@ -26,8 +26,9 @@ import org.springframework.context.ApplicationEventPublisherAware;
 
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
+import com.microsoft.azure.spring.cloud.config.properties.ConfigStore;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
-import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppConfigurationRefresh.class);
@@ -40,8 +41,6 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
 
     private final Map<String, List<String>> storeContextsMap;
 
-    private Duration delay;
-
     private ClientStore clientStore;
 
     private Date lastCheckedTime;
@@ -52,7 +51,6 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
             ClientStore clientStore) {
         this.configStores = properties.getStores();
         this.storeContextsMap = storeContextsMap;
-        this.delay = properties.getCacheExpiration();
         this.lastCheckedTime = new Date();
         this.clientStore = clientStore;
         this.eventDataInfo = "";
@@ -82,7 +80,7 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
      * @return If a refresh event is called.
      */
     private boolean refreshStores() {
-        boolean willRefresh = false;
+        boolean didRefresh = false;
         if (running.compareAndSet(false, true)) {
             try {
                 Date notCachedTime = null;
@@ -96,28 +94,24 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
                 if (notCachedTime == null || date.after(notCachedTime)) {
                     for (ConfigStore configStore : configStores) {
                         if (StateHolder.getLoadState(configStore.getEndpoint())) {
-                            String watchedKeyNames = clientStore.watchedKeyNames(configStore, storeContextsMap);
-                            willRefresh = refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames) ? true
-                                    : willRefresh;
-                            // Refresh Feature Flags
-                            willRefresh = refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY) ? true
-                                    : willRefresh;
+                            if (refresh(configStore, CONFIGURATION_SUFFIX)) {
+                                // Only one refresh Event needs to be call to update all of the
+                                // stores, not one for each.
+                                RefreshEventData eventData = new RefreshEventData(eventDataInfo);
+                                publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
+                                didRefresh = true;
+                                break;
+                            }
                         }
                     }
                     // Resetting last Checked date to now.
                     lastCheckedTime = new Date();
                 }
-                if (willRefresh) {
-                    // Only one refresh Event needs to be call to update all of the
-                    // stores, not one for each.
-                    RefreshEventData eventData = new RefreshEventData(eventDataInfo);
-                    publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
-                }
             } finally {
                 running.set(false);
             }
         }
-        return willRefresh;
+        return didRefresh;
     }
 
     /**
@@ -126,11 +120,11 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
      * 
      * @param store the {@code store} for which to composite watched key names
      * @param storeSuffix Suffix used to distinguish between Settings and Features
-     * @param watchedKeyNames Key used to check if refresh should occur
      * @return Refresh event was triggered. No other sources need to be checked.
      */
-    private boolean refresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
+    private boolean refresh(ConfigStore store, String storeSuffix) {
         String storeNameWithSuffix = store.getEndpoint() + storeSuffix;
+        
         SettingSelector settingSelector = new SettingSelector().setKeyFilter(watchedKeyNames)
                 .setLabelFilter("*");
 

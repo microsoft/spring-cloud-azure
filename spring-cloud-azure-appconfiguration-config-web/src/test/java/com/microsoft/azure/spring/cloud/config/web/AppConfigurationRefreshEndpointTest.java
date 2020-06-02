@@ -25,7 +25,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.cloud.context.refresh.ContextRefresher;
 import org.springframework.http.HttpStatus;
 
-import com.microsoft.azure.spring.cloud.config.AppConfigurationProviderProperties;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProviderProperties;
 
 public class AppConfigurationRefreshEndpointTest {
 

@@ -27,8 +27,8 @@ import com.azure.core.credential.TokenCredential;
 import com.azure.security.keyvault.secrets.SecretAsyncClient;
 import com.azure.security.keyvault.secrets.SecretClientBuilder;
 import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
-import com.microsoft.azure.spring.cloud.config.AppConfigurationProperties;
 import com.microsoft.azure.spring.cloud.config.KeyVaultCredentialProvider;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
 import com.microsoft.azure.spring.cloud.config.resource.AppConfigManagedIdentityProperties;
 
 import reactor.core.publisher.Mono;

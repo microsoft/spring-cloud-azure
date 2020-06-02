@@ -12,13 +12,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import com.azure.core.credential.TokenCredential;
-import com.azure.core.exception.HttpResponseException;
 import com.azure.core.http.policy.ExponentialBackoff;
 import com.azure.core.http.policy.RetryPolicy;
 import com.azure.data.appconfiguration.ConfigurationAsyncClient;
@@ -27,8 +24,9 @@ import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import com.azure.identity.ManagedIdentityCredentialBuilder;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationCredentialProvider;
-import com.microsoft.azure.spring.cloud.config.AppConfigurationProviderProperties;
 import com.microsoft.azure.spring.cloud.config.pipline.policies.BaseAppConfigurationPolicy;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProviderProperties;
+import com.microsoft.azure.spring.cloud.config.properties.ConfigStore;
 import com.microsoft.azure.spring.cloud.config.resource.Connection;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionPool;
 
@@ -140,7 +138,7 @@ public class ClientStore {
      * @return the full name of the key mapping to the configuration store
      */
     public String watchedKeyNames(ConfigStore store, Map<String, List<String>> storeContextsMap) {
-        String watchedKey = store.getWatchedKey().trim();
+        String watchedKey = store.getWatchedKeys().trim();
         List<String> contexts = storeContextsMap.get(store.getEndpoint());
 
         String watchedKeys = contexts.stream().map(ctx -> genKey(ctx, watchedKey))
