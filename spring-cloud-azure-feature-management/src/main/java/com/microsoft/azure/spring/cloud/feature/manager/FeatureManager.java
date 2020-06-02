@@ -97,10 +97,10 @@ public class FeatureManager extends HashMap<String, Object> {
             FeatureFilter featureFilter = (FeatureFilter) context.getBean(filter.getName());
             filter.setFeatureName(feature);
 
-            return Mono.just(featureFilter.evaluate(filter)).block();
+            return featureFilter.evaluate(filter);
         } catch (NoSuchBeanDefinitionException e) {
-            LOGGER.error("Was unable to find Filter " + filter.getName()
-                    + ". Does the class exist and set as an @Component?");
+            LOGGER.error("Was unable to find Filter {}. Does the class exist and set as an @Component?",
+                    filter.getName());
             if (properties.isFailFast()) {
                 String message = "Fail fast is set and a Filter was unable to be found";
                 ReflectionUtils.rethrowRuntimeException(new FilterNotFoundException(message, e, filter));

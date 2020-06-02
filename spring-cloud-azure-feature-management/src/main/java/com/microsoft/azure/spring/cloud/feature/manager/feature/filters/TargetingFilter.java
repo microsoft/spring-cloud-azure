@@ -90,15 +90,17 @@ public class TargetingFilter implements FeatureFilter {
 
         tryValidateSettings(settings);
 
-        if (targetingContext.getUserId() != null && settings.getAudience().getUsers() != null &&
-                settings.getAudience().getUsers().stream()
+        Audience audience = settings.getAudience();
+
+        if (targetingContext.getUserId() != null && audience.getUsers() != null &&
+                audience.getUsers().stream()
                         .anyMatch(user -> compairStrings(targetingContext.getUserId(), user))) {
             return true;
         }
 
-        if (targetingContext.getGroups() != null && settings.getAudience().getGroups() != null) {
+        if (targetingContext.getGroups() != null && audience.getGroups() != null) {
             for (String group : targetingContext.getGroups()) {
-                Optional<GroupRollout> groupRollout = settings.getAudience().getGroups().stream()
+                Optional<GroupRollout> groupRollout = audience.getGroups().stream()
                         .filter(g -> compairStrings(g.getName(), group)).findFirst();
 
                 if (groupRollout.isPresent()) {
