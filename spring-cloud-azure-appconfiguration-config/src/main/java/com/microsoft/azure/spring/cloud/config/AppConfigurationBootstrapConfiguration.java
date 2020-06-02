@@ -6,13 +6,12 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -69,31 +68,50 @@ public class AppConfigurationBootstrapConfiguration {
 
     @Bean
     public AppConfigurationPropertySourceLocator sourceLocator(AppConfigurationProperties properties,
-            AppConfigurationProviderProperties appProperties, ClientStore clients, ApplicationContext context) {
+            AppConfigurationProviderProperties appProperties, ClientStore clients, ApplicationContext context,
+            Optional<KeyVaultCredentialProvider> keyVaultCredentialProviderOptional,
+            Optional<SecretClientBuilderSetup> keyVaultClientProviderOptional) {
+        
         KeyVaultCredentialProvider keyVaultCredentialProvider = null;
-        try {
-            keyVaultCredentialProvider = context.getBean(KeyVaultCredentialProvider.class);
-        } catch (NoUniqueBeanDefinitionException e) {
-            throw new RuntimeException("Failed to find unique KeyVaultCredentialProvider Bean for authentication.", e);
-        } catch (NoSuchBeanDefinitionException e) {
+        SecretClientBuilderSetup keyVaultClientProvider = null;
+        
+        if (!keyVaultCredentialProviderOptional.isPresent()) {
             LOGGER.debug("No KeyVaultCredentialProvider found.");
+        } else {
+           keyVaultCredentialProvider = keyVaultCredentialProviderOptional.get(); 
         }
+
+        if (!keyVaultClientProviderOptional.isPresent()) {
+            LOGGER.debug("No KeyVaultCredentialProvider found.");
+        } else {
+           keyVaultClientProvider = keyVaultClientProviderOptional.get(); 
+        }
+        
         return new AppConfigurationPropertySourceLocator(properties, appProperties, clients,
-                keyVaultCredentialProvider);
+                keyVaultCredentialProvider, keyVaultClientProvider);
     }
 
     @Bean
     public ClientStore buildClientStores(AppConfigurationProperties properties,
-            AppConfigurationProviderProperties appProperties, ConnectionPool pool, ApplicationContext context) {
+            AppConfigurationProviderProperties appProperties, ConnectionPool pool, ApplicationContext context,
+            Optional<AppConfigurationCredentialProvider> tokenCredentialProviderOptional,
+            Optional<ConfigurationClientBuilderSetup> clientProviderOptional) {
+        
         AppConfigurationCredentialProvider tokenCredentialProvider = null;
-        try {
-            tokenCredentialProvider = context.getBean(AppConfigurationCredentialProvider.class);
-        } catch (NoUniqueBeanDefinitionException e) {
-            throw new RuntimeException(
-                    "Failed to find unique AppConfigurationCredentialProvider Bean for authentication.", e);
-        } catch (NoSuchBeanDefinitionException e) {
+        ConfigurationClientBuilderSetup clientProvider = null;
+        
+        if (!tokenCredentialProviderOptional.isPresent()) {
             LOGGER.debug("No AppConfigurationCredentialProvider found.");
+        } else {
+            tokenCredentialProvider = tokenCredentialProviderOptional.get();
         }
-        return new ClientStore(appProperties, pool, tokenCredentialProvider);
+        
+        if (!clientProviderOptional.isPresent()) {
+            LOGGER.debug("No AppConfigurationClientProvider found.");
+        } else {
+            clientProvider = clientProviderOptional.get();
+        }
+        
+        return new ClientStore(appProperties, pool, tokenCredentialProvider, clientProvider);
     }
 }

@@ -13,7 +13,6 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -23,13 +22,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.stereotype.Component;
 
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
-import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
-import com.microsoft.azure.spring.cloud.config.properties.ConfigStore;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
+import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
+@Component
 public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppConfigurationRefresh.class);
 
@@ -41,6 +43,8 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
 
     private final Map<String, List<String>> storeContextsMap;
 
+    private Duration delay;
+
     private ClientStore clientStore;
 
     private Date lastCheckedTime;
@@ -51,6 +55,7 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
             ClientStore clientStore) {
         this.configStores = properties.getStores();
         this.storeContextsMap = storeContextsMap;
+        this.delay = properties.getCacheExpiration();
         this.lastCheckedTime = new Date();
         this.clientStore = clientStore;
         this.eventDataInfo = "";
@@ -69,8 +74,9 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
      * refreshConfigurations is currently being run elsewhere this method will return
      * right away as <b>false</b>.
      */
+    @Async
     public Future<Boolean> refreshConfigurations() {
-        return CompletableFuture.supplyAsync(() -> refreshStores());
+        return new AsyncResult<Boolean>(refreshStores());
     }
 
     /**
@@ -80,7 +86,7 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
      * @return If a refresh event is called.
      */
     private boolean refreshStores() {
-        boolean didRefresh = false;
+        boolean willRefresh = false;
         if (running.compareAndSet(false, true)) {
             try {
                 Date notCachedTime = null;
@@ -94,24 +100,36 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
                 if (notCachedTime == null || date.after(notCachedTime)) {
                     for (ConfigStore configStore : configStores) {
                         if (StateHolder.getLoadState(configStore.getEndpoint())) {
-                            if (refresh(configStore, CONFIGURATION_SUFFIX)) {
-                                // Only one refresh Event needs to be call to update all of the
-                                // stores, not one for each.
-                                RefreshEventData eventData = new RefreshEventData(eventDataInfo);
-                                publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
-                                didRefresh = true;
-                                break;
-                            }
+                            String watchedKeyNames = clientStore.watchedKeyNames(configStore, storeContextsMap);
+                            willRefresh = refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames) ? true
+                                    : willRefresh;
+                            // Refresh Feature Flags
+                            willRefresh = refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY) ? true
+                                    : willRefresh;
+                        } else {
+                            LOGGER.debug("Skipping refresh check for " + configStore.getEndpoint()
+                                    + ". The store failed to load on startup.");
                         }
                     }
                     // Resetting last Checked date to now.
                     lastCheckedTime = new Date();
                 }
+                if (willRefresh) {
+                    // Only one refresh Event needs to be call to update all of the
+                    // stores, not one for each.
+                    if (eventDataInfo.equals("*")) {
+                        LOGGER.info("Configuration Refresh event triggered by store modification.");
+                    } else {
+                        LOGGER.info("Configuration Refresh Event triggered by " + eventDataInfo);
+                    }
+                    RefreshEventData eventData = new RefreshEventData(eventDataInfo);
+                    publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
+                }
             } finally {
                 running.set(false);
             }
         }
-        return didRefresh;
+        return willRefresh;
     }
 
     /**
@@ -120,26 +138,27 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
      * 
      * @param store the {@code store} for which to composite watched key names
      * @param storeSuffix Suffix used to distinguish between Settings and Features
+     * @param watchedKeyNames Key used to check if refresh should occur
      * @return Refresh event was triggered. No other sources need to be checked.
      */
-    private boolean refresh(ConfigStore store, String storeSuffix) {
+    private boolean refresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
         String storeNameWithSuffix = store.getEndpoint() + storeSuffix;
-        
         SettingSelector settingSelector = new SettingSelector().setKeyFilter(watchedKeyNames)
                 .setLabelFilter("*");
 
-        List<ConfigurationSetting> items = clientStore.listSettingRevisons(settingSelector, store.getEndpoint());
+        ConfigurationSetting revision = clientStore.getRevison(settingSelector, store.getEndpoint());
 
         String etag = null;
         // If there is no result, etag will be considered empty.
         // A refresh will trigger once the selector returns a value.
-        if (items != null && !items.isEmpty()) {
-            etag = items.get(0).getETag();
+        if (revision != null) {
+            etag = revision.getETag();
         }
 
         if (StateHolder.getEtagState(storeNameWithSuffix) == null) {
             // On startup there was no Configurations, but now there is.
             if (etag != null) {
+                LOGGER.info("The store " + store.getEndpoint() + " had no keys on startup, but now has keys to load.");
                 return true;
             }
             return false;

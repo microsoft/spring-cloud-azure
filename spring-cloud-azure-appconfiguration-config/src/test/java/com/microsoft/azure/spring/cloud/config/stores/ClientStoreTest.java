@@ -7,7 +7,7 @@ package com.microsoft.azure.spring.cloud.config.stores;
 
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_ENDPOINT;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -84,7 +84,7 @@ public class ClientStoreTest {
 
         SettingSelector selector = new SettingSelector();
 
-        clientStore = new ClientStore(appProperties, pool, null);
+        clientStore = new ClientStore(appProperties, pool, null, null);
         ClientStore test = Mockito.spy(clientStore);
         Mockito.doReturn(builderMock).when(test).getBuilder();
 
@@ -174,7 +174,7 @@ public class ClientStoreTest {
             }
         };
 
-        clientStore = new ClientStore(appProperties, pool, provider);
+        clientStore = new ClientStore(appProperties, pool, provider, null);
         ClientStore test = Mockito.spy(clientStore);
         Mockito.doReturn(builderMock).when(test).getBuilder();
 
@@ -204,7 +204,7 @@ public class ClientStoreTest {
             }
         };
 
-        clientStore = new ClientStore(appProperties, pool, provider);
+        clientStore = new ClientStore(appProperties, pool, provider, null);
         ClientStore test = Mockito.spy(clientStore);
         Mockito.doReturn(builderMock).when(test).getBuilder();
 
@@ -228,7 +228,7 @@ public class ClientStoreTest {
             }
         };
 
-        clientStore = new ClientStore(appProperties, pool, provider);
+        clientStore = new ClientStore(appProperties, pool, provider, null);
         ClientStore test = Mockito.spy(clientStore);
         Mockito.doReturn(builderMock).when(test).getBuilder();
 
@@ -240,7 +240,7 @@ public class ClientStoreTest {
 
     @Test
     public void watchedKeyNamesWildcardTest() {
-        clientStore = new ClientStore(appProperties, pool, null);
+        clientStore = new ClientStore(appProperties, pool, null, null);
         ConfigStore store = new ConfigStore();
         HashMap<String, List<String>> storeContextsMap = new HashMap<String, List<String>>();
 

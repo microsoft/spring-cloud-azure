@@ -29,7 +29,7 @@ public class AppConfigurationProviderProperties {
     private String version;
 
     @NotNull
-    @Value("${maxRetries:12}")
+    @Value("${maxRetries:2}")
     private int maxRetries;
 
     @NotNull

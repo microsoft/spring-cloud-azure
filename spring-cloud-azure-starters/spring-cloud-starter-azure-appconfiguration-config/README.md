@@ -65,7 +65,7 @@ Name | Description | Required | Default
 spring.cloud.azure.appconfiguration.stores[0].endpoint | When the endpoint of an App Configuration store is specified, a managed identity or a token credential provided using `AppConfigCredentialProvider` will be used to connect to the App Configuration service. An `IllegalArgumentException` will be thrown if the endpoint and connection-string are specified at the same time. | Conditional | null
 spring.cloud.azure.appconfiguration.stores[0].prefix | The prefix of the key name in the configuration store, e.g., /my-prefix/application/key.name | No |  null
 spring.cloud.azure.appconfiguration.stores[0].connection-string | When the connection-string of an App Configuration store is specified, HMAC authentication will be used to connect to the App Configuration service. An `IllegalArgumentException` will be thrown if the endpoint and connection-string are specified at the same time. | Conditional | null
-spring.cloud.azure.appconfiguration.stores[0].label | Comma separated list of label values, by default will query empty labeled value. If you want to specify *empty*(null) label explicitly, use `%00`, e.g., spring.cloud.azure.appconfiguration.stores[0].label=%00,v0 | No |  null
+spring.cloud.azure.appconfiguration.stores[0].label | Comma separated list of label values, by default will query *(No label)* labeled values. If you want to specify *(No label)* label explicitly, use `\0`, e.g., spring.cloud.azure.appconfiguration.stores[0].label=\0,v0 | No |  null
 spring.cloud.azure.appconfiguration.stores[0].fail-fast | Whether throw `RuntimeException` or not when fail to read App Configuration during application start-up. If an exception does occur during startup when set to false the store is skipped. | No |  true
 spring.cloud.azure.appconfiguration.stores[0].watched-key | The single watched key(or by default *) used to indicate configuration change.  | No | *
 
@@ -216,6 +216,50 @@ public class MyCredentials implements AppConfigCredentialProvider, KeyVaultCrede
 
     TokenCredential buildCredential() {
             return new DefaultAzureCredentialBuilder().build();
+    }
+
+}
+```
+
+### Client Builder Customization
+
+The service client builders used for connecting to App Configuration and Key Vault can be customized by implementing interfaces `ConfigurationClientBuilderSetup` and `SecretClientBuilderSetup` respectively. Generating and providing a `@Bean` of them will update the default service client builders used in [App Configuration SDK](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/appconfiguration/azure-data-appconfiguration#key-concepts) and [Key Vault SDK](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/keyvault/azure-security-keyvault-secrets#key-concepts). If necessary, the customization can be done per App Configuration store or Key Vault instance.
+
+```java
+public interface ConfigurationClientBuilderSetup {
+    public void setup(ConfigurationClientBuilder builder, String endpoint);
+}
+
+public interface SecretClientBuilderSetup {
+    public void setup(SecretClientBuilder builder, String uri);
+}
+```
+
+For example, the following implementation of `MyClient` replaces the default `HttpClient` with one using a proxy for all traffic to App Configuration and Key Vault.
+
+```java
+public class MyClient implements ConfigurationClientBuilderSetup, SecretClientBuilderSetup {
+
+    @Override
+    public void setup(ConfigurationClientBuilder builder, String endpoint) {
+        builder.httpClient(buildHttpClient());
+    }
+
+    @Override
+    public void setup(SecretClientBuilder builder, String uri) {
+        builder.httpClient(buildHttpClient());
+    }
+
+    private HttpClient buildHttpClient() {
+        String hostname = System.getProperty("https.proxyHosts");
+        String portString = System.getProperty("https.proxyPort");
+        int port = Integer.valueOf(portString);
+
+        ProxyOptions proxyOptions = new ProxyOptions(ProxyOptions.Type.HTTP,
+                new InetSocketAddress(hostname, port));
+        return new NettyAsyncHttpClientBuilder()
+                .proxy(proxyOptions)
+                .build();
     }
 
 }

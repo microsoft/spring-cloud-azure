@@ -10,12 +10,14 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.endpoint.RefreshEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 
 @Configuration
 @ConditionalOnProperty(prefix = AppConfigurationProperties.CONFIG_PREFIX, name = "enabled", matchIfMissing = true)
+@EnableAsync
 public class AppConfigurationAutoConfiguration {
 
     @Configuration
