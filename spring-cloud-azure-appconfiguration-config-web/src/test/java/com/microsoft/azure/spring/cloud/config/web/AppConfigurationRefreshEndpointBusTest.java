@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -22,10 +23,11 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.cloud.context.refresh.ContextRefresher;
 import org.springframework.http.HttpStatus;
 
-import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProviderProperties;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreMonitoring;
+import com.microsoft.azure.spring.cloud.config.properties.ConfigStore;
 
 public class AppConfigurationRefreshEndpointBusTest {
 
@@ -52,11 +54,16 @@ public class AppConfigurationRefreshEndpointBusTest {
     @Test
     public void webHookValidation() throws IOException {
         Map<String, String> allRequestParams = new HashMap<String, String>();
-        AppConfigurationProviderProperties properties = new AppConfigurationProviderProperties();
+        AppConfigurationProperties properties = new AppConfigurationProperties();
         String tokenName = "token";
         String tokenSecret = "secret";
-        properties.setTokenName(tokenName);
-        properties.setTokenSecret(tokenSecret);
+        AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
+        //monitoring.setPrimaryTokenName(tokenName);
+        //monitoring.setPrimaryTokenSecret(tokenSecret);
+        ConfigStore configStore = new ConfigStore();
+        ArrayList<ConfigStore> configStores = new ArrayList<>();
+        configStore.setMonitoring(monitoring);
+        properties.setStores(configStores);
         allRequestParams.put(tokenName, tokenSecret);
 
         AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(busPublisher, properties);
@@ -85,11 +92,16 @@ public class AppConfigurationRefreshEndpointBusTest {
     @Test
     public void webHookRefresh() throws IOException {
         Map<String, String> allRequestParams = new HashMap<String, String>();
-        AppConfigurationProviderProperties properties = new AppConfigurationProviderProperties();
+        AppConfigurationProperties properties = new AppConfigurationProperties();
         String tokenName = "token";
         String tokenSecret = "secret";
-        properties.setTokenName(tokenName);
-        properties.setTokenSecret(tokenSecret);
+        AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
+        //monitoring.setPrimaryTokenName(tokenName);
+       // monitoring.setPrimaryTokenSecret(tokenSecret);
+        ConfigStore configStore = new ConfigStore();
+        ArrayList<ConfigStore> configStores = new ArrayList<>();
+        configStore.setMonitoring(monitoring);
+        properties.setStores(configStores);
         allRequestParams.put(tokenName, tokenSecret);
 
         AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(busPublisher, properties);
@@ -104,11 +116,16 @@ public class AppConfigurationRefreshEndpointBusTest {
     @Test
     public void webHookRefreshNotFound() throws IOException {
         Map<String, String> allRequestParams = new HashMap<String, String>();
-        AppConfigurationProviderProperties properties = new AppConfigurationProviderProperties();
+        AppConfigurationProperties properties = new AppConfigurationProperties();
         String tokenName = "token";
         String tokenSecret = "secret";
-        properties.setTokenName(tokenName);
-        properties.setTokenSecret(tokenSecret);
+        AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
+        //monitoring.setPrimaryTokenName(tokenName);
+        //monitoring.setPrimaryTokenSecret(tokenSecret);
+        ConfigStore configStore = new ConfigStore();
+        ArrayList<ConfigStore> configStores = new ArrayList<>();
+        configStore.setMonitoring(monitoring);
+        properties.setStores(configStores);
         allRequestParams.put(tokenName, tokenSecret);
 
         AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(null, properties);
@@ -124,10 +141,15 @@ public class AppConfigurationRefreshEndpointBusTest {
     @Test
     public void noTokenName() throws IOException {
         Map<String, String> allRequestParams = new HashMap<String, String>();
-        AppConfigurationProviderProperties properties = new AppConfigurationProviderProperties();
+        AppConfigurationProperties properties = new AppConfigurationProperties();
         String tokenName = "token";
         String tokenSecret = "secret";
-        properties.setTokenSecret(tokenSecret);
+        AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
+        //monitoring.setPrimaryTokenSecret(tokenSecret);
+        ConfigStore configStore = new ConfigStore();
+        ArrayList<ConfigStore> configStores = new ArrayList<>();
+        configStore.setMonitoring(monitoring);
+        properties.setStores(configStores);
         allRequestParams.put(tokenName, tokenSecret);
 
         AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(busPublisher, properties);
@@ -138,10 +160,15 @@ public class AppConfigurationRefreshEndpointBusTest {
     @Test
     public void noTokenSecret() throws IOException {
         Map<String, String> allRequestParams = new HashMap<String, String>();
-        AppConfigurationProviderProperties properties = new AppConfigurationProviderProperties();
+        AppConfigurationProperties properties = new AppConfigurationProperties();
         String tokenName = "token";
         String tokenSecret = "secret";
-        properties.setTokenName(tokenName);
+        AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
+        //monitoring.setPrimaryTokenName(tokenName);
+        ConfigStore configStore = new ConfigStore();
+        ArrayList<ConfigStore> configStores = new ArrayList<>();
+        configStore.setMonitoring(monitoring);
+        properties.setStores(configStores);
         allRequestParams.put(tokenName, tokenSecret);
 
         AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(busPublisher, properties);
@@ -152,11 +179,16 @@ public class AppConfigurationRefreshEndpointBusTest {
     @Test
     public void noPramToken() throws IOException {
         Map<String, String> allRequestParams = new HashMap<String, String>();
-        AppConfigurationProviderProperties properties = new AppConfigurationProviderProperties();
+        AppConfigurationProperties properties = new AppConfigurationProperties();
         String tokenName = "token";
         String tokenSecret = "secret";
-        properties.setTokenName(tokenName);
-        properties.setTokenSecret(tokenSecret);
+        AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
+        //monitoring.setPrimaryTokenName(tokenName);
+        //monitoring.setPrimaryTokenSecret(tokenSecret);
+        ConfigStore configStore = new ConfigStore();
+        ArrayList<ConfigStore> configStores = new ArrayList<>();
+        configStore.setMonitoring(monitoring);
+        properties.setStores(configStores);
 
         AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(busPublisher, properties);
 
@@ -166,11 +198,16 @@ public class AppConfigurationRefreshEndpointBusTest {
     @Test
     public void invalidParamToken() throws IOException {
         Map<String, String> allRequestParams = new HashMap<String, String>();
-        AppConfigurationProviderProperties properties = new AppConfigurationProviderProperties();
+        AppConfigurationProperties properties = new AppConfigurationProperties();
         String tokenName = "token";
         String tokenSecret = "secret";
-        properties.setTokenName(tokenName);
-        properties.setTokenSecret(tokenSecret);
+        AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
+        //monitoring.setPrimaryTokenName(tokenName);
+        //monitoring.setPrimaryTokenSecret(tokenSecret);
+        ConfigStore configStore = new ConfigStore();
+        ArrayList<ConfigStore> configStores = new ArrayList<>();
+        configStore.setMonitoring(monitoring);
+        properties.setStores(configStores);
         allRequestParams.put(tokenName, "noSecret");
 
         AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(busPublisher, properties);

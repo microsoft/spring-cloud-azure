@@ -8,6 +8,7 @@ package com.microsoft.azure.spring.cloud.config;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreTrigger;
 
 final class StateHolder {
 
@@ -15,29 +16,33 @@ final class StateHolder {
         throw new IllegalStateException("Should not be callable.");
     }
 
-    private static ConcurrentHashMap<String, ConfigurationSetting> etagState = 
-            new ConcurrentHashMap<String, ConfigurationSetting>();
+    private static ConcurrentHashMap<String, State> state = new ConcurrentHashMap<String, State>();
 
     private static ConcurrentHashMap<String, Boolean> loadState = new ConcurrentHashMap<String, Boolean>();
 
     /**
-     * @return the etagState
+     * @return the state
      */
-    public static ConfigurationSetting getEtagState(String name) {
-        return etagState.get(name);
+    static State getState(String endpoint, AppConfigurationStoreTrigger trigger) {
+        return state.get(endpoint + trigger.toString());
     }
 
     /**
-     * @param etagState the etagState to set
+     * @param state the etagState to set
      */
-    static void setEtagState(String name, ConfigurationSetting config) {
-        etagState.put(name, config);
+    static void setState(String endpoint, AppConfigurationStoreTrigger trigger, ConfigurationSetting config) {
+        state.put(endpoint + trigger.toString(), new State(config));
+    }
+    
+    static void resetState(String endpoint, AppConfigurationStoreTrigger trigger) {
+        String key = endpoint + trigger.toString();
+        state.put(key, state.get(key));
     }
 
     /**
      * @return the loadState
      */
-    public static Boolean getLoadState(String name) {
+    static Boolean getLoadState(String name) {
         Boolean loadstate = loadState.get(name);
         return loadstate == null ? false : loadstate;
     }
@@ -45,8 +50,7 @@ final class StateHolder {
     /**
      * @param loadState the loadState to set
      */
-    public static void setLoadState(String name, Boolean loaded) {
+    static void setLoadState(String name, Boolean loaded) {
         loadState.put(name, loaded);
     }
-
 }

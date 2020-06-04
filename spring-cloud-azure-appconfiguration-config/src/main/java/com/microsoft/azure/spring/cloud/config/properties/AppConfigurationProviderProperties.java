@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.lang.Nullable;
 import org.springframework.validation.annotation.Validated;
 
 @Configuration
@@ -39,14 +38,6 @@ public class AppConfigurationProviderProperties {
     @NotNull
     @Value("${prekillTime:5}")
     private int prekillTime;
-    
-    @Value("${tokenName:}")
-    @Nullable
-    private String tokenName;
-    
-    @Value("${tokenSecret:}")
-    @Nullable
-    private String tokenSecret;
 
     private static final Date startDate = new Date();
 
@@ -111,34 +102,6 @@ public class AppConfigurationProviderProperties {
      */
     public Date getStartDate() {
         return startDate;
-    }
-
-    /**
-     * @return the tokenName
-     */
-    public String getTokenName() {
-        return tokenName;
-    }
-
-    /**
-     * @param tokenName the tokenName to set
-     */
-    public void setTokenName(String tokenName) {
-        this.tokenName = tokenName;
-    }
-
-    /**
-     * @return the tokenSecret
-     */
-    public String getTokenSecret() {
-        return tokenSecret;
-    }
-
-    /**
-     * @param tokenSecret the tokenSecret to set
-     */
-    public void setTokenSecret(String tokenSecret) {
-        this.tokenSecret = tokenSecret;
     }
 
 }

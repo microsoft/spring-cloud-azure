@@ -4,8 +4,10 @@
  * license information.
  */
 package com.microsoft.azure.spring.cloud.config.web;
+
 import static com.microsoft.azure.spring.cloud.config.web.Constants.VALIDATION_CODE_FORMAT_START;
 import static com.microsoft.azure.spring.cloud.config.web.Constants.VALIDATION_CODE_KEY;
+
 import java.io.IOException;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,7 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProviderProperties;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
 
 @ControllerEndpoint(id = "appconfiguration-refresh")
 public class AppConfigurationRefreshEndpoint {
@@ -34,27 +36,29 @@ public class AppConfigurationRefreshEndpoint {
 
     private ObjectMapper objectmapper = new ObjectMapper();
 
-    private AppConfigurationProviderProperties appConfiguration;
+    private AppConfigurationProperties appConfiguration;
 
     public AppConfigurationRefreshEndpoint(ContextRefresher contextRefresher,
-            AppConfigurationProviderProperties appConfiguration) {
+            AppConfigurationProperties appConfiguration) {
         this.contextRefresher = contextRefresher;
         this.appConfiguration = appConfiguration;
+
     }
 
     @PostMapping(value = "/")
     @ResponseBody
     public String refresh(HttpServletRequest request, HttpServletResponse response,
             @RequestParam Map<String, String> allRequestParams) throws IOException {
-        if (appConfiguration.getTokenName() == null || appConfiguration.getTokenSecret() == null
-                || !allRequestParams.containsKey(appConfiguration.getTokenName())
-                || !allRequestParams.get(appConfiguration.getTokenName()).equals(appConfiguration.getTokenSecret())) {
-            return HttpStatus.UNAUTHORIZED.getReasonPhrase();
-        }
 
         String reference = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
         JsonNode kvReference = objectmapper.readTree(reference);
+        RefreshEndpoint validation = new RefreshEndpoint(kvReference, appConfiguration.getStores(),
+                allRequestParams);
+
+        if (!validation.authenticate()) {
+            return HttpStatus.UNAUTHORIZED.getReasonPhrase();
+        }
 
         JsonNode validationResponse = kvReference.findValue(VALIDATION_CODE_KEY);
         if (validationResponse != null) {
@@ -62,13 +66,19 @@ public class AppConfigurationRefreshEndpoint {
             return VALIDATION_CODE_FORMAT_START + validationResponse.asText() + "\"}";
         } else {
             if (contextRefresher != null) {
-                // Will just refresh the local configurations
-                contextRefresher.refresh();
-                return HttpStatus.OK.getReasonPhrase();
+                if (validation.triggerRefresh()) {
+                    // Will just refresh the local configurations
+                    contextRefresher.refresh();
+                    return HttpStatus.OK.getReasonPhrase();
+                } else {
+                    LOGGER.debug("Non Refreshable notification");
+                    return HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase();
+                }
             } else {
                 LOGGER.error("ContextRefresher Not Found. Unable to Refresh.");
                 return HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase();
             }
         }
     }
+
 }

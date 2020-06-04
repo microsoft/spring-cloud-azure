@@ -8,13 +8,13 @@ package com.microsoft.azure.spring.cloud.config.stores;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_CONN_STRING;
 import static com.microsoft.azure.spring.cloud.config.TestConstants.TEST_ENDPOINT;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -106,7 +106,7 @@ public class ClientStoreTest {
 
         SettingSelector selector = new SettingSelector();
 
-        clientStore = new ClientStore(appProperties, pool, null);
+        clientStore = new ClientStore(appProperties, pool, null, null);
         ClientStore test = Mockito.spy(clientStore);
         Mockito.doReturn(builderMock).when(test).getBuilder();
 
@@ -128,7 +128,7 @@ public class ClientStoreTest {
 
         SettingSelector selector = new SettingSelector();
 
-        clientStore = new ClientStore(appProperties, pool, null);
+        clientStore = new ClientStore(appProperties, pool, null, null);
         ClientStore test = Mockito.spy(clientStore);
         Mockito.doReturn(builderMock).when(test).getBuilder();
 
@@ -141,23 +141,23 @@ public class ClientStoreTest {
         when(clientMock.listRevisions(Mockito.any(SettingSelector.class)))
                 .thenReturn(getConfigurationPagedFlux(1));
 
-        assertEquals(test.listSettingRevisons(selector, TEST_ENDPOINT).size(), 1);
+        assertTrue(test.getRevison(selector, TEST_ENDPOINT) != null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void noIdentityTest() throws IOException {
-        pool.put(TEST_ENDPOINT, new Connection("", ""));
+        pool.put(TEST_ENDPOINT, new Connection(null));
 
         SettingSelector selector = new SettingSelector();
 
-        clientStore = new ClientStore(appProperties, pool, null);
+        clientStore = new ClientStore(appProperties, pool, null, null);
         ClientStore test = Mockito.spy(clientStore);
         Mockito.doReturn(builderMock).when(test).getBuilder();
 
         when(builderMock.addPolicy(Mockito.any(BaseAppConfigurationPolicy.class))).thenReturn(builderMock);
         when(builderMock.retryPolicy(Mockito.any(RetryPolicy.class))).thenReturn(builderMock);
 
-        test.listSettingRevisons(selector, TEST_ENDPOINT);
+        test.getRevison(selector, TEST_ENDPOINT);
     }
 
     @Test
@@ -236,22 +236,6 @@ public class ClientStoreTest {
         when(builderMock.retryPolicy(Mockito.any(RetryPolicy.class))).thenReturn(builderMock);
 
         assertEquals(test.listSettings(selector, TEST_ENDPOINT).size(), 1);
-    }
-
-    @Test
-    public void watchedKeyNamesWildcardTest() {
-        clientStore = new ClientStore(appProperties, pool, null, null);
-        ConfigStore store = new ConfigStore();
-        HashMap<String, List<String>> storeContextsMap = new HashMap<String, List<String>>();
-
-        store.setWatchedKey("*");
-        store.setEndpoint(TEST_ENDPOINT);
-        ArrayList<String> contexts = new ArrayList<String>();
-        contexts.add("/application/");
-
-        storeContextsMap.put(TEST_ENDPOINT, contexts);
-
-        assertEquals("/application/*", clientStore.watchedKeyNames(store, storeContextsMap));
     }
 
     private PagedFlux<ConfigurationSetting> getConfigurationPagedFlux(int noOfPages) throws MalformedURLException {

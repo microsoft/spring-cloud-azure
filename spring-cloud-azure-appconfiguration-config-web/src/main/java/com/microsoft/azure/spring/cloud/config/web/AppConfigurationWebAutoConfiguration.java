@@ -6,7 +6,7 @@
 package com.microsoft.azure.spring.cloud.config.web;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.context.refresh.ContextRefresher;
 import org.springframework.cloud.endpoint.RefreshEndpoint;
 import org.springframework.context.ApplicationContext;
@@ -16,14 +16,12 @@ import org.springframework.context.annotation.Configuration;
 
 import com.microsoft.azure.spring.cloud.config.AppConfigurationRefresh;
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
-import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProviderProperties;
 
 @Configuration
+@EnableConfigurationProperties(AppConfigurationProperties.class)
 public class AppConfigurationWebAutoConfiguration {
 
     @Configuration
-    @ConditionalOnProperty(prefix = AppConfigurationProperties.CONFIG_PREFIX, name = "pushRefresh", 
-    matchIfMissing = true)
     static class AppConfiguraitonRefreshConfiguration {
 
         @Bean
@@ -35,7 +33,7 @@ public class AppConfigurationWebAutoConfiguration {
         @Bean
         @ConditionalOnClass(name = "org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties")
         public AppConfigurationRefreshEndpoint appConfigurationRefreshEndpoint(ContextRefresher contextRefresher,
-                AppConfigurationProviderProperties appConfiguration) {
+                AppConfigurationProperties appConfiguration) {
             return new AppConfigurationRefreshEndpoint(contextRefresher, appConfiguration);
         }
 
@@ -44,7 +42,7 @@ public class AppConfigurationWebAutoConfiguration {
                 "org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties",
                 "org.springframework.cloud.bus.event.RefreshRemoteApplicationEvent" })
         public AppConfigurationRefreshBusEndpoint appConfigurationRefreshBusEndpoint(BusPublisher busPublisher,
-                AppConfigurationProviderProperties appConfiguration) {
+                AppConfigurationProperties appConfiguration) {
             return new AppConfigurationRefreshBusEndpoint(busPublisher, appConfiguration);
         }
 
@@ -54,11 +52,6 @@ public class AppConfigurationWebAutoConfiguration {
     @ConditionalOnClass(RefreshEndpoint.class)
     public ConfigListener configListener(AppConfigurationRefresh appConfigurationRefresh,
             ApplicationContext context, AppConfigurationProperties properties) {
-        if (context.containsBean("appConfigurationRefreshEndpoint")
-                || context.containsBean("appConfigurationRefreshBusEndpoint")) {
-            // Only 1 Refresh Method is enabled at a time.
-            return new ConfigListener(appConfigurationRefresh, false);
-        }
         return new ConfigListener(appConfigurationRefresh, true);
 
     }

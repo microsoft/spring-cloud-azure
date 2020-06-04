@@ -5,10 +5,6 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
-import static com.microsoft.azure.spring.cloud.config.Constants.CONFIGURATION_SUFFIX;
-import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_STORE_WATCH_KEY;
-import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_SUFFIX;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,8 +29,11 @@ import org.springframework.util.StringUtils;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import com.microsoft.azure.spring.cloud.config.feature.management.entity.FeatureSet;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProviderProperties;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreTrigger;
+import com.microsoft.azure.spring.cloud.config.properties.ConfigStore;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
-import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 public class AppConfigurationPropertySourceLocator implements PropertySourceLocator {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppConfigurationPropertySourceLocator.class);
@@ -58,7 +57,7 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
     private ClientStore clients;
 
     private KeyVaultCredentialProvider keyVaultCredentialProvider;
-    
+
     private SecretClientBuilderSetup keyVaultClientProvider;
 
     private static Boolean startup = true;
@@ -227,27 +226,19 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
             }
 
             // Setting new ETag values for Watch
-            String watchedKeyNames = clients.watchedKeyNames(store, storeContextsMap);
-            SettingSelector settingSelector = new SettingSelector().setKeyFilter(watchedKeyNames).setLabelFilter("*");
+            for (AppConfigurationStoreTrigger trigger : store.getMonitoring().getTriggers()) {
+                SettingSelector settingSelector = new SettingSelector().setKeyFilter(trigger.getKey())
+                        .setLabelFilter(trigger.getLabel());
 
-            ConfigurationSetting configurationRevision = clients.getRevison(settingSelector,
-                    store.getEndpoint());
+                ConfigurationSetting configurationRevision = clients.getRevison(settingSelector,
+                        store.getEndpoint());
 
-            settingSelector = new SettingSelector().setKeyFilter(FEATURE_STORE_WATCH_KEY).setLabelFilter("*");
+                if (configurationRevision != null) {
+                    StateHolder.setState(store.getEndpoint(), trigger, configurationRevision);
+                } else {
+                    StateHolder.setState(store.getEndpoint(), trigger, new ConfigurationSetting());
+                }
 
-            ConfigurationSetting featureRevision = clients.getRevison(settingSelector,
-                    store.getEndpoint());
-
-            if (configurationRevision != null) {
-                StateHolder.setEtagState(store.getEndpoint() + CONFIGURATION_SUFFIX, configurationRevision);
-            } else {
-                StateHolder.setEtagState(store.getEndpoint() + CONFIGURATION_SUFFIX, new ConfigurationSetting());
-            }
-
-            if (featureRevision != null) {
-                StateHolder.setEtagState(store.getEndpoint() + FEATURE_SUFFIX, featureRevision);
-            } else {
-                StateHolder.setEtagState(store.getEndpoint() + FEATURE_SUFFIX, new ConfigurationSetting());
             }
             StateHolder.setLoadState(store.getEndpoint(), true);
         } catch (Exception e) {

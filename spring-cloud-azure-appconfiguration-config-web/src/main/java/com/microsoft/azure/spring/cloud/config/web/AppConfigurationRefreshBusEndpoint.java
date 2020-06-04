@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProviderProperties;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
 
 @ControllerEndpoint(id = "appconfiguration-refresh-bus")
 public class AppConfigurationRefreshBusEndpoint {
@@ -35,10 +35,10 @@ public class AppConfigurationRefreshBusEndpoint {
 
     private BusPublisher busPublisher;
 
-    private AppConfigurationProviderProperties appConfiguration;
+    private AppConfigurationProperties appConfiguration;
 
     public AppConfigurationRefreshBusEndpoint(BusPublisher busPublisher,
-            AppConfigurationProviderProperties appConfiguration) {
+            AppConfigurationProperties appConfiguration) {
         this.busPublisher = busPublisher;
         this.appConfiguration = appConfiguration;
     }
@@ -47,15 +47,16 @@ public class AppConfigurationRefreshBusEndpoint {
     @ResponseBody
     public String refresh(HttpServletRequest request, HttpServletResponse response,
             @RequestParam Map<String, String> allRequestParams) throws IOException {
-        if (appConfiguration.getTokenName() == null || appConfiguration.getTokenSecret() == null
-                || !allRequestParams.containsKey(appConfiguration.getTokenName())
-                || !allRequestParams.get(appConfiguration.getTokenName()).equals(appConfiguration.getTokenSecret())) {
-            return HttpStatus.UNAUTHORIZED.getReasonPhrase();
-        }
 
         String reference = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
         JsonNode kvReference = objectmapper.readTree(reference);
+        RefreshEndpoint validation = new RefreshEndpoint(kvReference, appConfiguration.getStores(),
+                allRequestParams);
+
+        if (!validation.authenticate()) {
+            return HttpStatus.UNAUTHORIZED.getReasonPhrase();
+        }
 
         JsonNode validationResponse = kvReference.findValue(VALIDATION_CODE_KEY);
         if (validationResponse != null) {
@@ -63,9 +64,14 @@ public class AppConfigurationRefreshBusEndpoint {
             return VALIDATION_CODE_FORMAT_START + validationResponse.asText() + "\"}";
         } else {
             if (busPublisher != null) {
-                // Spring Bus is in use, will publish a RefreshRemoteApplicationEvent
-                busPublisher.publish();
-                return HttpStatus.OK.getReasonPhrase();
+                if (validation.triggerRefresh()) {
+                    // Spring Bus is in use, will publish a RefreshRemoteApplicationEvent
+                    busPublisher.publish();
+                    return HttpStatus.OK.getReasonPhrase();
+                } else {
+                    LOGGER.debug("Non Refreshable notification");
+                    return HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase();
+                }
             } else {
                 LOGGER.error("BusPublisher Not Found. Unable to Refresh.");
                 return HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase();

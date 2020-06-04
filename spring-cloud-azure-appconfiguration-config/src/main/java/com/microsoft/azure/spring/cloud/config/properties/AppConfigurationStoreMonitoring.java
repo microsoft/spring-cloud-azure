@@ -1,11 +1,16 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License. See LICENSE in the project root for
+ * license information.
+ */
 package com.microsoft.azure.spring.cloud.config.properties;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 public class AppConfigurationStoreMonitoring {
@@ -14,19 +19,9 @@ public class AppConfigurationStoreMonitoring {
 
     private Duration cacheExpiration = Duration.ofSeconds(30);
 
-    private List<AppConfigurationStoreTrigger> triggers;
+    private List<AppConfigurationStoreTrigger> triggers = new ArrayList<>();
 
-    @Value("pushNotification.primaryToken.name")
-    private String primaryTokenName;
-
-    @Value("pushNotification.primaryToken.secret")
-    private String primaryTokenSecret;
-
-    @Value("pushNotification.secondaryToken.name")
-    private String secondaryTokenName;
-
-    @Value("pushNotification.secondaryToken.secret")
-    private String secondaryTokenSecret;
+    private PushNotification pushNotification = new PushNotification();
 
     /**
      * @return the enabled
@@ -74,67 +69,98 @@ public class AppConfigurationStoreMonitoring {
     }
 
     /**
-     * @return the primaryTokenName
+     * @return the pushNotification
      */
-    public String getPrimaryTokenName() {
-        return primaryTokenName;
+    public PushNotification getPushNotification() {
+        return pushNotification;
     }
 
     /**
-     * @param primaryTokenName the primaryTokenName to set
+     * @param pushNotification the pushNotification to set
      */
-    public void setPrimaryTokenName(String primaryTokenName) {
-        this.primaryTokenName = primaryTokenName;
+    public void setPushNotification(PushNotification pushNotification) {
+        this.pushNotification = pushNotification;
     }
 
-    /**
-     * @return the primaryTokenSecret
-     */
-    public String getPrimaryTokenSecret() {
-        return primaryTokenSecret;
-    }
-
-    /**
-     * @param primaryTokenSecret the primaryTokenSecret to set
-     */
-    public void setPrimaryTokenSecret(String primaryTokenSecret) {
-        this.primaryTokenSecret = primaryTokenSecret;
-    }
-
-    /**
-     * @return the secondaryTokenName
-     */
-    public String getSecondaryTokenName() {
-        return secondaryTokenName;
-    }
-
-    /**
-     * @param secondaryTokenName the secondaryTokenName to set
-     */
-    public void setSecondaryTokenName(String secondaryTokenName) {
-        this.secondaryTokenName = secondaryTokenName;
-    }
-
-    /**
-     * @return the secondaryTokenSecret
-     */
-    public String getSecondaryTokenSecret() {
-        return secondaryTokenSecret;
-    }
-
-    /**
-     * @param secondaryTokenSecret the secondaryTokenSecret to set
-     */
-    public void setSecondaryTokenSecret(String secondaryTokenSecret) {
-        this.secondaryTokenSecret = secondaryTokenSecret;
-    }
-    
     @PostConstruct
     public void validateAndInit() {
         if (enabled) {
             Assert.notEmpty(triggers, "Triggers need to be set if refresh is enabled.");
+            for (AppConfigurationStoreTrigger trigger : triggers) {
+                trigger.validateAndInit();
+            }
         }
         Assert.isTrue(cacheExpiration.getSeconds() >= 1, "Minimum Watch time is 1 Second.");
+    }
+
+    public class PushNotification {
+        private AccessToken primaryToken = new AccessToken();
+
+        private AccessToken secondaryToken = new AccessToken();
+
+        /**
+         * @return the primaryToken
+         */
+        public AccessToken getPrimaryToken() {
+            return primaryToken;
+        }
+
+        /**
+         * @param primaryToken the primaryToken to set
+         */
+        public void setPrimaryToken(AccessToken primaryToken) {
+            this.primaryToken = primaryToken;
+        }
+
+        /**
+         * @return the secondaryToken
+         */
+        public AccessToken getSecondaryToken() {
+            return secondaryToken;
+        }
+
+        /**
+         * @param secondaryToken the secondaryToken to set
+         */
+        public void setSecondaryToken(AccessToken secondaryToken) {
+            this.secondaryToken = secondaryToken;
+        }
+    }
+
+    public class AccessToken {
+
+        private String name;
+
+        private String secret;
+
+        /**
+         * @return the name
+         */
+        public String getName() {
+            return name;
+        }
+
+        /**
+         * @param name the name to set
+         */
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        /**
+         * @return the secret
+         */
+        public String getSecret() {
+            return secret;
+        }
+
+        /**
+         * @param secret the secret to set
+         */
+        public void setSecret(String secret) {
+            this.secret = secret;
+        }
+
     }
 
 }

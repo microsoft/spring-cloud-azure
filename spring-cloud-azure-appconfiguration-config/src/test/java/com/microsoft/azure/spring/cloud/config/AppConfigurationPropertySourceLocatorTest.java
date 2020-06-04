@@ -51,8 +51,9 @@ import com.azure.data.appconfiguration.ConfigurationAsyncClient;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProviderProperties;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreMonitoring;
+import com.microsoft.azure.spring.cloud.config.properties.ConfigStore;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
-import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
 
 import reactor.core.publisher.Flux;
 
@@ -140,6 +141,10 @@ public class AppConfigurationPropertySourceLocatorTest {
         when(configStoreMock.getConnectionString()).thenReturn(TEST_CONN_STRING);
         when(configStoreMock.getEndpoint()).thenReturn(TEST_STORE_NAME);
         when(configStoreMock.getPrefix()).thenReturn(null);
+        
+        AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
+        monitoring.setEnabled(false);
+        when(configStoreMock.getMonitoring()).thenReturn(monitoring);
 
         when(configClientMock.listConfigurationSettings(Mockito.any())).thenReturn(settingsMock);
         when(settingsMock.byPage()).thenReturn(pageMock);

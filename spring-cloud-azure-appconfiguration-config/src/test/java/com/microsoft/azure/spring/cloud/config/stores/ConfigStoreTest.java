@@ -7,9 +7,10 @@ package com.microsoft.azure.spring.cloud.config.stores;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.Test;
+
+import com.microsoft.azure.spring.cloud.config.properties.ConfigStore;
 
 public class ConfigStoreTest {
 

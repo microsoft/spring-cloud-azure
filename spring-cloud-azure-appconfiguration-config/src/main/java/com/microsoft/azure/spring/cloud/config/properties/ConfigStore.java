@@ -40,7 +40,7 @@ public class ConfigStore {
 
     private boolean failFast = true;
 
-    private AppConfigurationStoreMonitoring monitoring;
+    private AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
 
     public ConfigStore() {
     }

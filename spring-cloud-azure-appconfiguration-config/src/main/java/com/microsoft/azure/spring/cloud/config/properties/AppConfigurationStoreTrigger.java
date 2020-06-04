@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License. See LICENSE in the project root for
+ * license information.
+ */
 package com.microsoft.azure.spring.cloud.config.properties;
 
 import javax.annotation.PostConstruct;
@@ -41,7 +46,13 @@ public class AppConfigurationStoreTrigger {
     @PostConstruct
     public void validateAndInit() {
         Assert.notNull(key, "All Triggers need a key value set.");
-        Assert.notNull(label, "All Triggers need a label value set, (No Label) can be found using '\0' as the label.");
     }
 
+    @Override
+    public String toString() {
+        if (label == null) {
+            return key + "/";
+        }
+        return key + "/" + label;
+    }
 }
