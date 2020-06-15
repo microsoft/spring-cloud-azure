@@ -234,9 +234,10 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
                         store.getEndpoint());
 
                 if (configurationRevision != null) {
-                    StateHolder.setState(store.getEndpoint(), trigger, configurationRevision);
+                    StateHolder.setState(store.getEndpoint(), trigger, configurationRevision, store.getMonitoring());
                 } else {
-                    StateHolder.setState(store.getEndpoint(), trigger, new ConfigurationSetting());
+                    StateHolder.setState(store.getEndpoint(), trigger, new ConfigurationSetting(),
+                            store.getMonitoring());
                 }
 
             }

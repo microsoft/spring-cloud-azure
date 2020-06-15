@@ -8,6 +8,7 @@ package com.microsoft.azure.spring.cloud.config;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreMonitoring;
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreTrigger;
 
 final class StateHolder {
@@ -30,13 +31,14 @@ final class StateHolder {
     /**
      * @param state the etagState to set
      */
-    static void setState(String endpoint, AppConfigurationStoreTrigger trigger, ConfigurationSetting config) {
-        state.put(endpoint + trigger.toString(), new State(config));
+    static void setState(String endpoint, AppConfigurationStoreTrigger trigger, ConfigurationSetting config,
+            AppConfigurationStoreMonitoring monitoring) {
+        state.put(endpoint + trigger.toString(), new State(config, monitoring));
     }
-    
-    static void resetState(String endpoint, AppConfigurationStoreTrigger trigger) {
+
+    static void expireState(String endpoint, AppConfigurationStoreTrigger trigger) {
         String key = endpoint + trigger.toString();
-        state.put(key, state.get(key));
+        state.put(key, new State(state.get(key)));
     }
 
     /**

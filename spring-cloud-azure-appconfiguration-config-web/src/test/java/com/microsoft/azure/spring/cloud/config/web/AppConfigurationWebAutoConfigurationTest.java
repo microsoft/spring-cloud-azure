@@ -21,6 +21,7 @@ import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
 
 import com.microsoft.azure.spring.cloud.config.AppConfigurationAutoConfiguration;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationBootstrapConfiguration;
+import com.microsoft.azure.spring.cloud.config.web.refresh.AppConfigurationRefreshEndpoint;
 
 public class AppConfigurationWebAutoConfigurationTest {
     private static final ApplicationContextRunner contextRunner = new ApplicationContextRunner()

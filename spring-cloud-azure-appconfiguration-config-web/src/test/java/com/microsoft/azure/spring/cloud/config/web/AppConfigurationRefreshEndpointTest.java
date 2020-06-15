@@ -29,6 +29,7 @@ import org.springframework.http.HttpStatus;
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreMonitoring;
 import com.microsoft.azure.spring.cloud.config.properties.ConfigStore;
+import com.microsoft.azure.spring.cloud.config.web.refresh.AppConfigurationRefreshEndpoint;
 
 public class AppConfigurationRefreshEndpointTest {
 

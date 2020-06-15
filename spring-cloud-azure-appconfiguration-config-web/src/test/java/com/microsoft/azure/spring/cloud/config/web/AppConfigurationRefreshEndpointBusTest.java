@@ -23,11 +23,13 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreMonitoring;
 import com.microsoft.azure.spring.cloud.config.properties.ConfigStore;
+import com.microsoft.azure.spring.cloud.config.web.refreshbus.AppConfigurationRefreshBusEndpoint;
 
 public class AppConfigurationRefreshEndpointBusTest {
 
@@ -44,7 +46,7 @@ public class AppConfigurationRefreshEndpointBusTest {
     private Stream<String> lines;
 
     @Mock
-    private BusPublisher busPublisher;
+    private ApplicationEventPublisher publisher;
 
     @Before
     public void setup() {
@@ -58,15 +60,16 @@ public class AppConfigurationRefreshEndpointBusTest {
         String tokenName = "token";
         String tokenSecret = "secret";
         AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
-        //monitoring.setPrimaryTokenName(tokenName);
-        //monitoring.setPrimaryTokenSecret(tokenSecret);
+        // monitoring.setPrimaryTokenName(tokenName);
+        // monitoring.setPrimaryTokenSecret(tokenSecret);
         ConfigStore configStore = new ConfigStore();
         ArrayList<ConfigStore> configStores = new ArrayList<>();
         configStore.setMonitoring(monitoring);
         properties.setStores(configStores);
         allRequestParams.put(tokenName, tokenSecret);
 
-        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(busPublisher, properties);
+        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(publisher, "1",
+                properties);
 
         when(request.getReader()).thenReturn(reader);
         when(reader.lines()).thenReturn(lines);
@@ -96,15 +99,16 @@ public class AppConfigurationRefreshEndpointBusTest {
         String tokenName = "token";
         String tokenSecret = "secret";
         AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
-        //monitoring.setPrimaryTokenName(tokenName);
-       // monitoring.setPrimaryTokenSecret(tokenSecret);
+        // monitoring.setPrimaryTokenName(tokenName);
+        // monitoring.setPrimaryTokenSecret(tokenSecret);
         ConfigStore configStore = new ConfigStore();
         ArrayList<ConfigStore> configStores = new ArrayList<>();
         configStore.setMonitoring(monitoring);
         properties.setStores(configStores);
         allRequestParams.put(tokenName, tokenSecret);
 
-        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(busPublisher, properties);
+        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(publisher, "1",
+                properties);
 
         when(request.getReader()).thenReturn(reader);
         when(reader.lines()).thenReturn(lines);
@@ -120,15 +124,16 @@ public class AppConfigurationRefreshEndpointBusTest {
         String tokenName = "token";
         String tokenSecret = "secret";
         AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
-        //monitoring.setPrimaryTokenName(tokenName);
-        //monitoring.setPrimaryTokenSecret(tokenSecret);
+        // monitoring.setPrimaryTokenName(tokenName);
+        // monitoring.setPrimaryTokenSecret(tokenSecret);
         ConfigStore configStore = new ConfigStore();
         ArrayList<ConfigStore> configStores = new ArrayList<>();
         configStore.setMonitoring(monitoring);
         properties.setStores(configStores);
         allRequestParams.put(tokenName, tokenSecret);
 
-        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(null, properties);
+        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(publisher, "1",
+                properties);
 
         when(request.getReader()).thenReturn(reader);
         when(reader.lines()).thenReturn(lines);
@@ -145,14 +150,15 @@ public class AppConfigurationRefreshEndpointBusTest {
         String tokenName = "token";
         String tokenSecret = "secret";
         AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
-        //monitoring.setPrimaryTokenSecret(tokenSecret);
+        // monitoring.setPrimaryTokenSecret(tokenSecret);
         ConfigStore configStore = new ConfigStore();
         ArrayList<ConfigStore> configStores = new ArrayList<>();
         configStore.setMonitoring(monitoring);
         properties.setStores(configStores);
         allRequestParams.put(tokenName, tokenSecret);
 
-        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(busPublisher, properties);
+        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(publisher, "1",
+                properties);
 
         assertEquals(HttpStatus.UNAUTHORIZED.getReasonPhrase(), endpoint.refresh(request, response, allRequestParams));
     }
@@ -164,14 +170,15 @@ public class AppConfigurationRefreshEndpointBusTest {
         String tokenName = "token";
         String tokenSecret = "secret";
         AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
-        //monitoring.setPrimaryTokenName(tokenName);
+        // monitoring.setPrimaryTokenName(tokenName);
         ConfigStore configStore = new ConfigStore();
         ArrayList<ConfigStore> configStores = new ArrayList<>();
         configStore.setMonitoring(monitoring);
         properties.setStores(configStores);
         allRequestParams.put(tokenName, tokenSecret);
 
-        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(busPublisher, properties);
+        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(publisher, "1",
+                properties);
 
         assertEquals(HttpStatus.UNAUTHORIZED.getReasonPhrase(), endpoint.refresh(request, response, allRequestParams));
     }
@@ -183,14 +190,15 @@ public class AppConfigurationRefreshEndpointBusTest {
         String tokenName = "token";
         String tokenSecret = "secret";
         AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
-        //monitoring.setPrimaryTokenName(tokenName);
-        //monitoring.setPrimaryTokenSecret(tokenSecret);
+        // monitoring.setPrimaryTokenName(tokenName);
+        // monitoring.setPrimaryTokenSecret(tokenSecret);
         ConfigStore configStore = new ConfigStore();
         ArrayList<ConfigStore> configStores = new ArrayList<>();
         configStore.setMonitoring(monitoring);
         properties.setStores(configStores);
 
-        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(busPublisher, properties);
+        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(publisher, "1",
+                properties);
 
         assertEquals(HttpStatus.UNAUTHORIZED.getReasonPhrase(), endpoint.refresh(request, response, allRequestParams));
     }
@@ -202,15 +210,16 @@ public class AppConfigurationRefreshEndpointBusTest {
         String tokenName = "token";
         String tokenSecret = "secret";
         AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
-        //monitoring.setPrimaryTokenName(tokenName);
-        //monitoring.setPrimaryTokenSecret(tokenSecret);
+        // monitoring.setPrimaryTokenName(tokenName);
+        // monitoring.setPrimaryTokenSecret(tokenSecret);
         ConfigStore configStore = new ConfigStore();
         ArrayList<ConfigStore> configStores = new ArrayList<>();
         configStore.setMonitoring(monitoring);
         properties.setStores(configStores);
         allRequestParams.put(tokenName, "noSecret");
 
-        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(busPublisher, properties);
+        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(publisher, "1",
+                properties);
 
         assertEquals(HttpStatus.UNAUTHORIZED.getReasonPhrase(), endpoint.refresh(request, response, allRequestParams));
     }

@@ -5,6 +5,10 @@
  */
 package com.microsoft.azure.spring.cloud.config.web;
 
+import static com.microsoft.azure.spring.cloud.config.web.Constants.ACTUATOR;
+import static com.microsoft.azure.spring.cloud.config.web.Constants.APPCONFIGURATION_REFRESH;
+import static com.microsoft.azure.spring.cloud.config.web.Constants.APPCONFIGURATION_REFRESH_BUS;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
@@ -19,22 +23,21 @@ public class ConfigListener implements ApplicationListener<ServletRequestHandled
 
     private AppConfigurationRefresh appConfigurationRefresh;
 
-    private boolean enabled;
-
-    public ConfigListener(AppConfigurationRefresh appConfigurationRefresh, boolean enabled) {
+    public ConfigListener(AppConfigurationRefresh appConfigurationRefresh) {
         this.appConfigurationRefresh = appConfigurationRefresh;
-        this.enabled = enabled;
     }
 
     @Override
     public void onApplicationEvent(ServletRequestHandledEvent event) {
-        if (enabled) {
-            try {
+        try {
+            if (!(event.getRequestUrl().equals(ACTUATOR + APPCONFIGURATION_REFRESH)
+                    || event.getRequestUrl().equals(ACTUATOR + APPCONFIGURATION_REFRESH_BUS))) {
                 appConfigurationRefresh.refreshConfigurations();
-            } catch (Exception e) {
-                LOGGER.error("Refresh failed with unexpected exception.", e);
             }
+        } catch (Exception e) {
+            LOGGER.error("Refresh failed with unexpected exception.", e);
         }
+
     }
 
 }

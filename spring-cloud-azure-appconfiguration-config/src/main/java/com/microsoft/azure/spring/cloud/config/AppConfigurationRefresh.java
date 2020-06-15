@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.endpoint.event.RefreshEvent;
@@ -65,6 +64,18 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
         return new AsyncResult<Boolean>(refreshStores());
     }
 
+    public void resetCache(String endpoint, AppConfigurationStoreTrigger trigger) {
+        for (ConfigStore configStore : configStores) {
+            if (configStore.getEndpoint().equals(endpoint)) {
+                LOGGER.debug("Expiring Cache for " + configStore.getEndpoint());
+                StateHolder.expireState(configStore.getEndpoint(), trigger);
+                LOGGER.debug("Refreshing Configurations");
+                refreshConfigurations();
+                break;
+            }
+        }
+    }
+
     /**
      * Goes through each config store and checks if any of its keys need to be refreshed.
      * If any store has a value that needs to be updated a refresh event is called after
@@ -111,14 +122,13 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
      * @return Refresh event was triggered. No other sources need to be checked.
      */
     private boolean refresh(ConfigStore store) {
+        LOGGER.error("Get Stores to refresh");
         for (AppConfigurationStoreTrigger trigger : store.getMonitoring().getTriggers()) {
+            LOGGER.error("Checking Store");
             State state = StateHolder.getState(store.getEndpoint(), trigger);
 
-            Date notCachedTime = DateUtils.addSeconds(state.getLastCheckedTime(),
-                    Math.toIntExact(store.getMonitoring().getCacheExpiration().getSeconds()));
-
             Date date = new Date();
-            if (date.after(notCachedTime)) {
+            if (date.after(state.getNotCachedTime())) {
                 SettingSelector settingSelector = new SettingSelector().setKeyFilter(trigger.getKey())
                         .setLabelFilter(trigger.getLabel());
 
@@ -131,6 +141,8 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
                     etag = revision.getETag();
                 }
 
+                LOGGER.error(etag + " - "
+                        + StateHolder.getState(store.getEndpoint(), trigger).getConfigurationSetting().getETag());
                 if (etag != null && !etag.equals(
                         StateHolder.getState(store.getEndpoint(), trigger).getConfigurationSetting().getETag())) {
                     LOGGER.trace(
@@ -144,7 +156,8 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
                     return true;
                 } else {
                     StateHolder.setState(store.getEndpoint(), trigger,
-                            StateHolder.getState(store.getEndpoint(), trigger).getConfigurationSetting());
+                            StateHolder.getState(store.getEndpoint(), trigger).getConfigurationSetting(),
+                            store.getMonitoring());
                 }
             }
         }

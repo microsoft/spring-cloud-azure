@@ -3,8 +3,9 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config.web;
+package com.microsoft.azure.spring.cloud.config.web.refresh;
 
+import static com.microsoft.azure.spring.cloud.config.web.Constants.APPCONFIGURATION_REFRESH;
 import static com.microsoft.azure.spring.cloud.config.web.Constants.VALIDATION_CODE_FORMAT_START;
 import static com.microsoft.azure.spring.cloud.config.web.Constants.VALIDATION_CODE_KEY;
 
@@ -19,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.endpoint.web.annotation.ControllerEndpoint;
 import org.springframework.cloud.context.refresh.ContextRefresher;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,9 +30,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
+import com.microsoft.azure.spring.cloud.config.web.RefreshEndpoint;
 
-@ControllerEndpoint(id = "appconfiguration-refresh")
-public class AppConfigurationRefreshEndpoint {
+@ControllerEndpoint(id = APPCONFIGURATION_REFRESH)
+public class AppConfigurationRefreshEndpoint implements ApplicationEventPublisherAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppConfigurationRefreshEndpoint.class);
 
     private ContextRefresher contextRefresher;
@@ -37,6 +41,8 @@ public class AppConfigurationRefreshEndpoint {
     private ObjectMapper objectmapper = new ObjectMapper();
 
     private AppConfigurationProperties appConfiguration;
+
+    private ApplicationEventPublisher publisher;
 
     public AppConfigurationRefreshEndpoint(ContextRefresher contextRefresher,
             AppConfigurationProperties appConfiguration) {
@@ -68,7 +74,9 @@ public class AppConfigurationRefreshEndpoint {
             if (contextRefresher != null) {
                 if (validation.triggerRefresh()) {
                     // Will just refresh the local configurations
-                    contextRefresher.refresh();
+                    // contextRefresher.refresh();
+                    publisher.publishEvent(
+                            new AppConfigurationCacheResetEvent(validation.getEndpoint(), validation.getTrigger()));
                     return HttpStatus.OK.getReasonPhrase();
                 } else {
                     LOGGER.debug("Non Refreshable notification");
@@ -79,6 +87,11 @@ public class AppConfigurationRefreshEndpoint {
                 return HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase();
             }
         }
+    }
+
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.publisher = applicationEventPublisher;
     }
 
 }

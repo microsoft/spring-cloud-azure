@@ -7,16 +7,29 @@ package com.microsoft.azure.spring.cloud.config;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.time.DateUtils;
+
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreMonitoring;
 
 class State {
-    private ConfigurationSetting configurationSetting;
+    private final ConfigurationSetting configurationSetting;
 
-    private Date lastCheckedTime;
-    
-    State(ConfigurationSetting configurationSetting) {
+    private final Date notCachedTime;
+
+    State(ConfigurationSetting configurationSetting, AppConfigurationStoreMonitoring monitoring) {
         this.configurationSetting = configurationSetting;
-        lastCheckedTime = new Date();
+        notCachedTime = DateUtils.addSeconds(new Date(), Math.toIntExact(monitoring.getCacheExpiration().getSeconds()));
+    }
+
+    /**
+     * Creates a new State object that is already expired.
+     * 
+     * @param oldState
+     */
+    State(State oldState) {
+        this.configurationSetting = oldState.getConfigurationSetting();
+        this.notCachedTime = DateUtils.addSeconds(new Date(), Math.toIntExact(-60));
     }
 
     /**
@@ -27,10 +40,10 @@ class State {
     }
 
     /**
-     * @return the lastCheckedTime
+     * @return the notCachedTime
      */
-    public Date getLastCheckedTime() {
-        return lastCheckedTime;
+    public Date getNotCachedTime() {
+        return notCachedTime;
     }
 
 }

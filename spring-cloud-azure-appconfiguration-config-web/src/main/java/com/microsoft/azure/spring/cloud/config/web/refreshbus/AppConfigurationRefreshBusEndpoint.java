@@ -3,8 +3,9 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config.web;
+package com.microsoft.azure.spring.cloud.config.web.refreshbus;
 
+import static com.microsoft.azure.spring.cloud.config.web.Constants.APPCONFIGURATION_REFRESH_BUS;
 import static com.microsoft.azure.spring.cloud.config.web.Constants.VALIDATION_CODE_FORMAT_START;
 import static com.microsoft.azure.spring.cloud.config.web.Constants.VALIDATION_CODE_KEY;
 
@@ -18,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.endpoint.web.annotation.ControllerEndpoint;
+import org.springframework.cloud.bus.endpoint.AbstractBusEndpoint;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,20 +29,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
+import com.microsoft.azure.spring.cloud.config.web.RefreshEndpoint;
 
-@ControllerEndpoint(id = "appconfiguration-refresh-bus")
-public class AppConfigurationRefreshBusEndpoint {
+@ControllerEndpoint(id = APPCONFIGURATION_REFRESH_BUS)
+public class AppConfigurationRefreshBusEndpoint extends AbstractBusEndpoint {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AppConfigurationRefreshBusEndpoint.class);
 
     private ObjectMapper objectmapper = new ObjectMapper();
 
-    private BusPublisher busPublisher;
-
     private AppConfigurationProperties appConfiguration;
 
-    public AppConfigurationRefreshBusEndpoint(BusPublisher busPublisher,
+    public AppConfigurationRefreshBusEndpoint(ApplicationEventPublisher context, String appId,
             AppConfigurationProperties appConfiguration) {
-        this.busPublisher = busPublisher;
+        super(context, appId);
         this.appConfiguration = appConfiguration;
     }
 
@@ -63,17 +66,13 @@ public class AppConfigurationRefreshBusEndpoint {
             // Validating Web Hook
             return VALIDATION_CODE_FORMAT_START + validationResponse.asText() + "\"}";
         } else {
-            if (busPublisher != null) {
-                if (validation.triggerRefresh()) {
-                    // Spring Bus is in use, will publish a RefreshRemoteApplicationEvent
-                    busPublisher.publish();
-                    return HttpStatus.OK.getReasonPhrase();
-                } else {
-                    LOGGER.debug("Non Refreshable notification");
-                    return HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase();
-                }
+            if (validation.triggerRefresh()) {
+                // Spring Bus is in use, will publish a RefreshRemoteApplicationEvent
+                publish(new AppConfigurationCacheResetBusEvent(validation.getEndpoint(), this, getInstanceId(),
+                        validation.getTrigger()));
+                return HttpStatus.OK.getReasonPhrase();
             } else {
-                LOGGER.error("BusPublisher Not Found. Unable to Refresh.");
+                LOGGER.debug("Non Refreshable notification");
                 return HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase();
             }
         }

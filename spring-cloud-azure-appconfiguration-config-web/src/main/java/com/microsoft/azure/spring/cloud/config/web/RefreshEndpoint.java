@@ -15,7 +15,7 @@ import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreM
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreTrigger;
 import com.microsoft.azure.spring.cloud.config.properties.ConfigStore;
 
-class RefreshEndpoint {
+public class RefreshEndpoint {
 
     private static final String CONFIG_STORE_TOPIC = "configurationstores";
 
@@ -25,13 +25,17 @@ class RefreshEndpoint {
 
     private final JsonNode request;
 
-    private String endpoint;
+    private final String endpoint;
+
+    private final String store;
+
+    private AppConfigurationStoreTrigger trigger;
 
     private List<ConfigStore> configStores;
 
     private Map<String, String> allRequestParams;
 
-    RefreshEndpoint(JsonNode request, List<ConfigStore> configStores, Map<String, String> allRequestParams) {
+    public RefreshEndpoint(JsonNode request, List<ConfigStore> configStores, Map<String, String> allRequestParams) {
         this.request = request;
         this.configStores = configStores;
         this.allRequestParams = allRequestParams;
@@ -39,13 +43,16 @@ class RefreshEndpoint {
         JsonNode validationTopic = request.findValue(VALIDATION_TOPIC);
         if (validationTopic != null) {
             String topic = validationTopic.asText();
-            String store = topic.substring(topic.indexOf(CONFIG_STORE_TOPIC) + CONFIG_STORE_TOPIC.length() + 1);
+            store = topic.substring(topic.indexOf(CONFIG_STORE_TOPIC) + CONFIG_STORE_TOPIC.length() + 1);
             endpoint = "https://" + store + ".azconfig.io";
+        } else {
+            store = "";
+            endpoint = "";
         }
 
     }
 
-    boolean authenticate() {
+    public boolean authenticate() {
         for (ConfigStore configStore : configStores) {
             if (configStore.getEndpoint().equals(endpoint)) {
                 PushNotification pushNotification = configStore.getMonitoring().getPushNotification();
@@ -72,7 +79,7 @@ class RefreshEndpoint {
         return false;
     }
 
-    boolean triggerRefresh() {
+    public boolean triggerRefresh() {
         JsonNode key = request.findValue(KEY);
         JsonNode label = request.findValue(LABEL);
         for (ConfigStore configStore : configStores) {
@@ -80,11 +87,13 @@ class RefreshEndpoint {
                 for (AppConfigurationStoreTrigger trigger : configStore.getMonitoring().getTriggers()) {
                     if (trigger.getLabel() == null && label == null) {
                         if (key != null && key.asText().equals(trigger.getKey())) {
+                            this.trigger = trigger;
                             return true;
                         }
                     } else if (label != null) {
                         if (key != null && key.asText().equals(trigger.getKey())
                                 && label.asText().equals(trigger.getLabel())) {
+                            this.trigger = trigger;
                             return true;
                         }
                     }
@@ -92,6 +101,27 @@ class RefreshEndpoint {
             }
         }
         return false;
+    }
+
+    /**
+     * @return the endpoint
+     */
+    public String getEndpoint() {
+        return endpoint;
+    }
+
+    /**
+     * @return the store
+     */
+    public String getStore() {
+        return store;
+    }
+
+    /**
+     * @return the trigger
+     */
+    public AppConfigurationStoreTrigger getTrigger() {
+        return trigger;
     }
 
 }
