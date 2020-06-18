@@ -26,7 +26,7 @@ public class TargetingContextAccessor implements ITargetingContextAccessor {
         TargetingContext context = new TargetingContext();
         context.setUserId(requestContext.getParameter("User"));
         ArrayList<String> groups = new ArrayList<String>();
-        groups.add("Ring3");
+        groups.add(requestContext.getParameter("Group"));
         context.setGroups(groups);
         return Mono.just(context);
     }
