@@ -233,7 +233,7 @@ This strategy for rolling out a feature is built in to the library through the i
 
 An example web application that uses the targeting feature filter is available in the [FeatureFlagDemo](https://github.com/microsoft/spring-cloud-azure/tree/master/spring-cloud-azure-samples/feature-management-web-sample) example project.
 
-To begin using the `TargetingFilter` in an application it must be added as a `@Bean` like any other Feature Filter. Unlike the other Filters the `TargetingFilter` relies on another `@Bean` to be added to the application, `ITargetingContextAccessor`. The `ITargetingContextAccessor` allows for defining the current `TargetingContext` to be used for defining the current users; id, and groups. An example of this is:
+To begin using the `TargetingFilter` in an application it must be added as a `@Bean` like any other Feature Filter. Unlike the other Filters the `TargetingFilter` relies on another `@Bean` to be added to the application, [`ITargetingContextAccessor`](TargetingContextAccessor.java). The `ITargetingContextAccessor` allows for defining the current `TargetingContext` to be used for defining the current users; id, and groups. An example of this is:
 
 ```java
 public class TargetingContextAccessor implements ITargetingContextAccessor {
