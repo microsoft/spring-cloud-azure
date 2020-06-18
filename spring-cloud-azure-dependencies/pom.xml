@@ -53,7 +53,7 @@
         <spring.cloud.azure.version>1.2.7-SNAPSHOT</spring.cloud.azure.version>
         <commons.io.version>2.6</commons.io.version>
         <hibernate.validator.version>6.1.0.Final</hibernate.validator.version>
-        <google.guava.version>20.0</google.guava.version>
+        <google.guava.version>24.1.1-jre</google.guava.version>
         <azure.sdk.version>1.33.0</azure.sdk.version>
         <azure.eventhubs.version>5.0.2</azure.eventhubs.version>
         <azure.eventhubs.checkpoint.store.version>1.0.2</azure.eventhubs.checkpoint.store.version>
