@@ -5,8 +5,10 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import java.security.SecureRandom;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -69,8 +71,10 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
             if (configStore.getEndpoint().equals(endpoint)) {
                 LOGGER.debug("Expiring Cache for " + configStore.getEndpoint());
                 StateHolder.expireState(configStore.getEndpoint(), trigger);
-                LOGGER.debug("Refreshing Configurations");
-                refreshConfigurations();
+                //LOGGER.debug("Refreshing Configurations");
+                /*refreshConfigurations(); // Same as Pull*/
+                //RefreshEventData eventData = new RefreshEventData(eventDataInfo);
+                //publisher.publishEvent(new RefreshEvent(this, eventData, eventData.getMessage()));
                 break;
             }
         }

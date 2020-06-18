@@ -83,6 +83,7 @@ public class AppConfigurationRefreshTest {
         triggers.add(trigger);
         monitoring.setTriggers(triggers);
         monitoring.setCacheExpiration(Duration.ofMinutes(-60));
+        monitoring.setEnabled(true);
         store.setMonitoring(monitoring);
 
         properties = new AppConfigurationProperties();
@@ -186,6 +187,7 @@ public class AppConfigurationRefreshTest {
         store.setConnectionString(TEST_CONN_STRING);
 
         AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
+        monitoring.setEnabled(true);
         trigger = new AppConfigurationStoreTrigger();
         trigger.setKey(WATCHED_KEYS);
         trigger.setLabel("\0");
@@ -215,6 +217,7 @@ public class AppConfigurationRefreshTest {
         store.setEndpoint(TEST_STORE_NAME);
         store.setConnectionString(TEST_CONN_STRING);
         AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
+        monitoring.setEnabled(true);
         trigger = new AppConfigurationStoreTrigger();
         trigger.setKey(WATCHED_KEYS);
         trigger.setLabel("\0");
@@ -248,6 +251,7 @@ public class AppConfigurationRefreshTest {
         store.setConnectionString(TEST_CONN_STRING);
 
         AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
+        monitoring.setEnabled(true);
         trigger = new AppConfigurationStoreTrigger();
         trigger.setKey(WATCHED_KEYS);
         trigger.setLabel("\0");

@@ -52,6 +52,7 @@ import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProviderProperties;
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreMonitoring;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreTrigger;
 import com.microsoft.azure.spring.cloud.config.properties.ConfigStore;
 import com.microsoft.azure.spring.cloud.config.stores.ClientStore;
 
@@ -144,6 +145,12 @@ public class AppConfigurationPropertySourceLocatorTest {
         
         AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
         monitoring.setEnabled(false);
+        AppConfigurationStoreTrigger trigger = new AppConfigurationStoreTrigger();
+        trigger.setKey("sentinal");
+        trigger.setKey("test");
+        ArrayList<AppConfigurationStoreTrigger> triggers = new ArrayList<AppConfigurationStoreTrigger>();
+        triggers.add(trigger);
+        monitoring.setTriggers(triggers);
         when(configStoreMock.getMonitoring()).thenReturn(monitoring);
 
         when(configClientMock.listConfigurationSettings(Mockito.any())).thenReturn(settingsMock);
