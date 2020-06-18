@@ -161,7 +161,7 @@ public class ClientStore {
         String watchedKey = store.getWatchedKey().trim();
         List<String> contexts = storeContextsMap.get(store.getEndpoint());
 
-        String watchedKeys = contexts.stream().map(ctx -> genKey(ctx, watchedKey))
+        String watchedKeys = contexts.stream().map(ctx -> genKey(ctx, watchedKey)).distinct()
                 .collect(Collectors.joining(","));
 
         if (watchedKeys.contains(",") && watchedKeys.contains("*")) {

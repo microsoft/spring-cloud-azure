@@ -191,21 +191,33 @@ public class MyCredentials implements AppConfigCredentialProvider, KeyVaultCrede
 }
 ```
 
-### Modifying Connection Client
+### Client Builder Customization
 
-In some situations the client connection needs to be modified, such as adding proxy configurations. Using the AppConfigurationClientProvider and/or KeyVaultClientProvider. By implementing either of these classes and providing and generating a @Bean of them will enable client modification following [App Configuration SDK](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/appconfiguration/azure-data-appconfiguration#key-concepts) and [Key Vault SDK](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/keyvault/azure-security-keyvault-secrets#key-concepts).
+The service client builders used for connecting to App Configuration and Key Vault can be customized by implementing interfaces `ConfigurationClientBuilderSetup` and `SecretClientBuilderSetup` respectively. Generating and providing a `@Bean` of them will update the default service client builders used in [App Configuration SDK](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/appconfiguration/azure-data-appconfiguration#key-concepts) and [Key Vault SDK](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/keyvault/azure-security-keyvault-secrets#key-concepts). If necessary, the customization can be done per App Configuration store or Key Vault instance.
 
 ```java
-public class MyClients implements AppConfigurationClientProvider, KeyVaultClientProvider {
+public interface ConfigurationClientBuilderSetup {
+    public void setup(ConfigurationClientBuilder builder, String endpoint);
+}
+
+public interface SecretClientBuilderSetup {
+    public void setup(SecretClientBuilder builder, String uri);
+}
+```
+
+For example, the following implementation of `MyClient` replaces the default `HttpClient` with one using a proxy for all traffic to App Configuration and Key Vault.
+
+```java
+public class MyClient implements ConfigurationClientBuilderSetup, SecretClientBuilderSetup {
 
     @Override
-    public SecretClientBuilder modifyKeyVaultClient(SecretClientBuilder keyVaultClientBuilder) {
-        return keyVaultClientBuilder.httpClient(buildHttpClient());
+    public void setup(ConfigurationClientBuilder builder, String endpoint) {
+        builder.httpClient(buildHttpClient());
     }
 
     @Override
-    public ConfigurationClientBuilder modifyConfigurationClient(ConfigurationClientBuilder configurationClientBuilder) {
-        return configurationClientBuilder.httpClient(buildHttpClient());
+    public void setup(SecretClientBuilder builder, String uri) {
+        builder.httpClient(buildHttpClient());
     }
 
     private HttpClient buildHttpClient() {

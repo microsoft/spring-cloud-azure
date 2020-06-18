@@ -51,6 +51,7 @@ public class HelloController {
     @GetMapping(value = {"", "/", "/welcome"})
     public String mainWithParam(Model model) {
         model.addAttribute("Beta", featureManager.isEnabledAsync("beta").block());
+        model.addAttribute("Target", String.valueOf(featureManager.isEnabledAsync("target").block()));
         return "welcome";
     }
 }
