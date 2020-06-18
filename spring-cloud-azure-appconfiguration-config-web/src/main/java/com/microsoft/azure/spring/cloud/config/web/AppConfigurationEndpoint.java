@@ -15,7 +15,7 @@ import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreM
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreTrigger;
 import com.microsoft.azure.spring.cloud.config.properties.ConfigStore;
 
-public class RefreshEndpoint {
+public class AppConfigurationEndpoint {
 
     private static final String CONFIG_STORE_TOPIC = "configurationstores";
 
@@ -35,7 +35,8 @@ public class RefreshEndpoint {
 
     private Map<String, String> allRequestParams;
 
-    public RefreshEndpoint(JsonNode request, List<ConfigStore> configStores, Map<String, String> allRequestParams) {
+    public AppConfigurationEndpoint(JsonNode request, List<ConfigStore> configStores,
+            Map<String, String> allRequestParams) {
         this.request = request;
         this.configStores = configStores;
         this.allRequestParams = allRequestParams;
@@ -62,10 +63,11 @@ public class RefreshEndpoint {
                 String secondaryTokenSecret = pushNotification.getSecondaryToken().getSecret();
 
                 // One of these need to be set
-                if (!(primaryTokenName != null && primaryTokenSecret != null)
-                        || !(secondaryTokenName != null && secondaryTokenSecret != null)) {
+                if (!((primaryTokenName != null && primaryTokenSecret != null)
+                        || (secondaryTokenName != null && secondaryTokenSecret != null))) {
                     return false;
                 }
+
                 if (!allRequestParams.containsKey(primaryTokenName)
                         || !allRequestParams.get(primaryTokenName).equals(primaryTokenSecret)) {
                     return true;
@@ -74,6 +76,7 @@ public class RefreshEndpoint {
                         || !allRequestParams.get(secondaryTokenName).equals(secondaryTokenSecret)) {
                     return true;
                 }
+
             }
         }
         return false;

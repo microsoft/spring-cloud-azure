@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
-import com.microsoft.azure.spring.cloud.config.web.RefreshEndpoint;
+import com.microsoft.azure.spring.cloud.config.web.AppConfigurationEndpoint;
 
 @ControllerEndpoint(id = APPCONFIGURATION_REFRESH)
 public class AppConfigurationRefreshEndpoint implements ApplicationEventPublisherAware {
@@ -59,7 +59,7 @@ public class AppConfigurationRefreshEndpoint implements ApplicationEventPublishe
         String reference = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
         JsonNode kvReference = objectmapper.readTree(reference);
-        RefreshEndpoint validation = new RefreshEndpoint(kvReference, appConfiguration.getStores(),
+        AppConfigurationEndpoint validation = new AppConfigurationEndpoint(kvReference, appConfiguration.getStores(),
                 allRequestParams);
 
         if (!validation.authenticate()) {

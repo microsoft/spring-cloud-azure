@@ -18,10 +18,12 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
+import org.springframework.cloud.bus.BusProperties;
+import org.springframework.cloud.bus.event.RefreshRemoteApplicationEvent;
+import org.springframework.cloud.endpoint.RefreshEndpoint;
 
 import com.microsoft.azure.spring.cloud.config.AppConfigurationAutoConfiguration;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationBootstrapConfiguration;
-import com.microsoft.azure.spring.cloud.config.web.refresh.AppConfigurationRefreshEndpoint;
 
 public class AppConfigurationWebAutoConfigurationTest {
     private static final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
@@ -29,20 +31,61 @@ public class AppConfigurationWebAutoConfigurationTest {
                     propPair(STORE_ENDPOINT_PROP, TEST_STORE_NAME))
             .withConfiguration(AutoConfigurations.of(AppConfigurationBootstrapConfiguration.class,
                     AppConfigurationAutoConfiguration.class, AppConfigurationWebAutoConfiguration.class,
-                    RefreshAutoConfiguration.class));
+                    RefreshAutoConfiguration.class))
+            .withUserConfiguration(BusProperties.class);
 
     @Test
-    public void watchEnabledNotConfiguredShouldNotCreateWatch() {
-        contextRunner.run(context -> {
-            assertThat(context).hasSingleBean(AppConfigurationRefreshEndpoint.class);
-        });
+    public void refreshMissing() {
+        contextRunner
+                .withClassLoader(new FilteredClassLoader(WebEndpointProperties.class))
+                .run(context -> {
+                    assertThat(context)
+                            .doesNotHaveBean("appConfigurationRefreshBusEndpoint");
+                    assertThat(context)
+                            .doesNotHaveBean("appConfigurationRefreshEndpoint");
+                    assertThat(context)
+                            .hasBean("configListener");
+                });
     }
 
     @Test
-    public void bus() {
+    public void busRefresh() {
         contextRunner
-                .withClassLoader(new FilteredClassLoader(WebEndpointProperties.class))
                 .run(context -> assertThat(context)
-                        .doesNotHaveBean("AppConfigurationRefreshEndpoint"));
+                        .hasBean("appConfigurationRefreshBusEndpoint"));
+    }
+
+    @Test
+    public void busRefreshMissing() {
+        contextRunner
+                .withClassLoader(new FilteredClassLoader(RefreshRemoteApplicationEvent.class))
+                .run(context -> {
+                    assertThat(context)
+                            .doesNotHaveBean("appConfigurationRefreshBusEndpoint");
+                    assertThat(context)
+                            .hasBean("appConfigurationRefreshEndpoint");
+                    assertThat(context)
+                            .hasBean("configListener");
+                });
+    }
+
+    @Test
+    public void pullRefreshListenerMissing() {
+        contextRunner.withClassLoader(new FilteredClassLoader(RefreshEndpoint.class))
+                .run(context -> assertThat(context)
+                        .doesNotHaveBean("configListener"));
+    }
+
+    @Test
+    public void fullRefresh() {
+        contextRunner
+                .run(context -> {
+                    assertThat(context)
+                            .hasBean("configListener");
+                    assertThat(context)
+                            .hasBean("appConfigurationRefreshEndpoint");
+                    assertThat(context)
+                            .hasBean("appConfigurationRefreshBusEndpoint");
+                });
     }
 }

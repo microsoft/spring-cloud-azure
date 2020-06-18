@@ -25,7 +25,6 @@ public class ResetListener implements ApplicationListener<AppConfigurationCacheR
     @Override
     public void onApplicationEvent(AppConfigurationCacheResetEvent event) {
         try {
-            LOGGER.error("Reset Listener.");
             appConfigurationRefresh.resetCache(event.getEndpoint(), event.getTrigger());
         } catch (Exception e) {
             LOGGER.error("Refresh failed with unexpected exception.", e);

@@ -5,6 +5,10 @@
  */
 package com.microsoft.azure.spring.cloud.config.web;
 
+import static com.microsoft.azure.spring.cloud.config.web.TestConstants.TOPIC;
+import static com.microsoft.azure.spring.cloud.config.web.TestConstants.TRIGGER_KEY;
+import static com.microsoft.azure.spring.cloud.config.web.TestConstants.TRIGGER_LABEL;
+import static com.microsoft.azure.spring.cloud.config.web.TestConstants.VALIDATION_URL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -28,6 +32,9 @@ import org.springframework.http.HttpStatus;
 
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreMonitoring;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreMonitoring.AccessToken;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreMonitoring.PushNotification;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreTrigger;
 import com.microsoft.azure.spring.cloud.config.properties.ConfigStore;
 import com.microsoft.azure.spring.cloud.config.web.refreshbus.AppConfigurationRefreshBusEndpoint;
 
@@ -48,38 +55,63 @@ public class AppConfigurationRefreshEndpointBusTest {
     @Mock
     private ApplicationEventPublisher publisher;
 
+    private ArrayList<ConfigStore> configStores;
+
+    private ArrayList<AppConfigurationStoreTrigger> triggers;
+
+    private AppConfigurationStoreMonitoring monitoring;
+
+    private String tokenName = "token";
+
+    private String tokenSecret = "secret";
+
     @Before
-    public void setup() {
+    public void setup() throws IOException {
         MockitoAnnotations.initMocks(this);
+
+        monitoring = new AppConfigurationStoreMonitoring();
+        AppConfigurationStoreTrigger trigger = new AppConfigurationStoreTrigger();
+        trigger.setKey(TRIGGER_KEY);
+        trigger.setLabel(TRIGGER_LABEL);
+        triggers = new ArrayList<AppConfigurationStoreTrigger>();
+        triggers.add(trigger);
+        monitoring.setTriggers(triggers);
+        PushNotification pushNotification = monitoring.getPushNotification();
+        AccessToken primaryToken = pushNotification.getPrimaryToken();
+        primaryToken.setName(tokenName);
+        primaryToken.setSecret(tokenSecret);
+        pushNotification.setPrimaryToken(primaryToken);
+        monitoring.setPushNotification(pushNotification);
+        monitoring.setEnabled(true);
+        ConfigStore configStore = new ConfigStore();
+        configStores = new ArrayList<>();
+        configStore.setMonitoring(monitoring);
+        configStore.setEndpoint("https://fake.test.azconfig.io");
+        configStores.add(configStore);
+
+        when(request.getReader()).thenReturn(reader);
+        when(reader.lines()).thenReturn(lines);
     }
 
     @Test
     public void webHookValidation() throws IOException {
         Map<String, String> allRequestParams = new HashMap<String, String>();
         AppConfigurationProperties properties = new AppConfigurationProperties();
-        String tokenName = "token";
-        String tokenSecret = "secret";
-        AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
-        // monitoring.setPrimaryTokenName(tokenName);
-        // monitoring.setPrimaryTokenSecret(tokenSecret);
-        ConfigStore configStore = new ConfigStore();
-        ArrayList<ConfigStore> configStores = new ArrayList<>();
-        configStore.setMonitoring(monitoring);
+
         properties.setStores(configStores);
         allRequestParams.put(tokenName, tokenSecret);
 
         AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(publisher, "1",
                 properties);
 
-        when(request.getReader()).thenReturn(reader);
-        when(reader.lines()).thenReturn(lines);
         when(lines.collect(Mockito.any())).thenReturn("[{\r\n" +
                 "  \"id\": \"2d1781af-3a4c-4d7c-bd0c-e34b19da4e66\",\r\n" +
-                "  \"topic\": \"/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\",\r\n" +
+                "  \"topic\":" + TOPIC + ",\r\n"
+                +
                 "  \"subject\": \"\",\r\n" +
                 "  \"data\": {\r\n" +
                 "    \"validationCode\": \"512d38b6-c7b8-40c8-89fe-f46f9e9622b6\",\r\n" +
-                "    \"validationUrl\": \"https://rp-eastus2.eventgrid.azure.net:553/eventsubscriptions/estest/validate?id=512d38b6-c7b8-40c8-89fe-f46f9e9622b6&t=2018-04-26T20:30:54.4538837Z&apiVersion=2018-05-01-preview&token=1A1A1A1A\"\r\n"
+                "    \"validationUrl\":" + VALIDATION_URL + "\r\n"
                 +
                 "  },\r\n" +
                 "  \"eventType\": \"Microsoft.EventGrid.SubscriptionValidationEvent\",\r\n" +
@@ -96,61 +128,30 @@ public class AppConfigurationRefreshEndpointBusTest {
     public void webHookRefresh() throws IOException {
         Map<String, String> allRequestParams = new HashMap<String, String>();
         AppConfigurationProperties properties = new AppConfigurationProperties();
-        String tokenName = "token";
-        String tokenSecret = "secret";
-        AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
-        // monitoring.setPrimaryTokenName(tokenName);
-        // monitoring.setPrimaryTokenSecret(tokenSecret);
-        ConfigStore configStore = new ConfigStore();
-        ArrayList<ConfigStore> configStores = new ArrayList<>();
-        configStore.setMonitoring(monitoring);
+
         properties.setStores(configStores);
         allRequestParams.put(tokenName, tokenSecret);
 
         AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(publisher, "1",
                 properties);
 
-        when(request.getReader()).thenReturn(reader);
-        when(reader.lines()).thenReturn(lines);
-        when(lines.collect(Mockito.any())).thenReturn("[]");
+        when(lines.collect(Mockito.any())).thenReturn(getResetNotification());
 
         assertEquals(HttpStatus.OK.getReasonPhrase(), endpoint.refresh(request, response, allRequestParams));
-    }
-
-    @Test
-    public void webHookRefreshNotFound() throws IOException {
-        Map<String, String> allRequestParams = new HashMap<String, String>();
-        AppConfigurationProperties properties = new AppConfigurationProperties();
-        String tokenName = "token";
-        String tokenSecret = "secret";
-        AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
-        // monitoring.setPrimaryTokenName(tokenName);
-        // monitoring.setPrimaryTokenSecret(tokenSecret);
-        ConfigStore configStore = new ConfigStore();
-        ArrayList<ConfigStore> configStores = new ArrayList<>();
-        configStore.setMonitoring(monitoring);
-        properties.setStores(configStores);
-        allRequestParams.put(tokenName, tokenSecret);
-
-        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(publisher, "1",
-                properties);
-
-        when(request.getReader()).thenReturn(reader);
-        when(reader.lines()).thenReturn(lines);
-        when(lines.collect(Mockito.any())).thenReturn("[]");
-
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-                endpoint.refresh(request, response, allRequestParams));
     }
 
     @Test
     public void noTokenName() throws IOException {
         Map<String, String> allRequestParams = new HashMap<String, String>();
         AppConfigurationProperties properties = new AppConfigurationProperties();
+
         String tokenName = "token";
         String tokenSecret = "secret";
-        AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
-        // monitoring.setPrimaryTokenSecret(tokenSecret);
+        PushNotification pushNotification = monitoring.getPushNotification();
+        AccessToken primaryToken = pushNotification.getPrimaryToken();
+        primaryToken.setSecret(tokenSecret);
+        pushNotification.setPrimaryToken(primaryToken);
+        monitoring.setPushNotification(pushNotification);
         ConfigStore configStore = new ConfigStore();
         ArrayList<ConfigStore> configStores = new ArrayList<>();
         configStore.setMonitoring(monitoring);
@@ -159,6 +160,8 @@ public class AppConfigurationRefreshEndpointBusTest {
 
         AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(publisher, "1",
                 properties);
+
+        when(lines.collect(Mockito.any())).thenReturn(getResetNotification());
 
         assertEquals(HttpStatus.UNAUTHORIZED.getReasonPhrase(), endpoint.refresh(request, response, allRequestParams));
     }
@@ -167,10 +170,14 @@ public class AppConfigurationRefreshEndpointBusTest {
     public void noTokenSecret() throws IOException {
         Map<String, String> allRequestParams = new HashMap<String, String>();
         AppConfigurationProperties properties = new AppConfigurationProperties();
+
         String tokenName = "token";
         String tokenSecret = "secret";
-        AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
-        // monitoring.setPrimaryTokenName(tokenName);
+        PushNotification pushNotification = monitoring.getPushNotification();
+        AccessToken primaryToken = pushNotification.getPrimaryToken();
+        primaryToken.setName(tokenName);
+        pushNotification.setPrimaryToken(primaryToken);
+        monitoring.setPushNotification(pushNotification);
         ConfigStore configStore = new ConfigStore();
         ArrayList<ConfigStore> configStores = new ArrayList<>();
         configStore.setMonitoring(monitoring);
@@ -180,6 +187,8 @@ public class AppConfigurationRefreshEndpointBusTest {
         AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(publisher, "1",
                 properties);
 
+        when(lines.collect(Mockito.any())).thenReturn(getResetNotification());
+
         assertEquals(HttpStatus.UNAUTHORIZED.getReasonPhrase(), endpoint.refresh(request, response, allRequestParams));
     }
 
@@ -187,11 +196,15 @@ public class AppConfigurationRefreshEndpointBusTest {
     public void noPramToken() throws IOException {
         Map<String, String> allRequestParams = new HashMap<String, String>();
         AppConfigurationProperties properties = new AppConfigurationProperties();
+
         String tokenName = "token";
         String tokenSecret = "secret";
-        AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
-        // monitoring.setPrimaryTokenName(tokenName);
-        // monitoring.setPrimaryTokenSecret(tokenSecret);
+        PushNotification pushNotification = monitoring.getPushNotification();
+        AccessToken primaryToken = pushNotification.getPrimaryToken();
+        primaryToken.setName(tokenName);
+        primaryToken.setSecret(tokenSecret);
+        pushNotification.setPrimaryToken(primaryToken);
+        monitoring.setPushNotification(pushNotification);
         ConfigStore configStore = new ConfigStore();
         ArrayList<ConfigStore> configStores = new ArrayList<>();
         configStore.setMonitoring(monitoring);
@@ -200,6 +213,8 @@ public class AppConfigurationRefreshEndpointBusTest {
         AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(publisher, "1",
                 properties);
 
+        when(lines.collect(Mockito.any())).thenReturn(getResetNotification());
+
         assertEquals(HttpStatus.UNAUTHORIZED.getReasonPhrase(), endpoint.refresh(request, response, allRequestParams));
     }
 
@@ -207,11 +222,15 @@ public class AppConfigurationRefreshEndpointBusTest {
     public void invalidParamToken() throws IOException {
         Map<String, String> allRequestParams = new HashMap<String, String>();
         AppConfigurationProperties properties = new AppConfigurationProperties();
+
         String tokenName = "token";
         String tokenSecret = "secret";
-        AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
-        // monitoring.setPrimaryTokenName(tokenName);
-        // monitoring.setPrimaryTokenSecret(tokenSecret);
+        PushNotification pushNotification = monitoring.getPushNotification();
+        AccessToken primaryToken = pushNotification.getPrimaryToken();
+        primaryToken.setName(tokenName);
+        primaryToken.setSecret(tokenSecret);
+        pushNotification.setPrimaryToken(primaryToken);
+        monitoring.setPushNotification(pushNotification);
         ConfigStore configStore = new ConfigStore();
         ArrayList<ConfigStore> configStores = new ArrayList<>();
         configStore.setMonitoring(monitoring);
@@ -221,7 +240,28 @@ public class AppConfigurationRefreshEndpointBusTest {
         AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(publisher, "1",
                 properties);
 
+        when(lines.collect(Mockito.any())).thenReturn(getResetNotification());
+
         assertEquals(HttpStatus.UNAUTHORIZED.getReasonPhrase(), endpoint.refresh(request, response, allRequestParams));
+    }
+
+    private String getResetNotification() {
+        return " [ {\r\n" +
+                "  \"id\" : \"e2f7023c-b982-4050-80d9-8ed6bf24e183\",\r\n" +
+                "  \"topic\":" + TOPIC + ",\r\n"
+                +
+                "  \"subject\" : \"https://fake.test.azconfig.io/kv/%2Fapplication%2Fconfig.message?api-version=1.0\",\r\n"
+                +
+                "  \"data\" : {\r\n" +
+                "    \"key\" : \"trigger_key\",\r\n" +
+                "    \"label\" : \"trigger_label\",\r\n" +
+                "    \"etag\" : \"r05tB2hfMQs0vo6ITcXu7ScIOhR\"\r\n" +
+                "  },\r\n" +
+                "  \"eventType\" : \"Microsoft.AppConfiguration.KeyValueModified\",\r\n" +
+                "  \"dataVersion\" : \"1\",\r\n" +
+                "  \"metadataVersion\" : \"1\",\r\n" +
+                "  \"eventTime\" : \"2020-06-03T21:19:04.019421Z\"\r\n" +
+                "} ]";
     }
 
 }

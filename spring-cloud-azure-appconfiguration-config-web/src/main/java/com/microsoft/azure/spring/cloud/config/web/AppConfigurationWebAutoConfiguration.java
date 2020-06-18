@@ -5,8 +5,6 @@
  */
 package com.microsoft.azure.spring.cloud.config.web;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.bus.BusProperties;
@@ -29,24 +27,23 @@ import com.microsoft.azure.spring.cloud.config.web.refreshbus.ResetBusListener;
 @RemoteApplicationEventScan
 public class AppConfigurationWebAutoConfiguration {
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppConfigurationWebAutoConfiguration.class);
-
     // Refresh from appconfiguration-refresh
 
-    @Bean
-    @ConditionalOnClass(name = "org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties")
-    public AppConfigurationRefreshEndpoint appConfigurationRefreshEndpoint(ContextRefresher contextRefresher,
-            AppConfigurationProperties appConfiguration) {
-        LOGGER.error("Creating Refresh Endpoint");
-        return new AppConfigurationRefreshEndpoint(contextRefresher, appConfiguration);
-    }
-
-    @Bean
+    @Configuration
     @ConditionalOnClass(name = { "org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties",
             "org.springframework.cloud.endpoint.RefreshEndpoint" })
-    public ResetListener resetListener(AppConfigurationRefresh appConfigurationRefresh) {
-        LOGGER.error("Creating Refresh Listener");
-        return new ResetListener(appConfigurationRefresh);
+    public class AppConfigurationPushRefreshConfiguration {
+
+        @Bean
+        public AppConfigurationRefreshEndpoint appConfigurationRefreshEndpoint(ContextRefresher contextRefresher,
+                AppConfigurationProperties appConfiguration) {
+            return new AppConfigurationRefreshEndpoint(contextRefresher, appConfiguration);
+        }
+
+        @Bean
+        public ResetListener resetListener(AppConfigurationRefresh appConfigurationRefresh) {
+            return new ResetListener(appConfigurationRefresh);
+        }
     }
 
     // Refresh from appconfiguration-refresh-bus
@@ -62,13 +59,11 @@ public class AppConfigurationWebAutoConfiguration {
         public AppConfigurationRefreshBusEndpoint appConfigurationRefreshBusEndpoint(ApplicationContext context,
                 BusProperties bus,
                 AppConfigurationProperties appConfiguration) {
-            LOGGER.error("Creating Bus Endpoint");
             return new AppConfigurationRefreshBusEndpoint(context, bus.getId(), appConfiguration);
         }
 
         @Bean
         public ResetBusListener resetBusListener(AppConfigurationRefresh appConfigurationRefresh) {
-            LOGGER.error("Creating Bus Listener");
             return new ResetBusListener(appConfigurationRefresh);
         }
     }
