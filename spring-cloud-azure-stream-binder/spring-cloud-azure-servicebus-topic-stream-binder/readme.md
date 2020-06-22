@@ -100,7 +100,7 @@ Controls the max concurrent calls of service bus message handler and the size of
 
 Default: `1`
 
-**_sessionEnabled_**
+**_sessionsEnabled_**
 
 Controls if is a session aware consumer. Set it to `true` if is a topic with sessions enabled.
 
