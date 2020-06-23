@@ -3,24 +3,21 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config.web.refresh;
+package com.microsoft.azure.spring.cloud.config.web.pushrefresh;
 
 import org.springframework.context.ApplicationEvent;
 
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreTrigger;
 
-public class AppConfigurationCacheResetEvent extends ApplicationEvent {
+public class AppConfigurationRefreshEvent extends ApplicationEvent {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
 
     private final String endpoint;
 
     private final AppConfigurationStoreTrigger trigger;
 
-    public AppConfigurationCacheResetEvent(String endpoint, AppConfigurationStoreTrigger trigger) {
+    public AppConfigurationRefreshEvent(String endpoint, AppConfigurationStoreTrigger trigger) {
         super(endpoint + "/" + trigger.toString());
         this.endpoint = endpoint;
         this.trigger = trigger;

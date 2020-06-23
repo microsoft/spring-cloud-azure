@@ -17,16 +17,17 @@ import org.springframework.context.annotation.Configuration;
 
 import com.microsoft.azure.spring.cloud.config.AppConfigurationRefresh;
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
-import com.microsoft.azure.spring.cloud.config.web.refresh.AppConfigurationRefreshEndpoint;
-import com.microsoft.azure.spring.cloud.config.web.refresh.ResetListener;
-import com.microsoft.azure.spring.cloud.config.web.refreshbus.AppConfigurationRefreshBusEndpoint;
-import com.microsoft.azure.spring.cloud.config.web.refreshbus.ResetBusListener;
+import com.microsoft.azure.spring.cloud.config.web.pullrefresh.AppConfigurationEventListener;
+import com.microsoft.azure.spring.cloud.config.web.pushbusrefresh.AppConfigurationBusRefreshEndpoint;
+import com.microsoft.azure.spring.cloud.config.web.pushbusrefresh.AppConfigurationBusRefreshEventListener;
+import com.microsoft.azure.spring.cloud.config.web.pushrefresh.AppConfigurationRefreshEndpoint;
+import com.microsoft.azure.spring.cloud.config.web.pushrefresh.AppConfigurationRefreshEventListener;
 
 @Configuration
 @EnableConfigurationProperties(AppConfigurationProperties.class)
 @RemoteApplicationEventScan
 public class AppConfigurationWebAutoConfiguration {
-    
+
     // Refresh from appconfiguration-refresh
 
     @Configuration
@@ -41,8 +42,9 @@ public class AppConfigurationWebAutoConfiguration {
         }
 
         @Bean
-        public ResetListener resetListener(AppConfigurationRefresh appConfigurationRefresh) {
-            return new ResetListener(appConfigurationRefresh);
+        public AppConfigurationRefreshEventListener appConfigurationRefreshEventListener(
+                AppConfigurationRefresh appConfigurationRefresh) {
+            return new AppConfigurationRefreshEventListener(appConfigurationRefresh);
         }
     }
 
@@ -56,15 +58,16 @@ public class AppConfigurationWebAutoConfiguration {
     public class AppConfigurationBusConfiguration {
 
         @Bean
-        public AppConfigurationRefreshBusEndpoint appConfigurationRefreshBusEndpoint(ApplicationContext context,
+        public AppConfigurationBusRefreshEndpoint appConfigurationBusRefreshEndpoint(ApplicationContext context,
                 BusProperties bus,
                 AppConfigurationProperties appConfiguration) {
-            return new AppConfigurationRefreshBusEndpoint(context, bus.getId(), appConfiguration);
+            return new AppConfigurationBusRefreshEndpoint(context, bus.getId(), appConfiguration);
         }
 
         @Bean
-        public ResetBusListener resetBusListener(AppConfigurationRefresh appConfigurationRefresh) {
-            return new ResetBusListener(appConfigurationRefresh);
+        public AppConfigurationBusRefreshEventListener appConfigurationBusRefreshEventListener(
+                AppConfigurationRefresh appConfigurationRefresh) {
+            return new AppConfigurationBusRefreshEventListener(appConfigurationRefresh);
         }
     }
 
@@ -72,8 +75,8 @@ public class AppConfigurationWebAutoConfiguration {
 
     @Bean
     @ConditionalOnClass(RefreshEndpoint.class)
-    public ConfigListener configListener(AppConfigurationRefresh appConfigurationRefresh) {
-        return new ConfigListener(appConfigurationRefresh);
+    public AppConfigurationEventListener configListener(AppConfigurationRefresh appConfigurationRefresh) {
+        return new AppConfigurationEventListener(appConfigurationRefresh);
     }
 
 }

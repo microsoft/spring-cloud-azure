@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config.web;
+package com.microsoft.azure.spring.cloud.config.web.pullrefresh;
 
 import static com.microsoft.azure.spring.cloud.config.web.Constants.ACTUATOR;
 import static com.microsoft.azure.spring.cloud.config.web.Constants.APPCONFIGURATION_REFRESH;
@@ -18,12 +18,12 @@ import org.springframework.web.context.support.ServletRequestHandledEvent;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationRefresh;
 
 @Component
-public class ConfigListener implements ApplicationListener<ServletRequestHandledEvent> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigListener.class);
+public class AppConfigurationEventListener implements ApplicationListener<ServletRequestHandledEvent> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppConfigurationEventListener.class);
 
     private AppConfigurationRefresh appConfigurationRefresh;
 
-    public ConfigListener(AppConfigurationRefresh appConfigurationRefresh) {
+    public AppConfigurationEventListener(AppConfigurationRefresh appConfigurationRefresh) {
         this.appConfigurationRefresh = appConfigurationRefresh;
     }
 

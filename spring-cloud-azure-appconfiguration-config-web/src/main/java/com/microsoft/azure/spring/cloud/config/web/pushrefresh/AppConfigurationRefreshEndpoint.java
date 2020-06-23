@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config.web.refresh;
+package com.microsoft.azure.spring.cloud.config.web.pushrefresh;
 
 import static com.microsoft.azure.spring.cloud.config.web.Constants.APPCONFIGURATION_REFRESH;
 import static com.microsoft.azure.spring.cloud.config.web.Constants.VALIDATION_CODE_FORMAT_START;
@@ -76,7 +76,7 @@ public class AppConfigurationRefreshEndpoint implements ApplicationEventPublishe
                     // Will just refresh the local configurations
                     // contextRefresher.refresh();
                     publisher.publishEvent(
-                            new AppConfigurationCacheResetEvent(validation.getEndpoint(), validation.getTrigger()));
+                            new AppConfigurationRefreshEvent(validation.getEndpoint(), validation.getTrigger()));
                     return HttpStatus.OK.getReasonPhrase();
                 } else {
                     LOGGER.debug("Non Refreshable notification");

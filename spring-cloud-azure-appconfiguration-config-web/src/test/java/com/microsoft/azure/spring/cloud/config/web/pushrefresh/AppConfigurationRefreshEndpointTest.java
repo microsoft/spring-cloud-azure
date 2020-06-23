@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config.web;
+package com.microsoft.azure.spring.cloud.config.web.pushrefresh;
 
 import static com.microsoft.azure.spring.cloud.config.web.TestConstants.TOPIC;
 import static com.microsoft.azure.spring.cloud.config.web.TestConstants.TRIGGER_KEY;
@@ -37,7 +37,6 @@ import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreM
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreMonitoring.PushNotification;
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreTrigger;
 import com.microsoft.azure.spring.cloud.config.properties.ConfigStore;
-import com.microsoft.azure.spring.cloud.config.web.refresh.AppConfigurationRefreshEndpoint;
 
 public class AppConfigurationRefreshEndpointTest {
 

@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config.web.refreshbus;
+package com.microsoft.azure.spring.cloud.config.web.pushbusrefresh;
 
 import static com.microsoft.azure.spring.cloud.config.web.Constants.APPCONFIGURATION_REFRESH_BUS;
 import static com.microsoft.azure.spring.cloud.config.web.Constants.VALIDATION_CODE_FORMAT_START;
@@ -32,15 +32,15 @@ import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProper
 import com.microsoft.azure.spring.cloud.config.web.AppConfigurationEndpoint;
 
 @ControllerEndpoint(id = APPCONFIGURATION_REFRESH_BUS)
-public class AppConfigurationRefreshBusEndpoint extends AbstractBusEndpoint {
+public class AppConfigurationBusRefreshEndpoint extends AbstractBusEndpoint {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppConfigurationRefreshBusEndpoint.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppConfigurationBusRefreshEndpoint.class);
 
     private ObjectMapper objectmapper = new ObjectMapper();
 
     private AppConfigurationProperties appConfiguration;
 
-    public AppConfigurationRefreshBusEndpoint(ApplicationEventPublisher context, String appId,
+    public AppConfigurationBusRefreshEndpoint(ApplicationEventPublisher context, String appId,
             AppConfigurationProperties appConfiguration) {
         super(context, appId);
         this.appConfiguration = appConfiguration;
@@ -68,7 +68,7 @@ public class AppConfigurationRefreshBusEndpoint extends AbstractBusEndpoint {
         } else {
             if (validation.triggerRefresh()) {
                 // Spring Bus is in use, will publish a RefreshRemoteApplicationEvent
-                publish(new AppConfigurationCacheResetBusEvent(validation.getEndpoint(), this, getInstanceId(),
+                publish(new AppConfigurationBusRefreshEvent(validation.getEndpoint(), this, getInstanceId(),
                         validation.getTrigger()));
                 return HttpStatus.OK.getReasonPhrase();
             } else {

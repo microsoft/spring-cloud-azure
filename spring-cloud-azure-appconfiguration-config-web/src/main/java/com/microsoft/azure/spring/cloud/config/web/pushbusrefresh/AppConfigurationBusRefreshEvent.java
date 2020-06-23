@@ -3,24 +3,21 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config.web.refreshbus;
+package com.microsoft.azure.spring.cloud.config.web.pushbusrefresh;
 
 import org.springframework.cloud.bus.event.RemoteApplicationEvent;
 
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreTrigger;
 
-public class AppConfigurationCacheResetBusEvent extends RemoteApplicationEvent {
+public class AppConfigurationBusRefreshEvent extends RemoteApplicationEvent {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
 
     private final String endpoint;
 
     private final AppConfigurationStoreTrigger trigger;
 
-    public AppConfigurationCacheResetBusEvent(String endpoint, AppConfigurationRefreshBusEndpoint source, String origin,
+    AppConfigurationBusRefreshEvent(String endpoint, AppConfigurationBusRefreshEndpoint source, String origin,
             AppConfigurationStoreTrigger trigger) {
         super("Refresh Event", origin, null);
         this.endpoint = endpoint;

@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config.web;
+package com.microsoft.azure.spring.cloud.config.web.pushbusrefresh;
 
 import static com.microsoft.azure.spring.cloud.config.web.TestConstants.TOPIC;
 import static com.microsoft.azure.spring.cloud.config.web.TestConstants.TRIGGER_KEY;
@@ -36,9 +36,8 @@ import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreM
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreMonitoring.PushNotification;
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreTrigger;
 import com.microsoft.azure.spring.cloud.config.properties.ConfigStore;
-import com.microsoft.azure.spring.cloud.config.web.refreshbus.AppConfigurationRefreshBusEndpoint;
 
-public class AppConfigurationRefreshEndpointBusTest {
+public class AppConfigurationBusRefreshEndpointTest {
 
     @Mock
     private HttpServletRequest request;
@@ -58,7 +57,6 @@ public class AppConfigurationRefreshEndpointBusTest {
     private ArrayList<ConfigStore> configStores;
 
     private ArrayList<AppConfigurationStoreTrigger> triggers;
-
     private AppConfigurationStoreMonitoring monitoring;
 
     private String tokenName = "token";
@@ -101,7 +99,7 @@ public class AppConfigurationRefreshEndpointBusTest {
         properties.setStores(configStores);
         allRequestParams.put(tokenName, tokenSecret);
 
-        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(publisher, "1",
+        AppConfigurationBusRefreshEndpoint endpoint = new AppConfigurationBusRefreshEndpoint(publisher, "1",
                 properties);
 
         when(lines.collect(Mockito.any())).thenReturn("[{\r\n" +
@@ -132,7 +130,7 @@ public class AppConfigurationRefreshEndpointBusTest {
         properties.setStores(configStores);
         allRequestParams.put(tokenName, tokenSecret);
 
-        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(publisher, "1",
+        AppConfigurationBusRefreshEndpoint endpoint = new AppConfigurationBusRefreshEndpoint(publisher, "1",
                 properties);
 
         when(lines.collect(Mockito.any())).thenReturn(getResetNotification());
@@ -158,7 +156,7 @@ public class AppConfigurationRefreshEndpointBusTest {
         properties.setStores(configStores);
         allRequestParams.put(tokenName, tokenSecret);
 
-        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(publisher, "1",
+        AppConfigurationBusRefreshEndpoint endpoint = new AppConfigurationBusRefreshEndpoint(publisher, "1",
                 properties);
 
         when(lines.collect(Mockito.any())).thenReturn(getResetNotification());
@@ -184,7 +182,7 @@ public class AppConfigurationRefreshEndpointBusTest {
         properties.setStores(configStores);
         allRequestParams.put(tokenName, tokenSecret);
 
-        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(publisher, "1",
+        AppConfigurationBusRefreshEndpoint endpoint = new AppConfigurationBusRefreshEndpoint(publisher, "1",
                 properties);
 
         when(lines.collect(Mockito.any())).thenReturn(getResetNotification());
@@ -210,7 +208,7 @@ public class AppConfigurationRefreshEndpointBusTest {
         configStore.setMonitoring(monitoring);
         properties.setStores(configStores);
 
-        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(publisher, "1",
+        AppConfigurationBusRefreshEndpoint endpoint = new AppConfigurationBusRefreshEndpoint(publisher, "1",
                 properties);
 
         when(lines.collect(Mockito.any())).thenReturn(getResetNotification());
@@ -237,7 +235,7 @@ public class AppConfigurationRefreshEndpointBusTest {
         properties.setStores(configStores);
         allRequestParams.put(tokenName, "noSecret");
 
-        AppConfigurationRefreshBusEndpoint endpoint = new AppConfigurationRefreshBusEndpoint(publisher, "1",
+        AppConfigurationBusRefreshEndpoint endpoint = new AppConfigurationBusRefreshEndpoint(publisher, "1",
                 properties);
 
         when(lines.collect(Mockito.any())).thenReturn(getResetNotification());

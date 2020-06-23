@@ -52,7 +52,7 @@ public class AppConfigurationWebAutoConfigurationTest {
     public void busRefresh() {
         contextRunner
                 .run(context -> assertThat(context)
-                        .hasBean("appConfigurationRefreshBusEndpoint"));
+                        .hasBean("appConfigurationBusRefreshEndpoint"));
     }
 
     @Test
@@ -61,7 +61,7 @@ public class AppConfigurationWebAutoConfigurationTest {
                 .withClassLoader(new FilteredClassLoader(RefreshRemoteApplicationEvent.class))
                 .run(context -> {
                     assertThat(context)
-                            .doesNotHaveBean("appConfigurationRefreshBusEndpoint");
+                            .doesNotHaveBean("appConfigurationBusRefreshEndpoint");
                     assertThat(context)
                             .hasBean("appConfigurationRefreshEndpoint");
                     assertThat(context)
@@ -85,7 +85,7 @@ public class AppConfigurationWebAutoConfigurationTest {
                     assertThat(context)
                             .hasBean("appConfigurationRefreshEndpoint");
                     assertThat(context)
-                            .hasBean("appConfigurationRefreshBusEndpoint");
+                            .hasBean("appConfigurationBusRefreshEndpoint");
                 });
     }
 }
