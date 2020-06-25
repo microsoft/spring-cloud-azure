@@ -66,6 +66,7 @@
         <module>spring-cloud-azure-storage</module>
         <module>spring-cloud-azure-stream-binder</module>
         <module>spring-integration-azure</module>
+        <module>spring-cloud-azure-telemetry</module>
     </modules>
 
     <properties>

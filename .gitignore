@@ -4,6 +4,7 @@ bin/
 /config
 .idea/
 /out
+.vscode/
 
 # Do not ignore them
 !.idea/copyright

@@ -4,7 +4,7 @@
  * license information.
  */
 
-package com.microsoft.azure.spring.cloud.autoconfigure.telemetry;
+package com.microsoft.azure.spring.cloud.telemetry;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

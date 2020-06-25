@@ -9,14 +9,15 @@ package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 import com.azure.storage.queue.QueueServiceClient;
 import com.microsoft.azure.management.storage.StorageAccount;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.api.EnvironmentProvider;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
+import com.microsoft.azure.spring.cloud.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueOperation;
 import com.microsoft.azure.spring.integration.storage.queue.StorageQueueTemplate;
 import com.microsoft.azure.spring.integration.storage.queue.factory.DefaultStorageQueueClientFactory;
 import com.microsoft.azure.spring.integration.storage.queue.factory.StorageQueueClientFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
