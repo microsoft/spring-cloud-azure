@@ -7,7 +7,6 @@
 package com.microsoft.azure.spring.cloud.autoconfigure.telemetry;
 
 import com.microsoft.azure.credentials.AzureTokenCredentials;
-import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
 import com.microsoft.azure.spring.cloud.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.telemetry.TelemetryProperties;
 import com.microsoft.azure.spring.cloud.telemetry.TelemetrySender;
@@ -26,7 +25,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@AutoConfigureAfter(AzureContextAutoConfiguration.class)
 @PropertySource(value = "classpath:telemetry.config")
 @EnableConfigurationProperties(TelemetryProperties.class)
 @ConditionalOnProperty(name = "spring.cloud.azure.telemetry.enabled", matchIfMissing = true)
