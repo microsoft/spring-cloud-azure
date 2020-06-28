@@ -110,7 +110,9 @@ public class AzureEventHubAutoConfigurationTest {
             .withPropertyValues("spring.cloud.azure.eventhub.checkpoint-storage-account=sa1")
             .withPropertyValues("spring.cloud.azure.eventhub.consumer-max-delay=1500")
             .run(context -> {
-                AmqpRetryOptions retryOptions = context.getBean(AzureEventHubProperties.class).getConsumerRetryOptions();
+                AmqpRetryOptions retryOptions = context
+                    .getBean(AzureEventHubProperties.class)
+                    .getConsumerRetryOptions();
                 assertThat(retryOptions.getMaxDelay()).isEqualTo(Duration.ofSeconds(1500));
             });
     }
@@ -121,7 +123,9 @@ public class AzureEventHubAutoConfigurationTest {
             .withPropertyValues("spring.cloud.azure.eventhub.checkpoint-storage-account=sa1")
             .withPropertyValues("spring.cloud.azure.eventhub.consumer-try-timeout=100")
             .run(context -> {
-                AmqpRetryOptions retryOptions = context.getBean(AzureEventHubProperties.class).getConsumerRetryOptions();
+                AmqpRetryOptions retryOptions = context
+                    .getBean(AzureEventHubProperties.class)
+                    .getConsumerRetryOptions();
                 assertThat(retryOptions.getTryTimeout()).isEqualTo(Duration.ofSeconds(100));
             });
     }
@@ -132,7 +136,9 @@ public class AzureEventHubAutoConfigurationTest {
             .withPropertyValues("spring.cloud.azure.eventhub.checkpoint-storage-account=sa1")
             .withPropertyValues("spring.cloud.azure.eventhub.consumer-retry-mode=FIXED")
             .run(context -> {
-                AmqpRetryOptions retryOptions = context.getBean(AzureEventHubProperties.class).getConsumerRetryOptions();
+                AmqpRetryOptions retryOptions = context
+                    .getBean(AzureEventHubProperties.class)
+                    .getConsumerRetryOptions();
                 assertThat(retryOptions.getMode()).isEqualTo(AmqpRetryMode.FIXED);
             });
     }

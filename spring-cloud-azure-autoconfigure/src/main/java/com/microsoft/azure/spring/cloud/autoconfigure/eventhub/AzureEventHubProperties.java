@@ -154,7 +154,8 @@ public class AzureEventHubProperties {
         try {
             AmqpRetryMode.valueOf(this.consumerRetryMode);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("A valid value should be provided for 'spring.cloud.azure.eventhub.consumer-retry-mode'");
+            throw new IllegalArgumentException("A valid value should be provided for " +
+                "'spring.cloud.azure.eventhub.consumer-retry-mode'");
         }
     }
 }
