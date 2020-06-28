@@ -6,12 +6,15 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.eventhub;
 
+import com.azure.core.amqp.AmqpRetryMode;
+import com.azure.core.amqp.AmqpRetryOptions;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.Pattern;
+import java.time.Duration;
 
 /**
  * @author Warren Zhu
@@ -31,6 +34,73 @@ public class AzureEventHubProperties {
     private String checkpointAccessKey;
 
     private String checkpointContainer;
+
+    // AQMP default retry option in seconds.
+    private int consumerTryTimeout = 60;
+
+    // AQMP default retry option in milli seconds.
+    private int consumerDelay = 800;
+
+    // AQMP default retry option in seconds.
+    private int consumerMaxDelay = 60;
+
+    // AQMP default retry option.
+    private String consumerRetryMode = "EXPONENTIAL";
+
+    // AQMP default retry option.
+    private int consumerMaxRetries = 3;
+
+    public int getConsumerTryTimeout() {
+        return consumerTryTimeout;
+    }
+
+    public void setConsumerTryTimeout(int consumerTryTimeout) {
+        this.consumerTryTimeout = consumerTryTimeout;
+    }
+
+    public int getConsumerDelay() {
+        return consumerDelay;
+    }
+
+    public void setConsumerDelay(int consumerDelay) {
+        this.consumerDelay = consumerDelay;
+    }
+
+    public int getConsumerMaxDelay() {
+        return consumerMaxDelay;
+    }
+
+    public void setConsumerMaxDelay(int consumerMaxDelay) {
+        this.consumerMaxDelay = consumerMaxDelay;
+    }
+
+    public String getConsumerRetryMode() {
+        return consumerRetryMode;
+    }
+
+    public void setConsumerRetryMode(String consumerRetryMode) {
+        this.consumerRetryMode = consumerRetryMode;
+    }
+
+    public int getConsumerMaxRetries() {
+        return consumerMaxRetries;
+    }
+
+    public void setConsumerMaxRetries(int consumerMaxRetries) {
+        this.consumerMaxRetries = consumerMaxRetries;
+    }
+
+    public AmqpRetryOptions getConsumerRetryOptions() {
+        AmqpRetryOptions amqpRetryOptions = new AmqpRetryOptions();
+
+        amqpRetryOptions.setDelay(Duration.ofMillis(consumerDelay));
+        amqpRetryOptions.setMaxDelay(Duration.ofSeconds(consumerMaxDelay));
+        amqpRetryOptions.setMaxRetries(consumerMaxRetries);
+        amqpRetryOptions.setTryTimeout(Duration.ofSeconds(consumerTryTimeout));
+        amqpRetryOptions.setMode(AmqpRetryMode.valueOf(this.consumerRetryMode));
+
+        return amqpRetryOptions;
+    }
 
     public String getNamespace() {
         return namespace;
