@@ -65,6 +65,19 @@ Name | Description | Required | Default
  spring.cloud.azure.eventhub.namespace | Event Hub Namespace. Auto creating if missing | Yes |
  spring.cloud.azure.eventhub.checkpoint-storage-account | StorageAccount name for checkpoint message successfully consumed | Yes
 
+#### Consumer retry options ####
+
+The consumer retry policy can be controlled by following paramters.
+
+Name | Description | Required | Default 
+---|---|---|---
+ spring.cloud.azure.eventhub.consumer-try-timeout | Sets the maximum duration to wait for completion of a single attempt, whether the initial attempt or a retry. In *seconds* | No | 60
+ spring.cloud.azure.eventhub.consumer-delay | Gets the delay between retry attempts for a fixed approach or the delay on which to base calculations for a backoff-approach. In *milli seconds* | No | 800
+ spring.cloud.azure.eventhub.consumer-max-delay | Sets the maximum permissible delay between retry attempts. In *seconds* | No | 60
+ spring.cloud.azure.eventhub.consumer-retry-mode | Sets the approach to use for calculating retry delays. *Exponential*: Retry attempts will delay based on a backoff strategy, where each attempt will increase the duration that it waits before retrying. *Fixed*: Retry attempts happen at fixed intervals; each delay is a consistent duration. | No | EXPONENTIAL
+ spring.cloud.azure.eventhub.consumer-max-retries | Sets the maximum number of retry attempts before considering the associated operation to have failed. | No | 3
+
+
  #### Event Hub Producer Properties ####
 
  It supports the following configurations with the format of `spring.cloud.stream.eventhub.bindings.<channelName>.producer`.
