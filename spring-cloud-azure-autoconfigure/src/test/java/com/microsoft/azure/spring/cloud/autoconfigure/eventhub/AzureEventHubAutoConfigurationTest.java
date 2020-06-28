@@ -99,7 +99,9 @@ public class AzureEventHubAutoConfigurationTest {
             .withPropertyValues("spring.cloud.azure.eventhub.checkpoint-storage-account=sa1")
             .withPropertyValues("spring.cloud.azure.eventhub.consumer-delay=1500")
             .run(context -> {
-                AmqpRetryOptions retryOptions = context.getBean(AzureEventHubProperties.class).getConsumerRetryOptions();
+                AmqpRetryOptions retryOptions = context
+                    .getBean(AzureEventHubProperties.class)
+                    .getConsumerRetryOptions();
                 assertThat(retryOptions.getDelay()).isEqualTo(Duration.ofMillis(1500));
             });
     }
