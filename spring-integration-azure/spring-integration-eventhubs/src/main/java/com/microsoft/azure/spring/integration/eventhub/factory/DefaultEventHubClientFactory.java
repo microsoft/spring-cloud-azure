@@ -62,8 +62,11 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
     private final EventHubConnectionStringProvider connectionStringProvider;
     private final AmqpRetryOptions retryOptions;
 
-    public DefaultEventHubClientFactory(@NonNull EventHubConnectionStringProvider connectionStringProvider,
-            String checkpointConnectionString, String checkpointStorageContainer) {
+    public DefaultEventHubClientFactory(
+        @NonNull EventHubConnectionStringProvider connectionStringProvider,
+        String checkpointConnectionString,
+        String checkpointStorageContainer
+    ) {
         Assert.hasText(checkpointConnectionString, "checkpointConnectionString can't be null or empty");
         this.connectionStringProvider = connectionStringProvider;
         this.checkpointStorageConnectionString = checkpointConnectionString;
@@ -71,8 +74,12 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
         this.retryOptions = new AmqpRetryOptions();
     }
 
-    public DefaultEventHubClientFactory(@NonNull EventHubConnectionStringProvider connectionStringProvider,
-                                        String checkpointConnectionString, String checkpointStorageContainer, AmqpRetryOptions retryOptions) {
+    public DefaultEventHubClientFactory(
+        @NonNull EventHubConnectionStringProvider connectionStringProvider,
+        String checkpointConnectionString,
+        String checkpointStorageContainer,
+        AmqpRetryOptions retryOptions
+    ) {
         Assert.hasText(checkpointConnectionString, "checkpointConnectionString can't be null or empty");
         this.connectionStringProvider = connectionStringProvider;
         this.checkpointStorageConnectionString = checkpointConnectionString;
