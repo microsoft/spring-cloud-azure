@@ -15,6 +15,8 @@ import org.springframework.validation.annotation.Validated;
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.Pattern;
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * @author Warren Zhu
@@ -147,6 +149,12 @@ public class AzureEventHubProperties {
         if (!StringUtils.hasText(namespace) && !StringUtils.hasText(connectionString)) {
             throw new IllegalArgumentException("Either 'spring.cloud.azure.eventhub.namespace' or " +
                     "'spring.cloud.azure.eventhub.connection-string' should be provided");
+        }
+
+        try {
+            AmqpRetryMode.valueOf(this.consumerRetryMode);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("A valid value should be provided for 'spring.cloud.azure.eventhub.consumer-retry-mode'");
         }
     }
 }

@@ -6,6 +6,8 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.eventhub;
 
+import com.azure.core.amqp.AmqpRetryMode;
+import com.azure.core.amqp.AmqpRetryOptions;
 import com.azure.messaging.eventhubs.EventHubConsumerAsyncClient;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
@@ -16,6 +18,8 @@ import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -61,6 +65,86 @@ public class AzureEventHubAutoConfigurationTest {
             assertThat(context).hasSingleBean(EventHubClientFactory.class);
             assertThat(context).hasSingleBean(EventHubOperation.class);
         });
+    }
+
+    @Test
+    public void testDefaultRetryPolicyIsInPlace() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.eventhub.namespace=ns1").
+            withPropertyValues("spring.cloud.azure.eventhub.checkpoint-storage-account=sa1").run(context -> {
+            AmqpRetryOptions retryOptions = context.getBean(AzureEventHubProperties.class).getConsumerRetryOptions();
+
+            assertThat(retryOptions.getMaxRetries()).isEqualTo(3);
+            assertThat(retryOptions.getDelay()).isEqualTo(Duration.ofMillis(800));
+            assertThat(retryOptions.getMaxDelay()).isEqualTo(Duration.ofMinutes(1));
+            assertThat(retryOptions.getTryTimeout()).isEqualTo(Duration.ofMinutes(1));
+            assertThat(retryOptions.getMode()).isEqualTo(AmqpRetryMode.EXPONENTIAL);
+        });
+    }
+
+    @Test
+    public void testConsumerMaxRetriesIsChangeable() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.eventhub.namespace=ns1")
+            .withPropertyValues("spring.cloud.azure.eventhub.checkpoint-storage-account=sa1")
+            .withPropertyValues("spring.cloud.azure.eventhub.consumer-max-retries=10")
+            .run(context -> {
+            AmqpRetryOptions retryOptions = context.getBean(AzureEventHubProperties.class).getConsumerRetryOptions();
+
+            assertThat(retryOptions.getMaxRetries()).isEqualTo(10);
+        });
+    }
+
+    @Test
+    public void testConsumerDelayIsChangeable() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.eventhub.namespace=ns1")
+            .withPropertyValues("spring.cloud.azure.eventhub.checkpoint-storage-account=sa1")
+            .withPropertyValues("spring.cloud.azure.eventhub.consumer-delay=1500")
+            .run(context -> {
+                AmqpRetryOptions retryOptions = context.getBean(AzureEventHubProperties.class).getConsumerRetryOptions();
+                assertThat(retryOptions.getDelay()).isEqualTo(Duration.ofMillis(1500));
+            });
+    }
+
+    @Test
+    public void testConsumerMaxDelayIsChangeable() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.eventhub.namespace=ns1")
+            .withPropertyValues("spring.cloud.azure.eventhub.checkpoint-storage-account=sa1")
+            .withPropertyValues("spring.cloud.azure.eventhub.consumer-max-delay=1500")
+            .run(context -> {
+                AmqpRetryOptions retryOptions = context.getBean(AzureEventHubProperties.class).getConsumerRetryOptions();
+                assertThat(retryOptions.getMaxDelay()).isEqualTo(Duration.ofSeconds(1500));
+            });
+    }
+
+    @Test
+    public void testConsumerTryTimeoutIsChangeable() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.eventhub.namespace=ns1")
+            .withPropertyValues("spring.cloud.azure.eventhub.checkpoint-storage-account=sa1")
+            .withPropertyValues("spring.cloud.azure.eventhub.consumer-try-timeout=100")
+            .run(context -> {
+                AmqpRetryOptions retryOptions = context.getBean(AzureEventHubProperties.class).getConsumerRetryOptions();
+                assertThat(retryOptions.getTryTimeout()).isEqualTo(Duration.ofSeconds(100));
+            });
+    }
+
+    @Test
+    public void testConsumerRetryModeIsChangeable() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.eventhub.namespace=ns1")
+            .withPropertyValues("spring.cloud.azure.eventhub.checkpoint-storage-account=sa1")
+            .withPropertyValues("spring.cloud.azure.eventhub.consumer-retry-mode=FIXED")
+            .run(context -> {
+                AmqpRetryOptions retryOptions = context.getBean(AzureEventHubProperties.class).getConsumerRetryOptions();
+                assertThat(retryOptions.getMode()).isEqualTo(AmqpRetryMode.FIXED);
+            });
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testRetryModeInvalidValue() {
+        this.contextRunner.withPropertyValues("spring.cloud.azure.eventhub.namespace=ns1")
+            .withPropertyValues("spring.cloud.azure.eventhub.checkpoint-storage-account=sa1")
+            .withPropertyValues("spring.cloud.azure.eventhub.consumer-retry-mode=INVALID")
+            .run(context -> {
+                context.getBean(AzureEventHubProperties.class);
+            });
     }
 
     @Configuration
