@@ -97,6 +97,6 @@ public class AzureEventHubAutoConfiguration {
         }
 
         return new DefaultEventHubClientFactory(connectionStringProvider, checkpointConnectionString,
-                eventHubProperties.getCheckpointContainer());
+                eventHubProperties.getCheckpointContainer(), eventHubProperties.getConsumerRetryOptions());
     }
 }
