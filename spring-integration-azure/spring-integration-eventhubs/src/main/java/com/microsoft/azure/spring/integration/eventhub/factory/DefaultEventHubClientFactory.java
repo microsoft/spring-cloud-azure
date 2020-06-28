@@ -6,6 +6,7 @@
 
 package com.microsoft.azure.spring.integration.eventhub.factory;
 
+import com.azure.core.amqp.AmqpRetryOptions;
 import com.azure.messaging.eventhubs.EventHubClientBuilder;
 import com.azure.messaging.eventhubs.EventHubConsumerAsyncClient;
 import com.azure.messaging.eventhubs.EventHubProducerAsyncClient;
@@ -59,6 +60,7 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
     private final String checkpointStorageConnectionString;
     private final String checkpointStorageContainer;
     private final EventHubConnectionStringProvider connectionStringProvider;
+    private final AmqpRetryOptions retryOptions;
 
     public DefaultEventHubClientFactory(@NonNull EventHubConnectionStringProvider connectionStringProvider,
             String checkpointConnectionString, String checkpointStorageContainer) {
@@ -66,6 +68,16 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
         this.connectionStringProvider = connectionStringProvider;
         this.checkpointStorageConnectionString = checkpointConnectionString;
         this.checkpointStorageContainer = checkpointStorageContainer;
+        this.retryOptions = new AmqpRetryOptions();
+    }
+
+    public DefaultEventHubClientFactory(@NonNull EventHubConnectionStringProvider connectionStringProvider,
+                                        String checkpointConnectionString, String checkpointStorageContainer, AmqpRetryOptions retryOptions) {
+        Assert.hasText(checkpointConnectionString, "checkpointConnectionString can't be null or empty");
+        this.connectionStringProvider = connectionStringProvider;
+        this.checkpointStorageConnectionString = checkpointConnectionString;
+        this.checkpointStorageContainer = checkpointStorageContainer;
+        this.retryOptions = retryOptions != null ? retryOptions : new AmqpRetryOptions();
     }
 
     private EventHubConsumerAsyncClient createEventHubClient(String eventHubName, String consumerGroup) {
@@ -103,6 +115,7 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
         // TODO (xiada): set up event processing position for each partition
         return new EventProcessorClientBuilder()
                 .connectionString(connectionStringProvider.getConnectionString(), eventHubName)
+                .retry(this.retryOptions)
                 .consumerGroup(consumerGroup)
                 .checkpointStore(new BlobCheckpointStore(blobClient))
                 .processPartitionInitialization(eventHubProcessor::onInitialize)
