@@ -76,7 +76,7 @@ public class AppConfigurationRefreshEndpoint implements ApplicationEventPublishe
                     // Will just refresh the local configurations
                     // contextRefresher.refresh();
                     publisher.publishEvent(
-                            new AppConfigurationRefreshEvent(validation.getEndpoint(), validation.getTrigger()));
+                            new AppConfigurationRefreshEvent(validation.getEndpoint()));
                     return HttpStatus.OK.getReasonPhrase();
                 } else {
                     LOGGER.debug("Non Refreshable notification");

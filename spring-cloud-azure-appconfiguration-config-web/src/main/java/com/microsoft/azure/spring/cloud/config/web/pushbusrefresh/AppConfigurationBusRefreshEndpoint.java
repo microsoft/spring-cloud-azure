@@ -50,13 +50,19 @@ public class AppConfigurationBusRefreshEndpoint extends AbstractBusEndpoint {
     @ResponseBody
     public String refresh(HttpServletRequest request, HttpServletResponse response,
             @RequestParam Map<String, String> allRequestParams) throws IOException {
-
         String reference = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
         JsonNode kvReference = objectmapper.readTree(reference);
-        AppConfigurationEndpoint validation = new AppConfigurationEndpoint(kvReference, appConfiguration.getStores(),
-                allRequestParams);
 
+        AppConfigurationEndpoint validation;
+        try {
+            validation = new AppConfigurationEndpoint(kvReference, appConfiguration.getStores(),
+                    allRequestParams);
+        } catch (IllegalArgumentException e) {
+            LOGGER.error(e.getMessage());
+            return HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase();
+        }
+        
         if (!validation.authenticate()) {
             return HttpStatus.UNAUTHORIZED.getReasonPhrase();
         }
@@ -68,8 +74,7 @@ public class AppConfigurationBusRefreshEndpoint extends AbstractBusEndpoint {
         } else {
             if (validation.triggerRefresh()) {
                 // Spring Bus is in use, will publish a RefreshRemoteApplicationEvent
-                publish(new AppConfigurationBusRefreshEvent(validation.getEndpoint(), this, getInstanceId(),
-                        validation.getTrigger()));
+                publish(new AppConfigurationBusRefreshEvent(validation.getEndpoint(), this, getInstanceId()));
                 return HttpStatus.OK.getReasonPhrase();
             } else {
                 LOGGER.debug("Non Refreshable notification");

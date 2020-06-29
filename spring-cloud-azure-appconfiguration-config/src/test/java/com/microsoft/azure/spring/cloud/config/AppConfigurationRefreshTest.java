@@ -100,19 +100,20 @@ public class AppConfigurationRefreshTest {
         ConfigurationSetting item = new ConfigurationSetting();
         item.setKey("fake-etag/application/test.key");
         item.setETag("fake-etag");
-
         configRefresh = new AppConfigurationRefresh(properties, clientStoreMock);
         StateHolder.setLoadState(TEST_STORE_NAME, true);
     }
 
     @After
     public void cleanupMethod() {
-        StateHolder.setState(TEST_STORE_NAME, trigger, new ConfigurationSetting(), monitoring);
+        StateHolder.setState(TEST_STORE_NAME, new ArrayList<ConfigurationSetting>(), monitoring);
     }
 
     @Test
     public void nonUpdatedEtagShouldntPublishEvent() throws Exception {
-        StateHolder.setState(TEST_STORE_NAME, trigger, initialResponse(), monitoring);
+        List<ConfigurationSetting> watchKeys = new ArrayList<ConfigurationSetting>();
+        watchKeys.add(initialResponse());
+        StateHolder.setState(TEST_STORE_NAME, watchKeys, monitoring);
 
         configRefresh.setApplicationEventPublisher(eventPublisher);
 
@@ -124,7 +125,9 @@ public class AppConfigurationRefreshTest {
 
     @Test
     public void updatedEtagShouldPublishEvent() throws Exception {
-        StateHolder.setState(TEST_STORE_NAME, trigger, initialResponse(), monitoring);
+        List<ConfigurationSetting> watchKeys = new ArrayList<ConfigurationSetting>();
+        watchKeys.add(initialResponse());
+        StateHolder.setState(TEST_STORE_NAME, watchKeys, monitoring);
 
         when(clientStoreMock.getRevison(Mockito.any(), Mockito.anyString())).thenReturn(initialResponse());
         configRefresh.setApplicationEventPublisher(eventPublisher);
@@ -139,7 +142,9 @@ public class AppConfigurationRefreshTest {
         assertTrue(configRefresh.refreshConfigurations().get());
         verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
 
-        StateHolder.setState(TEST_STORE_NAME, trigger, updatedResponse(), monitoring);
+        watchKeys = new ArrayList<ConfigurationSetting>();
+        watchKeys.add(updatedResponse());
+        StateHolder.setState(TEST_STORE_NAME, watchKeys, monitoring);
 
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("store1_configuration", "fake-etag-updated");
@@ -147,8 +152,9 @@ public class AppConfigurationRefreshTest {
 
         ConfigurationSetting updated = new ConfigurationSetting();
         updated.setETag("fake-etag-updated");
-
-        StateHolder.setState(TEST_STORE_NAME, trigger, updated, monitoring);
+        watchKeys = new ArrayList<ConfigurationSetting>();
+        watchKeys.add(updated);
+        StateHolder.setState(TEST_STORE_NAME, watchKeys, monitoring);
 
         // If there is no change it shouldn't update
         assertFalse(configRefresh.refreshConfigurations().get());
@@ -157,7 +163,9 @@ public class AppConfigurationRefreshTest {
 
     @Test
     public void noEtagReturned() throws Exception {
-        StateHolder.setState(TEST_STORE_NAME, trigger, initialResponse(), monitoring);
+        List<ConfigurationSetting> watchKeys = new ArrayList<ConfigurationSetting>();
+        watchKeys.add(initialResponse());
+        StateHolder.setState(TEST_STORE_NAME, watchKeys, monitoring);
 
         when(clientStoreMock.getRevison(Mockito.any(), Mockito.anyString()))
                 .thenReturn(null);
@@ -170,7 +178,9 @@ public class AppConfigurationRefreshTest {
 
     @Test
     public void nullItemsReturned() throws Exception {
-        StateHolder.setState(TEST_STORE_NAME, trigger, initialResponse(), monitoring);
+        List<ConfigurationSetting> watchKeys = new ArrayList<ConfigurationSetting>();
+        watchKeys.add(initialResponse());
+        StateHolder.setState(TEST_STORE_NAME, watchKeys, monitoring);
 
         when(clientStoreMock.getRevison(Mockito.any(), Mockito.anyString())).thenReturn(null);
         configRefresh.setApplicationEventPublisher(eventPublisher);
@@ -212,39 +222,10 @@ public class AppConfigurationRefreshTest {
     }
 
     @Test
-    public void noInitialStateHasEtag() throws Exception {
-        ConfigStore store = new ConfigStore();
-        store.setEndpoint(TEST_STORE_NAME);
-        store.setConnectionString(TEST_CONN_STRING);
-        AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
-        monitoring.setEnabled(true);
-        trigger = new AppConfigurationStoreTrigger();
-        trigger.setKey(WATCHED_KEYS);
-        trigger.setLabel("\0");
-        List<AppConfigurationStoreTrigger> triggers = new ArrayList<AppConfigurationStoreTrigger>();
-        triggers.add(trigger);
-        monitoring.setTriggers(triggers);
-        monitoring.setCacheExpiration(Duration.ofMinutes(-60));
-        store.setMonitoring(monitoring);
-
-        AppConfigurationProperties propertiesLost = new AppConfigurationProperties();
-        propertiesLost.setStores(Arrays.asList(store));
-
-        AppConfigurationRefresh configRefreshLost = new AppConfigurationRefresh(propertiesLost,
-                clientStoreMock);
-        StateHolder.setLoadState(TEST_STORE_NAME, true);
-
-        when(clientStoreMock.getRevison(Mockito.any(), Mockito.anyString())).thenReturn(updatedResponse());
-        configRefreshLost.setApplicationEventPublisher(eventPublisher);
-
-        // The first time an action happens it can't update
-        assertTrue(configRefreshLost.refreshConfigurations().get());
-        verify(eventPublisher, times(1)).publishEvent(any(RefreshEvent.class));
-    }
-
-    @Test
     public void notRefreshTime() throws Exception {
-        StateHolder.setState(TEST_STORE_NAME, trigger, initialResponse(), monitoring);
+        List<ConfigurationSetting> watchKeys = new ArrayList<ConfigurationSetting>();
+        watchKeys.add(initialResponse());
+        StateHolder.setState(TEST_STORE_NAME, watchKeys, monitoring);
 
         ConfigStore store = new ConfigStore();
         store.setEndpoint(TEST_STORE_NAME);

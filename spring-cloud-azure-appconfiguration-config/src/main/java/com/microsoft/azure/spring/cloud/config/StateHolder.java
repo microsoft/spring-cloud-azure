@@ -5,13 +5,17 @@
  */
 package com.microsoft.azure.spring.cloud.config;
 
+import java.security.SecureRandom;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreMonitoring;
-import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreTrigger;
 
 final class StateHolder {
+
+    private static final int MAX_JITTER = 15;
 
     private StateHolder() {
         throw new IllegalStateException("Should not be callable.");
@@ -24,21 +28,27 @@ final class StateHolder {
     /**
      * @return the state
      */
-    static State getState(String endpoint, AppConfigurationStoreTrigger trigger) {
-        return state.get(endpoint + trigger.toString());
+    static State getState(String endpoint) {
+        return state.get(endpoint);
     }
 
     /**
      * @param state the etagState to set
      */
-    static void setState(String endpoint, AppConfigurationStoreTrigger trigger, ConfigurationSetting config,
+    static void setState(String endpoint, List<ConfigurationSetting> watchKeys,
             AppConfigurationStoreMonitoring monitoring) {
-        state.put(endpoint + trigger.toString(), new State(config, monitoring));
+        state.put(endpoint, new State(watchKeys, Math.toIntExact(monitoring.getCacheExpiration().getSeconds())));
     }
 
-    static void expireState(String endpoint, AppConfigurationStoreTrigger trigger) {
-        String key = endpoint + trigger.toString();
-        state.put(key, new State(state.get(key)));
+    static void expireState(String endpoint) {
+        String key = endpoint;
+        State oldState = state.get(key);
+        SecureRandom random = new SecureRandom();
+        long wait = (long) (random.nextDouble() * MAX_JITTER);
+        long timeLeft = (int) ((oldState.getNotCachedTime().getTime() - (new Date().getTime())) / 1000);
+        if (wait < timeLeft) {
+            state.put(key, new State(oldState.getWatchKeys(), (int) wait));
+        }
     }
 
     /**

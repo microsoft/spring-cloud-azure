@@ -6,20 +6,20 @@
 package com.microsoft.azure.spring.cloud.config;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.time.DateUtils;
 
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
-import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreMonitoring;
 
 class State {
-    private final ConfigurationSetting configurationSetting;
+    private final List<ConfigurationSetting> watchKeys;
 
     private final Date notCachedTime;
 
-    State(ConfigurationSetting configurationSetting, AppConfigurationStoreMonitoring monitoring) {
-        this.configurationSetting = configurationSetting;
-        notCachedTime = DateUtils.addSeconds(new Date(), Math.toIntExact(monitoring.getCacheExpiration().getSeconds()));
+    State(List<ConfigurationSetting> watchKeys, int cacheExperationTime) {
+        this.watchKeys = watchKeys;
+        notCachedTime = DateUtils.addSeconds(new Date(), cacheExperationTime);
     }
 
     /**
@@ -28,15 +28,15 @@ class State {
      * @param oldState
      */
     State(State oldState) {
-        this.configurationSetting = oldState.getConfigurationSetting();
+        this.watchKeys = oldState.getWatchKeys();
         this.notCachedTime = DateUtils.addSeconds(new Date(), Math.toIntExact(-60));
     }
 
     /**
-     * @return the configurationSetting
+     * @return the watchKeys
      */
-    public ConfigurationSetting getConfigurationSetting() {
-        return configurationSetting;
+    public List<ConfigurationSetting> getWatchKeys() {
+        return watchKeys;
     }
 
     /**

@@ -7,21 +7,15 @@ package com.microsoft.azure.spring.cloud.config.web.pushbusrefresh;
 
 import org.springframework.cloud.bus.event.RemoteApplicationEvent;
 
-import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreTrigger;
-
 public class AppConfigurationBusRefreshEvent extends RemoteApplicationEvent {
 
     private static final long serialVersionUID = 1L;
 
     private final String endpoint;
 
-    private final AppConfigurationStoreTrigger trigger;
-
-    AppConfigurationBusRefreshEvent(String endpoint, AppConfigurationBusRefreshEndpoint source, String origin,
-            AppConfigurationStoreTrigger trigger) {
-        super("Refresh Event", origin, null);
+    AppConfigurationBusRefreshEvent(String endpoint, AppConfigurationBusRefreshEndpoint source, String origin) {
+        super("App Configuration Refresh Event", origin, null);
         this.endpoint = endpoint;
-        this.trigger = trigger;
     }
 
     /**
@@ -29,13 +23,6 @@ public class AppConfigurationBusRefreshEvent extends RemoteApplicationEvent {
      */
     public String getEndpoint() {
         return endpoint;
-    }
-
-    /**
-     * @return the trigger
-     */
-    public AppConfigurationStoreTrigger getTrigger() {
-        return trigger;
     }
 
 }

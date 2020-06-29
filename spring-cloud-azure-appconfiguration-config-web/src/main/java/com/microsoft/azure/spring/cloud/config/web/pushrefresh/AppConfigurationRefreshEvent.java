@@ -7,20 +7,15 @@ package com.microsoft.azure.spring.cloud.config.web.pushrefresh;
 
 import org.springframework.context.ApplicationEvent;
 
-import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreTrigger;
-
 public class AppConfigurationRefreshEvent extends ApplicationEvent {
 
     private static final long serialVersionUID = 1L;
 
     private final String endpoint;
 
-    private final AppConfigurationStoreTrigger trigger;
-
-    public AppConfigurationRefreshEvent(String endpoint, AppConfigurationStoreTrigger trigger) {
-        super(endpoint + "/" + trigger.toString());
+    public AppConfigurationRefreshEvent(String endpoint) {
+        super(endpoint);
         this.endpoint = endpoint;
-        this.trigger = trigger;
     }
 
     /**
@@ -29,12 +24,4 @@ public class AppConfigurationRefreshEvent extends ApplicationEvent {
     public String getEndpoint() {
         return endpoint;
     }
-
-    /**
-     * @return the trigger
-     */
-    public AppConfigurationStoreTrigger getTrigger() {
-        return trigger;
-    }
-
 }

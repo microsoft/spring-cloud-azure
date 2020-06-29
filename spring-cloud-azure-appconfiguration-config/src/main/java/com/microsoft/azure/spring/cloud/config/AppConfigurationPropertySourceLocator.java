@@ -226,21 +226,16 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
             }
 
             // Setting new ETag values for Watch
+            List<ConfigurationSetting> watchKeys = new ArrayList<ConfigurationSetting>();
             for (AppConfigurationStoreTrigger trigger : store.getMonitoring().getTriggers()) {
                 SettingSelector settingSelector = new SettingSelector().setKeyFilter(trigger.getKey())
                         .setLabelFilter(trigger.getLabel());
 
                 ConfigurationSetting configurationRevision = clients.getRevison(settingSelector,
                         store.getEndpoint());
-
-                if (configurationRevision != null) {
-                    StateHolder.setState(store.getEndpoint(), trigger, configurationRevision, store.getMonitoring());
-                } else {
-                    StateHolder.setState(store.getEndpoint(), trigger, new ConfigurationSetting(),
-                            store.getMonitoring());
-                }
-
+                watchKeys.add(configurationRevision);
             }
+            StateHolder.setState(store.getEndpoint(), watchKeys, store.getMonitoring());
             StateHolder.setLoadState(store.getEndpoint(), true);
         } catch (Exception e) {
             delayException();
