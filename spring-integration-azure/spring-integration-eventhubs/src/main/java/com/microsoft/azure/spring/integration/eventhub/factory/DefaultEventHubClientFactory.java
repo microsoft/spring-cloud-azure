@@ -67,11 +67,7 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
         String checkpointConnectionString,
         String checkpointStorageContainer
     ) {
-        Assert.hasText(checkpointConnectionString, "checkpointConnectionString can't be null or empty");
-        this.connectionStringProvider = connectionStringProvider;
-        this.checkpointStorageConnectionString = checkpointConnectionString;
-        this.checkpointStorageContainer = checkpointStorageContainer;
-        this.retryOptions = new AmqpRetryOptions();
+        this(connectionStringProvider, checkpointConnectionString, checkpointStorageContainer, null);
     }
 
     public DefaultEventHubClientFactory(
