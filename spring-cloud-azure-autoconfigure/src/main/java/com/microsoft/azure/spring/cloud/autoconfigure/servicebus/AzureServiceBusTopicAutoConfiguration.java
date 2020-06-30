@@ -60,7 +60,7 @@ public class AzureServiceBusTopicAutoConfiguration {
                     ServiceBusUtils.getNamespace(connectionString));
         }
 
-        return new DefaultServiceBusTopicClientFactory(connectionString);
+        return clientFactory;
     }
 
     @Bean
