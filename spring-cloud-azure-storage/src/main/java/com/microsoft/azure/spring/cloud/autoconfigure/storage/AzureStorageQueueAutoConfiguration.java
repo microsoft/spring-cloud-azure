@@ -9,6 +9,7 @@ package com.microsoft.azure.spring.cloud.autoconfigure.storage;
 import com.azure.storage.queue.QueueServiceClient;
 import com.microsoft.azure.management.storage.StorageAccount;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
+import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureEnvironmentAutoConfiguration;
 import com.microsoft.azure.spring.cloud.context.core.api.EnvironmentProvider;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
@@ -30,7 +31,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.annotation.PostConstruct;
 
 @Configuration
-@AutoConfigureAfter(AzureContextAutoConfiguration.class)
+@AutoConfigureAfter({AzureContextAutoConfiguration.class, AzureEnvironmentAutoConfiguration.class})
 @ConditionalOnClass({QueueServiceClient.class, StorageQueueClientFactory.class})
 @ConditionalOnProperty(name = "spring.cloud.azure.storage.account")
 @EnableConfigurationProperties(AzureStorageProperties.class)
