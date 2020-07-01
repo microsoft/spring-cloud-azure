@@ -60,7 +60,9 @@ public class AppConfigurationRefreshTest {
     @Mock
     private ClientStore clientStoreMock;
 
-    private static final String WATCHED_KEYS = "/application/*";
+    private static final String WATCHED_KEY = "/application/*";
+    
+    private List<String> watchedKeys = new ArrayList<String>();
 
     @Before
     public void setup() {
@@ -69,7 +71,10 @@ public class AppConfigurationRefreshTest {
         ConfigStore store = new ConfigStore();
         store.setEndpoint(TEST_STORE_NAME);
         store.setConnectionString(TEST_CONN_STRING);
-        store.setWatchedKey(WATCHED_KEYS);
+        store.setWatchedKey(WATCHED_KEY);
+        
+        watchedKeys = new ArrayList<String>();
+        watchedKeys.add(WATCHED_KEY);
 
         properties = new AppConfigurationProperties();
         properties.setStores(Arrays.asList(store));
@@ -88,7 +93,7 @@ public class AppConfigurationRefreshTest {
         item.setKey("fake-etag/application/test.key");
         item.setETag("fake-etag");
 
-        when(clientStoreMock.watchedKeyNames(Mockito.any(), Mockito.any())).thenReturn(WATCHED_KEYS);
+        when(clientStoreMock.watchedKeyNames(Mockito.any(), Mockito.anyMap())).thenReturn(watchedKeys);
 
         configRefresh = new AppConfigurationRefresh(properties, contextsMap, clientStoreMock);
         StateHolder.setLoadState(TEST_STORE_NAME, true);
@@ -180,7 +185,7 @@ public class AppConfigurationRefreshTest {
         ConfigStore store = new ConfigStore();
         store.setEndpoint(TEST_STORE_NAME + "_LOST");
         store.setConnectionString(TEST_CONN_STRING);
-        store.setWatchedKey(WATCHED_KEYS);
+        store.setWatchedKey(WATCHED_KEY);
         
         AppConfigurationProperties propertiesLost = new AppConfigurationProperties();
         propertiesLost.setStores(Arrays.asList(store));
@@ -202,7 +207,7 @@ public class AppConfigurationRefreshTest {
         ConfigStore store = new ConfigStore();
         store.setEndpoint(TEST_STORE_NAME + "_LOST");
         store.setConnectionString(TEST_CONN_STRING);
-        store.setWatchedKey(WATCHED_KEYS);
+        store.setWatchedKey(WATCHED_KEY);
         
         AppConfigurationProperties propertiesLost = new AppConfigurationProperties();
         propertiesLost.setStores(Arrays.asList(store));

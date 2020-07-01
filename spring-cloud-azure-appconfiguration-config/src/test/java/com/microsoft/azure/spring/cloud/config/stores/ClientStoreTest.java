@@ -191,7 +191,7 @@ public class ClientStoreTest {
         
         storeContextsMap.put(TEST_ENDPOINT, contexts);
         
-        assertEquals("/application/*", clientStore.watchedKeyNames(store, storeContextsMap));
+        assertEquals("/application/*", clientStore.watchedKeyNames(store, "/application/"));
     }
 
     private PagedFlux<ConfigurationSetting> getConfigurationPagedFlux(int noOfPages) throws MalformedURLException {

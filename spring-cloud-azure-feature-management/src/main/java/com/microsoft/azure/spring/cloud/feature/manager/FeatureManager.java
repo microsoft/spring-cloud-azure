@@ -145,6 +145,10 @@ public class FeatureManager extends HashMap<String, Object> {
             return;
         }
         
+        if (m.size() == 1 && m.containsKey("featureManagement")) {
+            m = (Map<? extends String, ? extends Object>) m.get("featureManagement");
+        }
+        
         for (String key : m.keySet()) {
             addToFeatures(m, key, "");
         }

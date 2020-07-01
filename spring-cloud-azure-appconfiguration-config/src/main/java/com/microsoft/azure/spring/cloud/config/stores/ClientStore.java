@@ -7,6 +7,7 @@ package com.microsoft.azure.spring.cloud.config.stores;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,10 +26,9 @@ import com.azure.data.appconfiguration.ConfigurationClientBuilder;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import com.azure.identity.ManagedIdentityCredentialBuilder;
-import com.microsoft.azure.spring.cloud.config.ConfigurationClientBuilderSetup;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationCredentialProvider;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationProviderProperties;
-import com.microsoft.azure.spring.cloud.config.AppConfigurationRefresh;
+import com.microsoft.azure.spring.cloud.config.ConfigurationClientBuilderSetup;
 import com.microsoft.azure.spring.cloud.config.pipline.policies.BaseAppConfigurationPolicy;
 import com.microsoft.azure.spring.cloud.config.resource.Connection;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionPool;
@@ -157,12 +157,28 @@ public class ClientStore {
      * @param storeContextsMap map storing store name and List of context key-value pair
      * @return the full name of the key mapping to the configuration store
      */
-    public String watchedKeyNames(ConfigStore store, Map<String, List<String>> storeContextsMap) {
+    public List<String> watchedKeyNames(ConfigStore store, Map<String, List<String>> storeContextsMap) {
+        List<String> watchedKeys = new ArrayList<String>();
         String watchedKey = store.getWatchedKey().trim();
         List<String> contexts = storeContextsMap.get(store.getEndpoint());
 
-        String watchedKeys = contexts.stream().map(ctx -> genKey(ctx, watchedKey))
-                .collect(Collectors.joining(","));
+        for (String context : contexts) {
+            String key = genKey(context, watchedKey);
+            if (key.contains(",") && key.contains("*")) {
+                // Multi keys including one or more key patterns is not supported by API,
+                // will
+                // watch all keys(*) instead
+                key = "*";
+            }
+            watchedKeys.add(key);
+        }
+
+        return watchedKeys;
+    }
+
+    public String watchedKeyNames(ConfigStore store, String context) {
+        String watchedKey = store.getWatchedKey().trim();
+        String watchedKeys = genKey(context, watchedKey);
 
         if (watchedKeys.contains(",") && watchedKeys.contains("*")) {
             // Multi keys including one or more key patterns is not supported by API, will
