@@ -6,6 +6,7 @@
 
 package com.microsoft.azure.spring.integration.eventhub.factory;
 
+import com.azure.core.http.policy.HttpLogOptions;
 import com.azure.messaging.eventhubs.EventHubClientBuilder;
 import com.azure.messaging.eventhubs.EventHubConsumerAsyncClient;
 import com.azure.messaging.eventhubs.EventHubProducerAsyncClient;
@@ -31,6 +32,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
+import static com.microsoft.azure.spring.cloud.context.core.util.Constants.SPRING_EVENT_HUB_APPLICATION_ID;
 
 /**
  * Default implementation of {@link EventHubClientFactory}.
@@ -91,6 +94,7 @@ public class DefaultEventHubClientFactory implements EventHubClientFactory, Disp
         BlobContainerAsyncClient blobClient = new BlobContainerClientBuilder()
                 .connectionString(checkpointStorageConnectionString)
                 .containerName(containerName)
+                .httpLogOptions(new HttpLogOptions().setApplicationId(SPRING_EVENT_HUB_APPLICATION_ID))
                 .buildAsyncClient();
 
         final Boolean isContainerExist = blobClient.exists().block();
