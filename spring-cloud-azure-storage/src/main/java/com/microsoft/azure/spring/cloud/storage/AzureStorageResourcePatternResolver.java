@@ -19,6 +19,7 @@ import static com.microsoft.azure.spring.cloud.storage.StorageType.FILE;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Optional;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.util.AntPathMatcher;
@@ -36,12 +37,12 @@ public class AzureStorageResourcePatternResolver implements ResourcePatternResol
     /**
      * Stores the BlobServiceClient.
      */
-    private BlobServiceClient blobServiceClient;
+    private Optional<BlobServiceClient> blobServiceClient;
 
     /**
      * Stores the ShareServiceClient shareServiceClient
      */
-    private ShareServiceClient shareServiceClient;
+    private Optional<ShareServiceClient> shareServiceClient;
 
     /**
      * Constructor.
@@ -69,8 +70,8 @@ public class AzureStorageResourcePatternResolver implements ResourcePatternResol
      */
     public AzureStorageResourcePatternResolver(
             BlobServiceClient blobServiceClient, ShareServiceClient shareServiceClient) {
-        this.blobServiceClient = blobServiceClient;
-        this.shareServiceClient = shareServiceClient;
+        this.blobServiceClient = Optional.ofNullable(blobServiceClient);
+        this.shareServiceClient = Optional.ofNullable(shareServiceClient);
     }
 
     /**
@@ -96,10 +97,10 @@ public class AzureStorageResourcePatternResolver implements ResourcePatternResol
     public Resource getResource(String location) {
         Resource resource = null;
 
-        if (isAzureStorageResource(location, BLOB) && blobServiceClient != null) {
-            resource = new BlobStorageResource(blobServiceClient, location, true);
-        } else if (isAzureStorageResource(location, FILE) && shareServiceClient != null) {
-            resource = new FileStorageResource(shareServiceClient, location, true);
+        if (isAzureStorageResource(location, BLOB) && blobServiceClient.isPresent()) {
+            resource = new BlobStorageResource(blobServiceClient.get(), location, true);
+        } else if (isAzureStorageResource(location, FILE) && shareServiceClient.isPresent()) {
+            resource = new FileStorageResource(shareServiceClient.get(), location, true);
         }
 
         return resource;
@@ -121,23 +122,25 @@ public class AzureStorageResourcePatternResolver implements ResourcePatternResol
      */
     private Resource[] getBlobResources(String pattern) {
         ArrayList<Resource> resources = new ArrayList<>();
-        Iterator<BlobContainerItem> containerIterator
-                = blobServiceClient.listBlobContainers().iterator();
-        while (containerIterator.hasNext()) {
-            BlobContainerItem containerItem = containerIterator.next();
-            String containerName = containerItem.getName();
-            BlobContainerClient blobContainerClient
-                    = blobServiceClient.getBlobContainerClient(containerItem.getName());
-            Iterator<BlobItem> blobIterator = blobContainerClient.listBlobs().iterator();
-            while (blobIterator.hasNext()) {
-                BlobItem blobItem = blobIterator.next();
-                String blobName = blobItem.getName();
-                String location = "azure-blob://" + containerName + "/" + blobName;
-                if (matcher.match(pattern, location)) {
-                    resources.add(new BlobStorageResource(blobServiceClient, location));
+        blobServiceClient.ifPresent(() -> {
+            Iterator<BlobContainerItem> containerIterator
+                    = blobServiceClient.get().listBlobContainers().iterator();
+            while (containerIterator.hasNext()) {
+                BlobContainerItem containerItem = containerIterator.next();
+                String containerName = containerItem.getName();
+                BlobContainerClient blobContainerClient
+                        = blobServiceClient.get().getBlobContainerClient(containerItem.getName());
+                Iterator<BlobItem> blobIterator = blobContainerClient.listBlobs().iterator();
+                while (blobIterator.hasNext()) {
+                    BlobItem blobItem = blobIterator.next();
+                    String blobName = blobItem.getName();
+                    String location = "azure-blob://" + containerName + "/" + blobName;
+                    if (matcher.match(pattern, location)) {
+                        resources.add(new BlobStorageResource(blobServiceClient.get(), location));
+                    }
                 }
             }
-        }
+        });
         return resources.toArray(new Resource[]{});
     }
 
@@ -149,26 +152,28 @@ public class AzureStorageResourcePatternResolver implements ResourcePatternResol
      */
     private Resource[] getShareResources(String pattern) {
         ArrayList<Resource> resources = new ArrayList<>();
-        Iterator<ShareItem> shareIterator
-                = shareServiceClient.listShares().iterator();
-        while (shareIterator.hasNext()) {
-            ShareItem shareItem = shareIterator.next();
-            String shareName = shareItem.getName();
-            ShareClient shareClient
-                    = shareServiceClient.getShareClient(shareItem.getName());
-            Iterator<ShareFileItem> shareFileIterator = shareClient
-                    .getRootDirectoryClient().listFilesAndDirectories().iterator();
-            while (shareFileIterator.hasNext()) {
-                ShareFileItem fileItem = shareFileIterator.next();
-                String filename = fileItem.getName();
-                if (!fileItem.isDirectory()) {
-                    String location = "azure-file://" + shareName + "/" + filename;
-                    if (matcher.match(pattern, location)) {
-                        resources.add(new FileStorageResource(shareServiceClient, location));
+        shareServiceClient.ifPresent(() -> {
+            Iterator<ShareItem> shareIterator
+                    = shareServiceClient.get().listShares().iterator();
+            while (shareIterator.hasNext()) {
+                ShareItem shareItem = shareIterator.next();
+                String shareName = shareItem.getName();
+                ShareClient shareClient
+                        = shareServiceClient.get().getShareClient(shareItem.getName());
+                Iterator<ShareFileItem> shareFileIterator = shareClient
+                        .getRootDirectoryClient().listFilesAndDirectories().iterator();
+                while (shareFileIterator.hasNext()) {
+                    ShareFileItem fileItem = shareFileIterator.next();
+                    String filename = fileItem.getName();
+                    if (!fileItem.isDirectory()) {
+                        String location = "azure-file://" + shareName + "/" + filename;
+                        if (matcher.match(pattern, location)) {
+                            resources.add(new FileStorageResource(shareServiceClient.get(), location));
+                        }
                     }
                 }
             }
-        }
+        });
         return resources.toArray(new Resource[]{});
     }
 }
