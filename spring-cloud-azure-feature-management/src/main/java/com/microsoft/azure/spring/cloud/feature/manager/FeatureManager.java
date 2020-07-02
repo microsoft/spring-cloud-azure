@@ -145,6 +145,10 @@ public class FeatureManager extends HashMap<String, Object> {
             return;
         }
         
+        // Need to reset or switch between on/off to conditional doesn't work
+        featureManagement = new HashMap<String, Feature>();
+        onOff = new HashMap<String, Boolean>();
+        
         if (m.size() == 1 && m.containsKey("featureManagement")) {
             m = (Map<? extends String, ? extends Object>) m.get("featureManagement");
         }
