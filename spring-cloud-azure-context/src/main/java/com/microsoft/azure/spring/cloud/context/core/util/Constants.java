@@ -34,4 +34,6 @@ public class Constants {
     public static final String SPRING_INTEGRATION_STORAGE_QUEUE_APPLICATION_ID =
             String.join("-", AZURE, SPRING_INTEGRATION, STORAGE_QUEUE) + "/" + SPRING_CLOUD_VERSION;
 
+    public static final String SPRING_EVENT_HUB_APPLICATION_ID =
+            String.join("-", AZURE, SPRING_CLOUD, EVENT_HUB) + "/" + SPRING_CLOUD_VERSION;
 }
