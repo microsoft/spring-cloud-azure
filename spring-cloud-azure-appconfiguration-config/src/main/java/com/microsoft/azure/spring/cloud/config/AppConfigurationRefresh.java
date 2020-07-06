@@ -104,11 +104,10 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
                 if (notCachedTime == null || date.after(notCachedTime)) {
                     for (ConfigStore configStore : configStores) {
                         if (StateHolder.getLoadState(configStore.getEndpoint())) {
-                            List<String> watchedKeyNames = clientStore.watchedKeyNames(configStore, storeContextsMap);
-                            willRefresh = refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames) ? true
+                            willRefresh = refresh_configurations(configStore) ? true
                                     : willRefresh;
                             // Refresh Feature Flags
-                            willRefresh = refresh(configStore, FEATURE_SUFFIX, featureWatchKey) ? true
+                            willRefresh = refreshFeatureFlag(configStore) ? true
                                     : willRefresh;
                         } else {
                             LOGGER.debug("Skipping refresh check for " + configStore.getEndpoint()
@@ -141,32 +140,43 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
      * published.
      * 
      * @param store the {@code store} for which to composite watched key names
-     * @param storeSuffix Suffix used to distinguish between Settings and Features
-     * @param watchedKeyNames Key used to check if refresh should occur
      * @return Refresh event was triggered. No other sources need to be checked.
      */
-    private boolean refresh(ConfigStore store, String storeSuffix, List<String> watchedKeyNames) {
-        String storeNameWithSuffix = store.getEndpoint() + storeSuffix;
+    private boolean refresh_configurations(ConfigStore store) {
+        for (String context : storeContextsMap.get(store.getEndpoint())) {
+            // Checking every Profile
+            String storeNameWithSuffix = store.getEndpoint() + CONFIGURATION_SUFFIX + "_" + context;
+            String watchedKeyName = clientStore.watchedKeyNames(store, context);
 
-        ConfigurationSetting newestRevision = null;
-        String watchKey = "";
-
-        for (String watchedKeyName : watchedKeyNames) {
-            SettingSelector settingSelector = new SettingSelector().setKeyFilter(watchedKeyName)
-                    .setLabelFilter("*");
-            ConfigurationSetting revision = clientStore.getRevison(settingSelector, store.getEndpoint());
-            if (newestRevision == null && revision != null
-                    || (revision != null && revision.getLastModified().isAfter(newestRevision.getLastModified()))) {
-                newestRevision = revision;
-                watchKey = watchedKeyName;
+            if (checkETagChange(store, storeNameWithSuffix, watchedKeyName)) {
+                return true;
             }
         }
+        return false;
+    }
+
+    /**
+     * Checks un-cached items for etag changes for feature flags. If they have changed a
+     * RefreshEventData is published.
+     * 
+     * @param store the {@code store} for which to composite watched key names
+     * @return Refresh event was triggered. No other sources need to be checked.
+     */
+    private boolean refreshFeatureFlag(ConfigStore store) {
+        String storeNameWithSuffix = store.getEndpoint() + FEATURE_SUFFIX;
+        return checkETagChange(store, storeNameWithSuffix, FEATURE_STORE_WATCH_KEY);
+    }
+
+    private boolean checkETagChange(ConfigStore store, String storeNameWithSuffix, String watchKey) {
+        SettingSelector settingSelector = new SettingSelector().setKeyFilter(watchKey)
+                .setLabelFilter("*");
+        ConfigurationSetting revision = clientStore.getRevison(settingSelector, store.getEndpoint());
 
         String etag = null;
         // If there is no result, etag will be considered empty.
         // A refresh will trigger once the selector returns a value.
-        if (newestRevision != null) {
-            etag = newestRevision.getETag();
+        if (revision != null) {
+            etag = revision.getETag();
         }
 
         if (StateHolder.getEtagState(storeNameWithSuffix) == null) {

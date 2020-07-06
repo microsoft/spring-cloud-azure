@@ -58,7 +58,7 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
     private ClientStore clients;
 
     private KeyVaultCredentialProvider keyVaultCredentialProvider;
-    
+
     private SecretClientBuilderSetup keyVaultClientProvider;
 
     private static Boolean startup = true;
@@ -238,10 +238,13 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
             ConfigurationSetting featureRevision = clients.getRevison(settingSelector,
                     store.getEndpoint());
 
+            String prefix = "_" + context;
+
             if (configurationRevision != null) {
-                StateHolder.setEtagState(store.getEndpoint() + CONFIGURATION_SUFFIX, configurationRevision);
+                StateHolder.setEtagState(store.getEndpoint() + CONFIGURATION_SUFFIX + prefix, configurationRevision);
             } else {
-                StateHolder.setEtagState(store.getEndpoint() + CONFIGURATION_SUFFIX, new ConfigurationSetting());
+                StateHolder.setEtagState(store.getEndpoint() + CONFIGURATION_SUFFIX + prefix,
+                        new ConfigurationSetting());
             }
 
             if (featureRevision != null) {
