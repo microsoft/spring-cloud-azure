@@ -76,10 +76,6 @@ public class EventHubProcessor {
 
         this.consumer.accept(messageConverter.toMessage(event, new MessageHeaders(headers), payloadType));
         this.checkpointManager.onMessage(context, context.getEventData());
-
-        if (this.checkpointConfig.getCheckpointMode() == CheckpointMode.BATCH) {
-            this.checkpointManager.completeBatch(context);
-        }
     }
 
     public void onError(ErrorContext context) {
