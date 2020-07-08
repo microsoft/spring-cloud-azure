@@ -221,19 +221,19 @@ Targeting is a feature management strategy that enables developers to progressiv
 
 The following steps demonstrate an example of a progressive rollout for a new 'Beta' feature:
 
-Individual users Jeff and Alicia are granted access to the Beta
-Another user, Mark, asks to opt-in and is included.
-Twenty percent of a group known as "Ring1" users are included in the Beta.
-The number of "Ring1" users included in the beta is bumped up to 100 percent.
-Five percent of the user base is included in the beta.
-The rollout percentage is bumped up to 100 percent and the feature is completely rolled out.
-This strategy for rolling out a feature is built in to the library through the included TargetingFilter feature filter.
+1. Individual users Jeff and Alicia are granted access to the Beta
+1. Another user, Mark, asks to opt-in and is included.
+1. Twenty percent of a group known as "Ring1" users are included in the Beta.
+1. The number of "Ring1" users included in the beta is bumped up to 100 percent.
+1. Five percent of the user base is included in the beta.
+1. The rollout percentage is bumped up to 100 percent and the feature is completely rolled out.
+1. This strategy for rolling out a feature is built in to the library through the included TargetingFilter feature filter.
 
 ### Targeting in an Application
 
 An example web application that uses the targeting feature filter is available in the [FeatureFlagDemo](https://github.com/microsoft/spring-cloud-azure/tree/master/spring-cloud-azure-samples/feature-management-web-sample) example project.
 
-To begin using the `TargetingFilter` in an application it must be added as a `@Bean` like any other Feature Filter. `TargetingFilter` relies on another `@Bean` to be added to the application, [`ITargetingContextAccessor`](https://github.com/microsoft/spring-cloud-azure//tree/master/spring-cloud-azure-samples/feature-management-web-sample/src/main/java/com/example/TargetingContextAccessor.java). The `ITargetingContextAccessor` allows for defining the current `TargetingContext` to be used for defining the current user id and groups. An example of this is:
+To begin using the `TargetingFilter` in an application it must be added as a `@Bean` like any other Feature Filter. `TargetingFilter` relies on another `@Bean` to be added to the application, [`ITargetingContextAccessor`](.../spring-cloud-azure-samples/feature-management-web-sample/src/main/java/com/example/TargetingContextAccessor.java). The `ITargetingContextAccessor` allows for defining the current `TargetingContext` to be used for defining the current user id and groups. An example of this is:
 
 ```java
 public class TargetingContextAccessor implements ITargetingContextAccessor {

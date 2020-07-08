@@ -5,11 +5,13 @@
  */
 package com.example;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import com.microsoft.azure.spring.cloud.feature.manager.targeting.ITargetingContextAccessor;
 import com.microsoft.azure.spring.cloud.feature.manager.targeting.TargetingContext;
@@ -17,7 +19,7 @@ import com.microsoft.azure.spring.cloud.feature.manager.targeting.TargetingConte
 import reactor.core.publisher.Mono;
 
 public class TargetingContextAccessor implements ITargetingContextAccessor {
-    
+
     @Autowired
     private HttpServletRequest requestContext;
 
@@ -25,9 +27,11 @@ public class TargetingContextAccessor implements ITargetingContextAccessor {
     public Mono<TargetingContext> getContextAsync() {
         TargetingContext context = new TargetingContext();
         context.setUserId(requestContext.getParameter("User"));
-        ArrayList<String> groups = new ArrayList<String>();
-        groups.add(requestContext.getParameter("Group"));
-        context.setGroups(groups);
+        String group = requestContext.getParameter("Group");
+        if (StringUtils.hasText(group)) {
+            List<String> groups = Arrays.asList(group.split("\\s*,\\s*"));
+            context.setGroups(groups);
+        }
         return Mono.just(context);
     }
 
