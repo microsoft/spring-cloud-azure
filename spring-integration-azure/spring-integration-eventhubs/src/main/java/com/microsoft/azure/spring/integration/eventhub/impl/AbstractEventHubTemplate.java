@@ -51,7 +51,8 @@ public class AbstractEventHubTemplate {
 
     private StartPosition startPosition = StartPosition.LATEST;
 
-    private CheckpointConfig checkpointConfig = CheckpointConfig.builder().checkpointMode(CheckpointMode.BATCH).build();
+    private CheckpointConfig checkpointConfig = CheckpointConfig.builder()
+            .checkpointMode(CheckpointMode.RECORD).build();
 
     AbstractEventHubTemplate(EventHubClientFactory clientFactory) {
         this.clientFactory = clientFactory;
