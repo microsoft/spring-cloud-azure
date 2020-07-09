@@ -10,12 +10,17 @@ This sample describes how to use [spring-cloud-feature-management](../../spring-
 ## How to run without Azure Configuration Service
 Start the application and check the resulting console output to check the returned value.
 
-1. Load features from application.yml
-```
-$ mvn spring-boot:run
+1. Build and run the sample.
+
+```terminal
+mvn package spring-boot:run
 ```
 
-2. Check the returned value. The feature `Beta` has one filter `Random` which defines
+1. Goto localhost:8080
+1. A website will load with headers; Home, Beta, and Privacy. The Beta tab will only show when Beta is true. When the Beta tab is selected in will bring you two one of two pages BetaA or BetaB which is determined by the RandomFilter. Selecting the Privacy tab show shows how FeatureManagementSnapshot works. Again the RandomFilter is used, but each section has it called individually, but it will return the same result for each.
+1. Goto localhost:8080/?User=Jeff
+1. The same homepage will show, but a new tab is shown Target. The Target tab shows when the TargetingFilter returns true for the target feature flag. The TargetingFilter conditions are configured in `application.yml`. In this example the Target tab will show for users Jeff and Alicia, and groups Ring0 and Ring1. No one else will see the targeting tab.
+1. Going to `TargetingContextAccessor` you will see that the current `TargetingContext` is configured to have the UserId and groups to match the `requestContext.getParameter("User");` and `requestContext.getParameter("Group");` respectively. `TargetingContextAccessor` is user defined so any method can be used to set these values.
 
 ## How to run with Azure Configuration Service
 
