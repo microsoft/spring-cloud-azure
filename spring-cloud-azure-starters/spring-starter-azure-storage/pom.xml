@@ -15,11 +15,6 @@
         <main.basedir>${basedir}/../..</main.basedir>
     </properties>
     <dependencies>
-
-        <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-cloud-azure-autoconfigure</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.microsoft.azure</groupId>
             <artifactId>spring-cloud-azure-storage</artifactId>
