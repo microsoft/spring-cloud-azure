@@ -8,12 +8,13 @@ package com.microsoft.azure.spring.cloud.autoconfigure.servicebus;
 
 import com.microsoft.azure.servicebus.QueueClient;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
+import com.microsoft.azure.spring.cloud.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.integration.servicebus.factory.DefaultServiceBusQueueClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.factory.ServiceBusQueueClientFactory;
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueOperation;
 import com.microsoft.azure.spring.integration.servicebus.queue.ServiceBusQueueTemplate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

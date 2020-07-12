@@ -10,15 +10,16 @@ import com.azure.messaging.eventhubs.EventHubConsumerAsyncClient;
 import com.microsoft.azure.management.eventhub.EventHubNamespace;
 import com.microsoft.azure.management.storage.StorageAccount;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureContextAutoConfiguration;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.api.EnvironmentProvider;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
 import com.microsoft.azure.spring.cloud.context.core.storage.StorageConnectionStringProvider;
+import com.microsoft.azure.spring.cloud.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
 import com.microsoft.azure.spring.integration.eventhub.factory.DefaultEventHubClientFactory;
 import com.microsoft.azure.spring.integration.eventhub.factory.EventHubConnectionStringProvider;
 import com.microsoft.azure.spring.integration.eventhub.impl.EventHubTemplate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

@@ -185,7 +185,11 @@
                 <artifactId>spring-cloud-azure-messaging</artifactId>
                 <version>${spring.cloud.azure.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>spring-cloud-azure-telemetry</artifactId>
+                <version>${spring.cloud.azure.version}</version>
+            </dependency>
             <!--Azure Java SDKs-->
             <dependency>
                 <groupId>com.microsoft.azure</groupId>

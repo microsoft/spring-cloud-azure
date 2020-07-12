@@ -6,22 +6,8 @@
 
 package com.microsoft.azure.spring.cloud.autoconfigure.context;
 
-import com.microsoft.azure.AzureEnvironment;
-import com.microsoft.azure.AzureResponseBuilder;
-import com.microsoft.azure.credentials.ApplicationTokenCredentials;
-import com.microsoft.azure.credentials.AzureTokenCredentials;
-import com.microsoft.azure.management.Azure;
-import com.microsoft.azure.management.resources.fluentcore.utils.ProviderRegistrationInterceptor;
-import com.microsoft.azure.management.resources.fluentcore.utils.ResourceManagerThrottlingInterceptor;
-import com.microsoft.azure.serializer.AzureJacksonAdapter;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
-import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
-import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
-import com.microsoft.azure.spring.cloud.context.core.api.CredentialsProvider;
-import com.microsoft.azure.spring.cloud.context.core.impl.AzureResourceManagerProvider;
-import com.microsoft.azure.spring.cloud.context.core.impl.DefaultCredentialsProvider;
-import com.microsoft.rest.RestClient;
-import com.microsoft.rest.credentials.TokenCredentials;
+import java.io.IOException;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -29,7 +15,19 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.IOException;
+import com.microsoft.azure.AzureEnvironment;
+import com.microsoft.azure.AzureResponseBuilder;
+import com.microsoft.azure.credentials.AzureTokenCredentials;
+import com.microsoft.azure.management.Azure;
+import com.microsoft.azure.management.resources.fluentcore.utils.ProviderRegistrationInterceptor;
+import com.microsoft.azure.management.resources.fluentcore.utils.ResourceManagerThrottlingInterceptor;
+import com.microsoft.azure.serializer.AzureJacksonAdapter;
+import com.microsoft.azure.spring.cloud.context.core.api.CredentialsProvider;
+import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
+import com.microsoft.azure.spring.cloud.context.core.config.AzureProperties;
+import com.microsoft.azure.spring.cloud.context.core.impl.AzureResourceManagerProvider;
+import com.microsoft.azure.spring.cloud.context.core.impl.DefaultCredentialsProvider;
+import com.microsoft.rest.RestClient;
 
 /**
  * Auto-config to provide default {@link CredentialsProvider} for all Azure services
@@ -54,7 +52,6 @@ public class AzureContextAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public Azure azure(AzureTokenCredentials credentials) throws IOException {
-        TelemetryCollector.getInstance().setSubscription(credentials.defaultSubscriptionId());
         RestClient restClient = new RestClient.Builder()
                 .withBaseUrl(credentials.environment(), AzureEnvironment.Endpoint.RESOURCE_MANAGER)
                 .withCredentials(credentials).withSerializerAdapter(new AzureJacksonAdapter())

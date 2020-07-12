@@ -24,7 +24,10 @@
             <groupId>com.microsoft.azure</groupId>
             <artifactId>spring-jms-starter-azure-servicebus</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

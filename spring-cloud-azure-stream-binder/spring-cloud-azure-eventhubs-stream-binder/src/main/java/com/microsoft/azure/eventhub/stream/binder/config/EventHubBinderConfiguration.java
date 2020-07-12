@@ -14,9 +14,10 @@ import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureEnvironmentAu
 import com.microsoft.azure.spring.cloud.autoconfigure.eventhub.AzureEventHubAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.eventhub.AzureEventHubProperties;
 import com.microsoft.azure.spring.cloud.autoconfigure.eventhub.EventHubUtils;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.cloud.context.core.api.ResourceManagerProvider;
+import com.microsoft.azure.spring.cloud.telemetry.TelemetryCollector;
 import com.microsoft.azure.spring.integration.eventhub.api.EventHubOperation;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

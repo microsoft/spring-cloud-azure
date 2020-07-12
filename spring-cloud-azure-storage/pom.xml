@@ -16,7 +16,11 @@
             <groupId>com.microsoft.azure</groupId>
             <artifactId>spring-cloud-azure-context</artifactId>
         </dependency>
-
+        
+        <dependency>
+	        <groupId>com.microsoft.azure</groupId>
+	        <artifactId>spring-cloud-azure-telemetry</artifactId>
+		</dependency>
         <dependency>
             <groupId>com.azure</groupId>
             <artifactId>azure-storage-blob</artifactId>
@@ -26,6 +30,21 @@
             <groupId>com.azure</groupId>
             <artifactId>azure-storage-file-share</artifactId>
         </dependency>
+        
+        <!-- Storage -->
+		<dependency>
+			<groupId>com.azure</groupId>
+			<artifactId>azure-storage-queue</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- Storage Queue -->
+		<dependency>
+			<groupId>com.microsoft.azure</groupId>
+			<artifactId>spring-integration-storage-queue</artifactId>
+			<optional>true</optional>
+		</dependency>
+        
     </dependencies>
 
 </project>

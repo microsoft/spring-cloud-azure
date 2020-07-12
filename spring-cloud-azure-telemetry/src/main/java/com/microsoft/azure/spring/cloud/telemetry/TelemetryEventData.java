@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.autoconfigure.telemetry;
+package com.microsoft.azure.spring.cloud.telemetry;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.lang.NonNull;

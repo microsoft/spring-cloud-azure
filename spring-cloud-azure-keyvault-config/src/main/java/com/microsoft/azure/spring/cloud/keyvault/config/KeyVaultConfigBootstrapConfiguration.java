@@ -6,31 +6,43 @@
 
 package com.microsoft.azure.spring.cloud.keyvault.config;
 
-import com.microsoft.azure.keyvault.KeyVaultClient;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
-import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryCollector;
-import com.microsoft.azure.spring.cloud.keyvault.config.auth.*;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.PostConstruct;
+import com.microsoft.azure.keyvault.KeyVaultClient;
+import com.microsoft.azure.spring.cloud.autoconfigure.telemetry.TelemetryAutoConfiguration;
+import com.microsoft.azure.spring.cloud.keyvault.config.auth.AadKeyVaultCredentials;
+import com.microsoft.azure.spring.cloud.keyvault.config.auth.AuthenticationExecutor;
+import com.microsoft.azure.spring.cloud.keyvault.config.auth.AuthenticationExecutorFactory;
+import com.microsoft.azure.spring.cloud.keyvault.config.auth.Credentials;
+import com.microsoft.azure.spring.cloud.keyvault.config.auth.DefaultAuthenticationExecutorFactory;
+import com.microsoft.azure.spring.cloud.telemetry.TelemetryCollector;
 
 /**
- * Spring Cloud Bootstrap Configuration for setting up an {@link KeyVaultPropertySourceLocator}.
+ * Spring Cloud Bootstrap Configuration for setting up an
+ * {@link KeyVaultPropertySourceLocator}.
  */
 @Configuration
-@AutoConfigureBefore(TelemetryAutoConfiguration.class)
 @ConditionalOnProperty(name = KeyVaultConfigProperties.ENABLED, matchIfMissing = true)
 @EnableConfigurationProperties(KeyVaultConfigProperties.class)
+@AutoConfigureAfter(TelemetryAutoConfiguration.class)
 public class KeyVaultConfigBootstrapConfiguration {
     private static final String KEY_VAULT_CONFIG = "KeyVaultConfig";
 
+    @Autowired(required = false)
+    private TelemetryCollector telemetryCollector;
+
     @PostConstruct
     public void collectTelemetry() {
-        TelemetryCollector.getInstance().addService(KEY_VAULT_CONFIG);
+        if (telemetryCollector != null) {
+            telemetryCollector.addService(KEY_VAULT_CONFIG);
+        }
     }
 
     @Bean
@@ -42,7 +54,7 @@ public class KeyVaultConfigBootstrapConfiguration {
 
     @Bean
     public KeyVaultPropertySourceLocator keyVaultPropertySourceLocator(KeyVaultClient client,
-                                                                       KeyVaultConfigProperties properties) {
+            KeyVaultConfigProperties properties) {
         return new KeyVaultPropertySourceLocator(client, properties);
     }
 

@@ -10,6 +10,9 @@ import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
+import com.microsoft.azure.spring.cloud.telemetry.TelemetryProperties;
+import com.microsoft.azure.spring.cloud.telemetry.TelemetrySender;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 
