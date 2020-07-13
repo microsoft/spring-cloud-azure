@@ -58,7 +58,7 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
     private ClientStore clients;
 
     private KeyVaultCredentialProvider keyVaultCredentialProvider;
-    
+
     private SecretClientBuilderSetup keyVaultClientProvider;
 
     private static Boolean startup = true;
@@ -214,8 +214,8 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
         List<AppConfigurationPropertySource> sourceList = new ArrayList<>();
 
         try {
+            putStoreContext(store.getEndpoint(), context, storeContextsMap);
             for (String label : store.getLabels()) {
-                putStoreContext(store.getEndpoint(), context, storeContextsMap);
                 AppConfigurationPropertySource propertySource = new AppConfigurationPropertySource(context, store,
                         label, properties, clients, appProperties, keyVaultCredentialProvider, keyVaultClientProvider);
 
@@ -227,7 +227,7 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
             }
 
             // Setting new ETag values for Watch
-            String watchedKeyNames = clients.watchedKeyNames(store, storeContextsMap);
+            String watchedKeyNames = clients.watchedKeyNames(store, context);
             SettingSelector settingSelector = new SettingSelector().setKeyFilter(watchedKeyNames).setLabelFilter("*");
 
             ConfigurationSetting configurationRevision = clients.getRevison(settingSelector,
@@ -238,10 +238,13 @@ public class AppConfigurationPropertySourceLocator implements PropertySourceLoca
             ConfigurationSetting featureRevision = clients.getRevison(settingSelector,
                     store.getEndpoint());
 
+            String prefix = "_" + context;
+
             if (configurationRevision != null) {
-                StateHolder.setEtagState(store.getEndpoint() + CONFIGURATION_SUFFIX, configurationRevision);
+                StateHolder.setEtagState(store.getEndpoint() + CONFIGURATION_SUFFIX + prefix, configurationRevision);
             } else {
-                StateHolder.setEtagState(store.getEndpoint() + CONFIGURATION_SUFFIX, new ConfigurationSetting());
+                StateHolder.setEtagState(store.getEndpoint() + CONFIGURATION_SUFFIX + prefix,
+                        new ConfigurationSetting());
             }
 
             if (featureRevision != null) {

@@ -10,6 +10,7 @@ import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_STORE_WA
 import static com.microsoft.azure.spring.cloud.config.Constants.FEATURE_SUFFIX;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,8 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
 
     private String eventDataInfo;
 
+    private List<String> featureWatchKey = new ArrayList<String>();
+
     public AppConfigurationRefresh(AppConfigurationProperties properties, Map<String, List<String>> storeContextsMap,
             ClientStore clientStore) {
         this.configStores = properties.getStores();
@@ -59,6 +62,7 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
         this.lastCheckedTime = new Date();
         this.clientStore = clientStore;
         this.eventDataInfo = "";
+        featureWatchKey.add(FEATURE_STORE_WATCH_KEY);
     }
 
     @Override
@@ -100,11 +104,10 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
                 if (notCachedTime == null || date.after(notCachedTime)) {
                     for (ConfigStore configStore : configStores) {
                         if (StateHolder.getLoadState(configStore.getEndpoint())) {
-                            String watchedKeyNames = clientStore.watchedKeyNames(configStore, storeContextsMap);
-                            willRefresh = refresh(configStore, CONFIGURATION_SUFFIX, watchedKeyNames) ? true
+                            willRefresh = refresh_configurations(configStore) ? true
                                     : willRefresh;
                             // Refresh Feature Flags
-                            willRefresh = refresh(configStore, FEATURE_SUFFIX, FEATURE_STORE_WATCH_KEY) ? true
+                            willRefresh = refreshFeatureFlag(configStore) ? true
                                     : willRefresh;
                         } else {
                             LOGGER.debug("Skipping refresh check for " + configStore.getEndpoint()
@@ -137,15 +140,36 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
      * published.
      * 
      * @param store the {@code store} for which to composite watched key names
-     * @param storeSuffix Suffix used to distinguish between Settings and Features
-     * @param watchedKeyNames Key used to check if refresh should occur
      * @return Refresh event was triggered. No other sources need to be checked.
      */
-    private boolean refresh(ConfigStore store, String storeSuffix, String watchedKeyNames) {
-        String storeNameWithSuffix = store.getEndpoint() + storeSuffix;
-        SettingSelector settingSelector = new SettingSelector().setKeyFilter(watchedKeyNames)
-                .setLabelFilter("*");
+    private boolean refresh_configurations(ConfigStore store) {
+        for (String context : storeContextsMap.get(store.getEndpoint())) {
+            // Checking every Profile
+            String storeNameWithSuffix = store.getEndpoint() + CONFIGURATION_SUFFIX + "_" + context;
+            String watchedKeyName = clientStore.watchedKeyNames(store, context);
 
+            if (checkETagChange(store, storeNameWithSuffix, watchedKeyName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks un-cached items for etag changes for feature flags. If they have changed a
+     * RefreshEventData is published.
+     * 
+     * @param store the {@code store} for which to composite watched key names
+     * @return Refresh event was triggered. No other sources need to be checked.
+     */
+    private boolean refreshFeatureFlag(ConfigStore store) {
+        String storeNameWithSuffix = store.getEndpoint() + FEATURE_SUFFIX;
+        return checkETagChange(store, storeNameWithSuffix, FEATURE_STORE_WATCH_KEY);
+    }
+
+    private boolean checkETagChange(ConfigStore store, String storeNameWithSuffix, String watchKey) {
+        SettingSelector settingSelector = new SettingSelector().setKeyFilter(watchKey)
+                .setLabelFilter("*");
         ConfigurationSetting revision = clientStore.getRevison(settingSelector, store.getEndpoint());
 
         String etag = null;
@@ -166,11 +190,11 @@ public class AppConfigurationRefresh implements ApplicationEventPublisherAware {
 
         if (etag != null && !etag.equals(StateHolder.getEtagState(storeNameWithSuffix).getETag())) {
             LOGGER.trace("Some keys in store [{}] matching [{}] is updated, will send refresh event.",
-                    store.getEndpoint(), watchedKeyNames);
+                    store.getEndpoint(), watchKey);
             if (this.eventDataInfo.isEmpty()) {
-                this.eventDataInfo = watchedKeyNames;
+                this.eventDataInfo = watchKey;
             } else {
-                this.eventDataInfo += ", " + watchedKeyNames;
+                this.eventDataInfo += ", " + watchKey;
             }
 
             // Don't need to refresh here will be done in Property Source
