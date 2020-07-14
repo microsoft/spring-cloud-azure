@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreMonitoring.AccessToken;
 import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationStoreMonitoring.PushNotification;
 import com.microsoft.azure.spring.cloud.config.properties.ConfigStore;
 
@@ -35,7 +36,7 @@ public class AppConfigurationEndpoint {
         if (requestTopic != null) {
             String topic = requestTopic.asText();
             store = topic.substring(topic.indexOf(CONFIG_STORE_TOPIC) + CONFIG_STORE_TOPIC.length() + 1);
-            endpoint = "https://" + store + ".azconfig.io";
+            endpoint = String.format("https://%s.azconfig.io", store);
         } else {
             throw new IllegalArgumentException("Refresh request missing topic field.");
         }
@@ -46,29 +47,30 @@ public class AppConfigurationEndpoint {
         for (ConfigStore configStore : configStores) {
             if (configStore.getEndpoint().equals(endpoint)) {
                 PushNotification pushNotification = configStore.getMonitoring().getPushNotification();
-                String primaryTokenName = pushNotification.getPrimaryToken().getName();
-                String primaryTokenSecret = pushNotification.getPrimaryToken().getSecret();
-                String secondaryTokenName = pushNotification.getSecondaryToken().getName();
-                String secondaryTokenSecret = pushNotification.getSecondaryToken().getSecret();
 
                 // One of these need to be set
-                if (!((primaryTokenName != null && primaryTokenSecret != null)
-                        || (secondaryTokenName != null && secondaryTokenSecret != null))) {
+                if (!(pushNotification.getPrimaryToken().isValid()
+                        || pushNotification.getSecondaryToken().isValid())) {
                     return false;
                 }
 
-                if (allRequestParams.containsKey(primaryTokenName)
-                        && allRequestParams.get(primaryTokenName).equals(primaryTokenSecret)) {
+                if (isTokenMatch(pushNotification.getPrimaryToken())) {
                     return true;
                 }
-                if (allRequestParams.containsKey(secondaryTokenName)
-                        && allRequestParams.get(secondaryTokenName).equals(secondaryTokenSecret)) {
+                if (isTokenMatch(pushNotification.getSecondaryToken())) {
                     return true;
                 }
 
             }
         }
         return false;
+    }
+
+    private boolean isTokenMatch(AccessToken token) {
+        // if token's secret is allowed to be null this will cause NPE as well.
+        return token != null && allRequestParams.containsKey(token.getName())
+                && token.getSecret().equals(this.allRequestParams.get(token.getName()));
+
     }
 
     public boolean triggerRefresh() {

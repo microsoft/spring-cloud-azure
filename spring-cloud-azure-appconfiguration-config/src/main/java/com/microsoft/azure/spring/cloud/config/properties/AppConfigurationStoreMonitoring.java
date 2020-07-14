@@ -160,6 +160,10 @@ public class AppConfigurationStoreMonitoring {
         public void setSecret(String secret) {
             this.secret = secret;
         }
+        
+        public boolean isValid() {
+            return this.name != null && this.secret != null;
+        }
 
     }
 

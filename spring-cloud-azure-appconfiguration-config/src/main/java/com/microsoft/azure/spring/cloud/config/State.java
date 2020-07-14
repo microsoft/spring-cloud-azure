@@ -17,9 +17,9 @@ class State {
 
     private final Date notCachedTime;
 
-    State(List<ConfigurationSetting> watchKeys, int cacheExperationTime) {
+    State(List<ConfigurationSetting> watchKeys, int cacheExpirationTime) {
         this.watchKeys = watchKeys;
-        notCachedTime = DateUtils.addSeconds(new Date(), cacheExperationTime);
+        notCachedTime = DateUtils.addSeconds(new Date(), cacheExpirationTime);
     }
 
     /**

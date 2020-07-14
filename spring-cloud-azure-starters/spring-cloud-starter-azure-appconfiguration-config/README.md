@@ -125,7 +125,7 @@ When using the web library, applications will attempt a refresh whenever a servl
 
 In the console library calling refreshConfiguration on `AzureCloudConfigRefresh` will result in a refresh if the cache has expired. The web library can also use this method along with servlet request method.
 
-#### Pull Based Refresh
+#### Push Based Refresh
 
 The Web Provider can be connect to your Azure App Configuration store via an Azure Event Grid Web Hook to trigger a refresh event. By adding the Spring Actuator as a dependency you can add App Configuration Refresh as an exposed endpoint. There are two options appconfiguration-refresh and appconfiguration-refresh-bus. These endpoints work just like there counterparts refresh and refresh-bus, but have the required web hook authorization to work with Azure Event Grid.
 
@@ -142,7 +142,7 @@ In addition a required query parameter has been added for security. No token nam
  or
 
 /YOUR_APPLICATION_NAME/spring.cloud.appconfiguration.token-name
-/<YOUR_APPLICATION_NAME/spring.cloud.appconfiguration.token-secret
+/YOUR_APPLICATION_NAME/spring.cloud.appconfiguration.token-secret
 ```
 
 To setup the webhook open your app store and open the events tab. Select "+ Event Subscription". Set the name of your Event and selent the Endpoint type of Web Hook. Select "Select an endpoint". You endpoint will be your look as following:

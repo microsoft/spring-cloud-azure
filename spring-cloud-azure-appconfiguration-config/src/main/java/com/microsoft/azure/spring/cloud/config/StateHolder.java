@@ -26,7 +26,7 @@ final class StateHolder {
     private static ConcurrentHashMap<String, Boolean> loadState = new ConcurrentHashMap<String, Boolean>();
 
     /**
-     * @return the state
+     * @return the endpoint
      */
     static State getState(String endpoint) {
         return state.get(endpoint);
@@ -54,7 +54,7 @@ final class StateHolder {
     /**
      * @return the loadState
      */
-    static Boolean getLoadState(String name) {
+    static boolean getLoadState(String name) {
         Boolean loadstate = loadState.get(name);
         return loadstate == null ? false : loadstate;
     }

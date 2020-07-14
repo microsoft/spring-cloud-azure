@@ -110,7 +110,7 @@ public class AppConfigurationProperties {
     }
 
     /**
-     * @param pullRefresh the pushRefresh to set
+     * @param pushRefresh the pushRefresh to set
      */
     public void setPushRefresh(Boolean pushRefresh) {
         this.pushRefresh = pushRefresh;
