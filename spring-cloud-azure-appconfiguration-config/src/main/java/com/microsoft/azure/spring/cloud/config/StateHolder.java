@@ -26,14 +26,16 @@ final class StateHolder {
     private static ConcurrentHashMap<String, Boolean> loadState = new ConcurrentHashMap<String, Boolean>();
 
     /**
-     * @return the endpoint
+     * @return the state
      */
     static State getState(String endpoint) {
         return state.get(endpoint);
     }
 
     /**
-     * @param state the etagState to set
+     * @param endpoint the stores endpoint
+     * @param watchKeys list of configuration watch keys that can trigger a refresh event
+     * @param monitoring refresh configurations
      */
     static void setState(String endpoint, List<ConfigurationSetting> watchKeys,
             AppConfigurationStoreMonitoring monitoring) {
