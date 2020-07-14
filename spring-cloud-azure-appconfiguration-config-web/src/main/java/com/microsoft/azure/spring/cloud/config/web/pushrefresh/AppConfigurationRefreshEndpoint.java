@@ -69,7 +69,7 @@ public class AppConfigurationRefreshEndpoint implements ApplicationEventPublishe
         JsonNode validationResponse = kvReference.findValue(VALIDATION_CODE_KEY);
         if (validationResponse != null) {
             // Validating Web Hook
-            return VALIDATION_CODE_FORMAT_START + validationResponse.asText() + "\"}";
+            return String.format("%s%s\"}",VALIDATION_CODE_FORMAT_START ,validationResponse.asText());
         } else {
             if (contextRefresher != null) {
                 if (validation.triggerRefresh()) {
