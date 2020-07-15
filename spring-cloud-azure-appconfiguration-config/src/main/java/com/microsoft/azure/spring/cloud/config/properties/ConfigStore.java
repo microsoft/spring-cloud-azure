@@ -3,9 +3,9 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config.stores;
+package com.microsoft.azure.spring.cloud.config.properties;
 
-import static com.microsoft.azure.spring.cloud.config.AppConfigurationProperties.LABEL_SEPARATOR;
+import static com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties.LABEL_SEPARATOR;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
 import org.springframework.lang.Nullable;
@@ -39,11 +38,9 @@ public class ConfigStore {
     @Nullable
     private String label;
 
-    // The keys to be watched, won't take effect if watch not enabled
-    @NotEmpty
-    private String watchedKey = "*";
-    
     private boolean failFast = true;
+
+    private AppConfigurationStoreMonitoring monitoring = new AppConfigurationStoreMonitoring();
 
     public ConfigStore() {
     }
@@ -80,20 +77,26 @@ public class ConfigStore {
         this.label = label;
     }
 
-    public String getWatchedKey() {
-        return watchedKey;
-    }
-
-    public void setWatchedKey(String watchedKey) {
-        this.watchedKey = watchedKey;
-    }
-    
     public boolean isFailFast() {
         return failFast;
     }
 
     public void setFailFast(boolean failFast) {
         this.failFast = failFast;
+    }
+
+    /**
+     * @return the monitoring
+     */
+    public AppConfigurationStoreMonitoring getMonitoring() {
+        return monitoring;
+    }
+
+    /**
+     * @param monitoring the monitoring to set
+     */
+    public void setMonitoring(AppConfigurationStoreMonitoring monitoring) {
+        this.monitoring = monitoring;
     }
 
     @PostConstruct
@@ -112,23 +115,13 @@ public class ConfigStore {
                 throw new IllegalStateException("Endpoint in connection string is not a valid URI.", e);
             }
         }
-
-        Assert.isTrue(watchedKeyValid(this.watchedKey), "Watched key can only be a single asterisk(*) or " +
-                "a specific key without asterisk(*)");
-    }
-
-    private boolean watchedKeyValid(String watchedKey) {
-        if (!StringUtils.hasText(watchedKey)) {
-            return false;
-        }
-
-        String trimmedKey = watchedKey.trim();
-        // Watched key can either be single asterisk(*) or a specific key without asterisk(*)
-        return trimmedKey.equals("*") || !trimmedKey.contains("*");
+        
+        monitoring.validateAndInit();
     }
 
     /**
-     * @return List of reversed label values, which are split by the separator, the latter label has higher priority
+     * @return List of reversed label values, which are split by the separator, the latter
+     * label has higher priority
      */
     public String[] getLabels() {
         if (!StringUtils.hasText(this.getLabel())) {

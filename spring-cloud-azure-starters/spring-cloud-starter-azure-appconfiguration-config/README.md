@@ -125,6 +125,36 @@ When using the web library, applications will attempt a refresh whenever a servl
 
 In the console library calling refreshConfiguration on `AzureCloudConfigRefresh` will result in a refresh if the cache has expired. The web library can also use this method along with servlet request method.
 
+#### Push Based Refresh
+
+The Web Provider can be connect to your Azure App Configuration store via an Azure Event Grid Web Hook to trigger a refresh event. By adding the Spring Actuator as a dependency you can add App Configuration Refresh as an exposed endpoint. There are two options appconfiguration-refresh and appconfiguration-refresh-bus. These endpoints work just like there counterparts refresh and refresh-bus, but have the required web hook authorization to work with Azure Event Grid.
+
+```properties
+management.endpoints.web.exposure.include= appconfiguration-refresh, appconfiguration-refresh-bus
+```
+
+In addition a required query parameter has been added for security. No token name or value is set by default, but setting one is required in order to use the endpoints. We suggest you set up your token value in Key Vault and add it to your store through a key vault reference. The values should be:
+
+```properties
+/application/spring.cloud.appconfiguration.token-name
+/application/spring.cloud.appconfiguration.token-secret
+
+ or
+
+/YOUR_APPLICATION_NAME/spring.cloud.appconfiguration.token-name
+/YOUR_APPLICATION_NAME/spring.cloud.appconfiguration.token-secret
+```
+
+To setup the webhook open your app store and open the events tab. Select "+ Event Subscription". Set the name of your Event and selent the Endpoint type of Web Hook. Select "Select an endpoint". You endpoint will be your look as following:
+
+http://myApplication.azurewebsites.net/actuator/appconfiguration-refresh?myTokenName=mySecret
+
+Your application will need to be up and running with token-name and token-secret set as Selecting Confirm Selection will validate the endpoint.
+
+Note: This validation only happens on the creation/modification of the endpoint.
+
+It is also highly recommended that filters are setup as otherwise a refresh will be triggered after every key creation and modification.
+
 ### Failfast
 
 Failfast feature decides whether throw RuntimeException or not when exception happens. If an exception does occur when false the store is skipped. Any store skipped on startup will be automatically skipped on Refresh. By default, failfast is enabled, it can be disabled with below configuration:

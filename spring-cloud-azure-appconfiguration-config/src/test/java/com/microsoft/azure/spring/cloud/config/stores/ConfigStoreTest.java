@@ -10,6 +10,8 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import com.microsoft.azure.spring.cloud.config.properties.ConfigStore;
+
 public class ConfigStoreTest {
 
     @Test(expected = IllegalArgumentException.class)

@@ -8,8 +8,8 @@ package com.microsoft.azure.spring.cloud.config.web;
 import java.util.List;
 
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
-import com.microsoft.azure.spring.cloud.config.AppConfigurationProperties;
-import com.microsoft.azure.spring.cloud.config.stores.ConfigStore;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
+import com.microsoft.azure.spring.cloud.config.properties.ConfigStore;
 
 /**
  * Utility methods which can be used across different test classes

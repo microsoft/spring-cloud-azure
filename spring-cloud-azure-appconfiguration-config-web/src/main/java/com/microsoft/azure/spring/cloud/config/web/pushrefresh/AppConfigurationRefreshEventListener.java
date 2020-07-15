@@ -3,33 +3,33 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.azure.spring.cloud.config.web;
+package com.microsoft.azure.spring.cloud.config.web.pushrefresh;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.support.ServletRequestHandledEvent;
 
 import com.microsoft.azure.spring.cloud.config.AppConfigurationRefresh;
 
 @Component
-public class ConfigListener implements ApplicationListener<ServletRequestHandledEvent> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigListener.class);
+public class AppConfigurationRefreshEventListener implements ApplicationListener<AppConfigurationRefreshEvent> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppConfigurationRefreshEventListener.class);
 
     private AppConfigurationRefresh appConfigurationRefresh;
 
-    public ConfigListener(AppConfigurationRefresh appConfigurationRefresh) {
+    public AppConfigurationRefreshEventListener(AppConfigurationRefresh appConfigurationRefresh) {
         this.appConfigurationRefresh = appConfigurationRefresh;
     }
 
     @Override
-    public void onApplicationEvent(ServletRequestHandledEvent event) {
+    public void onApplicationEvent(AppConfigurationRefreshEvent event) {
         try {
-            appConfigurationRefresh.refreshConfigurations();
+            appConfigurationRefresh.resetCache(event.getEndpoint());
         } catch (Exception e) {
             LOGGER.error("Refresh failed with unexpected exception.", e);
         }
+
     }
 
 }
