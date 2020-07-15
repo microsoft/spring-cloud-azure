@@ -31,7 +31,6 @@ mail.properties
 .settings
 .sts4-cache
 .apt_generated
-.factorypath
 .springBeans
 mvnw
 mvnw.cmd
