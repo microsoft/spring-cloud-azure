@@ -17,7 +17,10 @@ import com.microsoft.azure.spring.integration.servicebus.converter.ServiceBusMes
 import com.microsoft.azure.spring.integration.test.support.AzureMessageConverterTest;
 import org.junit.Test;
 import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.support.GenericMessage;
+import org.springframework.integration.support.MessageBuilder;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
@@ -97,5 +100,15 @@ public class ServiceBusMessageConverterTest extends AzureMessageConverterTest<IM
         assertArrayEquals(
                 convertedPayload.getPayload(),
                 new ObjectMapper().writeValueAsBytes(internalSequence));
+    }
+
+    @Test
+    public void shouldConvertSpringMessageHeaderIntoIMessage() {
+        org.springframework.messaging.Message<String> springMessage =
+                MessageBuilder.withPayload(payload).setHeader("x-delay", 5000).build();
+        IMessage servicebusMessage = getConverter().fromMessage(springMessage, IMessage.class);
+        assertNotNull(servicebusMessage);
+        assertNotNull(servicebusMessage.getScheduledEnqueueTimeUtc());
+
     }
 }
