@@ -105,6 +105,12 @@
 			<optional>true</optional>
 		</dependency>
 
+		<dependency>
+			<groupId>com.microsoft.azure</groupId>
+			<artifactId>spring-cloud-azure-context</artifactId>
+			<optional>true</optional>
+		</dependency>
+
 		<!--Spring JMS -->
 		<dependency>
 			<groupId>org.springframework</groupId>
