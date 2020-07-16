@@ -22,6 +22,8 @@ public class AzureHeaders {
 
     public static final String NAME = PREFIX + "name";
 
+    public static final String SCHEDULED_ENQUEUE_MESSAGE = "x-delay";
+
     /**
      * The {@value CHECKPOINTER} header for checkpoint the specific message.
      */
