@@ -8,6 +8,11 @@ microservice using **Spring Cloud Stream** based on [Azure Service Bus Topic](ht
 The Spring Cloud Stream Binder for Azure Service Bus Topic provides the binding implementation for the Spring Cloud Stream.
 This implementation uses Spring Integration Service Bus Topic Channel Adapters at its foundation. 
 
+### Scheduled Message
+
+This binder supports submitting messages to a topic for delayed processing. Users can send scheduled messages with header `x-delay` 
+expressing in milliseconds a delay time for the message. The message will be delivered to the respective topics after `x-delay` milliseconds. 
+
 ### Consumer Group
 
 Service Bus Topic provides similar support of consumer group as Apache Kafka, but with slight different logic.
