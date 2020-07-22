@@ -20,15 +20,15 @@ import com.microsoft.azure.spring.cloud.autoconfigure.storage.AzureStorageQueueA
 @AutoConfigureAfter({ AzureStorageAutoConfiguration.class, AzureStorageQueueAutoConfiguration.class })
 @ConditionalOnClass(HealthIndicator.class)
 public class AzureStorageActuatorAutoConfiguration {
-    
+
     @Autowired
     private ApplicationContext applicationContext;
-        
+
     @Bean
     public BlobStorageHealthIndicator blobStorageHealthIndicator() {
         return new BlobStorageHealthIndicator(applicationContext);
     }
-    
+
     @Bean
     public FileStorageHealthIndicator fileStorageHealthIndicator() {
         return new FileStorageHealthIndicator(applicationContext);

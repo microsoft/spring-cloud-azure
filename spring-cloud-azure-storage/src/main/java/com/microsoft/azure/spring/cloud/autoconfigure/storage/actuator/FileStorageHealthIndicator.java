@@ -4,6 +4,7 @@ import static com.microsoft.azure.spring.cloud.autoconfigure.storage.actuator.Az
 import static com.microsoft.azure.spring.cloud.autoconfigure.storage.actuator.AzureStorageActuatorConstants.URL_FIELD;
 import static com.microsoft.azure.spring.cloud.autoconfigure.storage.actuator.AzureStorageActuatorConstants.NOT_CONFIGURED_STATUS;
 
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.context.ApplicationContext;
@@ -12,8 +13,8 @@ import com.azure.core.http.rest.Response;
 import com.azure.storage.file.share.ShareServiceAsyncClient;
 import com.azure.storage.file.share.ShareServiceClientBuilder;
 import com.azure.storage.file.share.models.ShareServiceProperties;
-public class FileStorageHealthIndicator implements HealthIndicator {
 
+public class FileStorageHealthIndicator implements HealthIndicator {
 
     private ApplicationContext applicationContext;
 
@@ -25,10 +26,9 @@ public class FileStorageHealthIndicator implements HealthIndicator {
     public Health health() {
         Health.Builder healthBuilder = new Health.Builder();
 
-        ShareServiceClientBuilder shareStorageClientBuilder = applicationContext.getBean(ShareServiceClientBuilder.class);
-
         try {
-
+            ShareServiceClientBuilder shareStorageClientBuilder = applicationContext
+                    .getBean(ShareServiceClientBuilder.class);
             if (shareStorageClientBuilder == null) { // Not configured
                 healthBuilder.status(NOT_CONFIGURED_STATUS);
             } else {
@@ -46,11 +46,10 @@ public class FileStorageHealthIndicator implements HealthIndicator {
 
             }
 
-        } catch (
-
-        Exception e) {
-            healthBuilder.status("Could not complete health check.").down(e);
+        } catch (NoSuchBeanDefinitionException nsbe) {
+            healthBuilder.status(NOT_CONFIGURED_STATUS);
         }
+        
         return healthBuilder.build();
     }
 }

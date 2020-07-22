@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import org.apache.http.HttpException;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.Status;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -18,17 +19,21 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.azure.core.http.rest.Response;
 import com.azure.storage.blob.BlobServiceAsyncClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.blob.models.AccountKind;
 import com.azure.storage.blob.models.SkuName;
 import com.azure.storage.blob.models.StorageAccountInfo;
+import com.azure.storage.file.share.ShareServiceAsyncClient;
+import com.azure.storage.file.share.ShareServiceClientBuilder;
+import com.azure.storage.file.share.models.ShareServiceProperties;
 import com.microsoft.azure.spring.cloud.autoconfigure.context.AzureEnvironmentAutoConfiguration;
 import com.microsoft.azure.spring.cloud.autoconfigure.storage.AzureStorageAutoConfiguration;
 
 import reactor.core.publisher.Mono;
 
-public class BlobStorageHealthIndicatorTest {
+public class FileStorageHealthIndicatorTest {
     private static final String MOCK_URL = "https://example.org/bigly_fake_url";
 
     @Test
@@ -36,8 +41,8 @@ public class BlobStorageHealthIndicatorTest {
         ApplicationContextRunner contextRunner = new ApplicationContextRunner()
                 .withConfiguration(AutoConfigurations.of(AzureStorageActuatorAutoConfiguration.class));
 
-        contextRunner.withBean(BlobStorageHealthIndicator.class).run(context -> {
-            Health health = context.getBean(BlobStorageHealthIndicator.class).getHealth(true);
+        contextRunner.withBean(FileStorageHealthIndicator.class).run(context -> {
+            Health health = context.getBean(FileStorageHealthIndicator.class).getHealth(true);
             Assert.assertEquals(AzureStorageActuatorConstants.NOT_CONFIGURED_STATUS, health.getStatus());
             Assert.assertEquals("No storage health details expected when storage not configured.", 0,
                     health.getDetails().size());
@@ -48,9 +53,9 @@ public class BlobStorageHealthIndicatorTest {
     public void testWithStorageConfigurationAndNoAccount() {
         ApplicationContextRunner contextRunner = new ApplicationContextRunner().withConfiguration(
                 AutoConfigurations.of(AzureStorageAutoConfiguration.class, AzureStorageActuatorAutoConfiguration.class))
-                .withBean(BlobStorageHealthIndicator.class);
+                .withBean(FileStorageHealthIndicator.class);
         contextRunner.run(context -> {
-            Health health = context.getBean(BlobStorageHealthIndicator.class).getHealth(true);
+            Health health = context.getBean(FileStorageHealthIndicator.class).getHealth(true);
             Assert.assertEquals(AzureStorageActuatorConstants.NOT_CONFIGURED_STATUS, health.getStatus());
         });
     }
@@ -62,9 +67,9 @@ public class BlobStorageHealthIndicatorTest {
                         AzureStorageAutoConfiguration.class, AzureStorageActuatorAutoConfiguration.class))
                 .withUserConfiguration(TestConfigurationConnectionUp.class)
                 .withPropertyValues("spring.cloud.azure.storage.account=acc1")
-                .withBean(BlobStorageHealthIndicator.class);
+                .withBean(FileStorageHealthIndicator.class);
         contextRunner.run(context -> {
-            Health health = context.getBean(BlobStorageHealthIndicator.class).getHealth(true);
+            Health health = context.getBean(FileStorageHealthIndicator.class).getHealth(true);
             Assert.assertEquals(Status.UP, health.getStatus());
             Assert.assertEquals(MOCK_URL, health.getDetails().get(AzureStorageActuatorConstants.URL_FIELD));
         });
@@ -79,7 +84,7 @@ public class BlobStorageHealthIndicatorTest {
                 .withPropertyValues("spring.cloud.azure.storage.account=acc1")
                 .withBean(BlobStorageHealthIndicator.class);
         contextRunner.run(context -> {
-            Health health = context.getBean(BlobStorageHealthIndicator.class).getHealth(true);
+            Health health = context.getBean(FileStorageHealthIndicator.class).getHealth(true);
             Assert.assertEquals(Status.DOWN, health.getStatus());
             Assert.assertEquals(MOCK_URL, health.getDetails().get(AzureStorageActuatorConstants.URL_FIELD));
         });
@@ -89,12 +94,15 @@ public class BlobStorageHealthIndicatorTest {
     static class TestConfigurationConnectionUp {
 
         @Bean
-        BlobServiceClientBuilder blobServiceClientBuilder() {
-            BlobServiceClientBuilder mockClientBuilder = mock(BlobServiceClientBuilder.class);
-            BlobServiceAsyncClient mockAsyncClient = mock(BlobServiceAsyncClient.class);
-            when(mockAsyncClient.getAccountUrl()).thenReturn(MOCK_URL);
-            when(mockAsyncClient.getAccountInfo())
-                    .thenReturn(Mono.just(new StorageAccountInfo(SkuName.STANDARD_LRS, AccountKind.BLOB_STORAGE)));
+        ShareServiceClientBuilder shareServiceClientBuilder() {
+            ShareServiceClientBuilder mockClientBuilder = mock(ShareServiceClientBuilder.class);
+            ShareServiceAsyncClient mockAsyncClient = mock(ShareServiceAsyncClient.class);
+            
+            @SuppressWarnings("unchecked")
+            Response<ShareServiceProperties> mockResponse = (Response<ShareServiceProperties>)Mockito.mock(Response.class);
+            
+            when(mockAsyncClient.getFileServiceUrl()).thenReturn(MOCK_URL);
+            when(mockAsyncClient.getPropertiesWithResponse()).thenReturn(Mono.just(mockResponse));
             when(mockClientBuilder.buildAsyncClient()).thenReturn(mockAsyncClient);
 
             return mockClientBuilder;
@@ -105,14 +113,15 @@ public class BlobStorageHealthIndicatorTest {
     static class TestConfigurationConnectionDown {
 
         @Bean
-        BlobServiceClientBuilder blobServiceClientBuilder() {
-            BlobServiceClientBuilder mockClientBuilder = mock(BlobServiceClientBuilder.class);
-            BlobServiceAsyncClient mockAsyncClient = mock(BlobServiceAsyncClient.class);
-            when(mockAsyncClient.getAccountUrl()).thenReturn(MOCK_URL);
-            when(mockAsyncClient.getAccountInfo()).thenReturn(Mono.error(new HttpException("The gremlins have cut the cable.")));
+        ShareServiceClientBuilder shareServiceClientBuilder() {
+            ShareServiceClientBuilder mockClientBuilder = mock(ShareServiceClientBuilder.class);
+            ShareServiceAsyncClient mockAsyncClient = mock(ShareServiceAsyncClient.class);
+            when(mockAsyncClient.getFileServiceUrl()).thenReturn(MOCK_URL);
+            when(mockAsyncClient.getPropertiesWithResponse()).thenReturn(Mono.error(new HttpException("The gremlins have cut the cable.")));
             when(mockClientBuilder.buildAsyncClient()).thenReturn(mockAsyncClient);
 
             return mockClientBuilder;
         }
+        
     }
 }
