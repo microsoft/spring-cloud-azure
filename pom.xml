@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.microsoft.azure</groupId>
     <artifactId>spring-cloud-azure</artifactId>
-    <version>1.2.7-SNAPSHOT</version>
+    <version>1.2.8-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Azure</name>
     <description>Spring Cloud Azure</description>
@@ -48,12 +49,12 @@
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-build</artifactId>
         <version>2.2.0.RELEASE</version>
-        <relativePath/>
+        <relativePath />
     </parent>
 
     <modules>
         <module>spring-cloud-azure-appconfiguration-config</module>
-		<module>spring-cloud-azure-appconfiguration-config-web</module>
+        <module>spring-cloud-azure-appconfiguration-config-web</module>
         <module>spring-cloud-azure-autoconfigure</module>
         <module>spring-cloud-azure-context</module>
         <module>spring-cloud-azure-dependencies</module>
@@ -66,12 +67,13 @@
         <module>spring-cloud-azure-storage</module>
         <module>spring-cloud-azure-stream-binder</module>
         <module>spring-integration-azure</module>
+        <module>spring-cloud-azure-telemetry</module>
     </modules>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <dependency.bom.version>1.2.7-SNAPSHOT</dependency.bom.version>
+        <dependency.bom.version>1.2.8-SNAPSHOT</dependency.bom.version>
     </properties>
 
     <dependencyManagement>
@@ -136,12 +138,14 @@
                         <compilerArgs>
                             <!-- Enable all warnings -->
                             <compilerArg>-Xlint:all</compilerArg>
-                            <!-- Disable options warning because we will have differences between the compiler and source code level-->
+                            <!-- Disable options warning because we will 
+                                have differences between the compiler and source code level -->
                             <compilerArg>-Xlint:-options</compilerArg>
                             <!-- Disable serialversionuid warnings -->
                             <compilerArg>-Xlint:-serial</compilerArg>
-                            <!--compilerArg>-Werror</compilerArg-->
-                            <!-- Workaround errorprone with lombok log result in IndexOutOfRange Exception -->
+                            <!--compilerArg>-Werror</compilerArg -->
+                            <!-- Workaround errorprone with lombok log result 
+                                in IndexOutOfRange Exception -->
                             <compilerArg>-Xep:ParameterName:OFF</compilerArg>
                         </compilerArgs>
                     </configuration>

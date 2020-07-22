@@ -8,14 +8,10 @@ package com.microsoft.azure.spring.cloud.config.stores;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
 import com.azure.core.credential.TokenCredential;
 import com.azure.core.http.policy.ExponentialBackoff;
@@ -25,11 +21,10 @@ import com.azure.data.appconfiguration.ConfigurationClientBuilder;
 import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.SettingSelector;
 import com.azure.identity.ManagedIdentityCredentialBuilder;
-import com.microsoft.azure.spring.cloud.config.ConfigurationClientBuilderSetup;
 import com.microsoft.azure.spring.cloud.config.AppConfigurationCredentialProvider;
-import com.microsoft.azure.spring.cloud.config.AppConfigurationProviderProperties;
-import com.microsoft.azure.spring.cloud.config.AppConfigurationRefresh;
+import com.microsoft.azure.spring.cloud.config.ConfigurationClientBuilderSetup;
 import com.microsoft.azure.spring.cloud.config.pipline.policies.BaseAppConfigurationPolicy;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProviderProperties;
 import com.microsoft.azure.spring.cloud.config.resource.Connection;
 import com.microsoft.azure.spring.cloud.config.resource.ConnectionPool;
 
@@ -143,40 +138,6 @@ public class ClientStore {
         ConfigurationAsyncClient client = buildClient(storeName);
 
         return client.listConfigurationSettings(settingSelector).collectList().block();
-    }
-
-    /**
-     * Composite watched key names separated by comma, the key names is made up of:
-     * prefix, context and key name pattern e.g., prefix: /config, context: /application,
-     * watched key: my.watch.key will return: /config/application/my.watch.key
-     *
-     * The returned watched key will be one key pattern, one or multiple specific keys
-     * e.g., 1) * 2) /application/abc* 3) /application/abc 4) /application/abc,xyz
-     *
-     * @param store the {@code store} for which to composite watched key names
-     * @param storeContextsMap map storing store name and List of context key-value pair
-     * @return the full name of the key mapping to the configuration store
-     */
-    public String watchedKeyNames(ConfigStore store, Map<String, List<String>> storeContextsMap) {
-        String watchedKey = store.getWatchedKey().trim();
-        List<String> contexts = storeContextsMap.get(store.getEndpoint());
-
-        String watchedKeys = contexts.stream().map(ctx -> genKey(ctx, watchedKey)).distinct()
-                .collect(Collectors.joining(","));
-
-        if (watchedKeys.contains(",") && watchedKeys.contains("*")) {
-            // Multi keys including one or more key patterns is not supported by API, will
-            // watch all keys(*) instead
-            watchedKeys = "*";
-        }
-
-        return watchedKeys;
-    }
-
-    private String genKey(@NonNull String context, @Nullable String watchedKey) {
-        String trimmedWatchedKey = StringUtils.isNoneEmpty(watchedKey) ? watchedKey.trim() : "*";
-
-        return String.format("%s%s", context, trimmedWatchedKey);
     }
 
     ConfigurationClientBuilder getBuilder() {

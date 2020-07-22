@@ -5,7 +5,7 @@
     <parent>
         <artifactId>spring-cloud-azure-starters</artifactId>
         <groupId>com.microsoft.azure</groupId>
-        <version>1.2.7-SNAPSHOT</version>
+        <version>1.2.8-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -22,6 +22,10 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-stream-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.microsoft.azure</groupId>
+            <artifactId>spring-cloud-azure-context</artifactId>
         </dependency>
     </dependencies>
 

@@ -8,6 +8,10 @@ microservice using **Spring Cloud Stream** based on [Azure Service Bus Queue](ht
 The Spring Cloud Stream Binder for Azure Service Bus Queue provides the binding implementation for the Spring Cloud Stream.
 This implementation uses Spring Integration Service Bus Queue Channel Adapters at its foundation. 
 
+### Scheduled Message
+
+This binder supports submitting messages to a queue for delayed processing. Users can send scheduled messages with header `x-delay` 
+expressing in milliseconds a delay time for the message. The message will be delivered to the respective queues after `x-delay` milliseconds. 
 ### Consumer Group
 
 This binder has no consumer group support since all consumers share one queue.

@@ -1,1 +1,1 @@
-provides: spring-integration-storage-queue, spring-cloud-azure-autoconfigure
+provides: spring-integration-storage-queue, spring-cloud-azure-storage

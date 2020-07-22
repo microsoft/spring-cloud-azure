@@ -45,6 +45,7 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.ApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.azure.spring.cloud.config.properties.AppConfigurationProperties;
 
 public class AppConfigurationPropertiesTest {
     @InjectMocks
@@ -167,16 +168,6 @@ public class AppConfigurationPropertiesTest {
     }
 
     @Test
-    public void watchedKeyCanNotBeKeyPattern() {
-        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
-                propPair(WATCHED_KEY_PROP, TEST_WATCH_KEY_PATTERN)).run(context -> {
-                    assertThat(context).getFailure()
-                            .hasStackTraceContaining("Watched key can only be a single asterisk(*) " +
-                                    "or a specific key without asterisk(*)");
-                });
-    }
-
-    @Test
     public void storeNameCanBeInitIfConnectionStringConfigured() {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                 propPair(STORE_ENDPOINT_PROP, "")).withPropertyValues(propPair(FAIL_FAST_PROP, "false"))
@@ -193,15 +184,6 @@ public class AppConfigurationPropertiesTest {
         this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING),
                 propPair(CONN_STRING_PROP_NEW, TEST_CONN_STRING)).run(context -> {
                     assertThat(context).getFailure().hasStackTraceContaining("Duplicate store name exists");
-                });
-    }
-
-    @Test
-    public void invalidWatchTime() {
-        this.contextRunner.withPropertyValues(propPair(CONN_STRING_PROP, TEST_CONN_STRING))
-                .withPropertyValues(propPair(CACHE_EXPIRATION_PROP, "99ms"))
-                .run(context -> {
-                    assertThat(context).getFailure().hasStackTraceContaining("Minimum Watch time is 1 Second.");
                 });
     }
 

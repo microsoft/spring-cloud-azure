@@ -6,6 +6,7 @@
 
 package com.microsoft.azure.spring.integration.servicebus.converter;
 
+import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.servicebus.IMessage;
 import com.microsoft.azure.servicebus.Message;
 import com.microsoft.azure.servicebus.MessageBody;
@@ -18,6 +19,8 @@ import org.springframework.util.InvalidMimeTypeException;
 import org.springframework.util.MimeType;
 import org.springframework.util.StringUtils;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -80,6 +83,11 @@ public class ServiceBusMessageConverter extends AbstractAzureMessageConverter<IM
 
         if (headers.containsKey(MessageHeaders.REPLY_CHANNEL)) {
             serviceBusMessage.setReplyTo(headers.get(MessageHeaders.REPLY_CHANNEL, String.class));
+        }
+
+        if (headers.containsKey(AzureHeaders.SCHEDULED_ENQUEUE_MESSAGE)) {
+            serviceBusMessage.setScheduledEnqueueTimeUtc(Instant.now().plus(Duration.ofMillis(
+                    headers.get(AzureHeaders.SCHEDULED_ENQUEUE_MESSAGE, Integer.class))));
         }
 
         headers.forEach((key, value) -> serviceBusMessage.getProperties().put(key, value.toString()));
