@@ -84,7 +84,7 @@ public class BlobStorageHealthIndicatorTest {
             Assert.assertEquals(MOCK_URL, health.getDetails().get(AzureStorageActuatorConstants.URL_FIELD));
         });
     }
-    
+
     @Configuration
     static class TestConfigurationConnectionUp {
 
@@ -109,7 +109,8 @@ public class BlobStorageHealthIndicatorTest {
             BlobServiceClientBuilder mockClientBuilder = mock(BlobServiceClientBuilder.class);
             BlobServiceAsyncClient mockAsyncClient = mock(BlobServiceAsyncClient.class);
             when(mockAsyncClient.getAccountUrl()).thenReturn(MOCK_URL);
-            when(mockAsyncClient.getAccountInfo()).thenReturn(Mono.error(new HttpException("The gremlins have cut the cable.")));
+            when(mockAsyncClient.getAccountInfo())
+                    .thenReturn(Mono.error(new HttpException("The gremlins have cut the cable.")));
             when(mockClientBuilder.buildAsyncClient()).thenReturn(mockAsyncClient);
 
             return mockClientBuilder;

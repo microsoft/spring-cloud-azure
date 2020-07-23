@@ -20,11 +20,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.azure.core.http.rest.Response;
-import com.azure.storage.blob.BlobServiceAsyncClient;
-import com.azure.storage.blob.BlobServiceClientBuilder;
-import com.azure.storage.blob.models.AccountKind;
-import com.azure.storage.blob.models.SkuName;
-import com.azure.storage.blob.models.StorageAccountInfo;
 import com.azure.storage.file.share.ShareServiceAsyncClient;
 import com.azure.storage.file.share.ShareServiceClientBuilder;
 import com.azure.storage.file.share.models.ShareServiceProperties;
@@ -89,7 +84,7 @@ public class FileStorageHealthIndicatorTest {
             Assert.assertEquals(MOCK_URL, health.getDetails().get(AzureStorageActuatorConstants.URL_FIELD));
         });
     }
-    
+
     @Configuration
     static class TestConfigurationConnectionUp {
 
@@ -97,10 +92,11 @@ public class FileStorageHealthIndicatorTest {
         ShareServiceClientBuilder shareServiceClientBuilder() {
             ShareServiceClientBuilder mockClientBuilder = mock(ShareServiceClientBuilder.class);
             ShareServiceAsyncClient mockAsyncClient = mock(ShareServiceAsyncClient.class);
-            
+
             @SuppressWarnings("unchecked")
-            Response<ShareServiceProperties> mockResponse = (Response<ShareServiceProperties>)Mockito.mock(Response.class);
-            
+            Response<ShareServiceProperties> mockResponse = (Response<ShareServiceProperties>) Mockito
+                    .mock(Response.class);
+
             when(mockAsyncClient.getFileServiceUrl()).thenReturn(MOCK_URL);
             when(mockAsyncClient.getPropertiesWithResponse()).thenReturn(Mono.just(mockResponse));
             when(mockClientBuilder.buildAsyncClient()).thenReturn(mockAsyncClient);
@@ -117,11 +113,12 @@ public class FileStorageHealthIndicatorTest {
             ShareServiceClientBuilder mockClientBuilder = mock(ShareServiceClientBuilder.class);
             ShareServiceAsyncClient mockAsyncClient = mock(ShareServiceAsyncClient.class);
             when(mockAsyncClient.getFileServiceUrl()).thenReturn(MOCK_URL);
-            when(mockAsyncClient.getPropertiesWithResponse()).thenReturn(Mono.error(new HttpException("The gremlins have cut the cable.")));
+            when(mockAsyncClient.getPropertiesWithResponse())
+                    .thenReturn(Mono.error(new HttpException("The gremlins have cut the cable.")));
             when(mockClientBuilder.buildAsyncClient()).thenReturn(mockAsyncClient);
 
             return mockClientBuilder;
         }
-        
+
     }
 }

@@ -53,9 +53,7 @@ public class BlobStorageHealthIndicator implements HealthIndicator {
 
         } catch (NoSuchBeanDefinitionException nsbe) {
             healthBuilder.status(NOT_CONFIGURED_STATUS);
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             healthBuilder.status("Could not complete health check.").down(e);
         }
         return healthBuilder.build();
