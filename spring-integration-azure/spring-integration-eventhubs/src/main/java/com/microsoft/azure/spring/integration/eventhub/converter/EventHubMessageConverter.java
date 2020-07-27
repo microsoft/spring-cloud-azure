@@ -43,10 +43,9 @@ public class EventHubMessageConverter extends AbstractAzureMessageConverter<Even
         super.setCustomHeaders(headers, azureMessage);
         headers.forEach((key, value) -> {
             azureMessage.getProperties().put(key, value.toString());
-            if (key.equals(NativeMessageHeaderAccessor.NATIVE_HEADERS)) {
-                if (value instanceof LinkedMultiValueMap) {
-                    azureMessage.getProperties().put(key, toJson(value));
-                }
+            if (key.equals(NativeMessageHeaderAccessor.NATIVE_HEADERS)
+                    && value instanceof LinkedMultiValueMap) {
+                azureMessage.getProperties().put(key, toJson(value));
             }
         });
     }
