@@ -48,7 +48,7 @@ public class EventHubMessageConverterTest extends AzureMessageConverterTest<Even
         return EventData.class;
     }
 
-    static class MyEventHubMessageConverter extends EventHubMessageConverter {
+    private static class MyEventHubMessageConverter extends EventHubMessageConverter {
 
         public void setCustomHeaders(MessageHeaders headers, EventData azureMessage) {
             super.setCustomHeaders(headers, azureMessage);
