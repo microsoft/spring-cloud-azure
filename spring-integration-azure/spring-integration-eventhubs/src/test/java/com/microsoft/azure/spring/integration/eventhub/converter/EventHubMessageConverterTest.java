@@ -25,12 +25,12 @@ import static org.junit.Assert.assertSame;
 
 public class EventHubMessageConverterTest extends AzureMessageConverterTest<EventData> {
 
-    private final static String EVENT_DATA = "event-hub-test-string";
-    private final static int PARTITION_ID = 1;
-    private final static String NATIVE_HEADERS_SPAN_ID_KEY = "spanId";
-    private final static List<String> NATIVE_HEADERS_SPAN_ID_VALUE = Arrays.asList("spanId-1", "spanId-2");
-    private final static String NATIVE_HEADERS_SPAN_TRACE_ID_KEY = "spanTraceId";
-    private final static List<String> NATIVE_HEADERS_SPAN_TRACE_ID_VALUE = Arrays
+    private static final String EVENT_DATA = "event-hub-test-string";
+    private static final int PARTITION_ID = 1;
+    private static final String NATIVE_HEADERS_SPAN_ID_KEY = "spanId";
+    private static final List<String> NATIVE_HEADERS_SPAN_ID_VALUE = Arrays.asList("spanId-1", "spanId-2");
+    private static final String NATIVE_HEADERS_SPAN_TRACE_ID_KEY = "spanTraceId";
+    private static final List<String> NATIVE_HEADERS_SPAN_TRACE_ID_VALUE = Arrays
             .asList("spanTraceId-1", "spanTraceId-2");
 
     @Override
