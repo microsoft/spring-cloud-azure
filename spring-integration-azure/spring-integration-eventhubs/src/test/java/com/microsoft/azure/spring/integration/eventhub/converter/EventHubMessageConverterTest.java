@@ -68,7 +68,8 @@ public class EventHubMessageConverterTest extends AzureMessageConverterTest<Even
 
         MyEventHubMessageConverter convert = new MyEventHubMessageConverter();
         convert.setCustomHeaders(headers, eventData);
-        assertEquals(Integer.parseInt(String.valueOf(eventData.getProperties().get(AzureHeaders.RAW_PARTITION_ID))), PARTITION_ID);
+        assertEquals(Integer.parseInt(String.valueOf(eventData.getProperties()
+                .get(AzureHeaders.RAW_PARTITION_ID))), PARTITION_ID);
         assertEquals(eventData.getBodyAsString(), EVENT_DATA);
     }
 
