@@ -64,7 +64,7 @@ public class BlobStorageResource extends AzureStorageResource {
                     throw new FileNotFoundException("The blob was not found: " + this.location);
                 }
             }
-            return this.blockBlobClient.getBlobOutputStream();
+            return this.blockBlobClient.getBlobOutputStream(true);
         } catch (BlobStorageException e) {
             log.error(MSG_FAIL_OPEN_OUTPUT, e);
             throw new IOException(MSG_FAIL_OPEN_OUTPUT, e);
