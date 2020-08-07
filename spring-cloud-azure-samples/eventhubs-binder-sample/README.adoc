@@ -185,7 +185,7 @@ spring.cloud.stream.eventhub.bindings.input.consumer.checkpoint-mode=MANUAL
 $ curl -X POST http://localhost:8080/messages?message=hello
 ....
 +
-or when the app runs on App Service
+or when the app runs on App Service or VM
 +
 ....
 $ curl -d -X POST https://[your-app-URL]/messages?message=hello
