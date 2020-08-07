@@ -165,7 +165,7 @@ public class AzureBlobStorageTests {
             when(nonExistingBlockBlob.getBlobName()).thenReturn(nonExisting);
 
             when(blockBlob.openInputStream()).thenReturn(mock(BlobInputStream.class));
-            when(blockBlob.getBlobOutputStream()).thenReturn(mock(BlobOutputStream.class));
+            when(blockBlob.getBlobOutputStream(true)).thenReturn(mock(BlobOutputStream.class));
 
             when(blockBlob.getProperties()).thenReturn(blobProperties);
             when(blobProperties.getBlobSize()).thenReturn(contentLength);
