@@ -4,7 +4,9 @@ This code sample demonstrates how to use https://github.com/Microsoft/spring-clo
 
 Running this sample will be charged by Azure. You can check the usage and bill at https://azure.microsoft.com/en-us/account/[this link].
 
-== Connection string based usage
+We have several ways to config the Azure Event Hub. You can choose anyone of them.
+
+== Method 1: Connection string based usage
 
 1. Create https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create[Azure Event Hubs]. Please note `Basic` tier is unsupported. 
 
@@ -23,7 +25,7 @@ spring.cloud.azure.eventhub.checkpoint-access-key=[checkpoint-accesskey]
 spring.cloud.azure.eventhub.checkpoint-container=[checkpoint-container]
 ....
 
-== Credential file based usage
+== Method 2: Credential file based usage
 
 1. Create Azure credential file. Please see https://github.com/Azure/azure-libraries-for-java/blob/master/AUTH.md[how
 to create credential file]

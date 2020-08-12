@@ -36,4 +36,9 @@ public class SourceExample {
     public String hello() {
         return "hello world";
     }
+
+    @GetMapping("/")
+    public String welcome() {
+        return "welcome";
+    }
 }
