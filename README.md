@@ -8,10 +8,10 @@
 
 ## Below are the new locations for Spring modules
 
-- [Spring Cloud Stream Binder for Azure Event Hubs](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/spring/azure-spring-cloud-eventhubs-stream-binder)
+- [Spring Cloud Stream Binder for Azure Event Hubs](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/spring/azure-spring-cloud-stream-binder-eventhubs)
 - [Spring Cloud Stream with Azure Event Hubs Kafka API](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/spring/azure-spring-cloud-starter-eventhubs-kafka) 
-- [Spring Cloud Stream Binder for Azure Service Bus Topic](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/spring/azure-spring-cloud-servicebus-topic-stream-binder)
-- [Spring Cloud Stream Binder for Azure Service Bus Queue](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/spring/azure-spring-cloud-servicebus-queue-stream-binder)
+- [Spring Cloud Stream Binder for Azure Service Bus Topic](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/spring/azure-spring-cloud-stream-binder-servicebus-topic)
+- [Spring Cloud Stream Binder for Azure Service Bus Queue](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/spring/azure-spring-cloud-stream-binder-servicebus-queue)
 - [Spring Integration for Azure Event Hubs](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/spring/azure-spring-integration-eventhubs)
 - [Spring Integration for Azure Service Bus](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/spring/azure-spring-integration-servicebus)
 - [Spring Integration for Storage Queue](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/spring/azure-spring-integration-storage-queue)
