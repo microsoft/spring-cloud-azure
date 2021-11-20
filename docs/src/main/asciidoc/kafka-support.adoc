@@ -24,7 +24,6 @@ Connect to Azure Event Hubs using Spring Kafka libraries.
 
 This Spring Cloud Azure Starter provides the following properties:
 
-
 |===
 |Properties |Description
 
@@ -102,7 +101,7 @@ spring:
           destination: sample-eventhubs-kafka
 ----
 
-. Use this controller code to catch key
+. Use this controller code to send message
 https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka/src/main/java/com/azure/spring/sample/eventhubs/kafka/SourceExample.java[SourceExample.java] file
 
 [source,java]
@@ -121,7 +120,7 @@ public class SourceExample {
 }
 ----
 
-. Spring boot start class
+. Spring boot start class and function bean definition
 https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka/src/main/java/com/azure/spring/sample/eventhubs/kafka/EventHubKafkaBinderApplication.java[EventHubKafkaBinderApplication.java] file
 
 [source,java]
