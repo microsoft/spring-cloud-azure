@@ -21,12 +21,47 @@
 		<main.basedir>${basedir}/..</main.basedir>
 		<docs.whitelisted.branches>4.0.x</docs.whitelisted.branches>
 		<configprops.inclusionPattern>spring.cloud.azure.*</configprops.inclusionPattern>
-		<upload-docs-zip.phase>deploy</upload-docs-zip.phase>
+		<upload-docs-zip.phase>none</upload-docs-zip.phase>
 		<generated-docs-multipage-output.dir>${project.build.directory}/generated-docs/${project.version}/reference/html</generated-docs-multipage-output.dir>
 		<generated-docs-singlepage-output.dir>${project.build.directory}/generated-docs/${project.version}/reference/htmlsingle</generated-docs-singlepage-output.dir>
 		<generated-docs-pdf-output.dir>${project.build.directory}/generated-docs/${project.version}/reference/pdf</generated-docs-pdf-output.dir>
 	</properties>
-	
+	<repositories>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-releases</id>
+			<name>Spring Releases</name>
+			<url>https://repo.spring.io/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-releases</id>
+			<name>Spring Releases</name>
+			<url>https://repo.spring.io/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 	<dependencies>
 		<dependency>
 			<groupId>com.azure.spring</groupId>
