@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Untitled</title>
+<title>Production Ready</title>
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -159,14 +159,61 @@ window.onload = function() {
 </script>
 
 </head>
-<body class="book">
+<body class="book toc2 toc-left">
 <div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_production_ready">Production Ready</a>
+<ul class="sectlevel2">
+<li><a href="#_enable_health_indicator">Enable Health Indicator</a></li>
+<li><a href="#_enable_sleuth">Enable Sleuth</a></li>
+<li><a href="#_integrate_with_azure_monitor">Integrate with Azure Monitor</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <div id="content">
-<div id="preamble">
+<div class="sect1">
+<h2 id="_production_ready"><a class="link" href="#_production_ready">Production Ready</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Spring Cloud Azure offers a convenient way to interact with Azure provided services using well-known Spring idioms and APIs for Spring developers.</p>
+<p>If you choose to add Spring Cloud Azure Actuator, include actuator dependencies.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-cloud-azure-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_enable_health_indicator"><a class="link" href="#_enable_health_indicator">Enable Health Indicator</a></h3>
+<div class="paragraph">
+<p>for Cosmos DB, add <code>management.health.azure-cosmos.enabled=true</code> to application.yaml.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yml" data-lang="yml">management.health.azure-cosmos.enabled: true</code></pre>
+</div>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Warning: Call <code><a href="http://{hostname}:{port}/actuator/health/cosmos" class="bare">http://{hostname}:{port}/actuator/health/cosmos</a></code> to get the Cosmos DB health info. <strong>Please note</strong>: it will calculate <a href="https://docs.microsoft.com/azure/cosmos-db/request-units">RUs</a>.</p>
+</div>
+</blockquote>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_enable_sleuth"><a class="link" href="#_enable_sleuth">Enable Sleuth</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_integrate_with_azure_monitor"><a class="link" href="#_integrate_with_azure_monitor">Integrate with Azure Monitor</a></h3>
+
 </div>
 </div>
 </div>

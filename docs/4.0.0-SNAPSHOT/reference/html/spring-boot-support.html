@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Untitled</title>
+<title>Spring Boot Support</title>
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -159,14 +159,43 @@ window.onload = function() {
 </script>
 
 </head>
-<body class="book">
+<body class="book toc2 toc-left">
 <div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_spring_boot_support">Spring Boot Support</a>
+<ul class="sectlevel2">
+<li><a href="#_production_ready_support">Production Ready Support</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <div id="content">
-<div id="preamble">
+<div class="sect1">
+<h2 id="_spring_boot_support"><a class="link" href="#_spring_boot_support">Spring Boot Support</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Spring Cloud Azure offers a convenient way to interact with Azure provided services using well-known Spring idioms and APIs for Spring developers.</p>
+<p>Provides support for authentication and auto-configuration, provides starters for all Azure SDK, contains components:</p>
+</div>
+<div class="paragraph">
+<p>Spring Cloud Azure Starters are a set of convenient dependency descriptors to include in your application. It boosts your Spring Boot application development with Azure services. For example, if you want to get started using Spring and Azure Cosmos DB for data persistence, include the <code>spring-cloud-azure-starter-cosmos</code> dependency in your project.</p>
+</div>
+<div class="sect2">
+<h3 id="_production_ready_support"><a class="link" href="#_production_ready_support">Production Ready Support</a></h3>
+<div class="paragraph">
+<p>Starter for using Spring Boot’s Actuator which provides production ready features to help you monitor and manage your application</p>
+</div>
+<div class="paragraph">
+<p>Actuator endpoints let you monitor and interact with your application. <code>Spring Boot Actuator</code> provides the infrastructure required for actuator endpoints.</p>
+</div>
+<div class="paragraph">
+<p>This module extends the <code>Spring Boot Actuator</code> module and provides the actuating support for Azure services.</p>
+</div>
+<div class="paragraph">
+<p>spring-cloud-azure-starter-actuator</p>
+</div>
 </div>
 </div>
 </div>
