@@ -1,3 +1,13 @@
-== Kafka Support (@moary)
+== Kafka Support
 
 Connect to Azure Event Hubs using Kafka libraries
+
+=== Dependency Setup
+
+=== Configuration
+
+for full configurations, check appendix
+
+=== Basic Usage
+
+=== Samples
