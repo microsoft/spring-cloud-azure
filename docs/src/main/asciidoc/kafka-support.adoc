@@ -163,7 +163,7 @@ $ curl -X POST http://localhost:8080/messages?message=hello
 
 . Verify in your app’s logs that a similar message was posted:
 
-`New message received: hello`
+New message received: hello
 
 . Delete the resources on https://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
 
@@ -171,9 +171,12 @@ $ curl -X POST http://localhost:8080/messages?message=hello
 
 * Meet with `Creating topics with default partitions/replication factor are only supported in CreateTopicRequest version 4+` error.
 
-`text
+[source,text]
+'''
 o.s.c.s.b.k.p.KafkaTopicProvisioner      : Failed to create topics
 org.apache.kafka.common.errors.UnsupportedVersionException: Creating topics with default partitions/replication factor are only supported in CreateTopicRequest version 4+. The following topics need values for partitions and replicas
-`
+```
 
-When this error is found, add this configuration item `spring.cloud.stream.kafka.binder.replicationFactor`, with the value set to at least 1. For more information, see https://docs.spring.io/spring-cloud-stream-binder-kafka/docs/current/reference/html/spring-cloud-stream-binder-kafka.html[Spring Cloud Stream Kafka Binder Reference Guide].
+When this error is found, add this configuration item spring.cloud.stream.kafka.binder.replicationFactor, with the value set to at least 1. For more information, see https://docs.spring.io/spring-cloud-stream-binder-kafka/docs/current/reference/html/spring-cloud-stream-binder-kafka.html[Spring Cloud Stream Kafka Binder Reference Guide].
+
+
