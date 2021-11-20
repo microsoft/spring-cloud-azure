@@ -104,8 +104,8 @@ new artifacts to better serve some scenarios.
 |azure-spring-cloud-autoconfigure |N/A |This artifact has been deleted with all functionality be merged into the new `spring-cloud-azure-autoconfigure` artifact. 
 |azure-spring-cloud-context |N/A |This artifact has been deleted with all functionality be merged into the new `spring-cloud-azure-autoconfigure` and `spring-cloud-azure-resourcemanager` artifacts. 
 |azure-spring-cloud-messaging |// TODO | 
-|azure-spring-cloud-starter-cache |N/A |This artifact has been deleted, for using redis, just add spring-boot-starter-data-redis, spring-boot-starter-cache, spring-cloud-azure-resourcemanager and spring-cloud-azure-starter. Please see <<Redis Support>> for more information about usage.
-|azure-spring-cloud-starter-eventhubs-kafka |N/A |This artifact has been deleted, for using kafka, just add spring kafka, spring-cloud-azure-resourcemanager and spring-cloud-azure-starter. Please see <<Kafka Support>> for more information about usage.
+|azure-spring-cloud-starter-cache |N/A |This artifact has been deleted, for using redis, just add spring-boot-starter-data-redis, spring-boot-starter-cache, spring-cloud-azure-resourcemanager and spring-cloud-azure-starter. Please see <<redis-support.adoc#Redis Support, Redis Support>> for more information about usage.
+|azure-spring-cloud-starter-eventhubs-kafka |N/A |This artifact has been deleted, for using kafka, just add spring kafka, spring-cloud-azure-resourcemanager and spring-cloud-azure-starter. Please see <<kafka-support.adoc#Kafka Support, Kafka Support>> for more information about usage.
 |azure-spring-cloud-starter-eventhubs |spring-cloud-azure-starter-integration-eventhubs |Starter for using Azure Event Hubs Spring Integration client library 
 |azure-spring-cloud-starter-servicebus |spring-cloud-azure-starter-integration-servicebus |Starter for using Azure Service Bus Spring Integration client library 
 |azure-spring-cloud-starter-storage-queue |spring-cloud-azure-starter-integration-storage-queue |Starter for using Azure Storage Queue Spring Integration client library 
