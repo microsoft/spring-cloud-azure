@@ -201,7 +201,7 @@ configurations can be divided into five categories:
 |spring.cloud.azure.retry |To configure the retry options apply to all Azure SDK clients. 
 |===
 
-Check https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Cloud-Azure-4.0-Reference#a-configuration-properties[here] for a full list of configurations.
+Check link:appendix.html[here] for a full list of configurations.
 
 ==== Each SDK configurations
 
