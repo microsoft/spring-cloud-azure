@@ -111,3 +111,4 @@ $ keys *
 ----
 
 . Delete the resources on https://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
+
