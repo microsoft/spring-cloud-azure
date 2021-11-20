@@ -1,3 +1,5 @@
+== Migration Guide for 4.0
+
 This guide assists in the migration to *Spring Cloud Azure 4.0* from legacy Azure Spring libraries. 
 
 We will call libraries whose group id and artifact id following pattern `com.azure.spring:spring-cloud-azure-*` the *modern libraries*,
@@ -11,9 +13,7 @@ or `com.azure.spring:azure-spring-integration-*` package is assumed.
 
 For those new to the Spring Cloud Azure 4.0 libraries, please refer to the https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Cloud-Azure-4.0-Reference[Spring Cloud Azure 4.0 Reference Doc] rather than this guide.
 
-[TOC]
-
-== Migration benefits
+=== Migration benefits
 
 A natural question to ask when considering whether to adopt a new version or library is its benefits. As Azure has
 matured and been embraced by a more diverse group of developers, we have been focused on learning the patterns and
@@ -38,7 +38,7 @@ projects, for example Spring Boot, Spring Integration, Spring Cloud Stream, etc.
 * A unified way to configure credential, proxy, retry, cloud environment, and transport layer settings.
 * Supporting all the authenticating methods an Azure Service or Azure Service SDK supports.
 
-== Overview
+=== Overview
 
 This migration guide will be consisted of following sections:
 
@@ -46,13 +46,13 @@ This migration guide will be consisted of following sections:
 * Artifact changes: renamed / added / deleted
 * Configuration properties
 
-== Naming changes
+=== Naming changes
 
 There has never been a consistent or official name to call all the Spring Cloud Azure libraries, some of them were
 called `Azure Spring Boot` and some of them `Spring on Azure` , and all these names will make developer confused. Since
 4.0, we began to use the project name `Spring Cloud Azure` to represent all the Azure Spring libraries.
 
-== BOM
+=== BOM
 
 We used to ship two BOMs for our libraries, the `azure-spring-boot-bom` and `azure-spring-cloud-dependencies`, but we
 combined these two BOMs into one BOM since 4.0, the `spring-cloud-azure-dependencies`. Please add an entry in the
@@ -75,7 +75,7 @@ dependencyManagement of your project to benefit from the dependency management.
 
 ----
 
-== Artifact changes: renamed / added / deleted
+=== Artifact changes: renamed / added / deleted
 
 Group ids are the same for modern and legacy Spring Cloud Azure libraries, they are all `com.azure.spring`. Artifact ids
 for the modern Spring Cloud Azure libraries have changed. And according to which Spring project it belongs, Spring Boot,
@@ -137,13 +137,13 @@ new artifacts to better serve some scenarios.
 |N/A |spring-cloud-azure-starter-cosmos |Starter for using Azure Cosmos Client library for Java 
 |===
 
-== Dependencies changes
+=== Dependencies changes
 
 Some unnecessary dependencies were included in the legacy artifacts, which we have removed in the modern Spring Cloud
 Azure 4.0 libraries. Please make sure add the removed dependencies manually to your project to prevent unintentionally
 crash.
 
-=== spring-cloud-azure-starter
+==== spring-cloud-azure-starter
 
 |===
 |Removed dependencies |Description 
@@ -151,7 +151,7 @@ crash.
 |org.springframework.boot:spring-boot-starter-validation |Please include the validation starter if you want to use the Hibernate Validator. 
 |===
 
-=== spring-cloud-azure-starter-active-directory
+==== spring-cloud-azure-starter-active-directory
 
 |===
 |Removed dependencies |Description 
@@ -159,7 +159,7 @@ crash.
 |org.springframework.boot:spring-boot-starter-validation |Please include the validation starter if you want to use the Hibernate Validator. 
 |===
 
-=== spring-cloud-azure-starter-active-directory-b2c
+==== spring-cloud-azure-starter-active-directory-b2c
 
 |===
 |Removed dependencies |Description 
@@ -167,7 +167,7 @@ crash.
 |org.springframework.boot:spring-boot-starter-validation |Please include the validation starter if you want to use the Hibernate Validator. 
 |===
 
-== Authentication
+=== Authentication
 
 Spring Cloud Azure 4.0 supports all the authentication methods each Azure Service SDK supports. It allows configuring a
 global token credential as well as providing the token credential at each service level. But credential is not required
@@ -183,9 +183,9 @@ Warning: There could be some `ERROR` logs be printed out while the `DefaultAzure
 
 ____
 
-== Configuration properties
+=== Configuration properties
 
-=== Global configurations
+==== Global configurations
 
 The modern `spring-cloud-azure-starter` allows developers to define properties that apply to all Azure SDKs in the
 namespace `spring.cloud.azure`. It was not supported in the legacy `azure-spring-boot-starter`. The global
@@ -203,9 +203,9 @@ configurations can be divided into five categories:
 
 Check https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Cloud-Azure-4.0-Reference#a-configuration-properties[here] for a full list of configurations.
 
-=== Each SDK configurations
+==== Each SDK configurations
 
-==== spring-cloud-azure-starter-integration-eventhubs
+===== spring-cloud-azure-starter-integration-eventhubs
 
 ____
 
@@ -257,7 +257,7 @@ spring:
             account-key: [checkpoint-access-key]
 ----
 
-==== spring-cloud-azure-stream-binder-eventhubs
+===== spring-cloud-azure-stream-binder-eventhubs
 
 ____
 
@@ -331,7 +331,7 @@ spring:
                     interval: [checkpoint-interval]
 ----
 
-==== spring-cloud-azure-starter-integration-servicebus
+===== spring-cloud-azure-starter-integration-servicebus
 
 ____
 
@@ -353,17 +353,17 @@ ____
 |`retry-options.retry-mode` |Dropped, will be configured according to `retry.backoff.multiplier` |NA
 |===
 
-==== spring-cloud-azure-starter-active-directory
+===== spring-cloud-azure-starter-active-directory
 
 . All configuration property names changed the prefix from `azure.activedirectory.` to `spring.cloud.azure.active-directory.`.
 . New property `spring.cloud.azure.active-directory.enabled=true` is necessary to enable related features.
 
-==== spring-cloud-azure-starter-active-directory.b2c
+===== spring-cloud-azure-starter-active-directory.b2c
 
 . All configuration property names changed the prefix from `azure.activedirectory.b2c.` to `spring.cloud.azure.active-directory.b2c.`.
 . New property `spring.cloud.azure.active-directory.b2c.enabled=true` is necessary to enable related features.
 
-==== From `azure-spring-boot-starter-cosmos` to `spring-cloud-azure-starter-data-cosmos`
+===== From `azure-spring-boot-starter-cosmos` to `spring-cloud-azure-starter-data-cosmos`
 
 . All configuration property names changed the prefix from `azure.cosmos` to `spring.cloud.azure.cosmos`.|===
 |Legacy properties |Morden properties 
@@ -374,7 +374,7 @@ ____
 |azure.cosmos.populateQueryMetrics |spring.cloud.azure.cosmos.populateQueryMetrics 
 |===
 
-| ==== From *azure-spring-boot-starter-storage* to *spring-cloud-azure-starter-storage-blob*
+| ===== From *azure-spring-boot-starter-storage* to *spring-cloud-azure-starter-storage-blob*
 
 . All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.blob`.|===
 |Legacy properties |Morden properties 
@@ -384,7 +384,7 @@ ____
 |azure.storage.blob-endpoint |spring.cloud.azure.storage.blob.endpoint 
 |===
 
-==== From *azure-spring-boot-starter-storage* to *spring-cloud-azure-starter-storage-file-share*
+===== From *azure-spring-boot-starter-storage* to *spring-cloud-azure-starter-storage-file-share*
 
 All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.fileshare`.
 
@@ -396,7 +396,7 @@ All configuration property names changed the prefix from `azure.storage` to `spr
 |azure.storage.file-endpoint |spring.cloud.azure.storage.fileshare.endpoint 
 |===
 
-==== From *azure-spring-cloud-starter-storage-queue* to *spring-cloud-azure-starter-integration-storage-queue*
+===== From *azure-spring-cloud-starter-storage-queue* to *spring-cloud-azure-starter-integration-storage-queue*
 
 All configuration property names changed the prefix from `spring.cloud.azure.storage` to `spring.cloud.azure.storage.queue`.
 
@@ -408,7 +408,7 @@ All configuration property names changed the prefix from `spring.cloud.azure.sto
 |spring.cloud.azure.storage.resource-group |spring.cloud.azure.storage.queue.resource.resource-group 
 |===
 
-==== spring-cloud-azure-stream-binder-servicebus
+===== spring-cloud-azure-stream-binder-servicebus
 
 ____
 
@@ -514,9 +514,9 @@ spring:
         fixed-delay: 1000
 ----
 
-== API breaking changes
+=== API breaking changes
 
-=== `spring-cloud-azure-starter-integration-eventhubs(legacy: azure-spring-cloud-starter-eventhubs)` &amp; `spring-cloud-azure-stream-binder-eventhubs(legacy: azure-spring-cloud-stream-binder-eventhubs)`
+==== `spring-cloud-azure-starter-integration-eventhubs(legacy: azure-spring-cloud-starter-eventhubs)` &amp; `spring-cloud-azure-stream-binder-eventhubs(legacy: azure-spring-cloud-stream-binder-eventhubs)`
 
 * Drop `EventHubOperation`, with its functionalities divided into `EventHubsTemplate` and `EventHubsProcessorContainer`.
 * Drop `EventHubsInboundChannelAdapter` and use new named `EventHubsInboundChannelAdapter`, also changed its
@@ -621,7 +621,7 @@ Modern code:
 |NONE |com.azure.spring.eventhubs.core.EventHubsProcessorContainer 
 |===
 
-| === spring-cloud-azure-stream-binder-servicebus
+| ==== spring-cloud-azure-stream-binder-servicebus
 
 |===
 |Legacy class |Modern class 
@@ -631,7 +631,7 @@ Modern code:
 |com.azure.spring.integration.servicebus.converter.ServiceBusMessageHeaders |com.azure.spring.servicebus.support.ServiceBusMessageHeaders
 |===
 
-| === spring-cloud-azure-starter-integration-servicebus
+| ==== spring-cloud-azure-starter-integration-servicebus
 
 ____
 
@@ -734,7 +734,7 @@ Modern code:
 
 ----
 
-=== spring-cloud-azure-starter-active-directory
+==== spring-cloud-azure-starter-active-directory
 
 |===
 |Legacy class |Modern class 
@@ -748,7 +748,7 @@ Modern code:
 |com.azure.spring.autoconfigure.aad.UserPrincipal |com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipal 
 |===
 
-|=== spring-cloud-azure-starter-active-directory-b2c
+|==== spring-cloud-azure-starter-active-directory-b2c
 
 |===
 |Legacy class |Modern class 
@@ -757,7 +757,7 @@ Modern code:
 |com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer |com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2COidcLoginConfigurer 
 |===
 
-| === spring-cloud-azure-starter-integration-storage-queue
+| ==== spring-cloud-azure-starter-integration-storage-queue
 
 |===
 |Legacy class |Modern class 
