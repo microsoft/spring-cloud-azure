@@ -1,1 +1,11 @@
 == Resource Manager
+
+=== Dependency Setup
+
+=== Configuration
+
+for full configurations, check appendix
+
+=== Basic Usage
+
+=== Samples

@@ -728,7 +728,7 @@ Legacy code:
     }
 ----
 
-Modern code:
+* Modern code:
 
 [source,java]
 ----
@@ -786,7 +786,7 @@ Modern code:
 |com.azure.spring.autoconfigure.aad.UserPrincipal |com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipal 
 |===
 
-|==== spring-cloud-azure-starter-active-directory-b2c
+==== spring-cloud-azure-starter-active-directory-b2c
 
 |===
 |Legacy class |Modern class 
@@ -795,13 +795,15 @@ Modern code:
 |com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer |com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2COidcLoginConfigurer 
 |===
 
-| ==== spring-cloud-azure-starter-integration-storage-queue
+==== spring-cloud-azure-starter-integration-storage-queue
 
 |===
-|Legacy class |Modern class 
+|Legacy class |Modern class
 
 |com.azure.spring.integration.core.api.CheckpointMode |com.azure.spring.messaging.checkpoint.CheckpointMode 
 |com.azure.spring.integration.core.api.reactor.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer 
 |com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.handler.DefaultMessageHandler 
 |com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders 
-|com.azure.spring.integration.storage.queue.StorageQueueOperation |com.azure.spring.storage.queue.core.StorageQueueOperation 
+|com.azure.spring.integration.storage.queue.StorageQueueOperation |com.azure.spring.storage.queue.core.StorageQueueOperation
+|===
+

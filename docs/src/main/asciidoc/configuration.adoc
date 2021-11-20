@@ -1,4 +1,4 @@
-== Spring Cloud Azure Configuration
+== Configuration
 
 Most of Azure Service SDKs could divide into two categories by transport type, HTTP-based and AMQP-based. There are properties that are common to all SDKs such as authentication principals and Azure environment settings. Or common to all HTTP-based clients, such as setting logging level to log http requests and responses. In Spring Cloud Azure 4.0 we added five common categories of configuration properties, which could be specified to each Azure service.
 
@@ -42,5 +42,3 @@ The configuration properties' prefixes have been unified to `spring.cloud.azure`
 |Azure Storage Queue |spring.cloud.azure.storage.queue 
 |===
 
-
-To see the list of all Spring Cloud Azure related configuration properties please check link:appendix.html[the Appendix page].

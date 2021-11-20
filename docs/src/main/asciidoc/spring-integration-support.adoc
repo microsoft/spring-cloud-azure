@@ -178,3 +178,4 @@ for full configurations, check appendix
 ==== Samples
 
 Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/storage/azure-spring-integration-sample-storage-queue[sample project] illustrating how to use Storage Queue integration.
+
