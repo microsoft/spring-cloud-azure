@@ -2,11 +2,11 @@
 
 Spring Integration Extension for Azure provides Spring Integration adapters for the various services provided by the https://github.com/Azure/azure-sdk-for-java/[Azure SDK for Java]. Below is a list of supported adapters:
 
-* spring-integration-azure-eventhbus
-* spring-integration-azure-servicebus
-* spring-integration-azure-storage-queue
+* spring-cloud-azure-starter-integration-eventhbus
+* spring-cloud-azure-starter-integration-servicebus
+* spring-cloud-azure-starter-integration-storage-queue
 
-Provide Spring Integration support for these Azure serices: eh, sb, storage q
+Provide Spring Integration support for these Azure services: Event Hubs, Service Bus, Storage Queue.
 
 === Spring Integration with Azure Event Hubs
 
@@ -16,20 +16,217 @@ Provide Spring Integration support for these Azure serices: eh, sb, storage q
 ----
 <dependency>
 	<groupId>com.azure.spring</groupId>
-	<artifactId>azure-spring-integration-eventhubs</artifactId>
+	<artifactId>spring-cloud-azure-starter-integration-eventhubs</artifactId>
 </dependency>
 
 ----
 
 ==== Configuration
 
-for full configurations, check appendix
+This starter provides the following 2 parts of configuration options:
+
+===== Azure Common Configuration Options
+Below properties can also be configured with the default Spring Cloud Azure unified properties,
+of which the prefix is changed from *spring.cloud.azure.eventhubs.* to *spring.cloud.azure.*.
+|===
+|Properties | Type |Description
+
+|*spring.cloud.azure.eventhubs*.enabled | boolean | Whether an Azure Event Hubs is enabled.
+|*spring.cloud.azure.eventhubs*.credential.* | NA | Properties used for getting token credential.
+|*spring.cloud.azure.eventhubs*.credential.clientId | String | Client id to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.eventhubs*.credential.clientSecret | String | Client secret to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.eventhubs*.credential.clientCertificatePath | String | Path of a PEM certificate file to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.eventhubs*.credential.clientCertificatePassword | String | Password of the certificate file.
+|*spring.cloud.azure.eventhubs*.credential.username | String | Username to use when performing username/password authentication with Azure.
+|*spring.cloud.azure.eventhubs*.credential.password | String | Password to use when performing username/password authentication with Azure.
+|*spring.cloud.azure.eventhubs*.credential.managedIdentityClientId | String | Client id to use when using managed identity to authenticate with Azure.
+|*spring.cloud.azure.eventhubs*.profile.* | String | Properties related to an Azure subscription.
+|*spring.cloud.azure.eventhubs*.profile.tenantId | String | Tenant id for Azure resources.
+|*spring.cloud.azure.eventhubs*.profile.subscriptionId | String | Subscription id to use when connecting to Azure resources.
+|*spring.cloud.azure.eventhubs*.profile.cloud | AzureProfileAware.CloudType | Name of the Azure cloud to connect to.
+|*spring.cloud.azure.eventhubs*.profile.environment.* | NA | Properties to Azure services, such as endpoints, resource ids, etc.
+|*spring.cloud.azure.eventhubs*.profile.environment.activeDirectoryEndpoint | String | The Azure Active Directory endpoint to connect to.
+|*spring.cloud.azure.eventhubs*.resource.* | String | Metadata defining an Azure resource.
+|*spring.cloud.azure.eventhubs*.resource.resourceGroup | String | Name of the Azure resource group.
+|*spring.cloud.azure.eventhubs*.resource.resourceId | String | Id of the Azure resource group.
+|*spring.cloud.azure.eventhubs*.resource.region | String | Name of region.
+|*spring.cloud.azure.eventhubs*.client.transportType | AmqpTransportType | Transport type switches available for AMQP protocol.
+|*spring.cloud.azure.eventhubs*.retry.* | NA | Retry properties.
+|*spring.cloud.azure.eventhubs*.retry.backoff.* | NA | Backoff properties when a retry fails.
+|*spring.cloud.azure.eventhubs*.retry.backoff.delay | Duration | Amount of time to wait between retry attempts.
+|*spring.cloud.azure.eventhubs*.retry.backoff.maxDelay | Duration | Maximum permissible amount of time between retry attempts.
+|*spring.cloud.azure.eventhubs*.retry.backoff.multiplier | Double | Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.
+|*spring.cloud.azure.eventhubs*.retry.maxAttempts | Integer | The maximum number of attempts.
+|*spring.cloud.azure.eventhubs*.retry.timeout | Duration | Amount of time to wait until a timeout.
+|*spring.cloud.azure.eventhubs*.proxy.* | NA | Common proxy properties.
+|*spring.cloud.azure.eventhubs*.proxy.type | String | Type of the proxy.
+|*spring.cloud.azure.eventhubs*.proxy.hostname | String | The host of the proxy.
+|*spring.cloud.azure.eventhubs*.proxy.port | Integer | The port of the proxy.
+|*spring.cloud.azure.eventhubs*.proxy.authenticationType | String | Authentication type used against the proxy.
+|*spring.cloud.azure.eventhubs*.proxy.username | String | Username used to authenticate with the proxy.
+|*spring.cloud.azure.eventhubs*.proxy.password | String | Password used to authenticate with the proxy.
+
+===== Azure Event Hubs Client Configuration Options
+|===
+|Properties | Type |Description
+
+|*spring.cloud.azure.eventhubs*.connection-string | NA | Event Hubs Namespace connection string value.
+|*spring.cloud.azure.eventhubs*.namespace | String | Event Hubs Namespace value.
+|*spring.cloud.azure.eventhubs*.domainName | String | Domain name of an Azure Event Hubs Namespace value.
+|*spring.cloud.azure.eventhubs*.eventHubName | String | Name of an Event Hub entity.
+|*spring.cloud.azure.eventhubs*.customEndpointAddress | String | Custom Endpoint address.
+|*spring.cloud.azure.eventhubs*.isSharedConnection | Boolean | Whether to use the same connection for different Event Hub producer / consumer client.
+|*spring.cloud.azure.eventhubs*.processor.checkpointStore.* | NA | Blob checkpoint store configuration options.
+|*spring.cloud.azure.eventhubs*.processor.checkpointStore.createContainerIfNotExists | Boolean | If allowed to create container if not exists.
+|*spring.cloud.azure.eventhubs*.processor.checkpointStore.customerProvidedKey | String | Base64 encoded string of the encryption key.
+|*spring.cloud.azure.eventhubs*.processor.checkpointStore.encryptionScope | String | Encryption scope to encrypt blob contents on the server.
+|*spring.cloud.azure.eventhubs*.processor.checkpointStore.serviceVersion | BlobServiceVersion | The versions of Azure Storage Blob supported by this client library.
+|*spring.cloud.azure.eventhubs*.processor.checkpointStore.blobName | String | Storage blob name.
+|*spring.cloud.azure.eventhubs*.processor.checkpointStore.containerName | String | Storage container name.
+
 
 ==== Basic Usage
+- Send messages to Azure Event Hubs
+1. Fill the configuration options with credential information.
+- For credentials as connection string, configure below properties in application.yml:
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      eventhubs:
+        connection-string: [servicebus-connection-string]
+----
+
+- For credentials as MSI, configure below properties in application.yml:
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        managed-identity-client-id: [managed-identity-client-id]
+      profile:
+        tenant-id: [tenant-id]
+#     Uncomment below configurations if you want to enable auto creating resources.
+#        subscription-id: [subscription-id]
+#        cloud: Azure
+#      resource:
+#        region: [region]
+
+      eventhubs:
+        namespace: [servicebus-namespace]
+----
+
+- For credentials as service principal, configure below properties in application.yml:
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        client-id: [client-id]
+        client-secret: [client-secret]
+      profile:
+        tenant-id: [tenant-id]
+#     Uncomment below configurations if you want to enable auto creating resources.
+#        subscription-id: [subscription-id]
+#        cloud: Azure
+#      resource:
+#        region: [region]
+
+      eventhubs:
+        namespace: [namespace]
+----
+
+2. Create `DefaultMessageHandler` with the bean of `EventHubsTemplate` to send messages to Event Hubs.
+[source,java]
+----
+    private static final String OUTPUT_CHANNEL = "output";
+    private static final String EVENTHUB_NAME = "eh1";
+
+    @Bean
+    @ServiceActivator(inputChannel = OUTPUT_CHANNEL)
+    public MessageHandler messageSender(EventHubsTemplate queueOperation) {
+        DefaultMessageHandler handler = new DefaultMessageHandler(EVENTHUB_NAME, queueOperation);
+        handler.setSendCallback(new ListenableFutureCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                LOGGER.info("Message was sent successfully.");
+            }
+            @Override
+            public void onFailure(Throwable ex) {
+                LOGGER.error("There was an error sending the message.", ex);
+            }
+        });
+        return handler;
+    }
+----
+
+3. Create a Message gateway binding with the message handler created in the last step via a message channel
+[source,java]
+----
+    @Autowired
+    EventHubOutboundGateway messagingGateway;
+
+    @MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL)
+    public interface EventHubOutboundGateway {
+        void send(String text);
+    }
+----
+4. Send messages using the gateway
+[source,java]
+----
+    this.messagingGateway.send(message);
+----
+
+- Receive messages from Azure Event Hubs
+1. Fill the configuration options with credential information.
+2. Create a bean of message channel as the input channel.
+[source,java]
+----
+    private static final String INPUT_CHANNEL = "input";
+    private static final String EVENTHUB_NAME = "eh1";
+    private static final String CONSUMER_GROUP = "$Default";
+
+    @Bean
+    public MessageChannel input() {
+        return new DirectChannel();
+    }
+----
+3. Create `EventHubsInboundChannelAdapter` with the bean of `EventHubsProcessorContainer` to receive messages to Event Hubs.
+[source,java]
+----
+    @Bean
+    public EventHubsInboundChannelAdapter messageChannelAdapter(
+            @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel,
+            EventHubsProcessorContainer processorContainer) {
+        CheckpointConfig config = new CheckpointConfig(CheckpointMode.MANUAL);
+
+        EventHubsInboundChannelAdapter adapter =
+                new EventHubsInboundChannelAdapter(processorContainer, EVENTHUB_NAME,
+                        CONSUMER_GROUP, config);
+        adapter.setOutputChannel(inputChannel);
+        return adapter;
+    }
+----
+4. Create a message receiver binding with EventHubsInboundChannelAdapter created in the last step via the message channel we created before.
+[source,java]
+----
+    @ServiceActivator(inputChannel = INPUT_CHANNEL)
+    public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
+        String message = new String(payload);
+        LOGGER.info("New message received: '{}'", message);
+        checkpointer.success()
+                .doOnSuccess(s -> LOGGER.info("Message '{}' successfully checkpointed", message))
+                .doOnError(e -> LOGGER.error("Error found", e))
+                .subscribe();
+    }
+----
 
 ==== Samples
 
-Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/eventhubs/azure-spring-integration-sample-eventhubs[sample project] to learn how to use Event Hubs integration. (todo: @chenrujun, update this link)
+Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/eventhubs[sample project] to learn how to use Event Hubs integration.
 
 === Spring Integration with Azure Service Bus
 
@@ -39,57 +236,215 @@ Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/
 ----
 <dependency>
 	<groupId>com.azure.spring</groupId>
-	<artifactId>azure-spring-integration-servicebus</artifactId>
+	<artifactId>spring-cloud-azure-starter-integration-servicebus</artifactId>
 </dependency>
 ----
 
 ==== Configuration
 
-for full configurations, check appendix
+===== Azure Common Configuration Options
+Below properties can also be configured with the default Spring Cloud Azure unified properties,
+of which the prefix is changed from *spring.cloud.azure.servicebus.* to *spring.cloud.azure.*.
+|===
+|Properties | Type |Description
+
+|*spring.cloud.azure.servicebus*.enabled | boolean | Whether an Azure Service Bus is enabled.
+|*spring.cloud.azure.servicebus*.credential.* | NA | Properties used for getting token credential.
+|*spring.cloud.azure.servicebus*.credential.clientId | String | Client id to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.servicebus*.credential.clientSecret | String | Client secret to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.servicebus*.credential.clientCertificatePath | String | Path of a PEM certificate file to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.servicebus*.credential.clientCertificatePassword | String | Password of the certificate file.
+|*spring.cloud.azure.servicebus*.credential.username | String | Username to use when performing username/password authentication with Azure.
+|*spring.cloud.azure.servicebus*.credential.password | String | Password to use when performing username/password authentication with Azure.
+|*spring.cloud.azure.servicebus*.credential.managedIdentityClientId | String | Client id to use when using managed identity to authenticate with Azure.
+|*spring.cloud.azure.servicebus*.profile.* | String | Properties related to an Azure subscription.
+|*spring.cloud.azure.servicebus*.profile.tenantId | String | Tenant id for Azure resources.
+|*spring.cloud.azure.servicebus*.profile.subscriptionId | String | Subscription id to use when connecting to Azure resources.
+|*spring.cloud.azure.servicebus*.profile.cloud | AzureProfileAware.CloudType | Name of the Azure cloud to connect to.
+|*spring.cloud.azure.servicebus*.profile.environment.* | NA | Properties to Azure services, such as endpoints, resource ids, etc.
+|*spring.cloud.azure.servicebus*.profile.environment.activeDirectoryEndpoint | String | The Azure Active Directory endpoint to connect to.
+|*spring.cloud.azure.servicebus*.resource.* | String | Metadata defining an Azure resource.
+|*spring.cloud.azure.servicebus*.resource.resourceGroup | String | Name of the Azure resource group.
+|*spring.cloud.azure.servicebus*.resource.resourceId | String | Id of the Azure resource group.
+|*spring.cloud.azure.servicebus*.resource.region | String | Name of region.
+|*spring.cloud.azure.servicebus*.client.transportType | AmqpTransportType | Transport type switches available for AMQP protocol.
+|*spring.cloud.azure.servicebus*.retry.* | NA | Retry properties.
+|*spring.cloud.azure.servicebus*.retry.backoff.* | NA | Backoff properties when a retry fails.
+|*spring.cloud.azure.servicebus*.retry.backoff.delay | Duration | Amount of time to wait between retry attempts.
+|*spring.cloud.azure.servicebus*.retry.backoff.maxDelay | Duration | Maximum permissible amount of time between retry attempts.
+|*spring.cloud.azure.servicebus*.retry.backoff.multiplier | Double | Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.
+|*spring.cloud.azure.servicebus*.retry.maxAttempts | Integer | The maximum number of attempts.
+|*spring.cloud.azure.servicebus*.retry.timeout | Duration | Amount of time to wait until a timeout.
+|*spring.cloud.azure.servicebus*.proxy.* | NA | Common proxy properties.
+|*spring.cloud.azure.servicebus*.proxy.type | String | Type of the proxy.
+|*spring.cloud.azure.servicebus*.proxy.hostname | String | The host of the proxy.
+|*spring.cloud.azure.servicebus*.proxy.port | Integer | The port of the proxy.
+|*spring.cloud.azure.servicebus*.proxy.authenticationType | String | Authentication type used against the proxy.
+|*spring.cloud.azure.servicebus*.proxy.username | String | Username used to authenticate with the proxy.
+|*spring.cloud.azure.servicebus*.proxy.password | String | Password used to authenticate with the proxy.
+
+===== Azure Service Bus Client Configuration Options
+|===
+|Properties | Type |Description
+
+|*spring.cloud.azure.servicebus*.connection-string | NA | Service Bus Namespace connection string value.
+|*spring.cloud.azure.servicebus*.namespace | String | Service Bus Namespace value.
+|*spring.cloud.azure.servicebus*.domainName | String | Domain name of an Azure Service Bus Namespace value.
+|*spring.cloud.azure.servicebus*.entityName | String | Entity name of Azure Service Bus queue or topic.
+|*spring.cloud.azure.servicebus*.entityType | ServiceBusEntityType | Entity type of Azure Service Bus queue or topic.
+|*spring.cloud.azure.servicebus*.crossEntityTransactions | Boolean | Enable cross entity transaction on the connection to Service bus.
+
 
 ==== Basic Usage
-
-==== Samples
-
-*Example: Manually set the partition key for the message*
-
-This example demonstrates how to manually set the partition key for the message in the application.
-
-*Way 1:*
-This example requires that `spring.cloud.stream.default.producer.partitionKeyExpression` be set `&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;`.
-
+- Send messages to Azure Service Bus
+1. Fill the configuration options with credential information.
+- For credentials as connection string, configure below properties in application.yml:
 [source,yaml]
 ----
 spring:
   cloud:
     azure:
       servicebus:
-        connection-string: [servicebus-namespace-connection-string]
-    stream:
-      default:
-        producer:
-          partitionKeyExpression:  "'partitionKey-' + headers[<message-header-key>]"
+        connection-string: [servicebus-connection-string]
 ----
 
+- For credentials as MSI, configure below properties in application.yml:
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        managed-identity-client-id: [managed-identity-client-id]
+      profile:
+        tenant-id: [tenant-id]
+#     Uncomment below configurations if you want to enable auto creating resources.
+#        subscription-id: [subscription-id]
+#        cloud: Azure
+#      resource:
+#        region: [region]
+
+      servicebus:
+        namespace: [servicebus-namespace]
+----
+
+- For credentials as service principal, configure below properties in application.yml:
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        client-id: [client-id]
+        client-secret: [client-secret]
+      profile:
+        tenant-id: [tenant-id]
+#     Uncomment below configurations if you want to enable auto creating resources.
+#        subscription-id: [subscription-id]
+#        cloud: Azure
+#      resource:
+#        region: [region]
+
+      servicebus:
+        namespace: [namespace]
+----
+
+2. Create `DefaultMessageHandler` with the bean of `ServiceBusTemplate` to send messages to Service Bus,
+set the entity type for the ServiceBusTemplate.
 [source,java]
 ----
-public class SampleController {
-    @PostMapping("/messages")
-    public ResponseEntity<String> sendMessage(@RequestParam String message) {
-        LOGGER.info("Going to add message {} to Sinks.Many.", message);
-        many.emitNext(MessageBuilder.withPayload(message)
-                                    .setHeader("<message-header-key>", "Customize partition key")
-                                    .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-        return ResponseEntity.ok("Sent!");
+    private static final String OUTPUT_CHANNEL = "queue.output";
+
+    @Bean
+    @ServiceActivator(inputChannel = OUTPUT_CHANNEL)
+    public MessageHandler queueMessageSender(ServiceBusTemplate serviceBusTemplate) {
+        serviceBusTemplate.setDefaultEntityType(ServiceBusEntityType.QUEUE);
+        DefaultMessageHandler handler = new DefaultMessageHandler(QUEUE_NAME, serviceBusTemplate);
+        handler.setSendCallback(new ListenableFutureCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                LOGGER.info("Message was sent successfully.");
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                LOGGER.info("There was an error sending the message.");
+            }
+        });
+
+        return handler;
     }
-}
 ----
 
-____
+3. Create a Message gateway binding with the message handler created in the last stop via a message channel
+[source,java]
+----
+    @Autowired
+    QueueOutboundGateway messagingGateway;
 
-*NOTE:* When using `application.yml` to configure the partition key, its priority will be the lowest.
-It will take effect only when the `ServiceBusMessageHeaders.SESSION_ID`, `ServiceBusMessageHeaders.PARTITION_KEY`, `AzureHeaders.PARTITION_KEY` are not configured.
-*Way 2:*
+    @MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL)
+    public interface QueueOutboundGateway {
+        void send(String text);
+    }
+
+----
+
+4. Send messages using the gateway
+[source,java]
+----
+    this.messagingGateway.send(message);
+----
+
+- Receive messages from Azure Service Bus
+1. Fill the configuration options with credential information.
+2. Create a bean of message channel as the input channel.
+[source,java]
+----
+    private static final String INPUT_CHANNEL = "input";
+
+    @Bean
+    public MessageChannel input() {
+        return new DirectChannel();
+    }
+----
+3. Create `ServiceBusInboundChannelAdapter` with the bean of `ServiceBusProcessorContainer` to receive messages to Service Bus.
+[source,java]
+----
+    private static final String QUEUE_NAME = "queue1";
+
+    @Bean
+    public ServiceBusInboundChannelAdapter queueMessageChannelAdapter(
+        @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel, ServiceBusProcessorContainer processorContainer) {
+        ServiceBusInboundChannelAdapter adapter = new ServiceBusInboundChannelAdapter(processorContainer, QUEUE_NAME,
+            new CheckpointConfig(CheckpointMode.MANUAL));
+        adapter.setOutputChannel(inputChannel);
+        return adapter;
+    }
+----
+4. Create a message receiver binding with ServiceBusInboundChannelAdapter created in the last step via the message channel we created before.
+[source,java]
+----
+    @ServiceActivator(inputChannel = INPUT_CHANNEL)
+    public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
+        String message = new String(payload);
+        LOGGER.info("New message received: '{}'", message);
+        checkpointer.success().handle((r, ex) -> {
+            if (ex == null) {
+                LOGGER.info("Message '{}' successfully checkpointed.", message);
+            }
+        });
+    }
+----
+
+==== Samples
+
+Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/servicebus[sample project] to learn how to use Service Bus integration.
+
+*Example: Manually set the partition key for the message*
+
+This example demonstrates how to manually set the partition key for the message in the application.
+
+*Way 1:*
 Manually add the partition Key in the message header by code.
 
 ____
@@ -165,17 +520,207 @@ ____
 ----
 <dependency>
 	<groupId>com.azure.spring</groupId>
-	<artifactId>azure-spring-integration-storage-queue</artifactId>
+	<artifactId>spring-cloud-azure-starter-integration-storage-queue</artifactId>
 </dependency>
 ----
 
 ==== Configuration
 
-for full configurations, check appendix
+===== Azure Common Configuration Options
+Below properties can also be configured with the default Spring Cloud Azure unified properties,
+of which the prefix is changed from *spring.cloud.azure.storage.queue.* to *spring.cloud.azure.*.
+|===
+|Properties | Type |Description
 
+|*spring.cloud.azure.storage.queue*.enabled | boolean | Whether an Azure Storage Queue is enabled.
+|*spring.cloud.azure.storage.queue*.credential.* | NA | Properties used for getting token credential.
+|*spring.cloud.azure.storage.queue*.credential.clientId | String | Client id to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.storage.queue*.credential.clientSecret | String | Client secret to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.storage.queue*.credential.clientCertificatePath | String | Path of a PEM certificate file to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.storage.queue*.credential.clientCertificatePassword | String | Password of the certificate file.
+|*spring.cloud.azure.storage.queue*.credential.username | String | Username to use when performing username/password authentication with Azure.
+|*spring.cloud.azure.storage.queue*.credential.password | String | Password to use when performing username/password authentication with Azure.
+|*spring.cloud.azure.storage.queue*.credential.managedIdentityClientId | String | Client id to use when using managed identity to authenticate with Azure.
+|*spring.cloud.azure.storage.queue*.profile.* | String | Properties related to an Azure subscription.
+|*spring.cloud.azure.storage.queue*.profile.tenantId | String | Tenant id for Azure resources.
+|*spring.cloud.azure.storage.queue*.profile.subscriptionId | String | Subscription id to use when connecting to Azure resources.
+|*spring.cloud.azure.storage.queue*.profile.cloud | AzureProfileAware.CloudType | Name of the Azure cloud to connect to.
+|*spring.cloud.azure.storage.queue*.profile.environment.* | NA | Properties to Azure services, such as endpoints, resource ids, etc.
+|*spring.cloud.azure.storage.queue*.profile.environment.activeDirectoryEndpoint | String | The Azure Active Directory endpoint to connect to.
+|*spring.cloud.azure.storage.queue*.resource.* | String | Metadata defining an Azure resource.
+|*spring.cloud.azure.storage.queue*.resource.resourceGroup | String | Name of the Azure resource group.
+|*spring.cloud.azure.storage.queue*.resource.resourceId | String | Id of the Azure resource group.
+|*spring.cloud.azure.storage.queue*.resource.region | String | Name of region.
+|*spring.cloud.azure.storage.queue*.client.transportType | AmqpTransportType | Transport type switches available for AMQP protocol.
+|*spring.cloud.azure.storage.queue*.retry.* | NA | Retry properties.
+|*spring.cloud.azure.storage.queue*.retry.backoff.* | NA | Backoff properties when a retry fails.
+|*spring.cloud.azure.storage.queue*.retry.backoff.delay | Duration | Amount of time to wait between retry attempts.
+|*spring.cloud.azure.storage.queue*.retry.backoff.maxDelay | Duration | Maximum permissible amount of time between retry attempts.
+|*spring.cloud.azure.storage.queue*.retry.backoff.multiplier | Double | Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.
+|*spring.cloud.azure.storage.queue*.retry.maxAttempts | Integer | The maximum number of attempts.
+|*spring.cloud.azure.storage.queue*.retry.timeout | Duration | Amount of time to wait until a timeout.
+|*spring.cloud.azure.storage.queue*.proxy.* | NA | Common proxy properties.
+|*spring.cloud.azure.storage.queue*.proxy.type | String | Type of the proxy.
+|*spring.cloud.azure.storage.queue*.proxy.hostname | String | The host of the proxy.
+|*spring.cloud.azure.storage.queue*.proxy.port | Integer | The port of the proxy.
+|*spring.cloud.azure.storage.queue*.proxy.authenticationType | String | Authentication type used against the proxy.
+|*spring.cloud.azure.storage.queue*.proxy.username | String | Username used to authenticate with the proxy.
+|*spring.cloud.azure.storage.queue*.proxy.password | String | Password used to authenticate with the proxy.
+
+===== Azure Storage Queue Client Configuration Options
+|===
+|Properties | Type |Description
+
+|*spring.cloud.azure.storage.queue*.connection-string | NA | Storage Queue Namespace connection string value.
+|*spring.cloud.azure.storage.queue*.accountName | String | Storage Queue account name.
+|*spring.cloud.azure.storage.queue*.accountKey | String | Storage Queue account key.
+|*spring.cloud.azure.storage.queue*.endpoint | String | Storage Queue service endpoint.
+|*spring.cloud.azure.storage.queue*.sasToken | String | Sas token credential
+|*spring.cloud.azure.storage.queue*.serviceVersion | QueueServiceVersion | QueueServiceVersion that is used when making API requests.
+|*spring.cloud.azure.storage.queue*.messageEncoding | String | Queue message encoding.
+|
 ==== Basic Usage
+- Send messages to Azure Storage Queue
+1. Fill the configuration options with credential information.
 
+- For credentials as connection string, configure below properties in application.yml:
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      storage:
+        queue:
+          connection-string: [servicebus-connection-string]
+----
+
+ - For credentials as MSI, configure below properties in application.yml:
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        managed-identity-client-id: [managed-identity-client-id]
+      profile:
+        tenant-id: [tenant-id]
+#     Uncomment below configurations if you want to enable auto creating resources.
+#        subscription-id: [subscription-id]
+#        cloud: Azure
+#      resource:
+#        region: [region]
+
+      storage:
+        queue:
+          namespace: [servicebus-namespace]
+----
+
+- For credentials as service principal, configure below properties in application.yml:
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        client-id: [client-id]
+        client-secret: [client-secret]
+      profile:
+        tenant-id: [tenant-id]
+#     Uncomment below configurations if you want to enable auto creating resources.
+#        subscription-id: [subscription-id]
+#        cloud: Azure
+#      resource:
+#        region: [region]
+
+      storage:
+        queue:
+          namespace: [servicebus-namespace]
+----
+
+2. Create `DefaultMessageHandler` with the bean of `StorageQueueOperation` to send messages to Storage Queue.
+[source,java]
+----
+    private static final String STORAGE_QUEUE_NAME = "example";
+    private static final String OUTPUT_CHANNEL = "output";
+
+    @Bean
+    @ServiceActivator(inputChannel = OUTPUT_CHANNEL)
+    public MessageHandler messageSender(StorageQueueOperation storageQueueOperation) {
+        DefaultMessageHandler handler = new DefaultMessageHandler(STORAGE_QUEUE_NAME, storageQueueOperation);
+        handler.setSendCallback(new ListenableFutureCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                LOGGER.info("Message was sent successfully.");
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                LOGGER.info("There was an error sending the message.");
+            }
+        });
+        return handler;
+    }
+----
+
+3. Create a Message gateway binding with the message handler created in the last stop via a message channel
+[source,java]
+----
+    @Autowired
+    StorageQueueOutboundGateway storageQueueOutboundGateway;
+
+    @MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL)
+    public interface StorageQueueOutboundGateway {
+        void send(String text);
+    }
+
+----
+
+4. Send messages using the gateway
+[source,java]
+----
+    this.storageQueueOutboundGateway.send(message);
+----
+
+- Receive messages from Azure Storage Queue
+1. Fill the configuration options with credential information.
+2. Create a bean of message channel as the input channel.
+[source,java]
+----
+    private static final String INPUT_CHANNEL = "input";
+
+    @Bean
+    public MessageChannel input() {
+        return new DirectChannel();
+    }
+----
+3. Create `StorageQueueMessageSource` with the bean of `StorageQueueOperation` to receive messages to Storage Queue.
+[source,java]
+----
+    private static final String STORAGE_QUEUE_NAME = "example";
+
+    @Bean
+    @InboundChannelAdapter(channel = INPUT_CHANNEL, poller = @Poller(fixedDelay = "1000"))
+    public StorageQueueMessageSource storageQueueMessageSource(StorageQueueOperation storageQueueOperation) {
+        storageQueueOperation.setCheckpointMode(CheckpointMode.MANUAL);
+        storageQueueOperation.setVisibilityTimeoutInSeconds(10);
+
+        return new StorageQueueMessageSource(STORAGE_QUEUE_NAME, storageQueueOperation);
+    }
+----
+4. Create a message receiver binding with StorageQueueMessageSource created in the last step via the message channel we created before.
+[source,java]
+----
+    @ServiceActivator(inputChannel = INPUT_CHANNEL)
+    public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
+        String message = new String(payload);
+        LOGGER.info("New message received: '{}'", message);
+        checkpointer.success()
+            .doOnError(Throwable::printStackTrace)
+            .doOnSuccess(t -> LOGGER.info("Message '{}' successfully checkpointed", message))
+            .subscribe();
+    }
+----
 ==== Samples
 
-Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/storage/azure-spring-integration-sample-storage-queue[sample project] illustrating how to use Storage Queue integration.
+Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/storage/[sample project] illustrating how to use Storage Queue integration.
 

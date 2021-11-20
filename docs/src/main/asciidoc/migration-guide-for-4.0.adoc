@@ -103,7 +103,7 @@ new artifacts to better serve some scenarios.
 |azure-spring-boot |N/A |This artifact has been deleted with all functionality be merged into the new `spring-cloud-azure-autoconfigure` artifact. 
 |azure-spring-cloud-autoconfigure |N/A |This artifact has been deleted with all functionality be merged into the new `spring-cloud-azure-autoconfigure` artifact. 
 |azure-spring-cloud-context |N/A |This artifact has been deleted with all functionality be merged into the new `spring-cloud-azure-autoconfigure` and `spring-cloud-azure-resourcemanager` artifacts. 
-|azure-spring-cloud-messaging |// TODO | 
+|azure-spring-cloud-messaging |spring-messaging-azure | The messaging listener annotation has been dropped.
 |azure-spring-cloud-starter-cache |N/A |This artifact has been deleted, for using redis, just add spring-boot-starter-data-redis, spring-boot-starter-cache and spring-cloud-azure-starter. 
 |azure-spring-cloud-starter-eventhubs-kafka |N/A |This artifact has been deleted, for using kafka, just add spring kafka and spring-cloud-azure-starter. 
 |azure-spring-cloud-starter-eventhubs |spring-cloud-azure-starter-integration-eventhubs |Starter for using Azure Event Hubs Spring Integration client library 
