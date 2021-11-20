@@ -42,5 +42,3 @@ The configuration properties' prefixes have been unified to `spring.cloud.azure`
 |Azure Storage Queue |spring.cloud.azure.storage.queue 
 |===
 
-
-To see the list of all Spring Cloud Azure related configuration properties please check link:appendix.html[the Appendix page].
