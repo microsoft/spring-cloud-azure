@@ -1,8 +1,8 @@
-= Spring Security Support
+== Spring Security Support
 
-== Spring Security with Azure AD
+=== Spring Security with Azure AD
 
-=== Dependency Setup
+==== Dependency Setup
 
 [source,xml]
 ----
@@ -12,7 +12,7 @@
 </dependency>
 ----
 
-=== Configuration
+==== Configuration
 
 This starter provides the following properties:
 
@@ -40,7 +40,7 @@ This starter provides the following properties:
 
 Here are some examples about how to use these properties:
 
-==== Property example 1: Application type
+===== Property example 1: Application type
 
 This property(`spring.cloud.azure.active-directory.application-type`) is optional, its value can be inferred by dependencies, only `web_application_and_resource_server` must be configured manually: `spring.cloud.azure.active-directory.application-type=web_application_and_resource_server`.
 
@@ -52,11 +52,11 @@ This property(`spring.cloud.azure.active-directory.application-type`) is optiona
 |Yes |Yes |`web_application`,`resource_server`,`resource_server_with_obo`, `web_application_and_resource_server` |`resource_server_with_obo` 
 |===
 
-==== Property example 2: Use https://docs.microsoft.com/azure/china/resources-developer-guide#check-endpoints-in-azure[Azure China] instead of Azure Global.
+===== Property example 2: Use https://docs.microsoft.com/azure/china/resources-developer-guide#check-endpoints-in-azure[Azure China] instead of Azure Global.
 
 * Step 1: Add property in application.yml
 
-==== Property example 3: Use `group name` or `group id` to protect some method in web application.
+===== Property example 3: Use `group name` or `group id` to protect some method in web application.
 
 * 
 
@@ -70,18 +70,18 @@ azure:
   active-directory:
     user-group:
       allowed-group-names: group1_name_1, group2_name_2
-      # 1. If allowed-group-ids = all, then all group id will take effect.
+      # 1. If allowed-group-ids == all, then all group id will take effect.
       # 2. If "all" is used, we should not configure other group ids.
       # 3. "all" is only supported for allowed-group-ids, not supported for allowed-group-names.
       allowed-group-ids: group_id_1, group_id_2
 ----
 
-* Step 2: Add `@EnableGlobalMethodSecurity(prePostEnabled = true)` in web application:
+* Step 2: Add `@EnableGlobalMethodSecurity(prePostEnabled == true)` in web application:
 
 [source,java]
 ----
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled == true)
 public class AADOAuth2LoginSecurityConfig extends AADWebSecurityConfigurerAdapter {
 
     /**
@@ -133,7 +133,7 @@ public class RoleController {
 }
 ----
 
-==== Property example 4: https://docs.microsoft.com/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison#incremental-and-dynamic-consent[Incremental consent] in Web application visiting resource servers.
+===== Property example 4: https://docs.microsoft.com/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison#incremental-and-dynamic-consent[Incremental consent] in Web application visiting resource servers.
 
 * 
 
@@ -163,7 +163,7 @@ After the scopes have been consented, AAD server will remember that this user ha
 the permission to the web application. So incremental consent will not happen anymore after user
 consented.
 
-==== Property example 5: [Client credential flow] in resource server visiting resource servers.
+===== Property example 5: [Client credential flow] in resource server visiting resource servers.
 
 * 
 
@@ -184,9 +184,9 @@ azure:
 
 * Step 2: Write Java code:
 
-=== Basic Usage
+==== Basic Usage
 
-==== Accessing a web application
+===== Accessing a web application
 
 This scenario uses the https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow[The OAuth 2.0 authorization code grant] flow to login in a user with a Microsoft account.
 
@@ -235,7 +235,7 @@ azure:
 
 The `AADWebSecurityConfigurerAdapter` contains necessary web security configuration for *aad-starter*.
 
-==== Web application accessing resource servers
+===== Web application accessing resource servers
 
 *System diagram*:
 
@@ -281,7 +281,7 @@ Here, `graph` is the name of `OAuth2AuthorizedClient`, `scopes` means the scopes
 
 * Step 4: Write your Java code:
 
-==== Accessing a resource server
+===== Accessing a resource server
 
 This scenario doesn't support login, just protect the server by validating the access_token. If the access token is valid, the server serves the request.
 
@@ -315,7 +315,7 @@ image:https://user-images.githubusercontent.com/13167207/142618069-074289df-11aa
 
 The `AADResourceServerWebSecurityConfigurerAdapter` contains necessary web security configuration for resource server.
 
-==== Resource server visiting other resource servers
+===== Resource server visiting other resource servers
 
 This scenario support visit other resource servers in resource servers.
 
@@ -379,7 +379,7 @@ public class SampleController {
 }
 ----
 
-==== Web application and Resource server in one application
+===== Web application and Resource server in one application
 
 This scenario supports `Web application` and `Resource server` in one application.
 
@@ -434,7 +434,7 @@ Configure multiple HttpSecurity instances, `AADOAuth2SecurityMultiConfig` contai
 [source,java]
 ----
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled == true)
 public class AADWebApplicationAndResourceServerConfig {
 
     @Order(1)
@@ -464,13 +464,13 @@ public class AADWebApplicationAndResourceServerConfig {
 }
 ----
 
-=== Samples
+==== Samples
 
 (todo: @chenrujun Add link here.)
 
-== Spring Security with Azure AD B2C
+=== Spring Security with Azure AD B2C
 
-=== Dependency Setup
+==== Dependency Setup
 
 [source,xml]
 ----
@@ -482,7 +482,7 @@ public class AADWebApplicationAndResourceServerConfig {
 </dependencies>
 ----
 
-=== Configuration
+==== Configuration
 
 |===
 |Parameter |Description 
@@ -501,7 +501,7 @@ public class AADWebApplicationAndResourceServerConfig {
 
 For full configurations, check appendix.
 
-=== Basic Usage
+==== Basic Usage
 
 A `web application` is any web based application that allows user to login Azure AD, whereas a `resource server` will either
 accept or deny access after validating access_token obtained from Azure AD. We will cover 4 scenarios in this guide:
@@ -513,7 +513,7 @@ accept or deny access after validating access_token obtained from Azure AD. We w
 
 image:https://user-images.githubusercontent.com/13167207/142620440-f970b572-2646-4f50-9f77-db62d6e965f1.png[B2C Web application &amp; Web Api Overall]
 
-==== Accessing a web application
+===== Accessing a web application
 
 This scenario uses the https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow[The OAuth 2.0 authorization code grant] flow to login in a user with your Azure AD B2C user.
 
@@ -599,7 +599,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final AADB2COidcLoginConfigurer configurer;
 
     public WebSecurityConfiguration(AADB2COidcLoginConfigurer configurer) {
-        this.configurer = configurer;
+        this.configurer == configurer;
     }
 
     @Override
@@ -620,7 +620,7 @@ Copy the _home.html_ from https://github.com/Azure-Samples/azure-spring-boot-sam
 
 Let `Webapp` run on port _8080_.
 
-==== Web application accessing resource servers
+===== Web application accessing resource servers
 
 This scenario is based on *Accessing a web application* scenario to allow application to access other resources, that is [The OAuth 2.0 client credentials grant] flow.
 
@@ -711,7 +711,7 @@ public class SampleConfiguration {
 Let `Webapp` and `WebApiA` run on port _8080_ and _8081_ respectively.
  Start `Webapp` and `WebApiA` application, return to the home page after logging successfully, you can access `http://localhost:8080/webapp/webApiA` to get *WebApiA* resource response.
 
-==== Accessing a resource server
+===== Accessing a resource server
 
 This scenario not support login. Just protect the server by validating the access token, and if valid, serves the request.
 
@@ -758,7 +758,7 @@ Security configuration code can refer to the following:
 [source,java]
 ----
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled == true)
 public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
@@ -777,7 +777,7 @@ Let `WebApiA` run on port _8081_.
  Get the access token for `webApiA` resource and access `http://localhost:8081/webApiA/sample`
  as the Bearer authorization header.
 
-==== Resource server accessing other resource servers
+===== Resource server accessing other resource servers
 
 This scenario is an upgrade of *Accessing a resource server*, supports access to other application resources, based on OAuth2 client credentials flow.
 
@@ -858,12 +858,12 @@ Let `WebApiA` and `WebApiB` run on port _8081_ and _8082_ respectively.
  Start `WebApiA` and `WebApiB` application, get the access token for `webApiA` resource and access `http://localhost:8081/webApiA/webApiB/sample`
  as the Bearer authorization header.
 
-=== Samples
+==== Samples
 
-==== Accessing a web application
+===== Accessing a web application
 
 Please refer to https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-oidc[azure-spring-boot-sample-active-directory-b2c-oidc]. (todo: @chenrujun. update this link)
 
-==== Accessing a resource server
+===== Accessing a resource server
 
 Please refer to https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-resource-server[azure-spring-boot-sample-active-directory-b2c-resource-server].

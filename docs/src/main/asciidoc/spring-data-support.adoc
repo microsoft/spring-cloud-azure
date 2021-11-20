@@ -1,15 +1,15 @@
-= Spring Data Support
+== Spring Data Support
 
-== Cosmos DB
+=== Cosmos DB
 
 brief introduction of the project
 
-== Dependency Setup
+=== Dependency Setup
 
-== Configuration
+=== Configuration
 
 for full configurations, check appendix
 
-== Basic Usage
+=== Basic Usage
 
-== Samples
+=== Samples

@@ -1,14 +1,14 @@
-= Authentication
+== Authentication
 
-== Authenticate with Azure Active Directory
+=== Authenticate with Azure Active Directory
 
-== Managed Identity
+=== Managed Identity
 
 We encourage using manged identity …
 
 pattern
 
-== default token credential chain
+=== default token credential chain
 
 ____
 

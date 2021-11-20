@@ -1,4 +1,4 @@
-= Production Ready
+== Production Ready
 
 If you choose to add Spring Cloud Azure Actuator, include actuator dependencies.
 
@@ -11,7 +11,7 @@ If you choose to add Spring Cloud Azure Actuator, include actuator dependencies.
 
 ----
 
-== Enable Health Indicator
+=== Enable Health Indicator
 
 for Cosmos DB, add `management.health.azure-cosmos.enabled=true` to application.yaml.
 
@@ -28,6 +28,6 @@ Warning: Call `http://{hostname}:{port}/actuator/health/cosmos` to get the Cosmo
 
 ____
 
-== Enable Sleuth
+=== Enable Sleuth
 
-== Integrate with Azure Monitor
+=== Integrate with Azure Monitor

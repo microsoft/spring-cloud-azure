@@ -1,4 +1,4 @@
-= Configuration Properties
+== Configuration Properties
 
 |===
 |Name |Required? |Default Value |Description 

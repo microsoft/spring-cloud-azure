@@ -1,4 +1,4 @@
-= Spring Integration Support
+== Spring Integration Support
 
 Spring Integration Extension for Azure provides Spring Integration adapters for the various services provided by the https://github.com/Azure/azure-sdk-for-java/[Azure SDK for Java]. Below is a list of supported adapters:
 
@@ -8,9 +8,9 @@ Spring Integration Extension for Azure provides Spring Integration adapters for 
 
 Provide Spring Integration support for these Azure serices: eh, sb, storage q
 
-== Spring Integration with Azure Event Hubs
+=== Spring Integration with Azure Event Hubs
 
-=== Dependency Setup
+==== Dependency Setup
 
 [source,xml]
 ----
@@ -21,19 +21,19 @@ Provide Spring Integration support for these Azure serices: eh, sb, storage q
 
 ----
 
-=== Configuration
+==== Configuration
 
 for full configurations, check appendix
 
-=== Basic Usage
+==== Basic Usage
 
-=== Samples
+==== Samples
 
 Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/eventhubs/azure-spring-integration-sample-eventhubs[sample project] to learn how to use Event Hubs integration. (todo: @chenrujun, update this link)
 
-== Spring Integration with Azure Service Bus
+=== Spring Integration with Azure Service Bus
 
-=== Dependency Setup
+==== Dependency Setup
 
 [source,xml]
 ----
@@ -43,13 +43,13 @@ Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/
 </dependency>
 ----
 
-=== Configuration
+==== Configuration
 
 for full configurations, check appendix
 
-=== Basic Usage
+==== Basic Usage
 
-=== Samples
+==== Samples
 
 *Example: Manually set the partition key for the message*
 
@@ -157,9 +157,9 @@ the value of the session id will eventually be used to overwrite the value of th
 
 ____
 
-== Spring Integration with Azure Storage Queue
+=== Spring Integration with Azure Storage Queue
 
-=== Dependency Setup
+==== Dependency Setup
 
 [source,xml]
 ----
@@ -169,12 +169,12 @@ ____
 </dependency>
 ----
 
-=== Configuration
+==== Configuration
 
 for full configurations, check appendix
 
-=== Basic Usage
+==== Basic Usage
 
-=== Samples
+==== Samples
 
 Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/storage/azure-spring-integration-sample-storage-queue[sample project] illustrating how to use Storage Queue integration.

@@ -374,7 +374,7 @@ ____
 |azure.cosmos.populateQueryMetrics |spring.cloud.azure.cosmos.populateQueryMetrics 
 |===
 
-==== From *azure-spring-boot-starter-storage* to *spring-cloud-azure-starter-storage-blob*
+| ==== From *azure-spring-boot-starter-storage* to *spring-cloud-azure-starter-storage-blob*
 
 . All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.blob`.|===
 |Legacy properties |Morden properties 
@@ -621,7 +621,7 @@ Modern code:
 |NONE |com.azure.spring.eventhubs.core.EventHubsProcessorContainer 
 |===
 
-=== spring-cloud-azure-stream-binder-servicebus
+| === spring-cloud-azure-stream-binder-servicebus
 
 |===
 |Legacy class |Modern class 
@@ -631,7 +631,7 @@ Modern code:
 |com.azure.spring.integration.servicebus.converter.ServiceBusMessageHeaders |com.azure.spring.servicebus.support.ServiceBusMessageHeaders
 |===
 
-=== spring-cloud-azure-starter-integration-servicebus
+| === spring-cloud-azure-starter-integration-servicebus
 
 ____
 
@@ -658,7 +658,7 @@ ____
 |com.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter |com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter
 |===
 
-Legacy code:
+| Legacy code:
 
 [source,java]
 ----
@@ -748,7 +748,7 @@ Modern code:
 |com.azure.spring.autoconfigure.aad.UserPrincipal |com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipal 
 |===
 
-=== spring-cloud-azure-starter-active-directory-b2c
+|=== spring-cloud-azure-starter-active-directory-b2c
 
 |===
 |Legacy class |Modern class 
@@ -757,7 +757,7 @@ Modern code:
 |com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer |com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2COidcLoginConfigurer 
 |===
 
-=== spring-cloud-azure-starter-integration-storage-queue
+| === spring-cloud-azure-starter-integration-storage-queue
 
 |===
 |Legacy class |Modern class 
@@ -767,4 +767,3 @@ Modern code:
 |com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.handler.DefaultMessageHandler 
 |com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders 
 |com.azure.spring.integration.storage.queue.StorageQueueOperation |com.azure.spring.storage.queue.core.StorageQueueOperation 
-|===

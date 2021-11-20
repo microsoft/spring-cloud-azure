@@ -1,11 +1,11 @@
-= Resource Handling
+== Resource Handling
 
-== Dependency Setup
+=== Dependency Setup
 
-== Configuration
+=== Configuration
 
 for full configurations, check appendix
 
-== Basic Usage
+=== Basic Usage
 
-== Samples
+=== Samples

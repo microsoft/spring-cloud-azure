@@ -1,4 +1,4 @@
-= Spring Cloud Stream Support
+== Spring Cloud Stream Support
 
 Spring Cloud Stream is a framework for building highly scalable event-driven microservices connected with shared messaging systems.
 
@@ -9,9 +9,9 @@ Current binder implementations include:
 * spring-cloud-azure-stream-binder-eventhubs
 * spring-cloud-azure-stream-binder-servicebus
 
-== Spring Cloud Stream Binder for Azure Event Hubs
+=== Spring Cloud Stream Binder for Azure Event Hubs
 
-=== Dependency Setup
+==== Dependency Setup
 
 [source,xml]
 ----
@@ -21,11 +21,11 @@ Current binder implementations include:
 </dependency>
 ----
 
-=== Configuration
+==== Configuration
 
 The binder provides the following configuration options in `application.properties`.
 
-==== Spring Cloud Azure Properties
+===== Spring Cloud Azure Properties
 
 [cols="<,<,<,<"]
 |===
@@ -47,12 +47,12 @@ The binder provides the following configuration options in `application.properti
 |spring.cloud.azure.eventhub.namespace |Event Hub Namespace. Auto creating if missing |Yes if service principal or MSI is used as credential configuration. 
 |===
 
-==== Common Producer Properties
+===== Common Producer Properties
 
 You can use the producer configurations of *Spring Cloud Stream*,
 it uses the configuration with the format of `spring.cloud.stream.bindings.&lt;channelName&gt;.producer`.
 
-===== Partition configuration
+====== Partition configuration
 
 The system will obtain the parameter `PartitionSupply` to send the message,
 the following is the process of obtaining the priority of the partition ID and key:
@@ -83,7 +83,7 @@ Default: null
 
 For more information about setting partition for the producer properties, please refer to the https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_producer_properties[Producer Properties of Spring Cloud Stream].
 
-==== Event Hub Producer Properties
+===== Event Hub Producer Properties
 
 It supports the following configurations with the format of `spring.cloud.stream.eventhubs.bindings.&lt;channelName&gt;.producer`.
 
@@ -100,12 +100,12 @@ Effective only if `sync` is set to true. The amount of time to wait for a respon
 
 Default: `10000`
 
-==== Common Consumer Properties
+===== Common Consumer Properties
 
 You can use the below consumer configurations of *Spring Cloud Stream*,
 it uses the configuration with the format of `spring.cloud.stream.bindings.&lt;channelName&gt;.consumer`.
 
-===== Batch Consumer
+====== Batch Consumer
 
 When `spring.cloud.stream.bindings.&lt;binding-name&gt;.consumer.batch-mode` is set to `true`, all of the received events
 will be presented as a `List&lt;?&gt;` to the consumer function. Otherwise, the function will be called with one event at a time.
@@ -118,7 +118,7 @@ Whether to enable the entire batch of messages to be passed to the consumer func
 
 Default: `False`
 
-==== Event Hub Consumer Properties
+===== Event Hub Consumer Properties
 
 It supports the following configurations with the format of `spring.cloud.stream.eventhubs.bindings.&lt;channelName&gt;.consumer`.
 
@@ -179,11 +179,11 @@ Default: `null`
 
 for full configurations, check appendix
 
-=== Basic Usage
+==== Basic Usage
 
-=== Samples
+==== Samples
 
-===== Error Channels
+==== Error Channels
 
 *_consumer error channel_*
 
@@ -192,7 +192,7 @@ this channel is open by default, you can handle the error message in this way:
 ----
     // Replace destination with spring.cloud.stream.bindings.input.destination
     // Replace group with spring.cloud.stream.bindings.input.group
-    @ServiceActivator(inputChannel = "{destination}.{group}.errors")
+    @ServiceActivator(inputChannel == "{destination}.{group}.errors")
     public void consumerError(Message<?> message) {
         LOGGER.error("Handling customer ERROR: " + message);
     }
@@ -210,7 +210,7 @@ you can handle the error message in this way:
 
 ----
     // Replace destination with spring.cloud.stream.bindings.output.destination
-    @ServiceActivator(inputChannel = "{destination}.errors")
+    @ServiceActivator(inputChannel == "{destination}.errors")
     public void producerError(Message<?> message) {
         LOGGER.error("Handling Producer ERROR: " + message);
     }
@@ -244,7 +244,7 @@ spring:
                 max-wait-time: 1m # Optional, the default value is null
 ----
 
-====== Consume messages in batches
+======= Consume messages in batches
 
 For checkpointing mode as BATCH, you can use below code to send messages and consume in batches.
 
@@ -270,7 +270,7 @@ For checkpointing mode as MANUAL, you can use below code to send messages and co
     @Bean
     public Consumer<Message<List<String>>> consume() {
         return message -> {
-            for (int i = 0; i < message.getPayload().size(); i++) {
+            for (int i == 0; i < message.getPayload().size(); i++) {
                 LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
                     message.getPayload().get(i),
                     ((List<Object>) message.getHeaders().get(EventHubsHeaders.PARTITION_KEY)).get(i),
@@ -279,7 +279,7 @@ For checkpointing mode as MANUAL, you can use below code to send messages and co
                     ((List<Object>) message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)).get(i));
             }
         
-            Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+            Checkpointer checkpointer == (Checkpointer) message.getHeaders().get(CHECKPOINTER);
             checkpointer.success()
                         .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                         .doOnError(error -> LOGGER.error("Exception found", error))
@@ -295,9 +295,9 @@ For checkpointing mode as MANUAL, you can use below code to send messages and co
     }
 ----
 
-== Spring Cloud Stream Binder for Azure Service Bus
+=== Spring Cloud Stream Binder for Azure Service Bus
 
-=== Dependency Setup
+==== Dependency Setup
 
 [source,xml]
 ----
@@ -307,11 +307,11 @@ For checkpointing mode as MANUAL, you can use below code to send messages and co
 </dependency>
 ----
 
-=== Configuration
+==== Configuration
 
 The binder provides the following configuration options:
 
-==== Spring Cloud Azure Properties
+===== Spring Cloud Azure Properties
 
 [cols="<,<,<,<"]
 |===
@@ -332,7 +332,7 @@ The binder provides the following configuration options:
 |spring.cloud.azure.servicebus.retry-Options |Service Bus retry options |No |Default value of AmqpRetryOptions
 |===
 
-==== Partition configuration
+===== Partition configuration
 
 The system will obtain the parameter `PartitionSupply` to send the message.
 
@@ -360,7 +360,7 @@ Default: null
 
 For more information about setting partition for the producer properties, please refer to the https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_producer_properties[Producer Properties of Spring Cloud Stream].
 
-==== Serivce Bus Queue Producer Properties
+===== Serivce Bus Queue Producer Properties
 
 It supports the following configurations with the format of `spring.cloud.stream.servicebus.queue.bindings.&lt;channelName&gt;.producer`.
 
@@ -377,7 +377,7 @@ Effective only if `sync` is set to true. The amount of time to wait for a respon
 
 Default: `10000`
 
-==== Service Bus Queue Consumer Properties
+===== Service Bus Queue Consumer Properties
 
 It supports the following configurations with the format of `spring.cloud.stream.servicebus.queue.bindings.&lt;channelName&gt;.consumer`.
 
@@ -449,7 +449,7 @@ Enable auto-complete and auto-abandon of received messages.
 
 Default: `false`
 
-==== Support for Service Bus Message Headers and Properties
+===== Support for Service Bus Message Headers and Properties
 
 The following table illustrates how Spring message headers are mapped to Service Bus message headers and properties.
 When create a message, developers can specify the header or property of a Service Bus message by below constants.
@@ -477,9 +477,9 @@ For some Service Bus headers that can be mapped to multiple Spring header consta
 
 For full configurations, check appendix
 
-=== Basic Usage
+==== Basic Usage
 
-=== Samples
+==== Samples
 
 *Example: Manually set the partition key for the message*
 
