@@ -343,7 +343,7 @@ ____
 
 For all configuration options supported in spring-cloud-azure-starter-integration-servicebus and spring-integration-azure-servicebus libraries,
 the prefix remains to be as `spring.cloud.azure.servicebus.`.
-* Renamed configuration options[cols="<,<,<"]
+
 |===
 |Legacy configuration suffix value |Current configuration suffix value |Current type
 
@@ -363,16 +363,16 @@ ____
 
 ____
 
-We have merged these two libraries into one, which supports both topic and queue.And the binder type is combined as `servicebus`.
+We have merged these two libraries into one, which supports both topic and queue. And the binder type is combined as `servicebus`.
 
-* New configuration properties[cols="<,<"]
+* New configuration properties
 |===
 |Modern Spring Cloud Azure 4.0 |description
 
 |`spring.cloud.stream.servicebus.bindings.{channel}.producer.entity-type` |`If you use the sending function, you need to set the entity-type, which can be set to topic or queue.`
 |===
 
-* Properties Configuration Changed[cols="<,<"]
+* Properties Configuration Changed
 |===
 |Legacy |Modern Spring Cloud Azure 4.0
 
