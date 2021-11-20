@@ -1,11 +1,44 @@
 == Resource Manager
 
+Connect to Azure Resources for All Azure SDKs service, which Spring Cloud used.
+Construct `TokenCredential` by using various credential information, and then construct `AzureResourceManager` to help Azure SDKs Client to authenticate and authorize.
+
 === Dependency Setup
+
+[source,xml]
+----
+<dependency>
+  <groupId>com.azure.spring</groupId>
+  <artifactId>spring-cloud-azure-resourcemanager</artifactId>
+</dependency>
+----
 
 === Configuration
 
-for full configurations, check appendix
+This Spring Cloud Azure Resource Manager provides the following properties:
+
+|===
+|Properties |Description
+
+|*spring.cloud.azure.resource-manager*.enabled |Whether the Resource Manager is enabled. Default is true.
+|*spring.cloud.azure.credential*.client-certificate-password |Password of the certificate file.
+|*spring.cloud.azure.credential*.client-certificate-path |Path of a PEM certificate file to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.credential*.client-id |Client id to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.credential*.client-secret |Client secret to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.credential*.managed-identity-client-id |Client id to use when using managed identity to authenticate with Azure.
+|*spring.cloud.azure.credential*.username |Username to use when performing username/password authentication with Azure.
+|*spring.cloud.azure.credential*.password |Password to use when performing username/password authentication.
+|*spring.cloud.azure.profile*.cloud |Name of the Azure cloud to connect to.
+|*spring.cloud.azure.profile*.environment.active-directory-endpoint |
+|*spring.cloud.azure.profile*.subscription |Subscription id to use when connecting to Azure resources.
+|*spring.cloud.azure.profile*.tenant-id |Tenant id for Azure resources.
+|===
 
 === Basic Usage
 
+Azure Resource Manger helps the Azure SDK client to complete authentication and authorization. It can be integrated into a specific Spring Cloud Azure Starter and work together, or it can be used with Spring Cloud Azure auto-configuration modules and third-party libraries to complete authentication, such as: <<Kafka Support>>, <<Redis Support>>.
+
 === Samples
+
+Please see <<Kafka Support>>, <<Redis Support>> for more information about usage.
+
