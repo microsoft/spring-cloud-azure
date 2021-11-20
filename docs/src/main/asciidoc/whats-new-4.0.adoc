@@ -1,6 +1,8 @@
 == What is New in 4.0 since 3.10.x
 
-This section covers the changes made from version 3.10 to version 4.0.0-beta.1. With this major release, we aim to bring better security, leaner dependencies, support for production readiness, and more. 
+This section covers the changes made from version 3.10 to version 4.0.0-beta.1. With this major release, we aim to bring better security, leaner dependencies, support for production readiness, and more.
+
+To learn how to migration to 4.0, please check link:appendix.html[the Appendix page].
 
 === Unified Development Experience 
 
@@ -46,5 +48,5 @@ Sample code
 ====
 === More Production Ready  
 
-Lastly all of the above would be in vain if we do not have enough feature coverage to support our customers in production. Many things come to my mind to make an application production-ready, but observability often arrives at the top. We’ve added health indicators for App Configuration, Event Hubs, Cosmos, Key Vault, Storage Blob, Storage Queue, Storage File, as well as Spring Cloud Sleuth support for all HTTP-based Azure SDKs. As an example, you now can prob if storage blob is up or down via Spring Boot actuator endpoint, as well as track dependencies and latencies going from your application to Cosmos DB. 
+Lastly all of the above would be in vain if we do not have enough feature coverage to support our customers in production. Many things come to my mind to make an application production-ready, but observability often arrives at the top. We’ve added health indicators for App Configuration, Event Hubs, Cosmos, Key Vault, Storage Blob, Storage Queue, Storage File, as well as Spring Cloud Sleuth support for all HTTP-based Azure SDKs. As an example, you now can prob if storage blob is up or down via Spring Boot actuator endpoint, as well as track dependencies and latencies going from your application to Cosmos DB.
 
