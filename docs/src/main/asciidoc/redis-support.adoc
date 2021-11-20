@@ -1,1 +1,8 @@
 == Redis Support
+
+Connect to Azure Cache for Redis using Spring Redis libraries.
+
+=== Dependency Setup
+=== Configuration
+=== Basic Usage
+=== Samples

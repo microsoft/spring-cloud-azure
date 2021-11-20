@@ -1,6 +1,6 @@
 == Kafka Support
 
-Connect to Azure Event Hubs using Kafka libraries.
+Connect to Azure Event Hubs using Spring Kafka libraries.
 
 === Dependency Setup
 
