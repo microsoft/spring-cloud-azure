@@ -188,19 +188,19 @@ window.onload = function() {
 <p>This guide assists in the migration to <strong>Spring Cloud Azure 4.0</strong> from legacy Azure Spring libraries.</p>
 </div>
 <div class="paragraph">
-<p>We will call libraries whose group id and artifact id following pattern <code>com.azure.spring:spring-cloud-azure-<strong></code> the *modern libraries</strong>,
-and those with pattern <code>com.azure.spring:azure-spring-boot-<strong></code>, <code>com.azure.spring:azure-spring-cloud-</strong></code> ,
-or <code>com.azure.spring:azure-spring-integration-<strong></code> the *legacy</strong> ones.</p>
+<p>We will call libraries whose group id and artifact id following pattern <code>com.azure.spring:spring-cloud-azure-*</code> the <strong>modern</strong> libraries,
+and those with pattern <code>com.azure.spring:azure-spring-boot-*</code>, <code>com.azure.spring:azure-spring-cloud-*</code> ,
+or <code>com.azure.spring:azure-spring-integration-*</code> the <strong>legacy</strong> ones.</p>
 </div>
 <div class="paragraph">
 <p>This guide will focus the side-by-side comparisons for similar configurations between the modern and legacy libraries.</p>
 </div>
 <div class="paragraph">
-<p>Familiarity with <code>com.azure.spring:azure-spring-boot-<strong></code>, <code>com.azure.spring:azure-spring-cloud-</strong></code>
+<p>Familiarity with <code>com.azure.spring:azure-spring-boot-*</code>, <code>com.azure.spring:azure-spring-cloud-*</code>
 or <code>com.azure.spring:azure-spring-integration-*</code> package is assumed.</p>
 </div>
 <div class="paragraph">
-<p>For those new to the Spring Cloud Azure 4.0 libraries, please refer to the <a href="https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Cloud-Azure-4.0-Reference">Spring Cloud Azure 4.0 Reference Doc</a> rather than this guide.</p>
+<p>For those new to the Spring Cloud Azure 4.0 libraries, please refer to the <a href="index.html">Spring Cloud Azure 4.0 Reference Doc</a> rather than this guide.</p>
 </div>
 <div class="sect2">
 <h3 id="_migration_benefits"><a class="link" href="#_migration_benefits">Migration benefits</a></h3>
@@ -634,6 +634,35 @@ target Azure resources.</p>
 <div class="sect2">
 <h3 id="_configuration_properties"><a class="link" href="#_configuration_properties">Configuration properties</a></h3>
 <div class="sect3">
+<h4 id="_properties_migration"><a class="link" href="#_properties_migration">Properties Migration</a></h4>
+<div class="paragraph">
+<p>We&#8217;ve create a <code>additional-spring-configuration-metadata.json</code> file to smooth the properties migration when using with <code>spring-boot-properties-migrator</code>. Before doing so, let’s add the properties migrator to your application</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-properties-migrator&lt;/artifactId&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or, if you’re using Gradle:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">runtime("org.springframework.boot:spring-boot-properties-migrator")</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you run the app, it will identify the properties that are no longer managed by Spring Cloud Azure. If there is a replacement it will temporarily remap the property for you with a warning. If there isn’t a replacement, an error report will give you more information. Either way, the configuration has to be updated and the dependency removed once you have updated the configuration.</p>
+</div>
+<div class="paragraph">
+<p>Before you move on, it is a good idea to use the search feature of your IDE to double-check that you aren’t using one of the properties you’ve migrated in an integration test.</p>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_global_configurations"><a class="link" href="#_global_configurations">Global configurations</a></h4>
 <div class="paragraph">
 <p>The modern <code>spring-cloud-azure-starter</code> allows developers to define properties that apply to all Azure SDKs in the
@@ -675,7 +704,7 @@ configurations can be divided into five categories:</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Check <a href="https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Cloud-Azure-4.0-Reference#a-configuration-properties">here</a> for a full list of configurations.</p>
+<p>Check <a href="appendix.html">here</a> for a full list of configurations.</p>
 </div>
 </div>
 <div class="sect3">
