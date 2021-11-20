@@ -2,16 +2,16 @@
 
 This guide assists in the migration to *Spring Cloud Azure 4.0* from legacy Azure Spring libraries. 
 
-We will call libraries whose group id and artifact id following pattern `com.azure.spring:spring-cloud-azure-*` the *modern libraries*,
-and those with pattern `com.azure.spring:azure-spring-boot-*`, `com.azure.spring:azure-spring-cloud-*` ,
+We will call libraries whose group id and artifact id following pattern `com.azure.spring:spring-cloud-azure-\*` the **modern** libraries,
+and those with pattern `com.azure.spring:azure-spring-boot-*`, `com.azure.spring:azure-spring-cloud-\*` ,
 or `com.azure.spring:azure-spring-integration-*` the *legacy* ones. 
 
 This guide will focus the side-by-side comparisons for similar configurations between the modern and legacy libraries. 
 
-Familiarity with `com.azure.spring:azure-spring-boot-*`, `com.azure.spring:azure-spring-cloud-*`
+Familiarity with `com.azure.spring:azure-spring-boot-\*`, `com.azure.spring:azure-spring-cloud-*`
 or `com.azure.spring:azure-spring-integration-*` package is assumed. 
 
-For those new to the Spring Cloud Azure 4.0 libraries, please refer to the https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Cloud-Azure-4.0-Reference[Spring Cloud Azure 4.0 Reference Doc] rather than this guide.
+For those new to the Spring Cloud Azure 4.0 libraries, please refer to the link:index.html[Spring Cloud Azure 4.0 Reference Doc] rather than this guide.
 
 === Migration benefits
 
@@ -201,7 +201,7 @@ configurations can be divided into five categories:
 |spring.cloud.azure.retry |To configure the retry options apply to all Azure SDK clients. 
 |===
 
-Check https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Cloud-Azure-4.0-Reference#a-configuration-properties[here] for a full list of configurations.
+Check link:appendix.html[here] for a full list of configurations.
 
 ==== Each SDK configurations
 
