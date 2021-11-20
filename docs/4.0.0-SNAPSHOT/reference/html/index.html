@@ -182,70 +182,102 @@ window.onload = function() {
 <li><a href="#learning-spring-cloud-azure">2.2. Learning Spring Cloud Azure</a></li>
 </ul>
 </li>
-<li><a href="#spring-cloud-azure-configuration">3. Spring Cloud Azure Configuration</a>
+<li><a href="#configuration">3. Configuration</a></li>
+<li><a href="#authentication">4. Authentication</a>
 <ul class="sectlevel2">
-<li><a href="#authenticate-with-azure-active-directory">3.1. Authenticate with Azure Active Directory</a></li>
-<li><a href="#managed-identity">3.2. Managed Identity</a></li>
-<li><a href="#default-token-credential-chain">3.3. default token credential chain</a></li>
+<li><a href="#authenticate-with-azure-active-directory">4.1. Authenticate with Azure Active Directory</a></li>
+<li><a href="#managed-identity">4.2. Managed Identity</a></li>
+<li><a href="#default-token-credential-chain">4.3. default token credential chain</a></li>
 </ul>
 </li>
-<li><a href="#production-ready">4. Production Ready</a>
+<li><a href="#production-ready">5. Production Ready</a>
 <ul class="sectlevel2">
-<li><a href="#enable-health-indicator">4.1. Enable Health Indicator</a></li>
-<li><a href="#enable-sleuth">4.2. Enable Sleuth</a></li>
-<li><a href="#integrate-with-azure-monitor">4.3. Integrate with Azure Monitor</a></li>
+<li><a href="#enable-health-indicator">5.1. Enable Health Indicator</a></li>
+<li><a href="#enable-sleuth">5.2. Enable Sleuth</a></li>
+<li><a href="#integrate-with-azure-monitor">5.3. Integrate with Azure Monitor</a></li>
 </ul>
 </li>
-<li><a href="#resource-handling">5. Resource Handling</a>
+<li><a href="#auto-configure-azure-sdk-clients">6. Auto Configure Azure SDK Clients</a></li>
+<li><a href="#resource-handling">7. Resource Handling</a>
 <ul class="sectlevel2">
-<li><a href="#dependency-setup">5.1. Dependency Setup</a></li>
-<li><a href="#configuration">5.2. Configuration</a></li>
-<li><a href="#basic-usage">5.3. Basic Usage</a></li>
-<li><a href="#samples">5.4. Samples</a></li>
+<li><a href="#dependency-setup">7.1. Dependency Setup</a></li>
+<li><a href="#configuration-2">7.2. Configuration</a></li>
+<li><a href="#basic-usage">7.3. Basic Usage</a></li>
+<li><a href="#samples">7.4. Samples</a></li>
 </ul>
 </li>
-<li><a href="#secret-management">6. Secret Management</a>
+<li><a href="#secret-management">8. Secret Management</a>
 <ul class="sectlevel2">
-<li><a href="#dependency-setup-2">6.1. Dependency Setup</a></li>
-<li><a href="#configuration-2">6.2. Configuration</a></li>
-<li><a href="#basic-usage-2">6.3. Basic Usage</a></li>
-<li><a href="#samples-2">6.4. Samples</a></li>
+<li><a href="#dependency-setup-2">8.1. Dependency Setup</a></li>
+<li><a href="#configuration-3">8.2. Configuration</a></li>
+<li><a href="#basic-usage-2">8.3. Basic Usage</a></li>
+<li><a href="#samples-2">8.4. Samples</a></li>
 </ul>
 </li>
-<li><a href="#spring-data-support">7. Spring Data Support</a>
+<li><a href="#spring-data-support">9. Spring Data Support</a>
 <ul class="sectlevel2">
-<li><a href="#cosmos-db">7.1. Cosmos DB</a></li>
-<li><a href="#dependency-setup-3">7.2. Dependency Setup</a></li>
-<li><a href="#configuration-3">7.3. Configuration</a></li>
-<li><a href="#basic-usage-3">7.4. Basic Usage</a></li>
-<li><a href="#samples-3">7.5. Samples</a></li>
+<li><a href="#cosmos-db">9.1. Cosmos DB</a></li>
+<li><a href="#dependency-setup-3">9.2. Dependency Setup</a></li>
+<li><a href="#configuration-4">9.3. Configuration</a></li>
+<li><a href="#basic-usage-3">9.4. Basic Usage</a></li>
+<li><a href="#samples-3">9.5. Samples</a></li>
 </ul>
 </li>
-<li><a href="#spring-security-support">8. Spring Security Support</a>
+<li><a href="#spring-security-support">10. Spring Security Support</a>
 <ul class="sectlevel2">
-<li><a href="#spring-security-with-azure-ad">8.1. Spring Security with Azure AD</a></li>
-<li><a href="#spring-security-with-azure-ad-b2c">8.2. Spring Security with Azure AD B2C</a></li>
-<li><a href="#spring-integration-with-azure-event-hubs">8.3. Spring Integration with Azure Event Hubs</a></li>
-<li><a href="#spring-integration-with-azure-service-bus">8.4. Spring Integration with Azure Service Bus</a></li>
-<li><a href="#spring-integration-with-azure-storage-queue">8.5. Spring Integration with Azure Storage Queue</a></li>
-<li><a href="#spring-cloud-stream-binder-for-azure-event-hubs">8.6. Spring Cloud Stream Binder for Azure Event Hubs</a></li>
-<li><a href="#spring-cloud-stream-binder-for-azure-service-bus">8.7. Spring Cloud Stream Binder for Azure Service Bus</a></li>
+<li><a href="#spring-security-with-azure-ad">10.1. Spring Security with Azure AD</a></li>
+<li><a href="#spring-security-with-azure-ad-b2c">10.2. Spring Security with Azure AD B2C</a></li>
 </ul>
 </li>
-<li><a href="#kafka-support-moary">9. Kafka Support (@moary)</a></li>
-<li><a href="#migration-guide-for-4-0">10. Migration Guide for 4.0</a>
+<li><a href="#spring-integration-support">11. Spring Integration Support</a>
 <ul class="sectlevel2">
-<li><a href="#migration-benefits">10.1. Migration benefits</a></li>
-<li><a href="#overview">10.2. Overview</a></li>
-<li><a href="#naming-changes">10.3. Naming changes</a></li>
-<li><a href="#bom">10.4. BOM</a></li>
-<li><a href="#artifact-changes-renamed-added-deleted">10.5. Artifact changes: renamed / added / deleted</a></li>
-<li><a href="#dependencies-changes">10.6. Dependencies changes</a></li>
-<li><a href="#authentication">10.7. Authentication</a></li>
-<li><a href="#configuration-properties">10.8. Configuration properties</a></li>
-<li><a href="#api-breaking-changes">10.9. API breaking changes</a></li>
+<li><a href="#spring-integration-with-azure-event-hubs">11.1. Spring Integration with Azure Event Hubs</a></li>
+<li><a href="#spring-integration-with-azure-service-bus">11.2. Spring Integration with Azure Service Bus</a></li>
+<li><a href="#spring-integration-with-azure-storage-queue">11.3. Spring Integration with Azure Storage Queue</a></li>
 </ul>
 </li>
+<li><a href="#spring-cloud-stream-support">12. Spring Cloud Stream Support</a>
+<ul class="sectlevel2">
+<li><a href="#spring-cloud-stream-binder-for-azure-event-hubs">12.1. Spring Cloud Stream Binder for Azure Event Hubs</a></li>
+<li><a href="#spring-cloud-stream-binder-for-azure-service-bus">12.2. Spring Cloud Stream Binder for Azure Service Bus</a></li>
+</ul>
+</li>
+<li><a href="#kafka-support">13. Kafka Support</a>
+<ul class="sectlevel2">
+<li><a href="#dependency-setup-11">13.1. Dependency Setup</a></li>
+<li><a href="#configuration-12">13.2. Configuration</a></li>
+<li><a href="#basic-usage-11">13.3. Basic Usage</a></li>
+<li><a href="#samples-11">13.4. Samples</a></li>
+<li><a href="#troubleshooting">13.5. Troubleshooting</a></li>
+<li><a href="#dependency-setup-12">13.6. Dependency Setup</a></li>
+<li><a href="#configuration-13">13.7. Configuration</a></li>
+<li><a href="#basic-usage-12">13.8. Basic Usage</a></li>
+<li><a href="#samples-12">13.9. Samples</a></li>
+</ul>
+</li>
+<li><a href="#resource-manager">14. Resource Manager</a>
+<ul class="sectlevel2">
+<li><a href="#dependency-setup-13">14.1. Dependency Setup</a></li>
+<li><a href="#configuration-14">14.2. Configuration</a></li>
+<li><a href="#basic-usage-13">14.3. Basic Usage</a></li>
+<li><a href="#samples-13">14.4. Samples</a></li>
+</ul>
+</li>
+<li><a href="#configuration-properties">15. Configuration Properties</a></li>
+<li><a href="#migration-guide-for-4-0">16. Migration Guide for 4.0</a>
+<ul class="sectlevel2">
+<li><a href="#migration-benefits">16.1. Migration benefits</a></li>
+<li><a href="#overview">16.2. Overview</a></li>
+<li><a href="#naming-changes">16.3. Naming changes</a></li>
+<li><a href="#bom">16.4. BOM</a></li>
+<li><a href="#artifact-changes-renamed-added-deleted">16.5. Artifact changes: renamed / added / deleted</a></li>
+<li><a href="#dependencies-changes">16.6. Dependencies changes</a></li>
+<li><a href="#authentication-2">16.7. Authentication</a></li>
+<li><a href="#configuration-properties-2">16.8. Configuration properties</a></li>
+<li><a href="#api-breaking-changes">16.9. API breaking changes</a></li>
+</ul>
+</li>
+<li><a href="#known-issues">17. Known Issues</a></li>
 </ul>
 </div>
 </div>
@@ -555,7 +587,7 @@ Spring Cloud is released under the non-restrictive Apache 2.0 license. If you wo
 </div>
 </div>
 <div class="sect1">
-<h2 id="spring-cloud-azure-configuration"><a class="anchor" href="#spring-cloud-azure-configuration"></a><a class="link" href="#spring-cloud-azure-configuration">3. Spring Cloud Azure Configuration</a></h2>
+<h2 id="configuration"><a class="anchor" href="#configuration"></a><a class="link" href="#configuration">3. Configuration</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Most of Azure Service SDKs could divide into two categories by transport type, HTTP-based and AMQP-based. There are properties that are common to all SDKs such as authentication principals and Azure environment settings. Or common to all HTTP-based clients, such as setting logging level to log http requests and responses. In Spring Cloud Azure 4.0 we added five common categories of configuration properties, which could be specified to each Azure service.</p>
@@ -687,16 +719,17 @@ Spring Cloud is released under the non-restrictive Apache 2.0 license. If you wo
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>To see the list of all Spring Cloud Azure related configuration properties please check <a href="appendix.html">the Appendix page</a>.
-== Authentication</p>
 </div>
+</div>
+<div class="sect1">
+<h2 id="authentication"><a class="anchor" href="#authentication"></a><a class="link" href="#authentication">4. Authentication</a></h2>
+<div class="sectionbody">
 <div class="sect2">
-<h3 id="authenticate-with-azure-active-directory"><a class="anchor" href="#authenticate-with-azure-active-directory"></a><a class="link" href="#authenticate-with-azure-active-directory">3.1. Authenticate with Azure Active Directory</a></h3>
+<h3 id="authenticate-with-azure-active-directory"><a class="anchor" href="#authenticate-with-azure-active-directory"></a><a class="link" href="#authenticate-with-azure-active-directory">4.1. Authenticate with Azure Active Directory</a></h3>
 
 </div>
 <div class="sect2">
-<h3 id="managed-identity"><a class="anchor" href="#managed-identity"></a><a class="link" href="#managed-identity">3.2. Managed Identity</a></h3>
+<h3 id="managed-identity"><a class="anchor" href="#managed-identity"></a><a class="link" href="#managed-identity">4.2. Managed Identity</a></h3>
 <div class="paragraph">
 <p>We encourage using manged identity …</p>
 </div>
@@ -705,7 +738,7 @@ Spring Cloud is released under the non-restrictive Apache 2.0 license. If you wo
 </div>
 </div>
 <div class="sect2">
-<h3 id="default-token-credential-chain"><a class="anchor" href="#default-token-credential-chain"></a><a class="link" href="#default-token-credential-chain">3.3. default token credential chain</a></h3>
+<h3 id="default-token-credential-chain"><a class="anchor" href="#default-token-credential-chain"></a><a class="link" href="#default-token-credential-chain">4.3. default token credential chain</a></h3>
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
@@ -717,7 +750,7 @@ Spring Cloud is released under the non-restrictive Apache 2.0 license. If you wo
 </div>
 </div>
 <div class="sect1">
-<h2 id="production-ready"><a class="anchor" href="#production-ready"></a><a class="link" href="#production-ready">4. Production Ready</a></h2>
+<h2 id="production-ready"><a class="anchor" href="#production-ready"></a><a class="link" href="#production-ready">5. Production Ready</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>If you choose to add Spring Cloud Azure Actuator, include actuator dependencies.</p>
@@ -731,7 +764,7 @@ Spring Cloud is released under the non-restrictive Apache 2.0 license. If you wo
 </div>
 </div>
 <div class="sect2">
-<h3 id="enable-health-indicator"><a class="anchor" href="#enable-health-indicator"></a><a class="link" href="#enable-health-indicator">4.1. Enable Health Indicator</a></h3>
+<h3 id="enable-health-indicator"><a class="anchor" href="#enable-health-indicator"></a><a class="link" href="#enable-health-indicator">5.1. Enable Health Indicator</a></h3>
 <div class="paragraph">
 <p>for Cosmos DB, add <code>management.health.azure-cosmos.enabled=true</code> to application.yaml.</p>
 </div>
@@ -749,46 +782,52 @@ Spring Cloud is released under the non-restrictive Apache 2.0 license. If you wo
 </div>
 </div>
 <div class="sect2">
-<h3 id="enable-sleuth"><a class="anchor" href="#enable-sleuth"></a><a class="link" href="#enable-sleuth">4.2. Enable Sleuth</a></h3>
+<h3 id="enable-sleuth"><a class="anchor" href="#enable-sleuth"></a><a class="link" href="#enable-sleuth">5.2. Enable Sleuth</a></h3>
 
 </div>
 <div class="sect2">
-<h3 id="integrate-with-azure-monitor"><a class="anchor" href="#integrate-with-azure-monitor"></a><a class="link" href="#integrate-with-azure-monitor">4.3. Integrate with Azure Monitor</a></h3>
+<h3 id="integrate-with-azure-monitor"><a class="anchor" href="#integrate-with-azure-monitor"></a><a class="link" href="#integrate-with-azure-monitor">5.3. Integrate with Azure Monitor</a></h3>
 
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="resource-handling"><a class="anchor" href="#resource-handling"></a><a class="link" href="#resource-handling">5. Resource Handling</a></h2>
+<h2 id="auto-configure-azure-sdk-clients"><a class="anchor" href="#auto-configure-azure-sdk-clients"></a><a class="link" href="#auto-configure-azure-sdk-clients">6. Auto Configure Azure SDK Clients</a></h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="resource-handling"><a class="anchor" href="#resource-handling"></a><a class="link" href="#resource-handling">7. Resource Handling</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="dependency-setup"><a class="anchor" href="#dependency-setup"></a><a class="link" href="#dependency-setup">5.1. Dependency Setup</a></h3>
+<h3 id="dependency-setup"><a class="anchor" href="#dependency-setup"></a><a class="link" href="#dependency-setup">7.1. Dependency Setup</a></h3>
 
 </div>
 <div class="sect2">
-<h3 id="configuration"><a class="anchor" href="#configuration"></a><a class="link" href="#configuration">5.2. Configuration</a></h3>
+<h3 id="configuration-2"><a class="anchor" href="#configuration-2"></a><a class="link" href="#configuration-2">7.2. Configuration</a></h3>
 <div class="paragraph">
 <p>for full configurations, check appendix</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="basic-usage"><a class="anchor" href="#basic-usage"></a><a class="link" href="#basic-usage">5.3. Basic Usage</a></h3>
+<h3 id="basic-usage"><a class="anchor" href="#basic-usage"></a><a class="link" href="#basic-usage">7.3. Basic Usage</a></h3>
 
 </div>
 <div class="sect2">
-<h3 id="samples"><a class="anchor" href="#samples"></a><a class="link" href="#samples">5.4. Samples</a></h3>
+<h3 id="samples"><a class="anchor" href="#samples"></a><a class="link" href="#samples">7.4. Samples</a></h3>
 
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="secret-management"><a class="anchor" href="#secret-management"></a><a class="link" href="#secret-management">6. Secret Management</a></h2>
+<h2 id="secret-management"><a class="anchor" href="#secret-management"></a><a class="link" href="#secret-management">8. Secret Management</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>spring-cloud-azure-starter-keyvault-secrets adds Azure Key Vault as one of the Spring PropertySource, so secrets stored in Azure Key Vault could be easily used and conveniently accessed like other externalized configuration property, e.g. properties in files.</p>
 </div>
 <div class="sect2">
-<h3 id="dependency-setup-2"><a class="anchor" href="#dependency-setup-2"></a><a class="link" href="#dependency-setup-2">6.1. Dependency Setup</a></h3>
+<h3 id="dependency-setup-2"><a class="anchor" href="#dependency-setup-2"></a><a class="link" href="#dependency-setup-2">8.1. Dependency Setup</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -799,7 +838,7 @@ Spring Cloud is released under the non-restrictive Apache 2.0 license. If you wo
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-2"><a class="anchor" href="#configuration-2"></a><a class="link" href="#configuration-2">6.2. Configuration</a></h3>
+<h3 id="configuration-3"><a class="anchor" href="#configuration-3"></a><a class="link" href="#configuration-3">8.2. Configuration</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-yml" data-lang="yml">spring:
@@ -815,11 +854,11 @@ Spring Cloud is released under the non-restrictive Apache 2.0 license. If you wo
 </div>
 </div>
 <div class="sect2">
-<h3 id="basic-usage-2"><a class="anchor" href="#basic-usage-2"></a><a class="link" href="#basic-usage-2">6.3. Basic Usage</a></h3>
+<h3 id="basic-usage-2"><a class="anchor" href="#basic-usage-2"></a><a class="link" href="#basic-usage-2">8.3. Basic Usage</a></h3>
 
 </div>
 <div class="sect2">
-<h3 id="samples-2"><a class="anchor" href="#samples-2"></a><a class="link" href="#samples-2">6.4. Samples</a></h3>
+<h3 id="samples-2"><a class="anchor" href="#samples-2"></a><a class="link" href="#samples-2">8.4. Samples</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
@@ -843,41 +882,41 @@ public class KeyVaultSample implements CommandLineRunner {
 </div>
 </div>
 <div class="sect1">
-<h2 id="spring-data-support"><a class="anchor" href="#spring-data-support"></a><a class="link" href="#spring-data-support">7. Spring Data Support</a></h2>
+<h2 id="spring-data-support"><a class="anchor" href="#spring-data-support"></a><a class="link" href="#spring-data-support">9. Spring Data Support</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="cosmos-db"><a class="anchor" href="#cosmos-db"></a><a class="link" href="#cosmos-db">7.1. Cosmos DB</a></h3>
+<h3 id="cosmos-db"><a class="anchor" href="#cosmos-db"></a><a class="link" href="#cosmos-db">9.1. Cosmos DB</a></h3>
 <div class="paragraph">
 <p>brief introduction of the project</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="dependency-setup-3"><a class="anchor" href="#dependency-setup-3"></a><a class="link" href="#dependency-setup-3">7.2. Dependency Setup</a></h3>
+<h3 id="dependency-setup-3"><a class="anchor" href="#dependency-setup-3"></a><a class="link" href="#dependency-setup-3">9.2. Dependency Setup</a></h3>
 
 </div>
 <div class="sect2">
-<h3 id="configuration-3"><a class="anchor" href="#configuration-3"></a><a class="link" href="#configuration-3">7.3. Configuration</a></h3>
+<h3 id="configuration-4"><a class="anchor" href="#configuration-4"></a><a class="link" href="#configuration-4">9.3. Configuration</a></h3>
 <div class="paragraph">
 <p>for full configurations, check appendix</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="basic-usage-3"><a class="anchor" href="#basic-usage-3"></a><a class="link" href="#basic-usage-3">7.4. Basic Usage</a></h3>
+<h3 id="basic-usage-3"><a class="anchor" href="#basic-usage-3"></a><a class="link" href="#basic-usage-3">9.4. Basic Usage</a></h3>
 
 </div>
 <div class="sect2">
-<h3 id="samples-3"><a class="anchor" href="#samples-3"></a><a class="link" href="#samples-3">7.5. Samples</a></h3>
+<h3 id="samples-3"><a class="anchor" href="#samples-3"></a><a class="link" href="#samples-3">9.5. Samples</a></h3>
 
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="spring-security-support"><a class="anchor" href="#spring-security-support"></a><a class="link" href="#spring-security-support">8. Spring Security Support</a></h2>
+<h2 id="spring-security-support"><a class="anchor" href="#spring-security-support"></a><a class="link" href="#spring-security-support">10. Spring Security Support</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="spring-security-with-azure-ad"><a class="anchor" href="#spring-security-with-azure-ad"></a><a class="link" href="#spring-security-with-azure-ad">8.1. Spring Security with Azure AD</a></h3>
+<h3 id="spring-security-with-azure-ad"><a class="anchor" href="#spring-security-with-azure-ad"></a><a class="link" href="#spring-security-with-azure-ad">10.1. Spring Security with Azure AD</a></h3>
 <div class="sect3">
-<h4 id="dependency-setup-4"><a class="anchor" href="#dependency-setup-4"></a><a class="link" href="#dependency-setup-4">8.1.1. Dependency Setup</a></h4>
+<h4 id="dependency-setup-4"><a class="anchor" href="#dependency-setup-4"></a><a class="link" href="#dependency-setup-4">10.1.1. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -888,7 +927,7 @@ public class KeyVaultSample implements CommandLineRunner {
 </div>
 </div>
 <div class="sect3">
-<h4 id="configuration-4"><a class="anchor" href="#configuration-4"></a><a class="link" href="#configuration-4">8.1.2. Configuration</a></h4>
+<h4 id="configuration-5"><a class="anchor" href="#configuration-5"></a><a class="link" href="#configuration-5">10.1.2. Configuration</a></h4>
 <div class="paragraph">
 <p>This starter provides the following properties:</p>
 </div>
@@ -1186,7 +1225,7 @@ azure:
 </div>
 </div>
 <div class="sect3">
-<h4 id="basic-usage-4"><a class="anchor" href="#basic-usage-4"></a><a class="link" href="#basic-usage-4">8.1.3. Basic Usage</a></h4>
+<h4 id="basic-usage-4"><a class="anchor" href="#basic-usage-4"></a><a class="link" href="#basic-usage-4">10.1.3. Basic Usage</a></h4>
 <div class="sect4">
 <h5 id="accessing-a-web-application"><a class="anchor" href="#accessing-a-web-application"></a><a class="link" href="#accessing-a-web-application">Accessing a web application</a></h5>
 <div class="paragraph">
@@ -1570,16 +1609,16 @@ public class AADWebApplicationAndResourceServerConfig {
 </div>
 </div>
 <div class="sect3">
-<h4 id="samples-4"><a class="anchor" href="#samples-4"></a><a class="link" href="#samples-4">8.1.4. Samples</a></h4>
+<h4 id="samples-4"><a class="anchor" href="#samples-4"></a><a class="link" href="#samples-4">10.1.4. Samples</a></h4>
 <div class="paragraph">
 <p>(todo: @chenrujun Add link here.)</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="spring-security-with-azure-ad-b2c"><a class="anchor" href="#spring-security-with-azure-ad-b2c"></a><a class="link" href="#spring-security-with-azure-ad-b2c">8.2. Spring Security with Azure AD B2C</a></h3>
+<h3 id="spring-security-with-azure-ad-b2c"><a class="anchor" href="#spring-security-with-azure-ad-b2c"></a><a class="link" href="#spring-security-with-azure-ad-b2c">10.2. Spring Security with Azure AD B2C</a></h3>
 <div class="sect3">
-<h4 id="dependency-setup-5"><a class="anchor" href="#dependency-setup-5"></a><a class="link" href="#dependency-setup-5">8.2.1. Dependency Setup</a></h4>
+<h4 id="dependency-setup-5"><a class="anchor" href="#dependency-setup-5"></a><a class="link" href="#dependency-setup-5">10.2.1. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
@@ -1592,7 +1631,7 @@ public class AADWebApplicationAndResourceServerConfig {
 </div>
 </div>
 <div class="sect3">
-<h4 id="configuration-5"><a class="anchor" href="#configuration-5"></a><a class="link" href="#configuration-5">8.2.2. Configuration</a></h4>
+<h4 id="configuration-6"><a class="anchor" href="#configuration-6"></a><a class="link" href="#configuration-6">10.2.2. Configuration</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -1652,7 +1691,7 @@ public class AADWebApplicationAndResourceServerConfig {
 </div>
 </div>
 <div class="sect3">
-<h4 id="basic-usage-5"><a class="anchor" href="#basic-usage-5"></a><a class="link" href="#basic-usage-5">8.2.3. Basic Usage</a></h4>
+<h4 id="basic-usage-5"><a class="anchor" href="#basic-usage-5"></a><a class="link" href="#basic-usage-5">10.2.3. Basic Usage</a></h4>
 <div class="paragraph">
 <p>A <code>web application</code> is any web based application that allows user to login Azure AD, whereas a <code>resource server</code> will either
 accept or deny access after validating access_token obtained from Azure AD. We will cover 4 scenarios in this guide:</p>
@@ -2159,7 +2198,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 </div>
 <div class="sect3">
-<h4 id="samples-5"><a class="anchor" href="#samples-5"></a><a class="link" href="#samples-5">8.2.4. Samples</a></h4>
+<h4 id="samples-5"><a class="anchor" href="#samples-5"></a><a class="link" href="#samples-5">10.2.4. Samples</a></h4>
 <div class="sect4">
 <h5 id="accessing-a-web-application-3"><a class="anchor" href="#accessing-a-web-application-3"></a><a class="link" href="#accessing-a-web-application-3">Accessing a web application</a></h5>
 <div class="paragraph">
@@ -2169,9 +2208,16 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 <div class="sect4">
 <h5 id="accessing-a-resource-server-3"><a class="anchor" href="#accessing-a-resource-server-3"></a><a class="link" href="#accessing-a-resource-server-3">Accessing a resource server</a></h5>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-resource-server">azure-spring-boot-sample-active-directory-b2c-resource-server</a>.
-== Spring Integration Support</p>
+<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-resource-server">azure-spring-boot-sample-active-directory-b2c-resource-server</a>.</p>
 </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="spring-integration-support"><a class="anchor" href="#spring-integration-support"></a><a class="link" href="#spring-integration-support">11. Spring Integration Support</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Spring Integration Extension for Azure provides Spring Integration adapters for the various services provided by the <a href="https://github.com/Azure/azure-sdk-for-java/">Azure SDK for Java</a>. Below is a list of supported adapters:</p>
 </div>
@@ -2191,13 +2237,10 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 <div class="paragraph">
 <p>Provide Spring Integration support for these Azure serices: eh, sb, storage q</p>
 </div>
-</div>
-</div>
-</div>
 <div class="sect2">
-<h3 id="spring-integration-with-azure-event-hubs"><a class="anchor" href="#spring-integration-with-azure-event-hubs"></a><a class="link" href="#spring-integration-with-azure-event-hubs">8.3. Spring Integration with Azure Event Hubs</a></h3>
+<h3 id="spring-integration-with-azure-event-hubs"><a class="anchor" href="#spring-integration-with-azure-event-hubs"></a><a class="link" href="#spring-integration-with-azure-event-hubs">11.1. Spring Integration with Azure Event Hubs</a></h3>
 <div class="sect3">
-<h4 id="dependency-setup-6"><a class="anchor" href="#dependency-setup-6"></a><a class="link" href="#dependency-setup-6">8.3.1. Dependency Setup</a></h4>
+<h4 id="dependency-setup-6"><a class="anchor" href="#dependency-setup-6"></a><a class="link" href="#dependency-setup-6">11.1.1. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -2208,26 +2251,26 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 </div>
 <div class="sect3">
-<h4 id="configuration-6"><a class="anchor" href="#configuration-6"></a><a class="link" href="#configuration-6">8.3.2. Configuration</a></h4>
+<h4 id="configuration-7"><a class="anchor" href="#configuration-7"></a><a class="link" href="#configuration-7">11.1.2. Configuration</a></h4>
 <div class="paragraph">
 <p>for full configurations, check appendix</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="basic-usage-6"><a class="anchor" href="#basic-usage-6"></a><a class="link" href="#basic-usage-6">8.3.3. Basic Usage</a></h4>
+<h4 id="basic-usage-6"><a class="anchor" href="#basic-usage-6"></a><a class="link" href="#basic-usage-6">11.1.3. Basic Usage</a></h4>
 
 </div>
 <div class="sect3">
-<h4 id="samples-6"><a class="anchor" href="#samples-6"></a><a class="link" href="#samples-6">8.3.4. Samples</a></h4>
+<h4 id="samples-6"><a class="anchor" href="#samples-6"></a><a class="link" href="#samples-6">11.1.4. Samples</a></h4>
 <div class="paragraph">
 <p>Please refer to this <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/eventhubs/azure-spring-integration-sample-eventhubs">sample project</a> to learn how to use Event Hubs integration. (todo: @chenrujun, update this link)</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="spring-integration-with-azure-service-bus"><a class="anchor" href="#spring-integration-with-azure-service-bus"></a><a class="link" href="#spring-integration-with-azure-service-bus">8.4. Spring Integration with Azure Service Bus</a></h3>
+<h3 id="spring-integration-with-azure-service-bus"><a class="anchor" href="#spring-integration-with-azure-service-bus"></a><a class="link" href="#spring-integration-with-azure-service-bus">11.2. Spring Integration with Azure Service Bus</a></h3>
 <div class="sect3">
-<h4 id="dependency-setup-7"><a class="anchor" href="#dependency-setup-7"></a><a class="link" href="#dependency-setup-7">8.4.1. Dependency Setup</a></h4>
+<h4 id="dependency-setup-7"><a class="anchor" href="#dependency-setup-7"></a><a class="link" href="#dependency-setup-7">11.2.1. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -2238,17 +2281,17 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 </div>
 <div class="sect3">
-<h4 id="configuration-7"><a class="anchor" href="#configuration-7"></a><a class="link" href="#configuration-7">8.4.2. Configuration</a></h4>
+<h4 id="configuration-8"><a class="anchor" href="#configuration-8"></a><a class="link" href="#configuration-8">11.2.2. Configuration</a></h4>
 <div class="paragraph">
 <p>for full configurations, check appendix</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="basic-usage-7"><a class="anchor" href="#basic-usage-7"></a><a class="link" href="#basic-usage-7">8.4.3. Basic Usage</a></h4>
+<h4 id="basic-usage-7"><a class="anchor" href="#basic-usage-7"></a><a class="link" href="#basic-usage-7">11.2.3. Basic Usage</a></h4>
 
 </div>
 <div class="sect3">
-<h4 id="samples-7"><a class="anchor" href="#samples-7"></a><a class="link" href="#samples-7">8.4.4. Samples</a></h4>
+<h4 id="samples-7"><a class="anchor" href="#samples-7"></a><a class="link" href="#samples-7">11.2.4. Samples</a></h4>
 <div class="paragraph">
 <p><strong>Example: Manually set the partition key for the message</strong></p>
 </div>
@@ -2367,9 +2410,9 @@ the value of the session id will eventually be used to overwrite the value of th
 </div>
 </div>
 <div class="sect2">
-<h3 id="spring-integration-with-azure-storage-queue"><a class="anchor" href="#spring-integration-with-azure-storage-queue"></a><a class="link" href="#spring-integration-with-azure-storage-queue">8.5. Spring Integration with Azure Storage Queue</a></h3>
+<h3 id="spring-integration-with-azure-storage-queue"><a class="anchor" href="#spring-integration-with-azure-storage-queue"></a><a class="link" href="#spring-integration-with-azure-storage-queue">11.3. Spring Integration with Azure Storage Queue</a></h3>
 <div class="sect3">
-<h4 id="dependency-setup-8"><a class="anchor" href="#dependency-setup-8"></a><a class="link" href="#dependency-setup-8">8.5.1. Dependency Setup</a></h4>
+<h4 id="dependency-setup-8"><a class="anchor" href="#dependency-setup-8"></a><a class="link" href="#dependency-setup-8">11.3.1. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -2380,21 +2423,27 @@ the value of the session id will eventually be used to overwrite the value of th
 </div>
 </div>
 <div class="sect3">
-<h4 id="configuration-8"><a class="anchor" href="#configuration-8"></a><a class="link" href="#configuration-8">8.5.2. Configuration</a></h4>
+<h4 id="configuration-9"><a class="anchor" href="#configuration-9"></a><a class="link" href="#configuration-9">11.3.2. Configuration</a></h4>
 <div class="paragraph">
 <p>for full configurations, check appendix</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="basic-usage-8"><a class="anchor" href="#basic-usage-8"></a><a class="link" href="#basic-usage-8">8.5.3. Basic Usage</a></h4>
+<h4 id="basic-usage-8"><a class="anchor" href="#basic-usage-8"></a><a class="link" href="#basic-usage-8">11.3.3. Basic Usage</a></h4>
 
 </div>
 <div class="sect3">
-<h4 id="samples-8"><a class="anchor" href="#samples-8"></a><a class="link" href="#samples-8">8.5.4. Samples</a></h4>
+<h4 id="samples-8"><a class="anchor" href="#samples-8"></a><a class="link" href="#samples-8">11.3.4. Samples</a></h4>
 <div class="paragraph">
-<p>Please refer to this <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/storage/azure-spring-integration-sample-storage-queue">sample project</a> illustrating how to use Storage Queue integration.
-== Spring Cloud Stream Support</p>
+<p>Please refer to this <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/storage/azure-spring-integration-sample-storage-queue">sample project</a> illustrating how to use Storage Queue integration.</p>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="spring-cloud-stream-support"><a class="anchor" href="#spring-cloud-stream-support"></a><a class="link" href="#spring-cloud-stream-support">12. Spring Cloud Stream Support</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Spring Cloud Stream is a framework for building highly scalable event-driven microservices connected with shared messaging systems.</p>
 </div>
@@ -2414,12 +2463,10 @@ the value of the session id will eventually be used to overwrite the value of th
 </li>
 </ul>
 </div>
-</div>
-</div>
 <div class="sect2">
-<h3 id="spring-cloud-stream-binder-for-azure-event-hubs"><a class="anchor" href="#spring-cloud-stream-binder-for-azure-event-hubs"></a><a class="link" href="#spring-cloud-stream-binder-for-azure-event-hubs">8.6. Spring Cloud Stream Binder for Azure Event Hubs</a></h3>
+<h3 id="spring-cloud-stream-binder-for-azure-event-hubs"><a class="anchor" href="#spring-cloud-stream-binder-for-azure-event-hubs"></a><a class="link" href="#spring-cloud-stream-binder-for-azure-event-hubs">12.1. Spring Cloud Stream Binder for Azure Event Hubs</a></h3>
 <div class="sect3">
-<h4 id="dependency-setup-9"><a class="anchor" href="#dependency-setup-9"></a><a class="link" href="#dependency-setup-9">8.6.1. Dependency Setup</a></h4>
+<h4 id="dependency-setup-9"><a class="anchor" href="#dependency-setup-9"></a><a class="link" href="#dependency-setup-9">12.1.1. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -2430,7 +2477,7 @@ the value of the session id will eventually be used to overwrite the value of th
 </div>
 </div>
 <div class="sect3">
-<h4 id="configuration-9"><a class="anchor" href="#configuration-9"></a><a class="link" href="#configuration-9">8.6.2. Configuration</a></h4>
+<h4 id="configuration-10"><a class="anchor" href="#configuration-10"></a><a class="link" href="#configuration-10">12.1.2. Configuration</a></h4>
 <div class="paragraph">
 <p>The binder provides the following configuration options in <code>application.properties</code>.</p>
 </div>
@@ -2713,15 +2760,15 @@ mode is set true.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="basic-usage-9"><a class="anchor" href="#basic-usage-9"></a><a class="link" href="#basic-usage-9">8.6.3. Basic Usage</a></h4>
+<h4 id="basic-usage-9"><a class="anchor" href="#basic-usage-9"></a><a class="link" href="#basic-usage-9">12.1.3. Basic Usage</a></h4>
 
 </div>
 <div class="sect3">
-<h4 id="samples-9"><a class="anchor" href="#samples-9"></a><a class="link" href="#samples-9">8.6.4. Samples</a></h4>
+<h4 id="samples-9"><a class="anchor" href="#samples-9"></a><a class="link" href="#samples-9">12.1.4. Samples</a></h4>
 
 </div>
 <div class="sect3">
-<h4 id="error-channels"><a class="anchor" href="#error-channels"></a><a class="link" href="#error-channels">8.6.5. Error Channels</a></h4>
+<h4 id="error-channels"><a class="anchor" href="#error-channels"></a><a class="link" href="#error-channels">12.1.5. Error Channels</a></h4>
 <div class="paragraph">
 <p><strong><em>consumer error channel</em></strong></p>
 </div>
@@ -2849,9 +2896,9 @@ mode is set true.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="spring-cloud-stream-binder-for-azure-service-bus"><a class="anchor" href="#spring-cloud-stream-binder-for-azure-service-bus"></a><a class="link" href="#spring-cloud-stream-binder-for-azure-service-bus">8.7. Spring Cloud Stream Binder for Azure Service Bus</a></h3>
+<h3 id="spring-cloud-stream-binder-for-azure-service-bus"><a class="anchor" href="#spring-cloud-stream-binder-for-azure-service-bus"></a><a class="link" href="#spring-cloud-stream-binder-for-azure-service-bus">12.2. Spring Cloud Stream Binder for Azure Service Bus</a></h3>
 <div class="sect3">
-<h4 id="dependency-setup-10"><a class="anchor" href="#dependency-setup-10"></a><a class="link" href="#dependency-setup-10">8.7.1. Dependency Setup</a></h4>
+<h4 id="dependency-setup-10"><a class="anchor" href="#dependency-setup-10"></a><a class="link" href="#dependency-setup-10">12.2.1. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -2862,7 +2909,7 @@ mode is set true.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="configuration-10"><a class="anchor" href="#configuration-10"></a><a class="link" href="#configuration-10">8.7.2. Configuration</a></h4>
+<h4 id="configuration-11"><a class="anchor" href="#configuration-11"></a><a class="link" href="#configuration-11">12.2.2. Configuration</a></h4>
 <div class="paragraph">
 <p>The binder provides the following configuration options:</p>
 </div>
@@ -3242,11 +3289,11 @@ When create a message, developers can specify the header or property of a Servic
 </div>
 </div>
 <div class="sect3">
-<h4 id="basic-usage-10"><a class="anchor" href="#basic-usage-10"></a><a class="link" href="#basic-usage-10">8.7.3. Basic Usage</a></h4>
+<h4 id="basic-usage-10"><a class="anchor" href="#basic-usage-10"></a><a class="link" href="#basic-usage-10">12.2.3. Basic Usage</a></h4>
 
 </div>
 <div class="sect3">
-<h4 id="samples-10"><a class="anchor" href="#samples-10"></a><a class="link" href="#samples-10">8.7.4. Samples</a></h4>
+<h4 id="samples-10"><a class="anchor" href="#samples-10"></a><a class="link" href="#samples-10">12.2.4. Samples</a></h4>
 <div class="paragraph">
 <p><strong>Example: Manually set the partition key for the message</strong></p>
 </div>
@@ -3361,14 +3408,326 @@ Please use this <code>sample</code> as a reference to learn more about how to us
 </div>
 </div>
 <div class="sect1">
-<h2 id="kafka-support-moary"><a class="anchor" href="#kafka-support-moary"></a><a class="link" href="#kafka-support-moary">9. Kafka Support (@moary)</a></h2>
+<h2 id="kafka-support"><a class="anchor" href="#kafka-support"></a><a class="link" href="#kafka-support">13. Kafka Support</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Connect to Azure Event Hubs using Kafka libraries
-== Redis Support
-== Resource Manager
-== Configuration Properties</p>
+<p>Connect to Azure Event Hubs using Spring Kafka libraries.</p>
 </div>
+<div class="sect2">
+<h3 id="dependency-setup-11"><a class="anchor" href="#dependency-setup-11"></a><a class="link" href="#dependency-setup-11">13.1. Dependency Setup</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-cloud-azure-resourcemanager&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-cloud-starter-stream-kafka&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configuration-12"><a class="anchor" href="#configuration-12"></a><a class="link" href="#configuration-12">13.2. Configuration</a></h3>
+<div class="paragraph">
+<p>This Spring Cloud Azure Starter provides the following properties:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Properties</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.profile</strong>.tenant-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tenant id for Azure resources.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.profile</strong>.subscription-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Subscription id to use when connecting to Azure resources.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-secret</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Subscription id to use when connecting to Azure resources.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.managed-identity-client-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when using managed identity to authenticate with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-certificate-password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-certificate-path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path of a PEM certificate file to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.namespace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Event Hubs namespace.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.resource.resource-group</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The resource group of Azure Event Hubs namespace.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="basic-usage-11"><a class="anchor" href="#basic-usage-11"></a><a class="link" href="#basic-usage-11">13.3. Basic Usage</a></h3>
+<div class="paragraph">
+<p>Spring Cloud Azure provides multiple methods to authenticate requests inside Azure Service. The following configuration is commonly used for service principal authentication:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      profile:
+        tenant-id: ${SPRING_TENANT_ID}
+        subscription-id: ${SPRING_SUBSCRIPTION_ID}
+      credential:
+        client-id: ${SPRING_CLIENT_ID}
+        client-secret: ${SPRING_CLIENT_SECRET}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="samples-11"><a class="anchor" href="#samples-11"></a><a class="link" href="#samples-11">13.4. Samples</a></h3>
+<div class="paragraph">
+<p>The following code sample demonstrates how to use the Spring Cloud Azure Starter and Spring Cloud Starter Stream Kafka for Azure Event Hub. The sample app exposes a RESTful API to receive string message. Then message is sent through Azure Event Hub to a bean <code>consumer</code> which simply logs the message.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a service principal for use in by your app. Please follow
+<a href="https://github.com/Azure-Samples/azure-spring-boot-samples/blob/main/create-sp-using-azure-cli.md">create service principal from Azure CLI</a>.
+The credential is not required since Spring Cloud Azure support <a href="https://docs.microsoft.com/en-us/azure/developer/java/sdk/identity" class="bare">docs.microsoft.com/en-us/azure/developer/java/sdk/identity</a>,
+you only need to log in with az cli / vs code or Intellij Azure Toolkit, then credential information will be left out of properties</p>
+</li>
+<li>
+<p>Create <a href="https://docs.microsoft.com/azure/event-hubs/">Azure Event Hubs</a>.</p>
+</li>
+<li>
+<p>Update
+<a href="https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka/src/main/resources/application.yaml">application.yaml</a> file</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      profile:
+        tenant-id: ${SPRING_TENANT_ID}
+        subscription-id: ${SPRING_SUBSCRIPTION_ID}
+# This is not required since Spring Cloud Azure support https://docs.microsoft.com/en-us/azure/developer/java/sdk/identity
+# you only need to login with az cli / vs code or Intellij Azure Toolkit
+# then credential information will be left out of properties
+#      credential:
+#        client-id: ${SPRING_CLIENT_ID}
+#        client-secret: ${SPRING_CLIENT_SECRET}
+      eventhubs:
+        namespace: ${EVENTHUB_NAMESPACE_NAME_SAMPLE_EVENTHUBS_KAFKA}
+        resource:
+          resource-group: ${SPRING_RESOURCE_GROUP}
+    stream:
+      function:
+        definition: consume;supply
+      bindings:
+        consume-in-0:
+          destination: sample-eventhubs-kafka
+          group: $Default
+        supply-out-0:
+          destination: sample-eventhubs-kafka</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Use this controller code to catch key
+<a href="https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka/src/main/java/com/azure/spring/sample/eventhubs/kafka/SourceExample.java">SourceExample.java</a> file</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@RestController
+public class SourceExample {
+
+    @Autowired
+    private Sinks.Many&lt;Message&lt;String&gt;&gt; many;
+
+    @PostMapping("/messages")
+    public String sendMessage(@RequestParam String message) {
+        many.emitNext(new GenericMessage&lt;&gt;(message), Sinks.EmitFailureHandler.FAIL_FAST);
+        return message;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Spring boot start class
+<a href="https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka/src/main/java/com/azure/spring/sample/eventhubs/kafka/EventHubKafkaBinderApplication.java">EventHubKafkaBinderApplication.java</a> file</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
+public class EventHubKafkaBinderApplication {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventHubKafkaBinderApplication.class);
+
+    public static void main(String[] args) {
+        SpringApplication.run(EventHubKafkaBinderApplication.class, args);
+    }
+
+    @Bean
+    public Sinks.Many&lt;Message&lt;String&gt;&gt; many() {
+        return Sinks.many().unicast().onBackpressureBuffer();
+    }
+
+    @Bean
+    public Supplier&lt;Flux&lt;Message&lt;String&gt;&gt;&gt; supply(Sinks.Many&lt;Message&lt;String&gt;&gt; many) {
+        return () -&gt; many.asFlux()
+                         .doOnNext(m -&gt; LOGGER.info("Manually sending message {}", m))
+                         .doOnError(t -&gt; LOGGER.error("Error encountered", t));
+    }
+
+    @Bean
+    public Consumer&lt;Message&lt;String&gt;&gt; consume() {
+        return message -&gt; LOGGER.info("New message received: '{}'", message.getPayload());
+    }
+}</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Run the <code>mvn spring-boot:run</code> in the root of the code sample to get the app running.</p>
+</li>
+<li>
+<p>Send a POST request</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ curl -X POST http://localhost:8080/messages?message=hello</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Verify in your app’s logs that a similar message was posted:</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><code>New message received: hello</code></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Delete the resources on <a href="https://ms.portal.azure.com/">Azure Portal</a> to avoid unexpected charges.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="troubleshooting"><a class="anchor" href="#troubleshooting"></a><a class="link" href="#troubleshooting">13.5. Troubleshooting</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Meet with <code>Creating topics with default partitions/replication factor are only supported in CreateTopicRequest version 4+</code> error.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>`text
+o.s.c.s.b.k.p.KafkaTopicProvisioner      : Failed to create topics
+org.apache.kafka.common.errors.UnsupportedVersionException: Creating topics with default partitions/replication factor are only supported in CreateTopicRequest version 4+. The following topics need values for partitions and replicas
+`</p>
+</div>
+<div class="paragraph">
+<p>When this error is found, add this configuration item <code>spring.cloud.stream.kafka.binder.replicationFactor</code>, with the value set to at least 1. For more information, see <a href="https://docs.spring.io/spring-cloud-stream-binder-kafka/docs/current/reference/html/spring-cloud-stream-binder-kafka.html">Spring Cloud Stream Kafka Binder Reference Guide</a>.
+== Redis Support</p>
+</div>
+<div class="paragraph">
+<p>Connect to Azure Cache for Redis using Spring Redis libraries.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dependency-setup-12"><a class="anchor" href="#dependency-setup-12"></a><a class="link" href="#dependency-setup-12">13.6. Dependency Setup</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="configuration-13"><a class="anchor" href="#configuration-13"></a><a class="link" href="#configuration-13">13.7. Configuration</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="basic-usage-12"><a class="anchor" href="#basic-usage-12"></a><a class="link" href="#basic-usage-12">13.8. Basic Usage</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="samples-12"><a class="anchor" href="#samples-12"></a><a class="link" href="#samples-12">13.9. Samples</a></h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="resource-manager"><a class="anchor" href="#resource-manager"></a><a class="link" href="#resource-manager">14. Resource Manager</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="dependency-setup-13"><a class="anchor" href="#dependency-setup-13"></a><a class="link" href="#dependency-setup-13">14.1. Dependency Setup</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="configuration-14"><a class="anchor" href="#configuration-14"></a><a class="link" href="#configuration-14">14.2. Configuration</a></h3>
+<div class="paragraph">
+<p>for full configurations, check appendix</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="basic-usage-13"><a class="anchor" href="#basic-usage-13"></a><a class="link" href="#basic-usage-13">14.3. Basic Usage</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="samples-13"><a class="anchor" href="#samples-13"></a><a class="link" href="#samples-13">14.4. Samples</a></h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuration-properties"><a class="anchor" href="#configuration-properties"></a><a class="link" href="#configuration-properties">15. Configuration Properties</a></h2>
+<div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -3612,7 +3971,7 @@ Please use this <code>sample</code> as a reference to learn more about how to us
 </div>
 </div>
 <div class="sect1">
-<h2 id="migration-guide-for-4-0"><a class="anchor" href="#migration-guide-for-4-0"></a><a class="link" href="#migration-guide-for-4-0">10. Migration Guide for 4.0</a></h2>
+<h2 id="migration-guide-for-4-0"><a class="anchor" href="#migration-guide-for-4-0"></a><a class="link" href="#migration-guide-for-4-0">16. Migration Guide for 4.0</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This guide assists in the migration to <strong>Spring Cloud Azure 4.0</strong> from legacy Azure Spring libraries.</p>
@@ -3633,7 +3992,7 @@ or <code>com.azure.spring:azure-spring-integration-*</code> package is assumed.<
 <p>For those new to the Spring Cloud Azure 4.0 libraries, please refer to the <a href="https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Cloud-Azure-4.0-Reference">Spring Cloud Azure 4.0 Reference Doc</a> rather than this guide.</p>
 </div>
 <div class="sect2">
-<h3 id="migration-benefits"><a class="anchor" href="#migration-benefits"></a><a class="link" href="#migration-benefits">10.1. Migration benefits</a></h3>
+<h3 id="migration-benefits"><a class="anchor" href="#migration-benefits"></a><a class="link" href="#migration-benefits">16.1. Migration benefits</a></h3>
 <div class="paragraph">
 <p>A natural question to ask when considering whether to adopt a new version or library is its benefits. As Azure has
 matured and been embraced by a more diverse group of developers, we have been focused on learning the patterns and
@@ -3674,7 +4033,7 @@ projects, for example Spring Boot, Spring Integration, Spring Cloud Stream, etc.
 </div>
 </div>
 <div class="sect2">
-<h3 id="overview"><a class="anchor" href="#overview"></a><a class="link" href="#overview">10.2. Overview</a></h3>
+<h3 id="overview"><a class="anchor" href="#overview"></a><a class="link" href="#overview">16.2. Overview</a></h3>
 <div class="paragraph">
 <p>This migration guide will be consisted of following sections:</p>
 </div>
@@ -3693,7 +4052,7 @@ projects, for example Spring Boot, Spring Integration, Spring Cloud Stream, etc.
 </div>
 </div>
 <div class="sect2">
-<h3 id="naming-changes"><a class="anchor" href="#naming-changes"></a><a class="link" href="#naming-changes">10.3. Naming changes</a></h3>
+<h3 id="naming-changes"><a class="anchor" href="#naming-changes"></a><a class="link" href="#naming-changes">16.3. Naming changes</a></h3>
 <div class="paragraph">
 <p>There has never been a consistent or official name to call all the Spring Cloud Azure libraries, some of them were
 called <code>Azure Spring Boot</code> and some of them <code>Spring on Azure</code> , and all these names will make developer confused. Since
@@ -3701,7 +4060,7 @@ called <code>Azure Spring Boot</code> and some of them <code>Spring on Azure</co
 </div>
 </div>
 <div class="sect2">
-<h3 id="bom"><a class="anchor" href="#bom"></a><a class="link" href="#bom">10.4. BOM</a></h3>
+<h3 id="bom"><a class="anchor" href="#bom"></a><a class="link" href="#bom">16.4. BOM</a></h3>
 <div class="paragraph">
 <p>We used to ship two BOMs for our libraries, the <code>azure-spring-boot-bom</code> and <code>azure-spring-cloud-dependencies</code>, but we
 combined these two BOMs into one BOM since 4.0, the <code>spring-cloud-azure-dependencies</code>. Please add an entry in the
@@ -3724,7 +4083,7 @@ dependencyManagement of your project to benefit from the dependency management.<
 </div>
 </div>
 <div class="sect2">
-<h3 id="artifact-changes-renamed-added-deleted"><a class="anchor" href="#artifact-changes-renamed-added-deleted"></a><a class="link" href="#artifact-changes-renamed-added-deleted">10.5. Artifact changes: renamed / added / deleted</a></h3>
+<h3 id="artifact-changes-renamed-added-deleted"><a class="anchor" href="#artifact-changes-renamed-added-deleted"></a><a class="link" href="#artifact-changes-renamed-added-deleted">16.5. Artifact changes: renamed / added / deleted</a></h3>
 <div class="paragraph">
 <p>Group ids are the same for modern and legacy Spring Cloud Azure libraries, they are all <code>com.azure.spring</code>. Artifact ids
 for the modern Spring Cloud Azure libraries have changed. And according to which Spring project it belongs, Spring Boot,
@@ -3971,14 +4330,14 @@ new artifacts to better serve some scenarios.</p>
 </table>
 </div>
 <div class="sect2">
-<h3 id="dependencies-changes"><a class="anchor" href="#dependencies-changes"></a><a class="link" href="#dependencies-changes">10.6. Dependencies changes</a></h3>
+<h3 id="dependencies-changes"><a class="anchor" href="#dependencies-changes"></a><a class="link" href="#dependencies-changes">16.6. Dependencies changes</a></h3>
 <div class="paragraph">
 <p>Some unnecessary dependencies were included in the legacy artifacts, which we have removed in the modern Spring Cloud
 Azure 4.0 libraries. Please make sure add the removed dependencies manually to your project to prevent unintentionally
 crash.</p>
 </div>
 <div class="sect3">
-<h4 id="spring-cloud-azure-starter"><a class="anchor" href="#spring-cloud-azure-starter"></a><a class="link" href="#spring-cloud-azure-starter">10.6.1. spring-cloud-azure-starter</a></h4>
+<h4 id="spring-cloud-azure-starter"><a class="anchor" href="#spring-cloud-azure-starter"></a><a class="link" href="#spring-cloud-azure-starter">16.6.1. spring-cloud-azure-starter</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -3999,7 +4358,7 @@ crash.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="spring-cloud-azure-starter-active-directory"><a class="anchor" href="#spring-cloud-azure-starter-active-directory"></a><a class="link" href="#spring-cloud-azure-starter-active-directory">10.6.2. spring-cloud-azure-starter-active-directory</a></h4>
+<h4 id="spring-cloud-azure-starter-active-directory"><a class="anchor" href="#spring-cloud-azure-starter-active-directory"></a><a class="link" href="#spring-cloud-azure-starter-active-directory">16.6.2. spring-cloud-azure-starter-active-directory</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -4020,7 +4379,7 @@ crash.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="spring-cloud-azure-starter-active-directory-b2c"><a class="anchor" href="#spring-cloud-azure-starter-active-directory-b2c"></a><a class="link" href="#spring-cloud-azure-starter-active-directory-b2c">10.6.3. spring-cloud-azure-starter-active-directory-b2c</a></h4>
+<h4 id="spring-cloud-azure-starter-active-directory-b2c"><a class="anchor" href="#spring-cloud-azure-starter-active-directory-b2c"></a><a class="link" href="#spring-cloud-azure-starter-active-directory-b2c">16.6.3. spring-cloud-azure-starter-active-directory-b2c</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -4042,7 +4401,7 @@ crash.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="authentication"><a class="anchor" href="#authentication"></a><a class="link" href="#authentication">10.7. Authentication</a></h3>
+<h3 id="authentication-2"><a class="anchor" href="#authentication-2"></a><a class="link" href="#authentication-2">16.7. Authentication</a></h3>
 <div class="paragraph">
 <p>Spring Cloud Azure 4.0 supports all the authentication methods each Azure Service SDK supports. It allows configuring a
 global token credential as well as providing the token credential at each service level. But credential is not required
@@ -4062,9 +4421,9 @@ target Azure resources.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-properties"><a class="anchor" href="#configuration-properties"></a><a class="link" href="#configuration-properties">10.8. Configuration properties</a></h3>
+<h3 id="configuration-properties-2"><a class="anchor" href="#configuration-properties-2"></a><a class="link" href="#configuration-properties-2">16.8. Configuration properties</a></h3>
 <div class="sect3">
-<h4 id="global-configurations"><a class="anchor" href="#global-configurations"></a><a class="link" href="#global-configurations">10.8.1. Global configurations</a></h4>
+<h4 id="global-configurations"><a class="anchor" href="#global-configurations"></a><a class="link" href="#global-configurations">16.8.1. Global configurations</a></h4>
 <div class="paragraph">
 <p>The modern <code>spring-cloud-azure-starter</code> allows developers to define properties that apply to all Azure SDKs in the
 namespace <code>spring.cloud.azure</code>. It was not supported in the legacy <code>azure-spring-boot-starter</code>. The global
@@ -4109,7 +4468,7 @@ configurations can be divided into five categories:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="each-sdk-configurations"><a class="anchor" href="#each-sdk-configurations"></a><a class="link" href="#each-sdk-configurations">10.8.2. Each SDK configurations</a></h4>
+<h4 id="each-sdk-configurations"><a class="anchor" href="#each-sdk-configurations"></a><a class="link" href="#each-sdk-configurations">16.8.2. Each SDK configurations</a></h4>
 <div class="sect4">
 <h5 id="spring-cloud-azure-starter-integration-eventhubs"><a class="anchor" href="#spring-cloud-azure-starter-integration-eventhubs"></a><a class="link" href="#spring-cloud-azure-starter-integration-eventhubs">spring-cloud-azure-starter-integration-eventhubs</a></h5>
 <div class="quoteblock">
@@ -4640,9 +4999,9 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus.</code>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="api-breaking-changes"><a class="anchor" href="#api-breaking-changes"></a><a class="link" href="#api-breaking-changes">10.9. API breaking changes</a></h3>
+<h3 id="api-breaking-changes"><a class="anchor" href="#api-breaking-changes"></a><a class="link" href="#api-breaking-changes">16.9. API breaking changes</a></h3>
 <div class="sect3">
-<h4 id="spring-cloud-azure-starter-integration-eventhubslegacy-azure-spring-cloud-starter-eventhubs-spring-cloud-azure-stream-binder-eventhubslegacy-azure-spring-cloud-stream-binder-eventhubs"><a class="anchor" href="#spring-cloud-azure-starter-integration-eventhubslegacy-azure-spring-cloud-starter-eventhubs-spring-cloud-azure-stream-binder-eventhubslegacy-azure-spring-cloud-stream-binder-eventhubs"></a><a class="link" href="#spring-cloud-azure-starter-integration-eventhubslegacy-azure-spring-cloud-starter-eventhubs-spring-cloud-azure-stream-binder-eventhubslegacy-azure-spring-cloud-stream-binder-eventhubs">10.9.1. <code>spring-cloud-azure-starter-integration-eventhubs(legacy: azure-spring-cloud-starter-eventhubs)</code> &amp; <code>spring-cloud-azure-stream-binder-eventhubs(legacy: azure-spring-cloud-stream-binder-eventhubs)</code></a></h4>
+<h4 id="spring-cloud-azure-starter-integration-eventhubslegacy-azure-spring-cloud-starter-eventhubs-spring-cloud-azure-stream-binder-eventhubslegacy-azure-spring-cloud-stream-binder-eventhubs"><a class="anchor" href="#spring-cloud-azure-starter-integration-eventhubslegacy-azure-spring-cloud-starter-eventhubs-spring-cloud-azure-stream-binder-eventhubslegacy-azure-spring-cloud-stream-binder-eventhubs"></a><a class="link" href="#spring-cloud-azure-starter-integration-eventhubslegacy-azure-spring-cloud-starter-eventhubs-spring-cloud-azure-stream-binder-eventhubslegacy-azure-spring-cloud-stream-binder-eventhubs">16.9.1. <code>spring-cloud-azure-starter-integration-eventhubs(legacy: azure-spring-cloud-starter-eventhubs)</code> &amp; <code>spring-cloud-azure-stream-binder-eventhubs(legacy: azure-spring-cloud-stream-binder-eventhubs)</code></a></h4>
 <div class="ulist">
 <ul>
 <li>
@@ -4749,49 +5108,96 @@ Legacy code:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Package path changes:|===
-|Legacy class |Modern class</p>
+<p>Package path changes:</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>|com.azure.spring.integration.core.EventHubsHeaders |com.azure.spring.eventhubs.support.EventHubsHeaders
-|com.azure.spring.integration.core.AzureHeaders.CHECKPOINTER |com.azure.spring.messaging.AzureHeaders.CHECKPOINTER
-|com.azure.spring.integration.core.api.reactor.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
-|com.azure.spring.integration.core.api.CheckpointConfig |com.azure.spring.messaging.checkpoint.CheckpointConfig
-|com.azure.spring.integration.core.api.CheckpointMode |com.azure.spring.messaging.checkpoint.CheckpointMode
-|com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.handler.DefaultMessageHandler
-|com.azure.spring.integration.eventhub.inbound.EventHubInboundChannelAdapter |com.azure.spring.integration.eventhubs.inbound.EventHubsInboundChannelAdapter
-|com.azure.spring.integration.eventhub.api.EventHubOperation |com.azure.spring.eventhubs.core.EventHubsTemplate
-|NONE |com.azure.spring.eventhubs.core.EventHubsProcessorContainer</p>
-</div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 100%;">
+<col style="width: 50%;">
+<col style="width: 50%;">
 </colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Legacy class</th>
+<th class="tableblock halign-left valign-top">Modern class</th>
+</tr>
+</thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">==== spring-cloud-azure-stream-binder-servicebus</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.EventHubsHeaders</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.eventhubs.support.EventHubsHeaders</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.AzureHeaders.CHECKPOINTER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.AzureHeaders.CHECKPOINTER</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.api.reactor.Checkpointer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.checkpoint.Checkpointer</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.api.CheckpointConfig</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.checkpoint.CheckpointConfig</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.api.CheckpointMode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.checkpoint.CheckpointMode</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.api.reactor.DefaultMessageHandler</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.handler.DefaultMessageHandler</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.eventhub.inbound.EventHubInboundChannelAdapter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.eventhubs.inbound.EventHubsInboundChannelAdapter</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.eventhub.api.EventHubOperation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.eventhubs.core.EventHubsTemplate</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NONE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.eventhubs.core.EventHubsProcessorContainer</p></td>
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>|Legacy class |Modern class</p>
 </div>
-<div class="paragraph">
-<p>|com.azure.spring.integration.core.api.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
-|com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
-|com.azure.spring.integration.servicebus.converter.ServiceBusMessageHeaders |com.azure.spring.servicebus.support.ServiceBusMessageHeaders</p>
-</div>
+<div class="sect3">
+<h4 id="spring-cloud-azure-stream-binder-servicebus-2"><a class="anchor" href="#spring-cloud-azure-stream-binder-servicebus-2"></a><a class="link" href="#spring-cloud-azure-stream-binder-servicebus-2">16.9.2. spring-cloud-azure-stream-binder-servicebus</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 100%;">
+<col style="width: 50%;">
+<col style="width: 50%;">
 </colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Legacy class</th>
+<th class="tableblock halign-left valign-top">Modern class</th>
+</tr>
+</thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">==== spring-cloud-azure-starter-integration-servicebus</p>
-<p class="tableblock"><em><em>_</p>
-<p class="tableblock">(legacy: azure-spring-cloud-starter-servicebus)
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.api.Checkpointer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.checkpoint.Checkpointer</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.AzureHeaders</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.AzureHeaders</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.servicebus.converter.ServiceBusMessageHeaders</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="spring-cloud-azure-starter-integration-servicebus-2"><a class="anchor" href="#spring-cloud-azure-starter-integration-servicebus-2"></a><a class="link" href="#spring-cloud-azure-starter-integration-servicebus-2">16.9.3. spring-cloud-azure-starter-integration-servicebus</a></h4>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>(legacy: azure-spring-cloud-starter-servicebus)
  - Combine the original <code>ServiceBusQueueTemplate#sendAsync</code> and <code>ServiceBusTopicTemplate#sendAsync</code> as <code>ServiceBusTemplate#sendAsync</code>
  and drop class of <code>ServiceBusQueueTemplate</code> and <code>ServiceBusTopicTemplate</code>.
  - Drop RxJava and CompletableFuture support of <code>ServiceBusTemplate</code> and support Reactor instead.
@@ -4803,29 +5209,49 @@ Legacy code:</p>
 for the <code>ProducerProperties#entityType</code>.
  - Drop class of <code>ServiceBusQueueInboundChannelAdapter</code> and <code>ServiceBusTopicInboundChannelAdapter</code> and combine them as <code>ServiceBusInboundChannelAdapter</code>.
  - Package path changes:</p>
-<p class="tableblock"></em>_</em></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>|Legacy class |Modern class</p>
 </div>
-<div class="paragraph">
-<p>|com.azure.spring.integration.core.DefaultMessageHandler |com.azure.spring.integration.handler.DefaultMessageHandler
-|com.azure.spring.integration.servicebus.ServiceBusTemplate |com.azure.spring.servicebus.core.ServiceBusTemplate
-|com.azure.spring.integration.servicebus.inbound.ServiceBusQueueInboundChannelAdapter |com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter
-|com.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter |com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter</p>
+</blockquote>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 100%;">
+<col style="width: 50%;">
+<col style="width: 50%;">
 </colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Legacy class</th>
+<th class="tableblock halign-left valign-top">Modern class</th>
+</tr>
+</thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Legacy code:</p>
-<p class="tableblock">[source,java]
-----
-    @Bean
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.DefaultMessageHandler</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.handler.DefaultMessageHandler</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.servicebus.ServiceBusTemplate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.core.ServiceBusTemplate</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.servicebus.inbound.ServiceBusQueueInboundChannelAdapter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p>Legacy code:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">    @Bean
     public ServiceBusQueueInboundChannelAdapter queueMessageChannelAdapter(
         @Qualifier("INPUT_CHANNEL_NAME") MessageChannel inputChannel, ServiceBusQueueOperation queueOperation) {
         queueOperation.setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.MANUAL).build());
@@ -4833,8 +5259,9 @@ for the <code>ProducerProperties#entityType</code>.
             queueOperation);
         adapter.setOutputChannel(inputChannel);
         return adapter;
-    }</p>
-<p class="tableblock">    @Bean
+    }
+
+    @Bean
     public ServiceBusTopicInboundChannelAdapter topicMessageChannelAdapter(
         @Qualifier("INPUT_CHANNEL_NAME") MessageChannel inputChannel, ServiceBusTopicOperation topicOperation) {
         topicOperation.setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.MANUAL).build());
@@ -4842,8 +5269,9 @@ for the <code>ProducerProperties#entityType</code>.
             topicOperation, "SUBSCRIPTION_NAME");
         adapter.setOutputChannel(inputChannel);
         return adapter;
-    }</p>
-<p class="tableblock">    @Bean
+    }
+
+    @Bean
     @ServiceActivator(inputChannel = "OUTPUT_CHANNEL_NAME")
     public MessageHandler queueMessageSender(ServiceBusQueueOperation queueOperation) {
         DefaultMessageHandler handler = new DefaultMessageHandler("QUEUE_NAME", queueOperation);
@@ -4858,19 +5286,27 @@ for the <code>ProducerProperties#entityType</code>.
             }
         });
         return handler;
-    }
-----</p>
-<p class="tableblock">Modern code:</p>
-<p class="tableblock">[source,java]
-----
-    public ServiceBusInboundChannelAdapter queueMessageChannelAdapter(
+    }</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Modern code:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">    public ServiceBusInboundChannelAdapter queueMessageChannelAdapter(
         @Qualifier("INPUT_CHANNEL_NAME") MessageChannel inputChannel, ServiceBusProcessorContainer processorContainer) {
         ServiceBusInboundChannelAdapter adapter = new ServiceBusInboundChannelAdapter(processorContainer, "QUEUE_NAME",
             new CheckpointConfig(CheckpointMode.MANUAL));
         adapter.setOutputChannel(inputChannel);
         return adapter;
-    }</p>
-<p class="tableblock">    @Bean
+    }
+
+    @Bean
     @ServiceActivator(inputChannel = "OUTPUT_CHANNEL_NAME")
     public MessageHandler queueMessageSender(ServiceBusTemplate serviceBusTemplate) {
         serviceBusTemplate.setDefaultEntityType(ServiceBusEntityType.QUEUE);
@@ -4879,77 +5315,138 @@ for the <code>ProducerProperties#entityType</code>.
             @Override
             public void onSuccess(Void result) {
                 LOGGER.info("Message was sent successfully for {}.", "QUEUE_NAME);
-            }</p>
-<p class="tableblock">            @Override
+            }
+
+            @Override
             public void onFailure(Throwable ex) {
                 LOGGER.info("There was an error sending the message.");
             }
-        });</p>
-<p class="tableblock">        return handler;
-    }</p>
-<p class="tableblock">----</p>
-<p class="tableblock">==== spring-cloud-azure-starter-active-directory</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>|Legacy class |Modern class</p>
+        });
+
+        return handler;
+    }</code></pre>
 </div>
-<div class="paragraph">
-<p>|com.azure.spring.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter |com.azure.spring.cloud.autoconfigure.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter
-|com.azure.spring.aad.webapp.AADWebSecurityConfigurerAdapter |com.azure.spring.cloud.autoconfigure.aad.webapp.AADWebSecurityConfigurerAdapter
-|com.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter |com.azure.spring.cloud.autoconfigure.aad.filter.AADAppRoleStatelessAuthenticationFilter
-|com.azure.spring.autoconfigure.aad.AADAuthenticationFilter |com.azure.spring.cloud.autoconfigure.aad.filter.AADAuthenticationFilter
-|com.azure.spring.autoconfigure.aad.AADAuthenticationProperties |com.azure.spring.cloud.autoconfigure.aad.properties.AADAuthenticationProperties
-|com.azure.spring.autoconfigure.aad.Membership |com.azure.spring.cloud.autoconfigure.aad.graph.Membership
-|com.azure.spring.autoconfigure.aad.UserPrincipal |com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipal</p>
 </div>
+</div>
+<div class="sect3">
+<h4 id="spring-cloud-azure-starter-active-directory-3"><a class="anchor" href="#spring-cloud-azure-starter-active-directory-3"></a><a class="link" href="#spring-cloud-azure-starter-active-directory-3">16.9.4. spring-cloud-azure-starter-active-directory</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 100%;">
+<col style="width: 50%;">
+<col style="width: 50%;">
 </colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Legacy class</th>
+<th class="tableblock halign-left valign-top">Modern class</th>
+</tr>
+</thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">==== spring-cloud-azure-starter-active-directory-b2c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapp.AADWebSecurityConfigurerAdapter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.webapp.AADWebSecurityConfigurerAdapter</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.filter.AADAppRoleStatelessAuthenticationFilter</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.AADAuthenticationFilter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.filter.AADAuthenticationFilter</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.AADAuthenticationProperties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.properties.AADAuthenticationProperties</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.Membership</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.graph.Membership</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.UserPrincipal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipal</p></td>
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>|Legacy class |Modern class</p>
 </div>
-<div class="paragraph">
-<p>|com.azure.spring.autoconfigure.b2c.AADB2CJwtBearerTokenAuthenticationConverter |com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2CJwtBearerTokenAuthenticationConverter
-|com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer |com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2COidcLoginConfigurer</p>
-</div>
+<div class="sect3">
+<h4 id="spring-cloud-azure-starter-active-directory-b2c-3"><a class="anchor" href="#spring-cloud-azure-starter-active-directory-b2c-3"></a><a class="link" href="#spring-cloud-azure-starter-active-directory-b2c-3">16.9.5. spring-cloud-azure-starter-active-directory-b2c</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 100%;">
+<col style="width: 50%;">
+<col style="width: 50%;">
 </colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Legacy class</th>
+<th class="tableblock halign-left valign-top">Modern class</th>
+</tr>
+</thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">==== spring-cloud-azure-starter-integration-storage-queue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.b2c.AADB2CJwtBearerTokenAuthenticationConverter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2CJwtBearerTokenAuthenticationConverter</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2COidcLoginConfigurer</p></td>
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>|Legacy class |Modern class</p>
 </div>
-<div class="paragraph">
-<p>|com.azure.spring.integration.core.api.CheckpointMode |com.azure.spring.messaging.checkpoint.CheckpointMode
-|com.azure.spring.integration.core.api.reactor.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
-|com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.handler.DefaultMessageHandler
-|com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
-|com.azure.spring.integration.storage.queue.StorageQueueOperation |com.azure.spring.storage.queue.core.StorageQueueOperation
-== Known Issues</p>
+<div class="sect3">
+<h4 id="spring-cloud-azure-starter-integration-storage-queue"><a class="anchor" href="#spring-cloud-azure-starter-integration-storage-queue"></a><a class="link" href="#spring-cloud-azure-starter-integration-storage-queue">16.9.6. spring-cloud-azure-starter-integration-storage-queue</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Legacy class</th>
+<th class="tableblock halign-left valign-top">Modern class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.api.CheckpointMode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.checkpoint.CheckpointMode</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.api.reactor.Checkpointer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.checkpoint.Checkpointer</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.api.reactor.DefaultMessageHandler</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.handler.DefaultMessageHandler</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.AzureHeaders</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.AzureHeaders</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.storage.queue.StorageQueueOperation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.storage.queue.core.StorageQueueOperation</p></td>
+</tr>
+</tbody>
+</table>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="known-issues"><a class="anchor" href="#known-issues"></a><a class="link" href="#known-issues">17. Known Issues</a></h2>
+<div class="sectionbody">
 <div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>scary Identity error log</p>
 </li>
 </ol>
-</div>
-</div>
 </div>
 </div>
 </div>
