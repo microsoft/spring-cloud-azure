@@ -1,4 +1,5 @@
 = Spring Cloud Azure
+
 include::_attributes.adoc[]
 
 include::intro.adoc[]
@@ -7,9 +8,19 @@ include::https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/maste
 
 include::whats-new-4.0.adoc[]
 include::getting-started.adoc[]
-
-
-
-== Configuration properties
-
-To see the list of all Spring Cloud Azure related configuration properties please check link:appendix.html[the Appendix page].
+include::configuration.adoc[]
+include::authentication.adoc[]
+include::production-ready.adoc[]
+include::auto-configure-azure-sdk-clients.adoc[]
+include::resource-handling.adoc[]
+include::secret-management.adoc[]
+include::spring-data-support.adoc[]
+include::spring-security-support.adoc[]
+include::spring-integration-support.adoc[]
+include::spring-cloud-stream-support.adoc[]
+include::kafka-support.adoc[]
+include::redis-support.adoc[]
+include::resource-manager.adoc[]
+include::configuration-properties.adoc[]
+include::migration-guide-for-4.0.adoc[]
+include::known-issues.adoc[]
