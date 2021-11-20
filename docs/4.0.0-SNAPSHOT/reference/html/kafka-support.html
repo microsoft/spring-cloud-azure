@@ -339,7 +339,7 @@ you only need to log in with az cli / vs code or Intellij Azure Toolkit, then cr
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Use this controller code to catch key
+<p>Use this controller code to send message
 <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka/src/main/java/com/azure/spring/sample/eventhubs/kafka/SourceExample.java">SourceExample.java</a> file</p>
 </li>
 </ol>
@@ -363,7 +363,7 @@ public class SourceExample {
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Spring boot start class
+<p>Spring boot start class and function bean definition
 <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka/src/main/java/com/azure/spring/sample/eventhubs/kafka/EventHubKafkaBinderApplication.java">EventHubKafkaBinderApplication.java</a> file</p>
 </li>
 </ol>
@@ -421,7 +421,7 @@ public class EventHubKafkaBinderApplication {
 </ol>
 </div>
 <div class="paragraph">
-<p><code>New message received: hello</code></p>
+<p>New message received: hello</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -440,14 +440,16 @@ public class EventHubKafkaBinderApplication {
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>`text
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-text" data-lang="text">'''
 o.s.c.s.b.k.p.KafkaTopicProvisioner      : Failed to create topics
 org.apache.kafka.common.errors.UnsupportedVersionException: Creating topics with default partitions/replication factor are only supported in CreateTopicRequest version 4+. The following topics need values for partitions and replicas
-`</p>
+```</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>When this error is found, add this configuration item <code>spring.cloud.stream.kafka.binder.replicationFactor</code>, with the value set to at least 1. For more information, see <a href="https://docs.spring.io/spring-cloud-stream-binder-kafka/docs/current/reference/html/spring-cloud-stream-binder-kafka.html">Spring Cloud Stream Kafka Binder Reference Guide</a>.</p>
+<p>When this error is found, add this configuration item spring.cloud.stream.kafka.binder.replicationFactor, with the value set to at least 1. For more information, see <a href="https://docs.spring.io/spring-cloud-stream-binder-kafka/docs/current/reference/html/spring-cloud-stream-binder-kafka.html">Spring Cloud Stream Kafka Binder Reference Guide</a>.</p>
 </div>
 </div>
 </div>

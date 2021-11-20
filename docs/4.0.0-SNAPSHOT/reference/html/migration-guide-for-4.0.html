@@ -685,8 +685,7 @@ configurations can be divided into five categories:</p>
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
-<p>(legacy: azure-spring-cloud-starter-eventhubs)
-- As per prefix of <code>spring.cloud.azure.</code></p>
+<p>(legacy: azure-spring-cloud-starter-eventhubs)</p>
 </div>
 </blockquote>
 </div>
@@ -699,13 +698,30 @@ to
 <div class="paragraph">
 <p>Changes for the child entries for this prefix, please refer the following tables:</p>
 </div>
-<div class="paragraph">
-<p>| Legacy | Modern Spring Cloud Azure 4.0
- |:—|:—
-|<code>checkpoint-storage-account</code>|<code>processor.checkpoint-store.account-name</code>
-|<code>checkpoint-access-key</code>|<code>processor.checkpoint-store.account-key</code>
-|<code>checkpoint-container</code>|<code>processor.checkpoint-store.container-name</code></p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Legacy Configuration options</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Current Configuration Options</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>checkpoint-storage-account</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>processor.checkpoint-store.account-name</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>checkpoint-access-key</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>processor.checkpoint-store.account-key</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>checkpoint-container</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>processor.checkpoint-store.container-name</code></p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>For example, change from:</p>
 </div>
@@ -744,14 +760,16 @@ to
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
-<p>(legacy: azure-spring-cloud-stream-binder-eventhubs)
-- As per prefix of <code>spring.cloud.azure.</code><br>
- <a href="#azure-spring-cloud-starter-eventhubs">please refer the above section</a></p>
+<p>(legacy: azure-spring-cloud-stream-binder-eventhubs)</p>
 </div>
 </blockquote>
 </div>
 <div class="ulist">
 <ul>
+<li>
+<p>As per prefix of <code>spring.cloud.azure.eventhub,</code>, prefix is re-defined as
+<code>spring.cloud.azure.eventhubs,</code></p>
+</li>
 <li>
 <p>As per prefix of <code>spring.cloud.stream.binders.&lt;eventhub-name&gt;.environment.spring.cloud.azure</code>:<br>
 prefix change from:<br>
@@ -768,6 +786,8 @@ to<br>
 </li>
 </ul>
 </div>
+<div class="openblock">
+<div class="content">
 <div class="paragraph">
 <p>Changes for the child entries for following prefix, please refer the following table:</p>
 </div>
@@ -805,6 +825,8 @@ to<br>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
 <div class="paragraph">
 <p>For example, you should change from:</p>
 </div>
@@ -851,18 +873,13 @@ to<br>
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
-<p>(legacy: azure-spring-cloud-starter-servicebus)
-For all configuration options supported in spring-cloud-azure-starter-integration-servicebus &amp; spring-integration-azure-servicebus libraries,
-the prefix remains to be as <code>spring.cloud.azure.servicebus.</code>.</p>
+<p>(legacy: azure-spring-cloud-starter-servicebus)</p>
 </div>
 </blockquote>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Renamed configuration options[cols="&lt;,&lt;,&lt;"]</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>For all configuration options supported in spring-cloud-azure-starter-integration-servicebus and spring-integration-azure-servicebus libraries,
+the prefix remains to be as <code>spring.cloud.azure.servicebus.</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -910,6 +927,166 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus.</code>.</p>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect4">
+<h5 id="_spring_cloud_azure_stream_binder_servicebus"><a class="link" href="#_spring_cloud_azure_stream_binder_servicebus">spring-cloud-azure-stream-binder-servicebus</a></h5>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>(legacy: azure-spring-cloud-stream-binder-servicebus-queue,azure-spring-cloud-stream-binder-servicebus-topic)</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>We have merged these two libraries into one, which supports both topic and queue. And the binder type is combined as <code>servicebus</code>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>New configuration properties</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Modern Spring Cloud Azure 4.0</th>
+<th class="tableblock halign-left valign-top">description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.stream.servicebus.bindings.{channel}.producer.entity-type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>If you use the sending function, you need to set the entity-type, which can be set to topic or queue.</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p>Properties Configuration Changed</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Legacy</th>
+<th class="tableblock halign-left valign-top">Modern Spring Cloud Azure 4.0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.stream.servicebus.queue.bindings.*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.stream.servicebus.bindings.*</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.stream.servicebus.topic.bindings.*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.stream.servicebus.bindings.*</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>please note: the binder type is renamed from: servicebus-queue/servicebus-topic to <code>servicebus</code>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If you use the Spring Cloud Stream binder for Azure Service Bus queue/topic，now your properties configuration should be changed to:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      servicebus:
+        connection-string: [servicebus-namespace-connection-string]
+    stream:
+      function:
+        definition: consume;supply
+      bindings:
+        consume-in-0:
+          destination: [servicebus-queue-name]
+        supply-out-0:
+          destination: [servicebus-queue-name-same-as-above]
+      servicebus:
+        bindings:
+          consume-in-0:
+            consumer:
+              checkpoint-mode: MANUAL
+          supply-out-0:
+            producer:
+              entity-type: queue#topic</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If you use the Spring Cloud Stream Binder for multiple Azure Service Bus namespaces,now your properties configuration should be changed to:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    stream:
+      function:
+        definition: queueConsume;queueSupply;topicConsume;topicSupply;
+      bindings:
+        topicConsume-in-0:
+          destination: [ servicebus-topic-1-name ]
+          group: [ topic-subscription-name ]
+        topicSupply-out-0:
+          destination: [ servicebus-topic-1-name ]
+        queueConsume-in-0:
+          binder: servicebus-2
+          destination: [ servicebus-queue-1-name ]
+        queueSupply-out-0:
+          binder: servicebus-2
+          destination: [ servicebus-queue-1-name ]
+      binders:
+        servicebus-1:
+          type: servicebus
+          default-candidate: true
+          environment:
+            spring:
+              cloud:
+                azure:
+                  servicebus:
+                    connection-string: [ servicebus-namespace-1-connection-string ]
+        servicebus-2:
+          type: servicebus
+          default-candidate: false
+          environment:
+            spring:
+              cloud:
+                azure:
+                  servicebus:
+                    connection-string: [ servicebus-namespace-2-connection-string ]
+      servicebus:
+        bindings:
+          topicSupply-out-0:
+            producer:
+              entity-type: topic
+          queueSupply-out-0:
+            producer:
+              entity-type: queue
+      poller:
+        initial-delay: 0
+        fixed-delay: 1000</pre>
+</div>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_spring_cloud_azure_starter_active_directory_2"><a class="link" href="#_spring_cloud_azure_starter_active_directory_2">spring-cloud-azure-starter-active-directory</a></h5>
@@ -1047,189 +1224,81 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus.</code>.</p>
 </tbody>
 </table>
 </div>
-<div class="sect4">
-<h5 id="_spring_cloud_azure_stream_binder_servicebus"><a class="link" href="#_spring_cloud_azure_stream_binder_servicebus">spring-cloud-azure-stream-binder-servicebus</a></h5>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>(legacy: azure-spring-cloud-stream-binder-servicebus-queue,azure-spring-cloud-stream-binder-servicebus-topic)</p>
-</div>
-</blockquote>
-</div>
-<div class="paragraph">
-<p>We have merged these two libraries into one, which supports both topic and queue.And the binder type is combined as <code>servicebus</code>.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>New configuration properties[cols="&lt;,&lt;"]</p>
-</li>
-</ul>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Modern Spring Cloud Azure 4.0</th>
-<th class="tableblock halign-left valign-top">description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.stream.servicebus.bindings.{channel}.producer.entity-type</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>If you use the sending function, you need to set the entity-type, which can be set to topic or queue.</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="ulist">
-<ul>
-<li>
-<p>Properties Configuration Changed[cols="&lt;,&lt;"]</p>
-</li>
-</ul>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Legacy</th>
-<th class="tableblock halign-left valign-top">Modern Spring Cloud Azure 4.0</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.stream.servicebus.queue.bindings.*</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.stream.servicebus.bindings.*</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.stream.servicebus.topic.bindings.*</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.stream.servicebus.bindings.*</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>please note: the binder type is renamed from: servicebus-queue/servicebus-topic to <code>servicebus</code>.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>If you use the Spring Cloud Stream binder for Azure Service Bus queue/topic，now your properties configuration should be changed to:</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>spring:
-  cloud:
-    azure:
-      servicebus:
-        connection-string: [servicebus-namespace-connection-string]
-    stream:
-      function:
-        definition: consume;supply
-      bindings:
-        consume-in-0:
-          destination: [servicebus-queue-name]
-        supply-out-0:
-          destination: [servicebus-queue-name-same-as-above]
-      servicebus:
-        bindings:
-          consume-in-0:
-            consumer:
-              checkpoint-mode: MANUAL
-          supply-out-0:
-            producer:
-              entity-type: queue#topic</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>If you use the Spring Cloud Stream Binder for multiple Azure Service Bus namespaces,now your properties configuration should be changed to:</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>spring:
-  cloud:
-    stream:
-      function:
-        definition: queueConsume;queueSupply;topicConsume;topicSupply;
-      bindings:
-        topicConsume-in-0:
-          destination: [ servicebus-topic-1-name ]
-          group: [ topic-subscription-name ]
-        topicSupply-out-0:
-          destination: [ servicebus-topic-1-name ]
-        queueConsume-in-0:
-          binder: servicebus-2
-          destination: [ servicebus-queue-1-name ]
-        queueSupply-out-0:
-          binder: servicebus-2
-          destination: [ servicebus-queue-1-name ]
-      binders:
-        servicebus-1:
-          type: servicebus
-          default-candidate: true
-          environment:
-            spring:
-              cloud:
-                azure:
-                  servicebus:
-                    connection-string: [ servicebus-namespace-1-connection-string ]
-        servicebus-2:
-          type: servicebus
-          default-candidate: false
-          environment:
-            spring:
-              cloud:
-                azure:
-                  servicebus:
-                    connection-string: [ servicebus-namespace-2-connection-string ]
-      servicebus:
-        bindings:
-          topicSupply-out-0:
-            producer:
-              entity-type: topic
-          queueSupply-out-0:
-            producer:
-              entity-type: queue
-      poller:
-        initial-delay: 0
-        fixed-delay: 1000</pre>
-</div>
-</div>
-</div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_api_breaking_changes"><a class="link" href="#_api_breaking_changes">API breaking changes</a></h3>
 <div class="sect3">
-<h4 id="_spring_cloud_azure_starter_integration_eventhubslegacy_azure_spring_cloud_starter_eventhubs_spring_cloud_azure_stream_binder_eventhubslegacy_azure_spring_cloud_stream_binder_eventhubs"><a class="link" href="#_spring_cloud_azure_starter_integration_eventhubslegacy_azure_spring_cloud_starter_eventhubs_spring_cloud_azure_stream_binder_eventhubslegacy_azure_spring_cloud_stream_binder_eventhubs"><code>spring-cloud-azure-starter-integration-eventhubs(legacy: azure-spring-cloud-starter-eventhubs)</code> &amp; <code>spring-cloud-azure-stream-binder-eventhubs(legacy: azure-spring-cloud-stream-binder-eventhubs)</code></a></h4>
+<h4 id="_spring_cloud_azure_stream_binder_eventhubs_2"><a class="link" href="#_spring_cloud_azure_stream_binder_eventhubs_2">spring-cloud-azure-stream-binder-eventhubs</a></h4>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>(legacy: azure-spring-cloud-stream-binder-eventhubs)</p>
+</div>
+</blockquote>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Legacy class</th>
+<th class="tableblock halign-left valign-top">Modern class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.api.Checkpointer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.checkpoint.Checkpointer</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.AzureHeaders</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.AzureHeaders</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.EventHubHeaders</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.eventhubs.support.EventHubsHeaders</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_spring_cloud_azure_starter_integration_eventhubs_2"><a class="link" href="#_spring_cloud_azure_starter_integration_eventhubs_2">spring-cloud-azure-starter-integration-eventhubs</a></h4>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>(legacy: azure-spring-cloud-starter-eventhubs)</p>
+</div>
+</blockquote>
+</div>
 <div class="ulist">
 <ul>
 <li>
-<p>Drop <code>EventHubOperation</code>, with its functionalities divided into <code>EventHubsTemplate</code> and <code>EventHubsProcessorContainer</code>.</p>
+<p>Annotation of <code>@AzureMessageListeners</code>, <code>@AzureMessageListener</code> and <code>@EnableAzureMessaging</code> are dropped.</p>
 </li>
 <li>
-<p>Drop <code>EventHubsInboundChannelAdapter</code> and use new named <code>EventHubsInboundChannelAdapter</code>, also changed its
-constructor signature.</p>
+<p>Drop <code>EventHubOperation</code>, and move its <code>subscribe</code> API to class of <code>EventHubsProcessorContainer</code>.</p>
+</li>
+<li>
+<p>Rename <code>EventHubsInboundChannelAdapter</code> as <code>EventHubsInboundChannelAdapter</code> to keep consistent with the service of Azure
+Event Hubs, and change constructor signature as well.</p>
 </li>
 <li>
 <p>Change <code>CheckpointConfig</code> instantiation style to simple constructor instead of build style.</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>EventHubsInboundChannelAdapter usage for eventhubs integration:<br>
+<div class="sect4">
+<h5 id="_sample_code_snippet"><a class="link" href="#_sample_code_snippet">Sample code snippet</a></h5>
+<div class="ulist">
+<ul>
+<li>
+<p>EventHubsInboundChannelAdapter sample code:
 Legacy code:</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1263,8 +1332,12 @@ Legacy code:</p>
     }</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>And also EventHubOperation usage:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>DefaultMessageHandler sample code:</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>Legacy code:</p>
@@ -1316,13 +1389,9 @@ Legacy code:</p>
     }</code></pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Package path changes:</p>
-</li>
-</ul>
 </div>
+<div class="sect4">
+<h5 id="_package_path_changes"><a class="link" href="#_package_path_changes">Package path changes</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -1340,8 +1409,8 @@ Legacy code:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.eventhubs.support.EventHubsHeaders</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.AzureHeaders.CHECKPOINTER</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.AzureHeaders.CHECKPOINTER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.AzureHeaders</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.AzureHeaders</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.api.reactor.Checkpointer</p></td>
@@ -1374,8 +1443,16 @@ Legacy code:</p>
 </tbody>
 </table>
 </div>
+</div>
 <div class="sect3">
 <h4 id="_spring_cloud_azure_stream_binder_servicebus_2"><a class="link" href="#_spring_cloud_azure_stream_binder_servicebus_2">spring-cloud-azure-stream-binder-servicebus</a></h4>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>(legacy: azure-spring-cloud-stream-binder-servicebus)</p>
+</div>
+</blockquote>
+</div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -1408,57 +1485,54 @@ Legacy code:</p>
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
-<p>(legacy: azure-spring-cloud-starter-servicebus)
- - Combine the original <code>ServiceBusQueueTemplate#sendAsync</code> and <code>ServiceBusTopicTemplate#sendAsync</code> as <code>ServiceBusTemplate#sendAsync</code>
- and drop class of <code>ServiceBusQueueTemplate</code> and <code>ServiceBusTopicTemplate</code>.
- - Drop RxJava and CompletableFuture support of <code>ServiceBusTemplate</code> and support Reactor instead.
- - Drop interface of <code>ServiceBusQueueOperation</code> and <code>ServiceBusTopicOperation</code>.
- - Drop API of <code>ServiceBusQueueOperation#abandon</code> and <code>ServiceBusQueueOperation#deadletter</code>.
- - Combine the original <code>ServiceBusQueueTemplate#subscribe</code> and <code>ServiceBusTopicTemplate#subscribe</code> as <code>ServiceBusProcessorClient#subscribe</code>.
- - Deprecate the interface of <code>SubscribeOperation</code>.
- - Add new API of <code>setDefaultEntityType</code> for <code>ServiceBusTemplate</code>, the default entity type of a ServiceBusTemplate is required when no bean of <code>PropertiesSupplier&lt;String, ProducerProperties&gt;</code> is provided
-for the <code>ProducerProperties#entityType</code>.
- - Drop class of <code>ServiceBusQueueInboundChannelAdapter</code> and <code>ServiceBusTopicInboundChannelAdapter</code> and combine them as <code>ServiceBusInboundChannelAdapter</code>.
- - Package path changes:</p>
+<p>(legacy: azure-spring-cloud-starter-servicebus)</p>
 </div>
 </blockquote>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Legacy class</th>
-<th class="tableblock halign-left valign-top">Modern class</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.DefaultMessageHandler</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.handler.DefaultMessageHandler</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.servicebus.ServiceBusTemplate</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.core.ServiceBusTemplate</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.servicebus.inbound.ServiceBusQueueInboundChannelAdapter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter</p></td>
-</tr>
-</tbody>
-</table>
 <div class="ulist">
 <ul>
 <li>
-<p>Legacy code:</p>
+<p>Annotation of <code>@AzureMessageListeners</code>, <code>@AzureMessageListener</code> and <code>@EnableAzureMessaging</code> are dropped.</p>
+</li>
+<li>
+<p>Combine the original <code>ServiceBusQueueTemplate#sendAsync</code> and <code>ServiceBusTopicTemplate#sendAsync</code> as <code>ServiceBusTemplate#sendAsync</code>
+and drop class of <code>ServiceBusQueueTemplate</code> and <code>ServiceBusTopicTemplate</code>.</p>
+</li>
+<li>
+<p>Drop RxJava and CompletableFuture support of <code>ServiceBusTemplate</code> and support Reactor instead.</p>
+</li>
+<li>
+<p>Drop interface of <code>ServiceBusQueueOperation</code> and <code>ServiceBusTopicOperation</code>.</p>
+</li>
+<li>
+<p>Drop API of <code>ServiceBusQueueOperation#abandon</code> and <code>ServiceBusQueueOperation#deadletter</code>.</p>
+</li>
+<li>
+<p>Combine the original <code>ServiceBusQueueTemplate#subscribe</code> and <code>ServiceBusTopicTemplate#subscribe</code> as <code>ServiceBusProcessorClient#subscribe</code>.</p>
+</li>
+<li>
+<p>Deprecate the interface of <code>SubscribeOperation</code>.</p>
+</li>
+<li>
+<p>Add new API of <code>setDefaultEntityType</code> for <code>ServiceBusTemplate</code>, the default entity type of a ServiceBusTemplate is required when no bean of <code>PropertiesSupplier&lt;String, ProducerProperties&gt;</code> is provided
+for the <code>ProducerProperties#entityType</code>.</p>
+</li>
+<li>
+<p>Drop class of <code>ServiceBusQueueInboundChannelAdapter</code> and <code>ServiceBusTopicInboundChannelAdapter</code> and combine them as <code>ServiceBusInboundChannelAdapter</code>.</p>
 </li>
 </ul>
+</div>
+<div class="sect4">
+<h5 id="_sample_code_snippet_2"><a class="link" href="#_sample_code_snippet_2">Sample code snippet</a></h5>
+<div class="ulist">
+<ul>
+<li>
+<p>EventHubsInboundChannelAdapter sample code:</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Legacy code:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1537,6 +1611,40 @@ for the <code>ProducerProperties#entityType</code>.
         return handler;
     }</code></pre>
 </div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_package_path_changes_2"><a class="link" href="#_package_path_changes_2">Package path changes</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Legacy class</th>
+<th class="tableblock halign-left valign-top">Modern class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.DefaultMessageHandler</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.handler.DefaultMessageHandler</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.servicebus.ServiceBusTemplate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.core.ServiceBusTemplate</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.servicebus.inbound.ServiceBusQueueInboundChannelAdapter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect3">
