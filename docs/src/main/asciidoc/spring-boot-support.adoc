@@ -1,8 +1,15 @@
 == Spring Boot Support
 
-Provides support for authentication and auto-configuration, provides starters for all Azure SDK, contains components:
+Spring Boot greatly simplifies the Spring Cloud Azure experience. Spring Cloud Azure Starters are a set of convenient dependency descriptors to include in your application. Our starters handle the object instantiation and configuration logic so you don’t have to. Every starter depends on the Spring Cloud Azure starter to provide critical bits of configuration, like the Azure Cloud environment and authentication information. You can configure these as properties in, for example, a properties file:
 
-Spring Cloud Azure Starters are a set of convenient dependency descriptors to include in your application. It boosts your Spring Boot application development with Azure services. For example, if you want to get started using Spring and Azure Cosmos DB for data persistence, include the `spring-cloud-azure-starter-cosmos` dependency in your project.
+[source,properties]
+----
+spring.cloud.azure.profile.tenant-id=[TENANT_ID]
+spring.cloud.azure.profile.cloud=[AZURE]
+spring.cloud.azure.credential.client-id=[CLIENT_ID]
+----
+
+These properties are optional and, if not specified, Spring Boot will attempt to automatically find them for you. For details on how Spring Boot finds these properties, refer to the documentation.
 
 === Production Ready Support
 
@@ -12,7 +19,10 @@ Actuator endpoints let you monitor and interact with your application. `Spring B
 
 This module extends the `Spring Boot Actuator` module and provides the actuating support for Azure services.
 
-// add actuator starter
-
-spring-cloud-azure-starter-actuator
-
+[source,xml]
+----
+<dependency>
+	<groupId>com.azure.spring</groupId>
+	<artifactId>spring-cloud-azure-starter-actuator</artifactId>
+</dependency>
+----
