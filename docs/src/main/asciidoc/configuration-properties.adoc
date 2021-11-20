@@ -41,3 +41,4 @@
 |spring.cloud.azure.retry.max-attempts | | |The maximum number of attempts. 
 |spring.cloud.azure.retry.timeout | | |Amount of time to wait until a timeout.
 |===
+

@@ -867,3 +867,4 @@ Please refer to https://github.com/Azure-Samples/azure-spring-boot-samples/tree/
 ===== Accessing a resource server
 
 Please refer to https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-resource-server[azure-spring-boot-sample-active-directory-b2c-resource-server].
+
