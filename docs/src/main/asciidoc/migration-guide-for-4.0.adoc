@@ -210,7 +210,6 @@ Check https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Cloud-Azure-4.0-Re
 ____
 
 (legacy: azure-spring-cloud-starter-eventhubs)
-- As per prefix of `spring.cloud.azure.` 
 
 ____
 
@@ -219,14 +218,14 @@ prefix changed from
 to
 `spring.cloud.azure.eventhubs.`
 
-Changes for the child entries for this prefix, please refer the following tables: 
+Changes for the child entries for this prefix, please refer the following tables:
 
-| Legacy | Modern Spring Cloud Azure 4.0
- |:—|:—
+|===
+|Legacy Configuration options | Current Configuration Options
 |`checkpoint-storage-account`|`processor.checkpoint-store.account-name`
 |`checkpoint-access-key`|`processor.checkpoint-store.account-key`
 |`checkpoint-container`|`processor.checkpoint-store.container-name`
-
+|===
 For example, change from:
 
 [source,yaml]
@@ -262,10 +261,11 @@ spring:
 ____
 
 (legacy: azure-spring-cloud-stream-binder-eventhubs)
-- As per prefix of `spring.cloud.azure.` +
- <<azure-spring-cloud-starter-eventhubs,please refer the above section>>
 
 ____
+
+* As per prefix of `spring.cloud.azure.eventhub,`, prefix is re-defined as
+`spring.cloud.azure.eventhubs,`
 
 * As per prefix of `spring.cloud.stream.binders.&lt;eventhub-name&gt;.environment.spring.cloud.azure`: +
 prefix change from: +
@@ -279,7 +279,8 @@ prefix changed from +
 to +
 `spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.`
 
-Changes for the child entries for following prefix, please refer the following table: 
+--
+Changes for the child entries for following prefix, please refer the following table:
 
 [cols="<,<"]
 |===
@@ -291,6 +292,7 @@ Changes for the child entries for following prefix, please refer the following t
 |`consumer.checkpoint-count` |`consumer.checkpoint.count`
 |`consumer.checkpoint-interval` |`consumer.checkpoint.interval`
 |===
+--
 
 For example, you should change from:
 
@@ -336,11 +338,11 @@ spring:
 ____
 
 (legacy: azure-spring-cloud-starter-servicebus)
-For all configuration options supported in spring-cloud-azure-starter-integration-servicebus &amp; spring-integration-azure-servicebus libraries,
-the prefix remains to be as `spring.cloud.azure.servicebus.`.
 
 ____
 
+For all configuration options supported in spring-cloud-azure-starter-integration-servicebus and spring-integration-azure-servicebus libraries,
+the prefix remains to be as `spring.cloud.azure.servicebus.`.
 * Renamed configuration options[cols="<,<,<"]
 |===
 |Legacy configuration suffix value |Current configuration suffix value |Current type
@@ -353,66 +355,11 @@ ____
 |`retry-options.retry-mode` |Dropped, will be configured according to `retry.backoff.multiplier` |NA
 |===
 
-===== spring-cloud-azure-starter-active-directory
-
-. All configuration property names changed the prefix from `azure.activedirectory.` to `spring.cloud.azure.active-directory.`.
-. New property `spring.cloud.azure.active-directory.enabled=true` is necessary to enable related features.
-
-===== spring-cloud-azure-starter-active-directory.b2c
-
-. All configuration property names changed the prefix from `azure.activedirectory.b2c.` to `spring.cloud.azure.active-directory.b2c.`.
-. New property `spring.cloud.azure.active-directory.b2c.enabled=true` is necessary to enable related features.
-
-===== From `azure-spring-boot-starter-cosmos` to `spring-cloud-azure-starter-data-cosmos`
-
-. All configuration property names changed the prefix from `azure.cosmos` to `spring.cloud.azure.cosmos`.|===
-|Legacy properties |Morden properties 
-
-|azure.cosmos.uri |spring.cloud.azure.cosmos.endpoint 
-|azure.cosmos.key |spring.cloud.azure.cosmos.key 
-|azure.cosmos.database |spring.cloud.azure.cosmos.database 
-|azure.cosmos.populateQueryMetrics |spring.cloud.azure.cosmos.populateQueryMetrics 
-|===
-
-| ===== From *azure-spring-boot-starter-storage* to *spring-cloud-azure-starter-storage-blob*
-
-. All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.blob`.|===
-|Legacy properties |Morden properties 
-
-|azure.storage.account-name |spring.cloud.azure.storage.blob.account-name 
-|azure.storage.account-key |spring.cloud.azure.storage.blob.account-key 
-|azure.storage.blob-endpoint |spring.cloud.azure.storage.blob.endpoint 
-|===
-
-===== From *azure-spring-boot-starter-storage* to *spring-cloud-azure-starter-storage-file-share*
-
-All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.fileshare`.
-
-|===
-|Legacy properties |Morden properties 
-
-|azure.storage.account-name |spring.cloud.azure.storage.fileshare.account-name 
-|azure.storage.account-key |spring.cloud.azure.storage.fileshare.account-key 
-|azure.storage.file-endpoint |spring.cloud.azure.storage.fileshare.endpoint 
-|===
-
-===== From *azure-spring-cloud-starter-storage-queue* to *spring-cloud-azure-starter-integration-storage-queue*
-
-All configuration property names changed the prefix from `spring.cloud.azure.storage` to `spring.cloud.azure.storage.queue`.
-
-|===
-|Legacy properties |Morden properties 
-
-|spring.cloud.azure.storage.account |spring.cloud.azure.storage.queue.account-name 
-|spring.cloud.azure.storage.access-key |spring.cloud.azure.storage.queue.account-key 
-|spring.cloud.azure.storage.resource-group |spring.cloud.azure.storage.queue.resource.resource-group 
-|===
-
 ===== spring-cloud-azure-stream-binder-servicebus
 
 ____
 
-(legacy: azure-spring-cloud-stream-binder-servicebus-queue,azure-spring-cloud-stream-binder-servicebus-topic) 
+(legacy: azure-spring-cloud-stream-binder-servicebus-queue,azure-spring-cloud-stream-binder-servicebus-topic)
 
 ____
 
@@ -422,7 +369,7 @@ We have merged these two libraries into one, which supports both topic and queue
 |===
 |Modern Spring Cloud Azure 4.0 |description
 
-|`spring.cloud.stream.servicebus.bindings.{channel}.producer.entity-type` |`If you use the sending function, you need to set the entity-type, which can be set to topic or queue.` 
+|`spring.cloud.stream.servicebus.bindings.{channel}.producer.entity-type` |`If you use the sending function, you need to set the entity-type, which can be set to topic or queue.`
 |===
 
 * Properties Configuration Changed[cols="<,<"]
@@ -514,16 +461,94 @@ spring:
         fixed-delay: 1000
 ----
 
+===== spring-cloud-azure-starter-active-directory
+
+. All configuration property names changed the prefix from `azure.activedirectory.` to `spring.cloud.azure.active-directory.`.
+. New property `spring.cloud.azure.active-directory.enabled=true` is necessary to enable related features.
+
+===== spring-cloud-azure-starter-active-directory.b2c
+
+. All configuration property names changed the prefix from `azure.activedirectory.b2c.` to `spring.cloud.azure.active-directory.b2c.`.
+. New property `spring.cloud.azure.active-directory.b2c.enabled=true` is necessary to enable related features.
+
+===== From `azure-spring-boot-starter-cosmos` to `spring-cloud-azure-starter-data-cosmos`
+
+. All configuration property names changed the prefix from `azure.cosmos` to `spring.cloud.azure.cosmos`.|===
+|Legacy properties |Morden properties 
+
+|azure.cosmos.uri |spring.cloud.azure.cosmos.endpoint 
+|azure.cosmos.key |spring.cloud.azure.cosmos.key 
+|azure.cosmos.database |spring.cloud.azure.cosmos.database 
+|azure.cosmos.populateQueryMetrics |spring.cloud.azure.cosmos.populateQueryMetrics 
+|===
+
+| ===== From *azure-spring-boot-starter-storage* to *spring-cloud-azure-starter-storage-blob*
+
+. All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.blob`.|===
+|Legacy properties |Morden properties 
+
+|azure.storage.account-name |spring.cloud.azure.storage.blob.account-name 
+|azure.storage.account-key |spring.cloud.azure.storage.blob.account-key 
+|azure.storage.blob-endpoint |spring.cloud.azure.storage.blob.endpoint 
+|===
+
+===== From *azure-spring-boot-starter-storage* to *spring-cloud-azure-starter-storage-file-share*
+
+All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.fileshare`.
+
+|===
+|Legacy properties |Morden properties 
+
+|azure.storage.account-name |spring.cloud.azure.storage.fileshare.account-name 
+|azure.storage.account-key |spring.cloud.azure.storage.fileshare.account-key 
+|azure.storage.file-endpoint |spring.cloud.azure.storage.fileshare.endpoint 
+|===
+
+===== From *azure-spring-cloud-starter-storage-queue* to *spring-cloud-azure-starter-integration-storage-queue*
+
+All configuration property names changed the prefix from `spring.cloud.azure.storage` to `spring.cloud.azure.storage.queue`.
+
+|===
+|Legacy properties |Morden properties 
+
+|spring.cloud.azure.storage.account |spring.cloud.azure.storage.queue.account-name 
+|spring.cloud.azure.storage.access-key |spring.cloud.azure.storage.queue.account-key 
+|spring.cloud.azure.storage.resource-group |spring.cloud.azure.storage.queue.resource.resource-group 
+|===
+
 === API breaking changes
 
-==== `spring-cloud-azure-starter-integration-eventhubs(legacy: azure-spring-cloud-starter-eventhubs)` &amp; `spring-cloud-azure-stream-binder-eventhubs(legacy: azure-spring-cloud-stream-binder-eventhubs)`
+==== spring-cloud-azure-stream-binder-eventhubs
+____
 
-* Drop `EventHubOperation`, with its functionalities divided into `EventHubsTemplate` and `EventHubsProcessorContainer`.
-* Drop `EventHubsInboundChannelAdapter` and use new named `EventHubsInboundChannelAdapter`, also changed its
- constructor signature.
+(legacy: azure-spring-cloud-stream-binder-eventhubs)
+
+____
+
+|===
+|Legacy class |Modern class
+
+|com.azure.spring.integration.core.api.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
+|com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
+|com.azure.spring.integration.core.EventHubHeaders |com.azure.spring.eventhubs.support.EventHubsHeaders
+|===
+
+==== spring-cloud-azure-starter-integration-eventhubs
+____
+
+(legacy: azure-spring-cloud-starter-eventhubs)
+
+____
+
+* Annotation of `@AzureMessageListeners`, `@AzureMessageListener` and `@EnableAzureMessaging` are dropped.
+* Drop `EventHubOperation`, and move its `subscribe` API to class of `EventHubsProcessorContainer`.
+* Rename `EventHubsInboundChannelAdapter` as `EventHubsInboundChannelAdapter` to keep consistent with the service of Azure
+Event Hubs, and change constructor signature as well.
 * Change `CheckpointConfig` instantiation style to simple constructor instead of build style.
 
-EventHubsInboundChannelAdapter usage for eventhubs integration: +
+===== Sample code snippet
+
+* EventHubsInboundChannelAdapter sample code:
 Legacy code:
 
 [source,java]
@@ -557,7 +582,7 @@ Modern code:
     }
 ----
 
-And also EventHubOperation usage:
+* DefaultMessageHandler sample code:
 
 Legacy code:
 
@@ -607,11 +632,12 @@ Modern code:
     }
 ----
 
-* Package path changes:|===
+===== Package path changes
+|===
 |Legacy class |Modern class 
 
 |com.azure.spring.integration.core.EventHubsHeaders |com.azure.spring.eventhubs.support.EventHubsHeaders 
-|com.azure.spring.integration.core.AzureHeaders.CHECKPOINTER |com.azure.spring.messaging.AzureHeaders.CHECKPOINTER 
+|com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
 |com.azure.spring.integration.core.api.reactor.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer 
 |com.azure.spring.integration.core.api.CheckpointConfig |com.azure.spring.messaging.checkpoint.CheckpointConfig 
 |com.azure.spring.integration.core.api.CheckpointMode |com.azure.spring.messaging.checkpoint.CheckpointMode
@@ -621,7 +647,12 @@ Modern code:
 |NONE |com.azure.spring.eventhubs.core.EventHubsProcessorContainer 
 |===
 
-| ==== spring-cloud-azure-stream-binder-servicebus
+==== spring-cloud-azure-stream-binder-servicebus
+____
+
+(legacy: azure-spring-cloud-stream-binder-servicebus)
+
+____
 
 |===
 |Legacy class |Modern class 
@@ -631,34 +662,31 @@ Modern code:
 |com.azure.spring.integration.servicebus.converter.ServiceBusMessageHeaders |com.azure.spring.servicebus.support.ServiceBusMessageHeaders
 |===
 
-| ==== spring-cloud-azure-starter-integration-servicebus
+==== spring-cloud-azure-starter-integration-servicebus
 
 ____
 
 (legacy: azure-spring-cloud-starter-servicebus)
- - Combine the original `ServiceBusQueueTemplate#sendAsync` and `ServiceBusTopicTemplate#sendAsync` as `ServiceBusTemplate#sendAsync`
- and drop class of `ServiceBusQueueTemplate` and `ServiceBusTopicTemplate`.
- - Drop RxJava and CompletableFuture support of `ServiceBusTemplate` and support Reactor instead.
- - Drop interface of `ServiceBusQueueOperation` and `ServiceBusTopicOperation`.
- - Drop API of `ServiceBusQueueOperation#abandon` and `ServiceBusQueueOperation#deadletter`.
- - Combine the original `ServiceBusQueueTemplate#subscribe` and `ServiceBusTopicTemplate#subscribe` as `ServiceBusProcessorClient#subscribe`.
- - Deprecate the interface of `SubscribeOperation`.
- - Add new API of `setDefaultEntityType` for `ServiceBusTemplate`, the default entity type of a ServiceBusTemplate is required when no bean of `PropertiesSupplier&lt;String, ProducerProperties&gt;` is provided
-for the `ProducerProperties#entityType`.
- - Drop class of `ServiceBusQueueInboundChannelAdapter` and `ServiceBusTopicInboundChannelAdapter` and combine them as `ServiceBusInboundChannelAdapter`.
- - Package path changes:
 
 ____
-|===
-|Legacy class |Modern class 
 
-|com.azure.spring.integration.core.DefaultMessageHandler |com.azure.spring.integration.handler.DefaultMessageHandler 
-|com.azure.spring.integration.servicebus.ServiceBusTemplate |com.azure.spring.servicebus.core.ServiceBusTemplate
-|com.azure.spring.integration.servicebus.inbound.ServiceBusQueueInboundChannelAdapter |com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter
-|com.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter |com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter
-|===
+- Annotation of `@AzureMessageListeners`, `@AzureMessageListener` and `@EnableAzureMessaging` are dropped.
+- Combine the original `ServiceBusQueueTemplate#sendAsync` and `ServiceBusTopicTemplate#sendAsync` as `ServiceBusTemplate#sendAsync`
+and drop class of `ServiceBusQueueTemplate` and `ServiceBusTopicTemplate`.
+- Drop RxJava and CompletableFuture support of `ServiceBusTemplate` and support Reactor instead.
+- Drop interface of `ServiceBusQueueOperation` and `ServiceBusTopicOperation`.
+- Drop API of `ServiceBusQueueOperation#abandon` and `ServiceBusQueueOperation#deadletter`.
+- Combine the original `ServiceBusQueueTemplate#subscribe` and `ServiceBusTopicTemplate#subscribe` as `ServiceBusProcessorClient#subscribe`.
+- Deprecate the interface of `SubscribeOperation`.
+- Add new API of `setDefaultEntityType` for `ServiceBusTemplate`, the default entity type of a ServiceBusTemplate is required when no bean of `PropertiesSupplier&lt;String, ProducerProperties&gt;` is provided
+for the `ProducerProperties#entityType`.
+- Drop class of `ServiceBusQueueInboundChannelAdapter` and `ServiceBusTopicInboundChannelAdapter` and combine them as `ServiceBusInboundChannelAdapter`.
 
-| Legacy code:
+===== Sample code snippet
+
+* EventHubsInboundChannelAdapter sample code:
+
+Legacy code:
 
 [source,java]
 ----
@@ -733,6 +761,16 @@ Modern code:
     }
 
 ----
+
+===== Package path changes
+|===
+|Legacy class |Modern class
+
+|com.azure.spring.integration.core.DefaultMessageHandler |com.azure.spring.integration.handler.DefaultMessageHandler
+|com.azure.spring.integration.servicebus.ServiceBusTemplate |com.azure.spring.servicebus.core.ServiceBusTemplate
+|com.azure.spring.integration.servicebus.inbound.ServiceBusQueueInboundChannelAdapter |com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter
+|com.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter |com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter
+|===
 
 ==== spring-cloud-azure-starter-active-directory
 
