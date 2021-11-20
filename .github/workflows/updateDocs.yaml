@@ -5,8 +5,8 @@ on:
     branches:
     - main
     - docs
-    paths:
-    - 'docs/**'
+    # paths:
+    # - 'docs/**'
   # release:
   #   types: [published] # includes pre-release and regular releases, but does not include draft releases.
   # workflow_dispatch:
