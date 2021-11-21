@@ -1,6 +1,6 @@
 == Spring Data Support
 
-=== Cosmos DB Support
+=== Spring Data CosmosDB Support
 
 [Azure Cosmos DB](https://azure.microsoft.com/services/cosmos-db/) is a globally-distributed database service that allows developers to work with data using a variety of standard APIs, such as SQL, MongoDB, Graph, and Azure Table storage.
 
@@ -19,7 +19,7 @@ Connect to Cosmos DB using Spring Data and CosmosDB libraries.
 
 === Configuration
 
-This Spring Cloud Azure Starter provides the following properties:
+Below are some properties you can configure when using Spring Data CosmosDB Support:
 
 |===
 |Name | Default | Description
