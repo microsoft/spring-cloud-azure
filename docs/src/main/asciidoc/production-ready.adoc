@@ -24,10 +24,7 @@ Below properties could be used to enable or disable health indicators for each A
 |Storage|management.health.azure-storage.enabled
 |===
 
-____
-
-*Please note*: Calling the health endpoint of Azure servcies could cause extra charge. For example, calling `http://{hostname}:{port}/actuator/health/cosmos` to get the Cosmos DB health info, it will calculate https://docs.microsoft.com/azure/cosmos-db/request-units[RUs].
-____
+NOTE: Calling the health endpoint of Azure servcies could cause extra charge. For example, calling `http://{hostname}:{port}/actuator/health/cosmos` to get the Cosmos DB health info, it will calculate https://docs.microsoft.com/azure/cosmos-db/request-units[RUs].
 
 === Enable Sleuth
 
@@ -40,9 +37,7 @@ Add the Spring Cloud Azure Trace Sleuth dependency when you want to trace Azure 
 	<artifactId>spring-cloud-azure-trace-sleuth</artifactId>
 </dependency>
 ----
-____
 
-*Please note*: Only HTTP-based Azure SDK clients are supported now.
-____
+NOTE: Only HTTP-based Azure SDK clients are supported now.
 
 

@@ -2,16 +2,12 @@
 
 This section covers the changes made from version 3.10 to version 4.0.0-beta.1. With this major release, we aim to bring better security, leaner dependencies, support for production readiness, and more.
 
-To learn how to migration to 4.0, please check link:appendix.html[the Appendix page].
+IMPORTANT: To learn how to migration to 4.0, please check link:appendix.html[the Appendix page].
 
 === Unified Development Experience 
 
 We constantly challenge ourselves on how we can make things more consistent and easier to understand, so our customers are not confronted with haphazard development choices. This is a long and self-evolving journey as consistency is relative and there will be things that are outside of our control. We now humbly take another step in this direction to improve to our developer experience by unifying project name, artifact ID and properties.  
 
-[TIP]
-====
-Example or screenshot 
-====
 
 === Simplified dependency management  
 
@@ -42,10 +38,7 @@ At the heart of every real-world application, is identity and secret management.
 
 Spring developers have long enjoyed the convenience of defining client options in application configuration files. We certainly do not want to take that privilege away and burden Spring developers with setting options via client objects. To that end, we’ve significantly improved autoconfiguration coverage of Azure SDK clients for both synchronous and asynchronous scenarios. 
 
-[TIP]
-====
-Sample code 
-====
+
 === More Production Ready  
 
 Lastly all of the above would be in vain if we do not have enough feature coverage to support our customers in production. Many things come to my mind to make an application production-ready, but observability often arrives at the top. We’ve added health indicators for App Configuration, Event Hubs, Cosmos, Key Vault, Storage Blob, Storage Queue, Storage File, as well as Spring Cloud Sleuth support for all HTTP-based Azure SDKs. As an example, you now can prob if storage blob is up or down via Spring Boot actuator endpoint, as well as track dependencies and latencies going from your application to Cosmos DB.

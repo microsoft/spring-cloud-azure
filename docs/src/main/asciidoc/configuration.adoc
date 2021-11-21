@@ -24,7 +24,8 @@ There are some properties that could be shared among different Azure services, f
 |spring.cloud.azure.retry |To configure the retry options apply to all Azure SDK clients by default. 
 |===
 
-Please note that properties configured under each Azure service will override the global configurations.
+
+NOTE: Properties configured under each Azure service will override the global configurations.
 
 The configuration properties' prefixes have been unified to `spring.cloud.azure` namespace since Spring Cloud Azure 4.0, it will make configuration properties more consistent and more intuitive. Here's a quick review of the prefixes of supported Azure services.
 

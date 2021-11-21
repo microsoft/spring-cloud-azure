@@ -149,9 +149,7 @@ mode is set true.
 
 Default: `RECORD`
 
-----
-Notes: when consume batch mode is false(default value), `BATCH` checkpoint mode is not invalid.
-----
+NOTE: when consume batch mode is false(default value), `BATCH` checkpoint mode is not invalid.
 
 *_checkpoint-count_*
 
@@ -485,7 +483,8 @@ For full configurations, check appendix
 
 This example demonstrates how to manually set the partition key for the message in the application.
 
-*Way 1:*
+*Approach 1:* Set partition key expression.
+
 This example requires that `spring.cloud.stream.default.producer.partitionKeyExpression` be set `&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;`.
 
 [source,yaml]
@@ -513,14 +512,12 @@ public ResponseEntity<String> sendMessage(@RequestParam String message) {
 }
 ----
 
-____
 
-*NOTE:* When using `application.yml` to configure the partition key, its priority will be the lowest.
+NOTE: When using `application.yml` to configure the partition key, its priority will be the lowest.
 It will take effect only when the `ServiceBusMessageHeaders.SESSION_ID`, `ServiceBusMessageHeaders.PARTITION_KEY`, `AzureHeaders.PARTITION_KEY` are not configured.
-*Way 2:*
-Manually add the partition Key in the message header by code.
 
-____
+*Approach 2:* Manually add the partition Key in the message header by code.
+
 
 _Recommended:_ Use `ServiceBusMessageHeaders.PARTITION_KEY` as the key of the header.
 
@@ -550,13 +547,10 @@ public ResponseEntity<String> sendMessage(@RequestParam String message) {
 }
 ----
 
-____
-
-*NOTE:* When both `ServiceBusMessageHeaders.PARTITION_KEY` and `AzureHeaders.PARTITION_KEY` are set in the message headers,
+NOTE: When both `ServiceBusMessageHeaders.PARTITION_KEY` and `AzureHeaders.PARTITION_KEY` are set in the message headers,
 `ServiceBusMessageHeaders.PARTITION_KEY` is preferred.
-*Example: Set the session id for the message*
 
-____
+*Example: Set the session id for the message*
 
 This example demonstrates how to manually set the session id of a message in the application.
 
@@ -572,12 +566,10 @@ public ResponseEntity<String> sendMessage(@RequestParam String message) {
 }
 ----
 
-____
-
-*NOTE:* When the `ServiceBusMessageHeaders.SESSION_ID` is set in the message headers, and a different `ServiceBusMessageHeaders.PARTITION_KEY` (or `AzureHeaders.PARTITION_KEY`) header is also set,
+NOTE: When the `ServiceBusMessageHeaders.SESSION_ID` is set in the message headers, and a different `ServiceBusMessageHeaders.PARTITION_KEY` (or `AzureHeaders.PARTITION_KEY`) header is also set,
 the value of the session id will eventually be used to overwrite the value of the partition key.
 Please use this `sample` as a reference to learn more about how to use this binder in your project.
 - https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/servicebus/azure-spring-cloud-stream-binder-servicebus-queue[Service Bus Queue]
 
-____
+
 

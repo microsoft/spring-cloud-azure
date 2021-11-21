@@ -448,10 +448,8 @@ Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/
 
 This example demonstrates how to manually set the partition key for the message in the application.
 
-*Way 1:*
-Manually add the partition Key in the message header by code.
+*Approach 1:* Manually add the partition Key in the message header by code.
 
-____
 
 _Recommended:_ Use `ServiceBusMessageHeaders.PARTITION_KEY` as the key of the header.
 
@@ -485,13 +483,11 @@ public class SampleController {
 }
 ----
 
-____
-
-*NOTE:* When both `ServiceBusMessageHeaders.PARTITION_KEY` and `AzureHeaders.PARTITION_KEY` are set in the message headers,
+NOTE: When both `ServiceBusMessageHeaders.PARTITION_KEY` and `AzureHeaders.PARTITION_KEY` are set in the message headers,
 `ServiceBusMessageHeaders.PARTITION_KEY` is preferred.
+
 *Example: Set the session id for the message*
 
-____
 
 This example demonstrates how to manually set the session id of a message in the application.
 
@@ -509,9 +505,7 @@ public class SampleController {
 }
 ----
 
-____
-
-*NOTE:* When the `ServiceBusMessageHeaders.SESSION_ID` is set in the message headers, and a different `ServiceBusMessageHeaders.PARTITION_KEY` (or `AzureHeaders.PARTITION_KEY`) header is also set,
+NOTE: When the `ServiceBusMessageHeaders.SESSION_ID` is set in the message headers, and a different `ServiceBusMessageHeaders.PARTITION_KEY` (or `AzureHeaders.PARTITION_KEY`) header is also set,
 the value of the session id will eventually be used to overwrite the value of the partition key.
 
 === Spring Integration with Azure Storage Queue

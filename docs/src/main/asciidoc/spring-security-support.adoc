@@ -195,7 +195,9 @@ This scenario uses the https://docs.microsoft.com/azure/active-directory/develop
 image:https://user-images.githubusercontent.com/13167207/142617664-f1704adb-db64-49e0-b1b6-078c62b6945b.png[Standalone Web Application]
 
 * Step 1: Make sure `redirect URI` has been set to `{application-base-uri}/login/oauth2/code/`, for
-example `http://localhost:8080/login/oauth2/code/`. Note the tailing `/` cannot be omitted.
+example `http://localhost:8080/login/oauth2/code/`. 
+
+CAUTION: The tailing `/` cannot be omitted.
 
 image:https://user-images.githubusercontent.com/13167207/142617751-154c156c-9035-4641-9b79-b26380ddad72.png[web-application-set-redirect-uri-1.png]
 image:https://user-images.githubusercontent.com/13167207/142617785-b4ca1afc-79f6-48ae-b7a3-99fba5856689.png[web-application-set-redirect-uri-2.png]
