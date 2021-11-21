@@ -22,19 +22,19 @@ Connect to Cosmos DB using Spring Data and CosmosDB libraries.
 Below are some properties you can configure when using Spring Data CosmosDB Support:
 
 |===
-|Name | Default | Description
-|spring.cloud.azure.cosmos.enabled | `true` | Whether Azure Cosmos Service is enabled.
-|spring.cloud.azure.cosmos.database |  | The CosmosDB database id
-|spring.cloud.azure.cosmos.endpoint |  | Uri to connect CosmosDB
-|spring.cloud.azure.cosmos.key |  | PrivateKey to connect CosmosDB
-|spring.cloud.azure.cosmos.credential.client-certificate-password |  | Password of the certificate file.
-|spring.cloud.azure.cosmos.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
-|spring.cloud.azure.cosmos.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
-|spring.cloud.azure.cosmos.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.cosmos.credential.managed-identity-client-id |  | Client id to use when using managed identity to authenticate with Azure.
-|spring.cloud.azure.cosmos.credential.password |  | Password to use when performing username/password authentication with Azure.
-|spring.cloud.azure.cosmos.credential.username |  | Username to use when performing username/password authentication with Azure.
-|spring.cloud.azure.cosmos.populate-query-metrics | `false` | Populate Diagnostics Strings and Query metrics
+|Name | Description | Default
+|spring.cloud.azure.cosmos.enabled |  Whether Azure Cosmos Service is enabled. | `true`
+|spring.cloud.azure.cosmos.database |  The CosmosDB database id |
+|spring.cloud.azure.cosmos.endpoint |  Uri to connect CosmosDB |
+|spring.cloud.azure.cosmos.key |  PrivateKey to connect CosmosDB |
+|spring.cloud.azure.cosmos.credential.client-certificate-password |  Password of the certificate file. |
+|spring.cloud.azure.cosmos.credential.client-certificate-path |  Path of a PEM certificate file to use when performing service principal authentication with Azure. |
+|spring.cloud.azure.cosmos.credential.client-id |  Client id to use when performing service principal authentication with Azure. |
+|spring.cloud.azure.cosmos.credential.client-secret |  Client secret to use when performing service principal authentication with Azure. |
+|spring.cloud.azure.cosmos.credential.managed-identity-client-id |  Client id to use when using managed identity to authenticate with Azure. |
+|spring.cloud.azure.cosmos.credential.password |  Password to use when performing username/password authentication with Azure. |
+|spring.cloud.azure.cosmos.credential.username |  Username to use when performing username/password authentication with Azure. |
+|spring.cloud.azure.cosmos.populate-query-metrics |  Populate Diagnostics Strings and Query metrics | `false`
 |===
 
 === Basic Usage
