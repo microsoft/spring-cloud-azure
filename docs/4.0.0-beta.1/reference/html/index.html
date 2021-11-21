@@ -176,53 +176,50 @@ window.onload = function() {
 <li><a href="#more-production-ready">1.7. More Production Ready</a></li>
 </ul>
 </li>
-<li><a href="#getting-started">2. Getting Started</a>
+<li><a href="#migration-guide-for-4-0">2. Migration Guide for 4.0</a></li>
+<li><a href="#getting-started">3. Getting Started</a>
 <ul class="sectlevel2">
-<li><a href="#setting-up-dependencies">2.1. Setting up Dependencies</a></li>
-<li><a href="#learning-spring-cloud-azure">2.2. Learning Spring Cloud Azure</a></li>
+<li><a href="#setting-up-dependencies">3.1. Setting up Dependencies</a></li>
+<li><a href="#learning-spring-cloud-azure">3.2. Learning Spring Cloud Azure</a></li>
 </ul>
 </li>
-<li><a href="#configuration">3. Configuration</a></li>
-<li><a href="#authentication">4. Authentication</a>
+<li><a href="#configuration">4. Configuration</a></li>
+<li><a href="#authentication">5. Authentication</a>
 <ul class="sectlevel2">
-<li><a href="#defaultazurecredential">4.1. DefaultAzureCredential</a></li>
-<li><a href="#managed-identity">4.2. Managed Identity</a></li>
-<li><a href="#other-credential-types">4.3. Other Credential Types</a></li>
+<li><a href="#defaultazurecredential">5.1. DefaultAzureCredential</a></li>
+<li><a href="#managed-identity">5.2. Managed Identity</a></li>
+<li><a href="#other-credential-types">5.3. Other Credential Types</a></li>
 </ul>
 </li>
-<li><a href="#production-ready">5. Production Ready</a>
+<li><a href="#production-ready">6. Production Ready</a>
 <ul class="sectlevel2">
-<li><a href="#enable-health-indicator">5.1. Enable Health Indicator</a></li>
-<li><a href="#enable-sleuth">5.2. Enable Sleuth</a></li>
+<li><a href="#enable-health-indicator">6.1. Enable Health Indicator</a></li>
+<li><a href="#enable-sleuth">6.2. Enable Sleuth</a></li>
 </ul>
 </li>
-<li><a href="#auto-configure-azure-sdk-clients">6. Auto Configure Azure SDK Clients</a>
+<li><a href="#auto-configure-azure-sdk-clients">7. Auto Configure Azure SDK Clients</a>
 <ul class="sectlevel2">
-<li><a href="#dependency-setup">6.1. Dependency Setup</a></li>
-<li><a href="#configuration-2">6.2. Configuration</a></li>
-<li><a href="#basic-usage">6.3. Basic Usage</a></li>
-<li><a href="#samples">6.4. Samples</a></li>
+<li><a href="#dependency-setup">7.1. Dependency Setup</a></li>
+<li><a href="#configuration-2">7.2. Configuration</a></li>
+<li><a href="#basic-usage">7.3. Basic Usage</a></li>
+<li><a href="#samples">7.4. Samples</a></li>
 </ul>
 </li>
-<li><a href="#resource-handling">7. Resource Handling</a>
+<li><a href="#resource-handling">8. Resource Handling</a>
 <ul class="sectlevel2">
-<li><a href="#dependency-setup-2">7.1. Dependency Setup</a></li>
-<li><a href="#configuration-3">7.2. Configuration</a></li>
-<li><a href="#basic-usage-2">7.3. Basic Usage</a></li>
-<li><a href="#samples-2">7.4. Samples</a></li>
-</ul>
-</li>
-<li><a href="#secret-management">8. Secret Management</a>
-<ul class="sectlevel2">
-<li><a href="#dependency-setup-3">8.1. Dependency Setup</a></li>
-<li><a href="#configuration-4">8.2. Configuration</a></li>
-<li><a href="#basic-usage-3">8.3. Basic Usage</a></li>
-<li><a href="#samples-3">8.4. Samples</a></li>
+<li><a href="#dependency-setup-2">8.1. Dependency Setup</a></li>
+<li><a href="#configuration-3">8.2. Configuration</a></li>
+<li><a href="#basic-usage-2">8.3. Basic Usage</a></li>
+<li><a href="#samples-2">8.4. Samples</a></li>
+<li><a href="#dependency-setup-3">8.5. Dependency Setup</a></li>
+<li><a href="#configuration-4">8.6. Configuration</a></li>
+<li><a href="#basic-usage-3">8.7. Basic Usage</a></li>
+<li><a href="#samples-3">8.8. Samples</a></li>
 </ul>
 </li>
 <li><a href="#spring-data-support">9. Spring Data Support</a>
 <ul class="sectlevel2">
-<li><a href="#cosmos-db">9.1. Cosmos DB</a></li>
+<li><a href="#spring-data-cosmosdb-support">9.1. Spring Data CosmosDB Support</a></li>
 <li><a href="#dependency-setup-4">9.2. Dependency Setup</a></li>
 <li><a href="#configuration-5">9.3. Configuration</a></li>
 <li><a href="#basic-usage-4">9.4. Basic Usage</a></li>
@@ -374,12 +371,20 @@ To learn how to migration to 4.0, please check <a href="appendix.html">the Appen
 </div>
 </div>
 <div class="sect1">
-<h2 id="getting-started"><a class="anchor" href="#getting-started"></a><a class="link" href="#getting-started">2. Getting Started</a></h2>
+<h2 id="migration-guide-for-4-0"><a class="anchor" href="#migration-guide-for-4-0"></a><a class="link" href="#migration-guide-for-4-0">2. Migration Guide for 4.0</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To learn how to migration to 4.0, please check <a href="appendix.html">the Appendix page</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="getting-started"><a class="anchor" href="#getting-started"></a><a class="link" href="#getting-started">3. Getting Started</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="setting-up-dependencies"><a class="anchor" href="#setting-up-dependencies"></a><a class="link" href="#setting-up-dependencies">2.1. Setting up Dependencies</a></h3>
+<h3 id="setting-up-dependencies"><a class="anchor" href="#setting-up-dependencies"></a><a class="link" href="#setting-up-dependencies">3.1. Setting up Dependencies</a></h3>
 <div class="sect3">
-<h4 id="bill-of-material-bom"><a class="anchor" href="#bill-of-material-bom"></a><a class="link" href="#bill-of-material-bom">2.1.1. Bill of Material (BOM)</a></h4>
+<h4 id="bill-of-material-bom"><a class="anchor" href="#bill-of-material-bom"></a><a class="link" href="#bill-of-material-bom">3.1.1. Bill of Material (BOM)</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencyManagement&gt;
@@ -397,7 +402,7 @@ To learn how to migration to 4.0, please check <a href="appendix.html">the Appen
 </div>
 </div>
 <div class="sect3">
-<h4 id="starter-dependencies"><a class="anchor" href="#starter-dependencies"></a><a class="link" href="#starter-dependencies">2.1.2. Starter Dependencies</a></h4>
+<h4 id="starter-dependencies"><a class="anchor" href="#starter-dependencies"></a><a class="link" href="#starter-dependencies">3.1.2. Starter Dependencies</a></h4>
 <div class="paragraph">
 <p>Spring Cloud Azure Starters are a set of convenient dependency descriptors to include in your application. Each starter contains all the dependencies and transitive dependencies needed to begin using their corresponding Spring Cloud Azure module. It boosts your Spring Boot application development with Azure services.</p>
 </div>
@@ -551,7 +556,7 @@ To learn how to migration to 4.0, please check <a href="appendix.html">the Appen
 </div>
 </div>
 <div class="sect2">
-<h3 id="learning-spring-cloud-azure"><a class="anchor" href="#learning-spring-cloud-azure"></a><a class="link" href="#learning-spring-cloud-azure">2.2. Learning Spring Cloud Azure</a></h3>
+<h3 id="learning-spring-cloud-azure"><a class="anchor" href="#learning-spring-cloud-azure"></a><a class="link" href="#learning-spring-cloud-azure">3.2. Learning Spring Cloud Azure</a></h3>
 <div class="paragraph">
 <p>We prepared a full list of samples to show the usages, can be found at <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0">Spring Cloud Azure Samples</a></p>
 </div>
@@ -559,7 +564,7 @@ To learn how to migration to 4.0, please check <a href="appendix.html">the Appen
 </div>
 </div>
 <div class="sect1">
-<h2 id="configuration"><a class="anchor" href="#configuration"></a><a class="link" href="#configuration">3. Configuration</a></h2>
+<h2 id="configuration"><a class="anchor" href="#configuration"></a><a class="link" href="#configuration">4. Configuration</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Most of Azure Service SDKs could be divided into two categories by transport type, HTTP-based and AMQP-based. There are properties that are common to all SDKs such as authentication principals and Azure environment settings. Or common to HTTP-based clients, such as logging level to log http requests and responses. In Spring Cloud Azure 4.0 we added five common categories of configuration properties, which could be specified to each Azure service.</p>
@@ -703,10 +708,10 @@ Properties configured under each Azure service will override the global configur
 </div>
 </div>
 <div class="sect1">
-<h2 id="authentication"><a class="anchor" href="#authentication"></a><a class="link" href="#authentication">4. Authentication</a></h2>
+<h2 id="authentication"><a class="anchor" href="#authentication"></a><a class="link" href="#authentication">5. Authentication</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="defaultazurecredential"><a class="anchor" href="#defaultazurecredential"></a><a class="link" href="#defaultazurecredential">4.1. DefaultAzureCredential</a></h3>
+<h3 id="defaultazurecredential"><a class="anchor" href="#defaultazurecredential"></a><a class="link" href="#defaultazurecredential">5.1. DefaultAzureCredential</a></h3>
 <div class="paragraph">
 <p>The <code>DefaultAzureCredential</code> is appropriate for most scenarios where the application is intended to ultimately be run in the Azure Cloud. This is because the DefaultAzureCredential combines credentials commonly used to authenticate when deployed, with credentials used to authenticate in a development environment.</p>
 </div>
@@ -763,7 +768,7 @@ There could be some <code>ERROR</code> logs be printed out while the <code>Defau
 </div>
 </div>
 <div class="sect2">
-<h3 id="managed-identity"><a class="anchor" href="#managed-identity"></a><a class="link" href="#managed-identity">4.2. Managed Identity</a></h3>
+<h3 id="managed-identity"><a class="anchor" href="#managed-identity"></a><a class="link" href="#managed-identity">5.2. Managed Identity</a></h3>
 <div class="paragraph">
 <p>A common challenge for developers is the management of secrets and credentials used to secure communication between different components making up a solution. Managed identities eliminate the need for developers to manage credentials. Managed identities provide an identity for applications to use when connecting to resources that support Azure Active Directory (Azure AD) authentication. Applications may use the managed identity to obtain Azure AD tokens. For example, an application may use a managed identity to access resources like Azure Key Vault where developers can store credentials in a secure manner or to access storage accounts.</p>
 </div>
@@ -772,12 +777,12 @@ There could be some <code>ERROR</code> logs be printed out while the <code>Defau
 </div>
 </div>
 <div class="sect2">
-<h3 id="other-credential-types"><a class="anchor" href="#other-credential-types"></a><a class="link" href="#other-credential-types">4.3. Other Credential Types</a></h3>
+<h3 id="other-credential-types"><a class="anchor" href="#other-credential-types"></a><a class="link" href="#other-credential-types">5.3. Other Credential Types</a></h3>
 <div class="paragraph">
 <p>Developers who want more control or whose scenario isn&#8217;t served by the <code>DefaultAzureCredential</code> or whose scenario isn&#8217;t served by the default settings should use other credential types.</p>
 </div>
 <div class="sect3">
-<h4 id="authentication-with-azure-active-directory"><a class="anchor" href="#authentication-with-azure-active-directory"></a><a class="link" href="#authentication-with-azure-active-directory">4.3.1. Authentication with Azure Active Directory</a></h4>
+<h4 id="authentication-with-azure-active-directory"><a class="anchor" href="#authentication-with-azure-active-directory"></a><a class="link" href="#authentication-with-azure-active-directory">5.3.1. Authentication with Azure Active Directory</a></h4>
 <div class="paragraph">
 <p>For applications want to connect to resources that support Azure Active Directory (Azure AD) authentication, below confiugrations could be set with prefix <code>spring.cloud.azure.credential</code> or <code>spring.cloud.azure.&lt;azure-service&gt;.credential</code></p>
 </div>
@@ -837,13 +842,13 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 </div>
 <div class="sect3">
-<h4 id="sas-token"><a class="anchor" href="#sas-token"></a><a class="link" href="#sas-token">4.3.2. SAS Token</a></h4>
+<h4 id="sas-token"><a class="anchor" href="#sas-token"></a><a class="link" href="#sas-token">5.3.2. SAS Token</a></h4>
 <div class="paragraph">
 <p>It&#8217;s also configurable for services support authenticating with Shared Access Signature (SAS). <code>spring.cloud.azure.&lt;azure-servcie&gt;.sas-token</code> is the propety to configure. For example, using <code>spring.cloud.azure.storage.blob.sas-token</code> to authenticate to Storage Blob service.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="connection-string"><a class="anchor" href="#connection-string"></a><a class="link" href="#connection-string">4.3.3. Connection String</a></h4>
+<h4 id="connection-string"><a class="anchor" href="#connection-string"></a><a class="link" href="#connection-string">5.3.3. Connection String</a></h4>
 <div class="paragraph">
 <p>Connection string are supported by some Azure services to provide connection informantion as well as credentials. To connect to those Azure servcies using connection string, just configure <code>spring.cloud.azure.&lt;azure-service&gt;.connection-string</code> will do. For example, <code>spring.cloud.azure.eventhubs.connection-string</code> to connect to Event Hubs service.</p>
 </div>
@@ -852,13 +857,13 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 </div>
 <div class="sect1">
-<h2 id="production-ready"><a class="anchor" href="#production-ready"></a><a class="link" href="#production-ready">5. Production Ready</a></h2>
+<h2 id="production-ready"><a class="anchor" href="#production-ready"></a><a class="link" href="#production-ready">6. Production Ready</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>We’ve added health indicators for App Configuration, Event Hubs, Cosmos, Key Vault, Storage Blob, Storage Queue, Storage File, as well as Spring Cloud Sleuth support for all HTTP-based Azure SDKs. As an example, you now can prob if storage blob is up or down via Spring Boot actuator endpoint, as well as track dependencies and latencies going from your application to Key Vault.</p>
 </div>
 <div class="sect2">
-<h3 id="enable-health-indicator"><a class="anchor" href="#enable-health-indicator"></a><a class="link" href="#enable-health-indicator">5.1. Enable Health Indicator</a></h3>
+<h3 id="enable-health-indicator"><a class="anchor" href="#enable-health-indicator"></a><a class="link" href="#enable-health-indicator">6.1. Enable Health Indicator</a></h3>
 <div class="paragraph">
 <p>Add the Spring Cloud Azure Actuator Starter dependency. This dependency will also include the <code>spring-boot-starter-actuator</code>.</p>
 </div>
@@ -921,7 +926,7 @@ Calling the health endpoint of Azure servcies may cause extra charge. For exampl
 </div>
 </div>
 <div class="sect2">
-<h3 id="enable-sleuth"><a class="anchor" href="#enable-sleuth"></a><a class="link" href="#enable-sleuth">5.2. Enable Sleuth</a></h3>
+<h3 id="enable-sleuth"><a class="anchor" href="#enable-sleuth"></a><a class="link" href="#enable-sleuth">6.2. Enable Sleuth</a></h3>
 <div class="paragraph">
 <p>Add the Spring Cloud Azure Trace Sleuth dependency when you want to trace Azure SDK activities with using Spring Cloud Sleuth.</p>
 </div>
@@ -949,7 +954,7 @@ Only HTTP-based Azure SDK clients are supported now, for example, Eventhub and S
 </div>
 </div>
 <div class="sect1">
-<h2 id="auto-configure-azure-sdk-clients"><a class="anchor" href="#auto-configure-azure-sdk-clients"></a><a class="link" href="#auto-configure-azure-sdk-clients">6. Auto Configure Azure SDK Clients</a></h2>
+<h2 id="auto-configure-azure-sdk-clients"><a class="anchor" href="#auto-configure-azure-sdk-clients"></a><a class="link" href="#auto-configure-azure-sdk-clients">7. Auto Configure Azure SDK Clients</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Spring Boot greatly simplifies the Spring Cloud Azure experience. Spring Cloud Azure Starters are a set of convenient dependency descriptors to include in your application. Our starters handle the object instantiation and configuration logic so you don’t have to. Every starter depends on the Spring Cloud Azure starter to provide critical bits of configuration, like the Azure Cloud environment and authentication information. You can configure these as properties in, for example, a yaml file:</p>
@@ -970,7 +975,7 @@ Only HTTP-based Azure SDK clients are supported now, for example, Eventhub and S
 <p>These properties are optional and, if not specified, Spring Boot will attempt to automatically find them for you. For details on how Spring Boot finds these properties, refer to the documentation.</p>
 </div>
 <div class="sect2">
-<h3 id="dependency-setup"><a class="anchor" href="#dependency-setup"></a><a class="link" href="#dependency-setup">6.1. Dependency Setup</a></h3>
+<h3 id="dependency-setup"><a class="anchor" href="#dependency-setup"></a><a class="link" href="#dependency-setup">7.1. Dependency Setup</a></h3>
 <div class="paragraph">
 <p>There are two ways to use Spring Cloud Azure starters, one is using Azure SDKs with this <code>spring-cloud-azure-starter</code> dependency</p>
 </div>
@@ -1007,7 +1012,7 @@ Please refer to <a href="index.html#starter-dependencies">Starter Dependencies</
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-2"><a class="anchor" href="#configuration-2"></a><a class="link" href="#configuration-2">6.2. Configuration</a></h3>
+<h3 id="configuration-2"><a class="anchor" href="#configuration-2"></a><a class="link" href="#configuration-2">7.2. Configuration</a></h3>
 <div class="paragraph">
 <p>Configuration properties for each Azure service are under prefix <code>spring.cloud.azure.prefix</code>.</p>
 </div>
@@ -1025,7 +1030,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 </div>
 <div class="sect2">
-<h3 id="basic-usage"><a class="anchor" href="#basic-usage"></a><a class="link" href="#basic-usage">6.3. Basic Usage</a></h3>
+<h3 id="basic-usage"><a class="anchor" href="#basic-usage"></a><a class="link" href="#basic-usage">7.3. Basic Usage</a></h3>
 <div class="paragraph">
 <p>Adding below properties to your <code>application.yaml</code> will auto-configure the Cosmos CLient for you, both <code>CosmosClient</code> and <code>CosmosAsyncClient</code> are available in the context and could be autowired.</p>
 </div>
@@ -1056,7 +1061,7 @@ public void run() {
 </div>
 </div>
 <div class="sect2">
-<h3 id="samples"><a class="anchor" href="#samples"></a><a class="link" href="#samples">6.4. Samples</a></h3>
+<h3 id="samples"><a class="anchor" href="#samples"></a><a class="link" href="#samples">7.4. Samples</a></h3>
 <div class="paragraph">
 <p>Check <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0">here</a> for more samples.</p>
 </div>
@@ -1064,36 +1069,162 @@ public void run() {
 </div>
 </div>
 <div class="sect1">
-<h2 id="resource-handling"><a class="anchor" href="#resource-handling"></a><a class="link" href="#resource-handling">7. Resource Handling</a></h2>
+<h2 id="resource-handling"><a class="anchor" href="#resource-handling"></a><a class="link" href="#resource-handling">8. Resource Handling</a></h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="dependency-setup-2"><a class="anchor" href="#dependency-setup-2"></a><a class="link" href="#dependency-setup-2">7.1. Dependency Setup</a></h3>
-
-</div>
-<div class="sect2">
-<h3 id="configuration-3"><a class="anchor" href="#configuration-3"></a><a class="link" href="#configuration-3">7.2. Configuration</a></h3>
 <div class="paragraph">
-<p>for full configurations, check appendix</p>
+<p>Connect to Azure Storage using Spring Resource abstraction and Azure Storage libraries.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Starter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-cloud-azure-starter-storage-blob</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Blobs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows unstructured data to be stored and accessed at a massive scale in block blobs.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-cloud-azure-starter-storage-file-share</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Files</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Offers fully managed cloud file shares that you can access from anywhere via the industry standard Server Message Block (SMB) protocol.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect2">
+<h3 id="dependency-setup-2"><a class="anchor" href="#dependency-setup-2"></a><a class="link" href="#dependency-setup-2">8.1. Dependency Setup</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-azure-starter-storage-blob&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-azure-starter-storage-file-share&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="basic-usage-2"><a class="anchor" href="#basic-usage-2"></a><a class="link" href="#basic-usage-2">7.3. Basic Usage</a></h3>
-
+<h3 id="configuration-3"><a class="anchor" href="#configuration-3"></a><a class="link" href="#configuration-3">8.2. Configuration</a></h3>
+<div class="paragraph">
+<p>This <code>spring-cloud-azure-starter-storage-blob</code> provides the following properties:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.blob.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether an Azure Blob Storage Service is enabled</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.blob.endpoint</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Uri to connect Azure Blob Storage</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.blob.account-key</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Privatekey to connect Azure Blob Storage</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.blob.account-name</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Storage Account Name</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>This <code>spring-cloud-azure-starter-storage-file-share</code> provides the following properties:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.fileshare.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether Azure File Storage Service is enabled</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.fileshare.endpoint</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Uri to connect Azure File Storage</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.fileshare.account-key</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Privatekey to connect Azure File Storage</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.fileshare.account-name</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Storage Account Name</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
-<h3 id="samples-2"><a class="anchor" href="#samples-2"></a><a class="link" href="#samples-2">7.4. Samples</a></h3>
-
+<h3 id="basic-usage-2"><a class="anchor" href="#basic-usage-2"></a><a class="link" href="#basic-usage-2">8.3. Basic Usage</a></h3>
+<div class="paragraph">
+<p>Provide the properties below in your configuration file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      storage:
+        blob:
+          account-name: ${STORAGE-ACCOUNT-NAME}
+          account-key: ${STORAGE-ACCOUNT-PRIVATE-KEY}
+          endpoint: ${STORAGE-BLOB-ENDPOINT}
+        fileshare:
+          account-name: ${STORAGE-ACCOUNT-NAME}
+          account-key: ${STORAGE-ACCOUNT-PRIVATE-KEY}
+          endpoint:  ${STORAGE-FILESHARE-ENDPOINT}</code></pre>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="secret-management"><a class="anchor" href="#secret-management"></a><a class="link" href="#secret-management">8. Secret Management</a></h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="samples-2"><a class="anchor" href="#samples-2"></a><a class="link" href="#samples-2">8.4. Samples</a></h3>
+<div class="paragraph">
+<p>A <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/storage/spring-cloud-azure-starter-storage-blob/storage-blob-sample">storage-blob-sample</a> and <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/storage/spring-cloud-azure-starter-storage-file-share/storage-file-sample">storage-file-sample</a> are provided to show how to use the <code>spring-cloud-azure-starter-storage-blob</code> and <code>spring-cloud-azure-starter-storage-file-share</code>.
+== Secret Management</p>
+</div>
 <div class="paragraph">
 <p>spring-cloud-azure-starter-keyvault-secrets adds Azure Key Vault as one of the Spring PropertySource, so secrets stored in Azure Key Vault could be easily used and conveniently accessed like other externalized configuration property, e.g. properties in files.</p>
 </div>
+</div>
 <div class="sect2">
-<h3 id="dependency-setup-3"><a class="anchor" href="#dependency-setup-3"></a><a class="link" href="#dependency-setup-3">8.1. Dependency Setup</a></h3>
+<h3 id="dependency-setup-3"><a class="anchor" href="#dependency-setup-3"></a><a class="link" href="#dependency-setup-3">8.5. Dependency Setup</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -1104,7 +1235,62 @@ public void run() {
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-4"><a class="anchor" href="#configuration-4"></a><a class="link" href="#configuration-4">8.2. Configuration</a></h3>
+<h3 id="configuration-4"><a class="anchor" href="#configuration-4"></a><a class="link" href="#configuration-4">8.6. Configuration</a></h3>
+<div class="paragraph">
+<p>Configurable items</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Properties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Key Vault uri</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.service-version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service version</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-source-enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable this property source</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-sources</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multiple property source</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-sources[].name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of this property source</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-sources[].endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Key Vault uri</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-sources[].service-version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service version</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-sources[].case-sensitive</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether the secret name is case-sensitive</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-sources[].secret-keys</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The supported secret names. If not configured, it will retrieve all secret names.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-sources[].refresh-interval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Refresh interval</p></td>
+</tr>
+</tbody>
+</table>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-yml" data-lang="yml">spring:
@@ -1123,11 +1309,7 @@ public void run() {
 </div>
 </div>
 <div class="sect2">
-<h3 id="basic-usage-3"><a class="anchor" href="#basic-usage-3"></a><a class="link" href="#basic-usage-3">8.3. Basic Usage</a></h3>
-
-</div>
-<div class="sect2">
-<h3 id="samples-3"><a class="anchor" href="#samples-3"></a><a class="link" href="#samples-3">8.4. Samples</a></h3>
+<h3 id="basic-usage-3"><a class="anchor" href="#basic-usage-3"></a><a class="link" href="#basic-usage-3">8.7. Basic Usage</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
@@ -1148,34 +1330,141 @@ public class KeyVaultSample implements CommandLineRunner {
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="samples-3"><a class="anchor" href="#samples-3"></a><a class="link" href="#samples-3">8.8. Samples</a></h3>
+
+</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="spring-data-support"><a class="anchor" href="#spring-data-support"></a><a class="link" href="#spring-data-support">9. Spring Data Support</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="cosmos-db"><a class="anchor" href="#cosmos-db"></a><a class="link" href="#cosmos-db">9.1. Cosmos DB</a></h3>
+<h3 id="spring-data-cosmosdb-support"><a class="anchor" href="#spring-data-cosmosdb-support"></a><a class="link" href="#spring-data-cosmosdb-support">9.1. Spring Data CosmosDB Support</a></h3>
 <div class="paragraph">
-<p>brief introduction of the project</p>
+<p>[Azure Cosmos DB](<a href="https://azure.microsoft.com/services/cosmos-db/" class="bare">azure.microsoft.com/services/cosmos-db/</a>) is a globally-distributed database service that allows developers to work with data using a variety of standard APIs, such as SQL, MongoDB, Graph, and Azure Table storage.</p>
+</div>
+<div class="paragraph">
+<p>Connect to Cosmos DB using Spring Data and CosmosDB libraries.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="dependency-setup-4"><a class="anchor" href="#dependency-setup-4"></a><a class="link" href="#dependency-setup-4">9.2. Dependency Setup</a></h3>
-
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+   &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-cloud-azure-starter-data-cosmos&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="configuration-5"><a class="anchor" href="#configuration-5"></a><a class="link" href="#configuration-5">9.3. Configuration</a></h3>
 <div class="paragraph">
-<p>for full configurations, check appendix</p>
+<p>Below are some properties you can configure when using Spring Data CosmosDB Support:</p>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether Azure Cosmos Service is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.database</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The CosmosDB database id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.endpoint</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Uri to connect CosmosDB</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.key</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PrivateKey to connect CosmosDB</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.credential.client-certificate-password</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.credential.client-certificate-path</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path of a PEM certificate file to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.credential.client-id</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.credential.client-secret</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.credential.managed-identity-client-id</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when using managed identity to authenticate with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.credential.password</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.credential.username</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.populate-query-metrics</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Populate Diagnostics Strings and Query metrics</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="basic-usage-4"><a class="anchor" href="#basic-usage-4"></a><a class="link" href="#basic-usage-4">9.4. Basic Usage</a></h3>
-
+<div class="sect3">
+<h4 id="use-private-key-to-access-cosmosdb"><a class="anchor" href="#use-private-key-to-access-cosmosdb"></a><a class="link" href="#use-private-key-to-access-cosmosdb">9.4.1. Use private key to access CosmosDB</a></h4>
+<div class="paragraph">
+<p>The simplest way to connect CosmosDB with <code>spring-cloud-azure-starter-data-cosmos</code> is primary key,
+add below properties and you are good to go.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      cosmos:
+        key: ${YOUR_COSMOS_KEY}
+        endpoint: ${YOUR_COSMOS_ENDPOINT}
+        database: ${YOUR_COSMOS_DATABASE}</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="samples-4"><a class="anchor" href="#samples-4"></a><a class="link" href="#samples-4">9.5. Samples</a></h3>
-
+<div class="paragraph">
+<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/cosmos/spring-cloud-azure-starter-data-cosmos">samples for Azure Spring Data Cosmos</a> for more details.</p>
+</div>
 </div>
 </div>
 </div>
