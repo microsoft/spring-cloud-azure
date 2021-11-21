@@ -239,6 +239,44 @@ window.onload = function() {
 <li><a href="#spring-integration-support">12. Spring Integration Support</a>
 <ul class="sectlevel2">
 <li><a href="#spring-integration-with-azure-event-hubs">12.1. Spring Integration with Azure Event Hubs</a></li>
+<li><a href="#spring-integration-with-azure-service-bus">12.2. Spring Integration with Azure Service Bus</a></li>
+<li><a href="#spring-integration-with-azure-storage-queue">12.3. Spring Integration with Azure Storage Queue</a></li>
+</ul>
+</li>
+<li><a href="#spring-cloud-stream-support">13. Spring Cloud Stream Support</a>
+<ul class="sectlevel2">
+<li><a href="#spring-cloud-stream-binder-for-azure-event-hubs">13.1. Spring Cloud Stream Binder for Azure Event Hubs</a></li>
+<li><a href="#spring-cloud-stream-binder-for-azure-service-bus">13.2. Spring Cloud Stream Binder for Azure Service Bus</a></li>
+</ul>
+</li>
+<li><a href="#kafka-support">14. Kafka Support</a>
+<ul class="sectlevel2">
+<li><a href="#dependency-setup-12">14.1. Dependency Setup</a></li>
+<li><a href="#configuration-13">14.2. Configuration</a></li>
+<li><a href="#basic-usage-12">14.3. Basic Usage</a></li>
+<li><a href="#samples-12">14.4. Samples</a></li>
+</ul>
+</li>
+<li><a href="#redis-support">15. Redis Support</a>
+<ul class="sectlevel2">
+<li><a href="#dependency-setup-13">15.1. Dependency Setup</a></li>
+<li><a href="#configuration-14">15.2. Configuration</a></li>
+<li><a href="#basic-usage-13">15.3. Basic Usage</a></li>
+<li><a href="#samples-13">15.4. Samples</a></li>
+</ul>
+</li>
+<li><a href="#resource-manager">16. Resource Manager</a>
+<ul class="sectlevel2">
+<li><a href="#dependency-setup-14">16.1. Dependency Setup</a></li>
+<li><a href="#configuration-15">16.2. Configuration</a></li>
+<li><a href="#basic-usage-14">16.3. Basic Usage</a></li>
+<li><a href="#samples-14">16.4. Samples</a></li>
+</ul>
+</li>
+<li><a href="#configuration-properties">17. Configuration Properties</a></li>
+<li><a href="#known-issues">18. Known Issues</a>
+<ul class="sectlevel2">
+<li><a href="#error-logs-when-using-defaultazurecredential">18.1. Error logs when using DefaultAzureCredential</a></li>
 </ul>
 </li>
 </ul>
@@ -694,7 +732,7 @@ DefaultAzureCredential is intended to simplify getting started with the SDK by h
 </table>
 </div>
 <div class="paragraph">
-<p>The <code>DefaultAzureCredential`</code> will attempt to authenticate via the following mechanisms in order.</p>
+<p>The <code>DefaultAzureCredential</code> will attempt to authenticate via the following mechanisms in order.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -2822,17 +2860,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 <div class="sect4">
 <h5 id="azure-common-configuration-options"><a class="anchor" href="#azure-common-configuration-options"></a><a class="link" href="#azure-common-configuration-options">Azure Common Configuration Options</a></h5>
 <div class="paragraph">
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
-Below properties can also be configured with the default Spring Cloud Azure unified properties by changing the prefix from <strong>spring.cloud.azure.eventhubs.</strong> to <strong>spring.cloud.azure.</strong>.</p>
-</div>
-<div class="exampleblock">
-<div class="content">
-<div class="paragraph">
-<p>Below properties can also be configured with the default Spring Cloud Azure unified properties,
-of which the prefix is changed from <strong>spring.cloud.azure.eventhubs.</strong> to <strong>spring.cloud.azure.</strong>.</p>
-</div>
-<div class="paragraph">
-<p>&gt;&gt;&gt;&gt;&gt;&gt;&gt; 1ffefa6e (update properties)</p>
+<p>Below properties can also be configured with the default Spring Cloud Azure unified properties by changing the prefix from <strong>spring.cloud.azure.eventhubs.</strong> to <strong>spring.cloud.azure.</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -3020,9 +3048,11 @@ of which the prefix is changed from <strong>spring.cloud.azure.eventhubs.</stron
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect4">
+<h5 id="azure-event-hubs-client-configuration-options"><a class="anchor" href="#azure-event-hubs-client-configuration-options"></a><a class="link" href="#azure-event-hubs-client-configuration-options">Azure Event Hubs Client Configuration Options</a></h5>
 <div class="paragraph">
-<p>===== Azure Event Hubs Client Configuration Options
-Below options are used to configure Azure Event Hubs SDK Client.</p>
+<p>Below options are used to configure Azure Event Hubs SDK Client.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -3105,10 +3135,14 @@ Below options are used to configure Azure Event Hubs SDK Client.</p>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="basic-usage-7"><a class="anchor" href="#basic-usage-7"></a><a class="link" href="#basic-usage-7">12.1.3. Basic Usage</a></h4>
+<div class="sect4">
+<h5 id="send-messages-to-azure-event-hubs"><a class="anchor" href="#send-messages-to-azure-event-hubs"></a><a class="link" href="#send-messages-to-azure-event-hubs">Send messages to Azure Event Hubs</a></h5>
 <div class="paragraph">
-<p>==== Basic Usage
-===== Send messages to Azure Event Hubs
-* Step 1. Fill the credential configuration options.</p>
+<p>Step 1. Fill the credential configuration options.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -3179,16 +3213,12 @@ Below options are used to configure Azure Event Hubs SDK Client.</p>
         namespace: ${AZURE_SERVICE_BUS_NAMESPACE}</pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
+<div class="paragraph">
 <p>Step 2. Create <code>DefaultMessageHandler</code> with the bean of <code>EventHubsTemplate</code> to send messages to Event Hubs.</p>
-</li>
-</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>private static final String OUTPUT_CHANNEL = "output";
+<pre class="highlight"><code class="language-java" data-lang="java">private static final String OUTPUT_CHANNEL = "output";
 private static final String EVENTHUB_NAME = "eh1";
 
 @Bean
@@ -3206,43 +3236,39 @@ public MessageHandler messageSender(EventHubsTemplate queueOperation) {
         }
     });
     return handler;
-}</pre>
+}</code></pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
+<div class="paragraph">
 <p>Step 3. Create a Message gateway binding with the message handler created in the last step via a message channel</p>
-</li>
-</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 EventHubOutboundGateway messagingGateway;
 
 @MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL)
 public interface EventHubOutboundGateway {
     void send(String text);
-}</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 4. Send messages using the gateway</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>this.messagingGateway.send(message);</pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>===== Receive messages from Azure Event Hubs
-* Step 1. Fill the credential configuration options.
-- Step 2. Create a bean of message channel as the input channel.</p>
+<p>Step 4. Send messages using the gateway</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">this.messagingGateway.send(message);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="receive-messages-from-azure-event-hubs"><a class="anchor" href="#receive-messages-from-azure-event-hubs"></a><a class="link" href="#receive-messages-from-azure-event-hubs">Receive messages from Azure Event Hubs</a></h5>
+<div class="paragraph">
+<p>Step 1. Fill the credential configuration options.</p>
+</div>
+<div class="paragraph">
+<p>Step 2. Create a bean of message channel as the input channel.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3256,16 +3282,12 @@ public MessageChannel input() {
 }</code></pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
+<div class="paragraph">
 <p>Step 3. Create <code>EventHubsInboundChannelAdapter</code> with the bean of <code>EventHubsProcessorContainer</code> to receive messages to Event Hubs.</p>
-</li>
-</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>@Bean
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
 public EventHubsInboundChannelAdapter messageChannelAdapter(
         @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel,
         EventHubsProcessorContainer processorContainer) {
@@ -3276,19 +3298,15 @@ public EventHubsInboundChannelAdapter messageChannelAdapter(
                     CONSUMER_GROUP, config);
     adapter.setOutputChannel(inputChannel);
     return adapter;
-}</pre>
+}</code></pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
+<div class="paragraph">
 <p>Step 4. Create a message receiver binding with EventHubsInboundChannelAdapter created in the last step via the message channel we created before.</p>
-</li>
-</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>@ServiceActivator(inputChannel = INPUT_CHANNEL)
+<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel = INPUT_CHANNEL)
 public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
     String message = new String(payload);
     LOGGER.info("New message received: '{}'", message);
@@ -3296,21 +3314,22 @@ public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) C
             .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
             .doOnError(e -&gt; LOGGER.error("Error found", e))
             .subscribe();
-}</pre>
+}</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>==== Samples</p>
 </div>
+</div>
+<div class="sect3">
+<h4 id="samples-7"><a class="anchor" href="#samples-7"></a><a class="link" href="#samples-7">12.1.4. Samples</a></h4>
 <div class="paragraph">
 <p>Please refer to this <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter-integration-eventhubs">sample project</a> to learn how to use Event Hubs integration.</p>
 </div>
-<div class="paragraph">
-<p>=== Spring Integration with Azure Service Bus</p>
 </div>
-<div class="paragraph">
-<p>==== Dependency Setup</p>
 </div>
+<div class="sect2">
+<h3 id="spring-integration-with-azure-service-bus"><a class="anchor" href="#spring-integration-with-azure-service-bus"></a><a class="link" href="#spring-integration-with-azure-service-bus">12.2. Spring Integration with Azure Service Bus</a></h3>
+<div class="sect3">
+<h4 id="dependency-setup-8"><a class="anchor" href="#dependency-setup-8"></a><a class="link" href="#dependency-setup-8">12.2.1. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -3319,12 +3338,13 @@ public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) C
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>==== Configuration</p>
 </div>
+<div class="sect3">
+<h4 id="configuration-9"><a class="anchor" href="#configuration-9"></a><a class="link" href="#configuration-9">12.2.2. Configuration</a></h4>
+<div class="sect4">
+<h5 id="azure-common-configuration-options-2"><a class="anchor" href="#azure-common-configuration-options-2"></a><a class="link" href="#azure-common-configuration-options-2">Azure Common Configuration Options</a></h5>
 <div class="paragraph">
-<p>===== Azure Common Configuration Options
-Below properties can also be configured with the default Spring Cloud Azure unified properties by changing the prefix
+<p>Below properties can also be configured with the default Spring Cloud Azure unified properties by changing the prefix
 from <strong>spring.cloud.azure.servicebus.</strong> to <strong>spring.cloud.azure.</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -3513,9 +3533,11 @@ from <strong>spring.cloud.azure.servicebus.</strong> to <strong>spring.cloud.azu
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect4">
+<h5 id="azure-service-bus-client-configuration-options"><a class="anchor" href="#azure-service-bus-client-configuration-options"></a><a class="link" href="#azure-service-bus-client-configuration-options">Azure Service Bus Client Configuration Options</a></h5>
 <div class="paragraph">
-<p>===== Azure Service Bus Client Configuration Options
-Below options are used to configure Azure Service Bus SDK Client.</p>
+<p>Below options are used to configure Azure Service Bus SDK Client.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -3563,10 +3585,14 @@ Below options are used to configure Azure Service Bus SDK Client.</p>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="basic-usage-8"><a class="anchor" href="#basic-usage-8"></a><a class="link" href="#basic-usage-8">12.2.3. Basic Usage</a></h4>
+<div class="sect4">
+<h5 id="send-messages-to-azure-service-bus"><a class="anchor" href="#send-messages-to-azure-service-bus"></a><a class="link" href="#send-messages-to-azure-service-bus">Send messages to Azure Service Bus</a></h5>
 <div class="paragraph">
-<p>==== Basic Usage
-===== Send messages to Azure Service Bus
-* Step 1. Fill the credential configuration options.</p>
+<p>Step 1. Fill the credential configuration options.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -3637,17 +3663,13 @@ Below options are used to configure Azure Service Bus SDK Client.</p>
         namespace: ${AZURE_SERVICE_BUS_NAMESPACE}</pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
+<div class="paragraph">
 <p>Step 2. Create <code>DefaultMessageHandler</code> with the bean of <code>ServiceBusTemplate</code> to send messages to Service Bus,
 set the entity type for the ServiceBusTemplate.</p>
-</li>
-</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>private static final String OUTPUT_CHANNEL = "queue.output";
+<pre class="highlight"><code class="language-java" data-lang="java">private static final String OUTPUT_CHANNEL = "queue.output";
 
 @Bean
 @ServiceActivator(inputChannel = OUTPUT_CHANNEL)
@@ -3667,43 +3689,39 @@ public MessageHandler queueMessageSender(ServiceBusTemplate serviceBusTemplate) 
     });
 
     return handler;
-}</pre>
+}</code></pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
+<div class="paragraph">
 <p>Step 3. Create a Message gateway binding with the message handler created in the last stop via a message channel</p>
-</li>
-</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 QueueOutboundGateway messagingGateway;
 
 @MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL)
 public interface QueueOutboundGateway {
     void send(String text);
-}</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 4. Send messages using the gateway</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>this.messagingGateway.send(message);</pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>===== Receive messages from Azure Service Bus
-* Step 1. Fill the credential configuration options.
-* Step 2. Create a bean of message channel as the input channel.</p>
+<p>Step 4. Send messages using the gateway</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">this.messagingGateway.send(message);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="receive-messages-from-azure-service-bus"><a class="anchor" href="#receive-messages-from-azure-service-bus"></a><a class="link" href="#receive-messages-from-azure-service-bus">Receive messages from Azure Service Bus</a></h5>
+<div class="paragraph">
+<p>Step 1. Fill the credential configuration options.</p>
+</div>
+<div class="paragraph">
+<p>Step 2. Create a bean of message channel as the input channel.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3715,16 +3733,12 @@ public MessageChannel input() {
 }</code></pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
+<div class="paragraph">
 <p>Step 3. Create <code>ServiceBusInboundChannelAdapter</code> with the bean of <code>ServiceBusProcessorContainer</code> to receive messages to Service Bus.</p>
-</li>
-</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>private static final String QUEUE_NAME = "queue1";
+<pre class="highlight"><code class="language-java" data-lang="java">private static final String QUEUE_NAME = "queue1";
 
 @Bean
 public ServiceBusInboundChannelAdapter queueMessageChannelAdapter(
@@ -3733,19 +3747,15 @@ public ServiceBusInboundChannelAdapter queueMessageChannelAdapter(
         new CheckpointConfig(CheckpointMode.MANUAL));
     adapter.setOutputChannel(inputChannel);
     return adapter;
-}</pre>
+}</code></pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
+<div class="paragraph">
 <p>Step 4. Create a message receiver binding with ServiceBusInboundChannelAdapter created in the last step via the message channel we created before.</p>
-</li>
-</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>@ServiceActivator(inputChannel = INPUT_CHANNEL)
+<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel = INPUT_CHANNEL)
 public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
     String message = new String(payload);
     LOGGER.info("New message received: '{}'", message);
@@ -3753,12 +3763,13 @@ public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) C
             .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
             .doOnError(e -&gt; LOGGER.error("Error found", e))
             .subscribe();
-}</pre>
+}</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>==== Samples</p>
 </div>
+</div>
+<div class="sect3">
+<h4 id="samples-8"><a class="anchor" href="#samples-8"></a><a class="link" href="#samples-8">12.2.4. Samples</a></h4>
 <div class="paragraph">
 <p>Please refer to this <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/servicebus/spring-cloud-azure-starter-integration-servicebus">sample project</a> to learn how to use Service Bus integration.</p>
 </div>
@@ -3767,9 +3778,6 @@ public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) C
 </div>
 <div class="paragraph">
 <p>This example demonstrates how to manually set the partition key for the message in the application.</p>
-</div>
-<div class="paragraph">
-<p><strong>Approach 1:</strong> Manually add the partition Key in the message header by code.</p>
 </div>
 <div class="paragraph">
 <p><em>Recommended:</em> Use <code>ServiceBusMessageHeaders.PARTITION_KEY</code> as the key of the header.</p>
@@ -3851,12 +3859,12 @@ the value of the session id will eventually be used to overwrite the value of th
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>=== Spring Integration with Azure Storage Queue</p>
 </div>
-<div class="paragraph">
-<p>==== Dependency Setup</p>
 </div>
+<div class="sect2">
+<h3 id="spring-integration-with-azure-storage-queue"><a class="anchor" href="#spring-integration-with-azure-storage-queue"></a><a class="link" href="#spring-integration-with-azure-storage-queue">12.3. Spring Integration with Azure Storage Queue</a></h3>
+<div class="sect3">
+<h4 id="dependency-setup-9"><a class="anchor" href="#dependency-setup-9"></a><a class="link" href="#dependency-setup-9">12.3.1. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -3865,12 +3873,13 @@ the value of the session id will eventually be used to overwrite the value of th
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>==== Configuration</p>
 </div>
+<div class="sect3">
+<h4 id="configuration-10"><a class="anchor" href="#configuration-10"></a><a class="link" href="#configuration-10">12.3.2. Configuration</a></h4>
+<div class="sect4">
+<h5 id="azure-common-configuration-options-3"><a class="anchor" href="#azure-common-configuration-options-3"></a><a class="link" href="#azure-common-configuration-options-3">Azure Common Configuration Options</a></h5>
 <div class="paragraph">
-<p>===== Azure Common Configuration Options
-Below properties can also be configured with the default Spring Cloud Azure unified properties,
+<p>Below properties can also be configured with the default Spring Cloud Azure unified properties,
 by changing the prefix from <strong>spring.cloud.azure.storage.queue.</strong> to <strong>spring.cloud.azure.</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -4059,9 +4068,11 @@ by changing the prefix from <strong>spring.cloud.azure.storage.queue.</strong> t
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect4">
+<h5 id="azure-storage-queue-client-configuration-options"><a class="anchor" href="#azure-storage-queue-client-configuration-options"></a><a class="link" href="#azure-storage-queue-client-configuration-options">Azure Storage Queue Client Configuration Options</a></h5>
 <div class="paragraph">
-<p>===== Azure Storage Queue Client Configuration Options
-Below options are used to configure Azure Storage Queue SDK Client.</p>
+<p>Below options are used to configure Azure Storage Queue SDK Client.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -4114,10 +4125,14 @@ Below options are used to configure Azure Storage Queue SDK Client.</p>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="basic-usage-9"><a class="anchor" href="#basic-usage-9"></a><a class="link" href="#basic-usage-9">12.3.3. Basic Usage</a></h4>
+<div class="sect4">
+<h5 id="send-messages-to-azure-storage-queue"><a class="anchor" href="#send-messages-to-azure-storage-queue"></a><a class="link" href="#send-messages-to-azure-storage-queue">Send messages to Azure Storage Queue</a></h5>
 <div class="paragraph">
-<p>==== Basic Usage
-===== Send messages to Azure Storage Queue
-* Step 1. Fill the credential configuration options.</p>
+<p>Step 1. Fill the credential configuration options.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -4191,16 +4206,12 @@ Below options are used to configure Azure Storage Queue SDK Client.</p>
           namespace: ${AZURE_SERVICE_BUS_NAMESPACE}</pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
+<div class="paragraph">
 <p>Step 2. Create <code>DefaultMessageHandler</code> with the bean of <code>StorageQueueOperation</code> to send messages to Storage Queue.</p>
-</li>
-</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>private static final String STORAGE_QUEUE_NAME = "example";
+<pre class="highlight"><code class="language-java" data-lang="java">private static final String STORAGE_QUEUE_NAME = "example";
 private static final String OUTPUT_CHANNEL = "output";
 
 @Bean
@@ -4219,43 +4230,39 @@ public MessageHandler messageSender(StorageQueueOperation storageQueueOperation)
         }
     });
     return handler;
-}</pre>
+}</code></pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
+<div class="paragraph">
 <p>Step 3. Create a Message gateway binding with the message handler created in the last stop via a message channel</p>
-</li>
-</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>@Autowired
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
 StorageQueueOutboundGateway storageQueueOutboundGateway;
 
 @MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL)
 public interface StorageQueueOutboundGateway {
     void send(String text);
-}</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 4. Send messages using the gateway</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>this.storageQueueOutboundGateway.send(message);</pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>===== Receive messages from Azure Storage Queue
-* Step 1. Fill the credential configuration options.
-* Step 2. Create a bean of message channel as the input channel.</p>
+<p>Step 4. Send messages using the gateway</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">this.storageQueueOutboundGateway.send(message);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="receive-messages-from-azure-storage-queue"><a class="anchor" href="#receive-messages-from-azure-storage-queue"></a><a class="link" href="#receive-messages-from-azure-storage-queue">Receive messages from Azure Storage Queue</a></h5>
+<div class="paragraph">
+<p>Step 1. Fill the credential configuration options.</p>
+</div>
+<div class="paragraph">
+<p>Step 2. Create a bean of message channel as the input channel.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4267,16 +4274,12 @@ public MessageChannel input() {
 }</code></pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
+<div class="paragraph">
 <p>Step 3. Create <code>StorageQueueMessageSource</code> with the bean of <code>StorageQueueOperation</code> to receive messages to Storage Queue.</p>
-</li>
-</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>private static final String STORAGE_QUEUE_NAME = "example";
+<pre class="highlight"><code class="language-java" data-lang="java">private static final String STORAGE_QUEUE_NAME = "example";
 
 @Bean
 @InboundChannelAdapter(channel = INPUT_CHANNEL, poller = @Poller(fixedDelay = "1000"))
@@ -4285,19 +4288,15 @@ public StorageQueueMessageSource storageQueueMessageSource(StorageQueueOperation
     storageQueueOperation.setVisibilityTimeoutInSeconds(10);
 
     return new StorageQueueMessageSource(STORAGE_QUEUE_NAME, storageQueueOperation);
-}</pre>
+}</code></pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
+<div class="paragraph">
 <p>Step 4. Create a message receiver binding with StorageQueueMessageSource created in the last step via the message channel we created before.</p>
-</li>
-</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>@ServiceActivator(inputChannel = INPUT_CHANNEL)
+<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel = INPUT_CHANNEL)
 public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
     String message = new String(payload);
     LOGGER.info("New message received: '{}'", message);
@@ -4305,18 +4304,23 @@ public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) C
         .doOnError(Throwable::printStackTrace)
         .doOnSuccess(t -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
         .subscribe();
-}</pre>
+}</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>==== Samples</p>
 </div>
+</div>
+<div class="sect3">
+<h4 id="samples-9"><a class="anchor" href="#samples-9"></a><a class="link" href="#samples-9">12.3.4. Samples</a></h4>
 <div class="paragraph">
 <p>Please refer to this <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/storage/spring-cloud-azure-starter-integration-storage-queue">sample project</a> illustrating how to use Storage Queue integration.</p>
 </div>
-<div class="paragraph">
-<p>== Spring Cloud Stream Support</p>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="spring-cloud-stream-support"><a class="anchor" href="#spring-cloud-stream-support"></a><a class="link" href="#spring-cloud-stream-support">13. Spring Cloud Stream Support</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Spring Cloud Stream is a framework for building highly scalable event-driven microservices connected with shared messaging systems.</p>
 </div>
@@ -4336,12 +4340,10 @@ public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) C
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>=== Spring Cloud Stream Binder for Azure Event Hubs</p>
-</div>
-<div class="paragraph">
-<p>==== Dependency Setup</p>
-</div>
+<div class="sect2">
+<h3 id="spring-cloud-stream-binder-for-azure-event-hubs"><a class="anchor" href="#spring-cloud-stream-binder-for-azure-event-hubs"></a><a class="link" href="#spring-cloud-stream-binder-for-azure-event-hubs">13.1. Spring Cloud Stream Binder for Azure Event Hubs</a></h3>
+<div class="sect3">
+<h4 id="dependency-setup-10"><a class="anchor" href="#dependency-setup-10"></a><a class="link" href="#dependency-setup-10">13.1.1. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -4350,15 +4352,14 @@ public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) C
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>==== Configuration</p>
 </div>
+<div class="sect3">
+<h4 id="configuration-11"><a class="anchor" href="#configuration-11"></a><a class="link" href="#configuration-11">13.1.2. Configuration</a></h4>
 <div class="paragraph">
 <p>The binder provides the following configuration options in <code>application.properties</code>.</p>
 </div>
-<div class="paragraph">
-<p>===== Spring Cloud Azure Properties</p>
-</div>
+<div class="sect4">
+<h5 id="spring-cloud-azure-properties"><a class="anchor" href="#spring-cloud-azure-properties"></a><a class="link" href="#spring-cloud-azure-properties">Spring Cloud Azure Properties</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -4443,16 +4444,15 @@ public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) C
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>===== Common Producer Properties</p>
 </div>
+<div class="sect4">
+<h5 id="common-producer-properties"><a class="anchor" href="#common-producer-properties"></a><a class="link" href="#common-producer-properties">Common Producer Properties</a></h5>
 <div class="paragraph">
 <p>You can use the producer configurations of <strong>Spring Cloud Stream</strong>,
 it uses the configuration with the format of <code>spring.cloud.stream.bindings.&lt;channelName&gt;.producer</code>.</p>
 </div>
-<div class="paragraph">
-<p>====== Partition configuration</p>
-</div>
+<div class="sect5">
+<h6 id="partition-configuration"><a class="anchor" href="#partition-configuration"></a><a class="link" href="#partition-configuration">Partition configuration</a></h6>
 <div class="paragraph">
 <p>The system will obtain the parameter <code>PartitionSupply</code> to send the message,
 the following is the process of obtaining the priority of the partition ID and key:</p>
@@ -4499,9 +4499,10 @@ When interface <code>PartitionKeyExtractorStrategy</code> is not implemented, it
 <div class="paragraph">
 <p>For more information about setting partition for the producer properties, please refer to the <a href="https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_producer_properties">Producer Properties of Spring Cloud Stream</a>.</p>
 </div>
-<div class="paragraph">
-<p>===== Event Hub Producer Properties</p>
 </div>
+</div>
+<div class="sect4">
+<h5 id="event-hub-producer-properties"><a class="anchor" href="#event-hub-producer-properties"></a><a class="link" href="#event-hub-producer-properties">Event Hub Producer Properties</a></h5>
 <div class="paragraph">
 <p>It supports the following configurations with the format of <code>spring.cloud.stream.eventhubs.bindings.&lt;channelName&gt;.producer</code>.</p>
 </div>
@@ -4532,16 +4533,15 @@ producer will wait for a response from Event Hub after a send operation.</p></td
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>===== Common Consumer Properties</p>
 </div>
+<div class="sect4">
+<h5 id="common-consumer-properties"><a class="anchor" href="#common-consumer-properties"></a><a class="link" href="#common-consumer-properties">Common Consumer Properties</a></h5>
 <div class="paragraph">
 <p>You can use the below consumer configurations of <strong>Spring Cloud Stream</strong>,
 it uses the configuration with the format of <code>spring.cloud.stream.bindings.&lt;channelName&gt;.consumer</code>.</p>
 </div>
-<div class="paragraph">
-<p>====== Batch Consumer</p>
-</div>
+<div class="sect5">
+<h6 id="batch-consumer"><a class="anchor" href="#batch-consumer"></a><a class="link" href="#batch-consumer">Batch Consumer</a></h6>
 <div class="paragraph">
 <p>When <code>spring.cloud.stream.bindings.&lt;binding-name&gt;.consumer.batch-mode</code> is set to <code>true</code>, all of the received events
 will be presented as a <code>List&lt;?&gt;</code> to the consumer function. Otherwise, the function will be called with one event at a time.
@@ -4557,9 +4557,10 @@ The size of the batch is controlled by Event Hubs consumer properties <code>max-
 <div class="paragraph">
 <p>Default: <code>False</code></p>
 </div>
-<div class="paragraph">
-<p>===== Event Hub Consumer Properties</p>
 </div>
+</div>
+<div class="sect4">
+<h5 id="event-hub-consumer-properties"><a class="anchor" href="#event-hub-consumer-properties"></a><a class="link" href="#event-hub-consumer-properties">Event Hub Consumer Properties</a></h5>
 <div class="paragraph">
 <p>It supports the following configurations with the format of <code>spring.cloud.stream.eventhubs.bindings.&lt;channelName&gt;.consumer</code>.</p>
 </div>
@@ -4652,15 +4653,18 @@ when consume batch mode is false(default value), <code>BATCH</code> checkpoint m
 <div class="paragraph">
 <p>To see the list of all Spring Cloud Azure related configuration properties please check <a href="appendix.html">the Appendix page</a>.</p>
 </div>
-<div class="paragraph">
-<p>==== Basic Usage</p>
 </div>
-<div class="paragraph">
-<p>==== Samples</p>
 </div>
-<div class="paragraph">
-<p>==== Error Channels</p>
+<div class="sect3">
+<h4 id="basic-usage-10"><a class="anchor" href="#basic-usage-10"></a><a class="link" href="#basic-usage-10">13.1.3. Basic Usage</a></h4>
+
 </div>
+<div class="sect3">
+<h4 id="samples-10"><a class="anchor" href="#samples-10"></a><a class="link" href="#samples-10">13.1.4. Samples</a></h4>
+
+</div>
+<div class="sect3">
+<h4 id="error-channels"><a class="anchor" href="#error-channels"></a><a class="link" href="#error-channels">13.1.5. Error Channels</a></h4>
 <div class="paragraph">
 <p><strong><em>consumer error channel</em></strong></p>
 </div>
@@ -4700,12 +4704,10 @@ public void producerError(Message&lt;?&gt; message) {
 }</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>===== Batch Consumer Sample</p>
-</div>
-<div class="paragraph">
-<p>====== Configuration Options</p>
-</div>
+<div class="sect4">
+<h5 id="batch-consumer-sample"><a class="anchor" href="#batch-consumer-sample"></a><a class="link" href="#batch-consumer-sample">Batch Consumer Sample</a></h5>
+<div class="sect5">
+<h6 id="configuration-options"><a class="anchor" href="#configuration-options"></a><a class="link" href="#configuration-options">Configuration Options</a></h6>
 <div class="paragraph">
 <p>To enable the batch consumer mode, you should add below configuration</p>
 </div>
@@ -4731,9 +4733,9 @@ public void producerError(Message&lt;?&gt; message) {
                 max-wait-time: 1m # Optional, the default value is null</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>====== Consume messages in batches</p>
 </div>
+<div class="sect5">
+<h6 id="consume-messages-in-batches"><a class="anchor" href="#consume-messages-in-batches"></a><a class="link" href="#consume-messages-in-batches">Consume messages in batches</a></h6>
 <div class="paragraph">
 <p>For checkpointing mode as BATCH, you can use below code to send messages and consume in batches.</p>
 </div>
@@ -4785,12 +4787,14 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 }</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>=== Spring Cloud Stream Binder for Azure Service Bus</p>
 </div>
-<div class="paragraph">
-<p>==== Dependency Setup</p>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="spring-cloud-stream-binder-for-azure-service-bus"><a class="anchor" href="#spring-cloud-stream-binder-for-azure-service-bus"></a><a class="link" href="#spring-cloud-stream-binder-for-azure-service-bus">13.2. Spring Cloud Stream Binder for Azure Service Bus</a></h3>
+<div class="sect3">
+<h4 id="dependency-setup-11"><a class="anchor" href="#dependency-setup-11"></a><a class="link" href="#dependency-setup-11">13.2.1. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -4799,15 +4803,14 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>==== Configuration</p>
 </div>
+<div class="sect3">
+<h4 id="configuration-12"><a class="anchor" href="#configuration-12"></a><a class="link" href="#configuration-12">13.2.2. Configuration</a></h4>
 <div class="paragraph">
 <p>The binder provides the following configuration options:</p>
 </div>
-<div class="paragraph">
-<p>===== Spring Cloud Azure Properties</p>
-</div>
+<div class="sect4">
+<h5 id="spring-cloud-azure-properties-2"><a class="anchor" href="#spring-cloud-azure-properties-2"></a><a class="link" href="#spring-cloud-azure-properties-2">Spring Cloud Azure Properties</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -4892,9 +4895,9 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>===== Partition configuration</p>
 </div>
+<div class="sect4">
+<h5 id="partition-configuration-2"><a class="anchor" href="#partition-configuration-2"></a><a class="link" href="#partition-configuration-2">Partition configuration</a></h5>
 <div class="paragraph">
 <p>The system will obtain the parameter <code>PartitionSupply</code> to send the message.</p>
 </div>
@@ -4933,9 +4936,9 @@ When interface <code>PartitionKeyExtractorStrategy</code> is not implemented, it
 <div class="paragraph">
 <p>For more information about setting partition for the producer properties, please refer to the <a href="https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_producer_properties">Producer Properties of Spring Cloud Stream</a>.</p>
 </div>
-<div class="paragraph">
-<p>===== Serivce Bus Queue Producer Properties</p>
 </div>
+<div class="sect4">
+<h5 id="serivce-bus-queue-producer-properties"><a class="anchor" href="#serivce-bus-queue-producer-properties"></a><a class="link" href="#serivce-bus-queue-producer-properties">Serivce Bus Queue Producer Properties</a></h5>
 <div class="paragraph">
 <p>It supports the following configurations with the format of <code>spring.cloud.stream.servicebus.queue.bindings.&lt;channelName&gt;.producer</code>.</p>
 </div>
@@ -4958,9 +4961,9 @@ producer will wait for a response after a send operation.</p>
 <div class="paragraph">
 <p>Default: <code>10000</code></p>
 </div>
-<div class="paragraph">
-<p>===== Service Bus Queue Consumer Properties</p>
 </div>
+<div class="sect4">
+<h5 id="service-bus-queue-consumer-properties"><a class="anchor" href="#service-bus-queue-consumer-properties"></a><a class="link" href="#service-bus-queue-consumer-properties">Service Bus Queue Consumer Properties</a></h5>
 <div class="paragraph">
 <p>It supports the following configurations with the format of <code>spring.cloud.stream.servicebus.queue.bindings.&lt;channelName&gt;.consumer</code>.</p>
 </div>
@@ -5064,9 +5067,9 @@ Set it to <code>false</code> if a message that trigger any exception in consumer
 <div class="paragraph">
 <p>Default: <code>false</code></p>
 </div>
-<div class="paragraph">
-<p>===== Support for Service Bus Message Headers and Properties</p>
 </div>
+<div class="sect4">
+<h5 id="support-for-service-bus-message-headers-and-properties"><a class="anchor" href="#support-for-service-bus-message-headers-and-properties"></a><a class="link" href="#support-for-service-bus-message-headers-and-properties">Support for Service Bus Message Headers and Properties</a></h5>
 <div class="paragraph">
 <p>The following table illustrates how Spring message headers are mapped to Service Bus message headers and properties.
 When create a message, developers can specify the header or property of a Service Bus message by below constants.</p>
@@ -5177,12 +5180,14 @@ When create a message, developers can specify the header or property of a Servic
 <div class="paragraph">
 <p>For full configurations, please check appendix</p>
 </div>
-<div class="paragraph">
-<p>==== Basic Usage</p>
 </div>
-<div class="paragraph">
-<p>==== Samples</p>
 </div>
+<div class="sect3">
+<h4 id="basic-usage-11"><a class="anchor" href="#basic-usage-11"></a><a class="link" href="#basic-usage-11">13.2.3. Basic Usage</a></h4>
+
+</div>
+<div class="sect3">
+<h4 id="samples-11"><a class="anchor" href="#samples-11"></a><a class="link" href="#samples-11">13.2.4. Samples</a></h4>
 <div class="paragraph">
 <p><strong>Example: Manually set the partition key for the message</strong></p>
 </div>
@@ -5312,15 +5317,18 @@ Please use this <code>sample</code> as a reference to learn more about how to us
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>== Kafka Support</p>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="kafka-support"><a class="anchor" href="#kafka-support"></a><a class="link" href="#kafka-support">14. Kafka Support</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Connect to Azure Event Hubs using Spring Kafka libraries. There&#8217;re two approaches to connect to Azure Event Hubs for Kafka, the first one is to provide the Azure Event Hubs connection string directly, the other is to use Azure Resource Manager to retrieve the connection string.</p>
 </div>
-<div class="paragraph">
-<p>=== Dependency Setup</p>
-</div>
+<div class="sect2">
+<h3 id="dependency-setup-12"><a class="anchor" href="#dependency-setup-12"></a><a class="link" href="#dependency-setup-12">14.1. Dependency Setup</a></h3>
 <div class="paragraph">
 <p>Adding below dependencies if you want to migrate your Apache Kafka application to use Azure Event Hubs for Kafka.</p>
 </div>
@@ -5343,9 +5351,9 @@ Please use this <code>sample</code> as a reference to learn more about how to us
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>=== Configuration</p>
 </div>
+<div class="sect2">
+<h3 id="configuration-13"><a class="anchor" href="#configuration-13"></a><a class="link" href="#configuration-13">14.2. Configuration</a></h3>
 <div class="paragraph">
 <p>Below properties could be configured when using Kafka support:</p>
 </div>
@@ -5395,12 +5403,11 @@ Authentication information is also required for authenticating for Azure Resourc
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>=== Basic Usage</p>
 </div>
-<div class="paragraph">
-<p>==== Use Event Hubs connection string</p>
-</div>
+<div class="sect2">
+<h3 id="basic-usage-12"><a class="anchor" href="#basic-usage-12"></a><a class="link" href="#basic-usage-12">14.3. Basic Usage</a></h3>
+<div class="sect3">
+<h4 id="use-event-hubs-connection-string"><a class="anchor" href="#use-event-hubs-connection-string"></a><a class="link" href="#use-event-hubs-connection-string">14.3.1. Use Event Hubs connection string</a></h4>
 <div class="paragraph">
 <p>The simplest way to connect to Event Hubs for Kafka is with the connection string.</p>
 </div>
@@ -5416,9 +5423,9 @@ Authentication information is also required for authenticating for Azure Resourc
         connection-string: ${AZURE_EVENTHUBS_CONNECTION_STRING}</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>==== Use Azure Resource Manager to retrieve connection string</p>
 </div>
+<div class="sect3">
+<h4 id="use-azure-resource-manager-to-retrieve-connection-string"><a class="anchor" href="#use-azure-resource-manager-to-retrieve-connection-string"></a><a class="link" href="#use-azure-resource-manager-to-retrieve-connection-string">14.3.2. Use Azure Resource Manager to retrieve connection string</a></h4>
 <div class="paragraph">
 <p>If you don&#8217;t want to configure connection string in your application, it&#8217;s also possible to use Azure Resource Manager to retrieve the connection string. And you could use credentials stored in Azure CLI or other local development tool, like Visual Studio Code or Intellij IDEA to authenticate with Azure Resource Manager. Or Managed Identity if your application is deployed to Azure Cloud. Just make sure the principal have sufficient permission to read resource metadata.</p>
 </div>
@@ -5438,21 +5445,24 @@ Authentication information is also required for authenticating for Azure Resourc
           resource-group: ${AZURE_EVENTHUBS_RESOURCE_GROUP}</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>=== Samples</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="samples-12"><a class="anchor" href="#samples-12"></a><a class="link" href="#samples-12">14.4. Samples</a></h3>
 <div class="paragraph">
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka">samples for Azure Event Hus for Kafka</a> for more details.</p>
 </div>
-<div class="paragraph">
-<p>== Redis Support</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="redis-support"><a class="anchor" href="#redis-support"></a><a class="link" href="#redis-support">15. Redis Support</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Connect to Azure Cache for Redis using Spring Redis libraries. With adding <code>spring-cloud-azure-starter</code> and <code>spring-cloud-azure-resourcemanager</code> to your application, it&#8217;s possible to read the Azure Cache for Redis connection information through Azure Resource Manager and auto-configure the Redis properties.</p>
 </div>
-<div class="paragraph">
-<p>=== Dependency Setup</p>
-</div>
+<div class="sect2">
+<h3 id="dependency-setup-13"><a class="anchor" href="#dependency-setup-13"></a><a class="link" href="#dependency-setup-13">15.1. Dependency Setup</a></h3>
 <div class="paragraph">
 <p>Adding below dependencies if you want to use the Spring Cloud Azure Redis support to your Spring Boot application using Redis.</p>
 </div>
@@ -5468,9 +5478,9 @@ Authentication information is also required for authenticating for Azure Resourc
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>=== Configuration</p>
 </div>
+<div class="sect2">
+<h3 id="configuration-14"><a class="anchor" href="#configuration-14"></a><a class="link" href="#configuration-14">15.2. Configuration</a></h3>
 <div class="paragraph">
 <p>Below properties could be configured when using Redis support:</p>
 </div>
@@ -5528,9 +5538,9 @@ Authentication information is also required for authenticating for Azure Resourc
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>=== Basic Usage</p>
 </div>
+<div class="sect2">
+<h3 id="basic-usage-13"><a class="anchor" href="#basic-usage-13"></a><a class="link" href="#basic-usage-13">15.3. Basic Usage</a></h3>
 <div class="paragraph">
 <p>Add below properties and you are good to go.</p>
 </div>
@@ -5545,22 +5555,24 @@ Authentication information is also required for authenticating for Azure Resourc
           resource-group: ${AZURE_CACHE_REDIS_RESOURCE_GROUP}</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>=== Samples</p>
 </div>
+<div class="sect2">
+<h3 id="samples-13"><a class="anchor" href="#samples-13"></a><a class="link" href="#samples-13">15.4. Samples</a></h3>
 <div class="paragraph">
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/cache/spring-cloud-azure-starter/spring-cloud-azure-sample-cache">samples for Azure Cache for Redis</a> for more details.</p>
 </div>
-<div class="paragraph">
-<p>== Resource Manager</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="resource-manager"><a class="anchor" href="#resource-manager"></a><a class="link" href="#resource-manager">16. Resource Manager</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Connect to Azure Resources for All Azure SDKs service, which Spring Cloud used.
 Construct <code>TokenCredential</code> by using various credential information, and then construct <code>AzureResourceManager</code> to help Azure SDKs Client to authenticate and authorize.</p>
 </div>
-<div class="paragraph">
-<p>=== Dependency Setup</p>
-</div>
+<div class="sect2">
+<h3 id="dependency-setup-14"><a class="anchor" href="#dependency-setup-14"></a><a class="link" href="#dependency-setup-14">16.1. Dependency Setup</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -5569,9 +5581,9 @@ Construct <code>TokenCredential</code> by using various credential information, 
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>=== Configuration</p>
 </div>
+<div class="sect2">
+<h3 id="configuration-15"><a class="anchor" href="#configuration-15"></a><a class="link" href="#configuration-15">16.2. Configuration</a></h3>
 <div class="paragraph">
 <p>This Spring Cloud Azure Resource Manager provides the following properties:</p>
 </div>
@@ -5637,34 +5649,36 @@ Construct <code>TokenCredential</code> by using various credential information, 
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>=== Basic Usage</p>
 </div>
+<div class="sect2">
+<h3 id="basic-usage-14"><a class="anchor" href="#basic-usage-14"></a><a class="link" href="#basic-usage-14">16.3. Basic Usage</a></h3>
 <div class="paragraph">
-<p>Azure Resource Manger helps the Azure SDK client to complete authentication and authorization. It can be integrated into a specific Spring Cloud Azure Starter and work together, or it can be used with Spring Cloud Azure auto-configuration modules and third-party libraries to complete authentication, such as: <a href="#Kafka Support">[Kafka Support]</a>, <a href="#Redis Support">[Redis Support]</a>.</p>
+<p>Azure Resource Manger helps the Azure SDK client to complete authentication and authorization. It can be integrated into a specific Spring Cloud Azure Starter and work together, or it can be used with Spring Cloud Azure auto-configuration modules and third-party libraries to complete authentication, such as: <a href="#kafka-support">Kafka Support</a>, <a href="#redis-support">Redis Support</a>.</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="samples-14"><a class="anchor" href="#samples-14"></a><a class="link" href="#samples-14">16.4. Samples</a></h3>
 <div class="paragraph">
-<p>=== Samples</p>
+<p>Please see <a href="#kafka-support">Kafka Support</a>, <a href="#redis-support">Redis Support</a> for more information about usage.</p>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuration-properties"><a class="anchor" href="#configuration-properties"></a><a class="link" href="#configuration-properties">17. Configuration Properties</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>Please see <a href="#Kafka Support">[Kafka Support]</a>, <a href="#Redis Support">[Redis Support]</a> for more information about usage.</p>
+<p>To see the list of all Spring Cloud Azure related configuration properties please check <a href="appendix.html">the Appendix page</a>.</p>
 </div>
-<div class="paragraph">
-<p>== Configuration Properties
-To see the list of all Spring Cloud Azure related configuration properties please check <a href="appendix.html">the Appendix page</a>.</p>
 </div>
-<div class="paragraph">
-<p>== Known Issues</p>
 </div>
-<div class="paragraph">
-<p>=== Error logs when using DefaultAzureCredential</p>
-</div>
+<div class="sect1">
+<h2 id="known-issues"><a class="anchor" href="#known-issues"></a><a class="link" href="#known-issues">18. Known Issues</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="error-logs-when-using-defaultazurecredential"><a class="anchor" href="#error-logs-when-using-defaultazurecredential"></a><a class="link" href="#error-logs-when-using-defaultazurecredential">18.1. Error logs when using DefaultAzureCredential</a></h3>
 <div class="paragraph">
 <p>There could be some <code>ERROR</code> logs be printed out while the <code>DefaultAzureCredential</code> running the chain and trying to find the first available credential. It doesn&#8217;t mean the <code>DefaultAzureCredential</code> is broken or unavailable. Meanwhile, we&#8217;ll keep improving this logging experience.</p>
-</div>
-</div>
-</div>
-</div>
 </div>
 </div>
 </div>
