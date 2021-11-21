@@ -103,8 +103,9 @@
 |spring.cloud.azure.appconfiguration.retry.retry-after-time-unit |  | Time unit to use when applying the retry delay.
 |spring.cloud.azure.appconfiguration.retry.timeout |  | Amount of time to wait until a timeout.
 |spring.cloud.azure.appconfiguration.service-version |  | 
-|spring.cloud.azure.client-id |  | Client id to use when performing service principal authentication with Azure..
-|spring.cloud.azure.client-secret |  | Client secret to use when performing service principal authentication with Azure.
+|spring.cloud.azure.auto-create-resources | `false` | 
+|spring.cloud.azure.client-id |  | 
+|spring.cloud.azure.client-secret |  | 
 |spring.cloud.azure.client.amqp.transport-type |  | Transport type for AMQP-based client.
 |spring.cloud.azure.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
 |spring.cloud.azure.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
@@ -183,6 +184,12 @@
 |spring.cloud.azure.credential.managed-identity-client-id |  | Client id to use when using managed identity to authenticate with Azure.
 |spring.cloud.azure.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.credential.username |  | Username to use when performing username/password authentication with Azure.
+|spring.cloud.azure.environment |  | 
+|spring.cloud.azure.eventhub.checkpoint-access-key |  | 
+|spring.cloud.azure.eventhub.checkpoint-container |  | 
+|spring.cloud.azure.eventhub.checkpoint-storage-account |  | 
+|spring.cloud.azure.eventhub.connection-string |  | 
+|spring.cloud.azure.eventhub.namespace |  | 
 |spring.cloud.azure.eventhubs.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
 |spring.cloud.azure.eventhubs.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
 |spring.cloud.azure.eventhubs.client.transport-type |  | 
@@ -587,6 +594,7 @@
 |spring.cloud.azure.keyvault.secret.retry.retry-after-time-unit |  | Time unit to use when applying the retry delay.
 |spring.cloud.azure.keyvault.secret.retry.timeout |  | Amount of time to wait until a timeout.
 |spring.cloud.azure.keyvault.secret.service-version |  | 
+|spring.cloud.azure.msi-enabled | `false` | 
 |spring.cloud.azure.profile.cloud |  | Name of the Azure cloud to connect to.
 |spring.cloud.azure.profile.environment.active-directory-endpoint |  | 
 |spring.cloud.azure.profile.environment.active-directory-graph-api-version |  | 
@@ -620,6 +628,8 @@
 |spring.cloud.azure.redis.resource.region |  | 
 |spring.cloud.azure.redis.resource.resource-group |  | 
 |spring.cloud.azure.redis.resource.resource-id |  | 
+|spring.cloud.azure.region |  | 
+|spring.cloud.azure.resource-group |  | 
 |spring.cloud.azure.retry.backoff.delay |  | Amount of time to wait between retry attempts.
 |spring.cloud.azure.retry.backoff.max-delay |  | Maximum permissible amount of time between retry attempts.
 |spring.cloud.azure.retry.backoff.multiplier |  | Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.
@@ -848,11 +858,19 @@
 |spring.cloud.azure.servicebus.resource.region |  | 
 |spring.cloud.azure.servicebus.resource.resource-group |  | 
 |spring.cloud.azure.servicebus.resource.resource-id |  | 
+|spring.cloud.azure.servicebus.retry-options.delay |  | 
+|spring.cloud.azure.servicebus.retry-options.maxDelay |  | 
+|spring.cloud.azure.servicebus.retry-options.maxRetries |  | 
+|spring.cloud.azure.servicebus.retry-options.retryMode |  | 
+|spring.cloud.azure.servicebus.retry-options.tryTimeout |  | 
 |spring.cloud.azure.servicebus.retry.backoff.delay |  | Amount of time to wait between retry attempts.
 |spring.cloud.azure.servicebus.retry.backoff.max-delay |  | Maximum permissible amount of time between retry attempts.
 |spring.cloud.azure.servicebus.retry.backoff.multiplier |  | Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.
 |spring.cloud.azure.servicebus.retry.max-attempts |  | The maximum number of attempts.
 |spring.cloud.azure.servicebus.retry.timeout |  | Amount of time to wait until a timeout.
+|spring.cloud.azure.servicebus.transport-type |  | 
+|spring.cloud.azure.storage.access-key |  | 
+|spring.cloud.azure.storage.account |  | 
 |spring.cloud.azure.storage.blob.account-key |  | 
 |spring.cloud.azure.storage.blob.account-name |  | 
 |spring.cloud.azure.storage.blob.blob-name |  | 
@@ -1047,5 +1065,8 @@
 |spring.cloud.azure.storage.queue.retry.timeout |  | How long to wait until a timeout
 |spring.cloud.azure.storage.queue.sas-token |  | 
 |spring.cloud.azure.storage.queue.service-version |  | 
+|spring.cloud.azure.storage.resource-group |  | 
+|spring.cloud.azure.subscription-id |  | 
+|spring.cloud.azure.tenant-id |  | 
 
 |===
