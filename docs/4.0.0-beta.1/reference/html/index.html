@@ -296,27 +296,22 @@ window.onload = function() {
 <div class="paragraph">
 <p>This section covers the changes made from version 3.10 to version 4.0.0-beta.1. With this major release, we aim to bring better security, leaner dependencies, support for production readiness, and more.</p>
 </div>
-<div class="paragraph">
-<p>To learn how to migration to 4.0, please check <a href="appendix.html">the Appendix page</a>.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+To learn how to migration to 4.0, please check <a href="appendix.html">the Appendix page</a>.
+</td>
+</tr>
+</table>
 </div>
 <div class="sect2">
 <h3 id="unified-development-experience"><a class="anchor" href="#unified-development-experience"></a><a class="link" href="#unified-development-experience">1.1. Unified Development Experience</a></h3>
 <div class="paragraph">
 <p>We constantly challenge ourselves on how we can make things more consistent and easier to understand, so our customers are not confronted with haphazard development choices. This is a long and self-evolving journey as consistency is relative and there will be things that are outside of our control. We now humbly take another step in this direction to improve to our developer experience by unifying project name, artifact ID and properties.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Example or screenshot</p>
-</div>
-</td>
-</tr>
-</table>
 </div>
 </div>
 <div class="sect2">
@@ -369,20 +364,6 @@ window.onload = function() {
 <h3 id="more-options-exposed-in-a-spring-idiomatic-way"><a class="anchor" href="#more-options-exposed-in-a-spring-idiomatic-way"></a><a class="link" href="#more-options-exposed-in-a-spring-idiomatic-way">1.6. More options exposed in a Spring idiomatic way</a></h3>
 <div class="paragraph">
 <p>Spring developers have long enjoyed the convenience of defining client options in application configuration files. We certainly do not want to take that privilege away and burden Spring developers with setting options via client objects. To that end, we’ve significantly improved autoconfiguration coverage of Azure SDK clients for both synchronous and asynchronous scenarios.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Sample code</p>
-</div>
-</td>
-</tr>
-</table>
 </div>
 </div>
 <div class="sect2">
@@ -573,7 +554,7 @@ window.onload = function() {
 <div class="sect2">
 <h3 id="learning-spring-cloud-azure"><a class="anchor" href="#learning-spring-cloud-azure"></a><a class="link" href="#learning-spring-cloud-azure">2.2. Learning Spring Cloud Azure</a></h3>
 <div class="paragraph">
-<p><a href="https://github.com/Azure-Samples/azure-spring-boot-samples">Sample Applications</a></p>
+<p>We prepared a full list of samples to show the usages, can be found at <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0">Spring Cloud Azure Samples</a></p>
 </div>
 </div>
 </div>
@@ -655,8 +636,17 @@ window.onload = function() {
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>Please note that properties configured under each Azure service will override the global configurations.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Properties configured under each Azure service will override the global configurations.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The configuration properties' prefixes have been unified to <code>spring.cloud.azure</code> namespace since Spring Cloud Azure 4.0, it will make configuration properties more consistent and more intuitive. Here&#8217;s a quick review of the prefixes of supported Azure services.</p>
@@ -721,19 +711,24 @@ window.onload = function() {
 <div class="paragraph">
 <p>The <code>DefaultAzureCredential</code> is appropriate for most scenarios where the application is intended to ultimately be run in the Azure Cloud. This is because the DefaultAzureCredential combines credentials commonly used to authenticate when deployed, with credentials used to authenticate in a development environment.</p>
 </div>
-<div class="exampleblock">
-<div class="content">
-<div class="paragraph">
-<p>Note: DefaultAzureCredential is intended to simplify getting started with the SDK by handling common scenarios with reasonable default behaviors. Developers who want more control or whose scenario isn&#8217;t served by the default settings should use other credential types.</p>
-</div>
-</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+DefaultAzureCredential is intended to simplify getting started with the SDK by handling common scenarios with reasonable default behaviors. Developers who want more control or whose scenario isn&#8217;t served by the default settings should use other credential types.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The <code>DefaultAzureCredential`</code> will attempt to authenticate via the following mechanisms in order.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/Azure/azure-sdk-for-java/main/sdk/identity/azure-identity/images/defaultazurecredential.png" alt="defaultazurecredential">
+<img src="./images/default-azure-credential.png" alt="DefaultAzureCredential">
 </div>
 </div>
 <div class="ulist">
@@ -755,12 +750,17 @@ window.onload = function() {
 </li>
 </ul>
 </div>
-<div class="exampleblock">
-<div class="content">
-<div class="paragraph">
-<p><strong>Warning</strong>: There could be some <code>ERROR</code> logs be printed out while the <code>DefaultAzureCredential</code> running the chain and trying to find the first available credential. It doesn&#8217;t mean the <code>DefaultAzureCredential</code> is broken or unavailable. Meanwhile, we&#8217;ll keep improving this logging experience.</p>
-</div>
-</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+There could be some <code>ERROR</code> logs be printed out while the <code>DefaultAzureCredential</code> running the chain and trying to find the first available credential. It doesn&#8217;t mean the <code>DefaultAzureCredential</code> is broken or unavailable. Meanwhile, we&#8217;ll keep improving this logging experience.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -824,8 +824,17 @@ window.onload = function() {
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>To see the list of all Spring Cloud Azure related configuration properties please check <a href="appendix.html">the Appendix page</a>.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+To see the list of all Spring Cloud Azure related configuration properties please check <a href="appendix.html">the Appendix page</a>.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect3">
@@ -870,11 +879,13 @@ window.onload = function() {
 <col style="width: 50%;">
 <col style="width: 50%;">
 </colgroup>
-<tbody>
+<thead>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Propropety</p></td>
+<th class="tableblock halign-left valign-top">Azure Service</th>
+<th class="tableblock halign-left valign-top">Propropety</th>
 </tr>
+</thead>
+<tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">App Configuration</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">management.health.azure-appconfiguration.enabled</p></td>
@@ -897,12 +908,17 @@ window.onload = function() {
 </tr>
 </tbody>
 </table>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p><strong>Please note</strong>: Calling the health endpoint of Azure servcies could cause extra charge. For example, calling <code><a href="http://{hostname}:{port}/actuator/health/cosmos" class="bare">{hostname}:{port}/actuator/health/cosmos</a></code> to get the Cosmos DB health info, it will calculate <a href="https://docs.microsoft.com/azure/cosmos-db/request-units">RUs</a>.</p>
-</div>
-</blockquote>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Calling the health endpoint of Azure servcies may cause extra charge. For example, calling <code><a href="http://{hostname}:{port}/actuator/health/cosmos" class="bare">{hostname}:{port}/actuator/health/cosmos</a></code> to get the Cosmos DB health info, it will calculate <a href="https://docs.microsoft.com/azure/cosmos-db/request-units">RUs</a>.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -918,12 +934,17 @@ window.onload = function() {
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p><strong>Please note</strong>: Only HTTP-based Azure SDK clients are supported now.</p>
-</div>
-</blockquote>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Only HTTP-based Azure SDK clients are supported now, for example, Eventhub and ServiceBus with AMQP transport are currently not supported, we recommend to use <a href="https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview">Azure Application Insight</a> for such requirement.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -932,13 +953,18 @@ window.onload = function() {
 <h2 id="auto-configure-azure-sdk-clients"><a class="anchor" href="#auto-configure-azure-sdk-clients"></a><a class="link" href="#auto-configure-azure-sdk-clients">6. Auto Configure Azure SDK Clients</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Spring Boot greatly simplifies the Spring Cloud Azure experience. Spring Cloud Azure Starters are a set of convenient dependency descriptors to include in your application. Our starters handle the object instantiation and configuration logic so you don’t have to. Every starter depends on the Spring Cloud Azure starter to provide critical bits of configuration, like the Azure Cloud environment and authentication information. You can configure these as properties in, for example, a properties file:</p>
+<p>Spring Boot greatly simplifies the Spring Cloud Azure experience. Spring Cloud Azure Starters are a set of convenient dependency descriptors to include in your application. Our starters handle the object instantiation and configuration logic so you don’t have to. Every starter depends on the Spring Cloud Azure starter to provide critical bits of configuration, like the Azure Cloud environment and authentication information. You can configure these as properties in, for example, a yaml file:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.profile.tenant-id=[TENANT_ID]
-spring.cloud.azure.profile.cloud=[AZURE]
-spring.cloud.azure.credential.client-id=[CLIENT_ID]</code></pre>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+        cloud: Azure
+      credential:
+        client-id: ${AZURE_CLIENT_ID}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -968,8 +994,17 @@ spring.cloud.azure.credential.client-id=[CLIENT_ID]</code></pre>
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Please refer to <a href="index.html#starter-dependencies">Starter Dependencies</a> for the list of starters we support.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Please refer to <a href="index.html#starter-dependencies">Starter Dependencies</a> for the list of starters we support.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -977,8 +1012,17 @@ spring.cloud.azure.credential.client-id=[CLIENT_ID]</code></pre>
 <div class="paragraph">
 <p>Configuration properties for each Azure service are under prefix <code>spring.cloud.azure.prefix</code>.</p>
 </div>
-<div class="paragraph">
-<p>To see the list of all Spring Cloud Azure related configuration properties please check <a href="appendix.html">the Appendix page</a>.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+To see the list of all Spring Cloud Azure related configuration properties please check <a href="appendix.html">the Appendix page</a>.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -992,8 +1036,8 @@ spring.cloud.azure.credential.client-id=[CLIENT_ID]</code></pre>
   cloud:
     azure:
       cosmos:
-        database: ${COSMOS_DATABASE_NAME}
-        endpoint: ${COSMOS_ENDPOINT}
+        database: ${AZURE_COSMOS_DATABASE_NAME}
+        endpoint: ${AZURE_COSMOS_ENDPOINT}
         consistency-level: eventual
         connection-mode: direct</code></pre>
 </div>
@@ -1293,11 +1337,12 @@ public class KeyVaultSample implements CommandLineRunner {
 </div>
 <div class="sect4">
 <h5 id="property-example-3-use-group-name-or-group-id-to-protect-some-method-in-web-application"><a class="anchor" href="#property-example-3-use-group-name-or-group-id-to-protect-some-method-in-web-application"></a><a class="link" href="#property-example-3-use-group-name-or-group-id-to-protect-some-method-in-web-application">Property example 3: Use <code>group name</code> or <code>group id</code> to protect some method in web application.</a></h5>
-<div class="paragraph">
-<p>*</p>
-</div>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>Step 1: Add property in application.yml</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1379,11 +1424,12 @@ public class RoleController {
 </div>
 <div class="sect4">
 <h5 id="property-example-4-incremental-consent-in-web-application-visiting-resource-servers"><a class="anchor" href="#property-example-4-incremental-consent-in-web-application-visiting-resource-servers"></a><a class="link" href="#property-example-4-incremental-consent-in-web-application-visiting-resource-servers">Property example 4: <a href="https://docs.microsoft.com/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison#incremental-and-dynamic-consent">Incremental consent</a> in Web application visiting resource servers.</a></h5>
-<div class="paragraph">
-<p>*</p>
-</div>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>Step 1: Add property in application.yml</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1419,11 +1465,12 @@ consented.</p>
 </div>
 <div class="sect4">
 <h5 id="property-example-5-client-credential-flow-in-resource-server-visiting-resource-servers"><a class="anchor" href="#property-example-5-client-credential-flow-in-resource-server-visiting-resource-servers"></a><a class="link" href="#property-example-5-client-credential-flow-in-resource-server-visiting-resource-servers">Property example 5: [Client credential flow] in resource server visiting resource servers.</a></h5>
-<div class="paragraph">
-<p>*</p>
-</div>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>Step 1: Add property in application.yml</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1464,9 +1511,21 @@ azure:
 <ul>
 <li>
 <p>Step 1: Make sure <code>redirect URI</code> has been set to <code>{application-base-uri}/login/oauth2/code/</code>, for
-example <code><a href="http://localhost:8080/login/oauth2/code/" class="bare">localhost:8080/login/oauth2/code/</a></code>. Note the tailing <code>/</code> cannot be omitted.</p>
+example <code><a href="http://localhost:8080/login/oauth2/code/" class="bare">localhost:8080/login/oauth2/code/</a></code>.</p>
 </li>
 </ul>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+The tailing <code>/</code> cannot be omitted.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142617751-154c156c-9035-4641-9b79-b26380ddad72.png" alt="web-application-set-redirect-uri-1.png"></span>
@@ -1493,11 +1552,12 @@ example <code><a href="http://localhost:8080/login/oauth2/code/" class="bare">lo
 &lt;/dependencies&gt;</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>*</p>
-</div>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>Step 3: Add properties in application.yml. These values should be got in <a href="https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/spring/azure-spring-boot-starter-active-directory#prerequisites">prerequisite</a>.</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1553,11 +1613,12 @@ azure:
 &lt;/dependencies&gt;</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>*</p>
-</div>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>Step 3: Add properties in application.yml:</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1680,11 +1741,12 @@ azure:
 &lt;/dependencies&gt;</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>*</p>
-</div>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>Step 2: Add properties in application.yml:</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2692,7 +2754,7 @@ of which the prefix is changed from <strong>spring.cloud.azure.eventhubs.</stron
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.connection-string</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Event Hubs Namespace connection string value.</p></td>
 </tr>
 <tr>
@@ -3209,7 +3271,7 @@ of which the prefix is changed from <strong>spring.cloud.azure.servicebus.</stro
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.connection-string</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service Bus Namespace connection string value.</p></td>
 </tr>
 <tr>
@@ -3467,11 +3529,8 @@ set the entity type for the ServiceBusTemplate.</p>
 <p>This example demonstrates how to manually set the partition key for the message in the application.</p>
 </div>
 <div class="paragraph">
-<p><strong>Way 1:</strong>
-Manually add the partition Key in the message header by code.</p>
+<p><strong>Approach 1:</strong> Manually add the partition Key in the message header by code.</p>
 </div>
-<div class="quoteblock">
-<blockquote>
 <div class="paragraph">
 <p><em>Recommended:</em> Use <code>ServiceBusMessageHeaders.PARTITION_KEY</code> as the key of the header.</p>
 </div>
@@ -3506,15 +3565,22 @@ Manually add the partition Key in the message header by code.</p>
 }</code></pre>
 </div>
 </div>
-</blockquote>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When both <code>ServiceBusMessageHeaders.PARTITION_KEY</code> and <code>AzureHeaders.PARTITION_KEY</code> are set in the message headers,
+<code>ServiceBusMessageHeaders.PARTITION_KEY</code> is preferred.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p><strong>NOTE:</strong> When both <code>ServiceBusMessageHeaders.PARTITION_KEY</code> and <code>AzureHeaders.PARTITION_KEY</code> are set in the message headers,
-<code>ServiceBusMessageHeaders.PARTITION_KEY</code> is preferred.
-<strong>Example: Set the session id for the message</strong></p>
+<p><strong>Example: Set the session id for the message</strong></p>
 </div>
-<div class="quoteblock">
-<blockquote>
 <div class="paragraph">
 <p>This example demonstrates how to manually set the session id of a message in the application.</p>
 </div>
@@ -3532,11 +3598,18 @@ Manually add the partition Key in the message header by code.</p>
 }</code></pre>
 </div>
 </div>
-</blockquote>
-</div>
-<div class="paragraph">
-<p><strong>NOTE:</strong> When the <code>ServiceBusMessageHeaders.SESSION_ID</code> is set in the message headers, and a different <code>ServiceBusMessageHeaders.PARTITION_KEY</code> (or <code>AzureHeaders.PARTITION_KEY</code>) header is also set,
-the value of the session id will eventually be used to overwrite the value of the partition key.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When the <code>ServiceBusMessageHeaders.SESSION_ID</code> is set in the message headers, and a different <code>ServiceBusMessageHeaders.PARTITION_KEY</code> (or <code>AzureHeaders.PARTITION_KEY</code>) header is also set,
+the value of the session id will eventually be used to overwrite the value of the partition key.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -3769,7 +3842,7 @@ of which the prefix is changed from <strong>spring.cloud.azure.storage.queue.</s
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.connection-string</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Storage Queue Namespace connection string value.</p></td>
 </tr>
 <tr>
@@ -4174,35 +4247,39 @@ the following is the process of obtaining the priority of the partition ID and k
 <div class="paragraph">
 <p>The following are configuration items related to the producer:</p>
 </div>
-<div class="paragraph">
-<p><strong><em>partition-count</em></strong></p>
-</div>
-<div class="paragraph">
-<p>The number of target partitions for the data, if partitioning is enabled.</p>
-</div>
-<div class="paragraph">
-<p>Default: 1</p>
-</div>
-<div class="paragraph">
-<p><strong><em>partition-key-extractor-name</em></strong></p>
-</div>
-<div class="paragraph">
-<p>The name of the bean that implements <code>PartitionKeyExtractorStrategy</code>.
-The partition handler will first use the <code>PartitionKeyExtractorStrategy#extractKey</code> method to obtain the partition key value.</p>
-</div>
-<div class="paragraph">
-<p>Default: null</p>
-</div>
-<div class="paragraph">
-<p><strong><em>partition-key-expression</em></strong></p>
-</div>
-<div class="paragraph">
-<p>A SpEL expression that determines how to partition outbound data.
-When interface <code>PartitionKeyExtractorStrategy</code> is not implemented, it will be called in the method <code>PartitionHandler#extractKey</code>.</p>
-</div>
-<div class="paragraph">
-<p>Default: null</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">PropertyName</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">partition-count</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of target partitions for the data, if partitioning is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">partition-key-extractor-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the bean that implements <code>PartitionKeyExtractorStrategy</code>.
+The partition handler will first use the <code>PartitionKeyExtractorStrategy#extractKey</code> method to obtain the partition key value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">partition-key-expression</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A SpEL expression that determines how to partition outbound data.
+When interface <code>PartitionKeyExtractorStrategy</code> is not implemented, it will be called in the method <code>PartitionHandler#extractKey</code>.</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>For more information about setting partition for the producer properties, please refer to the <a href="https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_producer_properties">Producer Properties of Spring Cloud Stream</a>.</p>
 </div>
@@ -4213,25 +4290,33 @@ When interface <code>PartitionKeyExtractorStrategy</code> is not implemented, it
 <div class="paragraph">
 <p>It supports the following configurations with the format of <code>spring.cloud.stream.eventhubs.bindings.&lt;channelName&gt;.producer</code>.</p>
 </div>
-<div class="paragraph">
-<p><strong><em>sync</em></strong></p>
-</div>
-<div class="paragraph">
-<p>Whether the producer should act in a synchronous manner with respect to writing messages into a stream. If true, the
-producer will wait for a response from Event Hub after a send operation.</p>
-</div>
-<div class="paragraph">
-<p>Default: <code>false</code></p>
-</div>
-<div class="paragraph">
-<p><strong><em>send-timeout</em></strong></p>
-</div>
-<div class="paragraph">
-<p>Effective only if <code>sync</code> is set to true. The amount of time to wait for a response from Event Hub after a send operation, in milliseconds.</p>
-</div>
-<div class="paragraph">
-<p>Default: <code>10000</code></p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">PropertyName</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sync</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether the producer should act in a synchronous manner with respect to writing messages into a stream. If true, the
+producer will wait for a response from Event Hub after a send operation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">send-timeout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Effective only if <code>sync</code> is set to true. The amount of time to wait for a response from Event Hub after a send operation, in milliseconds.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect4">
 <h5 id="common-consumer-properties"><a class="anchor" href="#common-consumer-properties"></a><a class="link" href="#common-consumer-properties">Common Consumer Properties</a></h5>
@@ -4301,10 +4386,17 @@ mode is set true.</p>
 <div class="paragraph">
 <p>Default: <code>RECORD</code></p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre>Notes: when consume batch mode is false(default value), `BATCH` checkpoint mode is not invalid.</pre>
-</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+when consume batch mode is false(default value), <code>BATCH</code> checkpoint mode is not invalid.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p><strong><em>checkpoint-count</em></strong></p>
@@ -4343,7 +4435,7 @@ mode is set true.</p>
 <p>Default: <code>null</code></p>
 </div>
 <div class="paragraph">
-<p>for full configurations, check appendix</p>
+<p>To see the list of all Spring Cloud Azure related configuration properties please check <a href="appendix.html">the Appendix page</a>.</p>
 </div>
 </div>
 </div>
@@ -4776,15 +4868,13 @@ When create a message, developers can specify the header or property of a Servic
 <col style="width: 25%;">
 <col style="width: 25%;">
 </colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Service Bus Message Headers and Properties</th>
-<th class="tableblock halign-left valign-top">Spring Message Header Constants</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Priority Number (Descending priority)</th>
-</tr>
-</thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service Bus Message Headers and Properties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Spring Message Header Constants</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Priority Number (Descending priority)</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>MessageId</strong></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.servicebus.converter.ServiceBusMessageHeaders.MESSAGE_ID</p></td>
@@ -4872,7 +4962,7 @@ When create a message, developers can specify the header or property of a Servic
 </tbody>
 </table>
 <div class="paragraph">
-<p>For full configurations, check appendix</p>
+<p>For full configurations, please check appendix</p>
 </div>
 </div>
 </div>
@@ -4889,8 +4979,10 @@ When create a message, developers can specify the header or property of a Servic
 <p>This example demonstrates how to manually set the partition key for the message in the application.</p>
 </div>
 <div class="paragraph">
-<p><strong>Way 1:</strong>
-This example requires that <code>spring.cloud.stream.default.producer.partitionKeyExpression</code> be set <code>&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;</code>.</p>
+<p><strong>Approach 1:</strong> Set partition key expression.</p>
+</div>
+<div class="paragraph">
+<p>This example requires that <code>spring.cloud.stream.default.producer.partitionKeyExpression</code> be set <code>&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4917,15 +5009,21 @@ public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
 }</code></pre>
 </div>
 </div>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p><strong>NOTE:</strong> When using <code>application.yml</code> to configure the partition key, its priority will be the lowest.
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When using <code>application.yml</code> to configure the partition key, its priority will be the lowest.
 It will take effect only when the <code>ServiceBusMessageHeaders.SESSION_ID</code>, <code>ServiceBusMessageHeaders.PARTITION_KEY</code>, <code>AzureHeaders.PARTITION_KEY</code> are not configured.
-<strong>Way 2:</strong>
-Manually add the partition Key in the message header by code.</p>
+</td>
+</tr>
+</table>
 </div>
-</blockquote>
+<div class="paragraph">
+<p><strong>Approach 2:</strong> Manually add the partition Key in the message header by code.</p>
 </div>
 <div class="paragraph">
 <p><em>Recommended:</em> Use <code>ServiceBusMessageHeaders.PARTITION_KEY</code> as the key of the header.</p>
@@ -4957,14 +5055,21 @@ public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
 }</code></pre>
 </div>
 </div>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p><strong>NOTE:</strong> When both <code>ServiceBusMessageHeaders.PARTITION_KEY</code> and <code>AzureHeaders.PARTITION_KEY</code> are set in the message headers,
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When both <code>ServiceBusMessageHeaders.PARTITION_KEY</code> and <code>AzureHeaders.PARTITION_KEY</code> are set in the message headers,
 <code>ServiceBusMessageHeaders.PARTITION_KEY</code> is preferred.
-<strong>Example: Set the session id for the message</strong></p>
+</td>
+</tr>
+</table>
 </div>
-</blockquote>
+<div class="paragraph">
+<p><strong>Example: Set the session id for the message</strong></p>
 </div>
 <div class="paragraph">
 <p>This example demonstrates how to manually set the session id of a message in the application.</p>
@@ -4981,15 +5086,20 @@ public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
 }</code></pre>
 </div>
 </div>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p><strong>NOTE:</strong> When the <code>ServiceBusMessageHeaders.SESSION_ID</code> is set in the message headers, and a different <code>ServiceBusMessageHeaders.PARTITION_KEY</code> (or <code>AzureHeaders.PARTITION_KEY</code>) header is also set,
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When the <code>ServiceBusMessageHeaders.SESSION_ID</code> is set in the message headers, and a different <code>ServiceBusMessageHeaders.PARTITION_KEY</code> (or <code>AzureHeaders.PARTITION_KEY</code>) header is also set,
 the value of the session id will eventually be used to overwrite the value of the partition key.
 Please use this <code>sample</code> as a reference to learn more about how to use this binder in your project.
-- <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/servicebus/azure-spring-cloud-stream-binder-servicebus-queue">Service Bus Queue</a></p>
-</div>
-</blockquote>
+- <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/servicebus/azure-spring-cloud-stream-binder-servicebus-queue">Service Bus Queue</a>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -5095,11 +5205,11 @@ Please use this <code>sample</code> as a reference to learn more about how to us
   cloud:
     azure:
       profile:
-        tenant-id: ${SPRING_TENANT_ID}
-        subscription-id: ${SPRING_SUBSCRIPTION_ID}
+        tenant-id: ${AZURE_TENANT_ID}
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
       credential:
-        client-id: ${SPRING_CLIENT_ID}
-        client-secret: ${SPRING_CLIENT_SECRET}</code></pre>
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}</code></pre>
 </div>
 </div>
 </div>
@@ -5113,7 +5223,7 @@ Please use this <code>sample</code> as a reference to learn more about how to us
 <li>
 <p>Create a service principal for use in by your app. Please follow
 <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/blob/main/create-sp-using-azure-cli.md">create service principal from Azure CLI</a>.
-The credential is not required since Spring Cloud Azure support <a href="https://docs.microsoft.com/en-us/azure/developer/java/sdk/identity" class="bare">docs.microsoft.com/en-us/azure/developer/java/sdk/identity</a>,
+The credential is not required since Spring Cloud Azure support <a href="https://docs.microsoft.com/en-us/azure/developer/java/sdk/identity">Azure Identity</a>,
 you only need to log in with az cli / vs code or Intellij Azure Toolkit, then credential information will be left out of properties</p>
 </li>
 <li>
@@ -5131,8 +5241,8 @@ you only need to log in with az cli / vs code or Intellij Azure Toolkit, then cr
   cloud:
     azure:
       profile:
-        tenant-id: ${SPRING_TENANT_ID}
-        subscription-id: ${SPRING_SUBSCRIPTION_ID}
+        tenant-id: ${AZURE_TENANT_ID}
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
 # This is not required since Spring Cloud Azure support https://docs.microsoft.com/en-us/azure/developer/java/sdk/identity
 # you only need to login with az cli / vs code or Intellij Azure Toolkit
 # then credential information will be left out of properties
@@ -5186,6 +5296,8 @@ public class SourceExample {
 </li>
 </ol>
 </div>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
@@ -5214,6 +5326,8 @@ public class EventHubKafkaBinderApplication {
         return message -&gt; LOGGER.info("New message received: '{}'", message.getPayload());
     }
 }</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="olist arabic">
@@ -5251,19 +5365,17 @@ public class EventHubKafkaBinderApplication {
 </div>
 <div class="sect2">
 <h3 id="troubleshooting"><a class="anchor" href="#troubleshooting"></a><a class="link" href="#troubleshooting">13.5. Troubleshooting</a></h3>
-<div class="ulist">
-<ul>
-<li>
+<div class="paragraph">
 <p>Meet with <code>Creating topics with default partitions/replication factor are only supported in CreateTopicRequest version 4+</code> error.</p>
-</li>
-</ul>
 </div>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-text" data-lang="text">'''
-o.s.c.s.b.k.p.KafkaTopicProvisioner      : Failed to create topics
-org.apache.kafka.common.errors.UnsupportedVersionException: Creating topics with default partitions/replication factor are only supported in CreateTopicRequest version 4+. The following topics need values for partitions and replicas
-```</code></pre>
+<pre class="highlight"><code class="language-text" data-lang="text">o.s.c.s.b.k.p.KafkaTopicProvisioner      : Failed to create topics
+org.apache.kafka.common.errors.UnsupportedVersionException: Creating topics with default partitions/replication factor are only supported in CreateTopicRequest version 4+. The following topics need values for partitions and replicas</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">

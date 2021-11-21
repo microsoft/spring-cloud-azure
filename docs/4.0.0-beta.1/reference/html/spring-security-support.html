@@ -334,11 +334,12 @@ window.onload = function() {
 </div>
 <div class="sect4">
 <h5 id="_property_example_3_use_group_name_or_group_id_to_protect_some_method_in_web_application"><a class="link" href="#_property_example_3_use_group_name_or_group_id_to_protect_some_method_in_web_application">Property example 3: Use <code>group name</code> or <code>group id</code> to protect some method in web application.</a></h5>
-<div class="paragraph">
-<p>*</p>
-</div>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>Step 1: Add property in application.yml</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -420,11 +421,12 @@ public class RoleController {
 </div>
 <div class="sect4">
 <h5 id="_property_example_4_incremental_consent_in_web_application_visiting_resource_servers"><a class="link" href="#_property_example_4_incremental_consent_in_web_application_visiting_resource_servers">Property example 4: <a href="https://docs.microsoft.com/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison#incremental-and-dynamic-consent">Incremental consent</a> in Web application visiting resource servers.</a></h5>
-<div class="paragraph">
-<p>*</p>
-</div>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>Step 1: Add property in application.yml</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -460,11 +462,12 @@ consented.</p>
 </div>
 <div class="sect4">
 <h5 id="_property_example_5_client_credential_flow_in_resource_server_visiting_resource_servers"><a class="link" href="#_property_example_5_client_credential_flow_in_resource_server_visiting_resource_servers">Property example 5: [Client credential flow] in resource server visiting resource servers.</a></h5>
-<div class="paragraph">
-<p>*</p>
-</div>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>Step 1: Add property in application.yml</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -505,9 +508,21 @@ azure:
 <ul>
 <li>
 <p>Step 1: Make sure <code>redirect URI</code> has been set to <code>{application-base-uri}/login/oauth2/code/</code>, for
-example <code><a href="http://localhost:8080/login/oauth2/code/" class="bare">http://localhost:8080/login/oauth2/code/</a></code>. Note the tailing <code>/</code> cannot be omitted.</p>
+example <code><a href="http://localhost:8080/login/oauth2/code/" class="bare">http://localhost:8080/login/oauth2/code/</a></code>.</p>
 </li>
 </ul>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+The tailing <code>/</code> cannot be omitted.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142617751-154c156c-9035-4641-9b79-b26380ddad72.png" alt="web-application-set-redirect-uri-1.png"></span>
@@ -534,11 +549,12 @@ example <code><a href="http://localhost:8080/login/oauth2/code/" class="bare">ht
 &lt;/dependencies&gt;</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>*</p>
-</div>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>Step 3: Add properties in application.yml. These values should be got in <a href="https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/spring/azure-spring-boot-starter-active-directory#prerequisites">prerequisite</a>.</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -594,11 +610,12 @@ azure:
 &lt;/dependencies&gt;</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>*</p>
-</div>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>Step 3: Add properties in application.yml:</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -721,11 +738,12 @@ azure:
 &lt;/dependencies&gt;</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>*</p>
-</div>
-<div class="paragraph">
+<div class="ulist">
+<ul>
+<li>
 <p>Step 2: Add properties in application.yml:</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">

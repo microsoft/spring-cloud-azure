@@ -385,21 +385,6 @@ new artifacts to better serve some scenarios.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">azure-spring-cloud-starter-cache</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This artifact has been deleted, for using redis, just add spring-boot-starter-data-redis, spring-boot-starter-cache and spring-cloud-azure-starter.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure-spring-cloud-starter-eventhubs-kafka</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This artifact has been deleted, for using kafka, just add spring kafka and spring-cloud-azure-starter.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure-spring-cloud-messaging</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring-messaging-azure</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The messaging listener annotation has been dropped.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure-spring-cloud-starter-cache</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">This artifact has been deleted, for using redis, just add spring-boot-starter-data-redis, spring-boot-starter-cache, spring-cloud-azure-resourcemanager and spring-cloud-azure-starter. Please see <a href="redis-support.html#Redis Support">Redis Support</a> for more information about usage.</p></td>
 </tr>
 <tr>
@@ -638,12 +623,17 @@ target Azure resources.</p>
 <div class="paragraph">
 <p>A chained credential, the <a href="https://docs.microsoft.com/en-us/java/api/overview/azure/identity-readme?view=azure-java-stable#defaultazurecredential">DefaultAzureCredential</a> bean is auto-configured by default and will be used by all components if no more authentication information is specified.</p>
 </div>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>Warning: There could be some <code>ERROR</code> logs be printed out while the <code>DefaultAzureCredential</code> running the chain and trying to find the first available credential. It doesn&#8217;t mean the <code>DefaultAzureCredential</code> is broken or unavailable. Meanwhile, we&#8217;ll keep improving this logging experience.</p>
-</div>
-</blockquote>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+There could be some <code>ERROR</code> logs be printed out while the <code>DefaultAzureCredential</code> running the chain and trying to find the first available credential. It doesn&#8217;t mean the <code>DefaultAzureCredential</code> is broken or unavailable. Meanwhile, we&#8217;ll keep improving this logging experience.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -726,12 +716,17 @@ configurations can be divided into five categories:</p>
 <h4 id="_each_sdk_configurations"><a class="link" href="#_each_sdk_configurations">Each SDK configurations</a></h4>
 <div class="sect4">
 <h5 id="_spring_cloud_azure_starter_integration_eventhubs"><a class="link" href="#_spring_cloud_azure_starter_integration_eventhubs">spring-cloud-azure-starter-integration-eventhubs</a></h5>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>(legacy: azure-spring-cloud-starter-eventhubs)</p>
-</div>
-</blockquote>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Legacy starter is <code>azure-spring-cloud-starter-eventhubs</code>.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>prefix changed from
@@ -801,12 +796,17 @@ to
 </div>
 <div class="sect4">
 <h5 id="_spring_cloud_azure_stream_binder_eventhubs"><a class="link" href="#_spring_cloud_azure_stream_binder_eventhubs">spring-cloud-azure-stream-binder-eventhubs</a></h5>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>(legacy: azure-spring-cloud-stream-binder-eventhubs)</p>
-</div>
-</blockquote>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Legacy starter is  <code>azure-spring-cloud-stream-binder-eventhubs</code>.
+</td>
+</tr>
+</table>
 </div>
 <div class="ulist">
 <ul>
@@ -914,12 +914,17 @@ to<br>
 </div>
 <div class="sect4">
 <h5 id="_spring_cloud_azure_starter_integration_servicebus"><a class="link" href="#_spring_cloud_azure_starter_integration_servicebus">spring-cloud-azure-starter-integration-servicebus</a></h5>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>(legacy: azure-spring-cloud-starter-servicebus)</p>
-</div>
-</blockquote>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Legacy starter is <code>azure-spring-cloud-starter-servicebus</code>.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>For all configuration options supported in spring-cloud-azure-starter-integration-servicebus and spring-integration-azure-servicebus libraries,
@@ -974,12 +979,17 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus.</code>.</p>
 </div>
 <div class="sect4">
 <h5 id="_spring_cloud_azure_stream_binder_servicebus"><a class="link" href="#_spring_cloud_azure_stream_binder_servicebus">spring-cloud-azure-stream-binder-servicebus</a></h5>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>(legacy: azure-spring-cloud-stream-binder-servicebus-queue,azure-spring-cloud-stream-binder-servicebus-topic)</p>
-</div>
-</blockquote>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Legacy binder libaries are <code>azure-spring-cloud-stream-binder-servicebus-queue</code> and <code>azure-spring-cloud-stream-binder-servicebus-topic</code>, and now they are merged into one <code>spring-cloud-azure-stream-binder-servicebus</code>.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>We have merged these two libraries into one, which supports both topic and queue. And the binder type is combined as <code>servicebus</code>.</p>
@@ -1038,8 +1048,17 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus.</code>.</p>
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>please note: the binder type is renamed from: servicebus-queue/servicebus-topic to <code>servicebus</code>.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The binder type is renamed from: servicebus-queue/servicebus-topic to <code>servicebus</code>.
+</td>
+</tr>
+</table>
 </div>
 <div class="ulist">
 <ul>
@@ -1163,32 +1182,62 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus.</code>.</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>All configuration property names changed the prefix from <code>azure.cosmos</code> to <code>spring.cloud.azure.cosmos</code>.|===
-|Legacy properties |Morden properties</p>
+<p>All configuration property names changed the prefix from <code>azure.cosmos</code> to <code>spring.cloud.azure.cosmos</code>.</p>
 </li>
 </ol>
-</div>
-<div class="paragraph">
-<p>|azure.cosmos.uri |spring.cloud.azure.cosmos.endpoint
-|azure.cosmos.key |spring.cloud.azure.cosmos.key
-|azure.cosmos.database |spring.cloud.azure.cosmos.database
-|azure.cosmos.populateQueryMetrics |spring.cloud.azure.cosmos.populateQueryMetrics</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
 </colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Legacy properties</th>
+<th class="tableblock halign-left valign-top">Morden properties</th>
+</tr>
+</thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">===== From <strong>azure-spring-boot-starter-storage</strong> to <strong>spring-cloud-azure-starter-storage-blob</strong></p>
-<p class="tableblock">. All configuration property names changed the prefix from <code>azure.storage</code> to <code>spring.cloud.azure.storage.blob</code>.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">===</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">azure.cosmos.uri</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.endpoint</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Legacy properties</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Morden properties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">azure.cosmos.key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.key</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">azure.cosmos.database</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.database</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">azure.cosmos.populateQueryMetrics</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.populateQueryMetrics</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_from_azure_spring_boot_starter_storage_to_spring_cloud_azure_starter_storage_blob"><a class="link" href="#_from_azure_spring_boot_starter_storage_to_spring_cloud_azure_starter_storage_blob">From <strong>azure-spring-boot-starter-storage</strong> to <strong>spring-cloud-azure-starter-storage-blob</strong></a></h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>All configuration property names changed the prefix from <code>azure.storage</code> to <code>spring.cloud.azure.storage.blob</code>.</p>
+</li>
+</ol>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Legacy properties</th>
+<th class="tableblock halign-left valign-top">Morden properties</th>
+</tr>
+</thead>
+<tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">azure.storage.account-name</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.blob.account-name</p></td>
@@ -1274,12 +1323,17 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus.</code>.</p>
 <h3 id="_api_breaking_changes"><a class="link" href="#_api_breaking_changes">API breaking changes</a></h3>
 <div class="sect3">
 <h4 id="_spring_cloud_azure_stream_binder_eventhubs_2"><a class="link" href="#_spring_cloud_azure_stream_binder_eventhubs_2">spring-cloud-azure-stream-binder-eventhubs</a></h4>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>(legacy: azure-spring-cloud-stream-binder-eventhubs)</p>
-</div>
-</blockquote>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Legacy binder is <code>azure-spring-cloud-stream-binder-eventhubs</code>.
+</td>
+</tr>
+</table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1310,12 +1364,17 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus.</code>.</p>
 </div>
 <div class="sect3">
 <h4 id="_spring_cloud_azure_starter_integration_eventhubs_2"><a class="link" href="#_spring_cloud_azure_starter_integration_eventhubs_2">spring-cloud-azure-starter-integration-eventhubs</a></h4>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>(legacy: azure-spring-cloud-starter-eventhubs)</p>
-</div>
-</blockquote>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+legacy: azure-spring-cloud-starter-eventhubs)
+</td>
+</tr>
+</table>
 </div>
 <div class="ulist">
 <ul>
@@ -1490,12 +1549,17 @@ Legacy code:</p>
 </div>
 <div class="sect3">
 <h4 id="_spring_cloud_azure_stream_binder_servicebus_2"><a class="link" href="#_spring_cloud_azure_stream_binder_servicebus_2">spring-cloud-azure-stream-binder-servicebus</a></h4>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>(legacy: azure-spring-cloud-stream-binder-servicebus)</p>
-</div>
-</blockquote>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Legacy binder is <code>azure-spring-cloud-stream-binder-servicebus</code>.
+</td>
+</tr>
+</table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1526,12 +1590,17 @@ Legacy code:</p>
 </div>
 <div class="sect3">
 <h4 id="_spring_cloud_azure_starter_integration_servicebus_2"><a class="link" href="#_spring_cloud_azure_starter_integration_servicebus_2">spring-cloud-azure-starter-integration-servicebus</a></h4>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>(legacy: azure-spring-cloud-starter-servicebus)</p>
-</div>
-</blockquote>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Legacy library is <code>azure-spring-cloud-starter-servicebus</code>.
+</td>
+</tr>
+</table>
 </div>
 <div class="ulist">
 <ul>
@@ -1788,12 +1857,20 @@ for the <code>ProducerProperties#entityType</code>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.handler.DefaultMessageHandler</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.storage.queue.inbound.StorageQueueMessageSource</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.storage.queue.inbound.StorageQueueMessageSource</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.core.AzureHeaders</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.AzureHeaders</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.storage.queue.StorageQueueOperation</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.storage.queue.core.StorageQueueOperation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.storage.queue.StorageQueueTemplate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.storage.queue.core.StorageQueueTemplate</p></td>
 </tr>
 </tbody>
 </table>

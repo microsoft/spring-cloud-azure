@@ -319,35 +319,39 @@ the following is the process of obtaining the priority of the partition ID and k
 <div class="paragraph">
 <p>The following are configuration items related to the producer:</p>
 </div>
-<div class="paragraph">
-<p><strong><em>partition-count</em></strong></p>
-</div>
-<div class="paragraph">
-<p>The number of target partitions for the data, if partitioning is enabled.</p>
-</div>
-<div class="paragraph">
-<p>Default: 1</p>
-</div>
-<div class="paragraph">
-<p><strong><em>partition-key-extractor-name</em></strong></p>
-</div>
-<div class="paragraph">
-<p>The name of the bean that implements <code>PartitionKeyExtractorStrategy</code>.
-The partition handler will first use the <code>PartitionKeyExtractorStrategy#extractKey</code> method to obtain the partition key value.</p>
-</div>
-<div class="paragraph">
-<p>Default: null</p>
-</div>
-<div class="paragraph">
-<p><strong><em>partition-key-expression</em></strong></p>
-</div>
-<div class="paragraph">
-<p>A SpEL expression that determines how to partition outbound data.
-When interface <code>PartitionKeyExtractorStrategy</code> is not implemented, it will be called in the method <code>PartitionHandler#extractKey</code>.</p>
-</div>
-<div class="paragraph">
-<p>Default: null</p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">PropertyName</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">partition-count</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of target partitions for the data, if partitioning is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">partition-key-extractor-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the bean that implements <code>PartitionKeyExtractorStrategy</code>.
+The partition handler will first use the <code>PartitionKeyExtractorStrategy#extractKey</code> method to obtain the partition key value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">partition-key-expression</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A SpEL expression that determines how to partition outbound data.
+When interface <code>PartitionKeyExtractorStrategy</code> is not implemented, it will be called in the method <code>PartitionHandler#extractKey</code>.</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>For more information about setting partition for the producer properties, please refer to the <a href="https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_producer_properties">Producer Properties of Spring Cloud Stream</a>.</p>
 </div>
@@ -358,25 +362,33 @@ When interface <code>PartitionKeyExtractorStrategy</code> is not implemented, it
 <div class="paragraph">
 <p>It supports the following configurations with the format of <code>spring.cloud.stream.eventhubs.bindings.&lt;channelName&gt;.producer</code>.</p>
 </div>
-<div class="paragraph">
-<p><strong><em>sync</em></strong></p>
-</div>
-<div class="paragraph">
-<p>Whether the producer should act in a synchronous manner with respect to writing messages into a stream. If true, the
-producer will wait for a response from Event Hub after a send operation.</p>
-</div>
-<div class="paragraph">
-<p>Default: <code>false</code></p>
-</div>
-<div class="paragraph">
-<p><strong><em>send-timeout</em></strong></p>
-</div>
-<div class="paragraph">
-<p>Effective only if <code>sync</code> is set to true. The amount of time to wait for a response from Event Hub after a send operation, in milliseconds.</p>
-</div>
-<div class="paragraph">
-<p>Default: <code>10000</code></p>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">PropertyName</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sync</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether the producer should act in a synchronous manner with respect to writing messages into a stream. If true, the
+producer will wait for a response from Event Hub after a send operation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">send-timeout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Effective only if <code>sync</code> is set to true. The amount of time to wait for a response from Event Hub after a send operation, in milliseconds.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect4">
 <h5 id="_common_consumer_properties"><a class="link" href="#_common_consumer_properties">Common Consumer Properties</a></h5>
@@ -446,10 +458,17 @@ mode is set true.</p>
 <div class="paragraph">
 <p>Default: <code>RECORD</code></p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre>Notes: when consume batch mode is false(default value), `BATCH` checkpoint mode is not invalid.</pre>
-</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+when consume batch mode is false(default value), <code>BATCH</code> checkpoint mode is not invalid.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p><strong><em>checkpoint-count</em></strong></p>
@@ -488,7 +507,7 @@ mode is set true.</p>
 <p>Default: <code>null</code></p>
 </div>
 <div class="paragraph">
-<p>for full configurations, check appendix</p>
+<p>To see the list of all Spring Cloud Azure related configuration properties please check <a href="appendix.html">the Appendix page</a>.</p>
 </div>
 </div>
 </div>
@@ -921,15 +940,13 @@ When create a message, developers can specify the header or property of a Servic
 <col style="width: 25%;">
 <col style="width: 25%;">
 </colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Service Bus Message Headers and Properties</th>
-<th class="tableblock halign-left valign-top">Spring Message Header Constants</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Priority Number (Descending priority)</th>
-</tr>
-</thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service Bus Message Headers and Properties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Spring Message Header Constants</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Priority Number (Descending priority)</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>MessageId</strong></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.servicebus.converter.ServiceBusMessageHeaders.MESSAGE_ID</p></td>
@@ -1017,7 +1034,7 @@ When create a message, developers can specify the header or property of a Servic
 </tbody>
 </table>
 <div class="paragraph">
-<p>For full configurations, check appendix</p>
+<p>For full configurations, please check appendix</p>
 </div>
 </div>
 </div>
@@ -1034,8 +1051,10 @@ When create a message, developers can specify the header or property of a Servic
 <p>This example demonstrates how to manually set the partition key for the message in the application.</p>
 </div>
 <div class="paragraph">
-<p><strong>Way 1:</strong>
-This example requires that <code>spring.cloud.stream.default.producer.partitionKeyExpression</code> be set <code>&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;</code>.</p>
+<p><strong>Approach 1:</strong> Set partition key expression.</p>
+</div>
+<div class="paragraph">
+<p>This example requires that <code>spring.cloud.stream.default.producer.partitionKeyExpression</code> be set <code>&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1062,15 +1081,21 @@ public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
 }</code></pre>
 </div>
 </div>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p><strong>NOTE:</strong> When using <code>application.yml</code> to configure the partition key, its priority will be the lowest.
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When using <code>application.yml</code> to configure the partition key, its priority will be the lowest.
 It will take effect only when the <code>ServiceBusMessageHeaders.SESSION_ID</code>, <code>ServiceBusMessageHeaders.PARTITION_KEY</code>, <code>AzureHeaders.PARTITION_KEY</code> are not configured.
-<strong>Way 2:</strong>
-Manually add the partition Key in the message header by code.</p>
+</td>
+</tr>
+</table>
 </div>
-</blockquote>
+<div class="paragraph">
+<p><strong>Approach 2:</strong> Manually add the partition Key in the message header by code.</p>
 </div>
 <div class="paragraph">
 <p><em>Recommended:</em> Use <code>ServiceBusMessageHeaders.PARTITION_KEY</code> as the key of the header.</p>
@@ -1102,14 +1127,21 @@ public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
 }</code></pre>
 </div>
 </div>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p><strong>NOTE:</strong> When both <code>ServiceBusMessageHeaders.PARTITION_KEY</code> and <code>AzureHeaders.PARTITION_KEY</code> are set in the message headers,
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When both <code>ServiceBusMessageHeaders.PARTITION_KEY</code> and <code>AzureHeaders.PARTITION_KEY</code> are set in the message headers,
 <code>ServiceBusMessageHeaders.PARTITION_KEY</code> is preferred.
-<strong>Example: Set the session id for the message</strong></p>
+</td>
+</tr>
+</table>
 </div>
-</blockquote>
+<div class="paragraph">
+<p><strong>Example: Set the session id for the message</strong></p>
 </div>
 <div class="paragraph">
 <p>This example demonstrates how to manually set the session id of a message in the application.</p>
@@ -1126,15 +1158,20 @@ public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
 }</code></pre>
 </div>
 </div>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p><strong>NOTE:</strong> When the <code>ServiceBusMessageHeaders.SESSION_ID</code> is set in the message headers, and a different <code>ServiceBusMessageHeaders.PARTITION_KEY</code> (or <code>AzureHeaders.PARTITION_KEY</code>) header is also set,
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When the <code>ServiceBusMessageHeaders.SESSION_ID</code> is set in the message headers, and a different <code>ServiceBusMessageHeaders.PARTITION_KEY</code> (or <code>AzureHeaders.PARTITION_KEY</code>) header is also set,
 the value of the session id will eventually be used to overwrite the value of the partition key.
 Please use this <code>sample</code> as a reference to learn more about how to use this binder in your project.
-- <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/servicebus/azure-spring-cloud-stream-binder-servicebus-queue">Service Bus Queue</a></p>
-</div>
-</blockquote>
+- <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/servicebus/azure-spring-cloud-stream-binder-servicebus-queue">Service Bus Queue</a>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>

@@ -183,19 +183,24 @@ window.onload = function() {
 <div class="paragraph">
 <p>The <code>DefaultAzureCredential</code> is appropriate for most scenarios where the application is intended to ultimately be run in the Azure Cloud. This is because the DefaultAzureCredential combines credentials commonly used to authenticate when deployed, with credentials used to authenticate in a development environment.</p>
 </div>
-<div class="exampleblock">
-<div class="content">
-<div class="paragraph">
-<p>Note: DefaultAzureCredential is intended to simplify getting started with the SDK by handling common scenarios with reasonable default behaviors. Developers who want more control or whose scenario isn&#8217;t served by the default settings should use other credential types.</p>
-</div>
-</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+DefaultAzureCredential is intended to simplify getting started with the SDK by handling common scenarios with reasonable default behaviors. Developers who want more control or whose scenario isn&#8217;t served by the default settings should use other credential types.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The <code>DefaultAzureCredential`</code> will attempt to authenticate via the following mechanisms in order.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/Azure/azure-sdk-for-java/main/sdk/identity/azure-identity/images/defaultazurecredential.png" alt="defaultazurecredential">
+<img src="./images/default-azure-credential.png" alt="DefaultAzureCredential">
 </div>
 </div>
 <div class="ulist">
@@ -217,12 +222,17 @@ window.onload = function() {
 </li>
 </ul>
 </div>
-<div class="exampleblock">
-<div class="content">
-<div class="paragraph">
-<p><strong>Warning</strong>: There could be some <code>ERROR</code> logs be printed out while the <code>DefaultAzureCredential</code> running the chain and trying to find the first available credential. It doesn&#8217;t mean the <code>DefaultAzureCredential</code> is broken or unavailable. Meanwhile, we&#8217;ll keep improving this logging experience.</p>
-</div>
-</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+There could be some <code>ERROR</code> logs be printed out while the <code>DefaultAzureCredential</code> running the chain and trying to find the first available credential. It doesn&#8217;t mean the <code>DefaultAzureCredential</code> is broken or unavailable. Meanwhile, we&#8217;ll keep improving this logging experience.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -286,8 +296,17 @@ window.onload = function() {
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>To see the list of all Spring Cloud Azure related configuration properties please check <a href="appendix.html">the Appendix page</a>.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+To see the list of all Spring Cloud Azure related configuration properties please check <a href="appendix.html">the Appendix page</a>.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect3">

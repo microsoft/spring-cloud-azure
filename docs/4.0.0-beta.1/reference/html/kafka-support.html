@@ -277,11 +277,11 @@ window.onload = function() {
   cloud:
     azure:
       profile:
-        tenant-id: ${SPRING_TENANT_ID}
-        subscription-id: ${SPRING_SUBSCRIPTION_ID}
+        tenant-id: ${AZURE_TENANT_ID}
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
       credential:
-        client-id: ${SPRING_CLIENT_ID}
-        client-secret: ${SPRING_CLIENT_SECRET}</code></pre>
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}</code></pre>
 </div>
 </div>
 </div>
@@ -295,7 +295,7 @@ window.onload = function() {
 <li>
 <p>Create a service principal for use in by your app. Please follow
 <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/blob/main/create-sp-using-azure-cli.md">create service principal from Azure CLI</a>.
-The credential is not required since Spring Cloud Azure support <a href="https://docs.microsoft.com/en-us/azure/developer/java/sdk/identity" class="bare">https://docs.microsoft.com/en-us/azure/developer/java/sdk/identity</a>,
+The credential is not required since Spring Cloud Azure support <a href="https://docs.microsoft.com/en-us/azure/developer/java/sdk/identity">Azure Identity</a>,
 you only need to log in with az cli / vs code or Intellij Azure Toolkit, then credential information will be left out of properties</p>
 </li>
 <li>
@@ -313,8 +313,8 @@ you only need to log in with az cli / vs code or Intellij Azure Toolkit, then cr
   cloud:
     azure:
       profile:
-        tenant-id: ${SPRING_TENANT_ID}
-        subscription-id: ${SPRING_SUBSCRIPTION_ID}
+        tenant-id: ${AZURE_TENANT_ID}
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
 # This is not required since Spring Cloud Azure support https://docs.microsoft.com/en-us/azure/developer/java/sdk/identity
 # you only need to login with az cli / vs code or Intellij Azure Toolkit
 # then credential information will be left out of properties
@@ -368,6 +368,8 @@ public class SourceExample {
 </li>
 </ol>
 </div>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
@@ -396,6 +398,8 @@ public class EventHubKafkaBinderApplication {
         return message -&gt; LOGGER.info("New message received: '{}'", message.getPayload());
     }
 }</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="olist arabic">
@@ -433,19 +437,17 @@ public class EventHubKafkaBinderApplication {
 </div>
 <div class="sect2">
 <h3 id="_troubleshooting"><a class="link" href="#_troubleshooting">Troubleshooting</a></h3>
-<div class="ulist">
-<ul>
-<li>
+<div class="paragraph">
 <p>Meet with <code>Creating topics with default partitions/replication factor are only supported in CreateTopicRequest version 4+</code> error.</p>
-</li>
-</ul>
 </div>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-text" data-lang="text">'''
-o.s.c.s.b.k.p.KafkaTopicProvisioner      : Failed to create topics
-org.apache.kafka.common.errors.UnsupportedVersionException: Creating topics with default partitions/replication factor are only supported in CreateTopicRequest version 4+. The following topics need values for partitions and replicas
-```</code></pre>
+<pre class="highlight"><code class="language-text" data-lang="text">o.s.c.s.b.k.p.KafkaTopicProvisioner      : Failed to create topics
+org.apache.kafka.common.errors.UnsupportedVersionException: Creating topics with default partitions/replication factor are only supported in CreateTopicRequest version 4+. The following topics need values for partitions and replicas</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="paragraph">

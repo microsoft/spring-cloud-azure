@@ -180,13 +180,18 @@ window.onload = function() {
 <h2 id="_auto_configure_azure_sdk_clients"><a class="link" href="#_auto_configure_azure_sdk_clients">Auto Configure Azure SDK Clients</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Spring Boot greatly simplifies the Spring Cloud Azure experience. Spring Cloud Azure Starters are a set of convenient dependency descriptors to include in your application. Our starters handle the object instantiation and configuration logic so you don’t have to. Every starter depends on the Spring Cloud Azure starter to provide critical bits of configuration, like the Azure Cloud environment and authentication information. You can configure these as properties in, for example, a properties file:</p>
+<p>Spring Boot greatly simplifies the Spring Cloud Azure experience. Spring Cloud Azure Starters are a set of convenient dependency descriptors to include in your application. Our starters handle the object instantiation and configuration logic so you don’t have to. Every starter depends on the Spring Cloud Azure starter to provide critical bits of configuration, like the Azure Cloud environment and authentication information. You can configure these as properties in, for example, a yaml file:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.profile.tenant-id=[TENANT_ID]
-spring.cloud.azure.profile.cloud=[AZURE]
-spring.cloud.azure.credential.client-id=[CLIENT_ID]</code></pre>
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+        cloud: Azure
+      credential:
+        client-id: ${AZURE_CLIENT_ID}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -216,8 +221,17 @@ spring.cloud.azure.credential.client-id=[CLIENT_ID]</code></pre>
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Please refer to <a href="index.html#starter-dependencies">Starter Dependencies</a> for the list of starters we support.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Please refer to <a href="index.html#starter-dependencies">Starter Dependencies</a> for the list of starters we support.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -225,8 +239,17 @@ spring.cloud.azure.credential.client-id=[CLIENT_ID]</code></pre>
 <div class="paragraph">
 <p>Configuration properties for each Azure service are under prefix <code>spring.cloud.azure.prefix</code>.</p>
 </div>
-<div class="paragraph">
-<p>To see the list of all Spring Cloud Azure related configuration properties please check <a href="appendix.html">the Appendix page</a>.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+To see the list of all Spring Cloud Azure related configuration properties please check <a href="appendix.html">the Appendix page</a>.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -240,8 +263,8 @@ spring.cloud.azure.credential.client-id=[CLIENT_ID]</code></pre>
   cloud:
     azure:
       cosmos:
-        database: ${COSMOS_DATABASE_NAME}
-        endpoint: ${COSMOS_ENDPOINT}
+        database: ${AZURE_COSMOS_DATABASE_NAME}
+        endpoint: ${AZURE_COSMOS_ENDPOINT}
         consistency-level: eventual
         connection-mode: direct</code></pre>
 </div>
