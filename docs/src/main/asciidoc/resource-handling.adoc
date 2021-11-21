@@ -2,6 +2,12 @@
 
 Connect to Azure Storage using Spring Resource abstraction and Azure Storage libraries.
 
+|===
+|Starter | Service | Description
+|spring-cloud-azure-starter-storage-blob|Azure Blobs|Allows unstructured data to be stored and accessed at a massive scale in block blobs.
+|spring-cloud-azure-starter-storage-file-share|Azure Files|Offers fully managed cloud file shares that you can access from anywhere via the industry standard Server Message Block (SMB) protocol.
+|===
+
 === Dependency Setup
 
 
