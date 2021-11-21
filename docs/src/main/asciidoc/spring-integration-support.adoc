@@ -226,7 +226,7 @@ spring:
 
 ==== Samples
 
-Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/eventhubs[sample project] to learn how to use Event Hubs integration.
+Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter-integration-eventhubs[sample project] to learn how to use Event Hubs integration.
 
 === Spring Integration with Azure Service Bus
 
@@ -438,7 +438,7 @@ set the entity type for the ServiceBusTemplate.
 
 ==== Samples
 
-Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/servicebus[sample project] to learn how to use Service Bus integration.
+Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/servicebus/spring-cloud-azure-starter-integration-servicebus[sample project] to learn how to use Service Bus integration.
 
 *Example: Manually set the partition key for the message*
 
@@ -722,5 +722,5 @@ spring:
 ----
 ==== Samples
 
-Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/storage/[sample project] illustrating how to use Storage Queue integration.
+Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/storage/spring-cloud-azure-starter-integration-storage-queue[sample project] illustrating how to use Storage Queue integration.
 

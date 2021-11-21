@@ -1,6 +1,10 @@
 == Production Ready
 
-If you choose to add Spring Cloud Azure Actuator, include actuator dependencies.
+We’ve added health indicators for App Configuration, Event Hubs, Cosmos, Key Vault, Storage Blob, Storage Queue, Storage File, as well as Spring Cloud Sleuth support for all HTTP-based Azure SDKs. As an example, you now can prob if storage blob is up or down via Spring Boot actuator endpoint, as well as track dependencies and latencies going from your application to Key Vault.
+
+=== Enable Health Indicator
+
+Add the Spring Cloud Azure Actuator Starter dependency. This dependency will also include the `spring-boot-starter-actuator`. 
 
 [source,xml]
 ----
@@ -8,26 +12,37 @@ If you choose to add Spring Cloud Azure Actuator, include actuator dependencies.
 	<groupId>com.azure.spring</groupId>
 	<artifactId>spring-cloud-azure-starter-actuator</artifactId>
 </dependency>
-
 ----
 
-=== Enable Health Indicator
-
-for Cosmos DB, add `management.health.azure-cosmos.enabled=true` to application.yaml.
-
-[source,yml]
-----
-management.health.azure-cosmos.enabled: true
-----
-
-// TODO add table for all servcies
+Below properties could be used to enable or disable health indicators for each Azure services.
+|===
+|Azure Service  |Propropety
+|App Configuration |management.health.azure-appconfiguration.enabled
+|Cosmos DB |management.health.azure-cosmos.enabled
+|Event Hubs |management.health.azure-eventhubs.enabled
+|Key Vault |management.health.azure-keyvault.enabled
+|Storage|management.health.azure-storage.enabled
+|===
 
 ____
 
-Warning: Call `http://{hostname}:{port}/actuator/health/cosmos` to get the Cosmos DB health info. *Please note*: it will calculate https://docs.microsoft.com/azure/cosmos-db/request-units[RUs].
-
+*Please note*: Calling the health endpoint of Azure servcies could cause extra charge. For example, calling `http://{hostname}:{port}/actuator/health/cosmos` to get the Cosmos DB health info, it will calculate https://docs.microsoft.com/azure/cosmos-db/request-units[RUs].
 ____
 
 === Enable Sleuth
 
-=== Integrate with Azure Monitor
+Add the Spring Cloud Azure Trace Sleuth dependency when you want to trace Azure SDK activities with using Spring Cloud Sleuth.
+
+[source,xml]
+----
+<dependency>
+	<groupId>com.azure.spring</groupId>
+	<artifactId>spring-cloud-azure-trace-sleuth</artifactId>
+</dependency>
+----
+____
+
+*Please note*: Only HTTP-based Azure SDK clients are supported now.
+____
+
+
