@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<style>
+<style>
 .hidden {
 	display: none;
 }
@@ -39,9 +39,9 @@
 	background-color: #7a2519;
 	color: #ffffff;
 }
-
-</style>
-<script type="text/javascript">
+
+</style>
+<script type="text/javascript">
 function addBlockSwitches() {
 	for (var primary of document.querySelectorAll('.primary')) {
 		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
@@ -155,8 +155,8 @@ window.onload = function() {
 	addBlockSwitches();
 	globalSwitch();
 };
-
-</script>
+
+</script>
 
 </head>
 <body class="book toc2 toc-left">
@@ -168,7 +168,6 @@ window.onload = function() {
 <ul class="sectlevel2">
 <li><a href="#_enable_health_indicator">Enable Health Indicator</a></li>
 <li><a href="#_enable_sleuth">Enable Sleuth</a></li>
-<li><a href="#_integrate_with_azure_monitor">Integrate with Azure Monitor</a></li>
 </ul>
 </li>
 </ul>
@@ -179,7 +178,12 @@ window.onload = function() {
 <h2 id="_production_ready"><a class="link" href="#_production_ready">Production Ready</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>If you choose to add Spring Cloud Azure Actuator, include actuator dependencies.</p>
+<p>We’ve added health indicators for App Configuration, Event Hubs, Cosmos, Key Vault, Storage Blob, Storage Queue, Storage File, as well as Spring Cloud Sleuth support for all HTTP-based Azure SDKs. As an example, you now can prob if storage blob is up or down via Spring Boot actuator endpoint, as well as track dependencies and latencies going from your application to Key Vault.</p>
+</div>
+<div class="sect2">
+<h3 id="_enable_health_indicator"><a class="link" href="#_enable_health_indicator">Enable Health Indicator</a></h3>
+<div class="paragraph">
+<p>Add the Spring Cloud Azure Actuator Starter dependency. This dependency will also include the <code>spring-boot-starter-actuator</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -189,31 +193,69 @@ window.onload = function() {
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_enable_health_indicator"><a class="link" href="#_enable_health_indicator">Enable Health Indicator</a></h3>
 <div class="paragraph">
-<p>for Cosmos DB, add <code>management.health.azure-cosmos.enabled=true</code> to application.yaml.</p>
+<p>Below properties could be used to enable or disable health indicators for each Azure services.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yml" data-lang="yml">management.health.azure-cosmos.enabled: true</code></pre>
-</div>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Propropety</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">App Configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">management.health.azure-appconfiguration.enabled</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cosmos DB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">management.health.azure-cosmos.enabled</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Event Hubs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">management.health.azure-eventhubs.enabled</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Key Vault</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">management.health.azure-keyvault.enabled</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">management.health.azure-storage.enabled</p></td>
+</tr>
+</tbody>
+</table>
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
-<p>Warning: Call <code><a href="http://{hostname}:{port}/actuator/health/cosmos" class="bare">http://{hostname}:{port}/actuator/health/cosmos</a></code> to get the Cosmos DB health info. <strong>Please note</strong>: it will calculate <a href="https://docs.microsoft.com/azure/cosmos-db/request-units">RUs</a>.</p>
+<p><strong>Please note</strong>: Calling the health endpoint of Azure servcies could cause extra charge. For example, calling <code><a href="http://{hostname}:{port}/actuator/health/cosmos" class="bare">http://{hostname}:{port}/actuator/health/cosmos</a></code> to get the Cosmos DB health info, it will calculate <a href="https://docs.microsoft.com/azure/cosmos-db/request-units">RUs</a>.</p>
 </div>
 </blockquote>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_enable_sleuth"><a class="link" href="#_enable_sleuth">Enable Sleuth</a></h3>
-
+<div class="paragraph">
+<p>Add the Spring Cloud Azure Trace Sleuth dependency when you want to trace Azure SDK activities with using Spring Cloud Sleuth.</p>
 </div>
-<div class="sect2">
-<h3 id="_integrate_with_azure_monitor"><a class="link" href="#_integrate_with_azure_monitor">Integrate with Azure Monitor</a></h3>
-
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-cloud-azure-trace-sleuth&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p><strong>Please note</strong>: Only HTTP-based Azure SDK clients are supported now.</p>
+</div>
+</blockquote>
+</div>
 </div>
 </div>
 </div>

@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<style>
+<style>
 .hidden {
 	display: none;
 }
@@ -39,9 +39,9 @@
 	background-color: #7a2519;
 	color: #ffffff;
 }
-
-</style>
-<script type="text/javascript">
+
+</style>
+<script type="text/javascript">
 function addBlockSwitches() {
 	for (var primary of document.querySelectorAll('.primary')) {
 		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
@@ -155,8 +155,8 @@ window.onload = function() {
 	addBlockSwitches();
 	globalSwitch();
 };
-
-</script>
+
+</script>
 
 </head>
 <body class="book toc2 toc-left">
@@ -5682,8 +5682,8 @@ new artifacts to better serve some scenarios.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">azure-spring-cloud-messaging</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">// TODO</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-messaging-azure</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The messaging listener annotation has been dropped.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">azure-spring-cloud-starter-cache</p></td>
@@ -5694,6 +5694,21 @@ new artifacts to better serve some scenarios.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">azure-spring-cloud-starter-eventhubs-kafka</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">This artifact has been deleted, for using kafka, just add spring kafka and spring-cloud-azure-starter.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">azure-spring-cloud-messaging</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-messaging-azure</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The messaging listener annotation has been dropped.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">azure-spring-cloud-starter-cache</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This artifact has been deleted, for using redis, just add spring-boot-starter-data-redis, spring-boot-starter-cache, spring-cloud-azure-resourcemanager and spring-cloud-azure-starter. Please see <a href="redis-support.html#Redis Support">Redis Support</a> for more information about usage.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">azure-spring-cloud-starter-eventhubs-kafka</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This artifact has been deleted, for using kafka, just add spring kafka, spring-cloud-azure-resourcemanager and spring-cloud-azure-starter. Please see <a href="kafka-support.html#Kafka Support">Kafka Support</a> for more information about usage.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">azure-spring-cloud-starter-eventhubs</p></td>

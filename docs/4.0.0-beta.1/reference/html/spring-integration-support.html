@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<style>
+<style>
 .hidden {
 	display: none;
 }
@@ -39,9 +39,9 @@
 	background-color: #7a2519;
 	color: #ffffff;
 }
-
-</style>
-<script type="text/javascript">
+
+</style>
+<script type="text/javascript">
 function addBlockSwitches() {
 	for (var primary of document.querySelectorAll('.primary')) {
 		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
@@ -155,8 +155,8 @@ window.onload = function() {
 	addBlockSwitches();
 	globalSwitch();
 };
-
-</script>
+
+</script>
 
 </head>
 <body class="book toc2 toc-left">
@@ -184,18 +184,18 @@ window.onload = function() {
 <div class="ulist">
 <ul>
 <li>
-<p>spring-integration-azure-eventhbus</p>
+<p>spring-cloud-azure-starter-integration-eventhbus</p>
 </li>
 <li>
-<p>spring-integration-azure-servicebus</p>
+<p>spring-cloud-azure-starter-integration-servicebus</p>
 </li>
 <li>
-<p>spring-integration-azure-storage-queue</p>
+<p>spring-cloud-azure-starter-integration-storage-queue</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Provide Spring Integration support for these Azure serices: eh, sb, storage q</p>
+<p>Provide Spring Integration support for these Azure services: Event Hubs, Service Bus, Storage Queue.</p>
 </div>
 <div class="sect2">
 <h3 id="_spring_integration_with_azure_event_hubs"><a class="link" href="#_spring_integration_with_azure_event_hubs">Spring Integration with Azure Event Hubs</a></h3>
@@ -205,7 +205,7 @@ window.onload = function() {
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
 	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
-	&lt;artifactId&gt;azure-spring-integration-eventhubs&lt;/artifactId&gt;
+	&lt;artifactId&gt;spring-cloud-azure-starter-integration-eventhubs&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -213,17 +213,507 @@ window.onload = function() {
 <div class="sect3">
 <h4 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h4>
 <div class="paragraph">
-<p>for full configurations, check appendix</p>
+<p>This starter provides the following 2 parts of configuration options:</p>
+</div>
+<div class="sect4">
+<h5 id="_azure_common_configuration_options"><a class="link" href="#_azure_common_configuration_options">Azure Common Configuration Options</a></h5>
+<div class="paragraph">
+<p>Below properties can also be configured with the default Spring Cloud Azure unified properties,
+of which the prefix is changed from <strong>spring.cloud.azure.eventhubs.</strong> to <strong>spring.cloud.azure.</strong>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Properties</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether an Azure Event Hubs is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.credential.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Properties used for getting token credential.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.credential.clientId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.credential.clientSecret</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.credential.clientCertificatePath</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path of a PEM certificate file to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.credential.clientCertificatePassword</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.credential.username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.credential.password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.credential.managedIdentityClientId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when using managed identity to authenticate with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.profile.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Properties related to an Azure subscription.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.profile.tenantId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tenant id for Azure resources.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.profile.subscriptionId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Subscription id to use when connecting to Azure resources.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.profile.cloud</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AzureProfileAware.CloudType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the Azure cloud to connect to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.profile.environment.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Properties to Azure services, such as endpoints, resource ids, etc.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.profile.environment.activeDirectoryEndpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Azure Active Directory endpoint to connect to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.resource.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Metadata defining an Azure resource.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.resource.resourceGroup</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the Azure resource group.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.resource.resourceId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Id of the Azure resource group.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.resource.region</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of region.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.client.transportType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AmqpTransportType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Transport type switches available for AMQP protocol.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.retry.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Retry properties.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.retry.backoff.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Backoff properties when a retry fails.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.retry.backoff.delay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of time to wait between retry attempts.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.retry.backoff.maxDelay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum permissible amount of time between retry attempts.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.retry.backoff.multiplier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Double</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.retry.maxAttempts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of attempts.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.retry.timeout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of time to wait until a timeout.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.proxy.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Common proxy properties.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.proxy.type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of the proxy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.proxy.hostname</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The host of the proxy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.proxy.port</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The port of the proxy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.proxy.authenticationType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Authentication type used against the proxy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.proxy.username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username used to authenticate with the proxy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.proxy.password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password used to authenticate with the proxy.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_azure_event_hubs_client_configuration_options"><a class="link" href="#_azure_event_hubs_client_configuration_options">Azure Event Hubs Client Configuration Options</a></h5>
+<div class="paragraph">
+<p>Below options are used to configure Azure Event Hubs SDK Client.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Properties</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.connection-string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Event Hubs Namespace connection string value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.namespace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Event Hubs Namespace value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.domainName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Domain name of an Azure Event Hubs Namespace value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.eventHubName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of an Event Hub entity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.customEndpointAddress</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Custom Endpoint address.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.isSharedConnection</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to use the same connection for different Event Hub producer / consumer client.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.processor.checkpointStore.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Blob checkpoint store configuration options.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.processor.checkpointStore.createContainerIfNotExists</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If allowed to create container if not exists.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.processor.checkpointStore.customerProvidedKey</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base64 encoded string of the encryption key.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.processor.checkpointStore.encryptionScope</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Encryption scope to encrypt blob contents on the server.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.processor.checkpointStore.serviceVersion</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BlobServiceVersion</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The versions of Azure Storage Blob supported by this client library.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.processor.checkpointStore.blobName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage blob name.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.processor.checkpointStore.containerName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage container name.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_basic_usage"><a class="link" href="#_basic_usage">Basic Usage</a></h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Send messages to Azure Event Hubs</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Fill the configuration options with credential information.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>For credentials as connection string, configure below properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      eventhubs:
+        connection-string: [servicebus-connection-string]</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as MSI, configure below properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      credential:
+        managed-identity-client-id: [managed-identity-client-id]
+      profile:
+        tenant-id: [tenant-id]
+#     Uncomment below configurations if you want to enable auto creating resources.
+#        subscription-id: [subscription-id]
+#        cloud: Azure
+#      resource:
+#        region: [region]
 
+      eventhubs:
+        namespace: [servicebus-namespace]</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as service principal, configure below properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      credential:
+        client-id: [client-id]
+        client-secret: [client-secret]
+      profile:
+        tenant-id: [tenant-id]
+#     Uncomment below configurations if you want to enable auto creating resources.
+#        subscription-id: [subscription-id]
+#        cloud: Azure
+#      resource:
+#        region: [region]
+
+      eventhubs:
+        namespace: [namespace]</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create <code>DefaultMessageHandler</code> with the bean of <code>EventHubsTemplate</code> to send messages to Event Hubs.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    private static final String OUTPUT_CHANNEL = "output";
+    private static final String EVENTHUB_NAME = "eh1";
+
+    @Bean
+    @ServiceActivator(inputChannel = OUTPUT_CHANNEL)
+    public MessageHandler messageSender(EventHubsTemplate queueOperation) {
+        DefaultMessageHandler handler = new DefaultMessageHandler(EVENTHUB_NAME, queueOperation);
+        handler.setSendCallback(new ListenableFutureCallback&lt;Void&gt;() {
+            @Override
+            public void onSuccess(Void result) {
+                LOGGER.info("Message was sent successfully.");
+            }
+            @Override
+            public void onFailure(Throwable ex) {
+                LOGGER.error("There was an error sending the message.", ex);
+            }
+        });
+        return handler;
+    }</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a Message gateway binding with the message handler created in the last step via a message channel</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    @Autowired
+    EventHubOutboundGateway messagingGateway;
+
+    @MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL)
+    public interface EventHubOutboundGateway {
+        void send(String text);
+    }</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Send messages using the gateway</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    this.messagingGateway.send(message);</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Receive messages from Azure Event Hubs</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Fill the configuration options with credential information.</p>
+</li>
+<li>
+<p>Create a bean of message channel as the input channel.</p>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    private static final String INPUT_CHANNEL = "input";
+    private static final String EVENTHUB_NAME = "eh1";
+    private static final String CONSUMER_GROUP = "$Default";
+
+    @Bean
+    public MessageChannel input() {
+        return new DirectChannel();
+    }</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create <code>EventHubsInboundChannelAdapter</code> with the bean of <code>EventHubsProcessorContainer</code> to receive messages to Event Hubs.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    @Bean
+    public EventHubsInboundChannelAdapter messageChannelAdapter(
+            @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel,
+            EventHubsProcessorContainer processorContainer) {
+        CheckpointConfig config = new CheckpointConfig(CheckpointMode.MANUAL);
+
+        EventHubsInboundChannelAdapter adapter =
+                new EventHubsInboundChannelAdapter(processorContainer, EVENTHUB_NAME,
+                        CONSUMER_GROUP, config);
+        adapter.setOutputChannel(inputChannel);
+        return adapter;
+    }</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a message receiver binding with EventHubsInboundChannelAdapter created in the last step via the message channel we created before.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    @ServiceActivator(inputChannel = INPUT_CHANNEL)
+    public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
+        String message = new String(payload);
+        LOGGER.info("New message received: '{}'", message);
+        checkpointer.success()
+                .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
+                .doOnError(e -&gt; LOGGER.error("Error found", e))
+                .subscribe();
+    }</pre>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_samples"><a class="link" href="#_samples">Samples</a></h4>
 <div class="paragraph">
-<p>Please refer to this <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/eventhubs/azure-spring-integration-sample-eventhubs">sample project</a> to learn how to use Event Hubs integration. (todo: @chenrujun, update this link)</p>
+<p>Please refer to this <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter-integration-eventhubs">sample project</a> to learn how to use Event Hubs integration.</p>
 </div>
 </div>
 </div>
@@ -235,23 +725,478 @@ window.onload = function() {
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
 	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
-	&lt;artifactId&gt;azure-spring-integration-servicebus&lt;/artifactId&gt;
+	&lt;artifactId&gt;spring-cloud-azure-starter-integration-servicebus&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_configuration_2"><a class="link" href="#_configuration_2">Configuration</a></h4>
+<div class="sect4">
+<h5 id="_azure_common_configuration_options_2"><a class="link" href="#_azure_common_configuration_options_2">Azure Common Configuration Options</a></h5>
 <div class="paragraph">
-<p>for full configurations, check appendix</p>
+<p>Below properties can also be configured with the default Spring Cloud Azure unified properties,
+of which the prefix is changed from <strong>spring.cloud.azure.servicebus.</strong> to <strong>spring.cloud.azure.</strong>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Properties</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether an Azure Service Bus is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.credential.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Properties used for getting token credential.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.credential.clientId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.credential.clientSecret</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.credential.clientCertificatePath</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path of a PEM certificate file to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.credential.clientCertificatePassword</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.credential.username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.credential.password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.credential.managedIdentityClientId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when using managed identity to authenticate with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.profile.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Properties related to an Azure subscription.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.profile.tenantId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tenant id for Azure resources.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.profile.subscriptionId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Subscription id to use when connecting to Azure resources.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.profile.cloud</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AzureProfileAware.CloudType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the Azure cloud to connect to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.profile.environment.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Properties to Azure services, such as endpoints, resource ids, etc.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.profile.environment.activeDirectoryEndpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Azure Active Directory endpoint to connect to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.resource.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Metadata defining an Azure resource.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.resource.resourceGroup</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the Azure resource group.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.resource.resourceId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Id of the Azure resource group.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.resource.region</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of region.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.client.transportType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AmqpTransportType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Transport type switches available for AMQP protocol.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Retry properties.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry.backoff.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Backoff properties when a retry fails.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry.backoff.delay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of time to wait between retry attempts.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry.backoff.maxDelay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum permissible amount of time between retry attempts.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry.backoff.multiplier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Double</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry.maxAttempts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of attempts.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry.timeout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of time to wait until a timeout.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.proxy.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Common proxy properties.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.proxy.type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of the proxy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.proxy.hostname</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The host of the proxy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.proxy.port</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The port of the proxy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.proxy.authenticationType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Authentication type used against the proxy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.proxy.username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username used to authenticate with the proxy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.proxy.password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password used to authenticate with the proxy.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_azure_service_bus_client_configuration_options"><a class="link" href="#_azure_service_bus_client_configuration_options">Azure Service Bus Client Configuration Options</a></h5>
+<div class="paragraph">
+<p>Below options are used to configure Azure Service Bus SDK Client.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Properties</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.connection-string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service Bus Namespace connection string value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.namespace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service Bus Namespace value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.domainName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Domain name of an Azure Service Bus Namespace value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.entityName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Entity name of Azure Service Bus queue or topic.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.entityType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusEntityType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Entity type of Azure Service Bus queue or topic.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.crossEntityTransactions</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable cross entity transaction on the connection to Service bus.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_basic_usage_2"><a class="link" href="#_basic_usage_2">Basic Usage</a></h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Send messages to Azure Service Bus</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Fill the configuration options with credential information.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>For credentials as connection string, configure below properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      servicebus:
+        connection-string: [servicebus-connection-string]</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as MSI, configure below properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      credential:
+        managed-identity-client-id: [managed-identity-client-id]
+      profile:
+        tenant-id: [tenant-id]
+#     Uncomment below configurations if you want to enable auto creating resources.
+#        subscription-id: [subscription-id]
+#        cloud: Azure
+#      resource:
+#        region: [region]
 
+      servicebus:
+        namespace: [servicebus-namespace]</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as service principal, configure below properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      credential:
+        client-id: [client-id]
+        client-secret: [client-secret]
+      profile:
+        tenant-id: [tenant-id]
+#     Uncomment below configurations if you want to enable auto creating resources.
+#        subscription-id: [subscription-id]
+#        cloud: Azure
+#      resource:
+#        region: [region]
+
+      servicebus:
+        namespace: [namespace]</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create <code>DefaultMessageHandler</code> with the bean of <code>ServiceBusTemplate</code> to send messages to Service Bus,
+set the entity type for the ServiceBusTemplate.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    private static final String OUTPUT_CHANNEL = "queue.output";
+
+    @Bean
+    @ServiceActivator(inputChannel = OUTPUT_CHANNEL)
+    public MessageHandler queueMessageSender(ServiceBusTemplate serviceBusTemplate) {
+        serviceBusTemplate.setDefaultEntityType(ServiceBusEntityType.QUEUE);
+        DefaultMessageHandler handler = new DefaultMessageHandler(QUEUE_NAME, serviceBusTemplate);
+        handler.setSendCallback(new ListenableFutureCallback&lt;Void&gt;() {
+            @Override
+            public void onSuccess(Void result) {
+                LOGGER.info("Message was sent successfully.");
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                LOGGER.info("There was an error sending the message.");
+            }
+        });
+
+        return handler;
+    }</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a Message gateway binding with the message handler created in the last stop via a message channel</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    @Autowired
+    QueueOutboundGateway messagingGateway;
+
+    @MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL)
+    public interface QueueOutboundGateway {
+        void send(String text);
+    }</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Send messages using the gateway</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    this.messagingGateway.send(message);</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Receive messages from Azure Service Bus</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Fill the configuration options with credential information.</p>
+</li>
+<li>
+<p>Create a bean of message channel as the input channel.</p>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    private static final String INPUT_CHANNEL = "input";
+
+    @Bean
+    public MessageChannel input() {
+        return new DirectChannel();
+    }</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create <code>ServiceBusInboundChannelAdapter</code> with the bean of <code>ServiceBusProcessorContainer</code> to receive messages to Service Bus.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    private static final String QUEUE_NAME = "queue1";
+
+    @Bean
+    public ServiceBusInboundChannelAdapter queueMessageChannelAdapter(
+        @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel, ServiceBusProcessorContainer processorContainer) {
+        ServiceBusInboundChannelAdapter adapter = new ServiceBusInboundChannelAdapter(processorContainer, QUEUE_NAME,
+            new CheckpointConfig(CheckpointMode.MANUAL));
+        adapter.setOutputChannel(inputChannel);
+        return adapter;
+    }</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a message receiver binding with ServiceBusInboundChannelAdapter created in the last step via the message channel we created before.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    @ServiceActivator(inputChannel = INPUT_CHANNEL)
+    public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
+        String message = new String(payload);
+        LOGGER.info("New message received: '{}'", message);
+        checkpointer.success().handle((r, ex) -&gt; {
+            if (ex == null) {
+                LOGGER.info("Message '{}' successfully checkpointed.", message);
+            }
+        });
+    }</pre>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_samples_2"><a class="link" href="#_samples_2">Samples</a></h4>
+<div class="paragraph">
+<p>Please refer to this <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/servicebus/spring-cloud-azure-starter-integration-servicebus">sample project</a> to learn how to use Service Bus integration.</p>
+</div>
 <div class="paragraph">
 <p><strong>Example: Manually set the partition key for the message</strong></p>
 </div>
@@ -260,45 +1205,10 @@ window.onload = function() {
 </div>
 <div class="paragraph">
 <p><strong>Way 1:</strong>
-This example requires that <code>spring.cloud.stream.default.producer.partitionKeyExpression</code> be set <code>&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
-  cloud:
-    azure:
-      servicebus:
-        connection-string: [servicebus-namespace-connection-string]
-    stream:
-      default:
-        producer:
-          partitionKeyExpression:  "'partitionKey-' + headers[&lt;message-header-key&gt;]"</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
-    @PostMapping("/messages")
-    public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
-        LOGGER.info("Going to add message {} to Sinks.Many.", message);
-        many.emitNext(MessageBuilder.withPayload(message)
-                                    .setHeader("&lt;message-header-key&gt;", "Customize partition key")
-                                    .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-        return ResponseEntity.ok("Sent!");
-    }
-}</code></pre>
-</div>
+Manually add the partition Key in the message header by code.</p>
 </div>
 <div class="quoteblock">
 <blockquote>
-<div class="paragraph">
-<p><strong>NOTE:</strong> When using <code>application.yml</code> to configure the partition key, its priority will be the lowest.
-It will take effect only when the <code>ServiceBusMessageHeaders.SESSION_ID</code>, <code>ServiceBusMessageHeaders.PARTITION_KEY</code>, <code>AzureHeaders.PARTITION_KEY</code> are not configured.
-<strong>Way 2:</strong>
-Manually add the partition Key in the message header by code.</p>
-</div>
-</blockquote>
-</div>
 <div class="paragraph">
 <p><em>Recommended:</em> Use <code>ServiceBusMessageHeaders.PARTITION_KEY</code> as the key of the header.</p>
 </div>
@@ -333,15 +1243,15 @@ Manually add the partition Key in the message header by code.</p>
 }</code></pre>
 </div>
 </div>
-<div class="quoteblock">
-<blockquote>
+</blockquote>
+</div>
 <div class="paragraph">
 <p><strong>NOTE:</strong> When both <code>ServiceBusMessageHeaders.PARTITION_KEY</code> and <code>AzureHeaders.PARTITION_KEY</code> are set in the message headers,
 <code>ServiceBusMessageHeaders.PARTITION_KEY</code> is preferred.
 <strong>Example: Set the session id for the message</strong></p>
 </div>
-</blockquote>
-</div>
+<div class="quoteblock">
+<blockquote>
 <div class="paragraph">
 <p>This example demonstrates how to manually set the session id of a message in the application.</p>
 </div>
@@ -359,13 +1269,11 @@ Manually add the partition Key in the message header by code.</p>
 }</code></pre>
 </div>
 </div>
-<div class="quoteblock">
-<blockquote>
+</blockquote>
+</div>
 <div class="paragraph">
 <p><strong>NOTE:</strong> When the <code>ServiceBusMessageHeaders.SESSION_ID</code> is set in the message headers, and a different <code>ServiceBusMessageHeaders.PARTITION_KEY</code> (or <code>AzureHeaders.PARTITION_KEY</code>) header is also set,
 the value of the session id will eventually be used to overwrite the value of the partition key.</p>
-</div>
-</blockquote>
 </div>
 </div>
 </div>
@@ -377,25 +1285,482 @@ the value of the session id will eventually be used to overwrite the value of th
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
 	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
-	&lt;artifactId&gt;azure-spring-integration-storage-queue&lt;/artifactId&gt;
+	&lt;artifactId&gt;spring-cloud-azure-starter-integration-storage-queue&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_configuration_3"><a class="link" href="#_configuration_3">Configuration</a></h4>
+<div class="sect4">
+<h5 id="_azure_common_configuration_options_3"><a class="link" href="#_azure_common_configuration_options_3">Azure Common Configuration Options</a></h5>
 <div class="paragraph">
-<p>for full configurations, check appendix</p>
+<p>Below properties can also be configured with the default Spring Cloud Azure unified properties,
+of which the prefix is changed from <strong>spring.cloud.azure.storage.queue.</strong> to <strong>spring.cloud.azure.</strong>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Properties</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether an Azure Storage Queue is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.credential.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Properties used for getting token credential.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.credential.clientId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.credential.clientSecret</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.credential.clientCertificatePath</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path of a PEM certificate file to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.credential.clientCertificatePassword</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.credential.username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.credential.password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.credential.managedIdentityClientId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when using managed identity to authenticate with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.profile.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Properties related to an Azure subscription.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.profile.tenantId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tenant id for Azure resources.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.profile.subscriptionId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Subscription id to use when connecting to Azure resources.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.profile.cloud</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AzureProfileAware.CloudType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the Azure cloud to connect to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.profile.environment.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Properties to Azure services, such as endpoints, resource ids, etc.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.profile.environment.activeDirectoryEndpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Azure Active Directory endpoint to connect to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.resource.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Metadata defining an Azure resource.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.resource.resourceGroup</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the Azure resource group.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.resource.resourceId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Id of the Azure resource group.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.resource.region</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of region.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.client.transportType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AmqpTransportType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Transport type switches available for AMQP protocol.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.retry.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Retry properties.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.retry.backoff.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Backoff properties when a retry fails.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.retry.backoff.delay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of time to wait between retry attempts.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.retry.backoff.maxDelay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum permissible amount of time between retry attempts.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.retry.backoff.multiplier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Double</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.retry.maxAttempts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of attempts.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.retry.timeout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of time to wait until a timeout.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.proxy.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Common proxy properties.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.proxy.type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of the proxy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.proxy.hostname</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The host of the proxy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.proxy.port</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The port of the proxy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.proxy.authenticationType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Authentication type used against the proxy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.proxy.username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username used to authenticate with the proxy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.proxy.password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password used to authenticate with the proxy.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_azure_storage_queue_client_configuration_options"><a class="link" href="#_azure_storage_queue_client_configuration_options">Azure Storage Queue Client Configuration Options</a></h5>
+<div class="paragraph">
+<p>Below options are used to configure Azure Storage Queue SDK Client.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Properties</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.connection-string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage Queue Namespace connection string value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.accountName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage Queue account name.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.accountKey</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage Queue account key.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage Queue service endpoint.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.sasToken</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sas token credential</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.serviceVersion</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">QueueServiceVersion</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">QueueServiceVersion that is used when making API requests.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.messageEncoding</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Queue message encoding.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_basic_usage_3"><a class="link" href="#_basic_usage_3">Basic Usage</a></h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Send messages to Azure Storage Queue</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Fill the configuration options with credential information.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>For credentials as connection string, configure below properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      storage:
+        queue:
+          connection-string: [servicebus-connection-string]</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as MSI, configure below properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      credential:
+        managed-identity-client-id: [managed-identity-client-id]
+      profile:
+        tenant-id: [tenant-id]
+#     Uncomment below configurations if you want to enable auto creating resources.
+#        subscription-id: [subscription-id]
+#        cloud: Azure
+#      resource:
+#        region: [region]
 
+      storage:
+        queue:
+          namespace: [servicebus-namespace]</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as service principal, configure below properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      credential:
+        client-id: [client-id]
+        client-secret: [client-secret]
+      profile:
+        tenant-id: [tenant-id]
+#     Uncomment below configurations if you want to enable auto creating resources.
+#        subscription-id: [subscription-id]
+#        cloud: Azure
+#      resource:
+#        region: [region]
+
+      storage:
+        queue:
+          namespace: [servicebus-namespace]</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create <code>DefaultMessageHandler</code> with the bean of <code>StorageQueueOperation</code> to send messages to Storage Queue.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    private static final String STORAGE_QUEUE_NAME = "example";
+    private static final String OUTPUT_CHANNEL = "output";
+
+    @Bean
+    @ServiceActivator(inputChannel = OUTPUT_CHANNEL)
+    public MessageHandler messageSender(StorageQueueOperation storageQueueOperation) {
+        DefaultMessageHandler handler = new DefaultMessageHandler(STORAGE_QUEUE_NAME, storageQueueOperation);
+        handler.setSendCallback(new ListenableFutureCallback&lt;Void&gt;() {
+            @Override
+            public void onSuccess(Void result) {
+                LOGGER.info("Message was sent successfully.");
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                LOGGER.info("There was an error sending the message.");
+            }
+        });
+        return handler;
+    }</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a Message gateway binding with the message handler created in the last stop via a message channel</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    @Autowired
+    StorageQueueOutboundGateway storageQueueOutboundGateway;
+
+    @MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL)
+    public interface StorageQueueOutboundGateway {
+        void send(String text);
+    }</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Send messages using the gateway</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    this.storageQueueOutboundGateway.send(message);</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Receive messages from Azure Storage Queue</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Fill the configuration options with credential information.</p>
+</li>
+<li>
+<p>Create a bean of message channel as the input channel.</p>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    private static final String INPUT_CHANNEL = "input";
+
+    @Bean
+    public MessageChannel input() {
+        return new DirectChannel();
+    }</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create <code>StorageQueueMessageSource</code> with the bean of <code>StorageQueueOperation</code> to receive messages to Storage Queue.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    private static final String STORAGE_QUEUE_NAME = "example";
+
+    @Bean
+    @InboundChannelAdapter(channel = INPUT_CHANNEL, poller = @Poller(fixedDelay = "1000"))
+    public StorageQueueMessageSource storageQueueMessageSource(StorageQueueOperation storageQueueOperation) {
+        storageQueueOperation.setCheckpointMode(CheckpointMode.MANUAL);
+        storageQueueOperation.setVisibilityTimeoutInSeconds(10);
+
+        return new StorageQueueMessageSource(STORAGE_QUEUE_NAME, storageQueueOperation);
+    }</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a message receiver binding with StorageQueueMessageSource created in the last step via the message channel we created before.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    @ServiceActivator(inputChannel = INPUT_CHANNEL)
+    public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
+        String message = new String(payload);
+        LOGGER.info("New message received: '{}'", message);
+        checkpointer.success()
+            .doOnError(Throwable::printStackTrace)
+            .doOnSuccess(t -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
+            .subscribe();
+    }</pre>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_samples_3"><a class="link" href="#_samples_3">Samples</a></h4>
 <div class="paragraph">
-<p>Please refer to this <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/storage/azure-spring-integration-sample-storage-queue">sample project</a> illustrating how to use Storage Queue integration.</p>
+<p>Please refer to this <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/storage/spring-cloud-azure-starter-integration-storage-queue">sample project</a> illustrating how to use Storage Queue integration.</p>
 </div>
 </div>
 </div>

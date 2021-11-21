@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<style>
+<style>
 .hidden {
 	display: none;
 }
@@ -39,9 +39,9 @@
 	background-color: #7a2519;
 	color: #ffffff;
 }
-
-</style>
-<script type="text/javascript">
+
+</style>
+<script type="text/javascript">
 function addBlockSwitches() {
 	for (var primary of document.querySelectorAll('.primary')) {
 		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
@@ -155,8 +155,8 @@ window.onload = function() {
 	addBlockSwitches();
 	globalSwitch();
 };
-
-</script>
+
+</script>
 
 </head>
 <body class="book toc2 toc-left">
@@ -177,10 +177,17 @@ window.onload = function() {
 <h2 id="_spring_boot_support"><a class="link" href="#_spring_boot_support">Spring Boot Support</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Provides support for authentication and auto-configuration, provides starters for all Azure SDK, contains components:</p>
+<p>Spring Boot greatly simplifies the Spring Cloud Azure experience. Spring Cloud Azure Starters are a set of convenient dependency descriptors to include in your application. Our starters handle the object instantiation and configuration logic so you don’t have to. Every starter depends on the Spring Cloud Azure starter to provide critical bits of configuration, like the Azure Cloud environment and authentication information. You can configure these as properties in, for example, a properties file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.profile.tenant-id=[TENANT_ID]
+spring.cloud.azure.profile.cloud=[AZURE]
+spring.cloud.azure.credential.client-id=[CLIENT_ID]</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Spring Cloud Azure Starters are a set of convenient dependency descriptors to include in your application. It boosts your Spring Boot application development with Azure services. For example, if you want to get started using Spring and Azure Cosmos DB for data persistence, include the <code>spring-cloud-azure-starter-cosmos</code> dependency in your project.</p>
+<p>These properties are optional and, if not specified, Spring Boot will attempt to automatically find them for you. For details on how Spring Boot finds these properties, refer to the documentation.</p>
 </div>
 <div class="sect2">
 <h3 id="_production_ready_support"><a class="link" href="#_production_ready_support">Production Ready Support</a></h3>
@@ -193,8 +200,13 @@ window.onload = function() {
 <div class="paragraph">
 <p>This module extends the <code>Spring Boot Actuator</code> module and provides the actuating support for Azure services.</p>
 </div>
-<div class="paragraph">
-<p>spring-cloud-azure-starter-actuator</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-cloud-azure-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
 </div>
 </div>
 </div>

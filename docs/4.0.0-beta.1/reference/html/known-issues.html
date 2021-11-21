@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<style>
+<style>
 .hidden {
 	display: none;
 }
@@ -39,9 +39,9 @@
 	background-color: #7a2519;
 	color: #ffffff;
 }
-
-</style>
-<script type="text/javascript">
+
+</style>
+<script type="text/javascript">
 function addBlockSwitches() {
 	for (var primary of document.querySelectorAll('.primary')) {
 		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
@@ -155,8 +155,8 @@ window.onload = function() {
 	addBlockSwitches();
 	globalSwitch();
 };
-
-</script>
+
+</script>
 
 </head>
 <body class="book toc2 toc-left">
@@ -164,7 +164,11 @@ window.onload = function() {
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_known_issues">Known Issues</a></li>
+<li><a href="#_known_issues">Known Issues</a>
+<ul class="sectlevel2">
+<li><a href="#_error_logs_when_using_defaultazurecredential">Error logs when using DefaultAzureCredential</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -172,12 +176,11 @@ window.onload = function() {
 <div class="sect1">
 <h2 id="_known_issues"><a class="link" href="#_known_issues">Known Issues</a></h2>
 <div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>scary Identity error log</p>
-</li>
-</ol>
+<div class="sect2">
+<h3 id="_error_logs_when_using_defaultazurecredential"><a class="link" href="#_error_logs_when_using_defaultazurecredential">Error logs when using DefaultAzureCredential</a></h3>
+<div class="paragraph">
+<p>There could be some <code>ERROR</code> logs be printed out while the <code>DefaultAzureCredential</code> running the chain and trying to find the first available credential. It doesn&#8217;t mean the <code>DefaultAzureCredential</code> is broken or unavailable. Meanwhile, we&#8217;ll keep improving this logging experience.</p>
+</div>
 </div>
 </div>
 </div>
