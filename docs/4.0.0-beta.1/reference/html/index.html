@@ -802,7 +802,7 @@ There could be some <code>ERROR</code> logs be printed out while the <code>Defau
 <td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">credential.client-certificate-path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">client-certificate-path</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure.</p></td>
 </tr>
 <tr>
@@ -5149,13 +5149,15 @@ Please use this <code>sample</code> as a reference to learn more about how to us
 <col style="width: 50%;">
 <col style="width: 50%;">
 </colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Properties</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Properties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.kafka.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable the Azure Event Hubs Kafka support, defult to true.</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.connection-string</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Azure Event Hubs connection string. Should be provided when want to provide the connection string directly.</p></td>
@@ -5174,8 +5176,17 @@ Please use this <code>sample</code> as a reference to learn more about how to us
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix <code>spring.cloud.azure</code>. Please refer to link:index.html#authentication for more details.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix <code>spring.cloud.azure</code>. Please refer to link:index.html#authentication for more details.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -5298,8 +5309,17 @@ Please use this <code>sample</code> as a reference to learn more about how to us
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix <code>spring.cloud.azure</code>. Please refer to link:index.html#authentication for more details.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix <code>spring.cloud.azure</code>. Please refer to link:index.html#authentication for more details.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -5400,10 +5420,10 @@ Construct <code>TokenCredential</code> by using various credential information, 
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.profile</strong>.environment.active-directory-endpoint</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Azure Active Directory endpoint to connect to for authentication.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.profile</strong>.subscription</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.profile</strong>.subscription-id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Subscription id to use when connecting to Azure resources.</p></td>
 </tr>
 <tr>
