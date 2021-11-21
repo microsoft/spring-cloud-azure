@@ -65,8 +65,10 @@ of which the prefix is changed from *spring.cloud.azure.eventhubs.* to *spring.c
 |*spring.cloud.azure.eventhubs*.proxy.authenticationType | String | Authentication type used against the proxy.
 |*spring.cloud.azure.eventhubs*.proxy.username | String | Username used to authenticate with the proxy.
 |*spring.cloud.azure.eventhubs*.proxy.password | String | Password used to authenticate with the proxy.
-
+|===
 ===== Azure Event Hubs Client Configuration Options
+Below options are used to configure Azure Event Hubs SDK Client.
+
 |===
 |Properties | Type |Description
 
@@ -83,7 +85,7 @@ of which the prefix is changed from *spring.cloud.azure.eventhubs.* to *spring.c
 |*spring.cloud.azure.eventhubs*.processor.checkpointStore.serviceVersion | BlobServiceVersion | The versions of Azure Storage Blob supported by this client library.
 |*spring.cloud.azure.eventhubs*.processor.checkpointStore.blobName | String | Storage blob name.
 |*spring.cloud.azure.eventhubs*.processor.checkpointStore.containerName | String | Storage container name.
-
+|===
 
 ==== Basic Usage
 - Send messages to Azure Event Hubs
@@ -282,8 +284,10 @@ of which the prefix is changed from *spring.cloud.azure.servicebus.* to *spring.
 |*spring.cloud.azure.servicebus*.proxy.authenticationType | String | Authentication type used against the proxy.
 |*spring.cloud.azure.servicebus*.proxy.username | String | Username used to authenticate with the proxy.
 |*spring.cloud.azure.servicebus*.proxy.password | String | Password used to authenticate with the proxy.
+|===
 
 ===== Azure Service Bus Client Configuration Options
+Below options are used to configure Azure Service Bus SDK Client.
 |===
 |Properties | Type |Description
 
@@ -293,7 +297,7 @@ of which the prefix is changed from *spring.cloud.azure.servicebus.* to *spring.
 |*spring.cloud.azure.servicebus*.entityName | String | Entity name of Azure Service Bus queue or topic.
 |*spring.cloud.azure.servicebus*.entityType | ServiceBusEntityType | Entity type of Azure Service Bus queue or topic.
 |*spring.cloud.azure.servicebus*.crossEntityTransactions | Boolean | Enable cross entity transaction on the connection to Service bus.
-
+|===
 
 ==== Basic Usage
 - Send messages to Azure Service Bus
@@ -510,8 +514,6 @@ ____
 *NOTE:* When the `ServiceBusMessageHeaders.SESSION_ID` is set in the message headers, and a different `ServiceBusMessageHeaders.PARTITION_KEY` (or `AzureHeaders.PARTITION_KEY`) header is also set,
 the value of the session id will eventually be used to overwrite the value of the partition key.
 
-____
-
 === Spring Integration with Azure Storage Queue
 
 ==== Dependency Setup
@@ -566,8 +568,10 @@ of which the prefix is changed from *spring.cloud.azure.storage.queue.* to *spri
 |*spring.cloud.azure.storage.queue*.proxy.authenticationType | String | Authentication type used against the proxy.
 |*spring.cloud.azure.storage.queue*.proxy.username | String | Username used to authenticate with the proxy.
 |*spring.cloud.azure.storage.queue*.proxy.password | String | Password used to authenticate with the proxy.
+|===
 
 ===== Azure Storage Queue Client Configuration Options
+Below options are used to configure Azure Storage Queue SDK Client.
 |===
 |Properties | Type |Description
 
@@ -578,7 +582,8 @@ of which the prefix is changed from *spring.cloud.azure.storage.queue.* to *spri
 |*spring.cloud.azure.storage.queue*.sasToken | String | Sas token credential
 |*spring.cloud.azure.storage.queue*.serviceVersion | QueueServiceVersion | QueueServiceVersion that is used when making API requests.
 |*spring.cloud.azure.storage.queue*.messageEncoding | String | Queue message encoding.
-|
+|===
+
 ==== Basic Usage
 - Send messages to Azure Storage Queue
 1. Fill the configuration options with credential information.
@@ -720,6 +725,7 @@ spring:
             .subscribe();
     }
 ----
+
 ==== Samples
 
 Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/storage/spring-cloud-azure-starter-integration-storage-queue[sample project] illustrating how to use Storage Queue integration.
