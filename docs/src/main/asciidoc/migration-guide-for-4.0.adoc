@@ -30,10 +30,7 @@ details are available in the https://github.com/Azure/azure-sdk-for-java/wiki/Sp
 The *Spring Cloud Azure 4.0* provides the shared experience across libraries integrating with different Spring
 projects, for example Spring Boot, Spring Integration, Spring Cloud Stream, etc. The shared experience includes:
 
-* *[placeholder]* An official name for the project?
-
 * A unified BOM to include all Spring Cloud Azure 4.0 libraries.
-
 * A consistent naming convention for artifacts.
 * A unified way to configure credential, proxy, retry, cloud environment, and transport layer settings.
 * Supporting all the authenticating methods an Azure Service or Azure Service SDK supports.

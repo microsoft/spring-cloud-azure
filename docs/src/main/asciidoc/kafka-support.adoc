@@ -1,8 +1,20 @@
 == Kafka Support
 
-Connect to Azure Event Hubs using Spring Kafka libraries.
+Connect to Azure Event Hubs using Spring Kafka libraries. There're two approaches to connect to Azure Event Hubs for Kafka, the first one is to provide the Azure Event Hubs connection string directly, the other is to use Azure Resource Manager to retrieve the connection string.
 
 === Dependency Setup
+
+Adding below dependencies if you want to migrate your Apache Kafka application to use Azure Event Hubs for Kafka.
+
+[source,xml]
+----
+<dependency>
+  <groupId>com.azure.spring</groupId>
+  <artifactId>spring-cloud-azure-starter</artifactId>
+</dependency>
+----
+
+If you want to retrieve the connection string using Azure Resource Manager, please also add below dependency
 
 [source,xml]
 ----
@@ -10,40 +22,47 @@ Connect to Azure Event Hubs using Spring Kafka libraries.
   <groupId>com.azure.spring</groupId>
   <artifactId>spring-cloud-azure-resourcemanager</artifactId>
 </dependency>
-<dependency>
-  <groupId>com.azure.spring</groupId>
-  <artifactId>spring-cloud-azure-starter</artifactId>
-</dependency>
-<dependency>
-  <groupId>org.springframework.cloud</groupId>
-  <artifactId>spring-cloud-starter-stream-kafka</artifactId>
-</dependency>
 ----
+
 
 === Configuration
 
-This Spring Cloud Azure Starter provides the following properties:
+Below properties could be configured when using Kafka support:
 
 |===
 |Properties |Description
 
-|*spring.cloud.azure.profile*.tenant-id |Tenant id for Azure resources.
-|*spring.cloud.azure.profile*.subscription-id |Subscription id to use when connecting to Azure resources.
-|*spring.cloud.azure.credential*.client-id |Client id to use when performing service principal authentication with Azure.
-|*spring.cloud.azure.credential*.client-secret |Subscription id to use when connecting to Azure resources.
-|*spring.cloud.azure.credential*.managed-identity-client-id |Client id to use when using managed identity to authenticate with Azure.
-|*spring.cloud.azure.credential*.password |Password to use when performing username/password authentication with Azure.
-|*spring.cloud.azure.credential*.username |Username to use when performing username/password authentication with Azure.
-|*spring.cloud.azure.credential*.client-certificate-password |Password of the certificate file.
-|*spring.cloud.azure.credential*.client-certificate-path |Path of a PEM certificate file to use when performing service principal authentication with Azure.
-|*spring.cloud.azure.eventhubs*.namespace |Azure Event Hubs namespace.
-|*spring.cloud.azure.eventhubs*.resource.resource-group |The resource group of Azure Event Hubs namespace.
+|*spring.cloud.azure.eventhubs*.connection-string |Azure Event Hubs connection string. Should be provided when want to provide the connection string directly.
+|*spring.cloud.azure.eventhubs*.namespace |Azure Event Hubs namespace. Should be provided when want to retrieve the connection information through Azure Resource Manager.
+|*spring.cloud.azure.eventhubs*.resource.resource-group |The resource group of Azure Event Hubs namespace. Should be provided when want to retrieve the connection information through Azure Resource Manager.
+|*spring.cloud.azure*.profile.subscription-id| The subscription id. Should be provided when want to retrieve the connection information through Azure Resource Manager.|
 |===
 
+Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix `spring.cloud.azure`. Please refer to link:index.html#authentication for more details.
 
 === Basic Usage
 
-Spring Cloud Azure provides multiple methods to authenticate requests inside Azure Service. The following configuration is commonly used for service principal authentication:
+
+==== Use Event Hubs connection string
+
+The simplest way to connect to Event Hubs for Kafka is with the connection string. 
+
+Add below properties and you are good to go.
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      eventhubs:
+        connection-string: ${AZURE_EVENTHUBS_CONNECTION_STRING}
+----
+
+==== Use Azure Resource Manager to retrieve connection string 
+
+If you don't want to configure connection string in your application, it's also possible to use Azure Resource Manager to retrieve the connection string. And you could use credentials stored in Azure CLI or other local development tool, like Visual Studio Code or Intellij IDEA to authenticate with Azure Resource Manager. Or Managed Identity if your application is deployed to Azure Cloud. Just make sure the principal have sufficient permission to read resource metadata.
+
+Add below properties and you are good to go.
 
 [source,yaml]
 ----
@@ -51,136 +70,15 @@ spring:
   cloud:
     azure:
       profile:
-        tenant-id: ${AZURE_TENANT_ID}
         subscription-id: ${AZURE_SUBSCRIPTION_ID}
-      credential:
-        client-id: ${AZURE_CLIENT_ID}
-        client-secret: ${AZURE_CLIENT_SECRET}
+      eventhubs:
+        namespace: ${AZURE_EVENTHUBS_NAMESPACE}
+        resource:
+          resource-group: ${AZURE_EVENTHUBS_RESOURCE_GROUP}
 ----
 
 === Samples
 
-The following code sample demonstrates how to use the Spring Cloud Azure Starter and Spring Cloud Starter Stream Kafka for Azure Event Hub. The sample app exposes a RESTful API to receive string message. Then message is sent through Azure Event Hub to a bean `consumer` which simply logs the message.
-
-. Create a service principal for use in by your app. Please follow
-https://github.com/Azure-Samples/azure-spring-boot-samples/blob/main/create-sp-using-azure-cli.md[create service principal from Azure CLI].
-The credential is not required since Spring Cloud Azure support https://docs.microsoft.com/en-us/azure/developer/java/sdk/identity[Azure Identity],
-you only need to log in with az cli / vs code or Intellij Azure Toolkit, then credential information will be left out of properties
-
-. Create https://docs.microsoft.com/azure/event-hubs/[Azure Event Hubs].
-
-. Update
-https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka/src/main/resources/application.yaml[application.yaml] file
-
-[source,yaml]
-----
-spring:
-  cloud:
-    azure:
-      profile:
-        tenant-id: ${AZURE_TENANT_ID}
-        subscription-id: ${AZURE_SUBSCRIPTION_ID}
-# This is not required since Spring Cloud Azure support https://docs.microsoft.com/en-us/azure/developer/java/sdk/identity
-# you only need to login with az cli / vs code or Intellij Azure Toolkit
-# then credential information will be left out of properties
-#      credential:
-#        client-id: ${SPRING_CLIENT_ID}
-#        client-secret: ${SPRING_CLIENT_SECRET}
-      eventhubs:
-        namespace: ${EVENTHUB_NAMESPACE_NAME_SAMPLE_EVENTHUBS_KAFKA}
-        resource:
-          resource-group: ${SPRING_RESOURCE_GROUP}
-    stream:
-      function:
-        definition: consume;supply
-      bindings:
-        consume-in-0:
-          destination: sample-eventhubs-kafka
-          group: $Default
-        supply-out-0:
-          destination: sample-eventhubs-kafka
-----
-
-. Use this controller code to send message
-https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka/src/main/java/com/azure/spring/sample/eventhubs/kafka/SourceExample.java[SourceExample.java] file
-
-[source,java]
-----
-@RestController
-public class SourceExample {
-
-    @Autowired
-    private Sinks.Many<Message<String>> many;
-
-    @PostMapping("/messages")
-    public String sendMessage(@RequestParam String message) {
-        many.emitNext(new GenericMessage<>(message), Sinks.EmitFailureHandler.FAIL_FAST);
-        return message;
-    }
-}
-----
-
-. Spring boot start class and function bean definition
-https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka/src/main/java/com/azure/spring/sample/eventhubs/kafka/EventHubKafkaBinderApplication.java[EventHubKafkaBinderApplication.java] file
-
-====
-[source,java]
-----
-@SpringBootApplication
-public class EventHubKafkaBinderApplication {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(EventHubKafkaBinderApplication.class);
-
-    public static void main(String[] args) {
-        SpringApplication.run(EventHubKafkaBinderApplication.class, args);
-    }
-
-    @Bean
-    public Sinks.Many<Message<String>> many() {
-        return Sinks.many().unicast().onBackpressureBuffer();
-    }
-
-    @Bean
-    public Supplier<Flux<Message<String>>> supply(Sinks.Many<Message<String>> many) {
-        return () -> many.asFlux()
-                         .doOnNext(m -> LOGGER.info("Manually sending message {}", m))
-                         .doOnError(t -> LOGGER.error("Error encountered", t));
-    }
-
-    @Bean
-    public Consumer<Message<String>> consume() {
-        return message -> LOGGER.info("New message received: '{}'", message.getPayload());
-    }
-}
-----
-====
-
-. Run the `mvn spring-boot:run` in the root of the code sample to get the app running.
-
-. Send a POST request
-
-----
-$ curl -X POST http://localhost:8080/messages?message=hello
-----
-
-. Verify in your app’s logs that a similar message was posted:
-
-New message received: hello
-
-. Delete the resources on https://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
-
-=== Troubleshooting
-
-Meet with `Creating topics with default partitions/replication factor are only supported in CreateTopicRequest version 4+` error.
-
-====
-[source,text]
-----
-o.s.c.s.b.k.p.KafkaTopicProvisioner      : Failed to create topics
-org.apache.kafka.common.errors.UnsupportedVersionException: Creating topics with default partitions/replication factor are only supported in CreateTopicRequest version 4+. The following topics need values for partitions and replicas
-----
-====
-
-When this error is found, add this configuration item spring.cloud.stream.kafka.binder.replicationFactor, with the value set to at least 1. For more information, see https://docs.spring.io/spring-cloud-stream-binder-kafka/docs/current/reference/html/spring-cloud-stream-binder-kafka.html[Spring Cloud Stream Kafka Binder Reference Guide].
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka[samples for Azure Event Hus for Kafka] for more details.
 
 
