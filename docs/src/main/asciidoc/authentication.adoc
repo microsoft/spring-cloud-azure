@@ -6,7 +6,7 @@ The `DefaultAzureCredential` is appropriate for most scenarios where the applica
 
 NOTE: DefaultAzureCredential is intended to simplify getting started with the SDK by handling common scenarios with reasonable default behaviors. Developers who want more control or whose scenario isn't served by the default settings should use other credential types.
 
-The `DefaultAzureCredential`` will attempt to authenticate via the following mechanisms in order.
+The `DefaultAzureCredential` will attempt to authenticate via the following mechanisms in order.
 
 image::default-azure-credential.png[DefaultAzureCredential]
 
