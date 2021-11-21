@@ -180,10 +180,13 @@ window.onload = function() {
 <h2 id="_redis_support"><a class="link" href="#_redis_support">Redis Support</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Connect to Azure Cache for Redis using Spring Redis libraries.</p>
+<p>Connect to Azure Cache for Redis using Spring Redis libraries. With adding <code>spring-cloud-azure-starter</code> and <code>spring-cloud-azure-resourcemanager</code> to your application, it&#8217;s possible to read the Azure Cache for Redis connection information through Azure Resource Manager and auto-configure the Redis properties.</p>
 </div>
 <div class="sect2">
 <h3 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h3>
+<div class="paragraph">
+<p>Adding below dependencies if you want to use the Spring Cloud Azure Redis support to your Spring Boot application using Redis.</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -193,10 +196,6 @@ window.onload = function() {
 &lt;dependency&gt;
   &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-azure-resourcemanager&lt;/artifactId&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-  &lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -204,168 +203,73 @@ window.onload = function() {
 <div class="sect2">
 <h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
 <div class="paragraph">
-<p>This Spring Cloud Azure Starter provides the following properties:</p>
+<p>Below properties could be configured when using Redis support:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Properties</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.profile</strong>.tenant-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tenant id for Azure resources.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Properties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default Value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.profile</strong>.subscription-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Subscription id to use when connecting to Azure resources.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when performing service principal authentication with Azure.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-secret</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Subscription id to use when connecting to Azure resources.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.managed-identity-client-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when using managed identity to authenticate with Azure.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Password to use when performing username/password authentication with Azure.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.username</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Username to use when performing username/password authentication with Azure.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-certificate-password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-certificate-path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path of a PEM certificate file to use when performing service principal authentication with Azure.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.redis</strong>.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Cache for Redis instance name.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.redis</strong>.name</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Azure Cache for Redis instance name.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.redis</strong>.resource.resource-group</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The resource group of Azure Cache for Redis.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure</strong>.profile.subscription-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The subscription id.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix <code>spring.cloud.azure</code>. Please refer to link:index.html#authentication for more details.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_basic_usage"><a class="link" href="#_basic_usage">Basic Usage</a></h3>
 <div class="paragraph">
-<p>Spring Cloud Azure provides multiple methods to authenticate requests inside Azure Service. The following configuration is commonly used for service principal authentication:</p>
+<p>Add below properties and you are good to go.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
     azure:
-      profile:
-        tenant-id: ${SPRING_TENANT_ID}
-        subscription-id: ${SPRING_SUBSCRIPTION_ID}
-      credential:
-        client-id: ${SPRING_CLIENT_ID}
-        client-secret: ${SPRING_CLIENT_SECRET}</code></pre>
+      redis:
+        name: ${AZURE_CACHE_REDIS_NAME}
+        resource:
+          resource-group: ${AZURE_CACHE_REDIS_RESOURCE_GROUP}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_samples"><a class="link" href="#_samples">Samples</a></h3>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Update
-<a href="https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0/cache/spring-cloud-azure-starter/spring-cloud-azure-sample-cache/src/main/resources/application.yaml">application.yaml</a> file to specify
-resource group, service principal, and cache instance name:</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
-  cloud:
-    azure:
-      credential:
-        client-id: [service-principal-id]
-        client-secret: [service-principal-secret]
-      profile:
-        tenant-id: [tenant-id]
-        subscription-id: [subscription-id]
-      redis:
-        name: [azure-cache-for-redis-instance-name]
-        resource:
-          resource-group: [resource-group]</code></pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Use this controller code to cache key
-<a href="https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0/cache/spring-cloud-azure-starter/spring-cloud-azure-sample-cache/src/main/java/com/azure/spring/sample/cache/WebController.java">WebController.java</a> file</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@RestController
-public class WebController {
-
-    @GetMapping("/{name}")
-    @Cacheable("azureCache")
-    public String getValue(@PathVariable String name) {
-        return "Hello " + name;
-    }
-}</code></pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Run the application using the <code>$ mvn spring-boot:run</code> command.</p>
-</li>
-<li>
-<p>Send a GET request to check, where <code>name</code> could be any string:</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>$ curl -XGET http://localhost:8080/{name}</pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Confirm from Azure Redis Cache console in Azure Portal</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>$ keys *</pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Delete the resources on <a href="https://ms.portal.azure.com/">Azure Portal</a> to avoid unexpected charges.</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/cache">samples for Azure Cache for Redis</a> for more details.</p>
 </div>
 </div>
 </div>

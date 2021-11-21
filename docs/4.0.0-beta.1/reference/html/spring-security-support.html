@@ -216,20 +216,20 @@ window.onload = function() {
 <td class="tableblock halign-left valign-top"><p class="tableblock">A map configure the resource APIs the application is going to visit. Each item corresponding to one resource API the application is going to visit. In Spring code, each item corresponding to one OAuth2AuthorizedClient object</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.{client-name}.scopes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.${CLIENT_NAME}.scopes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">API permissions of a resource server that the application is going to acquire.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.{client-name}.on-demand</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.${CLIENT_NAME}.on-demand</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">This is used for incremental consent. The default value is false. If it&#8217;s true, it&#8217;s not consent when user login, when application needs the additional permission, incremental consent is performed with one OAuth2 authorization code flow.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.{client-name}.authorization-grant-type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.${CLIENT_NAME}.authorization-grant-type</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Type of authorization client. Supported types are <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">authorization_code</a> (default type for webapp), <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow">on_behalf_of</a> (default type for resource-server), <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow">client_credentials</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.application-type</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Refer to <a href="property-example-1&.html#8212;&#8203;application-type">Application type</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Refer to <a href="#property-example-1-application-type">Application type</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.base-uri</p></td>
@@ -281,7 +281,7 @@ window.onload = function() {
 <p>Here are some examples about how to use these properties:</p>
 </div>
 <div class="sect4">
-<h5 id="_property_example_1_application_type"><a class="link" href="#_property_example_1_application_type">Property example 1: Application type</a></h5>
+<h5 id="property-example-1-application-type"><a class="link" href="#property-example-1-application-type">Property example 1: Application type</a></h5>
 <div class="paragraph">
 <p>This property(<code>spring.cloud.azure.active-directory.application-type</code>) is optional, its value can be inferred by dependencies, only <code>web_application_and_resource_server</code> must be configured manually: <code>spring.cloud.azure.active-directory.application-type=web_application_and_resource_server</code>.</p>
 </div>
@@ -331,6 +331,16 @@ window.onload = function() {
 </li>
 </ul>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      active-directory:
+        base-uri: https://login.partner.microsoftonline.cn
+        graph-base-uri: https://microsoftgraph.chinacloudapi.cn</pre>
+</div>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_property_example_3_use_group_name_or_group_id_to_protect_some_method_in_web_application"><a class="link" href="#_property_example_3_use_group_name_or_group_id_to_protect_some_method_in_web_application">Property example 3: Use <code>group name</code> or <code>group id</code> to protect some method in web application.</a></h5>
@@ -345,14 +355,14 @@ window.onload = function() {
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
-azure:
-  active-directory:
-    user-group:
-      allowed-group-names: group1_name_1, group2_name_2
-      # 1. If allowed-group-ids == all, then all group id will take effect.
-      # 2. If "all" is used, we should not configure other group ids.
-      # 3. "all" is only supported for allowed-group-ids, not supported for allowed-group-names.
-      allowed-group-ids: group_id_1, group_id_2</code></pre>
+    azure:
+      active-directory:
+        user-group:
+          allowed-group-names: group1_name_1, group2_name_2
+          # 1. If allowed-group-ids == all, then all group id will take effect.
+          # 2. If "all" is used, we should not configure other group ids.
+          # 3. "all" is only supported for allowed-group-ids, not supported for allowed-group-names.
+          allowed-group-ids: group_id_1, group_id_2</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -432,14 +442,14 @@ public class RoleController {
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
-azure:
-  active-directory:
-    authorization-clients:
-      graph:
-        scopes: https://graph.microsoft.com/Analytics.Read, email
-      arm: # client registration id
-        on-demand: true  # means incremental consent
-        scopes: https://management.core.windows.net/user_impersonation</code></pre>
+    azure:
+      active-directory:
+        authorization-clients:
+          graph:
+            scopes: https://graph.microsoft.com/Analytics.Read, email
+          arm: # client registration id
+            on-demand: true  # means incremental consent
+            scopes: https://management.core.windows.net/user_impersonation</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -473,13 +483,13 @@ consented.</p>
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
-azure:
-  active-directory:
-    authorization-clients:
-      webapiC:                          # When authorization-grant-type is null, on behalf of flow is used by default
-        authorization-grant-type: client_credentials
-        scopes:
-            - &lt;Web-API-C-app-id-url&gt;/.default</code></pre>
+    azure:
+      active-directory:
+        authorization-clients:
+          webapiC:                          # When authorization-grant-type is null, on behalf of flow is used by default
+            authorization-grant-type: client_credentials
+            scopes:
+                - &lt;Web-API-C-app-id-url&gt;/.default</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -496,7 +506,7 @@ azure:
 <div class="sect4">
 <h5 id="_accessing_a_web_application"><a class="link" href="#_accessing_a_web_application">Accessing a web application</a></h5>
 <div class="paragraph">
-<p>This scenario uses the <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">The OAuth 2.0 authorization code grant</a> flow to login in a user with a Microsoft account.</p>
+<p>This scenario uses <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">The OAuth 2.0 authorization code grant</a> flow to log in a user with a Microsoft account.</p>
 </div>
 <div class="paragraph">
 <p><strong>System diagram</strong>:</p>
@@ -507,7 +517,7 @@ azure:
 <div class="ulist">
 <ul>
 <li>
-<p>Step 1: Make sure <code>redirect URI</code> has been set to <code>{application-base-uri}/login/oauth2/code/</code>, for
+<p>Step 1: Make sure <code>redirect URI</code> has been set to <code>${APLICATION_BASE_URI}/login/oauth2/code/</code>, for
 example <code><a href="http://localhost:8080/login/oauth2/code/" class="bare">http://localhost:8080/login/oauth2/code/</a></code>.</p>
 </li>
 </ul>
@@ -560,11 +570,11 @@ The tailing <code>/</code> cannot be omitted.
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
-azure:
-  active-directory:
-    tenant-id: xxxxxx-your-tenant-id-xxxxxx
-    client-id: xxxxxx-your-client-id-xxxxxx
-    client-secret: xxxxxx-your-client-secret-xxxxxx</code></pre>
+    azure:
+      active-directory:
+        tenant-id: ${TENANT_NAME}
+        client-id: ${CLIENT_ID}
+        client-secret: ${CLIENT_SECRET}</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -621,14 +631,14 @@ azure:
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
-azure:
-  active-directory:
-    tenant-id: xxxxxx-your-tenant-id-xxxxxx
-    client-id: xxxxxx-your-client-id-xxxxxx
-    client-secret: xxxxxx-your-client-secret-xxxxxx
-    authorization-clients:
-      graph:
-        scopes: https://graph.microsoft.com/Analytics.Read, email</code></pre>
+    azure:
+      active-directory:
+        tenant-id: ${TENANT_ID}
+        client-id: ${CLIENT_ID}
+        client-secret: ${CLIENT_SECRET}
+        authorization-clients:
+          graph:
+            scopes: https://graph.microsoft.com/Analytics.Read, email</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -749,16 +759,16 @@ azure:
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
-azure:
-  active-directory:
-    tenant-id: &lt;Tenant-id-registered-by-application&gt;
-    client-id: &lt;Web-API-A-client-id&gt;
-    client-secret: &lt;Web-API-A-client-secret&gt;
-    app-id-uri: &lt;Web-API-A-app-id-url&gt;
-    authorization-clients:
-      graph:
-        scopes:
-          - https://graph.microsoft.com/User.Read</code></pre>
+    azure:
+      active-directory:
+        tenant-id: &lt;Tenant-id-registered-by-application&gt;
+        client-id: &lt;Web-API-A-client-id&gt;
+        client-secret: &lt;Web-API-A-client-secret&gt;
+        app-id-uri: &lt;Web-API-A-app-id-url&gt;
+        authorization-clients:
+          graph:
+            scopes:
+              - https://graph.microsoft.com/User.Read</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -893,7 +903,7 @@ public class AADWebApplicationAndResourceServerConfig {
 <div class="sect3">
 <h4 id="_samples"><a class="link" href="#_samples">Samples</a></h4>
 <div class="paragraph">
-<p>(todo: @chenrujun Add link here.)</p>
+<p><a href="https://github.com/Azure-Samples/azure-spring-boot-samples">Link to sample repo</a></p>
 </div>
 </div>
 </div>
@@ -964,7 +974,7 @@ public class AADWebApplicationAndResourceServerConfig {
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.azure.active-directory.b2c.user-name-attribute-name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The the attribute name of the user name.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The attribute name of the username.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1000,7 +1010,7 @@ accept or deny access after validating access_token obtained from Azure AD. We w
 <div class="sect4">
 <h5 id="_accessing_a_web_application_2"><a class="link" href="#_accessing_a_web_application_2">Accessing a web application</a></h5>
 <div class="paragraph">
-<p>This scenario uses the <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">The OAuth 2.0 authorization code grant</a> flow to login in a user with your Azure AD B2C user.</p>
+<p>This scenario uses <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">The OAuth 2.0 authorization code grant</a> flow to log in a user with your Azure AD B2C user.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -1009,10 +1019,10 @@ accept or deny access after validating access_token obtained from Azure AD. We w
 </li>
 <li>
 <p>Specify your application <strong>Name</strong>, we call it <code>webapp</code>, add <code><a href="http://localhost:8080/login/oauth2/code/" class="bare">http://localhost:8080/login/oauth2/code/</a></code> for the <strong>Reply URL</strong>, record the
-<strong>Application ID</strong> as your <code>${your-webapp-client-id}</code> and then click <strong>Save</strong>.</p>
+<strong>Application ID</strong> as your <code>${WEB_APP_CLIENT_ID}</code> and then click <strong>Save</strong>.</p>
 </li>
 <li>
-<p>Select <strong>Keys</strong> from your application, click <strong>Generate key</strong> to generate <code>${your-webapp-client-secret}</code> and then <strong>Save</strong>.</p>
+<p>Select <strong>Keys</strong> from your application, click <strong>Generate key</strong> to generate <code>${WEB_APP_CLIENT_SECRET}</code> and then <strong>Save</strong>.</p>
 </li>
 <li>
 <p>Select <strong>User flows</strong> on your left, and then Click <strong>New user flow</strong>.</p>
@@ -1069,23 +1079,23 @@ select <strong>Delegated permissions</strong>, check <strong>offline_access</str
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>spring:
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
-   azure:
-     active-directory:
-       b2c:
-         authenticate-additional-parameters:
-           domain_hint: xxxxxxxxx         # optional
-           login_hint: xxxxxxxxx          # optional
-           prompt: [login,none,consent]   # optional
-         base-uri: ${your-tenant-authorization-server-base-uri}
-         client-id: ${your-webapp-client-id}
-         client-secret: ${your-webapp-client-secret}
-         login-flow: ${your-login-user-flow-key}               # default to sign-up-or-sign-in, will look up the user-flows map with provided key.
-         logout-success-url: ${you-logout-success-url}
-         user-flows:
-           ${your-user-flow-key}: ${your-user-flow-name-defined-on-azure-portal}
-         user-name-attribute-name: ${your-user-name-attribute-name}</pre>
+    azure:
+      active-directory:
+        b2c:
+          authenticate-additional-parameters:
+            domain_hint: xxxxxxxxx         # optional
+            login_hint: xxxxxxxxx          # optional
+            prompt: [login,none,consent]   # optional
+          base-uri: ${BASE_URI}
+          client-id: ${WEBAPP_CLIENT_ID}
+          client-secret: ${WEBAPP_CLIENT_SECRET}
+          login-flow: ${LOGIN_USER_FLOW_KEY}               # default to sign-up-or-sign-in, will look up the user-flows map with provided key.
+          logout-success-url: ${LOGOUT_SUCCESS_URL}
+          user-flows:
+            ${YOUR_USER_FLOW_KEY}: ${USER_FLOW_NAME}
+          user-name-attribute-name: ${USER_NAME_ATTRIBUTE_NAME}</code></pre>
 </div>
 </div>
 <div class="olist arabic">
@@ -1125,7 +1135,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 </div>
 <div class="paragraph">
-<p>Copy the <em>home.html</em> from <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-oidc/src/main/resources/templates">Azure AD B2C Spring Boot Sample</a>, and replace the <code>${your-profile-edit-user-flow}</code> and <code>${your-password-reset-user-flow}</code> with your user flow name respectively that completed earlier.</p>
+<p>Copy the <em>home.html</em> from <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-oidc/src/main/resources/templates">Azure AD B2C Spring Boot Sample</a>, and replace the <code>${PROFILE_EDIT_USER_FLOW}</code> and <code>${PASSWORD_RESET_USER_FLOW}</code> with your user flow name respectively that completed earlier.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -1149,18 +1159,18 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 <p>Select <strong>Azure AD B2C</strong> from the portal menu, click <strong>Applications</strong>, and then click <strong>Add</strong>.</p>
 </li>
 <li>
-<p>Specify your application <strong>Name</strong>, we call it <code>webApiA</code>, record the <strong>Application ID</strong> as your <code>${your-web-api-a-client-id}</code> and then click <strong>Save</strong>.</p>
+<p>Specify your application <strong>Name</strong>, we call it <code>webApiA</code>, record the <strong>Application ID</strong> as your <code>${WEB_API_A_CLIENT_ID}</code> and then click <strong>Save</strong>.</p>
 </li>
 <li>
-<p>Select <strong>Keys</strong> from your application, click <strong>Generate key</strong> to generate <code>${your-web-api-a-client-secret}</code> and then <strong>Save</strong>.</p>
+<p>Select <strong>Keys</strong> from your application, click <strong>Generate key</strong> to generate <code>${WEB_API_A_CLIENT_SECRET}</code> and then <strong>Save</strong>.</p>
 </li>
 <li>
-<p>Select <strong>Expose an API</strong> on your left, and then Click the <strong>Set</strong> link, specify your resource app id url suffix, such as <em>web-api-a</em>,
-record the <strong>Application ID URI</strong> as your <code>${your-web-api-a-app-id-url}</code>, then <strong>Save</strong>.</p>
+<p>Select <strong>Expose an API</strong> on your left, and then Click the <strong>Set</strong> link,
+record the <strong>Application ID URI</strong> as your <code>${WEB_API_A_APP_ID_URL}</code>, then <strong>Save</strong>.</p>
 </li>
 <li>
 <p>Select <strong>Manifest</strong> on your left, and then paste the below json segment into <code>appRoles</code> array,
-record the <strong>Application ID URI</strong> as your <code>${your-web-api-a-app-id-url}</code>, record the value of the app role as your <code>${your-web-api-a-role-value}</code>, then <strong>save</strong>.</p>
+record the <strong>Application ID URI</strong> as your <code>${WEB_API_A_APP_ID_URL}</code>, record the value of the app role as your <code>${WEB_API_A_ROLE_VALUE}</code>, then <strong>save</strong>.</p>
 </li>
 </ol>
 </div>
@@ -1215,15 +1225,15 @@ select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleSc
 <div class="content">
 <pre>spring:
   cloud:
-   azure:
-     active-directory:
-       b2c:
-         base-uri: ${your-base-uri}             # Such as: https://xxxxb2c.b2clogin.com
-         tenant-id: ${your-tenant-id}
-         authorization-clients:
-           ${your-resource-server-a-name}:
-             authorization-grant-type: client_credentials
-             scopes: ${your-web-api-a-app-id-url}/.default</pre>
+    azure:
+      active-directory:
+        b2c:
+          base-uri: ${BASE_URI}             # Such as: https://xxxxb2c.b2clogin.com
+          tenant-id: ${TENANT_ID}
+          authorization-clients:
+            ${RESOURCE_SERVER_A_NAME}:
+              authorization-grant-type: client_credentials
+              scopes: ${WEB_API_A_APP_ID_URL}/.default</pre>
 </div>
 </div>
 <div class="olist arabic">
@@ -1311,13 +1321,13 @@ select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleSc
 <div class="content">
 <pre>spring:
   cloud:
-   azure:
-     active-directory:
-       b2c:
-         base-uri: ${your-base-uri}             # Such as: https://xxxxb2c.b2clogin.com
-         tenant-id: ${your-tenant-id}
-         app-id-uri: ${your-app-id-uri}         # If you are using v1.0 token, please configure app-id-uri for `aud` verification
-         client-id: ${your-client-id}           # If you are using v2.0 token, please configure client-id for `aud` verification</pre>
+    azure:
+      active-directory:
+        b2c:
+          base-uri: ${BASE_URI}             # Such as: https://xxxxb2c.b2clogin.com
+          tenant-id: ${TENANT_ID}
+          app-id-uri: ${APP_ID_URI}         # If you are using v1.0 token, please configure app-id-uri for `aud` verification
+          client-id: ${CLIENT_ID}           # If you are using v2.0 token, please configure client-id for `aud` verification</pre>
 </div>
 </div>
 <div class="olist arabic">
@@ -1423,14 +1433,14 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 <div class="content">
 <pre>spring:
   cloud:
-   azure:
-     active-directory:
-       b2c:
-         client-secret: ${your-web-api-a-client-secret}
-         authorization-clients:
-           ${your-resource-server-b-name}:
-             authorization-grant-type: client_credentials
-             scopes: ${your-web-api-b-app-id-url}/.default</pre>
+    azure:
+      active-directory:
+        b2c:
+          client-secret: ${WEB_API_A_CLIENT_SECRET}
+          authorization-clients:
+            ${RESOURCE_SERVER_B_NAME}:
+              authorization-grant-type: client_credentials
+              scopes: ${WEB_API_B_APP_ID_URL}/.default</pre>
 </div>
 </div>
 <div class="olist arabic">
@@ -1481,17 +1491,8 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 <div class="sect3">
 <h4 id="_samples_2"><a class="link" href="#_samples_2">Samples</a></h4>
-<div class="sect4">
-<h5 id="_accessing_a_web_application_3"><a class="link" href="#_accessing_a_web_application_3">Accessing a web application</a></h5>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-oidc">azure-spring-boot-sample-active-directory-b2c-oidc</a>. (todo: @chenrujun. update this link)</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_accessing_a_resource_server_3"><a class="link" href="#_accessing_a_resource_server_3">Accessing a resource server</a></h5>
-<div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-resource-server">azure-spring-boot-sample-active-directory-b2c-resource-server</a>.</p>
-</div>
+<p><a href="https://github.com/Azure-Samples/azure-spring-boot-samples">Link to sample repo</a></p>
 </div>
 </div>
 </div>

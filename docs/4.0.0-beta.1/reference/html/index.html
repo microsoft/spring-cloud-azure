@@ -254,7 +254,6 @@ window.onload = function() {
 <li><a href="#configuration-13">13.2. Configuration</a></li>
 <li><a href="#basic-usage-12">13.3. Basic Usage</a></li>
 <li><a href="#samples-12">13.4. Samples</a></li>
-<li><a href="#troubleshooting">13.5. Troubleshooting</a></li>
 </ul>
 </li>
 <li><a href="#redis-support">14. Redis Support</a>
@@ -1111,12 +1110,15 @@ public void run() {
 <pre class="highlight"><code class="language-yml" data-lang="yml">spring:
   cloud:
     azure:
-      tenant-id: put-your-tenant-id-here
-      client-id: put-your-client-id-here
-      client-key: put-your-client-key-here
+      profile:
+        tenant-id: ${tenant-id}
+      credential:
+        client-id: ${client-id}
+        client-secret: ${client-secret}
       keyvault:
         secret:
-          # TODO</code></pre>
+          property-source-enabled: true
+          endpoint: ${endpoint}</code></pre>
 </div>
 </div>
 </div>
@@ -1219,20 +1221,20 @@ public class KeyVaultSample implements CommandLineRunner {
 <td class="tableblock halign-left valign-top"><p class="tableblock">A map configure the resource APIs the application is going to visit. Each item corresponding to one resource API the application is going to visit. In Spring code, each item corresponding to one OAuth2AuthorizedClient object</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.{client-name}.scopes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.${CLIENT_NAME}.scopes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">API permissions of a resource server that the application is going to acquire.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.{client-name}.on-demand</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.${CLIENT_NAME}.on-demand</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">This is used for incremental consent. The default value is false. If it&#8217;s true, it&#8217;s not consent when user login, when application needs the additional permission, incremental consent is performed with one OAuth2 authorization code flow.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.{client-name}.authorization-grant-type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.${CLIENT_NAME}.authorization-grant-type</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Type of authorization client. Supported types are <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">authorization_code</a> (default type for webapp), <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow">on_behalf_of</a> (default type for resource-server), <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow">client_credentials</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.application-type</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Refer to <a href="property-example-1&.html#8212;&#8203;application-type">Application type</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Refer to <a href="#property-example-1-application-type">Application type</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.base-uri</p></td>
@@ -1334,6 +1336,16 @@ public class KeyVaultSample implements CommandLineRunner {
 </li>
 </ul>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      active-directory:
+        base-uri: https://login.partner.microsoftonline.cn
+        graph-base-uri: https://microsoftgraph.chinacloudapi.cn</pre>
+</div>
+</div>
 </div>
 <div class="sect4">
 <h5 id="property-example-3-use-group-name-or-group-id-to-protect-some-method-in-web-application"><a class="anchor" href="#property-example-3-use-group-name-or-group-id-to-protect-some-method-in-web-application"></a><a class="link" href="#property-example-3-use-group-name-or-group-id-to-protect-some-method-in-web-application">Property example 3: Use <code>group name</code> or <code>group id</code> to protect some method in web application.</a></h5>
@@ -1348,14 +1360,14 @@ public class KeyVaultSample implements CommandLineRunner {
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
-azure:
-  active-directory:
-    user-group:
-      allowed-group-names: group1_name_1, group2_name_2
-      # 1. If allowed-group-ids == all, then all group id will take effect.
-      # 2. If "all" is used, we should not configure other group ids.
-      # 3. "all" is only supported for allowed-group-ids, not supported for allowed-group-names.
-      allowed-group-ids: group_id_1, group_id_2</code></pre>
+    azure:
+      active-directory:
+        user-group:
+          allowed-group-names: group1_name_1, group2_name_2
+          # 1. If allowed-group-ids == all, then all group id will take effect.
+          # 2. If "all" is used, we should not configure other group ids.
+          # 3. "all" is only supported for allowed-group-ids, not supported for allowed-group-names.
+          allowed-group-ids: group_id_1, group_id_2</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1435,14 +1447,14 @@ public class RoleController {
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
-azure:
-  active-directory:
-    authorization-clients:
-      graph:
-        scopes: https://graph.microsoft.com/Analytics.Read, email
-      arm: # client registration id
-        on-demand: true  # means incremental consent
-        scopes: https://management.core.windows.net/user_impersonation</code></pre>
+    azure:
+      active-directory:
+        authorization-clients:
+          graph:
+            scopes: https://graph.microsoft.com/Analytics.Read, email
+          arm: # client registration id
+            on-demand: true  # means incremental consent
+            scopes: https://management.core.windows.net/user_impersonation</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1476,13 +1488,13 @@ consented.</p>
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
-azure:
-  active-directory:
-    authorization-clients:
-      webapiC:                          # When authorization-grant-type is null, on behalf of flow is used by default
-        authorization-grant-type: client_credentials
-        scopes:
-            - &lt;Web-API-C-app-id-url&gt;/.default</code></pre>
+    azure:
+      active-directory:
+        authorization-clients:
+          webapiC:                          # When authorization-grant-type is null, on behalf of flow is used by default
+            authorization-grant-type: client_credentials
+            scopes:
+                - &lt;Web-API-C-app-id-url&gt;/.default</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1499,7 +1511,7 @@ azure:
 <div class="sect4">
 <h5 id="accessing-a-web-application"><a class="anchor" href="#accessing-a-web-application"></a><a class="link" href="#accessing-a-web-application">Accessing a web application</a></h5>
 <div class="paragraph">
-<p>This scenario uses the <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">The OAuth 2.0 authorization code grant</a> flow to login in a user with a Microsoft account.</p>
+<p>This scenario uses <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">The OAuth 2.0 authorization code grant</a> flow to log in a user with a Microsoft account.</p>
 </div>
 <div class="paragraph">
 <p><strong>System diagram</strong>:</p>
@@ -1510,7 +1522,7 @@ azure:
 <div class="ulist">
 <ul>
 <li>
-<p>Step 1: Make sure <code>redirect URI</code> has been set to <code>{application-base-uri}/login/oauth2/code/</code>, for
+<p>Step 1: Make sure <code>redirect URI</code> has been set to <code>${APLICATION_BASE_URI}/login/oauth2/code/</code>, for
 example <code><a href="http://localhost:8080/login/oauth2/code/" class="bare">localhost:8080/login/oauth2/code/</a></code>.</p>
 </li>
 </ul>
@@ -1563,11 +1575,11 @@ The tailing <code>/</code> cannot be omitted.
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
-azure:
-  active-directory:
-    tenant-id: xxxxxx-your-tenant-id-xxxxxx
-    client-id: xxxxxx-your-client-id-xxxxxx
-    client-secret: xxxxxx-your-client-secret-xxxxxx</code></pre>
+    azure:
+      active-directory:
+        tenant-id: ${TENANT_NAME}
+        client-id: ${CLIENT_ID}
+        client-secret: ${CLIENT_SECRET}</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1624,14 +1636,14 @@ azure:
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
-azure:
-  active-directory:
-    tenant-id: xxxxxx-your-tenant-id-xxxxxx
-    client-id: xxxxxx-your-client-id-xxxxxx
-    client-secret: xxxxxx-your-client-secret-xxxxxx
-    authorization-clients:
-      graph:
-        scopes: https://graph.microsoft.com/Analytics.Read, email</code></pre>
+    azure:
+      active-directory:
+        tenant-id: ${TENANT_ID}
+        client-id: ${CLIENT_ID}
+        client-secret: ${CLIENT_SECRET}
+        authorization-clients:
+          graph:
+            scopes: https://graph.microsoft.com/Analytics.Read, email</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1752,16 +1764,16 @@ azure:
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
-azure:
-  active-directory:
-    tenant-id: &lt;Tenant-id-registered-by-application&gt;
-    client-id: &lt;Web-API-A-client-id&gt;
-    client-secret: &lt;Web-API-A-client-secret&gt;
-    app-id-uri: &lt;Web-API-A-app-id-url&gt;
-    authorization-clients:
-      graph:
-        scopes:
-          - https://graph.microsoft.com/User.Read</code></pre>
+    azure:
+      active-directory:
+        tenant-id: &lt;Tenant-id-registered-by-application&gt;
+        client-id: &lt;Web-API-A-client-id&gt;
+        client-secret: &lt;Web-API-A-client-secret&gt;
+        app-id-uri: &lt;Web-API-A-app-id-url&gt;
+        authorization-clients:
+          graph:
+            scopes:
+              - https://graph.microsoft.com/User.Read</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1896,7 +1908,7 @@ public class AADWebApplicationAndResourceServerConfig {
 <div class="sect3">
 <h4 id="samples-5"><a class="anchor" href="#samples-5"></a><a class="link" href="#samples-5">10.1.4. Samples</a></h4>
 <div class="paragraph">
-<p>(todo: @chenrujun Add link here.)</p>
+<p><a href="https://github.com/Azure-Samples/azure-spring-boot-samples">Link to sample repo</a></p>
 </div>
 </div>
 </div>
@@ -1967,7 +1979,7 @@ public class AADWebApplicationAndResourceServerConfig {
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.azure.active-directory.b2c.user-name-attribute-name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The the attribute name of the user name.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The attribute name of the username.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2003,7 +2015,7 @@ accept or deny access after validating access_token obtained from Azure AD. We w
 <div class="sect4">
 <h5 id="accessing-a-web-application-2"><a class="anchor" href="#accessing-a-web-application-2"></a><a class="link" href="#accessing-a-web-application-2">Accessing a web application</a></h5>
 <div class="paragraph">
-<p>This scenario uses the <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">The OAuth 2.0 authorization code grant</a> flow to login in a user with your Azure AD B2C user.</p>
+<p>This scenario uses <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">The OAuth 2.0 authorization code grant</a> flow to log in a user with your Azure AD B2C user.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -2012,10 +2024,10 @@ accept or deny access after validating access_token obtained from Azure AD. We w
 </li>
 <li>
 <p>Specify your application <strong>Name</strong>, we call it <code>webapp</code>, add <code><a href="http://localhost:8080/login/oauth2/code/" class="bare">localhost:8080/login/oauth2/code/</a></code> for the <strong>Reply URL</strong>, record the
-<strong>Application ID</strong> as your <code>${your-webapp-client-id}</code> and then click <strong>Save</strong>.</p>
+<strong>Application ID</strong> as your <code>${WEB_APP_CLIENT_ID}</code> and then click <strong>Save</strong>.</p>
 </li>
 <li>
-<p>Select <strong>Keys</strong> from your application, click <strong>Generate key</strong> to generate <code>${your-webapp-client-secret}</code> and then <strong>Save</strong>.</p>
+<p>Select <strong>Keys</strong> from your application, click <strong>Generate key</strong> to generate <code>${WEB_APP_CLIENT_SECRET}</code> and then <strong>Save</strong>.</p>
 </li>
 <li>
 <p>Select <strong>User flows</strong> on your left, and then Click <strong>New user flow</strong>.</p>
@@ -2072,23 +2084,23 @@ select <strong>Delegated permissions</strong>, check <strong>offline_access</str
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>spring:
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
-   azure:
-     active-directory:
-       b2c:
-         authenticate-additional-parameters:
-           domain_hint: xxxxxxxxx         # optional
-           login_hint: xxxxxxxxx          # optional
-           prompt: [login,none,consent]   # optional
-         base-uri: ${your-tenant-authorization-server-base-uri}
-         client-id: ${your-webapp-client-id}
-         client-secret: ${your-webapp-client-secret}
-         login-flow: ${your-login-user-flow-key}               # default to sign-up-or-sign-in, will look up the user-flows map with provided key.
-         logout-success-url: ${you-logout-success-url}
-         user-flows:
-           ${your-user-flow-key}: ${your-user-flow-name-defined-on-azure-portal}
-         user-name-attribute-name: ${your-user-name-attribute-name}</pre>
+    azure:
+      active-directory:
+        b2c:
+          authenticate-additional-parameters:
+            domain_hint: xxxxxxxxx         # optional
+            login_hint: xxxxxxxxx          # optional
+            prompt: [login,none,consent]   # optional
+          base-uri: ${BASE_URI}
+          client-id: ${WEBAPP_CLIENT_ID}
+          client-secret: ${WEBAPP_CLIENT_SECRET}
+          login-flow: ${LOGIN_USER_FLOW_KEY}               # default to sign-up-or-sign-in, will look up the user-flows map with provided key.
+          logout-success-url: ${LOGOUT_SUCCESS_URL}
+          user-flows:
+            ${YOUR_USER_FLOW_KEY}: ${USER_FLOW_NAME}
+          user-name-attribute-name: ${USER_NAME_ATTRIBUTE_NAME}</code></pre>
 </div>
 </div>
 <div class="olist arabic">
@@ -2128,7 +2140,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 </div>
 <div class="paragraph">
-<p>Copy the <em>home.html</em> from <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-oidc/src/main/resources/templates">Azure AD B2C Spring Boot Sample</a>, and replace the <code>${your-profile-edit-user-flow}</code> and <code>${your-password-reset-user-flow}</code> with your user flow name respectively that completed earlier.</p>
+<p>Copy the <em>home.html</em> from <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-oidc/src/main/resources/templates">Azure AD B2C Spring Boot Sample</a>, and replace the <code>${PROFILE_EDIT_USER_FLOW}</code> and <code>${PASSWORD_RESET_USER_FLOW}</code> with your user flow name respectively that completed earlier.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -2152,18 +2164,18 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 <p>Select <strong>Azure AD B2C</strong> from the portal menu, click <strong>Applications</strong>, and then click <strong>Add</strong>.</p>
 </li>
 <li>
-<p>Specify your application <strong>Name</strong>, we call it <code>webApiA</code>, record the <strong>Application ID</strong> as your <code>${your-web-api-a-client-id}</code> and then click <strong>Save</strong>.</p>
+<p>Specify your application <strong>Name</strong>, we call it <code>webApiA</code>, record the <strong>Application ID</strong> as your <code>${WEB_API_A_CLIENT_ID}</code> and then click <strong>Save</strong>.</p>
 </li>
 <li>
-<p>Select <strong>Keys</strong> from your application, click <strong>Generate key</strong> to generate <code>${your-web-api-a-client-secret}</code> and then <strong>Save</strong>.</p>
+<p>Select <strong>Keys</strong> from your application, click <strong>Generate key</strong> to generate <code>${WEB_API_A_CLIENT_SECRET}</code> and then <strong>Save</strong>.</p>
 </li>
 <li>
-<p>Select <strong>Expose an API</strong> on your left, and then Click the <strong>Set</strong> link, specify your resource app id url suffix, such as <em>web-api-a</em>,
-record the <strong>Application ID URI</strong> as your <code>${your-web-api-a-app-id-url}</code>, then <strong>Save</strong>.</p>
+<p>Select <strong>Expose an API</strong> on your left, and then Click the <strong>Set</strong> link,
+record the <strong>Application ID URI</strong> as your <code>${WEB_API_A_APP_ID_URL}</code>, then <strong>Save</strong>.</p>
 </li>
 <li>
 <p>Select <strong>Manifest</strong> on your left, and then paste the below json segment into <code>appRoles</code> array,
-record the <strong>Application ID URI</strong> as your <code>${your-web-api-a-app-id-url}</code>, record the value of the app role as your <code>${your-web-api-a-role-value}</code>, then <strong>save</strong>.</p>
+record the <strong>Application ID URI</strong> as your <code>${WEB_API_A_APP_ID_URL}</code>, record the value of the app role as your <code>${WEB_API_A_ROLE_VALUE}</code>, then <strong>save</strong>.</p>
 </li>
 </ol>
 </div>
@@ -2218,15 +2230,15 @@ select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleSc
 <div class="content">
 <pre>spring:
   cloud:
-   azure:
-     active-directory:
-       b2c:
-         base-uri: ${your-base-uri}             # Such as: https://xxxxb2c.b2clogin.com
-         tenant-id: ${your-tenant-id}
-         authorization-clients:
-           ${your-resource-server-a-name}:
-             authorization-grant-type: client_credentials
-             scopes: ${your-web-api-a-app-id-url}/.default</pre>
+    azure:
+      active-directory:
+        b2c:
+          base-uri: ${BASE_URI}             # Such as: https://xxxxb2c.b2clogin.com
+          tenant-id: ${TENANT_ID}
+          authorization-clients:
+            ${RESOURCE_SERVER_A_NAME}:
+              authorization-grant-type: client_credentials
+              scopes: ${WEB_API_A_APP_ID_URL}/.default</pre>
 </div>
 </div>
 <div class="olist arabic">
@@ -2314,13 +2326,13 @@ select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleSc
 <div class="content">
 <pre>spring:
   cloud:
-   azure:
-     active-directory:
-       b2c:
-         base-uri: ${your-base-uri}             # Such as: https://xxxxb2c.b2clogin.com
-         tenant-id: ${your-tenant-id}
-         app-id-uri: ${your-app-id-uri}         # If you are using v1.0 token, please configure app-id-uri for `aud` verification
-         client-id: ${your-client-id}           # If you are using v2.0 token, please configure client-id for `aud` verification</pre>
+    azure:
+      active-directory:
+        b2c:
+          base-uri: ${BASE_URI}             # Such as: https://xxxxb2c.b2clogin.com
+          tenant-id: ${TENANT_ID}
+          app-id-uri: ${APP_ID_URI}         # If you are using v1.0 token, please configure app-id-uri for `aud` verification
+          client-id: ${CLIENT_ID}           # If you are using v2.0 token, please configure client-id for `aud` verification</pre>
 </div>
 </div>
 <div class="olist arabic">
@@ -2426,14 +2438,14 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 <div class="content">
 <pre>spring:
   cloud:
-   azure:
-     active-directory:
-       b2c:
-         client-secret: ${your-web-api-a-client-secret}
-         authorization-clients:
-           ${your-resource-server-b-name}:
-             authorization-grant-type: client_credentials
-             scopes: ${your-web-api-b-app-id-url}/.default</pre>
+    azure:
+      active-directory:
+        b2c:
+          client-secret: ${WEB_API_A_CLIENT_SECRET}
+          authorization-clients:
+            ${RESOURCE_SERVER_B_NAME}:
+              authorization-grant-type: client_credentials
+              scopes: ${WEB_API_B_APP_ID_URL}/.default</pre>
 </div>
 </div>
 <div class="olist arabic">
@@ -2484,17 +2496,8 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 <div class="sect3">
 <h4 id="samples-6"><a class="anchor" href="#samples-6"></a><a class="link" href="#samples-6">10.2.4. Samples</a></h4>
-<div class="sect4">
-<h5 id="accessing-a-web-application-3"><a class="anchor" href="#accessing-a-web-application-3"></a><a class="link" href="#accessing-a-web-application-3">Accessing a web application</a></h5>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-oidc">azure-spring-boot-sample-active-directory-b2c-oidc</a>. (todo: @chenrujun. update this link)</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="accessing-a-resource-server-3"><a class="anchor" href="#accessing-a-resource-server-3"></a><a class="link" href="#accessing-a-resource-server-3">Accessing a resource server</a></h5>
-<div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-resource-server">azure-spring-boot-sample-active-directory-b2c-resource-server</a>.</p>
-</div>
+<p><a href="https://github.com/Azure-Samples/azure-spring-boot-samples">Link to sample repo</a></p>
 </div>
 </div>
 </div>
@@ -5109,23 +5112,29 @@ Please use this <code>sample</code> as a reference to learn more about how to us
 <h2 id="kafka-support"><a class="anchor" href="#kafka-support"></a><a class="link" href="#kafka-support">13. Kafka Support</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Connect to Azure Event Hubs using Spring Kafka libraries.</p>
+<p>Connect to Azure Event Hubs using Spring Kafka libraries. There&#8217;re two approaches to connect to Azure Event Hubs for Kafka, the first one is to provide the Azure Event Hubs connection string directly, the other is to use Azure Resource Manager to retrieve the connection string.</p>
 </div>
 <div class="sect2">
 <h3 id="dependency-setup-12"><a class="anchor" href="#dependency-setup-12"></a><a class="link" href="#dependency-setup-12">13.1. Dependency Setup</a></h3>
+<div class="paragraph">
+<p>Adding below dependencies if you want to migrate your Apache Kafka application to use Azure Event Hubs for Kafka.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you want to retrieve the connection string using Azure Resource Manager, please also add below dependency</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-azure-resourcemanager&lt;/artifactId&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-  &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
-  &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-  &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
-  &lt;artifactId&gt;spring-cloud-starter-stream-kafka&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -5133,7 +5142,7 @@ Please use this <code>sample</code> as a reference to learn more about how to us
 <div class="sect2">
 <h3 id="configuration-13"><a class="anchor" href="#configuration-13"></a><a class="link" href="#configuration-13">13.2. Configuration</a></h3>
 <div class="paragraph">
-<p>This Spring Cloud Azure Starter provides the following properties:</p>
+<p>Below properties could be configured when using Kafka support:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -5148,56 +5157,54 @@ Please use this <code>sample</code> as a reference to learn more about how to us
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.profile</strong>.tenant-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tenant id for Azure resources.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.profile</strong>.subscription-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Subscription id to use when connecting to Azure resources.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when performing service principal authentication with Azure.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-secret</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Subscription id to use when connecting to Azure resources.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.managed-identity-client-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when using managed identity to authenticate with Azure.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Password to use when performing username/password authentication with Azure.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.username</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Username to use when performing username/password authentication with Azure.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-certificate-password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-certificate-path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path of a PEM certificate file to use when performing service principal authentication with Azure.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.connection-string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Event Hubs connection string. Should be provided when want to provide the connection string directly.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.namespace</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Event Hubs namespace.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Event Hubs namespace. Should be provided when want to retrieve the connection information through Azure Resource Manager.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.resource.resource-group</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The resource group of Azure Event Hubs namespace.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The resource group of Azure Event Hubs namespace. Should be provided when want to retrieve the connection information through Azure Resource Manager.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure</strong>.profile.subscription-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The subscription id. Should be provided when want to retrieve the connection information through Azure Resource Manager.</p></td>
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix <code>spring.cloud.azure</code>. Please refer to link:index.html#authentication for more details.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="basic-usage-12"><a class="anchor" href="#basic-usage-12"></a><a class="link" href="#basic-usage-12">13.3. Basic Usage</a></h3>
+<div class="sect3">
+<h4 id="use-event-hubs-connection-string"><a class="anchor" href="#use-event-hubs-connection-string"></a><a class="link" href="#use-event-hubs-connection-string">13.3.1. Use Event Hubs connection string</a></h4>
 <div class="paragraph">
-<p>Spring Cloud Azure provides multiple methods to authenticate requests inside Azure Service. The following configuration is commonly used for service principal authentication:</p>
+<p>The simplest way to connect to Event Hubs for Kafka is with the connection string.</p>
+</div>
+<div class="paragraph">
+<p>Add below properties and you are good to go.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      eventhubs:
+        connection-string: ${AZURE_EVENTHUBS_CONNECTION_STRING}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="use-azure-resource-manager-to-retrieve-connection-string"><a class="anchor" href="#use-azure-resource-manager-to-retrieve-connection-string"></a><a class="link" href="#use-azure-resource-manager-to-retrieve-connection-string">13.3.2. Use Azure Resource Manager to retrieve connection string</a></h4>
+<div class="paragraph">
+<p>If you don&#8217;t want to configure connection string in your application, it&#8217;s also possible to use Azure Resource Manager to retrieve the connection string. And you could use credentials stored in Azure CLI or other local development tool, like Visual Studio Code or Intellij IDEA to authenticate with Azure Resource Manager. Or Managed Identity if your application is deployed to Azure Cloud. Just make sure the principal have sufficient permission to read resource metadata.</p>
+</div>
+<div class="paragraph">
+<p>Add below properties and you are good to go.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5205,181 +5212,19 @@ Please use this <code>sample</code> as a reference to learn more about how to us
   cloud:
     azure:
       profile:
-        tenant-id: ${AZURE_TENANT_ID}
         subscription-id: ${AZURE_SUBSCRIPTION_ID}
-      credential:
-        client-id: ${AZURE_CLIENT_ID}
-        client-secret: ${AZURE_CLIENT_SECRET}</code></pre>
+      eventhubs:
+        namespace: ${AZURE_EVENTHUBS_NAMESPACE}
+        resource:
+          resource-group: ${AZURE_EVENTHUBS_RESOURCE_GROUP}</code></pre>
+</div>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="samples-12"><a class="anchor" href="#samples-12"></a><a class="link" href="#samples-12">13.4. Samples</a></h3>
 <div class="paragraph">
-<p>The following code sample demonstrates how to use the Spring Cloud Azure Starter and Spring Cloud Starter Stream Kafka for Azure Event Hub. The sample app exposes a RESTful API to receive string message. Then message is sent through Azure Event Hub to a bean <code>consumer</code> which simply logs the message.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Create a service principal for use in by your app. Please follow
-<a href="https://github.com/Azure-Samples/azure-spring-boot-samples/blob/main/create-sp-using-azure-cli.md">create service principal from Azure CLI</a>.
-The credential is not required since Spring Cloud Azure support <a href="https://docs.microsoft.com/en-us/azure/developer/java/sdk/identity">Azure Identity</a>,
-you only need to log in with az cli / vs code or Intellij Azure Toolkit, then credential information will be left out of properties</p>
-</li>
-<li>
-<p>Create <a href="https://docs.microsoft.com/azure/event-hubs/">Azure Event Hubs</a>.</p>
-</li>
-<li>
-<p>Update
-<a href="https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka/src/main/resources/application.yaml">application.yaml</a> file</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
-  cloud:
-    azure:
-      profile:
-        tenant-id: ${AZURE_TENANT_ID}
-        subscription-id: ${AZURE_SUBSCRIPTION_ID}
-# This is not required since Spring Cloud Azure support https://docs.microsoft.com/en-us/azure/developer/java/sdk/identity
-# you only need to login with az cli / vs code or Intellij Azure Toolkit
-# then credential information will be left out of properties
-#      credential:
-#        client-id: ${SPRING_CLIENT_ID}
-#        client-secret: ${SPRING_CLIENT_SECRET}
-      eventhubs:
-        namespace: ${EVENTHUB_NAMESPACE_NAME_SAMPLE_EVENTHUBS_KAFKA}
-        resource:
-          resource-group: ${SPRING_RESOURCE_GROUP}
-    stream:
-      function:
-        definition: consume;supply
-      bindings:
-        consume-in-0:
-          destination: sample-eventhubs-kafka
-          group: $Default
-        supply-out-0:
-          destination: sample-eventhubs-kafka</code></pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Use this controller code to send message
-<a href="https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka/src/main/java/com/azure/spring/sample/eventhubs/kafka/SourceExample.java">SourceExample.java</a> file</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@RestController
-public class SourceExample {
-
-    @Autowired
-    private Sinks.Many&lt;Message&lt;String&gt;&gt; many;
-
-    @PostMapping("/messages")
-    public String sendMessage(@RequestParam String message) {
-        many.emitNext(new GenericMessage&lt;&gt;(message), Sinks.EmitFailureHandler.FAIL_FAST);
-        return message;
-    }
-}</code></pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Spring boot start class and function bean definition
-<a href="https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka/src/main/java/com/azure/spring/sample/eventhubs/kafka/EventHubKafkaBinderApplication.java">EventHubKafkaBinderApplication.java</a> file</p>
-</li>
-</ol>
-</div>
-<div class="exampleblock">
-<div class="content">
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
-public class EventHubKafkaBinderApplication {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(EventHubKafkaBinderApplication.class);
-
-    public static void main(String[] args) {
-        SpringApplication.run(EventHubKafkaBinderApplication.class, args);
-    }
-
-    @Bean
-    public Sinks.Many&lt;Message&lt;String&gt;&gt; many() {
-        return Sinks.many().unicast().onBackpressureBuffer();
-    }
-
-    @Bean
-    public Supplier&lt;Flux&lt;Message&lt;String&gt;&gt;&gt; supply(Sinks.Many&lt;Message&lt;String&gt;&gt; many) {
-        return () -&gt; many.asFlux()
-                         .doOnNext(m -&gt; LOGGER.info("Manually sending message {}", m))
-                         .doOnError(t -&gt; LOGGER.error("Error encountered", t));
-    }
-
-    @Bean
-    public Consumer&lt;Message&lt;String&gt;&gt; consume() {
-        return message -&gt; LOGGER.info("New message received: '{}'", message.getPayload());
-    }
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Run the <code>mvn spring-boot:run</code> in the root of the code sample to get the app running.</p>
-</li>
-<li>
-<p>Send a POST request</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>$ curl -X POST http://localhost:8080/messages?message=hello</pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Verify in your app’s logs that a similar message was posted:</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>New message received: hello</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Delete the resources on <a href="https://ms.portal.azure.com/">Azure Portal</a> to avoid unexpected charges.</p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="troubleshooting"><a class="anchor" href="#troubleshooting"></a><a class="link" href="#troubleshooting">13.5. Troubleshooting</a></h3>
-<div class="paragraph">
-<p>Meet with <code>Creating topics with default partitions/replication factor are only supported in CreateTopicRequest version 4+</code> error.</p>
-</div>
-<div class="exampleblock">
-<div class="content">
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-text" data-lang="text">o.s.c.s.b.k.p.KafkaTopicProvisioner      : Failed to create topics
-org.apache.kafka.common.errors.UnsupportedVersionException: Creating topics with default partitions/replication factor are only supported in CreateTopicRequest version 4+. The following topics need values for partitions and replicas</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>When this error is found, add this configuration item spring.cloud.stream.kafka.binder.replicationFactor, with the value set to at least 1. For more information, see <a href="https://docs.spring.io/spring-cloud-stream-binder-kafka/docs/current/reference/html/spring-cloud-stream-binder-kafka.html">Spring Cloud Stream Kafka Binder Reference Guide</a>.</p>
+<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka">samples for Azure Event Hus for Kafka</a> for more details.</p>
 </div>
 </div>
 </div>
@@ -5388,10 +5233,13 @@ org.apache.kafka.common.errors.UnsupportedVersionException: Creating topics with
 <h2 id="redis-support"><a class="anchor" href="#redis-support"></a><a class="link" href="#redis-support">14. Redis Support</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Connect to Azure Cache for Redis using Spring Redis libraries.</p>
+<p>Connect to Azure Cache for Redis using Spring Redis libraries. With adding <code>spring-cloud-azure-starter</code> and <code>spring-cloud-azure-resourcemanager</code> to your application, it&#8217;s possible to read the Azure Cache for Redis connection information through Azure Resource Manager and auto-configure the Redis properties.</p>
 </div>
 <div class="sect2">
 <h3 id="dependency-setup-13"><a class="anchor" href="#dependency-setup-13"></a><a class="link" href="#dependency-setup-13">14.1. Dependency Setup</a></h3>
+<div class="paragraph">
+<p>Adding below dependencies if you want to use the Spring Cloud Azure Redis support to your Spring Boot application using Redis.</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -5401,10 +5249,6 @@ org.apache.kafka.common.errors.UnsupportedVersionException: Creating topics with
 &lt;dependency&gt;
   &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-azure-resourcemanager&lt;/artifactId&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-  &lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -5412,168 +5256,73 @@ org.apache.kafka.common.errors.UnsupportedVersionException: Creating topics with
 <div class="sect2">
 <h3 id="configuration-14"><a class="anchor" href="#configuration-14"></a><a class="link" href="#configuration-14">14.2. Configuration</a></h3>
 <div class="paragraph">
-<p>This Spring Cloud Azure Starter provides the following properties:</p>
+<p>Below properties could be configured when using Redis support:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Properties</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.profile</strong>.tenant-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tenant id for Azure resources.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Properties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default Value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Required</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.profile</strong>.subscription-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Subscription id to use when connecting to Azure resources.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when performing service principal authentication with Azure.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-secret</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Subscription id to use when connecting to Azure resources.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.managed-identity-client-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when using managed identity to authenticate with Azure.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Password to use when performing username/password authentication with Azure.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.username</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Username to use when performing username/password authentication with Azure.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-certificate-password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-certificate-path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path of a PEM certificate file to use when performing service principal authentication with Azure.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.redis</strong>.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Cache for Redis instance name.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.redis</strong>.name</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Azure Cache for Redis instance name.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.redis</strong>.resource.resource-group</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The resource group of Azure Cache for Redis.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure</strong>.profile.subscription-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The subscription id.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix <code>spring.cloud.azure</code>. Please refer to link:index.html#authentication for more details.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="basic-usage-13"><a class="anchor" href="#basic-usage-13"></a><a class="link" href="#basic-usage-13">14.3. Basic Usage</a></h3>
 <div class="paragraph">
-<p>Spring Cloud Azure provides multiple methods to authenticate requests inside Azure Service. The following configuration is commonly used for service principal authentication:</p>
+<p>Add below properties and you are good to go.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
     azure:
-      profile:
-        tenant-id: ${SPRING_TENANT_ID}
-        subscription-id: ${SPRING_SUBSCRIPTION_ID}
-      credential:
-        client-id: ${SPRING_CLIENT_ID}
-        client-secret: ${SPRING_CLIENT_SECRET}</code></pre>
+      redis:
+        name: ${AZURE_CACHE_REDIS_NAME}
+        resource:
+          resource-group: ${AZURE_CACHE_REDIS_RESOURCE_GROUP}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="samples-13"><a class="anchor" href="#samples-13"></a><a class="link" href="#samples-13">14.4. Samples</a></h3>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Update
-<a href="https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0/cache/spring-cloud-azure-starter/spring-cloud-azure-sample-cache/src/main/resources/application.yaml">application.yaml</a> file to specify
-resource group, service principal, and cache instance name:</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
-  cloud:
-    azure:
-      credential:
-        client-id: [service-principal-id]
-        client-secret: [service-principal-secret]
-      profile:
-        tenant-id: [tenant-id]
-        subscription-id: [subscription-id]
-      redis:
-        name: [azure-cache-for-redis-instance-name]
-        resource:
-          resource-group: [resource-group]</code></pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Use this controller code to cache key
-<a href="https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0/cache/spring-cloud-azure-starter/spring-cloud-azure-sample-cache/src/main/java/com/azure/spring/sample/cache/WebController.java">WebController.java</a> file</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@RestController
-public class WebController {
-
-    @GetMapping("/{name}")
-    @Cacheable("azureCache")
-    public String getValue(@PathVariable String name) {
-        return "Hello " + name;
-    }
-}</code></pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Run the application using the <code>$ mvn spring-boot:run</code> command.</p>
-</li>
-<li>
-<p>Send a GET request to check, where <code>name</code> could be any string:</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>$ curl -XGET http://localhost:8080/{name}</pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Confirm from Azure Redis Cache console in Azure Portal</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>$ keys *</pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Delete the resources on <a href="https://ms.portal.azure.com/">Azure Portal</a> to avoid unexpected charges.</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/cache">samples for Azure Cache for Redis</a> for more details.</p>
 </div>
 </div>
 </div>
