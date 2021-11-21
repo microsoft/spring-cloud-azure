@@ -88,7 +88,7 @@ Below options are used to configure Azure Event Hubs SDK Client.
 
 ==== Basic Usage
 ===== Send messages to Azure Event Hubs
-* Step 1. Fill the credential configuration options.
+Step 1. Fill the credential configuration options.
 
 * For credentials as connection string, configure below properties in `application.yml`:
 [source,yaml]
@@ -141,7 +141,7 @@ spring:
         namespace: [namespace]
 ----
 
-- Step 2. Create `DefaultMessageHandler` with the bean of `EventHubsTemplate` to send messages to Event Hubs.
+Step 2. Create `DefaultMessageHandler` with the bean of `EventHubsTemplate` to send messages to Event Hubs.
 [source,java]
 ----
     private static final String OUTPUT_CHANNEL = "output";
@@ -165,7 +165,7 @@ spring:
     }
 ----
 
-- Step 3. Create a Message gateway binding with the message handler created in the last step via a message channel
+Step 3. Create a Message gateway binding with the message handler created in the last step via a message channel
 [source,java]
 ----
     @Autowired
@@ -176,15 +176,16 @@ spring:
         void send(String text);
     }
 ----
-- Step 4. Send messages using the gateway
+Step 4. Send messages using the gateway
 [source,java]
 ----
     this.messagingGateway.send(message);
 ----
 
 ===== Receive messages from Azure Event Hubs
-* Step 1. Fill the credential configuration options.
-- Step 2. Create a bean of message channel as the input channel.
+Step 1. Fill the credential configuration options.
+
+Step 2. Create a bean of message channel as the input channel.
 [source,java]
 ----
     private static final String INPUT_CHANNEL = "input";
@@ -196,7 +197,8 @@ spring:
         return new DirectChannel();
     }
 ----
-- Step 3. Create `EventHubsInboundChannelAdapter` with the bean of `EventHubsProcessorContainer` to receive messages to Event Hubs.
+
+Step 3. Create `EventHubsInboundChannelAdapter` with the bean of `EventHubsProcessorContainer` to receive messages to Event Hubs.
 [source,java]
 ----
     @Bean
@@ -212,7 +214,8 @@ spring:
         return adapter;
     }
 ----
-- Step 4. Create a message receiver binding with EventHubsInboundChannelAdapter created in the last step via the message channel we created before.
+
+Step 4. Create a message receiver binding with EventHubsInboundChannelAdapter created in the last step via the message channel we created before.
 [source,java]
 ----
     @ServiceActivator(inputChannel = INPUT_CHANNEL)
@@ -301,9 +304,9 @@ Below options are used to configure Azure Service Bus SDK Client.
 
 ==== Basic Usage
 ===== Send messages to Azure Service Bus
-* Step 1. Fill the credential configuration options.
+Step 1. Fill the credential configuration options.
 
-- For credentials as connection string, configure below properties in application.yml:
+* For credentials as connection string, configure below properties in application.yml:
 [source,yaml]
 ----
 spring:
@@ -313,7 +316,7 @@ spring:
         connection-string: [servicebus-connection-string]
 ----
 
-- For credentials as MSI, configure below properties in application.yml:
+* For credentials as MSI, configure below properties in application.yml:
 [source,yaml]
 ----
 spring:
@@ -333,7 +336,7 @@ spring:
         namespace: [servicebus-namespace]
 ----
 
-- For credentials as service principal, configure below properties in application.yml:
+* For credentials as service principal, configure below properties in application.yml:
 [source,yaml]
 ----
 spring:
@@ -354,7 +357,7 @@ spring:
         namespace: [namespace]
 ----
 
-* Step 2. Create `DefaultMessageHandler` with the bean of `ServiceBusTemplate` to send messages to Service Bus,
+Step 2. Create `DefaultMessageHandler` with the bean of `ServiceBusTemplate` to send messages to Service Bus,
 set the entity type for the ServiceBusTemplate.
 [source,java]
 ----
@@ -381,7 +384,7 @@ set the entity type for the ServiceBusTemplate.
     }
 ----
 
-* Step 3. Create a Message gateway binding with the message handler created in the last stop via a message channel
+Step 3. Create a Message gateway binding with the message handler created in the last stop via a message channel
 [source,java]
 ----
     @Autowired
@@ -394,15 +397,16 @@ set the entity type for the ServiceBusTemplate.
 
 ----
 
-* Step 4. Send messages using the gateway
+Step 4. Send messages using the gateway
 [source,java]
 ----
     this.messagingGateway.send(message);
 ----
 
 ===== Receive messages from Azure Service Bus
-* Step 1. Fill the credential configuration options.
-* Step 2. Create a bean of message channel as the input channel.
+Step 1. Fill the credential configuration options.
+
+Step 2. Create a bean of message channel as the input channel.
 [source,java]
 ----
     private static final String INPUT_CHANNEL = "input";
@@ -412,7 +416,8 @@ set the entity type for the ServiceBusTemplate.
         return new DirectChannel();
     }
 ----
-* Step 3. Create `ServiceBusInboundChannelAdapter` with the bean of `ServiceBusProcessorContainer` to receive messages to Service Bus.
+
+Step 3. Create `ServiceBusInboundChannelAdapter` with the bean of `ServiceBusProcessorContainer` to receive messages to Service Bus.
 [source,java]
 ----
     private static final String QUEUE_NAME = "queue1";
@@ -426,7 +431,8 @@ set the entity type for the ServiceBusTemplate.
         return adapter;
     }
 ----
-* Step 4. Create a message receiver binding with ServiceBusInboundChannelAdapter created in the last step via the message channel we created before.
+
+Step 4. Create a message receiver binding with ServiceBusInboundChannelAdapter created in the last step via the message channel we created before.
 [source,java]
 ----
     @ServiceActivator(inputChannel = INPUT_CHANNEL)
@@ -447,9 +453,6 @@ Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/
 *Example: Manually set the partition key for the message*
 
 This example demonstrates how to manually set the partition key for the message in the application.
-
-*Approach 1:* Manually add the partition Key in the message header by code.
-
 
 _Recommended:_ Use `ServiceBusMessageHeaders.PARTITION_KEY` as the key of the header.
 
@@ -487,7 +490,6 @@ NOTE: When both `ServiceBusMessageHeaders.PARTITION_KEY` and `AzureHeaders.PARTI
 `ServiceBusMessageHeaders.PARTITION_KEY` is preferred.
 
 *Example: Set the session id for the message*
-
 
 This example demonstrates how to manually set the session id of a message in the application.
 
@@ -580,9 +582,9 @@ Below options are used to configure Azure Storage Queue SDK Client.
 
 ==== Basic Usage
 ===== Send messages to Azure Storage Queue
-* Step 1. Fill the credential configuration options.
+Step 1. Fill the credential configuration options.
 
-- For credentials as connection string, configure below properties in application.yml:
+** For credentials as connection string, configure below properties in application.yml:
 [source,yaml]
 ----
 spring:
@@ -593,7 +595,7 @@ spring:
           connection-string: [servicebus-connection-string]
 ----
 
-- For credentials as MSI, configure below properties in application.yml:
+** For credentials as MSI, configure below properties in application.yml:
 [source,yaml]
 ----
 spring:
@@ -614,7 +616,7 @@ spring:
           namespace: [servicebus-namespace]
 ----
 
-- For credentials as service principal, configure below properties in application.yml:
+** For credentials as service principal, configure below properties in application.yml:
 [source,yaml]
 ----
 spring:
@@ -636,7 +638,8 @@ spring:
           namespace: [servicebus-namespace]
 ----
 
-* Step 2. Create `DefaultMessageHandler` with the bean of `StorageQueueOperation` to send messages to Storage Queue.
+
+Step 2. Create `DefaultMessageHandler` with the bean of `StorageQueueOperation` to send messages to Storage Queue.
 [source,java]
 ----
     private static final String STORAGE_QUEUE_NAME = "example";
@@ -661,7 +664,7 @@ spring:
     }
 ----
 
-* Step 3. Create a Message gateway binding with the message handler created in the last stop via a message channel
+Step 3. Create a Message gateway binding with the message handler created in the last stop via a message channel
 [source,java]
 ----
     @Autowired
@@ -674,15 +677,16 @@ spring:
 
 ----
 
-* Step 4. Send messages using the gateway
+Step 4. Send messages using the gateway
 [source,java]
 ----
     this.storageQueueOutboundGateway.send(message);
 ----
 
 ===== Receive messages from Azure Storage Queue
-* Step 1. Fill the credential configuration options.
-* Step 2. Create a bean of message channel as the input channel.
+Step 1. Fill the credential configuration options.
+
+Step 2. Create a bean of message channel as the input channel.
 [source,java]
 ----
     private static final String INPUT_CHANNEL = "input";
@@ -692,7 +696,8 @@ spring:
         return new DirectChannel();
     }
 ----
-* Step 3. Create `StorageQueueMessageSource` with the bean of `StorageQueueOperation` to receive messages to Storage Queue.
+
+Step 3. Create `StorageQueueMessageSource` with the bean of `StorageQueueOperation` to receive messages to Storage Queue.
 [source,java]
 ----
     private static final String STORAGE_QUEUE_NAME = "example";
@@ -706,7 +711,8 @@ spring:
         return new StorageQueueMessageSource(STORAGE_QUEUE_NAME, storageQueueOperation);
     }
 ----
-* Step 4. Create a message receiver binding with StorageQueueMessageSource created in the last step via the message channel we created before.
+
+Step 4. Create a message receiver binding with StorageQueueMessageSource created in the last step via the message channel we created before.
 [source,java]
 ----
     @ServiceActivator(inputChannel = INPUT_CHANNEL)
