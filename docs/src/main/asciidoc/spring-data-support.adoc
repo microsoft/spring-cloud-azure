@@ -2,7 +2,7 @@
 
 === Spring Data CosmosDB Support
 
-[Azure Cosmos DB](https://azure.microsoft.com/services/cosmos-db/) is a globally-distributed database service that allows developers to work with data using a variety of standard APIs, such as SQL, MongoDB, Graph, and Azure Table storage.
+link:https://azure.microsoft.com/services/cosmos-db/[Azure Cosmos DB] is a globally-distributed database service that allows developers to work with data using a variety of standard APIs, such as SQL, MongoDB, Graph, and Azure Table storage.
 
 Connect to Cosmos DB using Spring Data and CosmosDB libraries.
 
