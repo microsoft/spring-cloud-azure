@@ -51,11 +51,11 @@ spring:
   cloud:
     azure:
       profile:
-        tenant-id: ${SPRING_TENANT_ID}
-        subscription-id: ${SPRING_SUBSCRIPTION_ID}
+        tenant-id: ${AZURE_TENANT_ID}
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
       credential:
-        client-id: ${SPRING_CLIENT_ID}
-        client-secret: ${SPRING_CLIENT_SECRET}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
 ----
 
 === Samples
@@ -64,7 +64,7 @@ The following code sample demonstrates how to use the Spring Cloud Azure Starter
 
 . Create a service principal for use in by your app. Please follow
 https://github.com/Azure-Samples/azure-spring-boot-samples/blob/main/create-sp-using-azure-cli.md[create service principal from Azure CLI].
-The credential is not required since Spring Cloud Azure support https://docs.microsoft.com/en-us/azure/developer/java/sdk/identity,
+The credential is not required since Spring Cloud Azure support https://docs.microsoft.com/en-us/azure/developer/java/sdk/identity[Azure Identity],
 you only need to log in with az cli / vs code or Intellij Azure Toolkit, then credential information will be left out of properties
 
 . Create https://docs.microsoft.com/azure/event-hubs/[Azure Event Hubs].
@@ -78,8 +78,8 @@ spring:
   cloud:
     azure:
       profile:
-        tenant-id: ${SPRING_TENANT_ID}
-        subscription-id: ${SPRING_SUBSCRIPTION_ID}
+        tenant-id: ${AZURE_TENANT_ID}
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
 # This is not required since Spring Cloud Azure support https://docs.microsoft.com/en-us/azure/developer/java/sdk/identity
 # you only need to login with az cli / vs code or Intellij Azure Toolkit
 # then credential information will be left out of properties
@@ -123,6 +123,7 @@ public class SourceExample {
 . Spring boot start class and function bean definition
 https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka/src/main/java/com/azure/spring/sample/eventhubs/kafka/EventHubKafkaBinderApplication.java[EventHubKafkaBinderApplication.java] file
 
+====
 [source,java]
 ----
 @SpringBootApplication
@@ -152,6 +153,7 @@ public class EventHubKafkaBinderApplication {
     }
 }
 ----
+====
 
 . Run the `mvn spring-boot:run` in the root of the code sample to get the app running.
 
@@ -169,13 +171,15 @@ New message received: hello
 
 === Troubleshooting
 
-* Meet with `Creating topics with default partitions/replication factor are only supported in CreateTopicRequest version 4+` error.
+Meet with `Creating topics with default partitions/replication factor are only supported in CreateTopicRequest version 4+` error.
 
+====
 [source,text]
-'''
+----
 o.s.c.s.b.k.p.KafkaTopicProvisioner      : Failed to create topics
 org.apache.kafka.common.errors.UnsupportedVersionException: Creating topics with default partitions/replication factor are only supported in CreateTopicRequest version 4+. The following topics need values for partitions and replicas
-```
+----
+====
 
 When this error is found, add this configuration item spring.cloud.stream.kafka.binder.replicationFactor, with the value set to at least 1. For more information, see https://docs.spring.io/spring-cloud-stream-binder-kafka/docs/current/reference/html/spring-cloud-stream-binder-kafka.html[Spring Cloud Stream Kafka Binder Reference Guide].
 

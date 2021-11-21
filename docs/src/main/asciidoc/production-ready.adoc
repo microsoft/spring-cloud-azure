@@ -15,6 +15,7 @@ Add the Spring Cloud Azure Actuator Starter dependency. This dependency will als
 ----
 
 Below properties could be used to enable or disable health indicators for each Azure services.
+[cols="2*", options="header"]
 |===
 |Azure Service  |Propropety
 |App Configuration |management.health.azure-appconfiguration.enabled
@@ -24,7 +25,7 @@ Below properties could be used to enable or disable health indicators for each A
 |Storage|management.health.azure-storage.enabled
 |===
 
-NOTE: Calling the health endpoint of Azure servcies could cause extra charge. For example, calling `http://{hostname}:{port}/actuator/health/cosmos` to get the Cosmos DB health info, it will calculate https://docs.microsoft.com/azure/cosmos-db/request-units[RUs].
+NOTE: Calling the health endpoint of Azure servcies may cause extra charge. For example, calling `http://{hostname}:{port}/actuator/health/cosmos` to get the Cosmos DB health info, it will calculate https://docs.microsoft.com/azure/cosmos-db/request-units[RUs].
 
 === Enable Sleuth
 
@@ -38,6 +39,6 @@ Add the Spring Cloud Azure Trace Sleuth dependency when you want to trace Azure 
 </dependency>
 ----
 
-NOTE: Only HTTP-based Azure SDK clients are supported now.
+NOTE: Only HTTP-based Azure SDK clients are supported now, for example, Eventhub and ServiceBus with AMQP transport are currently not supported, we recommend to use https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview[Azure Application Insight] for such requirement.
 
 

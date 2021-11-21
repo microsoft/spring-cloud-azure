@@ -44,7 +44,7 @@ For applications want to connect to resources that support Azure Active Director
 |managed-identity-client-id|Client id to use when using managed identity to authenticate with Azure.
 |===
 
-To see the list of all Spring Cloud Azure related configuration properties please check link:appendix.html[the Appendix page].
+TIP: To see the list of all Spring Cloud Azure related configuration properties please check link:appendix.html[the Appendix page].
 
 ==== SAS Token
 It's also configurable for services support authenticating with Shared Access Signature (SAS). `spring.cloud.azure.<azure-servcie>.sas-token` is the propety to configure. For example, using `spring.cloud.azure.storage.blob.sas-token` to authenticate to Storage Blob service.

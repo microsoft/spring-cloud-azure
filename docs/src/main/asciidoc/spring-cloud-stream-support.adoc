@@ -61,44 +61,38 @@ image:https://user-images.githubusercontent.com/13167207/142611562-38dfd834-47e6
 
 The following are configuration items related to the producer:
 
-*_partition-count_*
-
-The number of target partitions for the data, if partitioning is enabled.
-
-Default: 1
-
-*_partition-key-extractor-name_*
-
-The name of the bean that implements `PartitionKeyExtractorStrategy`.
+[cols="3*", options="header"]
+|===
+|PropertyName |Default Value | Description
+|partition-count
+|1
+|The number of target partitions for the data, if partitioning is enabled.
+|partition-key-extractor-name
+|null
+|The name of the bean that implements `PartitionKeyExtractorStrategy`.
 The partition handler will first use the `PartitionKeyExtractorStrategy#extractKey` method to obtain the partition key value.
-
-Default: null
-
-*_partition-key-expression_*
-
-A SpEL expression that determines how to partition outbound data.
+|partition-key-expression
+|null
+|A SpEL expression that determines how to partition outbound data.
 When interface `PartitionKeyExtractorStrategy` is not implemented, it will be called in the method `PartitionHandler#extractKey`.
-
-Default: null
+|===
 
 For more information about setting partition for the producer properties, please refer to the https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_producer_properties[Producer Properties of Spring Cloud Stream].
 
 ===== Event Hub Producer Properties
 
 It supports the following configurations with the format of `spring.cloud.stream.eventhubs.bindings.&lt;channelName&gt;.producer`.
-
-*_sync_*
-
-Whether the producer should act in a synchronous manner with respect to writing messages into a stream. If true, the
+[cols="3*", options="header"]
+|===
+|PropertyName |Default Value | Description
+|sync
+|false
+|Whether the producer should act in a synchronous manner with respect to writing messages into a stream. If true, the
 producer will wait for a response from Event Hub after a send operation.
-
-Default: `false`
-
-*_send-timeout_*
-
-Effective only if `sync` is set to true. The amount of time to wait for a response from Event Hub after a send operation, in milliseconds.
-
-Default: `10000`
+|send-timeout
+|10000
+|Effective only if `sync` is set to true. The amount of time to wait for a response from Event Hub after a send operation, in milliseconds.
+|===
 
 ===== Common Consumer Properties
 
@@ -175,7 +169,7 @@ The max time `Duration` to wait to receive a batch of events up to the max batch
 
 Default: `null`
 
-for full configurations, check appendix
+To see the list of all Spring Cloud Azure related configuration properties please check link:appendix.html[the Appendix page].
 
 ==== Basic Usage
 
@@ -456,7 +450,6 @@ For some Service Bus headers that can be mapped to multiple Spring header consta
 
 |===
 |Service Bus Message Headers and Properties |Spring Message Header Constants |Type |Priority Number (Descending priority)
-
 |*MessageId* |com.azure.spring.integration.servicebus.converter.ServiceBusMessageHeaders.MESSAGE_ID |String |1
 |*MessageId* |com.azure.spring.integration.core.AzureHeaders.RAW_ID |String |2
 |*MessageId* |org.springframework.messaging.MessageHeaders.ID |UUID |3
@@ -473,7 +466,7 @@ For some Service Bus headers that can be mapped to multiple Spring header consta
 |*PartitionKey* |com.azure.spring.integration.core.AzureHeaders.PARTITION_KEY |String |2
 |===
 
-For full configurations, check appendix
+For full configurations, please check appendix
 
 ==== Basic Usage
 

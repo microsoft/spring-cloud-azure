@@ -90,5 +90,5 @@ Below are starters for **Spring Cloud Stream** support:
 
 === Learning Spring Cloud Azure
 
-https://github.com/Azure-Samples/azure-spring-boot-samples[Sample Applications]
+We prepared a full list of samples to show the usages, can be found at https://github.com/Azure-Samples/azure-spring-boot-samples[Spring Cloud Azure Samples]
 
