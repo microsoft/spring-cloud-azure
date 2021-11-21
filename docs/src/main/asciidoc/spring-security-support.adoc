@@ -21,10 +21,10 @@ This starter provides the following properties:
 
 |*spring.cloud.azure.active-directory*.app-id-uri |It used in resource server, used to validate the audience in access_token. access_token is valid only when the audience in access_token equal to client-id or app-id-uri 
 |*spring.cloud.azure.active-directory*.authorization-clients |A map configure the resource APIs the application is going to visit. Each item corresponding to one resource API the application is going to visit. In Spring code, each item corresponding to one OAuth2AuthorizedClient object
-|*spring.cloud.azure.active-directory*.authorization-clients.{client-name}.scopes |API permissions of a resource server that the application is going to acquire. 
-|*spring.cloud.azure.active-directory*.authorization-clients.{client-name}.on-demand |This is used for incremental consent. The default value is false. If it's true, it's not consent when user login, when application needs the additional permission, incremental consent is performed with one OAuth2 authorization code flow.
-|*spring.cloud.azure.active-directory*.authorization-clients.{client-name}.authorization-grant-type |Type of authorization client. Supported types are https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow[authorization_code] (default type for webapp), https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow[on_behalf_of] (default type for resource-server), https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow[client_credentials]. 
-|*spring.cloud.azure.active-directory*.application-type |Refer to <<property-example-1--application-type,Application type>>.
+|*spring.cloud.azure.active-directory*.authorization-clients.${CLIENT_NAME}.scopes |API permissions of a resource server that the application is going to acquire.
+|*spring.cloud.azure.active-directory*.authorization-clients.${CLIENT_NAME}.on-demand |This is used for incremental consent. The default value is false. If it's true, it's not consent when user login, when application needs the additional permission, incremental consent is performed with one OAuth2 authorization code flow.
+|*spring.cloud.azure.active-directory*.authorization-clients.${CLIENT_NAME}.authorization-grant-type |Type of authorization client. Supported types are https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow[authorization_code] (default type for webapp), https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow[on_behalf_of] (default type for resource-server), https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow[client_credentials].
+|*spring.cloud.azure.active-directory*.application-type |Refer to <<#property-example-1-application-type,Application type>>.
 |*spring.cloud.azure.active-directory*.base-uri |Base uri for authorization server, the default value is `https://login.microsoftonline.com/`. 
 |*spring.cloud.azure.active-directory*.client-id |Registered application ID in Azure AD. 
 |*spring.cloud.azure.active-directory*.client-secret |client secret of the registered application. 
@@ -40,16 +40,17 @@ This starter provides the following properties:
 
 Here are some examples about how to use these properties:
 
+[#property-example-1-application-type]
 ===== Property example 1: Application type
 
 This property(`spring.cloud.azure.active-directory.application-type`) is optional, its value can be inferred by dependencies, only `web_application_and_resource_server` must be configured manually: `spring.cloud.azure.active-directory.application-type=web_application_and_resource_server`.
 
 |===
-|Has dependency: spring-security-oauth2-client |Has dependency: spring-security-oauth2-resource-server |Valid values of application type |Default value 
+|Has dependency: spring-security-oauth2-client |Has dependency: spring-security-oauth2-resource-server |Valid values of application type |Default value
 
-|Yes |No |`web_application` |`web_application` 
-|No |Yes |`resource_server` |`resource_server` 
-|Yes |Yes |`web_application`,`resource_server`,`resource_server_with_obo`, `web_application_and_resource_server` |`resource_server_with_obo` 
+|Yes |No |`web_application` |`web_application`
+|No |Yes |`resource_server` |`resource_server`
+|Yes |Yes |`web_application`,`resource_server`,`resource_server_with_obo`, `web_application_and_resource_server` |`resource_server_with_obo`
 |===
 
 ===== Property example 2: Use https://docs.microsoft.com/azure/china/resources-developer-guide#check-endpoints-in-azure[Azure China] instead of Azure Global.
@@ -182,13 +183,13 @@ azure:
 
 ===== Accessing a web application
 
-This scenario uses the https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow[The OAuth 2.0 authorization code grant] flow to login in a user with a Microsoft account.
+This scenario uses https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow[The OAuth 2.0 authorization code grant] flow to log in a user with a Microsoft account.
 
 *System diagram*:
 
 image:https://user-images.githubusercontent.com/13167207/142617664-f1704adb-db64-49e0-b1b6-078c62b6945b.png[Standalone Web Application]
 
-* Step 1: Make sure `redirect URI` has been set to `{application-base-uri}/login/oauth2/code/`, for
+* Step 1: Make sure `redirect URI` has been set to `${APLICATION_BASE_URI}/login/oauth2/code/`, for
 example `http://localhost:8080/login/oauth2/code/`. 
 
 CAUTION: The tailing `/` cannot be omitted.
@@ -456,7 +457,7 @@ public class AADWebApplicationAndResourceServerConfig {
 
 ==== Samples
 
-(todo: @chenrujun Add link here.)
+https://github.com/Azure-Samples/azure-spring-boot-samples[Link to sample repo]
 
 === Spring Security with Azure AD B2C
 
@@ -486,7 +487,7 @@ public class AADWebApplicationAndResourceServerConfig {
 |`spring.cloud.azure.active-directory.b2c.tenant(Deprecated)` |The Azure AD B2C's tenant name, this is only suitable for Global cloud. 
 |`spring.cloud.azure.active-directory.b2c.tenant-id` |The Azure AD B2C's tenant id. 
 |`spring.cloud.azure.active-directory.b2c.user-flows` |A map to list all user flows defined on Azure Portal. 
-|`spring.cloud.azure.active-directory.b2c.user-name-attribute-name` |The the attribute name of the user name. 
+|`spring.cloud.azure.active-directory.b2c.user-name-attribute-name` | The attribute name of the username.
 |===
 
 For full configurations, check appendix.
@@ -505,14 +506,14 @@ image:https://user-images.githubusercontent.com/13167207/142620440-f970b572-2646
 
 ===== Accessing a web application
 
-This scenario uses the https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow[The OAuth 2.0 authorization code grant] flow to login in a user with your Azure AD B2C user.
+This scenario uses https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow[The OAuth 2.0 authorization code grant] flow to log in a user with your Azure AD B2C user.
 
 . Select *Azure AD B2C* from the portal menu, click *Applications*, and then click *Add*.
 
 . Specify your application *Name*, we call it `webapp`, add `http://localhost:8080/login/oauth2/code/` for the *Reply URL*, record the
- *Application ID* as your `${your-webapp-client-id}` and then click *Save*.
+ *Application ID* as your `${WEB_APP_CLIENT_ID}` and then click *Save*.
 
-. Select *Keys* from your application, click *Generate key* to generate `${your-webapp-client-secret}` and then *Save*.
+. Select *Keys* from your application, click *Generate key* to generate `${WEB_APP_CLIENT_SECRET}` and then *Save*.
 
 . Select *User flows* on your left, and then Click *New user flow*.
 
@@ -604,7 +605,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 }
 ----
 
-Copy the _home.html_ from https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-oidc/src/main/resources/templates[Azure AD B2C Spring Boot Sample], and replace the `${your-profile-edit-user-flow}` and `${your-password-reset-user-flow}` with your user flow name respectively that completed earlier.
+Copy the _home.html_ from https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-oidc/src/main/resources/templates[Azure AD B2C Spring Boot Sample], and replace the `${PROFILE_EDIT_USER_FLOW}` and `${PASSWORD_RESET_USER_FLOW}` with your user flow name respectively that completed earlier.
 
 . Build and test your app
 
@@ -616,15 +617,15 @@ This scenario is based on *Accessing a web application* scenario to allow applic
 
 . Select *Azure AD B2C* from the portal menu, click *Applications*, and then click *Add*.
 
-. Specify your application *Name*, we call it `webApiA`, record the *Application ID* as your `${your-web-api-a-client-id}` and then click *Save*.
+. Specify your application *Name*, we call it `webApiA`, record the *Application ID* as your `${WEB_API_A_CLIENT_ID}` and then click *Save*.
 
-. Select *Keys* from your application, click *Generate key* to generate `${your-web-api-a-client-secret}` and then *Save*.
+. Select *Keys* from your application, click *Generate key* to generate `${WEB_API_A_CLIENT_SECRET}` and then *Save*.
 
-. Select *Expose an API* on your left, and then Click the *Set* link, specify your resource app id url suffix, such as _web-api-a_,
- record the *Application ID URI* as your `${your-web-api-a-app-id-url}`, then *Save*.
+. Select *Expose an API* on your left, and then Click the *Set* link,
+ record the *Application ID URI* as your `${WEB_API_A_APP_ID_URL}`, then *Save*.
 
 . Select *Manifest* on your left, and then paste the below json segment into `appRoles` array,
- record the *Application ID URI* as your `${your-web-api-a-app-id-url}`, record the value of the app role as your `${your-web-api-a-role-value}`, then *save*.
+ record the *Application ID URI* as your `${WEB_API_A_APP_ID_URL}`, record the value of the app role as your `${WEB_API_A_ROLE_VALUE}`, then *save*.
 
 [source,json]
 ----
@@ -850,11 +851,5 @@ Let `WebApiA` and `WebApiB` run on port _8081_ and _8082_ respectively.
 
 ==== Samples
 
-===== Accessing a web application
-
-Please refer to https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-oidc[azure-spring-boot-sample-active-directory-b2c-oidc]. (todo: @chenrujun. update this link)
-
-===== Accessing a resource server
-
-Please refer to https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-resource-server[azure-spring-boot-sample-active-directory-b2c-resource-server].
+https://github.com/Azure-Samples/azure-spring-boot-samples[Link to sample repo]
 
