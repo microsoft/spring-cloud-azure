@@ -39,7 +39,9 @@ Below are some properties you can configure when using Spring Data CosmosDB Supp
 
 === Basic Usage
 
-Add below properties and you are good to go.
+==== Use private key to access CosmosDB
+The simplest way to connect CosmosDB with `spring-cloud-azure-starter-data-cosmos` is primary key,
+add below properties and you are good to go.
 
 [source,yaml]
 ----
