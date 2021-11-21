@@ -15,10 +15,9 @@
 ==== Configuration
 
 This starter provides the following properties:
-
+[cols="2*", options="header"]
 |===
 |Properties |Description 
-
 |*spring.cloud.azure.active-directory*.app-id-uri |It used in resource server, used to validate the audience in access_token. access_token is valid only when the audience in access_token equal to client-id or app-id-uri 
 |*spring.cloud.azure.active-directory*.authorization-clients |A map configure the resource APIs the application is going to visit. Each item corresponding to one resource API the application is going to visit. In Spring code, each item corresponding to one OAuth2AuthorizedClient object
 |*spring.cloud.azure.active-directory*.authorization-clients.${AZURE_CLIENT_NAME}.scopes |API permissions of a resource server that the application is going to acquire.
@@ -44,10 +43,9 @@ Here are some examples about how to use these properties:
 ===== Property example 1: Application type
 
 This property(`spring.cloud.azure.active-directory.application-type`) is optional, its value can be inferred by dependencies, only `web_application_and_resource_server` must be configured manually: `spring.cloud.azure.active-directory.application-type=web_application_and_resource_server`.
-
+[cols="4*", options="header"]
 |===
 |Has dependency: spring-security-oauth2-client |Has dependency: spring-security-oauth2-resource-server |Valid values of application type |Default value
-
 |Yes |No |`web_application` |`web_application`
 |No |Yes |`resource_server` |`resource_server`
 |Yes |Yes |`web_application`,`resource_server`,`resource_server_with_obo`, `web_application_and_resource_server` |`resource_server_with_obo`
@@ -354,10 +352,10 @@ spring:
   cloud:
     azure:
       active-directory:
-        tenant-id: <Tenant-id-registered-by-application>
-        client-id: <Web-API-A-client-id>
-        client-secret: <Web-API-A-client-secret>
-        app-id-uri: <Web-API-A-app-id-url>
+        tenant-id: ${AZURE_TENANT_ID}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
+        app-id-uri: ${WEB_API_ID_URI}
         authorization-clients:
           graph:
             scopes:
@@ -414,10 +412,10 @@ spring:
   cloud:
     azure:
       active-directory:
-        tenant-id: <Tenant-id-registered-by-application>
-        client-id: <Web-API-C-client-id>
-        client-secret: <Web-API-C-client-secret>
-        app-id-uri: <Web-API-C-app-id-url>
+        tenant-id: ${AZURE_TENANT_ID}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
+        app-id-uri: ${WEB_API_ID_URI}
         application-type: web_application_and_resource_server  # This is required.
         authorization-clients:
           graph:

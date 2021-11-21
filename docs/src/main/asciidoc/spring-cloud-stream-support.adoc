@@ -182,12 +182,12 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 this channel is open by default, you can handle the error message in this way:
 
 ----
-    // Replace destination with spring.cloud.stream.bindings.input.destination
-    // Replace group with spring.cloud.stream.bindings.input.group
-    @ServiceActivator(inputChannel == "{destination}.{group}.errors")
-    public void consumerError(Message<?> message) {
-        LOGGER.error("Handling customer ERROR: " + message);
-    }
+// Replace destination with spring.cloud.stream.bindings.input.destination
+// Replace group with spring.cloud.stream.bindings.input.group
+@ServiceActivator(inputChannel == "{destination}.{group}.errors")
+public void consumerError(Message<?> message) {
+    LOGGER.error("Handling customer ERROR: " + message);
+}
 ----
 
 *_producer error channel_*
@@ -201,11 +201,11 @@ spring.cloud.stream.default.producer.errorChannelEnabled=true
 you can handle the error message in this way:
 
 ----
-    // Replace destination with spring.cloud.stream.bindings.output.destination
-    @ServiceActivator(inputChannel == "{destination}.errors")
-    public void producerError(Message<?> message) {
-        LOGGER.error("Handling Producer ERROR: " + message);
-    }
+// Replace destination with spring.cloud.stream.bindings.output.destination
+@ServiceActivator(inputChannel == "{destination}.errors")
+public void producerError(Message<?> message) {
+    LOGGER.error("Handling Producer ERROR: " + message);
+}
 ----
 
 ===== Batch Consumer Sample
@@ -221,8 +221,8 @@ spring:
     stream:
       bindings:
         consume-in-0:
-          destination: {event-hub-name}
-          group: [consumer-group-name]
+          destination: ${AZURE_EVENTHUB_NAME}
+          group: ${AZURE_EVENTHUB_CONSUMER_GROUP}
           consumer:
             batch-mode: true 
       eventhubs:
@@ -242,49 +242,49 @@ For checkpointing mode as BATCH, you can use below code to send messages and con
 
 [source,java]
 ----
-    @Bean
-    public Consumer<List<String>> consume() {
-        return list -> list.forEach(event -> LOGGER.info("New event received: '{}'",event));
-    }
-    @Bean
-    public Supplier<Message<String>> supply() {
-        return () -> {
-            LOGGER.info("Sending message, sequence " + i);
-            return MessageBuilder.withPayload("\"test"+ i++ +"\"").build();
-        };
-    }
+@Bean
+public Consumer<List<String>> consume() {
+    return list -> list.forEach(event -> LOGGER.info("New event received: '{}'",event));
+}
+@Bean
+public Supplier<Message<String>> supply() {
+    return () -> {
+        LOGGER.info("Sending message, sequence " + i);
+        return MessageBuilder.withPayload("\"test"+ i++ +"\"").build();
+    };
+}
 ----
 
 For checkpointing mode as MANUAL, you can use below code to send messages and consume/checkpoint in batches.
 
 [source,java]
 ----
-    @Bean
-    public Consumer<Message<List<String>>> consume() {
-        return message -> {
-            for (int i == 0; i < message.getPayload().size(); i++) {
-                LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
-                    message.getPayload().get(i),
-                    ((List<Object>) message.getHeaders().get(EventHubsHeaders.PARTITION_KEY)).get(i),
-                    ((List<Object>) message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER)).get(i),
-                    ((List<Object>) message.getHeaders().get(EventHubsHeaders.OFFSET)).get(i),
-                    ((List<Object>) message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)).get(i));
-            }
-        
-            Checkpointer checkpointer == (Checkpointer) message.getHeaders().get(CHECKPOINTER);
-            checkpointer.success()
-                        .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
-                        .doOnError(error -> LOGGER.error("Exception found", error))
-                        .subscribe();
-        };
-    }
-    @Bean
-    public Supplier<Message<String>> supply() {
-        return () -> {
-            LOGGER.info("Sending message, sequence " + i);
-            return MessageBuilder.withPayload("\"test"+ i++ +"\"").build();
-        };
-    }
+@Bean
+public Consumer<Message<List<String>>> consume() {
+    return message -> {
+        for (int i == 0; i < message.getPayload().size(); i++) {
+            LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
+                message.getPayload().get(i),
+                ((List<Object>) message.getHeaders().get(EventHubsHeaders.PARTITION_KEY)).get(i),
+                ((List<Object>) message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER)).get(i),
+                ((List<Object>) message.getHeaders().get(EventHubsHeaders.OFFSET)).get(i),
+                ((List<Object>) message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)).get(i));
+        }
+    
+        Checkpointer checkpointer == (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        checkpointer.success()
+                    .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
+                    .doOnError(error -> LOGGER.error("Exception found", error))
+                    .subscribe();
+    };
+}
+@Bean
+public Supplier<Message<String>> supply() {
+    return () -> {
+        LOGGER.info("Sending message, sequence " + i);
+        return MessageBuilder.withPayload("\"test"+ i++ +"\"").build();
+    };
+}
 ----
 
 === Spring Cloud Stream Binder for Azure Service Bus
