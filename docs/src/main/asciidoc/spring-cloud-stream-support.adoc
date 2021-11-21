@@ -20,272 +20,136 @@ Current binder implementations include:
 	<artifactId>spring-cloud-azure-stream-binder-eventhubs</artifactId>
 </dependency>
 ----
-
 ==== Configuration
 
-The binder provides the following configuration options in `application.properties`.
+The binder provides the following 2 parts of configuration options:
 
-===== Spring Cloud Azure Properties
-
-[cols="<,<,<,<"]
+===== Azure Common Configuration Options
+Below properties can also be configured with the default Spring Cloud Azure unified properties,
+of which the prefix is changed from *spring.cloud.azure.eventhubs.* to *spring.cloud.azure.*.
 |===
-|Name |Description |Required |Default
+|Properties | Type |Description
 
-|spring.cloud.azure.auto-create-resources |If enable auto-creation for Azure resources | |false
-|spring.cloud.azure.region |Region name of the Azure resource group, e.g. westus |Yes if spring.cloud.azure.auto-create-resources is enabled. 
-|spring.cloud.azure.environment |Azure Cloud name for Azure resources, supported values are `azure`, `azurechina`, `azure_germany` and `azureusgovernment` which are case insensitive | |azure 
-|spring.cloud.azure.client-id |Client (application) id of a service principal or Managed Service Identity (MSI) |Yes if service principal or MSI is used as credential configuration. 
-|spring.cloud.azure.client-secret |Client secret of a service principal |Yes if service principal is used as credential configuration. 
-|spring.cloud.azure.msi-enabled |If enable MSI as credential configuration |Yes if MSI is used as credential configuration. |false
-|spring.cloud.azure.resource-group |Name of Azure resource group |Yes if service principal or MSI is used as credential configuration. 
-|spring.cloud.azure.subscription-id |Subscription id of an MSI |Yes if MSI is used as credential configuration. 
-|spring.cloud.azure.tenant-id |Tenant id of a service principal |Yes if service principal is used as credential configuration. 
-|spring.cloud.azure.eventhub.connection-string |Event Hubs Namespace connection string |Yes if connection string is used as Event Hubs credential configuration 
-|spring.cloud.azure.eventhub.checkpoint-storage-account |StorageAccount name for message checkpoint |Yes
-|spring.cloud.azure.eventhub.checkpoint-access-key |StorageAccount access key for message checkpoint |Yes if StorageAccount access key is used as StorageAccount credential configuration
-|spring.cloud.azure.eventhub.checkpoint-container |StorageAccount container name for message checkpoint |Yes
-|spring.cloud.azure.eventhub.namespace |Event Hub Namespace. Auto creating if missing |Yes if service principal or MSI is used as credential configuration. 
+|*spring.cloud.azure.eventhubs*.enabled | boolean | Whether an Azure Event Hubs is enabled.
+|*spring.cloud.azure.eventhubs*.credential.* | NA | Properties used for getting token credential.
+|*spring.cloud.azure.eventhubs*.credential.clientId | String | Client id to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.eventhubs*.credential.clientSecret | String | Client secret to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.eventhubs*.credential.clientCertificatePath | String | Path of a PEM certificate file to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.eventhubs*.credential.clientCertificatePassword | String | Password of the certificate file.
+|*spring.cloud.azure.eventhubs*.credential.username | String | Username to use when performing username/password authentication with Azure.
+|*spring.cloud.azure.eventhubs*.credential.password | String | Password to use when performing username/password authentication with Azure.
+|*spring.cloud.azure.eventhubs*.credential.managedIdentityClientId | String | Client id to use when using managed identity to authenticate with Azure.
+|*spring.cloud.azure.eventhubs*.profile.* | String | Properties related to an Azure subscription.
+|*spring.cloud.azure.eventhubs*.profile.tenantId | String | Tenant id for Azure resources.
+|*spring.cloud.azure.eventhubs*.profile.subscriptionId | String | Subscription id to use when connecting to Azure resources.
+|*spring.cloud.azure.eventhubs*.profile.cloud | AzureProfileAware.CloudType | Name of the Azure cloud to connect to.
+|*spring.cloud.azure.eventhubs*.profile.environment.* | NA | Properties to Azure services, such as endpoints, resource ids, etc.
+|*spring.cloud.azure.eventhubs*.profile.environment.activeDirectoryEndpoint | String | The Azure Active Directory endpoint to connect to.
+|*spring.cloud.azure.eventhubs*.resource.* | String | Metadata defining an Azure resource.
+|*spring.cloud.azure.eventhubs*.resource.resourceGroup | String | Name of the Azure resource group.
+|*spring.cloud.azure.eventhubs*.resource.resourceId | String | Id of the Azure resource group.
+|*spring.cloud.azure.eventhubs*.resource.region | String | Name of region.
+|*spring.cloud.azure.eventhubs*.client.transportType | AmqpTransportType | Transport type switches available for AMQP protocol.
+|*spring.cloud.azure.eventhubs*.retry.* | NA | Retry properties.
+|*spring.cloud.azure.eventhubs*.retry.backoff.* | NA | Backoff properties when a retry fails.
+|*spring.cloud.azure.eventhubs*.retry.backoff.delay | Duration | Amount of time to wait between retry attempts.
+|*spring.cloud.azure.eventhubs*.retry.backoff.maxDelay | Duration | Maximum permissible amount of time between retry attempts.
+|*spring.cloud.azure.eventhubs*.retry.backoff.multiplier | Double | Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.
+|*spring.cloud.azure.eventhubs*.retry.maxAttempts | Integer | The maximum number of attempts.
+|*spring.cloud.azure.eventhubs*.retry.timeout | Duration | Amount of time to wait until a timeout.
+|*spring.cloud.azure.eventhubs*.proxy.* | NA | Common proxy properties.
+|*spring.cloud.azure.eventhubs*.proxy.type | String | Type of the proxy.
+|*spring.cloud.azure.eventhubs*.proxy.hostname | String | The host of the proxy.
+|*spring.cloud.azure.eventhubs*.proxy.port | Integer | The port of the proxy.
+|*spring.cloud.azure.eventhubs*.proxy.authenticationType | String | Authentication type used against the proxy.
+|*spring.cloud.azure.eventhubs*.proxy.username | String | Username used to authenticate with the proxy.
+|*spring.cloud.azure.eventhubs*.proxy.password | String | Password used to authenticate with the proxy.
 |===
+===== Azure Event Hubs Client Configuration Options
+Below options are used to configure Azure Event Hubs SDK Client.
 
-===== Common Producer Properties
-
-You can use the producer configurations of *Spring Cloud Stream*,
-it uses the configuration with the format of `spring.cloud.stream.bindings.&lt;channelName&gt;.producer`.
-
-====== Partition configuration
-
-The system will obtain the parameter `PartitionSupply` to send the message,
-the following is the process of obtaining the priority of the partition ID and key:
-
-image:https://user-images.githubusercontent.com/13167207/142611562-38dfd834-47e6-4b8c-ba7d-b811f88a2821.png[Create PartitionSupply parameter process]
-
-The following are configuration items related to the producer:
-
-[cols="3*", options="header"]
 |===
-|PropertyName |Default Value | Description
-|partition-count
-|1
-|The number of target partitions for the data, if partitioning is enabled.
-|partition-key-extractor-name
-|null
-|The name of the bean that implements `PartitionKeyExtractorStrategy`.
-The partition handler will first use the `PartitionKeyExtractorStrategy#extractKey` method to obtain the partition key value.
-|partition-key-expression
-|null
-|A SpEL expression that determines how to partition outbound data.
-When interface `PartitionKeyExtractorStrategy` is not implemented, it will be called in the method `PartitionHandler#extractKey`.
-|===
+|Properties | Type |Description
 
-For more information about setting partition for the producer properties, please refer to the https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_producer_properties[Producer Properties of Spring Cloud Stream].
-
-===== Event Hub Producer Properties
-
-It supports the following configurations with the format of `spring.cloud.stream.eventhubs.bindings.&lt;channelName&gt;.producer`.
-[cols="3*", options="header"]
-|===
-|PropertyName |Default Value | Description
-|sync
-|false
-|Whether the producer should act in a synchronous manner with respect to writing messages into a stream. If true, the
-producer will wait for a response from Event Hub after a send operation.
-|send-timeout
-|10000
-|Effective only if `sync` is set to true. The amount of time to wait for a response from Event Hub after a send operation, in milliseconds.
+|*spring.cloud.azure.eventhubs*.connection-string | String | Event Hubs Namespace connection string value.
+|*spring.cloud.azure.eventhubs*.namespace | String | Event Hubs Namespace value.
+|*spring.cloud.azure.eventhubs*.domainName | String | Domain name of an Azure Event Hubs Namespace value.
+|*spring.cloud.azure.eventhubs*.eventHubName | String | Name of an Event Hub entity.
+|*spring.cloud.azure.eventhubs*.customEndpointAddress | String | Custom Endpoint address.
+|*spring.cloud.azure.eventhubs*.isSharedConnection | Boolean | Whether to use the same connection for different Event Hub producer / consumer client.
+|*spring.cloud.azure.eventhubs*.processor.checkpointStore.* | NA | Blob checkpoint store configuration options.
+|*spring.cloud.azure.eventhubs*.processor.checkpointStore.createContainerIfNotExists | Boolean | If allowed to create container if not exists.
+|*spring.cloud.azure.eventhubs*.processor.checkpointStore.customerProvidedKey | String | Base64 encoded string of the encryption key.
+|*spring.cloud.azure.eventhubs*.processor.checkpointStore.encryptionScope | String | Encryption scope to encrypt blob contents on the server.
+|*spring.cloud.azure.eventhubs*.processor.checkpointStore.serviceVersion | BlobServiceVersion | The versions of Azure Storage Blob supported by this client library.
+|*spring.cloud.azure.eventhubs*.processor.checkpointStore.blobName | String | Storage blob name.
+|*spring.cloud.azure.eventhubs*.processor.checkpointStore.containerName | String | Storage container name.
 |===
 
-===== Common Consumer Properties
+===== Azure Event Hubs Binding Configuration Options
+Below options are used to configure Azure Event Hubs Binding properties.
 
-You can use the below consumer configurations of *Spring Cloud Stream*,
-it uses the configuration with the format of `spring.cloud.stream.bindings.&lt;channelName&gt;.consumer`.
-
-====== Batch Consumer
-
-When `spring.cloud.stream.bindings.&lt;binding-name&gt;.consumer.batch-mode` is set to `true`, all of the received events
-will be presented as a `List&lt;?&gt;` to the consumer function. Otherwise, the function will be called with one event at a time.
-The size of the batch is controlled by Event Hubs consumer properties `max-size`(required) and `max-wait-time`
-(optional); refer to the <<event-hub-consumer-properties,below section>> for more information.
-
-*_batch-mode_*
-
-Whether to enable the entire batch of messages to be passed to the consumer function in a `List`.
-
-Default: `False`
-
-===== Event Hub Consumer Properties
-
-It supports the following configurations with the format of `spring.cloud.stream.eventhubs.bindings.&lt;channelName&gt;.consumer`.
-
-*_start-position_*
-
-Whether the consumer receives messages from the beginning or end of event hub. if `EARLIEST`, from beginning. If
-`LATEST`, from end.
-
-Default: `LATEST`
-
-*_checkpoint-mode_*
-
-The mode in which checkpoints are updated.
-
-`RECORD`, `default` mode. Checkpoints occur after each record is successfully processed by user-defined message
-handler without any exception. If you use `StorageAccount` as checkpoint store, this might become bottleneck.
-
-`BATCH`, checkpoints occur after each batch of messages successfully processed by user-defined message handler
-without any exception. Be aware that batch size could be any value and `BATCH` mode is only supported when consume
-batch
-mode is set true.
-
-`MANUAL`, checkpoints occur on demand by the user via the `Checkpointer`. You can do checkpoints after the message has been successfully processed. `Message.getHeaders.get(AzureHeaders.CHECKPOINTER)`callback can get you the `Checkpointer` you need. Please be aware all messages in the corresponding Event Hub partition before this message will be considered as successfully processed.
-
-`PARTITION_COUNT`, checkpoints occur after the count of messages defined by `checkpoint_count` successfully processed for each partition. You may experience reprocessing at most `checkpoint_count` of when message processing fails.
-
-`Time`, checkpoints occur at fixed time interval specified by `checkpoint_interval`. You may experience reprocessing of messages during this time interval when message processing fails.
-
-Default: `RECORD`
-
-NOTE: when consume batch mode is false(default value), `BATCH` checkpoint mode is not invalid.
-
-*_checkpoint-count_*
-
-Effectively only when `checkpoint-mode` is `PARTITION_COUNT`. Decides the amount of message for each partition to do one checkpoint.
-
-Default: `10`
-
-*_checkpoint-interval_*
-
-Effectively only when `checkpoint-mode` is `Time`. Decides The time interval to do one checkpoint.
-
-Default: `5s`
-
-*_max-size_*
-
-The maximum number of events that will be in the list of a message payload when the consumer callback is invoked.
-
-Default: `10`
-
-*_max-wait-time_*
-
-The max time `Duration` to wait to receive a batch of events up to the max batch size before invoking the consumer callback.
-
-Default: `null`
-
-To see the list of all Spring Cloud Azure related configuration properties please check link:appendix.html[the Appendix page].
+|===
+|Properties | Type |Description
+|*spring.cloud.stream.eventhubs*.binding | EventHubsExtendedBindingProperties | eventhubs binding additional properties.
+|===
 
 ==== Basic Usage
 
-==== Samples
+. Method 1: Connection string based usage
 
-==== Error Channels
+**  Create [Azure Event Hubs][create-event-hubs].
+After creating the Azure Event Hub, you can create your own Consumer Group or use the default "$Default" Consumer Group.
 
-*_consumer error channel_*
+**  Create [Azure Storage][create-azure-storage] for checkpoint usage.
 
-this channel is open by default, you can handle the error message in this way:
-
-----
-    // Replace destination with spring.cloud.stream.bindings.input.destination
-    // Replace group with spring.cloud.stream.bindings.input.group
-    @ServiceActivator(inputChannel == "{destination}.{group}.errors")
-    public void consumerError(Message<?> message) {
-        LOGGER.error("Handling customer ERROR: " + message);
-    }
-----
-
-*_producer error channel_*
-
-this channel is not open by default, if you want to open it. You need to add a configuration in your application.properties, like this:
-
-----
-spring.cloud.stream.default.producer.errorChannelEnabled=true
-----
-
-you can handle the error message in this way:
-
-----
-    // Replace destination with spring.cloud.stream.bindings.output.destination
-    @ServiceActivator(inputChannel == "{destination}.errors")
-    public void producerError(Message<?> message) {
-        LOGGER.error("Handling Producer ERROR: " + message);
-    }
-----
-
-===== Batch Consumer Sample
-
-====== Configuration Options
-
-To enable the batch consumer mode, you should add below configuration
-
+**  Update [application.yaml][application.yaml].
 [source,yaml]
 ----
-spring:
-  cloud:
-    stream:
-      bindings:
-        consume-in-0:
-          destination: {event-hub-name}
-          group: [consumer-group-name]
-          consumer:
-            batch-mode: true 
-      eventhubs:
-        bindings:
-          consume-in-0:
-            consumer:
-              checkpoint:
-                mode: BATCH # or MANUAL as needed
-              batch:
-                max-size: 2 # The default value is 10
-                max-wait-time: 1m # Optional, the default value is null
+    spring:
+      cloud:
+        azure:
+          eventhubs:
+            # Fill event hub namespace connection string copied from portal
+            connection-string: [eventhub-namespace-connection-string]
+            # Fill checkpoint storage account name, access key and container
+            processor:
+              checkpoint-store:
+                container-name: [checkpoint-container]
+                account-name: [checkpoint-storage-account]
+                account-key: [checkpoint-access-key]
+        stream:
+          function:
+            definition: consume;supply
+          bindings:
+            consume-in-0:
+              destination: [eventhub-name]
+              group: [consumer-group]
+            supply-out-0:
+              destination: [the-same-eventhub-name-as-above]
 ----
 
-======= Consume messages in batches
-
-For checkpointing mode as BATCH, you can use below code to send messages and consume in batches.
-
+** Define suppler and consumer
 [source,java]
 ----
-    @Bean
+ @Bean
     public Consumer<List<String>> consume() {
         return list -> list.forEach(event -> LOGGER.info("New event received: '{}'",event));
     }
+
     @Bean
     public Supplier<Message<String>> supply() {
         return () -> {
             LOGGER.info("Sending message, sequence " + i);
-            return MessageBuilder.withPayload("\"test"+ i++ +"\"").build();
+            return MessageBuilder.withPayload("\"Hello world"+ i++ +"\"").build();
         };
     }
 ----
+==== Samples
 
-For checkpointing mode as MANUAL, you can use below code to send messages and consume/checkpoint in batches.
-
-[source,java]
-----
-    @Bean
-    public Consumer<Message<List<String>>> consume() {
-        return message -> {
-            for (int i == 0; i < message.getPayload().size(); i++) {
-                LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
-                    message.getPayload().get(i),
-                    ((List<Object>) message.getHeaders().get(EventHubsHeaders.PARTITION_KEY)).get(i),
-                    ((List<Object>) message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER)).get(i),
-                    ((List<Object>) message.getHeaders().get(EventHubsHeaders.OFFSET)).get(i),
-                    ((List<Object>) message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)).get(i));
-            }
-        
-            Checkpointer checkpointer == (Checkpointer) message.getHeaders().get(CHECKPOINTER);
-            checkpointer.success()
-                        .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
-                        .doOnError(error -> LOGGER.error("Exception found", error))
-                        .subscribe();
-        };
-    }
-    @Bean
-    public Supplier<Message<String>> supply() {
-        return () -> {
-            LOGGER.info("Sending message, sequence " + i);
-            return MessageBuilder.withPayload("\"test"+ i++ +"\"").build();
-        };
-    }
-----
+Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud
+-azure_4.0/eventhubs/spring-cloud-azure-stream-binder-eventhubs[sample project] to learn how to
+use Event Hubs Binder.
 
 === Spring Cloud Stream Binder for Azure Service Bus
 
