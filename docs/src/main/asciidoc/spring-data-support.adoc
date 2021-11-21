@@ -24,7 +24,7 @@ This Spring Cloud Azure Starter provides the following properties:
 |===
 |Name | Default | Description
 |spring.cloud.azure.cosmos.enabled | `true` | Whether Azure Cosmos Service is enabled.
-|spring.cloud.azure.cosmos.database |  |
+|spring.cloud.azure.cosmos.database |  | The CosmosDB database id
 |spring.cloud.azure.cosmos.endpoint |  | Uri to connect CosmosDB
 |spring.cloud.azure.cosmos.key |  | PrivateKey to connect CosmosDB
 |spring.cloud.azure.cosmos.credential.client-certificate-password |  | Password of the certificate file.
@@ -48,8 +48,8 @@ spring:
     azure:
       cosmos:
         key: ${YOUR_COSMOS_KEY}
-        endpoint: [YOUR_COSMOS_ENDPOINT]
-        database: [YOUR_COSMOS_DATABASE]
+        endpoint: ${YOUR_COSMOS_ENDPOINT}
+        database: ${YOUR_COSMOS_DATABASE}
 ----
 
 === Samples
