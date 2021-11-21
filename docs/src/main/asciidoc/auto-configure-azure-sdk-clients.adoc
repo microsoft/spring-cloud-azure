@@ -1,12 +1,17 @@
 == Auto Configure Azure SDK Clients
 
-Spring Boot greatly simplifies the Spring Cloud Azure experience. Spring Cloud Azure Starters are a set of convenient dependency descriptors to include in your application. Our starters handle the object instantiation and configuration logic so you don’t have to. Every starter depends on the Spring Cloud Azure starter to provide critical bits of configuration, like the Azure Cloud environment and authentication information. You can configure these as properties in, for example, a properties file:
+Spring Boot greatly simplifies the Spring Cloud Azure experience. Spring Cloud Azure Starters are a set of convenient dependency descriptors to include in your application. Our starters handle the object instantiation and configuration logic so you don’t have to. Every starter depends on the Spring Cloud Azure starter to provide critical bits of configuration, like the Azure Cloud environment and authentication information. You can configure these as properties in, for example, a yaml file:
 
-[source,properties]
+[source,yaml]
 ----
-spring.cloud.azure.profile.tenant-id=[TENANT_ID]
-spring.cloud.azure.profile.cloud=[AZURE]
-spring.cloud.azure.credential.client-id=[CLIENT_ID]
+spring:
+  cloud:
+    azure:
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+        cloud: Azure
+      credential:
+        client-id: ${AZURE_CLIENT_ID}
 ----
 
 These properties are optional and, if not specified, Spring Boot will attempt to automatically find them for you. For details on how Spring Boot finds these properties, refer to the documentation.
@@ -33,13 +38,13 @@ or without adding Azure SDK dependencies and including the Spring Cloud Azure St
 </dependency>
 ----
 
-Please refer to link:index.html#starter-dependencies[Starter Dependencies] for the list of starters we support.
+TIP: Please refer to link:index.html#starter-dependencies[Starter Dependencies] for the list of starters we support.
 
 === Configuration
 
 Configuration properties for each Azure service are under prefix `spring.cloud.azure.prefix`.
 
-To see the list of all Spring Cloud Azure related configuration properties please check link:appendix.html[the Appendix page].
+TIP: To see the list of all Spring Cloud Azure related configuration properties please check link:appendix.html[the Appendix page].
 
 === Basic Usage
 
@@ -51,8 +56,8 @@ spring:
   cloud:
     azure:
       cosmos:
-        database: ${COSMOS_DATABASE_NAME}
-        endpoint: ${COSMOS_ENDPOINT}
+        database: ${AZURE_COSMOS_DATABASE_NAME}
+        endpoint: ${AZURE_COSMOS_ENDPOINT}
         consistency-level: eventual
         connection-mode: direct
 ----
