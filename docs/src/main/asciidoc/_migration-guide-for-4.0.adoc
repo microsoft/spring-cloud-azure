@@ -223,15 +223,48 @@ Check link:appendix.html[here] for a full list of configurations.
 
 ==== Each SDK configurations
 
-===== spring-cloud-azure-starter-integration-eventhubs
 
+===== From azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory
 
-IMPORTANT: Legacy starter is `azure-spring-cloud-starter-eventhubs`.
+. All configuration property names changed the prefix from `azure.activedirectory.` to `spring.cloud.azure.active-directory.`.
+. New property `spring.cloud.azure.active-directory.enabled=true` is necessary to enable related features.
 
-prefix changed from
-`spring.cloud.azure.eventhub.`
-to
-`spring.cloud.azure.eventhubs.`
+IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory`, you have to specify the `spring.cloud.azure.active-directory.enabled` to true, even if the starter is included in classpath.
+
+===== From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c
+
+. All configuration property names changed the prefix from `azure.activedirectory.b2c.` to `spring.cloud.azure.active-directory.b2c.`.
+. New property `spring.cloud.azure.active-directory.b2c.enabled=true` is necessary to enable related features.
+
+IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory-b2c`, you have to specify the `spring.cloud.azure.active-directory.b2c.enabled` to true, even if the starter is included in classpath.
+
+===== From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob
+
+. All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.blob`.
+
+|===
+|Legacy properties |Morden properties 
+
+|azure.storage.account-name |spring.cloud.azure.storage.blob.account-name 
+|azure.storage.account-key |spring.cloud.azure.storage.blob.account-key 
+|azure.storage.blob-endpoint |spring.cloud.azure.storage.blob.endpoint 
+|===
+
+===== From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share
+
+All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.fileshare`.
+
+|===
+|Legacy properties |Morden properties 
+
+|azure.storage.account-name |spring.cloud.azure.storage.fileshare.account-name 
+|azure.storage.account-key |spring.cloud.azure.storage.fileshare.account-key 
+|azure.storage.file-endpoint |spring.cloud.azure.storage.fileshare.endpoint 
+|===
+
+===== From azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs
+
+IMPORTANT: Configuration prefix has been changed from `spring.cloud.azure.eventhub` to `spring.cloud.azure.eventhubs.`
 
 Changes for the child entries for this prefix, please refer the following tables:
 
@@ -271,10 +304,35 @@ spring:
             account-key: [checkpoint-access-key]
 ----
 
-===== spring-cloud-azure-stream-binder-eventhubs
+===== From azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus
 
-IMPORTANT: Legacy starter is  `azure-spring-cloud-stream-binder-eventhubs`.
+For all configuration options supported in spring-cloud-azure-starter-integration-servicebus and spring-integration-azure-servicebus libraries,
+the prefix remains to be as `spring.cloud.azure.servicebus.`.
 
+|===
+|Legacy configuration suffix value |Current configuration suffix value |Current type
+
+|`transport-type` |`client.transport-type` |AmqpTransportType
+|`retry-options.max-retries` |`retry.max-attempts` |Integer
+|`retry-options.delay` |`retry.delay` |Duration
+|`retry-options.max-delay` |`retry.max-delay` |Duration
+|`retry-options.try-timeout` |`retry.timeout` |Duration
+|`retry-options.retry-mode` |Dropped, will be configured according to `retry.backoff.multiplier` |NA
+|===
+
+===== From azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue
+
+All configuration property names changed the prefix from `spring.cloud.azure.storage` to `spring.cloud.azure.storage.queue`.
+
+|===
+|Legacy properties |Morden properties 
+
+|spring.cloud.azure.storage.account |spring.cloud.azure.storage.queue.account-name 
+|spring.cloud.azure.storage.access-key |spring.cloud.azure.storage.queue.account-key 
+|spring.cloud.azure.storage.resource-group |spring.cloud.azure.storage.queue.resource.resource-group 
+|===
+
+===== From azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs
 
 * As per prefix of `spring.cloud.azure.eventhub,`, prefix is re-defined as
 `spring.cloud.azure.eventhubs,`
@@ -345,25 +403,7 @@ spring:
                     interval: [checkpoint-interval]
 ----
 
-===== spring-cloud-azure-starter-integration-servicebus
-
-IMPORTANT: Legacy starter is `azure-spring-cloud-starter-servicebus`.
-
-For all configuration options supported in spring-cloud-azure-starter-integration-servicebus and spring-integration-azure-servicebus libraries,
-the prefix remains to be as `spring.cloud.azure.servicebus.`.
-
-|===
-|Legacy configuration suffix value |Current configuration suffix value |Current type
-
-|`transport-type` |`client.transport-type` |AmqpTransportType
-|`retry-options.max-retries` |`retry.max-attempts` |Integer
-|`retry-options.delay` |`retry.delay` |Duration
-|`retry-options.max-delay` |`retry.max-delay` |Duration
-|`retry-options.try-timeout` |`retry.timeout` |Duration
-|`retry-options.retry-mode` |Dropped, will be configured according to `retry.backoff.multiplier` |NA
-|===
-
-===== spring-cloud-azure-stream-binder-servicebus
+===== From azure-spring-cloud-stream-binder-servicebus-* to spring-cloud-azure-stream-binder-servicebus
 
 IMPORTANT: Legacy binder libaries are `azure-spring-cloud-stream-binder-servicebus-queue` and `azure-spring-cloud-stream-binder-servicebus-topic`, and now they are merged into one `spring-cloud-azure-stream-binder-servicebus`.
 
@@ -465,82 +505,32 @@ spring:
         fixed-delay: 1000
 ----
 
-===== spring-cloud-azure-starter-active-directory
-
-. All configuration property names changed the prefix from `azure.activedirectory.` to `spring.cloud.azure.active-directory.`.
-. New property `spring.cloud.azure.active-directory.enabled=true` is necessary to enable related features.
-
-===== spring-cloud-azure-starter-active-directory.b2c
-
-. All configuration property names changed the prefix from `azure.activedirectory.b2c.` to `spring.cloud.azure.active-directory.b2c.`.
-. New property `spring.cloud.azure.active-directory.b2c.enabled=true` is necessary to enable related features.
-
-===== From `azure-spring-boot-starter-cosmos` to `spring-cloud-azure-starter-data-cosmos`
-
-. All configuration property names changed the prefix from `azure.cosmos` to `spring.cloud.azure.cosmos`.
-
-|===
-|Legacy properties |Morden properties 
-
-|azure.cosmos.uri |spring.cloud.azure.cosmos.endpoint 
-|azure.cosmos.key |spring.cloud.azure.cosmos.key 
-|azure.cosmos.database |spring.cloud.azure.cosmos.database 
-|azure.cosmos.populateQueryMetrics |spring.cloud.azure.cosmos.populateQueryMetrics 
-|===
-
-
-
-===== From *azure-spring-boot-starter-storage* to *spring-cloud-azure-starter-storage-blob*
-
-. All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.blob`.
-
-|===
-|Legacy properties |Morden properties 
-
-|azure.storage.account-name |spring.cloud.azure.storage.blob.account-name 
-|azure.storage.account-key |spring.cloud.azure.storage.blob.account-key 
-|azure.storage.blob-endpoint |spring.cloud.azure.storage.blob.endpoint 
-|===
-
-===== From *azure-spring-boot-starter-storage* to *spring-cloud-azure-starter-storage-file-share*
-
-All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.fileshare`.
-
-|===
-|Legacy properties |Morden properties 
-
-|azure.storage.account-name |spring.cloud.azure.storage.fileshare.account-name 
-|azure.storage.account-key |spring.cloud.azure.storage.fileshare.account-key 
-|azure.storage.file-endpoint |spring.cloud.azure.storage.fileshare.endpoint 
-|===
-
-
-===== From *azure-spring-cloud-starter-storage-queue* to *spring-cloud-azure-starter-integration-storage-queue*
-
-All configuration property names changed the prefix from `spring.cloud.azure.storage` to `spring.cloud.azure.storage.queue`.
-
-|===
-|Legacy properties |Morden properties 
-
-|spring.cloud.azure.storage.account |spring.cloud.azure.storage.queue.account-name 
-|spring.cloud.azure.storage.access-key |spring.cloud.azure.storage.queue.account-key 
-|spring.cloud.azure.storage.resource-group |spring.cloud.azure.storage.queue.resource.resource-group 
-|===
 
 === API breaking changes
 
-==== spring-cloud-azure-stream-binder-eventhubs
-
-
-IMPORTANT: Legacy binder is `azure-spring-cloud-stream-binder-eventhubs`.
+==== spring-cloud-azure-starter-active-directory
 
 |===
-|Legacy class |Modern class
+|Legacy class |Modern class 
 
-|com.azure.spring.integration.core.api.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
-|com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
-|com.azure.spring.integration.core.EventHubHeaders |com.azure.spring.eventhubs.support.EventHubsHeaders
+|com.azure.spring.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter |com.azure.spring.cloud.autoconfigure.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter 
+|com.azure.spring.aad.webapp.AADWebSecurityConfigurerAdapter |com.azure.spring.cloud.autoconfigure.aad.webapp.AADWebSecurityConfigurerAdapter 
+|com.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter |com.azure.spring.cloud.autoconfigure.aad.filter.AADAppRoleStatelessAuthenticationFilter 
+|com.azure.spring.autoconfigure.aad.AADAuthenticationFilter |com.azure.spring.cloud.autoconfigure.aad.filter.AADAuthenticationFilter 
+|com.azure.spring.autoconfigure.aad.AADAuthenticationProperties |com.azure.spring.cloud.autoconfigure.aad.properties.AADAuthenticationProperties 
+|com.azure.spring.autoconfigure.aad.Membership |com.azure.spring.cloud.autoconfigure.aad.graph.Membership 
+|com.azure.spring.autoconfigure.aad.UserPrincipal |com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipal 
 |===
+
+==== spring-cloud-azure-starter-active-directory-b2c
+
+|===
+|Legacy class |Modern class 
+
+|com.azure.spring.autoconfigure.b2c.AADB2CJwtBearerTokenAuthenticationConverter |com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2CJwtBearerTokenAuthenticationConverter 
+|com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer |com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2COidcLoginConfigurer 
+|===
+
 
 ==== spring-cloud-azure-starter-integration-eventhubs
 
@@ -653,18 +643,6 @@ Modern code:
 |NONE |com.azure.spring.eventhubs.core.EventHubsProcessorContainer 
 |===
 
-==== spring-cloud-azure-stream-binder-servicebus
-
-IMPORTANT: Legacy binder is `azure-spring-cloud-stream-binder-servicebus`.
-
-|===
-|Legacy class |Modern class 
-
-|com.azure.spring.integration.core.api.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer 
-|com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders 
-|com.azure.spring.integration.servicebus.converter.ServiceBusMessageHeaders |com.azure.spring.servicebus.support.ServiceBusMessageHeaders
-|===
-
 ==== spring-cloud-azure-starter-integration-servicebus
 
 IMPORTANT: Legacy library is `azure-spring-cloud-starter-servicebus`.
@@ -761,39 +739,6 @@ Legacy code:
 
 ----
 
-===== Package path changes
-|===
-|Legacy class |Modern class
-
-|com.azure.spring.integration.core.DefaultMessageHandler |com.azure.spring.integration.handler.DefaultMessageHandler
-|com.azure.spring.integration.servicebus.ServiceBusTemplate |com.azure.spring.servicebus.core.ServiceBusTemplate
-|com.azure.spring.integration.servicebus.inbound.ServiceBusQueueInboundChannelAdapter |com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter
-|com.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter |com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter
-|===
-
-==== spring-cloud-azure-starter-active-directory
-
-|===
-|Legacy class |Modern class 
-
-|com.azure.spring.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter |com.azure.spring.cloud.autoconfigure.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter 
-|com.azure.spring.aad.webapp.AADWebSecurityConfigurerAdapter |com.azure.spring.cloud.autoconfigure.aad.webapp.AADWebSecurityConfigurerAdapter 
-|com.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter |com.azure.spring.cloud.autoconfigure.aad.filter.AADAppRoleStatelessAuthenticationFilter 
-|com.azure.spring.autoconfigure.aad.AADAuthenticationFilter |com.azure.spring.cloud.autoconfigure.aad.filter.AADAuthenticationFilter 
-|com.azure.spring.autoconfigure.aad.AADAuthenticationProperties |com.azure.spring.cloud.autoconfigure.aad.properties.AADAuthenticationProperties 
-|com.azure.spring.autoconfigure.aad.Membership |com.azure.spring.cloud.autoconfigure.aad.graph.Membership 
-|com.azure.spring.autoconfigure.aad.UserPrincipal |com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipal 
-|===
-
-==== spring-cloud-azure-starter-active-directory-b2c
-
-|===
-|Legacy class |Modern class 
-
-|com.azure.spring.autoconfigure.b2c.AADB2CJwtBearerTokenAuthenticationConverter |com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2CJwtBearerTokenAuthenticationConverter 
-|com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer |com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2COidcLoginConfigurer 
-|===
-
 ==== spring-cloud-azure-starter-integration-storage-queue
 
 |===
@@ -807,4 +752,32 @@ Legacy code:
 |com.azure.spring.integration.storage.queue.StorageQueueOperation |com.azure.spring.storage.queue.core.StorageQueueOperation
 |com.azure.spring.integration.storage.queue.StorageQueueTemplate |com.azure.spring.storage.queue.core.StorageQueueTemplate
 |===
+
+===== Package path changes
+|===
+|Legacy class |Modern class
+
+|com.azure.spring.integration.core.DefaultMessageHandler |com.azure.spring.integration.handler.DefaultMessageHandler
+|com.azure.spring.integration.servicebus.ServiceBusTemplate |com.azure.spring.servicebus.core.ServiceBusTemplate
+|com.azure.spring.integration.servicebus.inbound.ServiceBusQueueInboundChannelAdapter |com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter
+|com.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter |com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter
+|===
+
+
+
+==== spring-cloud-azure-stream-binder-servicebus
+
+IMPORTANT: Legacy binder is `azure-spring-cloud-stream-binder-servicebus`.
+
+|===
+|Legacy class |Modern class 
+
+|com.azure.spring.integration.core.api.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer 
+|com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders 
+|com.azure.spring.integration.servicebus.converter.ServiceBusMessageHeaders |com.azure.spring.servicebus.support.ServiceBusMessageHeaders
+|===
+
+
+
+
 
