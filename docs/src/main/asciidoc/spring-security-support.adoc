@@ -230,9 +230,9 @@ spring:
   cloud:
     azure:
       active-directory:
-        tenant-id: ${TENANT_NAME}
-        client-id: ${CLIENT_ID}
-        client-secret: ${CLIENT_SECRET}
+        tenant-id: ${AZURE_TENANT_ID}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
 ----
 
 * Step 4: Write your Java code:
@@ -271,9 +271,9 @@ spring:
   cloud:
     azure:
       active-directory:
-        tenant-id: ${TENANT_ID}
-        client-id: ${CLIENT_ID}
-        client-secret: ${CLIENT_SECRET}
+        tenant-id: ${AZURE_TENANT_ID}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
         authorization-clients:
           graph:
             scopes: https://graph.microsoft.com/Analytics.Read, email
@@ -520,9 +520,9 @@ This scenario uses https://docs.microsoft.com/azure/active-directory/develop/v2-
 . Select *Azure AD B2C* from the portal menu, click *Applications*, and then click *Add*.
 
 . Specify your application *Name*, we call it `webapp`, add `http://localhost:8080/login/oauth2/code/` for the *Reply URL*, record the
- *Application ID* as your `${WEB_APP_CLIENT_ID}` and then click *Save*.
+ *Application ID* as your `${WEB_APP_AZURE_CLIENT_ID}` and then click *Save*.
 
-. Select *Keys* from your application, click *Generate key* to generate `${WEB_APP_CLIENT_SECRET}` and then *Save*.
+. Select *Keys* from your application, click *Generate key* to generate `${WEB_APP_AZURE_CLIENT_SECRET}` and then *Save*.
 
 . Select *User flows* on your left, and then Click *New user flow*.
 
@@ -577,8 +577,8 @@ spring:
             login_hint: xxxxxxxxx          # optional
             prompt: [login,none,consent]   # optional
           base-uri: ${BASE_URI}
-          client-id: ${WEBAPP_CLIENT_ID}
-          client-secret: ${WEBAPP_CLIENT_SECRET}
+          client-id: ${WEBAPP_AZURE_CLIENT_ID}
+          client-secret: ${WEBAPP_AZURE_CLIENT_SECRET}
           login-flow: ${LOGIN_USER_FLOW_KEY}               # default to sign-up-or-sign-in, will look up the user-flows map with provided key.
           logout-success-url: ${LOGOUT_SUCCESS_URL}
           user-flows:
@@ -627,9 +627,9 @@ This scenario is based on *Accessing a web application* scenario to allow applic
 
 . Select *Azure AD B2C* from the portal menu, click *Applications*, and then click *Add*.
 
-. Specify your application *Name*, we call it `webApiA`, record the *Application ID* as your `${WEB_API_A_CLIENT_ID}` and then click *Save*.
+. Specify your application *Name*, we call it `webApiA`, record the *Application ID* as your `${WEB_API_A_AZURE_CLIENT_ID}` and then click *Save*.
 
-. Select *Keys* from your application, click *Generate key* to generate `${WEB_API_A_CLIENT_SECRET}` and then *Save*.
+. Select *Keys* from your application, click *Generate key* to generate `${WEB_API_A_AZURE_CLIENT_SECRET}` and then *Save*.
 
 . Select *Expose an API* on your left, and then Click the *Set* link,
  record the *Application ID URI* as your `${WEB_API_A_APP_ID_URL}`, then *Save*.
@@ -678,7 +678,7 @@ spring:
       active-directory:
         b2c:
           base-uri: ${BASE_URI}             # Such as: https://xxxxb2c.b2clogin.com
-          tenant-id: ${TENANT_ID}
+          tenant-id: ${AZURE_TENANT_ID}
           authorization-clients:
             ${RESOURCE_SERVER_A_NAME}:
               authorization-grant-type: client_credentials
@@ -745,9 +745,9 @@ spring:
       active-directory:
         b2c:
           base-uri: ${BASE_URI}             # Such as: https://xxxxb2c.b2clogin.com
-          tenant-id: ${TENANT_ID}
+          tenant-id: ${AZURE_TENANT_ID}
           app-id-uri: ${APP_ID_URI}         # If you are using v1.0 token, please configure app-id-uri for `aud` verification
-          client-id: ${CLIENT_ID}           # If you are using v2.0 token, please configure client-id for `aud` verification
+          client-id: ${AZURE_CLIENT_ID}           # If you are using v2.0 token, please configure client-id for `aud` verification
 ----
 
 . Write your Java code.
@@ -822,7 +822,7 @@ spring:
     azure:
       active-directory:
         b2c:
-          client-secret: ${WEB_API_A_CLIENT_SECRET}
+          client-secret: ${WEB_API_A_AZURE_CLIENT_SECRET}
           authorization-clients:
             ${RESOURCE_SERVER_B_NAME}:
               authorization-grant-type: client_credentials
