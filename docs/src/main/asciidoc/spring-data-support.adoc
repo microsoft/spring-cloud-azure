@@ -1,15 +1,58 @@
 == Spring Data Support
 
-=== Cosmos DB
+=== Cosmos DB Support
 
-brief introduction of the project
+[Azure Cosmos DB](https://azure.microsoft.com/services/cosmos-db/) is a globally-distributed database service that allows developers to work with data using a variety of standard APIs, such as SQL, MongoDB, Graph, and Azure Table storage.
+
+Connect to Cosmos DB using Spring Data and CosmosDB libraries.
 
 === Dependency Setup
 
+[source,xml]
+----
+<dependency>
+   <groupId>com.azure.spring</groupId>
+   <artifactId>spring-cloud-azure-starter-data-cosmos</artifactId>
+</dependency>
+----
+
+
 === Configuration
 
-for full configurations, check appendix
+This Spring Cloud Azure Starter provides the following properties:
+
+|===
+|Name | Default | Description
+|spring.cloud.azure.cosmos.enabled | `true` | Whether Azure Cosmos Service is enabled.
+|spring.cloud.azure.cosmos.database |  |
+|spring.cloud.azure.cosmos.endpoint |  | Uri to connect CosmosDB
+|spring.cloud.azure.cosmos.key |  | PrivateKey to connect CosmosDB
+|spring.cloud.azure.cosmos.credential.client-certificate-password |  | Password of the certificate file.
+|spring.cloud.azure.cosmos.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
+|spring.cloud.azure.cosmos.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
+|spring.cloud.azure.cosmos.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
+|spring.cloud.azure.cosmos.credential.managed-identity-client-id |  | Client id to use when using managed identity to authenticate with Azure.
+|spring.cloud.azure.cosmos.credential.password |  | Password to use when performing username/password authentication with Azure.
+|spring.cloud.azure.cosmos.credential.username |  | Username to use when performing username/password authentication with Azure.
+|spring.cloud.azure.cosmos.populate-query-metrics | `false` | Populate Diagnostics Strings and Query metrics
+|===
 
 === Basic Usage
 
+Add below properties and you are good to go.
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      cosmos:
+        key: ${YOUR_COSMOS_KEY}
+        endpoint: [YOUR_COSMOS_ENDPOINT]
+        database: [YOUR_COSMOS_DATABASE]
+----
+
 === Samples
+
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/cosmos/spring-cloud-azure-starter-data-cosmos[samples for Azure Spring Data Cosmos] for more details.
+
