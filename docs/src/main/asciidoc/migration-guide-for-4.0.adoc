@@ -179,7 +179,6 @@ IMPORTANT: There could be some `ERROR` logs be printed out while the `DefaultAzu
 === Configuration properties
 
 ==== Properties Migration 
-
 We've create a `additional-spring-configuration-metadata.json` file to smooth the properties migration when using with `spring-boot-properties-migrator`. Before doing so, let’s add the properties migrator to your application
 
 [source,xml]
@@ -200,6 +199,8 @@ runtime("org.springframework.boot:spring-boot-properties-migrator")
 If you run the app, it will identify the properties that are no longer managed by Spring Cloud Azure. If there is a replacement it will temporarily remap the property for you with a warning. If there isn’t a replacement, an error report will give you more information. Either way, the configuration has to be updated and the dependency removed once you have updated the configuration.
 
 Before you move on, it is a good idea to use the search feature of your IDE to double-check that you aren’t using one of the properties you’ve migrated in an integration test.
+
+IMPORTANT: We've changed many configuration properties in this change, with using the `spring-boot-properties-migrator` will help smooth your migration.
 
 
 ==== Global configurations

@@ -30,7 +30,7 @@ Below properties could be configured when using Redis support:
 |*spring.cloud.azure*.profile.subscription-id| The subscription id. ||Yes
 |===
 
-Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix `spring.cloud.azure`. Please refer to link:index.html#authentication for more details.
+NOTE: Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix `spring.cloud.azure`. Please refer to link:index.html#authentication for more details.
 
 === Basic Usage
 

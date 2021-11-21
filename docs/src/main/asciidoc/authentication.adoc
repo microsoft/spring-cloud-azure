@@ -37,7 +37,7 @@ For applications want to connect to resources that support Azure Active Director
 
 |client-id |Client id to use when performing service principal authentication with Azure.
 |client-serect |Client secret to use when performing service principal authentication with Azure.
-|credential.client-certificate-path |Client secret to use when performing service principal authentication with Azure.
+|client-certificate-path |Client secret to use when performing service principal authentication with Azure.
 |client-certificate-password |Password of the certificate file.
 |username |Username to use when performing username/password authentication with Azure.
 |password |Password to use when performing username/password authentication with Azure.
