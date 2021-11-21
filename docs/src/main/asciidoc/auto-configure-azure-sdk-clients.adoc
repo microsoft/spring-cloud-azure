@@ -48,7 +48,7 @@ TIP: To see the list of all Spring Cloud Azure related configuration properties 
 
 === Basic Usage
 
-Adding below properties to your `application.yaml` will auto-configure the Cosmos CLient for you, both `CosmosClient` and `CosmosAsyncClient` are available in the context and could be autowired.
+Adding below properties to your `application.yaml` will auto-configure the Cosmos Client for you, both `CosmosClient` and `CosmosAsyncClient` are available in the context and could be autowired.
 
 [source,yaml]
 ----
