@@ -236,7 +236,7 @@ spring:
                 max-wait-time: 1m # Optional, the default value is null
 ----
 
-======= Consume messages in batches
+====== Consume messages in batches
 
 For checkpointing mode as BATCH, you can use below code to send messages and consume in batches.
 
