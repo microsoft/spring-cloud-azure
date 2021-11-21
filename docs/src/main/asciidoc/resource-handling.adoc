@@ -72,3 +72,5 @@ spring:
 === Samples
 
 A link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/storage/spring-cloud-azure-starter-storage-blob/storage-blob-sample[storage-blob-sample] and link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/storage/spring-cloud-azure-starter-storage-file-share/storage-file-sample[storage-file-sample] are provided to show how to use the `spring-cloud-azure-starter-storage-blob` and `spring-cloud-azure-starter-storage-file-share`.
+
+
