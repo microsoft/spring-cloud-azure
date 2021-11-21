@@ -56,6 +56,15 @@ This property(`spring.cloud.azure.active-directory.application-type`) is optiona
 ===== Property example 2: Use https://docs.microsoft.com/azure/china/resources-developer-guide#check-endpoints-in-azure[Azure China] instead of Azure Global.
 
 * Step 1: Add property in application.yml
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      active-directory:
+        base-uri: https://login.partner.microsoftonline.cn
+        graph-base-uri: https://microsoftgraph.chinacloudapi.cn
+----
 
 ===== Property example 3: Use `group name` or `group id` to protect some method in web application.
 
@@ -65,14 +74,14 @@ This property(`spring.cloud.azure.active-directory.application-type`) is optiona
 ----
 spring:
   cloud:
-azure:
-  active-directory:
-    user-group:
-      allowed-group-names: group1_name_1, group2_name_2
-      # 1. If allowed-group-ids == all, then all group id will take effect.
-      # 2. If "all" is used, we should not configure other group ids.
-      # 3. "all" is only supported for allowed-group-ids, not supported for allowed-group-names.
-      allowed-group-ids: group_id_1, group_id_2
+    azure:
+      active-directory:
+        user-group:
+          allowed-group-names: group1_name_1, group2_name_2
+          # 1. If allowed-group-ids == all, then all group id will take effect.
+          # 2. If "all" is used, we should not configure other group ids.
+          # 3. "all" is only supported for allowed-group-ids, not supported for allowed-group-names.
+          allowed-group-ids: group_id_1, group_id_2
 ----
 
 * Step 2: Add `@EnableGlobalMethodSecurity(prePostEnabled == true)` in web application:
@@ -140,14 +149,14 @@ public class RoleController {
 ----
 spring:
   cloud:
-azure:
-  active-directory:
-    authorization-clients:
-      graph:
-        scopes: https://graph.microsoft.com/Analytics.Read, email
-      arm: # client registration id
-        on-demand: true  # means incremental consent
-        scopes: https://management.core.windows.net/user_impersonation
+    azure:
+      active-directory:
+        authorization-clients:
+          graph:
+            scopes: https://graph.microsoft.com/Analytics.Read, email
+          arm: # client registration id
+            on-demand: true  # means incremental consent
+            scopes: https://management.core.windows.net/user_impersonation
 ----
 
 * Step 2: Write Java code:
@@ -168,13 +177,13 @@ consented.
 ----
 spring:
   cloud:
-azure:
-  active-directory:
-    authorization-clients:
-      webapiC:                          # When authorization-grant-type is null, on behalf of flow is used by default
-        authorization-grant-type: client_credentials
-        scopes:
-            - <Web-API-C-app-id-url>/.default
+    azure:
+      active-directory:
+        authorization-clients:
+          webapiC:                          # When authorization-grant-type is null, on behalf of flow is used by default
+            authorization-grant-type: client_credentials
+            scopes:
+                - <Web-API-C-app-id-url>/.default
 ----
 
 * Step 2: Write Java code:
@@ -219,11 +228,11 @@ image:https://user-images.githubusercontent.com/13167207/142617785-b4ca1afc-79f6
 ----
 spring:
   cloud:
-azure:
-  active-directory:
-    tenant-id: xxxxxx-your-tenant-id-xxxxxx
-    client-id: xxxxxx-your-client-id-xxxxxx
-    client-secret: xxxxxx-your-client-secret-xxxxxx
+    azure:
+      active-directory:
+        tenant-id: xxxxxx-your-tenant-id-xxxxxx
+        client-id: xxxxxx-your-client-id-xxxxxx
+        client-secret: xxxxxx-your-client-secret-xxxxxx
 ----
 
 * Step 4: Write your Java code:
@@ -260,14 +269,14 @@ image:https://user-images.githubusercontent.com/13167207/142617853-0526205f-fdef
 ----
 spring:
   cloud:
-azure:
-  active-directory:
-    tenant-id: xxxxxx-your-tenant-id-xxxxxx
-    client-id: xxxxxx-your-client-id-xxxxxx
-    client-secret: xxxxxx-your-client-secret-xxxxxx
-    authorization-clients:
-      graph:
-        scopes: https://graph.microsoft.com/Analytics.Read, email
+    azure:
+      active-directory:
+        tenant-id: xxxxxx-your-tenant-id-xxxxxx
+        client-id: xxxxxx-your-client-id-xxxxxx
+        client-secret: xxxxxx-your-client-secret-xxxxxx
+        authorization-clients:
+          graph:
+            scopes: https://graph.microsoft.com/Analytics.Read, email
 ----
 
 Here, `graph` is the name of `OAuth2AuthorizedClient`, `scopes` means the scopes need to consent when login.
@@ -343,16 +352,16 @@ To use *aad-starter* in this scenario, we need these steps:
 ----
 spring:
   cloud:
-azure:
-  active-directory:
-    tenant-id: <Tenant-id-registered-by-application>
-    client-id: <Web-API-A-client-id>
-    client-secret: <Web-API-A-client-secret>
-    app-id-uri: <Web-API-A-app-id-url>
-    authorization-clients:
-      graph:
-        scopes:
-          - https://graph.microsoft.com/User.Read
+    azure:
+      active-directory:
+        tenant-id: <Tenant-id-registered-by-application>
+        client-id: <Web-API-A-client-id>
+        client-secret: <Web-API-A-client-secret>
+        app-id-uri: <Web-API-A-app-id-url>
+        authorization-clients:
+          graph:
+            scopes:
+              - https://graph.microsoft.com/User.Read
 ----
 
 * Step 3: Write Java code:
@@ -559,21 +568,21 @@ This scenario uses https://docs.microsoft.com/azure/active-directory/develop/v2-
 ----
 spring:
   cloud:
-   azure:
-     active-directory:
-       b2c:
-         authenticate-additional-parameters: 
-           domain_hint: xxxxxxxxx         # optional
-           login_hint: xxxxxxxxx          # optional
-           prompt: [login,none,consent]   # optional
-         base-uri: ${your-tenant-authorization-server-base-uri}
-         client-id: ${your-webapp-client-id}
-         client-secret: ${your-webapp-client-secret}
-         login-flow: ${your-login-user-flow-key}               # default to sign-up-or-sign-in, will look up the user-flows map with provided key.
-         logout-success-url: ${you-logout-success-url}
-         user-flows:
-           ${your-user-flow-key}: ${your-user-flow-name-defined-on-azure-portal}
-         user-name-attribute-name: ${your-user-name-attribute-name}
+    azure:
+      active-directory:
+        b2c:
+          authenticate-additional-parameters:
+            domain_hint: xxxxxxxxx         # optional
+            login_hint: xxxxxxxxx          # optional
+            prompt: [login,none,consent]   # optional
+          base-uri: ${your-tenant-authorization-server-base-uri}
+          client-id: ${your-webapp-client-id}
+          client-secret: ${your-webapp-client-secret}
+          login-flow: ${your-login-user-flow-key}               # default to sign-up-or-sign-in, will look up the user-flows map with provided key.
+          logout-success-url: ${you-logout-success-url}
+          user-flows:
+            ${your-user-flow-key}: ${your-user-flow-name-defined-on-azure-portal}
+          user-name-attribute-name: ${your-user-name-attribute-name}
 ----
 
 . Write your Java code.
@@ -664,15 +673,15 @@ image:https://user-images.githubusercontent.com/13167207/142620567-59a91df7-7a97
 ----
 spring:
   cloud:
-   azure:
-     active-directory:
-       b2c:
-         base-uri: ${your-base-uri}             # Such as: https://xxxxb2c.b2clogin.com
-         tenant-id: ${your-tenant-id}
-         authorization-clients:
-           ${your-resource-server-a-name}:
-             authorization-grant-type: client_credentials
-             scopes: ${your-web-api-a-app-id-url}/.default
+    azure:
+      active-directory:
+        b2c:
+          base-uri: ${your-base-uri}             # Such as: https://xxxxb2c.b2clogin.com
+          tenant-id: ${your-tenant-id}
+          authorization-clients:
+            ${your-resource-server-a-name}:
+              authorization-grant-type: client_credentials
+              scopes: ${your-web-api-a-app-id-url}/.default
 ----
 
 . Write your `Webapp` Java code.
@@ -731,13 +740,13 @@ This scenario not support login. Just protect the server by validating the acces
 ----
 spring:
   cloud:
-   azure:
-     active-directory:
-       b2c:
-         base-uri: ${your-base-uri}             # Such as: https://xxxxb2c.b2clogin.com
-         tenant-id: ${your-tenant-id}
-         app-id-uri: ${your-app-id-uri}         # If you are using v1.0 token, please configure app-id-uri for `aud` verification
-         client-id: ${your-client-id}           # If you are using v2.0 token, please configure client-id for `aud` verification
+    azure:
+      active-directory:
+        b2c:
+          base-uri: ${your-base-uri}             # Such as: https://xxxxb2c.b2clogin.com
+          tenant-id: ${your-tenant-id}
+          app-id-uri: ${your-app-id-uri}         # If you are using v1.0 token, please configure app-id-uri for `aud` verification
+          client-id: ${your-client-id}           # If you are using v2.0 token, please configure client-id for `aud` verification
 ----
 
 . Write your Java code.
@@ -809,14 +818,14 @@ image:https://user-images.githubusercontent.com/13167207/142620648-cfbf5220-9736
 ----
 spring:
   cloud:
-   azure:
-     active-directory:
-       b2c:
-         client-secret: ${your-web-api-a-client-secret}
-         authorization-clients:
-           ${your-resource-server-b-name}:
-             authorization-grant-type: client_credentials
-             scopes: ${your-web-api-b-app-id-url}/.default
+    azure:
+      active-directory:
+        b2c:
+          client-secret: ${your-web-api-a-client-secret}
+          authorization-clients:
+            ${your-resource-server-b-name}:
+              authorization-grant-type: client_credentials
+              scopes: ${your-web-api-b-app-id-url}/.default
 ----
 
 . Write your Java code.
