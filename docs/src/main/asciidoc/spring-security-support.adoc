@@ -58,9 +58,7 @@ This property(`spring.cloud.azure.active-directory.application-type`) is optiona
 
 ===== Property example 3: Use `group name` or `group id` to protect some method in web application.
 
-* 
-
-Step 1: Add property in application.yml
+* Step 1: Add property in application.yml
 
 [source,yaml]
 ----
@@ -135,9 +133,7 @@ public class RoleController {
 
 ===== Property example 4: https://docs.microsoft.com/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison#incremental-and-dynamic-consent[Incremental consent] in Web application visiting resource servers.
 
-* 
-
-Step 1: Add property in application.yml
+* Step 1: Add property in application.yml
 
 [source,yaml]
 ----
@@ -165,9 +161,7 @@ consented.
 
 ===== Property example 5: [Client credential flow] in resource server visiting resource servers.
 
-* 
-
-Step 1: Add property in application.yml
+* Step 1: Add property in application.yml
 
 [source,yaml]
 ----
@@ -218,9 +212,7 @@ image:https://user-images.githubusercontent.com/13167207/142617785-b4ca1afc-79f6
 </dependencies>
 ----
 
-* 
-
-Step 3: Add properties in application.yml. These values should be got in https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/spring/azure-spring-boot-starter-active-directory#prerequisites[prerequisite].
+* Step 3: Add properties in application.yml. These values should be got in https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/spring/azure-spring-boot-starter-active-directory#prerequisites[prerequisite].
 
 [source,yaml]
 ----
@@ -261,9 +253,7 @@ image:https://user-images.githubusercontent.com/13167207/142617853-0526205f-fdef
 </dependencies>
 ----
 
-* 
-
-Step 3: Add properties in application.yml:
+* Step 3: Add properties in application.yml:
 
 [source,yaml]
 ----
@@ -346,9 +336,7 @@ To use *aad-starter* in this scenario, we need these steps:
 </dependencies>
 ----
 
-* 
-
-Step 2: Add properties in application.yml:
+* Step 2: Add properties in application.yml:
 
 [source,yaml]
 ----
