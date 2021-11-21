@@ -72,7 +72,7 @@ Below options are used to configure Azure Event Hubs SDK Client.
 |===
 |Properties | Type |Description
 
-|*spring.cloud.azure.eventhubs*.connection-string | NA | Event Hubs Namespace connection string value.
+|*spring.cloud.azure.eventhubs*.connection-string | String | Event Hubs Namespace connection string value.
 |*spring.cloud.azure.eventhubs*.namespace | String | Event Hubs Namespace value.
 |*spring.cloud.azure.eventhubs*.domainName | String | Domain name of an Azure Event Hubs Namespace value.
 |*spring.cloud.azure.eventhubs*.eventHubName | String | Name of an Event Hub entity.
@@ -291,7 +291,7 @@ Below options are used to configure Azure Service Bus SDK Client.
 |===
 |Properties | Type |Description
 
-|*spring.cloud.azure.servicebus*.connection-string | NA | Service Bus Namespace connection string value.
+|*spring.cloud.azure.servicebus*.connection-string | String | Service Bus Namespace connection string value.
 |*spring.cloud.azure.servicebus*.namespace | String | Service Bus Namespace value.
 |*spring.cloud.azure.servicebus*.domainName | String | Domain name of an Azure Service Bus Namespace value.
 |*spring.cloud.azure.servicebus*.entityName | String | Entity name of Azure Service Bus queue or topic.
@@ -575,7 +575,7 @@ Below options are used to configure Azure Storage Queue SDK Client.
 |===
 |Properties | Type |Description
 
-|*spring.cloud.azure.storage.queue*.connection-string | NA | Storage Queue Namespace connection string value.
+|*spring.cloud.azure.storage.queue*.connection-string | String | Storage Queue Namespace connection string value.
 |*spring.cloud.azure.storage.queue*.accountName | String | Storage Queue account name.
 |*spring.cloud.azure.storage.queue*.accountKey | String | Storage Queue account key.
 |*spring.cloud.azure.storage.queue*.endpoint | String | Storage Queue service endpoint.
