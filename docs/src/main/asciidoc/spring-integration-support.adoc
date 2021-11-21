@@ -26,13 +26,8 @@ Provide Spring Integration support for these Azure services: Event Hubs, Service
 This starter provides the following 2 parts of configuration options:
 
 ===== Azure Common Configuration Options
-<<<<<<< HEAD
 Below properties can also be configured with the default Spring Cloud Azure unified properties by changing the prefix from *spring.cloud.azure.eventhubs.* to *spring.cloud.azure.*.
-=======
-Below properties can also be configured with the default Spring Cloud Azure unified properties,
-of which the prefix is changed from *spring.cloud.azure.eventhubs.* to *spring.cloud.azure.*.
 [cols="3*", options="header"]
->>>>>>> 1ffefa6e (update properties)
 |===
 |Properties | Type |Description
 
