@@ -1,8 +1,10 @@
 == Redis Support
 
-Connect to Azure Cache for Redis using Spring Redis libraries.
+Connect to Azure Cache for Redis using Spring Redis libraries. With adding `spring-cloud-azure-starter` and `spring-cloud-azure-resourcemanager` to your application, it's possible to read the Azure Cache for Redis connection information through Azure Resource Manager and auto-configure the Redis properties.
 
 === Dependency Setup
+
+Adding below dependencies if you want to use the Spring Cloud Azure Redis support to your Spring Boot application using Redis.
 
 [source,xml]
 ----
@@ -14,101 +16,40 @@ Connect to Azure Cache for Redis using Spring Redis libraries.
   <groupId>com.azure.spring</groupId>
   <artifactId>spring-cloud-azure-resourcemanager</artifactId>
 </dependency>
-<dependency>
-  <groupId>org.springframework.boot</groupId>
-  <artifactId>spring-boot-starter-data-redis</artifactId>
-</dependency>
 ----
 
 === Configuration
 
-This Spring Cloud Azure Starter provides the following properties:
+Below properties could be configured when using Redis support:
 
 |===
-|Properties |Description
-
-|*spring.cloud.azure.profile*.tenant-id |Tenant id for Azure resources.
-|*spring.cloud.azure.profile*.subscription-id |Subscription id to use when connecting to Azure resources.
-|*spring.cloud.azure.credential*.client-id |Client id to use when performing service principal authentication with Azure.
-|*spring.cloud.azure.credential*.client-secret |Subscription id to use when connecting to Azure resources.
-|*spring.cloud.azure.credential*.managed-identity-client-id |Client id to use when using managed identity to authenticate with Azure.
-|*spring.cloud.azure.credential*.password |Password to use when performing username/password authentication with Azure.
-|*spring.cloud.azure.credential*.username |Username to use when performing username/password authentication with Azure.
-|*spring.cloud.azure.credential*.client-certificate-password |Password of the certificate file.
-|*spring.cloud.azure.credential*.client-certificate-path |Path of a PEM certificate file to use when performing service principal authentication with Azure.
-|*spring.cloud.azure.redis*.name |Azure Cache for Redis instance name.
-|*spring.cloud.azure.redis*.resource.resource-group |The resource group of Azure Cache for Redis.
+|Properties |Description |Default Value | Required
+|*spring.cloud.azure.redis*.enabled |Azure Cache for Redis instance name.|true | No
+|*spring.cloud.azure.redis*.name |Azure Cache for Redis instance name.| |Yes
+|*spring.cloud.azure.redis*.resource.resource-group |The resource group of Azure Cache for Redis.||Yes
+|*spring.cloud.azure*.profile.subscription-id| The subscription id. ||Yes
 |===
+
+NOTE: Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix `spring.cloud.azure`. Please refer to link:index.html#authentication for more details.
 
 === Basic Usage
 
-Spring Cloud Azure provides multiple methods to authenticate requests inside Azure Service. The following configuration is commonly used for service principal authentication:
+Add below properties and you are good to go.
 
 [source,yaml]
 ----
 spring:
   cloud:
     azure:
-      profile:
-        tenant-id: ${SPRING_TENANT_ID}
-        subscription-id: ${SPRING_SUBSCRIPTION_ID}
-      credential:
-        client-id: ${SPRING_CLIENT_ID}
-        client-secret: ${SPRING_CLIENT_SECRET}
+      redis:
+        name: ${AZURE_CACHE_REDIS_NAME}
+        resource:
+          resource-group: ${AZURE_CACHE_REDIS_RESOURCE_GROUP}
 ----
 
 === Samples
 
-. Update
-https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0/cache/spring-cloud-azure-starter/spring-cloud-azure-sample-cache/src/main/resources/application.yaml[application.yaml] file to specify
-resource group, service principal, and cache instance name:
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/cache[samples for Azure Cache for Redis] for more details.
 
-[source,yaml]
-----
-spring:
-  cloud:
-    azure:
-      credential:
-        client-id: [service-principal-id]
-        client-secret: [service-principal-secret]
-      profile:
-        tenant-id: [tenant-id]
-        subscription-id: [subscription-id]
-      redis:
-        name: [azure-cache-for-redis-instance-name]
-        resource:
-          resource-group: [resource-group]
-----
 
-. Use this controller code to cache key
-https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0/cache/spring-cloud-azure-starter/spring-cloud-azure-sample-cache/src/main/java/com/azure/spring/sample/cache/WebController.java[WebController.java] file
-
-[source,java]
-----
-@RestController
-public class WebController {
-
-    @GetMapping("/{name}")
-    @Cacheable("azureCache")
-    public String getValue(@PathVariable String name) {
-        return "Hello " + name;
-    }
-}
-----
-
-. Run the application using the `$ mvn spring-boot:run` command.
-
-. Send a GET request to check, where `name` could be any string:
-
-----
-$ curl -XGET http://localhost:8080/{name}
-----
-
-. Confirm from Azure Redis Cache console in Azure Portal
-
-----
-$ keys *
-----
-
-. Delete the resources on https://ms.portal.azure.com/[Azure Portal] to avoid unexpected charges.
 
