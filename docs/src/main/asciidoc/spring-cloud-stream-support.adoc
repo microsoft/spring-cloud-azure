@@ -89,9 +89,30 @@ Below options are used to configure Azure Event Hubs SDK Client.
 ===== Azure Event Hubs Binding Configuration Options
 Below options are used to configure Azure Event Hubs Binding properties.
 
+> For *spring.cloud.stream.eventhubs*.bindings entry's value is type of
+Map<String, EventHubsExtendedBindingProperties>, we flattened the details here for clarity.
+consumer and producer are correspondingly listed below.
 |===
 |Properties | Type |Description
-|*spring.cloud.stream.eventhubs*.binding | EventHubsExtendedBindingProperties | eventhubs binding additional properties.
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.checkpoint.mode |
+CheckpointMode | literal string of `RECORD`, `BATCH`, `MANUAL`, `PARTITION_COUNT`, `TIME`
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.checkpoint.count | Integer | count
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.checkpoint.interval | Duration |
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.batch.max-size | Integer |
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.batch.max-wait-time | Duration |
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.load-balancing.update-interval
+|Duration| interval time for update
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.load-balancing.strategy |
+LoadBalancingStrategy |literal value of BALANCED or GREEDY
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name>
+.consumer.track-las-enqueued-event-properties |Boolean |as it is
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name> .consumer
+.partition-ownership-expiration-interval |Boolean | expiration interval time for partition ownership
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.producer
+.sync |boolean | switch flag for sync of producer
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.producer
+.send-timeout |long | timeout value for sending of producer
+
 |===
 
 ==== Basic Usage
