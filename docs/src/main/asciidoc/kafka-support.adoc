@@ -28,14 +28,20 @@ If you want to retrieve the connection string using Azure Resource Manager, plea
 === Configuration
 
 Below properties could be configured when using Kafka support:
-
+[cols="2*", options="header"]
 |===
-|Properties |Description
-|*spring.cloud.azure.eventhubs*.kafka.enabled |Whether to enable the Azure Event Hubs Kafka support, defult to true.
-|*spring.cloud.azure.eventhubs*.connection-string |Azure Event Hubs connection string. Should be provided when want to provide the connection string directly.
-|*spring.cloud.azure.eventhubs*.namespace |Azure Event Hubs namespace. Should be provided when want to retrieve the connection information through Azure Resource Manager.
-|*spring.cloud.azure.eventhubs*.resource.resource-group |The resource group of Azure Event Hubs namespace. Should be provided when want to retrieve the connection information through Azure Resource Manager.
-|*spring.cloud.azure*.profile.subscription-id| The subscription id. Should be provided when want to retrieve the connection information through Azure Resource Manager.|
+|Properties 
+|Description
+|*spring.cloud.azure.eventhubs*.kafka.enabled 
+|Whether to enable the Azure Event Hubs Kafka support, defult to true.
+|*spring.cloud.azure.eventhubs*.connection-string 
+|Azure Event Hubs connection string. Should be provided when want to provide the connection string directly.
+|*spring.cloud.azure.eventhubs*.namespace 
+|Azure Event Hubs namespace. Should be provided when want to retrieve the connection information through Azure Resource Manager.
+|*spring.cloud.azure.eventhubs*.resource.resource-group 
+|The resource group of Azure Event Hubs namespace. Should be provided when want to retrieve the connection information through Azure Resource Manager.
+|*spring.cloud.azure*.profile.subscription-id
+| The subscription id. Should be provided when want to retrieve the connection information through Azure Resource Manager.
 |===
 
 NOTE: Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix `spring.cloud.azure`. Please refer to link:index.html#authentication[Authentication] for more details.
