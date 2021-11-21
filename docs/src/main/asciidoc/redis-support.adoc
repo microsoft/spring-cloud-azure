@@ -30,7 +30,7 @@ Below properties could be configured when using Redis support:
 |*spring.cloud.azure*.profile.subscription-id| The subscription id. ||Yes
 |===
 
-NOTE: Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix `spring.cloud.azure`. Please refer to link:index.html#authentication for more details.
+NOTE: Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix `spring.cloud.azure`. Please refer to link:index.html#authentication[Authentication] for more details.
 
 === Basic Usage
 
@@ -49,7 +49,7 @@ spring:
 
 === Samples
 
-Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/cache[samples for Azure Cache for Redis] for more details.
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/cache/spring-cloud-azure-starter/spring-cloud-azure-sample-cache[samples for Azure Cache for Redis] for more details.
 
 
 
