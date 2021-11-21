@@ -28,7 +28,7 @@ Connect to Azure Storage using Spring Resource abstraction and Azure Storage lib
 === Configuration
 
 This `spring-cloud-azure-starter-storage-blob` provides the following properties:
-
+[cols="3*", options="header"]
 |===
 |Name | Default | Description
 |spring.cloud.azure.storage.blob.enabled | `true` | Whether an Azure Blob Storage Service is enabled
@@ -38,7 +38,7 @@ This `spring-cloud-azure-starter-storage-blob` provides the following properties
 |===
 
 This `spring-cloud-azure-starter-storage-file-share` provides the following properties:
-
+[cols="3*", options="header"]
 |===
 |Name | Default | Description
 |spring.cloud.azure.storage.fileshare.enabled | `true` | Whether Azure File Storage Service is enabled
@@ -59,13 +59,13 @@ spring:
     azure:
       storage:
         blob:
-          account-name: ${STORAGE-ACCOUNT-NAME}
-          account-key: ${STORAGE-ACCOUNT-PRIVATE-KEY}
-          endpoint: ${STORAGE-BLOB-ENDPOINT}
+          account-name: ${STORAGE_ACCOUNT_NAME}
+          account-key: ${STORAGE_ACCOUNT_PRIVATE_KEY}
+          endpoint: ${STORAGE_BLOB_ENDPOINT}
         fileshare:
-          account-name: ${STORAGE-ACCOUNT-NAME}
-          account-key: ${STORAGE-ACCOUNT-PRIVATE-KEY}
-          endpoint:  ${STORAGE-FILESHARE-ENDPOINT}
+          account-name: ${STORAGE_ACCOUNT_NAME}
+          account-key: ${STORAGE_ACCOUNT_PRIVATE_KEY}
+          endpoint:  ${STORAGE_FILESHARE_ENDPOINT}
 ----
 
 

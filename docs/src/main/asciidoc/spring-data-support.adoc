@@ -20,7 +20,7 @@ Connect to Cosmos DB using Spring Data and CosmosDB libraries.
 === Configuration
 
 Below are some properties you can configure when using Spring Data CosmosDB Support:
-
+[cols="3*", options="header"]
 |===
 |Name | Description | Default
 |spring.cloud.azure.cosmos.enabled |  Whether Azure Cosmos Service is enabled. | `true`
@@ -49,9 +49,9 @@ spring:
   cloud:
     azure:
       cosmos:
-        key: ${YOUR_COSMOS_KEY}
-        endpoint: ${YOUR_COSMOS_ENDPOINT}
-        database: ${YOUR_COSMOS_DATABASE}
+        key: ${AZURE_COSMOS_KEY}
+        endpoint: ${AZURE_COSMOS_ENDPOINT}
+        database: ${AZURE_COSMOS_DATABASE}
 ----
 
 === Samples
