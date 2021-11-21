@@ -6818,14 +6818,14 @@ Event Hubs, and change constructor signature as well.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Bean
-    public EventHubInboundChannelAdapter messageChannelAdapter(
-        @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel, EventHubOperation eventhubOperation) {
-        eventhubOperation.setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.MANUAL).build());
-        EventHubInboundChannelAdapter adapter = new EventHubInboundChannelAdapter(EVENTHUB_NAME,
-            eventhubOperation, CONSUMER_GROUP);
-        adapter.setOutputChannel(inputChannel);
-        return adapter;
-    }</code></pre>
+public EventHubInboundChannelAdapter messageChannelAdapter(
+    @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel, EventHubOperation eventhubOperation) {
+    eventhubOperation.setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.MANUAL).build());
+    EventHubInboundChannelAdapter adapter = new EventHubInboundChannelAdapter(EVENTHUB_NAME,
+        eventhubOperation, CONSUMER_GROUP);
+    adapter.setOutputChannel(inputChannel);
+    return adapter;
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6833,18 +6833,18 @@ Event Hubs, and change constructor signature as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">    @Bean
-    public EventHubsInboundChannelAdapter messageChannelAdapter(
-        @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel,
-        EventHubsProcessorContainer processorContainer) {
-        CheckpointConfig config = new CheckpointConfig(CheckpointMode.MANUAL);
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public EventHubsInboundChannelAdapter messageChannelAdapter(
+    @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel,
+    EventHubsProcessorContainer processorContainer) {
+    CheckpointConfig config = new CheckpointConfig(CheckpointMode.MANUAL);
 
-        EventHubsInboundChannelAdapter adapter =
-                new EventHubsInboundChannelAdapter(processorContainer, EVENTHUB_NAME,
-              CONSUMER_GROUP, config);
-        adapter.setOutputChannel(inputChannel);
-        return adapter;
-    }</code></pre>
+    EventHubsInboundChannelAdapter adapter =
+            new EventHubsInboundChannelAdapter(processorContainer, EVENTHUB_NAME,
+          CONSUMER_GROUP, config);
+    adapter.setOutputChannel(inputChannel);
+    return adapter;
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6855,24 +6855,23 @@ Event Hubs, and change constructor signature as well.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java"> @Bean
-    @ServiceActivator(inputChannel = OUTPUT_CHANNEL)
-    public MessageHandler messageSender(EventHubOperation queueOperation) {
-        DefaultMessageHandler handler = new DefaultMessageHandler(EVENTHUB_NAME, queueOperation);
-        handler.setSendCallback(new ListenableFutureCallback&lt;Void&gt;() {
-            @Override
-            public void onSuccess(Void result) {
-                LOGGER.info("Message was sent successfully.");
-            }
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+@ServiceActivator(inputChannel = OUTPUT_CHANNEL)
+public MessageHandler messageSender(EventHubOperation queueOperation) {
+    DefaultMessageHandler handler = new DefaultMessageHandler(EVENTHUB_NAME, queueOperation);
+    handler.setSendCallback(new ListenableFutureCallback&lt;Void&gt;() {
+        @Override
+        public void onSuccess(Void result) {
+            LOGGER.info("Message was sent successfully.");
+        }
 
-            @Override
-            public void onFailure(Throwable ex) {
-                LOGGER.error("There was an error sending the message.", ex);
-            }
-        });
-
-        return handler;
-    }</code></pre>
+        @Override
+        public void onFailure(Throwable ex) {
+            LOGGER.error("There was an error sending the message.", ex);
+        }
+    });
+    return handler;
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6881,23 +6880,23 @@ Event Hubs, and change constructor signature as well.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Bean
-    @ServiceActivator(inputChannel = OUTPUT_CHANNEL)
-    public MessageHandler messageSender(EventHubsTemplate queueOperation) {
-        DefaultMessageHandler handler = new DefaultMessageHandler(EVENTHUB_NAME, queueOperation);
-        handler.setSendCallback(new ListenableFutureCallback&lt;Void&gt;() {
-            @Override
-            public void onSuccess(Void result) {
-                LOGGER.info("Message was sent successfully.");
-            }
+@ServiceActivator(inputChannel = OUTPUT_CHANNEL)
+public MessageHandler messageSender(EventHubsTemplate queueOperation) {
+    DefaultMessageHandler handler = new DefaultMessageHandler(EVENTHUB_NAME, queueOperation);
+    handler.setSendCallback(new ListenableFutureCallback&lt;Void&gt;() {
+        @Override
+        public void onSuccess(Void result) {
+            LOGGER.info("Message was sent successfully.");
+        }
 
-            @Override
-            public void onFailure(Throwable ex) {
-                LOGGER.error("There was an error sending the message.", ex);
-            }
-        });
+        @Override
+        public void onFailure(Throwable ex) {
+            LOGGER.error("There was an error sending the message.", ex);
+        }
+    });
 
-        return handler;
-    }</code></pre>
+    return handler;
+}</code></pre>
 </div>
 </div>
 </div>
@@ -7016,42 +7015,42 @@ for the <code>ProducerProperties#entityType</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">    @Bean
-    public ServiceBusQueueInboundChannelAdapter queueMessageChannelAdapter(
-        @Qualifier("INPUT_CHANNEL_NAME") MessageChannel inputChannel, ServiceBusQueueOperation queueOperation) {
-        queueOperation.setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.MANUAL).build());
-        ServiceBusQueueInboundChannelAdapter adapter = new ServiceBusQueueInboundChannelAdapter("QUEUE_NAME",
-            queueOperation);
-        adapter.setOutputChannel(inputChannel);
-        return adapter;
-    }
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public ServiceBusQueueInboundChannelAdapter queueMessageChannelAdapter(
+    @Qualifier("INPUT_CHANNEL_NAME") MessageChannel inputChannel, ServiceBusQueueOperation queueOperation) {
+    queueOperation.setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.MANUAL).build());
+    ServiceBusQueueInboundChannelAdapter adapter = new ServiceBusQueueInboundChannelAdapter("QUEUE_NAME",
+        queueOperation);
+    adapter.setOutputChannel(inputChannel);
+    return adapter;
+}
 
-    @Bean
-    public ServiceBusTopicInboundChannelAdapter topicMessageChannelAdapter(
-        @Qualifier("INPUT_CHANNEL_NAME") MessageChannel inputChannel, ServiceBusTopicOperation topicOperation) {
-        topicOperation.setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.MANUAL).build());
-        ServiceBusTopicInboundChannelAdapter adapter = new ServiceBusTopicInboundChannelAdapter("TOPIC_NAME",
-            topicOperation, "SUBSCRIPTION_NAME");
-        adapter.setOutputChannel(inputChannel);
-        return adapter;
-    }
+@Bean
+public ServiceBusTopicInboundChannelAdapter topicMessageChannelAdapter(
+    @Qualifier("INPUT_CHANNEL_NAME") MessageChannel inputChannel, ServiceBusTopicOperation topicOperation) {
+    topicOperation.setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.MANUAL).build());
+    ServiceBusTopicInboundChannelAdapter adapter = new ServiceBusTopicInboundChannelAdapter("TOPIC_NAME",
+        topicOperation, "SUBSCRIPTION_NAME");
+    adapter.setOutputChannel(inputChannel);
+    return adapter;
+}
 
-    @Bean
-    @ServiceActivator(inputChannel = "OUTPUT_CHANNEL_NAME")
-    public MessageHandler queueMessageSender(ServiceBusQueueOperation queueOperation) {
-        DefaultMessageHandler handler = new DefaultMessageHandler("QUEUE_NAME", queueOperation);
-        handler.setSendCallback(new ListenableFutureCallback&lt;Void&gt;() {
-            @Override
-            public void onSuccess(Void result) {
-                LOGGER.info("Message was sent successfully.");
-            }
-            @Override
-            public void onFailure(Throwable ex) {
-                LOGGER.info("There was an error sending the message.");
-            }
-        });
-        return handler;
-    }</code></pre>
+@Bean
+@ServiceActivator(inputChannel = "OUTPUT_CHANNEL_NAME")
+public MessageHandler queueMessageSender(ServiceBusQueueOperation queueOperation) {
+    DefaultMessageHandler handler = new DefaultMessageHandler("QUEUE_NAME", queueOperation);
+    handler.setSendCallback(new ListenableFutureCallback&lt;Void&gt;() {
+        @Override
+        public void onSuccess(Void result) {
+            LOGGER.info("Message was sent successfully.");
+        }
+        @Override
+        public void onFailure(Throwable ex) {
+            LOGGER.info("There was an error sending the message.");
+        }
+    });
+    return handler;
+}</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -7061,35 +7060,39 @@ for the <code>ProducerProperties#entityType</code>.</p>
 </li>
 </ul>
 </div>
+<div class="exampleblock">
+<div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">    public ServiceBusInboundChannelAdapter queueMessageChannelAdapter(
-        @Qualifier("INPUT_CHANNEL_NAME") MessageChannel inputChannel, ServiceBusProcessorContainer processorContainer) {
-        ServiceBusInboundChannelAdapter adapter = new ServiceBusInboundChannelAdapter(processorContainer, "QUEUE_NAME",
-            new CheckpointConfig(CheckpointMode.MANUAL));
-        adapter.setOutputChannel(inputChannel);
-        return adapter;
-    }
+<pre class="highlight"><code class="language-java" data-lang="java">public ServiceBusInboundChannelAdapter queueMessageChannelAdapter(
+    @Qualifier("INPUT_CHANNEL_NAME") MessageChannel inputChannel, ServiceBusProcessorContainer processorContainer) {
+    ServiceBusInboundChannelAdapter adapter = new ServiceBusInboundChannelAdapter(processorContainer, "QUEUE_NAME",
+        new CheckpointConfig(CheckpointMode.MANUAL));
+    adapter.setOutputChannel(inputChannel);
+    return adapter;
+}
 
-    @Bean
-    @ServiceActivator(inputChannel = "OUTPUT_CHANNEL_NAME")
-    public MessageHandler queueMessageSender(ServiceBusTemplate serviceBusTemplate) {
-        serviceBusTemplate.setDefaultEntityType(ServiceBusEntityType.QUEUE);
-        DefaultMessageHandler handler = new DefaultMessageHandler("QUEUE_NAME", serviceBusTemplate);
-        handler.setSendCallback(new ListenableFutureCallback&lt;Void&gt;() {
-            @Override
-            public void onSuccess(Void result) {
-                LOGGER.info("Message was sent successfully for {}.", "QUEUE_NAME");
-            }
+@Bean
+@ServiceActivator(inputChannel = "OUTPUT_CHANNEL_NAME")
+public MessageHandler queueMessageSender(ServiceBusTemplate serviceBusTemplate) {
+    serviceBusTemplate.setDefaultEntityType(ServiceBusEntityType.QUEUE);
+    DefaultMessageHandler handler = new DefaultMessageHandler("QUEUE_NAME", serviceBusTemplate);
+    handler.setSendCallback(new ListenableFutureCallback&lt;Void&gt;() {
+        @Override
+        public void onSuccess(Void result) {
+            LOGGER.info("Message was sent successfully for {}.", "QUEUE_NAME);
+        }
 
-            @Override
-            public void onFailure(Throwable ex) {
-                LOGGER.info("There was an error sending the message.");
-            }
-        });
+        @Override
+        public void onFailure(Throwable ex) {
+            LOGGER.info("There was an error sending the message.");
+        }
+    });
 
-        return handler;
-    }</code></pre>
+    return handler;
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>

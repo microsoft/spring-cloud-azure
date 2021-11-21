@@ -529,12 +529,12 @@ when consume batch mode is false(default value), <code>BATCH</code> checkpoint m
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>    // Replace destination with spring.cloud.stream.bindings.input.destination
-    // Replace group with spring.cloud.stream.bindings.input.group
-    @ServiceActivator(inputChannel == "{destination}.{group}.errors")
-    public void consumerError(Message&lt;?&gt; message) {
-        LOGGER.error("Handling customer ERROR: " + message);
-    }</pre>
+<pre>// Replace destination with spring.cloud.stream.bindings.input.destination
+// Replace group with spring.cloud.stream.bindings.input.group
+@ServiceActivator(inputChannel == "{destination}.{group}.errors")
+public void consumerError(Message&lt;?&gt; message) {
+    LOGGER.error("Handling customer ERROR: " + message);
+}</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -553,11 +553,11 @@ when consume batch mode is false(default value), <code>BATCH</code> checkpoint m
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>    // Replace destination with spring.cloud.stream.bindings.output.destination
-    @ServiceActivator(inputChannel == "{destination}.errors")
-    public void producerError(Message&lt;?&gt; message) {
-        LOGGER.error("Handling Producer ERROR: " + message);
-    }</pre>
+<pre>// Replace destination with spring.cloud.stream.bindings.output.destination
+@ServiceActivator(inputChannel == "{destination}.errors")
+public void producerError(Message&lt;?&gt; message) {
+    LOGGER.error("Handling Producer ERROR: " + message);
+}</pre>
 </div>
 </div>
 <div class="sect4">
@@ -574,8 +574,8 @@ when consume batch mode is false(default value), <code>BATCH</code> checkpoint m
     stream:
       bindings:
         consume-in-0:
-          destination: {event-hub-name}
-          group: [consumer-group-name]
+          destination: ${AZURE_EVENTHUB_NAME}
+          group: ${AZURE_EVENTHUB_CONSUMER_GROUP}
           consumer:
             batch-mode: true
       eventhubs:
@@ -589,25 +589,25 @@ when consume batch mode is false(default value), <code>BATCH</code> checkpoint m
                 max-wait-time: 1m # Optional, the default value is null</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>======= Consume messages in batches</p>
 </div>
+<div class="sect5">
+<h6 id="_consume_messages_in_batches"><a class="link" href="#_consume_messages_in_batches">Consume messages in batches</a></h6>
 <div class="paragraph">
 <p>For checkpointing mode as BATCH, you can use below code to send messages and consume in batches.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">    @Bean
-    public Consumer&lt;List&lt;String&gt;&gt; consume() {
-        return list -&gt; list.forEach(event -&gt; LOGGER.info("New event received: '{}'",event));
-    }
-    @Bean
-    public Supplier&lt;Message&lt;String&gt;&gt; supply() {
-        return () -&gt; {
-            LOGGER.info("Sending message, sequence " + i);
-            return MessageBuilder.withPayload("\"test"+ i++ +"\"").build();
-        };
-    }</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public Consumer&lt;List&lt;String&gt;&gt; consume() {
+    return list -&gt; list.forEach(event -&gt; LOGGER.info("New event received: '{}'",event));
+}
+@Bean
+public Supplier&lt;Message&lt;String&gt;&gt; supply() {
+    return () -&gt; {
+        LOGGER.info("Sending message, sequence " + i);
+        return MessageBuilder.withPayload("\"test"+ i++ +"\"").build();
+    };
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -615,32 +615,32 @@ when consume batch mode is false(default value), <code>BATCH</code> checkpoint m
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">    @Bean
-    public Consumer&lt;Message&lt;List&lt;String&gt;&gt;&gt; consume() {
-        return message -&gt; {
-            for (int i == 0; i &lt; message.getPayload().size(); i++) {
-                LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
-                    message.getPayload().get(i),
-                    ((List&lt;Object&gt;) message.getHeaders().get(EventHubsHeaders.PARTITION_KEY)).get(i),
-                    ((List&lt;Object&gt;) message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER)).get(i),
-                    ((List&lt;Object&gt;) message.getHeaders().get(EventHubsHeaders.OFFSET)).get(i),
-                    ((List&lt;Object&gt;) message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)).get(i));
-            }
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public Consumer&lt;Message&lt;List&lt;String&gt;&gt;&gt; consume() {
+    return message -&gt; {
+        for (int i == 0; i &lt; message.getPayload().size(); i++) {
+            LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
+                message.getPayload().get(i),
+                ((List&lt;Object&gt;) message.getHeaders().get(EventHubsHeaders.PARTITION_KEY)).get(i),
+                ((List&lt;Object&gt;) message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER)).get(i),
+                ((List&lt;Object&gt;) message.getHeaders().get(EventHubsHeaders.OFFSET)).get(i),
+                ((List&lt;Object&gt;) message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)).get(i));
+        }
 
-            Checkpointer checkpointer == (Checkpointer) message.getHeaders().get(CHECKPOINTER);
-            checkpointer.success()
-                        .doOnSuccess(success -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
-                        .doOnError(error -&gt; LOGGER.error("Exception found", error))
-                        .subscribe();
-        };
-    }
-    @Bean
-    public Supplier&lt;Message&lt;String&gt;&gt; supply() {
-        return () -&gt; {
-            LOGGER.info("Sending message, sequence " + i);
-            return MessageBuilder.withPayload("\"test"+ i++ +"\"").build();
-        };
-    }</code></pre>
+        Checkpointer checkpointer == (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        checkpointer.success()
+                    .doOnSuccess(success -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
+                    .doOnError(error -&gt; LOGGER.error("Exception found", error))
+                    .subscribe();
+    };
+}
+@Bean
+public Supplier&lt;Message&lt;String&gt;&gt; supply() {
+    return () -&gt; {
+        LOGGER.info("Sending message, sequence " + i);
+        return MessageBuilder.withPayload("\"test"+ i++ +"\"").build();
+    };
+}</code></pre>
 </div>
 </div>
 </div>

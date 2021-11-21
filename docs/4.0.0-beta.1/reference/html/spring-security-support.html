@@ -216,15 +216,15 @@ window.onload = function() {
 <td class="tableblock halign-left valign-top"><p class="tableblock">A map configure the resource APIs the application is going to visit. Each item corresponding to one resource API the application is going to visit. In Spring code, each item corresponding to one OAuth2AuthorizedClient object</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.${CLIENT_NAME}.scopes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.AZURE_CLIENT_NAME.scopes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">API permissions of a resource server that the application is going to acquire.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.${CLIENT_NAME}.on-demand</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.AZURE_CLIENT_NAME.on-demand</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">This is used for incremental consent. The default value is false. If it&#8217;s true, it&#8217;s not consent when user login, when application needs the additional permission, incremental consent is performed with one OAuth2 authorization code flow.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.${CLIENT_NAME}.authorization-grant-type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.AZURE_CLIENT_NAME.authorization-grant-type</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Type of authorization client. Supported types are <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">authorization_code</a> (default type for webapp), <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow">on_behalf_of</a> (default type for resource-server), <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow">client_credentials</a>.</p></td>
 </tr>
 <tr>
@@ -517,7 +517,7 @@ consented.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Step 1: Make sure <code>redirect URI</code> has been set to <code>${APLICATION_BASE_URI}/login/oauth2/code/</code>, for
+<p>Step 1: Make sure <code>redirect URI</code> has been set to <code>APPLICATION_BASE_URI/login/oauth2/code/</code>, for
 example <code><a href="http://localhost:8080/login/oauth2/code/" class="bare">http://localhost:8080/login/oauth2/code/</a></code>.</p>
 </li>
 </ul>
@@ -572,9 +572,9 @@ The tailing <code>/</code> cannot be omitted.
   cloud:
     azure:
       active-directory:
-        tenant-id: ${TENANT_NAME}
-        client-id: ${CLIENT_ID}
-        client-secret: ${CLIENT_SECRET}</code></pre>
+        tenant-id: ${AZURE_TENANT_ID}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -633,9 +633,9 @@ The tailing <code>/</code> cannot be omitted.
   cloud:
     azure:
       active-directory:
-        tenant-id: ${TENANT_ID}
-        client-id: ${CLIENT_ID}
-        client-secret: ${CLIENT_SECRET}
+        tenant-id: ${AZURE_TENANT_ID}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
         authorization-clients:
           graph:
             scopes: https://graph.microsoft.com/Analytics.Read, email</code></pre>
@@ -761,10 +761,10 @@ The tailing <code>/</code> cannot be omitted.
   cloud:
     azure:
       active-directory:
-        tenant-id: &lt;Tenant-id-registered-by-application&gt;
-        client-id: &lt;Web-API-A-client-id&gt;
-        client-secret: &lt;Web-API-A-client-secret&gt;
-        app-id-uri: &lt;Web-API-A-app-id-url&gt;
+        tenant-id: ${AZURE_TENANT_ID}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
+        app-id-uri: ${WEB_API_ID_URI}
         authorization-clients:
           graph:
             scopes:
@@ -842,10 +842,10 @@ The tailing <code>/</code> cannot be omitted.
   cloud:
     azure:
       active-directory:
-        tenant-id: &lt;Tenant-id-registered-by-application&gt;
-        client-id: &lt;Web-API-C-client-id&gt;
-        client-secret: &lt;Web-API-C-client-secret&gt;
-        app-id-uri: &lt;Web-API-C-app-id-url&gt;
+        tenant-id: ${AZURE_TENANT_ID}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
+        app-id-uri: ${WEB_API_ID_URI}
         application-type: web_application_and_resource_server  # This is required.
         authorization-clients:
           graph:
@@ -1019,10 +1019,10 @@ accept or deny access after validating access_token obtained from Azure AD. We w
 </li>
 <li>
 <p>Specify your application <strong>Name</strong>, we call it <code>webapp</code>, add <code><a href="http://localhost:8080/login/oauth2/code/" class="bare">http://localhost:8080/login/oauth2/code/</a></code> for the <strong>Reply URL</strong>, record the
-<strong>Application ID</strong> as your <code>${WEB_APP_CLIENT_ID}</code> and then click <strong>Save</strong>.</p>
+<strong>Application ID</strong> as your <code>WEB_APP_AZURE_CLIENT_ID</code> and then click <strong>Save</strong>.</p>
 </li>
 <li>
-<p>Select <strong>Keys</strong> from your application, click <strong>Generate key</strong> to generate <code>${WEB_APP_CLIENT_SECRET}</code> and then <strong>Save</strong>.</p>
+<p>Select <strong>Keys</strong> from your application, click <strong>Generate key</strong> to generate <code>WEB_APP_AZURE_CLIENT_SECRET</code> and then <strong>Save</strong>.</p>
 </li>
 <li>
 <p>Select <strong>User flows</strong> on your left, and then Click <strong>New user flow</strong>.</p>
@@ -1089,8 +1089,8 @@ select <strong>Delegated permissions</strong>, check <strong>offline_access</str
             login_hint: xxxxxxxxx          # optional
             prompt: [login,none,consent]   # optional
           base-uri: ${BASE_URI}
-          client-id: ${WEBAPP_CLIENT_ID}
-          client-secret: ${WEBAPP_CLIENT_SECRET}
+          client-id: ${WEBAPP_AZURE_CLIENT_ID}
+          client-secret: ${WEBAPP_AZURE_CLIENT_SECRET}
           login-flow: ${LOGIN_USER_FLOW_KEY}               # default to sign-up-or-sign-in, will look up the user-flows map with provided key.
           logout-success-url: ${LOGOUT_SUCCESS_URL}
           user-flows:
@@ -1135,7 +1135,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 </div>
 <div class="paragraph">
-<p>Copy the <em>home.html</em> from <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-oidc/src/main/resources/templates">Azure AD B2C Spring Boot Sample</a>, and replace the <code>${PROFILE_EDIT_USER_FLOW}</code> and <code>${PASSWORD_RESET_USER_FLOW}</code> with your user flow name respectively that completed earlier.</p>
+<p>Copy the <em>home.html</em> from <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-oidc/src/main/resources/templates">Azure AD B2C Spring Boot Sample</a>, and replace the <code>PROFILE_EDIT_USER_FLOW</code> and <code>PASSWORD_RESET_USER_FLOW</code> with your user flow name respectively that completed earlier.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -1159,18 +1159,18 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 <p>Select <strong>Azure AD B2C</strong> from the portal menu, click <strong>Applications</strong>, and then click <strong>Add</strong>.</p>
 </li>
 <li>
-<p>Specify your application <strong>Name</strong>, we call it <code>webApiA</code>, record the <strong>Application ID</strong> as your <code>${WEB_API_A_CLIENT_ID}</code> and then click <strong>Save</strong>.</p>
+<p>Specify your application <strong>Name</strong>, we call it <code>webApiA</code>, record the <strong>Application ID</strong> as your <code>WEB_API_A_AZURE_CLIENT_ID</code> and then click <strong>Save</strong>.</p>
 </li>
 <li>
-<p>Select <strong>Keys</strong> from your application, click <strong>Generate key</strong> to generate <code>${WEB_API_A_CLIENT_SECRET}</code> and then <strong>Save</strong>.</p>
+<p>Select <strong>Keys</strong> from your application, click <strong>Generate key</strong> to generate <code>WEB_API_A_AZURE_CLIENT_SECRET</code> and then <strong>Save</strong>.</p>
 </li>
 <li>
 <p>Select <strong>Expose an API</strong> on your left, and then Click the <strong>Set</strong> link,
-record the <strong>Application ID URI</strong> as your <code>${WEB_API_A_APP_ID_URL}</code>, then <strong>Save</strong>.</p>
+record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_URL</code>, then <strong>Save</strong>.</p>
 </li>
 <li>
 <p>Select <strong>Manifest</strong> on your left, and then paste the below json segment into <code>appRoles</code> array,
-record the <strong>Application ID URI</strong> as your <code>${WEB_API_A_APP_ID_URL}</code>, record the value of the app role as your <code>${WEB_API_A_ROLE_VALUE}</code>, then <strong>save</strong>.</p>
+record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_URL</code>, record the value of the app role as your <code>WEB_API_A_ROLE_VALUE</code>, then <strong>save</strong>.</p>
 </li>
 </ol>
 </div>
@@ -1229,7 +1229,7 @@ select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleSc
       active-directory:
         b2c:
           base-uri: ${BASE_URI}             # Such as: https://xxxxb2c.b2clogin.com
-          tenant-id: ${TENANT_ID}
+          tenant-id: ${AZURE_TENANT_ID}
           authorization-clients:
             ${RESOURCE_SERVER_A_NAME}:
               authorization-grant-type: client_credentials
@@ -1325,9 +1325,9 @@ select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleSc
       active-directory:
         b2c:
           base-uri: ${BASE_URI}             # Such as: https://xxxxb2c.b2clogin.com
-          tenant-id: ${TENANT_ID}
+          tenant-id: ${AZURE_TENANT_ID}
           app-id-uri: ${APP_ID_URI}         # If you are using v1.0 token, please configure app-id-uri for `aud` verification
-          client-id: ${CLIENT_ID}           # If you are using v2.0 token, please configure client-id for `aud` verification</pre>
+          client-id: ${AZURE_CLIENT_ID}           # If you are using v2.0 token, please configure client-id for `aud` verification</pre>
 </div>
 </div>
 <div class="olist arabic">
@@ -1436,7 +1436,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
     azure:
       active-directory:
         b2c:
-          client-secret: ${WEB_API_A_CLIENT_SECRET}
+          client-secret: ${WEB_API_A_AZURE_CLIENT_SECRET}
           authorization-clients:
             ${RESOURCE_SERVER_B_NAME}:
               authorization-grant-type: client_credentials

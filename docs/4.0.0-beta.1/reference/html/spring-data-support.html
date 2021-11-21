@@ -211,12 +211,14 @@ window.onload = function() {
 <col style="width: 33.3333%;">
 <col style="width: 33.3334%;">
 </colgroup>
-<tbody>
+<thead>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default</p></td>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default</th>
 </tr>
+</thead>
+<tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Whether Azure Cosmos Service is enabled.</p></td>
@@ -294,9 +296,9 @@ add below properties and you are good to go.</p>
   cloud:
     azure:
       cosmos:
-        key: ${YOUR_COSMOS_KEY}
-        endpoint: ${YOUR_COSMOS_ENDPOINT}
-        database: ${YOUR_COSMOS_DATABASE}</code></pre>
+        key: ${AZURE_COSMOS_KEY}
+        endpoint: ${AZURE_COSMOS_ENDPOINT}
+        database: ${AZURE_COSMOS_DATABASE}</code></pre>
 </div>
 </div>
 </div>

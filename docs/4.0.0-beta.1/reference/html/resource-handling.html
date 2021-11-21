@@ -233,12 +233,14 @@ window.onload = function() {
 <col style="width: 33.3333%;">
 <col style="width: 33.3334%;">
 </colgroup>
-<tbody>
+<thead>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
 </tr>
+</thead>
+<tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.blob.enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
@@ -270,12 +272,14 @@ window.onload = function() {
 <col style="width: 33.3333%;">
 <col style="width: 33.3334%;">
 </colgroup>
-<tbody>
+<thead>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
 </tr>
+</thead>
+<tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.fileshare.enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
@@ -311,13 +315,13 @@ window.onload = function() {
     azure:
       storage:
         blob:
-          account-name: ${STORAGE-ACCOUNT-NAME}
-          account-key: ${STORAGE-ACCOUNT-PRIVATE-KEY}
-          endpoint: ${STORAGE-BLOB-ENDPOINT}
+          account-name: ${STORAGE_ACCOUNT_NAME}
+          account-key: ${STORAGE_ACCOUNT_PRIVATE_KEY}
+          endpoint: ${STORAGE_BLOB_ENDPOINT}
         fileshare:
-          account-name: ${STORAGE-ACCOUNT-NAME}
-          account-key: ${STORAGE-ACCOUNT-PRIVATE-KEY}
-          endpoint:  ${STORAGE-FILESHARE-ENDPOINT}</code></pre>
+          account-name: ${STORAGE_ACCOUNT_NAME}
+          account-key: ${STORAGE_ACCOUNT_PRIVATE_KEY}
+          endpoint:  ${STORAGE_FILESHARE_ENDPOINT}</code></pre>
 </div>
 </div>
 </div>
