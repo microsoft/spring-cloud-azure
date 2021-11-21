@@ -42,7 +42,7 @@ TIP: Please refer to link:index.html#starter-dependencies[Starter Dependencies] 
 
 === Configuration
 
-Configuration properties for each Azure service are under prefix `spring.cloud.azure.prefix`.
+Configuration properties for each Azure service are under prefix `spring.cloud.azure`.
 
 TIP: To see the list of all Spring Cloud Azure related configuration properties please check link:appendix.html[the Appendix page].
 
