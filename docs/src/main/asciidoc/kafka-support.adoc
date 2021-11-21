@@ -38,7 +38,7 @@ Below properties could be configured when using Kafka support:
 |*spring.cloud.azure*.profile.subscription-id| The subscription id. Should be provided when want to retrieve the connection information through Azure Resource Manager.|
 |===
 
-NOTE: Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix `spring.cloud.azure`. Please refer to link:index.html#authentication for more details.
+NOTE: Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix `spring.cloud.azure`. Please refer to link:index.html#authentication[Authentication] for more details.
 
 === Basic Usage
 
