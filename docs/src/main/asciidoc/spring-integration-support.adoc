@@ -112,12 +112,6 @@ spring:
         managed-identity-client-id: ${AZURE_CLIENT_ID}
       profile:
         tenant-id: ${AZURE_TENANT_ID}
-#     Uncomment below configurations if you want to enable auto creating resources.
-#        subscription-id: ${AZURE_SUBSCRIPTION_ID}
-#        cloud: Azure
-#      resource:
-#        region: [region]
-
       eventhubs:
         namespace: ${AZURE_SERVICE_BUS_NAMESPACE}
 ----
@@ -133,12 +127,6 @@ spring:
         client-secret: ${AZURE_CLIENT_SECRET}
       profile:
         tenant-id: ${AZURE_TENANT_ID}
-#     Uncomment below configurations if you want to enable auto creating resources.
-#        subscription-id: ${AZURE_SUBSCRIPTION_ID}
-#        cloud: Azure
-#      resource:
-#        region: [region]
-
       eventhubs:
         namespace: ${AZURE_SERVICE_BUS_NAMESPACE}
 ----
@@ -328,12 +316,6 @@ spring:
         managed-identity-client-id: ${AZURE_CLIENT_ID}
       profile:
         tenant-id: ${AZURE_TENANT_ID}
-#     Uncomment below configurations if you want to enable auto creating resources.
-#        subscription-id: ${AZURE_SUBSCRIPTION_ID}
-#        cloud: Azure
-#      resource:
-#        region: [region]
-
       servicebus:
         namespace: ${AZURE_SERVICE_BUS_NAMESPACE}
 ----
@@ -349,12 +331,6 @@ spring:
         client-secret: ${AZURE_CLIENT_SECRET}
       profile:
         tenant-id: ${AZURE_TENANT_ID}
-#     Uncomment below configurations if you want to enable auto creating resources.
-#        subscription-id: ${AZURE_SUBSCRIPTION_ID}
-#        cloud: Azure
-#      resource:
-#        region: [region]
-
       servicebus:
         namespace: ${AZURE_SERVICE_BUS_NAMESPACE}
 ----
@@ -606,12 +582,6 @@ spring:
         managed-identity-client-id: ${AZURE_CLIENT_ID}
       profile:
         tenant-id: ${AZURE_TENANT_ID}
-#     Uncomment below configurations if you want to enable auto creating resources.
-#        subscription-id: ${AZURE_SUBSCRIPTION_ID}
-#        cloud: Azure
-#      resource:
-#        region: [region]
-
       storage:
         queue:
           namespace: ${AZURE_SERVICE_BUS_NAMESPACE}
@@ -628,12 +598,6 @@ spring:
         client-secret: ${AZURE_CLIENT_SECRET}
       profile:
         tenant-id: ${AZURE_TENANT_ID}
-#     Uncomment below configurations if you want to enable auto creating resources.
-#        subscription-id: ${AZURE_SUBSCRIPTION_ID}
-#        cloud: Azure
-#      resource:
-#        region: [region]
-
       storage:
         queue:
           namespace: ${AZURE_SERVICE_BUS_NAMESPACE}
