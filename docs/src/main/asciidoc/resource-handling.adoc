@@ -33,7 +33,6 @@ Connect to Azure Storage using Spring Resource abstraction and Azure Storage lib
 <1> Only required when you're using Azure Storage Blob.
 <2> Only required when you're using Azure Storage File Share.
 
-
 === Configuration
 
 This `spring-cloud-azure-starter-storage-blob` provides the following properties:
