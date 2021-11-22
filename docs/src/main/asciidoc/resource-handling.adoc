@@ -22,15 +22,16 @@ Connect to Azure Storage using Spring Resource abstraction and Azure Storage lib
 ----
 <dependency>
     <groupId>com.azure.spring</groupId>
-    <artifactId>spring-cloud-azure-starter-storage-blob</artifactId>
+    <artifactId>spring-cloud-azure-starter-storage-blob</artifactId> # <1>
 </dependency>
 
 <dependency>
     <groupId>com.azure.spring</groupId>
-    <artifactId>spring-cloud-azure-starter-storage-file-share</artifactId>
+    <artifactId>spring-cloud-azure-starter-storage-file-share</artifactId> # <2>
 </dependency>
 ----
-
+<1> Only required when you're using Azure Storage Blob.
+<2> Only required when you're using Azure Storage File Share.
 
 === Configuration
 
