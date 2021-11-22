@@ -435,15 +435,15 @@ spring:
   cloud:
     azure:
       servicebus:
-        connection-string: [servicebus-namespace-connection-string]
+        connection-string: ${SERVICEBUS_BINDER_CONNECTION_STRING}
     stream:
       function:
         definition: consume;supply
       bindings:
         consume-in-0:
-          destination: [servicebus-queue/topic-name]
+          destination: ${SERVICEBUS_QUWUW_OR_TOPIC_NAME}
         supply-out-0:
-          destination: [servicebus-queue/topic-name-same-as-above]
+          destination: ${SERVICEBUS_QUWUW_OR_TOPIC_NAME}
       servicebus:
         bindings:
           consume-in-0:
@@ -468,16 +468,16 @@ spring:
         definition: consume1;supply1;consume2;supply2
       bindings:
         consume1-in-0:
-          destination: [servicebus-topic-1-name]
-          group: [servicebus-topic-1-subscription-name]
+          destination: ${SERVICEBUS_QUWUW_OR_TOPIC_NAME}
+         #group: ${SERVICEBUS_TOPIC_SUBSCRIPTION_NAME}
         supply1-out-0:
-          destination: [servicebus-topic-1-name-same-as-above]
+          destination: ${SERVICEBUS_QUWUW_OR_TOPIC_NAME}
         consume2-in-0:
           binder: servicebus-2
-          destination: [servicebus-queue-1-name]
+          destination: ${SERVICEBUS_QUWUW_NAME}
         supply2-out-0:
           binder: servicebus-2
-          destination: [servicebus-queue-1-name-same-as-above]
+          destination: ${SERVICEBUS_QUWUW_NAME}
       binders:
         servicebus-1:
           type: servicebus
@@ -487,7 +487,7 @@ spring:
               cloud:
                 azure:
                   servicebus:
-                    connection-string: [ servicebus-namespace-1-connection-string ]
+                    connection-string: ${SERVICEBUS1_BINDER_CONNECTION_STRING}
         servicebus-2:
           type: servicebus
           default-candidate: false
@@ -496,13 +496,19 @@ spring:
               cloud:
                 azure:
                   servicebus:
-                    connection-string: [ servicebus-namespace-2-connection-string ]
+                    connection-string: ${SERVICEBUS2_BINDER_CONNECTION_STRING}
       servicebus:
         bindings:
-          consume1-out-0:
+          consume1-in-0:
+            consumer:
+              checkpoint-mode: MANUAL
+          supply1-out-0:
             producer:
               entity-type: topic
-          consume2-out-0:
+          consume2-in-0:
+            consumer:
+              checkpoint-mode: MANUAL
+          supply2-out-0:
             producer:
               entity-type: queue
       poller:
