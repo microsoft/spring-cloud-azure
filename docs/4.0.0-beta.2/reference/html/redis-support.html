@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<style>
+<style>
 .hidden {
 	display: none;
 }
@@ -39,9 +39,9 @@
 	background-color: #7a2519;
 	color: #ffffff;
 }
-
-</style>
-<script type="text/javascript">
+
+</style>
+<script type="text/javascript">
 function addBlockSwitches() {
 	for (var primary of document.querySelectorAll('.primary')) {
 		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
@@ -155,8 +155,8 @@ window.onload = function() {
 	addBlockSwitches();
 	globalSwitch();
 };
-
-</script>
+
+</script>
 
 </head>
 <body class="book toc2 toc-left">
@@ -164,7 +164,7 @@ window.onload = function() {
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_redis_support">Redis Support</a>
+<li><a href="#redis-support">Redis Support</a>
 <ul class="sectlevel2">
 <li><a href="#_dependency_setup">Dependency Setup</a></li>
 <li><a href="#_configuration">Configuration</a></li>
@@ -177,10 +177,10 @@ window.onload = function() {
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_redis_support"><a class="link" href="#_redis_support">Redis Support</a></h2>
+<h2 id="redis-support"><a class="link" href="#redis-support">Redis Support</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Connect to Azure Cache for Redis using Spring Redis libraries. With adding <code>spring-cloud-azure-starter</code> and <code>spring-cloud-azure-resourcemanager</code> to your application, it&#8217;s possible to read the Azure Cache for Redis connection information through Azure Resource Manager and auto-configure the Redis properties.</p>
+<p>Connect to Azure Cache for Redis using Spring Redis libraries.With adding <code>spring-cloud-azure-starter</code> and <code>spring-cloud-azure-resourcemanager</code> to your application, it&#8217;s possible to read the Azure Cache for Redis connection information through Azure Resource Manager and auto-configure the Redis properties.</p>
 </div>
 <div class="sect2">
 <h3 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h3>
@@ -267,13 +267,8 @@ Authentication information is also required for authenticating for Azure Resourc
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
-  cloud:
-    azure:
-      redis:
-        name: ${AZURE_CACHE_REDIS_NAME}
-        resource:
-          resource-group: ${AZURE_CACHE_REDIS_RESOURCE_GROUP}</code></pre>
+<pre class="highlight"><code>spring.cloud.azure.redis.name=${AZURE_CACHE_REDIS_NAME}
+spring.cloud.azure.redis.resource.resource-group=${AZURE_CACHE_REDIS_RESOURCE_GROUP}</code></pre>
 </div>
 </div>
 </div>

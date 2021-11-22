@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<style>
+<style>
 .hidden {
 	display: none;
 }
@@ -39,9 +39,9 @@
 	background-color: #7a2519;
 	color: #ffffff;
 }
-
-</style>
-<script type="text/javascript">
+
+</style>
+<script type="text/javascript">
 function addBlockSwitches() {
 	for (var primary of document.querySelectorAll('.primary')) {
 		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
@@ -155,8 +155,8 @@ window.onload = function() {
 	addBlockSwitches();
 	globalSwitch();
 };
-
-</script>
+
+</script>
 
 </head>
 <body class="book toc2 toc-left">
@@ -222,9 +222,9 @@ window.onload = function() {
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 37.5%;">
+<col style="width: 12.5%;">
+<col style="width: 50%;">
 </colgroup>
 <thead>
 <tr>
@@ -534,12 +534,6 @@ window.onload = function() {
         managed-identity-client-id: ${AZURE_CLIENT_ID}
       profile:
         tenant-id: ${AZURE_TENANT_ID}
-#     Uncomment below configurations if you want to enable auto creating resources.
-#        subscription-id: ${AZURE_SUBSCRIPTION_ID}
-#        cloud: Azure
-#      resource:
-#        region: [region]
-
       eventhubs:
         namespace: ${AZURE_SERVICE_BUS_NAMESPACE}</pre>
 </div>
@@ -561,12 +555,6 @@ window.onload = function() {
         client-secret: ${AZURE_CLIENT_SECRET}
       profile:
         tenant-id: ${AZURE_TENANT_ID}
-#     Uncomment below configurations if you want to enable auto creating resources.
-#        subscription-id: ${AZURE_SUBSCRIPTION_ID}
-#        cloud: Azure
-#      resource:
-#        region: [region]
-
       eventhubs:
         namespace: ${AZURE_SERVICE_BUS_NAMESPACE}</pre>
 </div>
@@ -984,12 +972,6 @@ from <strong>spring.cloud.azure.servicebus.</strong> to <strong>spring.cloud.azu
         managed-identity-client-id: ${AZURE_CLIENT_ID}
       profile:
         tenant-id: ${AZURE_TENANT_ID}
-#     Uncomment below configurations if you want to enable auto creating resources.
-#        subscription-id: ${AZURE_SUBSCRIPTION_ID}
-#        cloud: Azure
-#      resource:
-#        region: [region]
-
       servicebus:
         namespace: ${AZURE_SERVICE_BUS_NAMESPACE}</pre>
 </div>
@@ -1011,12 +993,6 @@ from <strong>spring.cloud.azure.servicebus.</strong> to <strong>spring.cloud.azu
         client-secret: ${AZURE_CLIENT_SECRET}
       profile:
         tenant-id: ${AZURE_TENANT_ID}
-#     Uncomment below configurations if you want to enable auto creating resources.
-#        subscription-id: ${AZURE_SUBSCRIPTION_ID}
-#        cloud: Azure
-#      resource:
-#        region: [region]
-
       servicebus:
         namespace: ${AZURE_SERVICE_BUS_NAMESPACE}</pre>
 </div>
@@ -1525,12 +1501,6 @@ by changing the prefix from <strong>spring.cloud.azure.storage.queue.</strong> t
         managed-identity-client-id: ${AZURE_CLIENT_ID}
       profile:
         tenant-id: ${AZURE_TENANT_ID}
-#     Uncomment below configurations if you want to enable auto creating resources.
-#        subscription-id: ${AZURE_SUBSCRIPTION_ID}
-#        cloud: Azure
-#      resource:
-#        region: [region]
-
       storage:
         queue:
           namespace: ${AZURE_SERVICE_BUS_NAMESPACE}</pre>
@@ -1553,12 +1523,6 @@ by changing the prefix from <strong>spring.cloud.azure.storage.queue.</strong> t
         client-secret: ${AZURE_CLIENT_SECRET}
       profile:
         tenant-id: ${AZURE_TENANT_ID}
-#     Uncomment below configurations if you want to enable auto creating resources.
-#        subscription-id: ${AZURE_SUBSCRIPTION_ID}
-#        cloud: Azure
-#      resource:
-#        region: [region]
-
       storage:
         queue:
           namespace: ${AZURE_SERVICE_BUS_NAMESPACE}</pre>

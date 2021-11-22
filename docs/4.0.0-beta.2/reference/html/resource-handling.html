@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<style>
+<style>
 .hidden {
 	display: none;
 }
@@ -39,9 +39,9 @@
 	background-color: #7a2519;
 	color: #ffffff;
 }
-
-</style>
-<script type="text/javascript">
+
+</style>
+<script type="text/javascript">
 function addBlockSwitches() {
 	for (var primary of document.querySelectorAll('.primary')) {
 		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
@@ -155,8 +155,8 @@ window.onload = function() {
 	addBlockSwitches();
 	globalSwitch();
 };
-
-</script>
+
+</script>
 
 </head>
 <body class="book toc2 toc-left">
@@ -184,16 +184,18 @@ window.onload = function() {
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
 </colgroup>
-<tbody>
+<thead>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Starter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Service</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<th class="tableblock halign-left valign-top">Starter</th>
+<th class="tableblock halign-left valign-top">Service</th>
+<th class="tableblock halign-left valign-top">Description</th>
 </tr>
+</thead>
+<tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring-cloud-azure-starter-storage-blob</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Azure Blobs</p></td>
@@ -212,14 +214,26 @@ window.onload = function() {
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-cloud-azure-starter-storage-blob&lt;/artifactId&gt;
+    &lt;artifactId&gt;spring-cloud-azure-starter-storage-blob&lt;/artifactId&gt; <i class="conum" data-value="1"></i><b>(1)</b>
 &lt;/dependency&gt;
 
 &lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-cloud-azure-starter-storage-file-share&lt;/artifactId&gt;
+    &lt;artifactId&gt;spring-cloud-azure-starter-storage-file-share&lt;/artifactId&gt; <i class="conum" data-value="2"></i><b>(2)</b>
 &lt;/dependency&gt;</code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Only required when you&#8217;re using Azure Storage Blob.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Only required when you&#8217;re using Azure Storage File Share.</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -230,8 +244,8 @@ window.onload = function() {
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 11.1111%;">
+<col style="width: 55.5556%;">
 </colgroup>
 <thead>
 <tr>
@@ -243,7 +257,7 @@ window.onload = function() {
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.blob.enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Whether an Azure Blob Storage Service is enabled</p></td>
 </tr>
 <tr>
@@ -269,8 +283,8 @@ window.onload = function() {
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 11.1111%;">
+<col style="width: 55.5556%;">
 </colgroup>
 <thead>
 <tr>
@@ -282,7 +296,7 @@ window.onload = function() {
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.fileshare.enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Whether Azure File Storage Service is enabled</p></td>
 </tr>
 <tr>
