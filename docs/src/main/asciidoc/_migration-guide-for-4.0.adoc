@@ -239,6 +239,40 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory`
 
 IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory-b2c`, you have to specify the `spring.cloud.azure.active-directory.b2c.enabled` to true, even if the starter is included in classpath.
 
+
+==== From azure-spring-boot-starter-keyvault-secrets to spring-cloud-azure-starter-keyvault-secrets
+
+IMPORTANT: If you're using the new `spring-cloud-azure-starter-keyvault-secrets`, you have to set `spring.cloud.azure.keyvault.secret.property-source-enabled=true` to enable property source.
+
+.Property name mapping
+|===
+| Legacy properties                      | Morden properties
+| azure.keyvault.allow-telemetry         | Not supported anymore.
+| azure.keyvault.case-sensitive-keys     | spring.cloud.azure.keyvault.secret.property-source[n].case-sensitive
+| azure.keyvault.certificate-password    | spring.cloud.azure.keyvault.secret.property-source[n].credential.client-certificate-password
+| azure.keyvault.certificate-path        | spring.cloud.azure.keyvault.secret.property-source[n].credential.client-certificate-path
+| azure.keyvault.client-id               | spring.cloud.azure.keyvault.secret.property-source[n].credential.client-id
+| azure.keyvault.client-key              | spring.cloud.azure.keyvault.secret.property-source[n].credential.client-secret
+| azure.keyvault.enabled                 | spring.cloud.azure.keyvault.secret.enabled and spring.cloud.azure.keyvault.secret.property-source-enabled and spring.cloud.azure.keyvault.secret.property-source[n].enabled
+| azure.keyvault.order                   | Not supported anymore. Use the order in property-source[n] instead.
+| azure.keyvault.refresh-interval        | spring.cloud.azure.keyvault.secret.property-source[n].refresh-interval
+| azure.keyvault.secret-keys             | spring.cloud.azure.keyvault.secret.property-source[n].secret-keys
+| azure.keyvault.tenant-id               | spring.cloud.azure.keyvault.secret.property-source[n].profile.tenant-id
+| azure.keyvault.uri                     | spring.cloud.azure.keyvault.secret.property-source[n].endpoint
+| -                                      | spring.cloud.azure.keyvault.secret.property-source[n].service-version
+| -                                      | spring.cloud.azure.keyvault.secret.property-source[n].client
+| -                                      | spring.cloud.azure.keyvault.secret.property-source[n].proxy
+| -                                      | spring.cloud.azure.keyvault.secret.property-source[n].retry
+| -                                      | spring.cloud.azure.keyvault.secret.property-source[n].resource
+|===
+
+. All configuration property names changed the prefix from `azure.keyvault` to `spring.cloud.azure.keyvault.secret`.
+. `spring.cloud.azure.keyvault.secret.enabled` is used to enable all Key Vault Secret features, include configure Key Vault secret client beans(like `SecretClient` and `SecretAsyncClient`) and add `KeyVaultPropertySource` in `ConfigurableEnvironment`.
+. `spring.cloud.azure.keyvault.secret.property-source-enabled` is used to enable all `KeyVaultPropertySource`. It will take effect only when `spring.cloud.azure.keyvault.secret.enabled=true`.
+. `spring.cloud.azure.keyvault.secret.property-source[n].enabled` is used to enable specific `KeyVaultPropertySource`. It will take effect only when `spring.cloud.azure.keyvault.secret.enabled=true` and `spring.cloud.azure.keyvault.secret.property-source-enabled=true`
+. For Azure common properties(like `client`, `proxy`, `retry`, `credential`, `profile`) and Key Vault properties(like `endpoint`, `service-version`). If `spring.cloud.azure.keyvault.secret.property-source[n].PROPERTY_NAME` is not configured, `spring.cloud.azure.keyvault.secret.PROPERTY_NAME` will be used.
+. `spring.cloud.azure.keyvault.secret.property-source[n].resource` is specific to a unique Azure resource, so if it's not configured, it will not get value from other places.
+
 ===== From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob
 
 . All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.blob`.
