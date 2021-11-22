@@ -1,6 +1,7 @@
+[#kafka-support]
 == Kafka Support
 
-Connect to Azure Event Hubs using Spring Kafka libraries. There're two approaches to connect to Azure Event Hubs for Kafka, the first one is to provide the Azure Event Hubs connection string directly, the other is to use Azure Resource Manager to retrieve the connection string.
+Connect to Azure Event Hubs using Spring Kafka libraries.There're two approaches to connect to Azure Event Hubs for Kafka, the first one is to provide the Azure Event Hubs connection string directly, the other is to use Azure Resource Manager to retrieve the connection string.
 
 === Dependency Setup
 
