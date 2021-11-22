@@ -2,7 +2,7 @@
 
 This section covers the changes made from version 3.10 to version 4.0.0-beta.1. With this major release, we aim to bring better security, leaner dependencies, support for production readiness, and more.
 
-IMPORTANT: To learn how to migration to 4.0, please check link:appendix.html[the Appendix page].
+IMPORTANT: To learn how to migration to 4.0, please check link:appendix.html#migration-guide-for-4-0[the Appendix page].
 
 === Unified Development Experience 
 

@@ -1,5 +1,5 @@
 
 == Migration Guide for 4.0
 
-To learn how to migration to 4.0, please check link:appendix.html[the Appendix page].
+To learn how to migration to 4.0, please check link:appendix.html#migration-guide-for-4-0[the Appendix page].
 
