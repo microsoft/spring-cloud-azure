@@ -441,9 +441,9 @@ spring:
         definition: consume;supply
       bindings:
         consume-in-0:
-          destination: [servicebus-queue-name]
+          destination: [servicebus-queue/topic-name]
         supply-out-0:
-          destination: [servicebus-queue-name-same-as-above]
+          destination: [servicebus-queue/topic-name-same-as-above]
       servicebus:
         bindings:
           consume-in-0:
@@ -452,6 +452,9 @@ spring:
           supply-out-0:
             producer:
               entity-type: queue#topic
+      poller:
+        fixed-delay: 1000
+        initial-delay: 0
 
 ----
 
@@ -462,19 +465,19 @@ spring:
   cloud:
     stream:
       function:
-        definition: queueConsume;queueSupply;topicConsume;topicSupply;
+        definition: consume1;supply1;consume2;supply2
       bindings:
-        topicConsume-in-0:
-          destination: [ servicebus-topic-1-name ]
-          group: [ topic-subscription-name ]
-        topicSupply-out-0:
-          destination: [ servicebus-topic-1-name ]
-        queueConsume-in-0:
+        consume1-in-0:
+          destination: [servicebus-topic-1-name]
+          group: [servicebus-topic-1-subscription-name]
+        supply1-out-0:
+          destination: [servicebus-topic-1-name-same-as-above]
+        consume2-in-0:
           binder: servicebus-2
-          destination: [ servicebus-queue-1-name ]
-        queueSupply-out-0:
+          destination: [servicebus-queue-1-name]
+        supply2-out-0:
           binder: servicebus-2
-          destination: [ servicebus-queue-1-name ]
+          destination: [servicebus-queue-1-name-same-as-above]
       binders:
         servicebus-1:
           type: servicebus
@@ -496,10 +499,10 @@ spring:
                     connection-string: [ servicebus-namespace-2-connection-string ]
       servicebus:
         bindings:
-          topicSupply-out-0:
+          consume1-out-0:
             producer:
               entity-type: topic
-          queueSupply-out-0:
+          consume2-out-0:
             producer:
               entity-type: queue
       poller:
