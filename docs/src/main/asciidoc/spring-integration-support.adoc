@@ -27,7 +27,7 @@ This starter provides the following 2 parts of configuration options:
 
 ===== Azure Common Configuration Options
 Below properties can also be configured with the default Spring Cloud Azure unified properties by changing the prefix from *spring.cloud.azure.eventhubs.* to *spring.cloud.azure.*.
-[cols="3*", options="header"]
+[cols="3,1,4", options="header"]
 |===
 |Properties | Type |Description
 

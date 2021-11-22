@@ -32,16 +32,30 @@ Developers who want more control or whose scenario isn't served by the `DefaultA
 ==== Authentication with Azure Active Directory
 For applications want to connect to resources that support Azure Active Directory (Azure AD) authentication, below confiugrations could be set with prefix `spring.cloud.azure.credential` or `spring.cloud.azure.<azure-service>.credential`
 
+[cols="1,3", options="header"]
 |===
 |Property Name |Description 
 
-|client-id |Client id to use when performing service principal authentication with Azure.
-|client-serect |Client secret to use when performing service principal authentication with Azure.
-|client-certificate-path |Client secret to use when performing service principal authentication with Azure.
-|client-certificate-password |Password of the certificate file.
-|username |Username to use when performing username/password authentication with Azure.
-|password |Password to use when performing username/password authentication with Azure.
-|managed-identity-client-id|Client id to use when using managed identity to authenticate with Azure.
+|client-id 
+|Client id to use when performing service principal authentication with Azure.
+
+|client-serect 
+|Client secret to use when performing service principal authentication with Azure.
+
+|client-certificate-path 
+|Client secret to use when performing service principal authentication with Azure.
+
+|client-certificate-password 
+|Password of the certificate file.
+
+|username 
+|Username to use when performing username/password authentication with Azure.
+
+|password 
+|Password to use when performing username/password authentication with Azure.
+
+|managed-identity-client-id
+|Client id to use when using managed identity to authenticate with Azure.
 |===
 
 TIP: To see the list of all Spring Cloud Azure related configuration properties please check link:appendix.html[the Appendix page].
