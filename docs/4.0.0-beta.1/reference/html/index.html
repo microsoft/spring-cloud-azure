@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<style>
+<style>
 .hidden {
 	display: none;
 }
@@ -39,9 +39,9 @@
 	background-color: #7a2519;
 	color: #ffffff;
 }
-
-</style>
-<script type="text/javascript">
+
+</style>
+<script type="text/javascript">
 function addBlockSwitches() {
 	for (var primary of document.querySelectorAll('.primary')) {
 		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
@@ -155,8 +155,8 @@ window.onload = function() {
 	addBlockSwitches();
 	globalSwitch();
 };
-
-</script>
+
+</script>
 
 </head>
 <body class="book toc2 toc-left">
@@ -1352,10 +1352,73 @@ public class KeyVaultSample implements CommandLineRunner {
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="multiple-property-source"><a class="anchor" href="#multiple-property-source"></a><a class="link" href="#multiple-property-source">9.3.2. Multiple property source</a></h4>
+<div class="sect4">
+<h5 id="property-configuration-2"><a class="anchor" href="#property-configuration-2"></a><a class="link" href="#property-configuration-2">Property configuration</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yml" data-lang="yml">spring:
+  cloud:
+    azure:
+      keyvault:
+        secret:
+          property-source-enabled: true
+          property-sources:
+            -
+              name: key-vault-1
+              endpoint: ${ENDPOINT_1}
+              profile:
+                tenant-id: ${AZURE_TENANT_ID_1}
+              credential:
+                client-id: ${AZURE_CLIENT_ID_1}
+                client-secret: ${AZURE_CLIENT_SECRET_1}
+            -
+              name: key-vault-2
+              endpoint: ${ENDPOINT_2}
+              profile:
+                tenant-id: ${AZURE_TENANT_ID_2}
+              credential:
+                client-id: ${AZURE_CLIENT_ID_2}
+                client-secret: ${AZURE_CLIENT_SECRET_2}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="java-code-2"><a class="anchor" href="#java-code-2"></a><a class="link" href="#java-code-2">Java code</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
+public class SampleApplication implements CommandLineRunner {
+
+    @Value("${secret-name-in-key-vault-1}")
+    private String secretNameInKeyVault1;
+    @Value("${secret-name-in-key-vault-2}")
+    private String secretNameInKeyVault2;
+    @Value("${secret-name-in-key-vault-both}")
+    private String secretNameInKeyVaultBoth;
+
+    public static void main(String[] args) {
+        SpringApplication.run(SampleApplication.class, args);
+    }
+
+    public void run(String[] args) {
+        System.out.println("secretNameInKeyVault1: " + secretNameInKeyVault1);
+        System.out.println("secretNameInKeyVault2: " + secretNameInKeyVault2);
+        System.out.println("secretNameInKeyVaultBoth: " + secretNameInKeyVaultBoth);
+    }
+
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="samples-3"><a class="anchor" href="#samples-3"></a><a class="link" href="#samples-3">9.4. Samples</a></h3>
-
+<div class="paragraph">
+<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples">this repo</a> to get  sample project.</p>
+</div>
 </div>
 </div>
 </div>
