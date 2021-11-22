@@ -1,15 +1,22 @@
 == Resource Handling
 
 Connect to Azure Storage using Spring Resource abstraction and Azure Storage libraries.
-
+[cols="2,1,5", options="header"]
 |===
-|Starter | Service | Description
-|spring-cloud-azure-starter-storage-blob|Azure Blobs|Allows unstructured data to be stored and accessed at a massive scale in block blobs.
-|spring-cloud-azure-starter-storage-file-share|Azure Files|Offers fully managed cloud file shares that you can access from anywhere via the industry standard Server Message Block (SMB) protocol.
+|Starter 
+|Service 
+|Description
+
+|spring-cloud-azure-starter-storage-blob
+|Azure Blobs
+|Allows unstructured data to be stored and accessed at a massive scale in block blobs.
+
+|spring-cloud-azure-starter-storage-file-share
+|Azure Files
+|Offers fully managed cloud file shares that you can access from anywhere via the industry standard Server Message Block (SMB) protocol.
 |===
 
 === Dependency Setup
-
 
 [source,xml]
 ----
@@ -22,29 +29,53 @@ Connect to Azure Storage using Spring Resource abstraction and Azure Storage lib
     <groupId>com.azure.spring</groupId>
     <artifactId>spring-cloud-azure-starter-storage-file-share</artifactId>
 </dependency>
-
 ----
+
 
 === Configuration
 
 This `spring-cloud-azure-starter-storage-blob` provides the following properties:
-[cols="3*", options="header"]
+[cols="3,1,5", options="header"]
 |===
-|Name | Default | Description
-|spring.cloud.azure.storage.blob.enabled | `true` | Whether an Azure Blob Storage Service is enabled
-|spring.cloud.azure.storage.blob.endpoint |  | Uri to connect Azure Blob Storage
-|spring.cloud.azure.storage.blob.account-key |  | Privatekey to connect Azure Blob Storage
-|spring.cloud.azure.storage.blob.account-name |  | Azure Storage Account Name
+|Name |Default | Description
+
+|spring.cloud.azure.storage.blob.enabled 
+|true
+|Whether an Azure Blob Storage Service is enabled
+
+|spring.cloud.azure.storage.blob.endpoint 
+|  
+|Uri to connect Azure Blob Storage
+
+|spring.cloud.azure.storage.blob.account-key 
+|  
+|Privatekey to connect Azure Blob Storage
+
+|spring.cloud.azure.storage.blob.account-name 
+|  
+|Azure Storage Account Name
 |===
 
 This `spring-cloud-azure-starter-storage-file-share` provides the following properties:
-[cols="3*", options="header"]
+[cols="3,1,5", options="header"]
 |===
 |Name | Default | Description
-|spring.cloud.azure.storage.fileshare.enabled | `true` | Whether Azure File Storage Service is enabled
-|spring.cloud.azure.storage.fileshare.endpoint |  | Uri to connect Azure File Storage
-|spring.cloud.azure.storage.fileshare.account-key |  | Privatekey to connect Azure File Storage
-|spring.cloud.azure.storage.fileshare.account-name |  | Azure Storage Account Name
+
+|spring.cloud.azure.storage.fileshare.enabled 
+|true 
+|Whether Azure File Storage Service is enabled
+
+|spring.cloud.azure.storage.fileshare.endpoint 
+|  
+|Uri to connect Azure File Storage
+
+|spring.cloud.azure.storage.fileshare.account-key 
+|  
+|Privatekey to connect Azure File Storage
+
+|spring.cloud.azure.storage.fileshare.account-name 
+|  
+|Azure Storage Account Name
 |===
 
 
