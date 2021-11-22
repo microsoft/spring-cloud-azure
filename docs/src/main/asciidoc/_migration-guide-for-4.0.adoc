@@ -60,19 +60,17 @@ dependencyManagement of your project to benefit from the dependency management.
 
 [source,xml]
 ----
-
 <dependencyManagement>
-<dependencies>
-    <dependency>
-        <groupId>com.azure.spring</groupId>
-        <artifactId>spring-cloud-azure-dependencies</artifactId>
-        <version>4.0.0-beta.1</version>
-        <type>pom</type>
-        <scope>import</scope>
-    </dependency>
-</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>com.azure.spring</groupId>
+            <artifactId>spring-cloud-azure-dependencies</artifactId>
+            <version>4.0.0-beta.1</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
 </dependencyManagement>
-
 ----
 
 === Artifact changes: renamed / added / deleted
