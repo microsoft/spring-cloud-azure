@@ -387,7 +387,7 @@ of 'spring.cloud.azure.servicebus.' with `spring.cloud.stream.servicebus.binding
 .producer.`.
 
 ==== Basic Usage
-step 1. Fill the configuration options with credential information.
+Step 1. Fill the configuration options with credential information.
 - For credentials as connection string, configure below properties in application.yml:
 [source,yaml]
 ----
@@ -486,7 +486,22 @@ spring:
 
 ----
 
-2. consumer and suppliers
+Step 2. Define supplier and consumer
+[source,java]
+----
+@Bean
+public Consumer<List<String>> consume() {
+    return list -> list.forEach(event -> LOGGER.info("New event received: '{}'",event));
+}
+
+@Bean
+public Supplier<Message<String>> supply() {
+    return () -> {
+        LOGGER.info("Sending message, sequence " + i);
+        return MessageBuilder.withPayload("\"Hello world"+ i++ +"\"").build();
+    };
+}
+----
 
 ==== Samples
 
