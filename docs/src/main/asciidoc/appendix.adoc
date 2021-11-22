@@ -7,3 +7,7 @@ include::_configprops.adoc[]
 [appendix]
 == Migration Guide for 4.0
 include::_migration-guide-for-4.0.adoc[]
+
+[appendix]
+== Known Issues
+include::known-issues.adoc[]
