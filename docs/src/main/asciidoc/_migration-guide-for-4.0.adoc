@@ -468,10 +468,10 @@ spring:
         definition: consume1;supply1;consume2;supply2
       bindings:
         consume1-in-0:
-          destination: ${AZURE_SERVICEBUS_QUEUE_OR_TOPIC_NAME}
-         #group: ${AZURE_SERVICEBUS_TOPIC_SUBSCRIPTION_NAME}
+          destination: ${AZURE_SERVICEBUS_TOPIC_NAME}
+          group: ${AZURE_SERVICEBUS_TOPIC_SUBSCRIPTION_NAME}
         supply1-out-0:
-          destination: ${AZURE_SERVICEBUS_QUEUE_OR_TOPIC_NAME}
+          destination: ${AZURE_SERVICEBUS_TOPIC_NAME}
         consume2-in-0:
           binder: servicebus-2
           destination: ${AZURE_SERVICEBUS_QUEUE_NAME}
