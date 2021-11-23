@@ -1,1 +1,1 @@
-Spring Cloud Azure offers a convenient way to interact with Azure provided services using well-known Spring idioms and APIs for Spring developers.
+Spring is an open-source application framework developed by VMware that provides a simplified, modular approach for creating Java applications. Spring Cloud Azure is an open-source project that provides seamless Spring integration with Azure services.
