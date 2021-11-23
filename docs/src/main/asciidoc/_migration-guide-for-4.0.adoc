@@ -86,11 +86,10 @@ In the process of developing Spring Cloud Azure 4.0, we renamed some artifacts t
 conventions, deleted some artifacts for its functionality could be put in a more appropriate artifact, and added some
 new artifacts to better serve some scenarios.
 
-.artifact id mapping
-[cols="<,<,<"]
+.Mapping of legacy artifact id and modern artifact id
+[cols="<,<,<", options="header"]
 |===
 |Legacy Artifact ID |Modern Artifact ID |Description
-
 |azure-spring-boot-starter |spring-cloud-azure-starter |This artifact has been deleted with all functionality be merged into the new `spring-cloud-azure-starter` artifact.
 |azure-spring-boot-starter-active-directory |spring-cloud-azure-starter-active-directory | Renamed the artifact.
 |azure-spring-boot-starter-active-directory-b2c |spring-cloud-azure-starter-active-directory-b2c | Renamed the artifact.
@@ -144,31 +143,28 @@ crash.
 
 ==== spring-cloud-azure-starter
 
-[cols="<30,<~"]
-.removed dependencies of spring-cloud-starter
+.Removed dependencies of spring-cloud-starter
+[cols="<30,<~", options="header"]
 |===
 |Removed dependencies |Description
-
 |org.springframework.boot:spring-boot-starter-validation | Please include the validation starter if you want to use Hibernate Validator.
 |===
 
 ==== spring-cloud-azure-starter-active-directory
 
-[cols="<30,<~"]
-.removed dependencies of spring-cloud-azure-starter-active-directory
+.Removed dependencies of spring-cloud-azure-starter-active-directory
+[cols="<30,<~", options="header"]
 |===
 |Removed dependencies |Description
-
 |org.springframework.boot:spring-boot-starter-validation |Please include the validation starter if you want to use Hibernate Validator.
 |===
 
 ==== spring-cloud-azure-starter-active-directory-b2c
 
-[cols="<30,<~"]
-.removed dependencies of spring-cloud-azure-starter-active-directory-b2c
+.Removed dependencies of spring-cloud-azure-starter-active-directory-b2c
+[cols="<30,<~", options="header"]
 |===
 |Removed dependencies |Description
-
 |org.springframework.boot:spring-boot-starter-validation |Please include the validation starter if you want to use Hibernate Validator.
 |===
 
@@ -217,11 +213,10 @@ The modern `spring-cloud-azure-starter` allows developers to define properties t
 namespace `spring.cloud.azure`. It was not supported in the legacy `azure-spring-boot-starter`. The global
 configurations can be divided into five categories:
 
-.global configurations
-[cols="<30,<~"]
+.Global configurations
+[cols="<30,<~", options="header"]
 |===
-|Prefix |Description 
-
+|Prefix |Description
 |spring.cloud.azure.client |To configure the transport clients underneath each Azure SDK. 
 |spring.cloud.azure.credential |To configure how to authenticate with Azure Active Directory. 
 |spring.cloud.azure.profile |To configure the Azure cloud environment. 
@@ -252,11 +247,10 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory-
 
 IMPORTANT: If you're using the new `spring-cloud-azure-starter-keyvault-secrets`, you have to set `spring.cloud.azure.keyvault.secret.property-source-enabled=true` to enable property source.
 
-.property name mapping of spring-cloud-azure-starter-keyvault-secrets
-[cols="<30,<~"]
+.Property mapping from azure-spring-boot-starter-keyvault-secrets to spring-cloud-azure-starter-keyvault-secrets
+[cols="<30,<~", options="header"]
 |===
 | Legacy properties                      | Morden properties
-
 | azure.keyvault.allow-telemetry         | Not supported anymore.
 | azure.keyvault.case-sensitive-keys     | spring.cloud.azure.keyvault.secret.property-source[n].case-sensitive
 | azure.keyvault.certificate-password    | spring.cloud.azure.keyvault.secret.property-source[n].credential.client-certificate-password
@@ -287,11 +281,10 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-keyvault-secrets`
 
 . All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.blob`.
 
-.property name mapping of spring-cloud-azure-starter-storage-blob
-[cols="<30,<~"]
+.Property mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob
+[cols="<30,<~", options="header"]
 |===
-|Legacy properties |Morden properties 
-
+|Legacy properties |Morden properties
 |azure.storage.account-name |spring.cloud.azure.storage.blob.account-name 
 |azure.storage.account-key |spring.cloud.azure.storage.blob.account-key 
 |azure.storage.blob-endpoint |spring.cloud.azure.storage.blob.endpoint 
@@ -301,11 +294,10 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-keyvault-secrets`
 
 All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.fileshare`.
 
-.property name mapping of spring-cloud-azure-starter-storage-file-share
-[cols="<30,<~"]
+.Property mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share
+[cols="<30,<~", options="header"]
 |===
-|Legacy properties |Morden properties 
-
+|Legacy properties |Morden properties
 |azure.storage.account-name |spring.cloud.azure.storage.fileshare.account-name 
 |azure.storage.account-key |spring.cloud.azure.storage.fileshare.account-key 
 |azure.storage.file-endpoint |spring.cloud.azure.storage.fileshare.endpoint 
@@ -317,15 +309,15 @@ IMPORTANT: Configuration prefix has been changed from `spring.cloud.azure.eventh
 
 Changes for the child entries for this prefix, please refer the following tables:
 
-.property name mapping of spring-cloud-azure-starter-integration-eventhubs
-[cols="<30,<~"]
+.Property mapping from azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs
+[cols="<30,<~", options="header"]
 |===
-|Legacy properties | Morden properties 
-
+|Legacy properties | Morden properties
 |checkpoint-storage-account|processor.checkpoint-store.account-name
 |checkpoint-access-key|processor.checkpoint-store.account-key
 |checkpoint-container|processor.checkpoint-store.container-name
 |===
+
 For example, change from:
 
 [source,yaml]
@@ -361,11 +353,10 @@ spring:
 For all configuration options supported in spring-cloud-azure-starter-integration-servicebus and spring-integration-azure-servicebus libraries,
 the prefix remains to be as `spring.cloud.azure.servicebus`.
 
-.property name mapping of spring-cloud-azure-starter-integration-servicebus
-[cols="<30,<~"]
+.Property mapping from azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus
+[cols="<30,<~", options="header"]
 |===
 |Legacy properties suffix value |Current properties suffix value |Current type
-
 |transport-type |client.transport-type |AmqpTransportType
 |retry-options.max-retries |retry.max-attempts |Integer
 |retry-options.delay |retry.delay |Duration
@@ -378,11 +369,10 @@ the prefix remains to be as `spring.cloud.azure.servicebus`.
 
 All configuration property names changed the prefix from `spring.cloud.azure.storage` to `spring.cloud.azure.storage.queue`.
 
-.property name mapping of spring-cloud-azure-starter-integration-storage-queue
-[cols="<30,<~"]
+.Property mapping from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue
+[cols="<30,<~", options="header"]
 |===
-|Legacy properties |Morden properties 
-
+|Legacy properties |Morden properties
 |spring.cloud.azure.storage.account |spring.cloud.azure.storage.queue.account-name 
 |spring.cloud.azure.storage.access-key |spring.cloud.azure.storage.queue.account-key 
 |spring.cloud.azure.storage.resource-group |spring.cloud.azure.storage.queue.resource.resource-group 
@@ -405,21 +395,18 @@ prefix changed from +
 to +
 `spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.`
 
---
 Changes for the child entries for following prefix, please refer the following table:
 
-.property name mapping of spring-cloud-azure-starter-integration-storage-queue
-[cols="<30,<~"]
+.Property mapping from azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs
+[cols="<30,<~", options="header"]
 |===
 |Legacy properties |Modern properties
-
 |consumer.max-batch-size |consumer.batch.max-size
 |consumer.max-wait-time |consumer.batch.max-wait-time
 |consumer.checkpoint-mode |consumer.checkpoint.mode
 |consumer.checkpoint-count |consumer.checkpoint.count
 |consumer.checkpoint-interval |consumer.checkpoint.interval
 |===
---
 
 For example, you should change from:
 
@@ -466,19 +453,17 @@ IMPORTANT: Legacy binder libaries are `azure-spring-cloud-stream-binder-serviceb
 
 We have merged these two libraries into one, which supports both topic and queue. And the binder type is combined as `servicebus`.
 
-.new configuration properties of spring-cloud-azure-stream-binder-servicebus
-[cols="<30,<~"]
+.New configuration properties of spring-cloud-azure-stream-binder-servicebus
+[cols="<30,<~", options="header"]
 |===
 |Modern properties |description
-
 |spring.cloud.stream.servicebus.bindings.CHANNEL.producer.entity-type |If you use the sending function, you need to set the entity-type, which can be set to topic or queue.
 |===
 
-.property name mapping of spring-cloud-azure-stream-binder-servicebus
-[cols="<30,<~"]
+.Property mapping from azure-spring-cloud-stream-binder-servicebus-* to spring-cloud-azure-stream-binder-servicebus
+[cols="<30,<~", options="header"]
 |===
 |Legacy properties |Modern properties
-
 |spring.cloud.stream.servicebus.queue.bindings.* |spring.cloud.stream.servicebus.bindings.*
 |spring.cloud.stream.servicebus.topic.bindings.* |spring.cloud.stream.servicebus.bindings.*
 |===
@@ -578,11 +563,10 @@ spring:
 
 ==== From azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory
 
-.class mapping of spring-cloud-azure-starter-active-directory
-[cols="<~,<~"]
+.Class mapping from azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory
+[cols="<~,<~", options="header"]
 |===
-|Legacy class |Modern class 
-
+|Legacy class |Modern class
 |com.azure.spring.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter |com.azure.spring.cloud.autoconfigure.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter 
 |com.azure.spring.aad.webapp.AADWebSecurityConfigurerAdapter |com.azure.spring.cloud.autoconfigure.aad.webapp.AADWebSecurityConfigurerAdapter 
 |com.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter |com.azure.spring.cloud.autoconfigure.aad.filter.AADAppRoleStatelessAuthenticationFilter 
@@ -594,11 +578,10 @@ spring:
 
 ==== From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c
 
-.class mapping of spring-cloud-azure-starter-active-directory-b2c
-[cols="<~,<~"]
+.Class mapping from azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c
+[cols="<~,<~", options="header"]
 |===
-|Legacy class |Modern class 
-
+|Legacy class |Modern class
 |com.azure.spring.autoconfigure.b2c.AADB2CJwtBearerTokenAuthenticationConverter |com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2CJwtBearerTokenAuthenticationConverter 
 |com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer |com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2COidcLoginConfigurer 
 |===
@@ -706,11 +689,10 @@ public class Demo {
 }
 ----
 
-.class mapping of spring-cloud-azure-starter-integration-eventhubs
-[cols="<~,<~"]
+.Class mapping from azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs
+[cols="<~,<~", options="header"]
 |===
-|Legacy class |Modern class 
-
+|Legacy class |Modern class
 |com.azure.spring.integration.core.EventHubsHeaders |com.azure.spring.eventhubs.support.EventHubsHeaders 
 |com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
 |com.azure.spring.integration.core.api.reactor.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer 
@@ -823,11 +805,10 @@ public class Demo {
 
 ==== From azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue
 
-.class mapping of spring-cloud-azure-starter-integration-storage-queue
-[cols="<~,<~"]
+.Class mapping from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue
+[cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-
 |com.azure.spring.integration.core.api.CheckpointMode |com.azure.spring.messaging.checkpoint.CheckpointMode 
 |com.azure.spring.integration.core.api.reactor.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer 
 |com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.handler.DefaultMessageHandler 
@@ -843,11 +824,10 @@ public class Demo {
 
 ==== From azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs
 
-.class mapping of spring-cloud-azure-stream-binder-eventhubs
-[cols="<~,<~"]
+.Class mapping from azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs
+[cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-
 |com.azure.spring.integration.core.api.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
 |com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
 |com.azure.spring.integration.core.EventHubHeaders |com.azure.spring.eventhubs.support.EventHubsHeaders
@@ -856,11 +836,10 @@ public class Demo {
 
 ==== From azure-spring-cloud-stream-binder-servicebus to spring-cloud-azure-stream-binder-servicebus
 
-.class mapping of spring-cloud-azure-stream-binder-servicebus
-[cols="<~,<~"]
+.Class mapping from azure-spring-cloud-stream-binder-servicebus to spring-cloud-azure-stream-binder-servicebus
+[cols="<~,<~", options="header"]
 |===
-|Legacy class |Modern class 
-
+|Legacy class |Modern class
 |com.azure.spring.integration.core.api.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer 
 |com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders 
 |com.azure.spring.integration.servicebus.converter.ServiceBusMessageHeaders |com.azure.spring.servicebus.support.ServiceBusMessageHeaders
