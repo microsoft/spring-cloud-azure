@@ -1663,7 +1663,7 @@ add below properties and you are good to go.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.resource-server.claim-to-authority-prefix-map</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Claim to authority prefix map. Default map is: "scp" -&gt; "SCOPE_", "roles" -&gt; "APPROLE_".</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Claim to authority prefix map. Default map is: "scp" -&gt; "SCOPE_", "roles" -&gt; <code>APPROLE_</code>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.tenant-id</p></td>
@@ -2692,7 +2692,7 @@ select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleSc
 <div class="ulist">
 <ul>
 <li>
-<p>Step 1: Refer to <a href="#web-application-accessing-resource-servers">Web application accessing resource servers</a> to build your <code>WebApiA</code> permission.</p>
+<p>Step 1: Refer to <a href="#usage-2web-application-accessing-resource-servers">Web application accessing resource servers</a> to build your <code>WebApiA</code> permission.</p>
 </li>
 <li>
 <p>Step 2: Add <code>WebApiA</code> permission and grant admin consent for your web application.</p>
