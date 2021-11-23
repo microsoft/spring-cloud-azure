@@ -1,0 +1,15 @@
+
+== Getting Help
+
+If you have any questions about this doc, please ask by creating GitHub issue. And PR is welcome.
+
+.GitHub repos
+[cols="<30,<~"]
+|===
+|GitHub repo | Description
+
+|https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/spring[Azure/azure-sdk-for-java] |This repo used to hold the source code.
+|https://github.com/microsoft/spring-cloud-azure/tree/docs/docs/src/main/asciidoc[microsoft/spring-cloud-azure] | This repo used to hold the document which is displaying in current page.
+|===
+
+
