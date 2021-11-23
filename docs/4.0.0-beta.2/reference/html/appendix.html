@@ -6744,15 +6744,15 @@ The binder type is renamed from: servicebus-queue/servicebus-topic to <code>serv
   cloud:
     azure:
       servicebus:
-        connection-string: ${SERVICEBUS_BINDER_CONNECTION_STRING}
+        connection-string: ${AZURE_SERVICEBUS_BINDER_CONNECTION_STRING}
     stream:
       function:
         definition: consume;supply
       bindings:
         consume-in-0:
-          destination: ${SERVICEBUS_QUWUW_OR_TOPIC_NAME}
+          destination: ${AZURE_SERVICEBUS_QUEUE_OR_TOPIC_NAME}
         supply-out-0:
-          destination: ${SERVICEBUS_QUWUW_OR_TOPIC_NAME}
+          destination: ${AZURE_SERVICEBUS_QUEUE_OR_TOPIC_NAME}
       servicebus:
         bindings:
           consume-in-0:
@@ -6782,16 +6782,16 @@ The binder type is renamed from: servicebus-queue/servicebus-topic to <code>serv
         definition: consume1;supply1;consume2;supply2
       bindings:
         consume1-in-0:
-          destination: ${SERVICEBUS_QUWUW_OR_TOPIC_NAME}
-         #group: ${SERVICEBUS_TOPIC_SUBSCRIPTION_NAME}
+          destination: ${AZURE_SERVICEBUS_TOPIC_NAME}
+          group: ${AZURE_SERVICEBUS_TOPIC_SUBSCRIPTION_NAME}
         supply1-out-0:
-          destination: ${SERVICEBUS_QUWUW_OR_TOPIC_NAME}
+          destination: ${AZURE_SERVICEBUS_TOPIC_NAME}
         consume2-in-0:
           binder: servicebus-2
-          destination: ${SERVICEBUS_QUWUW_NAME}
+          destination: ${AZURE_SERVICEBUS_QUEUE_NAME}
         supply2-out-0:
           binder: servicebus-2
-          destination: ${SERVICEBUS_QUWUW_NAME}
+          destination: ${AZURE_SERVICEBUS_QUEUE_NAME}
       binders:
         servicebus-1:
           type: servicebus
@@ -6801,7 +6801,7 @@ The binder type is renamed from: servicebus-queue/servicebus-topic to <code>serv
               cloud:
                 azure:
                   servicebus:
-                    connection-string: ${SERVICEBUS1_BINDER_CONNECTION_STRING}
+                    connection-string: ${SERVICEBUS_BINDER_CONNECTION_STRING_1}
         servicebus-2:
           type: servicebus
           default-candidate: false
@@ -6810,7 +6810,7 @@ The binder type is renamed from: servicebus-queue/servicebus-topic to <code>serv
               cloud:
                 azure:
                   servicebus:
-                    connection-string: ${SERVICEBUS2_BINDER_CONNECTION_STRING}
+                    connection-string: ${SERVICEBUS_BINDER_CONNECTION_STRING_2}
       servicebus:
         bindings:
           consume1-in-0:
