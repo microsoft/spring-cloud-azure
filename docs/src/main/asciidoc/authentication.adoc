@@ -8,7 +8,7 @@ NOTE: DefaultAzureCredential is intended to simplify getting started with the SD
 
 The `DefaultAzureCredential` will attempt to authenticate via the following mechanisms in order.
 
-image::default-azure-credential.png[DefaultAzureCredential]
+image::images/default-azure-credential.png[DefaultAzureCredential]
 
 - Environment - The `DefaultAzureCredential` will read account information specified via environment variables and use it to authenticate.
 - Managed Identity - If the application is deployed to an Azure host with Managed Identity enabled, the `DefaultAzureCredential` will authenticate with that account.
@@ -30,8 +30,9 @@ We encourage using manged identity instead of using connection string or key in 
 Developers who want more control or whose scenario isn't served by the `DefaultAzureCredential` or whose scenario isn't served by the default settings should use other credential types.
 
 ==== Authentication with Azure Active Directory
-For applications want to connect to resources that support Azure Active Directory (Azure AD) authentication, below confiugrations could be set with prefix `spring.cloud.azure.credential` or `spring.cloud.azure.<azure-service>.credential`
+For applications want to connect to resources that support Azure Active Directory (Azure AD) authentication, below configurations could be set with prefix `spring.cloud.azure.credential` or `spring.cloud.azure.<azure-service>.credential`
 
+.Authentication properties
 [cols="1,3", options="header"]
 |===
 |Property Name |Description 

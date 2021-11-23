@@ -2,6 +2,7 @@
 
 Most of Azure Service SDKs could be divided into two categories by transport type, HTTP-based and AMQP-based. There are properties that are common to all SDKs such as authentication principals and Azure environment settings. Or common to HTTP-based clients, such as logging level to log http requests and responses. In Spring Cloud Azure 4.0 we added five common categories of configuration properties, which could be specified to each Azure service.
 
+.Service common properties
 [cols="1,3", options="header"]
 |===
 |Prefix |Description 
@@ -24,6 +25,7 @@ Most of Azure Service SDKs could be divided into two categories by transport typ
 
 There are some properties that could be shared among different Azure services, for example using the same service principal to access Azure Cosmos DB and Azure Event Hubs. Spring Cloud Azure 4.0 allows developers to define properties that apply to all Azure SDKs in the namespace `spring.cloud.azure`.
 
+.Global properties
 [cols="1,3", options="header"]
 |===
 |Prefix |Description 
@@ -49,6 +51,7 @@ NOTE: Properties configured under each Azure service will override the global co
 
 The configuration properties' prefixes have been unified to `spring.cloud.azure` namespace since Spring Cloud Azure 4.0, it will make configuration properties more consistent and more intuitive. Here's a quick review of the prefixes of supported Azure services.
 
+.Service specific properties
 [cols="2*", options="header"]
 |===
 |Azure Service |Configuration Property Prefix 
