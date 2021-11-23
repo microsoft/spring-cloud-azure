@@ -504,7 +504,7 @@ consented.</p>
 <div class="sect3">
 <h4 id="_basic_usage"><a class="link" href="#_basic_usage">Basic Usage</a></h4>
 <div class="sect4">
-<h5 id="_accessing_a_web_application"><a class="link" href="#_accessing_a_web_application">Accessing a web application</a></h5>
+<h5 id="_usage_1accessing_a_web_application"><a class="link" href="#_usage_1accessing_a_web_application">Usage 1:Accessing a web application</a></h5>
 <div class="paragraph">
 <p>This scenario uses <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">The OAuth 2.0 authorization code grant</a> flow to log in a user with a Microsoft account.</p>
 </div>
@@ -589,7 +589,7 @@ The tailing <code>/</code> cannot be omitted.
 </div>
 </div>
 <div class="sect4">
-<h5 id="_web_application_accessing_resource_servers"><a class="link" href="#_web_application_accessing_resource_servers">Web application accessing resource servers</a></h5>
+<h5 id="_usage_2web_application_accessing_resource_servers"><a class="link" href="#_usage_2web_application_accessing_resource_servers">Usage 2:Web application accessing resource servers</a></h5>
 <div class="paragraph">
 <p><strong>System diagram</strong>:</p>
 </div>
@@ -653,7 +653,7 @@ The tailing <code>/</code> cannot be omitted.
 </div>
 </div>
 <div class="sect4">
-<h5 id="_accessing_a_resource_server"><a class="link" href="#_accessing_a_resource_server">Accessing a resource server</a></h5>
+<h5 id="_usage_3accessing_a_resource_server"><a class="link" href="#_usage_3accessing_a_resource_server">Usage 3:Accessing a resource server</a></h5>
 <div class="paragraph">
 <p>This scenario doesn&#8217;t support login, just protect the server by validating the access_token. If the access token is valid, the server serves the request.</p>
 </div>
@@ -710,7 +710,7 @@ The tailing <code>/</code> cannot be omitted.
 </div>
 </div>
 <div class="sect4">
-<h5 id="_resource_server_visiting_other_resource_servers"><a class="link" href="#_resource_server_visiting_other_resource_servers">Resource server visiting other resource servers</a></h5>
+<h5 id="_usage_4resource_server_visiting_other_resource_servers"><a class="link" href="#_usage_4resource_server_visiting_other_resource_servers">Usage 4:Resource server visiting other resource servers</a></h5>
 <div class="paragraph">
 <p>This scenario support visit other resource servers in resource servers.</p>
 </div>
@@ -794,7 +794,7 @@ The tailing <code>/</code> cannot be omitted.
 </div>
 </div>
 <div class="sect4">
-<h5 id="_web_application_and_resource_server_in_one_application"><a class="link" href="#_web_application_and_resource_server_in_one_application">Web application and Resource server in one application</a></h5>
+<h5 id="_usage_5web_application_and_resource_server_in_one_application"><a class="link" href="#_usage_5web_application_and_resource_server_in_one_application">Usage 5:Web application and Resource server in one application</a></h5>
 <div class="paragraph">
 <p>This scenario supports <code>Web application</code> and <code>Resource server</code> in one application.</p>
 </div>
@@ -1008,41 +1008,41 @@ accept or deny access after validating access_token obtained from Azure AD. We w
 <p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142620440-f970b572-2646-4f50-9f77-db62d6e965f1.png" alt="B2C Web application &amp; Web Api Overall"></span></p>
 </div>
 <div class="sect4">
-<h5 id="_accessing_a_web_application_2"><a class="link" href="#_accessing_a_web_application_2">Accessing a web application</a></h5>
+<h5 id="_usage_1accessing_a_web_application_2"><a class="link" href="#_usage_1accessing_a_web_application_2">Usage 1:Accessing a web application</a></h5>
 <div class="paragraph">
 <p>This scenario uses <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">The OAuth 2.0 authorization code grant</a> flow to log in a user with your Azure AD B2C user.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Select <strong>Azure AD B2C</strong> from the portal menu, click <strong>Applications</strong>, and then click <strong>Add</strong>.</p>
+<p>Step 1: Select <strong>Azure AD B2C</strong> from the portal menu, click <strong>Applications</strong>, and then click <strong>Add</strong>.</p>
 </li>
 <li>
-<p>Specify your application <strong>Name</strong>, we call it <code>webapp</code>, add <code><a href="http://localhost:8080/login/oauth2/code/" class="bare">http://localhost:8080/login/oauth2/code/</a></code> for the <strong>Reply URL</strong>, record the
+<p>Step 2: Specify your application <strong>Name</strong>, we call it <code>webapp</code>, add <code><a href="http://localhost:8080/login/oauth2/code/" class="bare">http://localhost:8080/login/oauth2/code/</a></code> for the <strong>Reply URL</strong>, record the
 <strong>Application ID</strong> as your <code>WEB_APP_AZURE_CLIENT_ID</code> and then click <strong>Save</strong>.</p>
 </li>
 <li>
-<p>Select <strong>Keys</strong> from your application, click <strong>Generate key</strong> to generate <code>WEB_APP_AZURE_CLIENT_SECRET</code> and then <strong>Save</strong>.</p>
+<p>Step 3: Select <strong>Keys</strong> from your application, click <strong>Generate key</strong> to generate <code>WEB_APP_AZURE_CLIENT_SECRET</code> and then <strong>Save</strong>.</p>
 </li>
 <li>
-<p>Select <strong>User flows</strong> on your left, and then Click <strong>New user flow</strong>.</p>
+<p>Step 4: Select <strong>User flows</strong> on your left, and then Click <strong>New user flow</strong>.</p>
 </li>
 <li>
-<p>Choose <strong>Sign up or in</strong>, <strong>Profile editing</strong> and <strong>Password reset</strong> to create user flows
+<p>Step 5: Choose <strong>Sign up or in</strong>, <strong>Profile editing</strong> and <strong>Password reset</strong> to create user flows
 respectively. Specify your user flow <strong>Name</strong> and <strong>User attributes and claims</strong>, click <strong>Create</strong>.</p>
 </li>
 <li>
-<p>Select <strong>API permissions</strong> &gt; <strong>Add a permission</strong> &gt; <strong>Microsoft APIs</strong>, select <strong><em>Microsoft Graph</em></strong>,
+<p>Step 6: Select <strong>API permissions</strong> &gt; <strong>Add a permission</strong> &gt; <strong>Microsoft APIs</strong>, select <strong><em>Microsoft Graph</em></strong>,
 select <strong>Delegated permissions</strong>, check <strong>offline_access</strong> and <strong>openid</strong> permissions, select <strong>Add permission</strong> to complete the process.</p>
 </li>
 <li>
-<p>Grant admin consent for <strong><em>Graph</em></strong> permissions.
+<p>Step 7: Grant admin consent for <strong><em>Graph</em></strong> permissions.
 <span class="image"><img src="https://user-images.githubusercontent.com/13167207/142620491-8c8a82ea-c920-43a8-aa0a-dd028f1b8553.png" alt="Add Graph permissions"></span></p>
 </li>
 <li>
-<p>Add the following dependencies in your <em>pom.xml</em>.</p>
+<p>Step 8: Add the following dependencies in your <em>pom.xml</em>.</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1070,12 +1070,12 @@ select <strong>Delegated permissions</strong>, check <strong>offline_access</str
 &lt;/dependencies&gt;</code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Add properties in <em>application.yml</em> using the values you created earlier, for example:</p>
+<p>Step 9: Add properties in <em>application.yml</em> using the values you created earlier, for example:</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1098,12 +1098,12 @@ select <strong>Delegated permissions</strong>, check <strong>offline_access</str
           user-name-attribute-name: ${USER_NAME_ATTRIBUTE_NAME}</code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Write your Java code.</p>
+<p>Step 10: Write your Java code.</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="paragraph">
 <p>Controller code can refer to the following:</p>
@@ -1137,42 +1137,42 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 <div class="paragraph">
 <p>Copy the <em>home.html</em> from <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-oidc/src/main/resources/templates">Azure AD B2C Spring Boot Sample</a>, and replace the <code>PROFILE_EDIT_USER_FLOW</code> and <code>PASSWORD_RESET_USER_FLOW</code> with your user flow name respectively that completed earlier.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Build and test your app</p>
+<p>Step 11: Build and test your app</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="paragraph">
 <p>Let <code>Webapp</code> run on port <em>8080</em>.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_web_application_accessing_resource_servers_2"><a class="link" href="#_web_application_accessing_resource_servers_2">Web application accessing resource servers</a></h5>
+<h5 id="_usage_2web_application_accessing_resource_servers_2"><a class="link" href="#_usage_2web_application_accessing_resource_servers_2">Usage 2:Web application accessing resource servers</a></h5>
 <div class="paragraph">
 <p>This scenario is based on <strong>Accessing a web application</strong> scenario to allow application to access other resources, that is [The OAuth 2.0 client credentials grant] flow.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Select <strong>Azure AD B2C</strong> from the portal menu, click <strong>Applications</strong>, and then click <strong>Add</strong>.</p>
+<p>Step 1: Select <strong>Azure AD B2C</strong> from the portal menu, click <strong>Applications</strong>, and then click <strong>Add</strong>.</p>
 </li>
 <li>
-<p>Specify your application <strong>Name</strong>, we call it <code>webApiA</code>, record the <strong>Application ID</strong> as your <code>WEB_API_A_AZURE_CLIENT_ID</code> and then click <strong>Save</strong>.</p>
+<p>Step 2: Specify your application <strong>Name</strong>, we call it <code>webApiA</code>, record the <strong>Application ID</strong> as your <code>WEB_API_A_AZURE_CLIENT_ID</code> and then click <strong>Save</strong>.</p>
 </li>
 <li>
-<p>Select <strong>Keys</strong> from your application, click <strong>Generate key</strong> to generate <code>WEB_API_A_AZURE_CLIENT_SECRET</code> and then <strong>Save</strong>.</p>
+<p>Step 3: Select <strong>Keys</strong> from your application, click <strong>Generate key</strong> to generate <code>WEB_API_A_AZURE_CLIENT_SECRET</code> and then <strong>Save</strong>.</p>
 </li>
 <li>
-<p>Select <strong>Expose an API</strong> on your left, and then Click the <strong>Set</strong> link,
+<p>Step 4: Select <strong>Expose an API</strong> on your left, and then Click the <strong>Set</strong> link,
 record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_URL</code>, then <strong>Save</strong>.</p>
 </li>
 <li>
-<p>Select <strong>Manifest</strong> on your left, and then paste the below json segment into <code>appRoles</code> array,
+<p>Step 5: Select <strong>Manifest</strong> on your left, and then paste the below json segment into <code>appRoles</code> array,
 record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_URL</code>, record the value of the app role as your <code>WEB_API_A_ROLE_VALUE</code>, then <strong>save</strong>.</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1191,20 +1191,20 @@ record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_UR
 <div class="paragraph">
 <p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142620567-59a91df7-7a97-4027-b525-1f422f25fb22.png" alt="Configure WebApiA appRoles"></span></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Select <strong>API permissions</strong> &gt; <strong>Add a permission</strong> &gt; <strong>My APIs</strong>, select <strong><em>WebApiA</em></strong> application name,
+<p>Step 6: Select <strong>API permissions</strong> &gt; <strong>Add a permission</strong> &gt; <strong>My APIs</strong>, select <strong><em>WebApiA</em></strong> application name,
 select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleScope</strong> permission, select <strong>Add permission</strong> to complete the process.</p>
 </li>
 <li>
-<p>Grant admin consent for <strong><em>WebApiA</em></strong> permissions.
+<p>Step 7: Grant admin consent for <strong><em>WebApiA</em></strong> permissions.
 <span class="image"><img src="https://user-images.githubusercontent.com/13167207/142620601-660400fa-7cff-4989-9d7f-2b32a9aa1244.png" alt="Add WebApiA permission"></span></p>
 </li>
 <li>
-<p>Add the following dependency on the basis of <strong>Accessing a web application</strong> scenario.</p>
+<p>Step 8: Add the following dependency on the basis of <strong>Accessing a web application</strong> scenario.</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1214,12 +1214,12 @@ select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleSc
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Add the following configuration on the basis of <strong>Accessing a web application</strong> scenario.</p>
+<p>Step 9: Add the following configuration on the basis of <strong>Accessing a web application</strong> scenario.</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1236,12 +1236,12 @@ select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleSc
               scopes: ${WEB_API_A_APP_ID_URL}/.default</pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Write your <code>Webapp</code> Java code.</p>
+<p>Step 10: Write your <code>Webapp</code> Java code.</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="paragraph">
 <p>Controller code can refer to the following:</p>
@@ -1263,15 +1263,15 @@ select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleSc
 }</code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Please refer to <strong>Accessing a resource server</strong> section to write your <code>WebApiA</code> Java code.</p>
+<p>Step 11: Please refer to <strong>Accessing a resource server</strong> section to write your <code>WebApiA</code> Java code.</p>
 </li>
 <li>
-<p>Build and test your app</p>
+<p>Step 12: Build and test your app</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="paragraph">
 <p>Let <code>Webapp</code> and <code>WebApiA</code> run on port <em>8080</em> and <em>8081</em> respectively.
@@ -1279,22 +1279,22 @@ select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleSc
 </div>
 </div>
 <div class="sect4">
-<h5 id="_accessing_a_resource_server_2"><a class="link" href="#_accessing_a_resource_server_2">Accessing a resource server</a></h5>
+<h5 id="_usage_3accessing_a_resource_server_2"><a class="link" href="#_usage_3accessing_a_resource_server_2">Usage 3:Accessing a resource server</a></h5>
 <div class="paragraph">
 <p>This scenario not support login. Just protect the server by validating the access token, and if valid, serves the request.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Refer to <a href="#web-application-accessing-resource-servers">Web application accessing resource servers</a> to build your <code>WebApiA</code> permission.</p>
+<p>Step 1: Refer to <a href="#web-application-accessing-resource-servers">Web application accessing resource servers</a> to build your <code>WebApiA</code> permission.</p>
 </li>
 <li>
-<p>Add <code>WebApiA</code> permission and grant admin consent for your web application.</p>
+<p>Step 2: Add <code>WebApiA</code> permission and grant admin consent for your web application.</p>
 </li>
 <li>
-<p>Add the following dependencies in your <em>pom.xml</em>.</p>
+<p>Step 3: Add the following dependencies in your <em>pom.xml</em>.</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1310,12 +1310,12 @@ select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleSc
 &lt;/dependencies&gt;</code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Add the following configuration.</p>
+<p>Step 4: Add the following configuration.</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1330,12 +1330,12 @@ select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleSc
           client-id: ${AZURE_CLIENT_ID}           # If you are using v2.0 token, please configure client-id for `aud` verification</pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Write your Java code.</p>
+<p>Step 5: Write your Java code.</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="paragraph">
 <p>Controller code can refer to the following:</p>
@@ -1359,12 +1359,12 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 }</code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Build and test your app</p>
+<p>Step 6: Build and test your app</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="paragraph">
 <p>Let <code>WebApiA</code> run on port <em>8081</em>.
@@ -1373,16 +1373,16 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 </div>
 <div class="sect4">
-<h5 id="_resource_server_accessing_other_resource_servers"><a class="link" href="#_resource_server_accessing_other_resource_servers">Resource server accessing other resource servers</a></h5>
+<h5 id="_usage_4resource_server_accessing_other_resource_servers"><a class="link" href="#_usage_4resource_server_accessing_other_resource_servers">Usage 4:Resource server accessing other resource servers</a></h5>
 <div class="paragraph">
 <p>This scenario is an upgrade of <strong>Accessing a resource server</strong>, supports access to other application resources, based on OAuth2 client credentials flow.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Referring to the previous steps, we create a <code>WebApiB</code> application and expose an application permission <code>WebApiB.SampleScope</code>.</p>
+<p>Step 1: Referring to the previous steps, we create a <code>WebApiB</code> application and expose an application permission <code>WebApiB.SampleScope</code>.</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1403,16 +1403,16 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 <div class="paragraph">
 <p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142620648-cfbf5220-9736-4050-a3ef-1370c522e672.png" alt="Configure WebApiB appRoles"></span></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Grant admin consent for <strong><em>WebApiB</em></strong> permissions.
+<p>Step 2: Grant admin consent for <strong><em>WebApiB</em></strong> permissions.
 <span class="image"><img src="https://user-images.githubusercontent.com/13167207/142620691-b1a7fcda-fc92-41af-9515-812139f26ee0.png" alt="Add WebApiB permission"></span></p>
 </li>
 <li>
-<p>On the basis of <strong>Accessing a resource server</strong>, add a dependency in your <em>pom.xml</em>.</p>
+<p>Step 3: On the basis of <strong>Accessing a resource server</strong>, add a dependency in your <em>pom.xml</em>.</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1422,12 +1422,12 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Add the following configuration on the basis of <strong>Accessing a resource server</strong> scenario configuration.</p>
+<p>Step 4: Add the following configuration on the basis of <strong>Accessing a resource server</strong> scenario configuration.</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1443,12 +1443,12 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
               scopes: ${WEB_API_B_APP_ID_URL}/.default</pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Write your Java code.</p>
+<p>Step 5: Write your Java code.</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="paragraph">
 <p>WebApiA controller code can refer to the following:</p>
@@ -1475,12 +1475,12 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 <div class="paragraph">
 <p>Security configuration code is the same with <strong>Accessing a resource server</strong> scenario, another bean `webClient`is added as follows</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Build and test your app</p>
+<p>Step 6: Build and test your app</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="paragraph">
 <p>Let <code>WebApiA</code> and <code>WebApiB</code> run on port <em>8081</em> and <em>8082</em> respectively.
