@@ -188,7 +188,7 @@ spring:
 
 ==== Basic Usage
 
-===== Accessing a web application
+===== Usage 1:Accessing a web application
 
 This scenario uses https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow[The OAuth 2.0 authorization code grant] flow to log in a user with a Microsoft account.
 
@@ -237,7 +237,7 @@ spring:
 
 The `AADWebSecurityConfigurerAdapter` contains necessary web security configuration for *aad-starter*.
 
-===== Web application accessing resource servers
+===== Usage 2:Web application accessing resource servers
 
 *System diagram*:
 
@@ -281,7 +281,7 @@ Here, `graph` is the name of `OAuth2AuthorizedClient`, `scopes` means the scopes
 
 * Step 4: Write your Java code:
 
-===== Accessing a resource server
+===== Usage 3:Accessing a resource server
 
 This scenario doesn't support login, just protect the server by validating the access_token. If the access token is valid, the server serves the request.
 
@@ -315,7 +315,7 @@ image:https://user-images.githubusercontent.com/13167207/142618069-074289df-11aa
 
 The `AADResourceServerWebSecurityConfigurerAdapter` contains necessary web security configuration for resource server.
 
-===== Resource server visiting other resource servers
+===== Usage 4:Resource server visiting other resource servers
 
 This scenario support visit other resource servers in resource servers.
 
@@ -377,7 +377,7 @@ public class SampleController {
 }
 ----
 
-===== Web application and Resource server in one application
+===== Usage 5:Web application and Resource server in one application
 
 This scenario supports `Web application` and `Resource server` in one application.
 
@@ -511,29 +511,29 @@ accept or deny access after validating access_token obtained from Azure AD. We w
 
 image:https://user-images.githubusercontent.com/13167207/142620440-f970b572-2646-4f50-9f77-db62d6e965f1.png[B2C Web application &amp; Web Api Overall]
 
-===== Accessing a web application
+===== Usage 1:Accessing a web application
 
 This scenario uses https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow[The OAuth 2.0 authorization code grant] flow to log in a user with your Azure AD B2C user.
 
-. Select *Azure AD B2C* from the portal menu, click *Applications*, and then click *Add*.
+* Step 1: Select *Azure AD B2C* from the portal menu, click *Applications*, and then click *Add*.
 
-. Specify your application *Name*, we call it `webapp`, add `http://localhost:8080/login/oauth2/code/` for the *Reply URL*, record the
+* Step 2: Specify your application *Name*, we call it `webapp`, add `http://localhost:8080/login/oauth2/code/` for the *Reply URL*, record the
  *Application ID* as your `WEB_APP_AZURE_CLIENT_ID` and then click *Save*.
 
-. Select *Keys* from your application, click *Generate key* to generate `WEB_APP_AZURE_CLIENT_SECRET` and then *Save*.
+* Step 3: Select *Keys* from your application, click *Generate key* to generate `WEB_APP_AZURE_CLIENT_SECRET` and then *Save*.
 
-. Select *User flows* on your left, and then Click *New user flow*.
+* Step 4: Select *User flows* on your left, and then Click *New user flow*.
 
-. Choose *Sign up or in*, *Profile editing* and *Password reset* to create user flows
+* Step 5: Choose *Sign up or in*, *Profile editing* and *Password reset* to create user flows
  respectively. Specify your user flow *Name* and *User attributes and claims*, click *Create*.
 
-. Select *API permissions* &gt; *Add a permission* &gt; *Microsoft APIs*, select *_Microsoft Graph_*,
+* Step 6: Select *API permissions* &gt; *Add a permission* &gt; *Microsoft APIs*, select *_Microsoft Graph_*,
  select *Delegated permissions*, check *offline_access* and *openid* permissions, select *Add permission* to complete the process.
 
-. Grant admin consent for *_Graph_* permissions.
+* Step 7: Grant admin consent for *_Graph_* permissions.
  image:https://user-images.githubusercontent.com/13167207/142620491-8c8a82ea-c920-43a8-aa0a-dd028f1b8553.png[Add Graph permissions]
 
-. Add the following dependencies in your _pom.xml_.
+* Step 8: Add the following dependencies in your _pom.xml_.
 
 [source,xml]
 ----
@@ -561,7 +561,7 @@ This scenario uses https://docs.microsoft.com/azure/active-directory/develop/v2-
 </dependencies>
 ----
 
-. Add properties in _application.yml_ using the values you created earlier, for example:
+* Step 9: Add properties in _application.yml_ using the values you created earlier, for example:
 
 [source,yaml]
 ----
@@ -584,7 +584,7 @@ spring:
           user-name-attribute-name: ${USER_NAME_ATTRIBUTE_NAME}
 ----
 
-. Write your Java code.
+* Step 10: Write your Java code.
 
 Controller code can refer to the following:
 
@@ -615,24 +615,24 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 Copy the _home.html_ from https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-oidc/src/main/resources/templates[Azure AD B2C Spring Boot Sample], and replace the `PROFILE_EDIT_USER_FLOW` and `PASSWORD_RESET_USER_FLOW` with your user flow name respectively that completed earlier.
 
-. Build and test your app
+* Step 11: Build and test your app
 
 Let `Webapp` run on port _8080_.
 
-===== Web application accessing resource servers
+===== Usage 2:Web application accessing resource servers
 
 This scenario is based on *Accessing a web application* scenario to allow application to access other resources, that is [The OAuth 2.0 client credentials grant] flow.
 
-. Select *Azure AD B2C* from the portal menu, click *Applications*, and then click *Add*.
+* Step 1: Select *Azure AD B2C* from the portal menu, click *Applications*, and then click *Add*.
 
-. Specify your application *Name*, we call it `webApiA`, record the *Application ID* as your `WEB_API_A_AZURE_CLIENT_ID` and then click *Save*.
+* Step 2: Specify your application *Name*, we call it `webApiA`, record the *Application ID* as your `WEB_API_A_AZURE_CLIENT_ID` and then click *Save*.
 
-. Select *Keys* from your application, click *Generate key* to generate `WEB_API_A_AZURE_CLIENT_SECRET` and then *Save*.
+* Step 3: Select *Keys* from your application, click *Generate key* to generate `WEB_API_A_AZURE_CLIENT_SECRET` and then *Save*.
 
-. Select *Expose an API* on your left, and then Click the *Set* link,
+* Step 4: Select *Expose an API* on your left, and then Click the *Set* link,
  record the *Application ID URI* as your `WEB_API_A_APP_ID_URL`, then *Save*.
 
-. Select *Manifest* on your left, and then paste the below json segment into `appRoles` array,
+* Step 5: Select *Manifest* on your left, and then paste the below json segment into `appRoles` array,
  record the *Application ID URI* as your `WEB_API_A_APP_ID_URL`, record the value of the app role as your `WEB_API_A_ROLE_VALUE`, then *save*.
 
 [source,json]
@@ -651,13 +651,13 @@ This scenario is based on *Accessing a web application* scenario to allow applic
 
 image:https://user-images.githubusercontent.com/13167207/142620567-59a91df7-7a97-4027-b525-1f422f25fb22.png[Configure WebApiA appRoles]
 
-. Select *API permissions* &gt; *Add a permission* &gt; *My APIs*, select *_WebApiA_* application name,
+* Step 6: Select *API permissions* &gt; *Add a permission* &gt; *My APIs*, select *_WebApiA_* application name,
  select *Application Permissions*, select *WebApiA.SampleScope* permission, select *Add permission* to complete the process.
 
-. Grant admin consent for *_WebApiA_* permissions.
+* Step 7: Grant admin consent for *_WebApiA_* permissions.
  image:https://user-images.githubusercontent.com/13167207/142620601-660400fa-7cff-4989-9d7f-2b32a9aa1244.png[Add WebApiA permission]
 
-. Add the following dependency on the basis of *Accessing a web application* scenario.
+* Step 8: Add the following dependency on the basis of *Accessing a web application* scenario.
 
 [source,xml]
 ----
@@ -667,7 +667,7 @@ image:https://user-images.githubusercontent.com/13167207/142620567-59a91df7-7a97
 </dependency>
 ----
 
-. Add the following configuration on the basis of *Accessing a web application* scenario.
+* Step 9: Add the following configuration on the basis of *Accessing a web application* scenario.
 [source,yaml]
 ----
 spring:
@@ -683,7 +683,7 @@ spring:
               scopes: ${WEB_API_A_APP_ID_URL}/.default
 ----
 
-. Write your `Webapp` Java code.
+* Step 10: Write your `Webapp` Java code.
 
 Controller code can refer to the following:
 
@@ -703,22 +703,22 @@ public class SampleConfiguration {
 }
 ----
 
-. Please refer to *Accessing a resource server* section to write your `WebApiA` Java code.
+* Step 11: Please refer to *Accessing a resource server* section to write your `WebApiA` Java code.
 
-. Build and test your app
+* Step 12: Build and test your app
 
 Let `Webapp` and `WebApiA` run on port _8080_ and _8081_ respectively.
  Start `Webapp` and `WebApiA` application, return to the home page after logging successfully, you can access `http://localhost:8080/webapp/webApiA` to get *WebApiA* resource response.
 
-===== Accessing a resource server
+===== Usage 3:Accessing a resource server
 
 This scenario not support login. Just protect the server by validating the access token, and if valid, serves the request.
 
-. Refer to <<web-application-accessing-resource-servers,Web application accessing resource servers>> to build your `WebApiA` permission.
+* Step 1: Refer to <<web-application-accessing-resource-servers,Web application accessing resource servers>> to build your `WebApiA` permission.
 
-. Add `WebApiA` permission and grant admin consent for your web application.
+* Step 2: Add `WebApiA` permission and grant admin consent for your web application.
 
-. Add the following dependencies in your _pom.xml_.
+* Step 3: Add the following dependencies in your _pom.xml_.
 
 [source,xml]
 ----
@@ -734,7 +734,7 @@ This scenario not support login. Just protect the server by validating the acces
 </dependencies>
 ----
 
-. Add the following configuration.
+* Step 4: Add the following configuration.
 [source,yaml]
 ----
 spring:
@@ -748,7 +748,7 @@ spring:
           client-id: ${AZURE_CLIENT_ID}           # If you are using v2.0 token, please configure client-id for `aud` verification
 ----
 
-. Write your Java code.
+* Step 5: Write your Java code.
 
 Controller code can refer to the following:
 
@@ -770,17 +770,17 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 }
 ----
 
-. Build and test your app
+* Step 6: Build and test your app
 
 Let `WebApiA` run on port _8081_.
  Get the access token for `webApiA` resource and access `http://localhost:8081/webApiA/sample`
  as the Bearer authorization header.
 
-===== Resource server accessing other resource servers
+===== Usage 4:Resource server accessing other resource servers
 
 This scenario is an upgrade of *Accessing a resource server*, supports access to other application resources, based on OAuth2 client credentials flow.
 
-. Referring to the previous steps, we create a `WebApiB` application and expose an application permission `WebApiB.SampleScope`.
+* Step 1: Referring to the previous steps, we create a `WebApiB` application and expose an application permission `WebApiB.SampleScope`.
 [source,json]
 ----
 {
@@ -799,10 +799,10 @@ This scenario is an upgrade of *Accessing a resource server*, supports access to
 
 image:https://user-images.githubusercontent.com/13167207/142620648-cfbf5220-9736-4050-a3ef-1370c522e672.png[Configure WebApiB appRoles]
 
-. Grant admin consent for *_WebApiB_* permissions.
+* Step 2: Grant admin consent for *_WebApiB_* permissions.
  image:https://user-images.githubusercontent.com/13167207/142620691-b1a7fcda-fc92-41af-9515-812139f26ee0.png[Add WebApiB permission]
 
-. On the basis of *Accessing a resource server*, add a dependency in your _pom.xml_.
+* Step 3: On the basis of *Accessing a resource server*, add a dependency in your _pom.xml_.
 
 [source,xml]
 ----
@@ -812,7 +812,7 @@ image:https://user-images.githubusercontent.com/13167207/142620648-cfbf5220-9736
 </dependency>
 ----
 
-. Add the following configuration on the basis of *Accessing a resource server* scenario configuration.
+* Step 4: Add the following configuration on the basis of *Accessing a resource server* scenario configuration.
 [source,yaml]
 ----
 spring:
@@ -827,7 +827,7 @@ spring:
               scopes: ${WEB_API_B_APP_ID_URL}/.default
 ----
 
-. Write your Java code.
+* Step 5: Write your Java code.
 
 WebApiA controller code can refer to the following:
 
@@ -851,7 +851,7 @@ public class SampleController {
 
 Security configuration code is the same with *Accessing a resource server* scenario, another bean `webClient`is added as follows
 
-. Build and test your app
+* Step 6: Build and test your app
 
 Let `WebApiA` and `WebApiB` run on port _8081_ and _8082_ respectively.
  Start `WebApiA` and `WebApiB` application, get the access token for `webApiA` resource and access `http://localhost:8081/webApiA/webApiB/sample`
