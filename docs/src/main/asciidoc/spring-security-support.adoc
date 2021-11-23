@@ -30,7 +30,7 @@ This starter provides the following properties:
 |*spring.cloud.azure.active-directory*.graph-membership-uri |It's used to load users' groups. The default value is `https://graph.microsoft.com/v1.0/me/memberOf`, this uri just get direct groups. To get all transitive membership, set it to `https://graph.microsoft.com/v1.0/me/transitiveMemberOf`. The 2 uris are both Azure Global, check `Property example 1` if you want to use Azure China.
 |*spring.cloud.azure.active-directory*.post-logout-redirect-uri |Redirect uri for posting log-out. 
 |*spring.cloud.azure.active-directory*.resource-server.principal-claim-name |Principal claim name. Default value is "sub". 
-|*spring.cloud.azure.active-directory*.resource-server.claim-to-authority-prefix-map |Claim to authority prefix map. Default map is: "scp" -&gt; "SCOPE_", "roles" -&gt; "APPROLE_". 
+|*spring.cloud.azure.active-directory*.resource-server.claim-to-authority-prefix-map |Claim to authority prefix map. Default map is: "scp" -&gt; "SCOPE_", "roles" -&gt; `APPROLE_`.
 |*spring.cloud.azure.active-directory*.tenant-id |Azure Tenant ID. 
 |*spring.cloud.azure.active-directory*.user-group.allowed-group-names |Users' group name can be use in `@PreAuthorize(&quot;hasRole(&#39;ROLE_group_name_1&#39;)&quot;)`. Not all group name will take effect, only group names configured in this property will take effect. 
 |*spring.cloud.azure.active-directory*.user-group.allowed-group-ids |Users' group id can be use in `@PreAuthorize(&quot;hasRole(&#39;ROLE_group_id_1&#39;)&quot;)`. Not all group id will take effect, only group id configured in this property will take effect. If this property's value is `all`, then all group id will take effect.
@@ -714,7 +714,7 @@ Let `Webapp` and `WebApiA` run on port _8080_ and _8081_ respectively.
 
 This scenario not support login. Just protect the server by validating the access token, and if valid, serves the request.
 
-* Step 1: Refer to <<web-application-accessing-resource-servers,Web application accessing resource servers>> to build your `WebApiA` permission.
+* Step 1: Refer to <<#usage-2web-application-accessing-resource-servers,Web application accessing resource servers>> to build your `WebApiA` permission.
 
 * Step 2: Add `WebApiA` permission and grant admin consent for your web application.
 
