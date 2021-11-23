@@ -19,7 +19,7 @@ Connect to Cosmos DB using Spring Data and CosmosDB libraries.
 
 === Configuration
 
-Below are some properties you can configure when using Spring Data CosmosDB Support:
+.Configurable properties of spring-cloud-azure-starter-data-cosmos
 [cols="2,1,3", options="header"]
 |===
 |Name | Default | Description

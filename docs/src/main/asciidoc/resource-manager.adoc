@@ -15,7 +15,7 @@ Construct `TokenCredential` by using various credential information, and then co
 
 === Configuration
 
-This Spring Cloud Azure Resource Manager provides the following properties:
+.Configurable properties of spring-cloud-azure-resourcemanager
 [cols="2*", options="header"]
 |===
 |Properties |Description

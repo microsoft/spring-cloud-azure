@@ -28,9 +28,11 @@ The binder provides the following 3 parts of configuration options:
 ===== Azure Common Configuration Options
 Below properties can also be configured with the default Spring Cloud Azure unified properties,
 of which the prefix is changed from *spring.cloud.azure.eventhubs.* to *spring.cloud.azure.*.
+
+.Common configurable properties of spring-cloud-azure-stream-binder-eventhubs
+[cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
-
 |*spring.cloud.azure.eventhubs*.enabled | boolean | Whether an Azure Event Hubs is enabled.
 |*spring.cloud.azure.eventhubs*.credential.* | NA | Properties used for getting token credential.
 |*spring.cloud.azure.eventhubs*.credential.clientId | String | Client id to use when performing service principal authentication with Azure.
@@ -66,9 +68,11 @@ of which the prefix is changed from *spring.cloud.azure.eventhubs.* to *spring.c
 |*spring.cloud.azure.eventhubs*.proxy.username | String | Username used to authenticate with the proxy.
 |*spring.cloud.azure.eventhubs*.proxy.password | String | Password used to authenticate with the proxy.
 |===
-===== Azure Event Hubs Client Configuration Options
-Below options are used to configure Azure Event Hubs SDK Client.
 
+===== Azure Event Hubs Client Configuration Options
+
+.Client configurable properties of spring-cloud-azure-stream-binder-eventhubs
+[cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
 
@@ -133,14 +137,15 @@ Below options are divided into four sections: Consumer Properties, Advanced Cons
 Configurations, Producer PropertiesProducer Properties, and Advanced Producer Configurations.
 
 ====== Consumer Properties
+
+.Consumer configurable properties of spring-cloud-azure-stream-binder-eventhubs
+[cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
-
 |*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.checkpoint.mode |
 CheckpointMode | Checkpoint mode used when consumer decide how to checkpoint message
 |*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.checkpoint.count | Integer |
 Decides the amount of message for each partition to do one checkpoint
-
 |*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.checkpoint.interval | Duration |Decides the time interval to do one checkpoint
 |*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.batch.max-size | Integer | Max
 size of message for batch consuming.
@@ -163,14 +168,15 @@ Client Configuration Options`) can be applied for each specific consumer by repl
 of ''spring.cloud.azure.eventhubs.'' with `'spring.cloud.stream.eventhubs.bindings.<binding-name.consumer.'`.
 
 ====== Producer Properties
+
+.Producer configurable properties of spring-cloud-azure-stream-binder-eventhubs
+[cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
-
 |*spring.cloud.stream.eventhubs*.bindings.<binding-name>.producer
 .sync |boolean | switch flag for sync of producer
 |*spring.cloud.stream.eventhubs*.bindings.<binding-name>.producer
 .send-timeout |long | timeout value for sending of producer
-
 |===
 
 ====== Advanced Producer Configuration
@@ -346,9 +352,11 @@ use Event Hubs Binder.
 ===== Azure Common Configuration Options
 Below properties can also be configured with the default Spring Cloud Azure unified properties,
 of which the prefix is changed from *spring.cloud.azure.servicebus.* to *spring.cloud.azure.*.
+
+.Common configurable properties of spring-cloud-azure-stream-binder-servicebus
+[cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
-
 |*spring.cloud.azure.servicebus*.enabled | boolean | Whether an Azure Service Bus is enabled.
 |*spring.cloud.azure.servicebus*.credential.* | NA | Properties used for getting token credential.
 |*spring.cloud.azure.servicebus*.credential.client-id | String | Client id to use when performing
@@ -397,7 +405,9 @@ against the proxy.
 |===
 
 ===== Azure Service Bus Client Configuration Options
-Below options are used to configure Azure Service Bus SDK Client.
+
+.Client configurable properties of spring-cloud-azure-stream-binder-servicebus
+[cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
 
@@ -424,7 +434,6 @@ flag.
 duration for auto lock renew.
 |*spring.cloud.azure.servicebus*.consumer.receiveMode | String | Consumer receive mode.
 |*spring.cloud.azure.servicebus*.processor.*| see Notes | Processor configuration option.
-
 |===
 
 Notes:
@@ -441,9 +450,11 @@ Below options are divided into four sections: Consumer Properties, Advanced Cons
 Configurations, Producer PropertiesProducer Properties, and Advanced Producer Configurations.
 
 ====== Consumer Properties
+
+.Consumer configurable properties of spring-cloud-azure-stream-binder-servicebus
+[cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
-
 |*spring.cloud.stream.servicebus*.bindings.<binding-name>.consumer.requeue-rejected |If the
 failed messages are routed to the DLQ.
 boolean |
@@ -460,14 +471,15 @@ The configuration in the above first 2 sections(`Azure Common Configuration Opti
 of ''spring.cloud.azure.servicebus.'' with `'spring.cloud.stream.servicebus.bindings.<binding-name>.consumer.'`.
 
 ====== Producer Properties
+
+.Producer configurable properties of spring-cloud-azure-stream-binder-servicebus
+[cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
-
 |*spring.cloud.stream.servicebus*.bindings.<binding-name>.producer
 .sync |boolean | switch flag for sync of producer
 |*spring.cloud.stream.servicebus*.bindings.<binding-name>.producer
 .send-timeout |long | timeout value for sending of producer
-
 |===
 
 ====== Advanced Producer Configuration
@@ -725,10 +737,12 @@ public ResponseEntity<String> sendMessage(@RequestParam String message) {
 ----
 
 For some Service Bus headers that can be mapped to multiple Spring header constants, the priority of different Spring headers is listed.
+
+.Mapping of service bus message header and spring message header
+[cols="<,<,<,<", options="header"]
 |===
 |Service Bus Message Headers and Properties | Spring Message Header Constants | Type | Priority
 Number (Descending priority)
-
 |ContentType| org.springframework.messaging.MessageHeaders.CONTENT_TYPE | String | N/A
 |CorrelationId | com.azure.spring.servicebus.support.ServiceBusMessageHeaders.CORRELATION_ID |String | N/A
 |**MessageId** | com.azure.spring.servicebus.support.ServiceBusMessageHeaders.MESSAGE_ID | String| 1

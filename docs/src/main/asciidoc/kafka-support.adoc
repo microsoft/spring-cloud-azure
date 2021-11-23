@@ -28,7 +28,7 @@ If you want to retrieve the connection string using Azure Resource Manager, plea
 
 === Configuration
 
-Below properties could be configured when using Kafka support:
+.Configurable properties when using Kafka support
 [cols="2*", options="header"]
 |===
 |Properties 

@@ -1,6 +1,6 @@
 == Resource Handling
 
-Connect to Azure Storage using Spring Resource abstraction and Azure Storage libraries.
+.Azure Storage related libraries.
 [cols="2,1,5", options="header"]
 |===
 |Starter 
@@ -35,7 +35,7 @@ Connect to Azure Storage using Spring Resource abstraction and Azure Storage lib
 
 === Configuration
 
-This `spring-cloud-azure-starter-storage-blob` provides the following properties:
+.Configurable properties of spring-cloud-azure-starter-storage-blob
 [cols="3,1,5", options="header"]
 |===
 |Name |Default | Description
@@ -57,7 +57,7 @@ This `spring-cloud-azure-starter-storage-blob` provides the following properties
 |Azure Storage Account Name
 |===
 
-This `spring-cloud-azure-starter-storage-file-share` provides the following properties:
+.Configurable properties of spring-cloud-azure-starter-storage-file-share
 [cols="3,1,5", options="header"]
 |===
 |Name | Default | Description
