@@ -1,10 +1,11 @@
 
 == Configuration properties
 
+.Configuration properties
+[cols="<,<,<", options="header"]
 |===
 |Name | Default | Description
-
-|spring.cloud.azure.active-directory.active-directory-groups |  | 
+|spring.cloud.azure.active-directory.active-directory-groups |  |
 |spring.cloud.azure.active-directory.allow-telemetry | `true` | If Telemetry events should be published to Azure AD.
 |spring.cloud.azure.active-directory.app-id-uri |  | App ID URI which might be used in the <code>"aud"</code> claim of an <code>id_token</code>.
 |spring.cloud.azure.active-directory.application-type |  | 
@@ -1071,5 +1072,4 @@
 |spring.cloud.azure.storage.resource-group |  | 
 |spring.cloud.azure.subscription-id |  | 
 |spring.cloud.azure.tenant-id |  | 
-
 |===

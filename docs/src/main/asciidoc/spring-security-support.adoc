@@ -14,8 +14,8 @@
 
 ==== Configuration
 
-This starter provides the following properties:
-[cols="2*", options="header"]
+.Configurable properties of spring-cloud-azure-starter-active-directory
+[cols="<,<", options="header"]
 |===
 |Properties |Description 
 |*spring.cloud.azure.active-directory*.app-id-uri |It used in resource server, used to validate the audience in access_token. access_token is valid only when the audience in access_token equal to client-id or app-id-uri 
@@ -43,6 +43,8 @@ Here are some examples about how to use these properties:
 ===== Property example 1: Application type
 
 This property(`spring.cloud.azure.active-directory.application-type`) is optional, its value can be inferred by dependencies, only `web_application_and_resource_server` must be configured manually: `spring.cloud.azure.active-directory.application-type=web_application_and_resource_server`.
+
+.Application type of spring-cloud-azure-starter-active-directory
 [cols="4*", options="header"]
 |===
 |Has dependency: spring-security-oauth2-client |Has dependency: spring-security-oauth2-resource-server |Valid values of application type |Default value
@@ -482,9 +484,10 @@ https://github.com/Azure-Samples/azure-spring-boot-samples[Link to sample repo]
 
 ==== Configuration
 
+.Configurable properties of spring-cloud-azure-starter-active-directory-b2c
+[cols="<,<", options="header"]
 |===
-|Parameter |Description 
-
+|Parameter |Description
 |`spring.cloud.azure.active-directory.b2c.base-uri` |Base uri for authorization server, if both `tenant` and `baseUri` are configured at the same time, only `baseUri` takes effect. 
 |`spring.cloud.azure.active-directory.b2c.client-id` |The registered application ID in Azure AD B2C. 
 |`spring.cloud.azure.active-directory.b2c.client-secret` |The client secret of a registered application. 

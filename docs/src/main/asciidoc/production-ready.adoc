@@ -14,10 +14,10 @@ Add the Spring Cloud Azure Actuator Starter dependency. This dependency will als
 </dependency>
 ----
 
-Below properties could be used to enable or disable health indicators for each Azure services.
+.Configurable properties to enable or disable health indicators for each Azure services.
 [cols="2*", options="header"]
 |===
-|Azure Service  |Propropety
+|Azure Service  |Property
 |App Configuration |management.health.azure-appconfiguration.enabled
 |Cosmos DB |management.health.azure-cosmos.enabled
 |Event Hubs |management.health.azure-eventhubs.enabled
@@ -25,7 +25,7 @@ Below properties could be used to enable or disable health indicators for each A
 |Storage|management.health.azure-storage.enabled
 |===
 
-NOTE: Calling the health endpoint of Azure servcies may cause extra charge. For example, calling `http://{hostname}:{port}/actuator/health/cosmos` to get the Cosmos DB health info, it will calculate https://docs.microsoft.com/azure/cosmos-db/request-units[RUs].
+NOTE: Calling the health endpoint of Azure services may cause extra charge. For example, calling `http://HOST_NAME:{port}/actuator/health/cosmos` to get the Cosmos DB health info, it will calculate https://docs.microsoft.com/azure/cosmos-db/request-units[RUs].
 
 === Enable Sleuth
 

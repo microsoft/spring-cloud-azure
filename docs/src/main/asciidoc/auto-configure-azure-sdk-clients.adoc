@@ -1,6 +1,6 @@
 == Auto Configure Azure SDK Clients
 
-Spring Boot greatly simplifies the Spring Cloud Azure experience. Spring Cloud Azure Starters are a set of convenient dependency descriptors to include in your application. Our starters handle the object instantiation and configuration logic so you don’t have to. Every starter depends on the Spring Cloud Azure starter to provide critical bits of configuration, like the Azure Cloud environment and authentication information. You can configure these as properties in, for example, a yaml file:
+Spring Boot greatly simplifies the Spring Cloud Azure experience. Spring Cloud Azure Starters are a set of convenient dependency descriptors to include in your application. Our starters handle the object instantiation and configuration logic, so you don’t have to. Every starter depends on the Spring Cloud Azure starter to provide critical bits of configuration, like the Azure Cloud environment and authentication information. You can configure these as properties in, for example, a yaml file:
 
 [source,yaml]
 ----
@@ -66,14 +66,16 @@ spring:
 
 [source,java]
 ----
-@Autowired
-private CosmosClient cosmosClient;
+class Demo {
+    @Autowired
+    private CosmosClient cosmosClient;
 
-@Override
-public void run() {
-    User item = User.randomUser();
-    CosmosContainer container = cosmosClient.getDatabase(databaseName).getContainer(containerName);
-    container.createItem(item);
+    @Override
+    public void run() {
+        User item = User.randomUser();
+        CosmosContainer container = cosmosClient.getDatabase(databaseName).getContainer(containerName);
+        container.createItem(item);
+    }
 }
 ----
 
