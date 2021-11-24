@@ -14,8 +14,8 @@ Add the Spring Cloud Azure Actuator Starter dependency. This dependency will als
 </dependency>
 ----
 
-.Configurable properties to enable or disable health indicators for each Azure services.
-[cols="2*", options="header"]
+.Configurable properties to enable or disable health indicators for each Azure services
+[cols="<30,<70", options="header"]
 |===
 |Azure Service  |Property
 |App Configuration |management.health.azure-appconfiguration.enabled

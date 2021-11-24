@@ -52,7 +52,7 @@ NOTE: Properties configured under each Azure service will override the global co
 The configuration properties' prefixes have been unified to `spring.cloud.azure` namespace since Spring Cloud Azure 4.0, it will make configuration properties more consistent and more intuitive. Here's a quick review of the prefixes of supported Azure services.
 
 .Service specific properties
-[cols="2*", options="header"]
+[cols="<50,<50", options="header"]
 |===
 |Azure Service |Configuration Property Prefix 
 

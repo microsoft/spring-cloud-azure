@@ -4,7 +4,7 @@
 If you have any questions about this doc, please ask by creating GitHub issue. And PR is welcome.
 
 .GitHub repos
-[cols="<30,<~", options="header"]
+[cols="<30,<70", options="header"]
 |===
 |GitHub repo | Description
 
