@@ -40,7 +40,7 @@ For applications want to connect to resources that support Azure Active Director
 |client-id 
 |Client id to use when performing service principal authentication with Azure.
 
-|client-serect 
+|client-select
 |Client secret to use when performing service principal authentication with Azure.
 
 |client-certificate-path 
@@ -62,12 +62,12 @@ For applications want to connect to resources that support Azure Active Director
 TIP: To see the list of all Spring Cloud Azure related configuration properties please check link:appendix.html[the Appendix page].
 
 ==== SAS Token
-It's also configurable for services support authenticating with Shared Access Signature (SAS). `spring.cloud.azure.<azure-servcie>.sas-token` is the propety to configure. For example, using `spring.cloud.azure.storage.blob.sas-token` to authenticate to Storage Blob service.
+It's also configurable for services support authenticating with Shared Access Signature (SAS). `spring.cloud.azure.<azure-service>.sas-token` is the property to configure. For example, using `spring.cloud.azure.storage.blob.sas-token` to authenticate to Storage Blob service.
 
 
 ==== Connection String
 
-Connection string are supported by some Azure services to provide connection informantion as well as credentials. To connect to those Azure servcies using connection string, just configure `spring.cloud.azure.<azure-service>.connection-string` will do. For example, `spring.cloud.azure.eventhubs.connection-string` to connect to Event Hubs service.
+Connection string are supported by some Azure services to provide connection information as well as credentials. To connect to those Azure services using connection string, just configure `spring.cloud.azure.<azure-service>.connection-string` will do. For example, `spring.cloud.azure.eventhubs.connection-string` to connect to Event Hubs service.
 
 
 
