@@ -9,14 +9,16 @@ Adding below dependencies if you want to use the Spring Cloud Azure Redis suppor
 
 [source,xml]
 ----
-<dependency>
-  <groupId>com.azure.spring</groupId>
-  <artifactId>spring-cloud-azure-starter</artifactId>
-</dependency>
-<dependency>
-  <groupId>com.azure.spring</groupId>
-  <artifactId>spring-cloud-azure-resourcemanager</artifactId>
-</dependency>
+<dependencies>
+    <dependency>
+      <groupId>com.azure.spring</groupId>
+      <artifactId>spring-cloud-azure-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.azure.spring</groupId>
+      <artifactId>spring-cloud-azure-resourcemanager</artifactId>
+    </dependency>
+</dependencies>
 ----
 
 === Configuration
