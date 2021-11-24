@@ -34,7 +34,7 @@ Developers who want more control or whose scenario isn't served by the `DefaultA
 For applications want to connect to resources that support Azure Active Directory (Azure AD) authentication, below configurations could be set with prefix `spring.cloud.azure.credential` or `spring.cloud.azure.<azure-service>.credential`
 
 .Authentication properties
-[cols="1,3", options="header"]
+[cols="<50,<50", options="header"]
 |===
 |Property Name |Description 
 

@@ -301,6 +301,7 @@ from *spring.cloud.azure.servicebus* to *spring.cloud.azure*.
 Below options are used to configure Azure Service Bus SDK Client.
 
 .Client configurable properties of spring-cloud-azure-starter-integration-servicebus
+[cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
 |*spring.cloud.azure.servicebus*.connection-string | String | Service Bus Namespace connection string value.
