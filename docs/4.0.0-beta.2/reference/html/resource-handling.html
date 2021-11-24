@@ -179,10 +179,8 @@ window.onload = function() {
 <div class="sect1">
 <h2 id="_resource_handling"><a class="link" href="#_resource_handling">Resource Handling</a></h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>Connect to Azure Storage using Spring Resource abstraction and Azure Storage libraries.</p>
-</div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Azure Storage related libraries.</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 12.5%;">
@@ -212,15 +210,16 @@ window.onload = function() {
 <h3 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
-    &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-cloud-azure-starter-storage-blob&lt;/artifactId&gt; <i class="conum" data-value="1"></i><b>(1)</b>
-&lt;/dependency&gt;
-
-&lt;dependency&gt;
-    &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-cloud-azure-starter-storage-file-share&lt;/artifactId&gt; <i class="conum" data-value="2"></i><b>(2)</b>
-&lt;/dependency&gt;</code></pre>
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-azure-starter-storage-blob&lt;/artifactId&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-azure-starter-storage-file-share&lt;/artifactId&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -238,10 +237,8 @@ window.onload = function() {
 </div>
 <div class="sect2">
 <h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
-<div class="paragraph">
-<p>This <code>spring-cloud-azure-starter-storage-blob</code> provides the following properties:</p>
-</div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Configurable properties of spring-cloud-azure-starter-storage-blob</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 11.1111%;">
@@ -268,7 +265,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.blob.account-key</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Privatekey to connect Azure Blob Storage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Private key to connect Azure Blob Storage</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.blob.account-name</p></td>
@@ -277,10 +274,8 @@ window.onload = function() {
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>This <code>spring-cloud-azure-starter-storage-file-share</code> provides the following properties:</p>
-</div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Configurable properties of spring-cloud-azure-starter-storage-file-share</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 11.1111%;">
@@ -307,7 +302,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.fileshare.account-key</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Privatekey to connect Azure File Storage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Private key to connect Azure File Storage</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.fileshare.account-name</p></td>

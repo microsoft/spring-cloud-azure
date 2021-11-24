@@ -193,10 +193,8 @@ window.onload = function() {
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Below properties could be used to enable or disable health indicators for each Azure services.</p>
-</div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Configurable properties to enable or disable health indicators for each Azure services.</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -204,7 +202,7 @@ window.onload = function() {
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Azure Service</th>
-<th class="tableblock halign-left valign-top">Propropety</th>
+<th class="tableblock halign-left valign-top">Property</th>
 </tr>
 </thead>
 <tbody>
@@ -237,7 +235,7 @@ window.onload = function() {
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Calling the health endpoint of Azure servcies may cause extra charge. For example, calling <code><a href="http://{hostname}:{port}/actuator/health/cosmos" class="bare">http://{hostname}:{port}/actuator/health/cosmos</a></code> to get the Cosmos DB health info, it will calculate <a href="https://docs.microsoft.com/azure/cosmos-db/request-units">RUs</a>.
+Calling the health endpoint of Azure services may cause extra charge. For example, calling <code><a href="http://HOST_NAME:{port}/actuator/health/cosmos" class="bare">http://HOST_NAME:{port}/actuator/health/cosmos</a></code> to get the Cosmos DB health info, it will calculate <a href="https://docs.microsoft.com/azure/cosmos-db/request-units">RUs</a>.
 </td>
 </tr>
 </table>

@@ -176,6 +176,7 @@ window.onload = function() {
 <p>Most of Azure Service SDKs could be divided into two categories by transport type, HTTP-based and AMQP-based. There are properties that are common to all SDKs such as authentication principals and Azure environment settings. Or common to HTTP-based clients, such as logging level to log http requests and responses. In Spring Cloud Azure 4.0 we added five common categories of configuration properties, which could be specified to each Azure service.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Service common properties</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 75%;">
@@ -213,6 +214,7 @@ window.onload = function() {
 <p>There are some properties that could be shared among different Azure services, for example using the same service principal to access Azure Cosmos DB and Azure Event Hubs. Spring Cloud Azure 4.0 allows developers to define properties that apply to all Azure SDKs in the namespace <code>spring.cloud.azure</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Global properties</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 75%;">
@@ -262,6 +264,7 @@ Properties configured under each Azure service will override the global configur
 <p>The configuration properties' prefixes have been unified to <code>spring.cloud.azure</code> namespace since Spring Cloud Azure 4.0, it will make configuration properties more consistent and more intuitive. Here&#8217;s a quick review of the prefixes of supported Azure services.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Service specific properties</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">

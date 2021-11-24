@@ -219,9 +219,10 @@ window.onload = function() {
 <h5 id="_azure_common_configuration_options"><a class="link" href="#_azure_common_configuration_options">Azure Common Configuration Options</a></h5>
 <div class="paragraph">
 <p>Below properties can also be configured with the default Spring Cloud Azure unified properties,
-of which the prefix is changed from <strong>spring.cloud.azure.eventhubs.</strong> to <strong>spring.cloud.azure.</strong>.</p>
+of which the prefix is changed from <strong>spring.cloud.azure.eventhubs</strong> to <strong>spring.cloud.azure</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Common configurable properties of spring-cloud-azure-stream-binder-eventhubs</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -323,7 +324,7 @@ of which the prefix is changed from <strong>spring.cloud.azure.eventhubs.</stron
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.resource.resourceId</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Id of the Azure resource group.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ID of the Azure resource group.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.resource.region</p></td>
@@ -410,10 +411,8 @@ of which the prefix is changed from <strong>spring.cloud.azure.eventhubs.</stron
 </div>
 <div class="sect4">
 <h5 id="_azure_event_hubs_client_configuration_options"><a class="link" href="#_azure_event_hubs_client_configuration_options">Azure Event Hubs Client Configuration Options</a></h5>
-<div class="paragraph">
-<p>Below options are used to configure Azure Event Hubs SDK Client.</p>
-</div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Client configurable properties of spring-cloud-azure-stream-binder-eventhubs</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -585,6 +584,7 @@ Configurations, Producer PropertiesProducer Properties, and Advanced Producer Co
 <div class="sect5">
 <h6 id="_consumer_properties"><a class="link" href="#_consumer_properties">Consumer Properties</a></h6>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Consumer configurable properties of spring-cloud-azure-stream-binder-eventhubs</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -661,6 +661,7 @@ of ''spring.cloud.azure.eventhubs.'' with <code>'spring.cloud.stream.eventhubs.b
 <div class="sect5">
 <h6 id="_producer_properties"><a class="link" href="#_producer_properties">Producer Properties</a></h6>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. Producer configurable properties of spring-cloud-azure-stream-binder-eventhubs</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -695,7 +696,7 @@ of ''spring.cloud.azure.eventhubs.'' with <code>'spring.cloud.stream.eventhubs.b
 <p>The configuration in the above first 2 sections(<code>Azure Common Configuration Options</code>, <code>Azure
 Event Hubs
 Client Configuration Options</code>) can be applied for each specific producer by replacing the prefix
-of 'spring.cloud.azure.eventhubs.' with <code>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.producer.</code>.</p>
+of 'spring.cloud.azure.eventhubs' with <code>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.producer</code>.</p>
 </div>
 </div>
 </div>
@@ -843,31 +844,33 @@ of 'spring.cloud.azure.eventhubs.' with <code>spring.cloud.stream.eventhubs.bind
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>@Bean
-public Consumer&lt;Message&lt;String&gt;&gt; consume() {
-    return message -&gt; {
-        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
-        LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
-                message.getPayload(),
-                message.getHeaders().get(EventHubsHeaders.PARTITION_KEY),
-                message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER),
-                message.getHeaders().get(EventHubsHeaders.OFFSET),
-                message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)
-        );
-
-        checkpointer.success()
-                .doOnSuccess(success -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
-                .doOnError(error -&gt; LOGGER.error("Exception found", error))
-                .subscribe();
-    };
-}
-
+<pre>class Demo{
 @Bean
-public Supplier&lt;Message&lt;String&gt;&gt; supply() {
-    return () -&gt; {
-        LOGGER.info("Sending message, sequence " + i);
-        return MessageBuilder.withPayload("Hello world, " + i++).build();
-    };
+    public Consumer&lt;Message&lt;String&gt;&gt; consume() {
+        return message -&gt; {
+            Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+            LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
+                    message.getPayload(),
+                    message.getHeaders().get(EventHubsHeaders.PARTITION_KEY),
+                    message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER),
+                    message.getHeaders().get(EventHubsHeaders.OFFSET),
+                    message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)
+            );
+
+            checkpointer.success()
+                    .doOnSuccess(success -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
+                    .doOnError(error -&gt; LOGGER.error("Exception found", error))
+                    .subscribe();
+        };
+    }
+
+    @Bean
+    public Supplier&lt;Message&lt;String&gt;&gt; supply() {
+        return () -&gt; {
+            LOGGER.info("Sending message, sequence " + i);
+            return MessageBuilder.withPayload("Hello world, " + i++).build();
+        };
+    }
 }</pre>
 </div>
 </div>
@@ -899,9 +902,10 @@ use Event Hubs Binder.</p>
 <h5 id="_azure_common_configuration_options_2"><a class="link" href="#_azure_common_configuration_options_2">Azure Common Configuration Options</a></h5>
 <div class="paragraph">
 <p>Below properties can also be configured with the default Spring Cloud Azure unified properties,
-of which the prefix is changed from <strong>spring.cloud.azure.servicebus.</strong> to <strong>spring.cloud.azure.</strong>.</p>
+of which the prefix is changed from <strong>spring.cloud.azure.servicebus</strong> to <strong>spring.cloud.azure</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. Common configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1011,7 +1015,7 @@ group.</p></td>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.resource.resource-id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Id of the Azure resource group.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ID of the Azure resource group.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.resource.region</p></td>
@@ -1101,10 +1105,8 @@ against the proxy.</p></td>
 </div>
 <div class="sect4">
 <h5 id="_azure_service_bus_client_configuration_options"><a class="link" href="#_azure_service_bus_client_configuration_options">Azure Service Bus Client Configuration Options</a></h5>
-<div class="paragraph">
-<p>Below options are used to configure Azure Service Bus SDK Client.</p>
-</div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. Client configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1228,6 +1230,7 @@ Configurations, Producer PropertiesProducer Properties, and Advanced Producer Co
 <div class="sect5">
 <h6 id="_consumer_properties_2"><a class="link" href="#_consumer_properties_2">Consumer Properties</a></h6>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. Consumer configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1276,6 +1279,7 @@ of ''spring.cloud.azure.servicebus.'' with <code>'spring.cloud.stream.servicebus
 <div class="sect5">
 <h6 id="_producer_properties_2"><a class="link" href="#_producer_properties_2">Producer Properties</a></h6>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 8. Producer configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1308,8 +1312,8 @@ of ''spring.cloud.azure.servicebus.'' with <code>'spring.cloud.stream.servicebus
 <h6 id="_advanced_producer_configuration_2"><a class="link" href="#_advanced_producer_configuration_2">Advanced Producer Configuration</a></h6>
 <div class="paragraph">
 <p>The configuration in the above first 2 sections(<code>Azure Common Configuration Options</code>, <code>Azure Service Bus Client Configuration Options</code>) can be applied for each specific producer by replacing the prefix
-of 'spring.cloud.azure.servicebus.' with <code>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;
-.producer.</code>.</p>
+of 'spring.cloud.azure.servicebus' with <code>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;
+.producer</code>.</p>
 </div>
 </div>
 </div>
@@ -1438,31 +1442,33 @@ of 'spring.cloud.azure.servicebus.' with <code>spring.cloud.stream.servicebus.bi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
-public Consumer&lt;Message&lt;String&gt;&gt; consume() {
-    return message -&gt; {
-        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
-        LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
-                message.getPayload(),
-                message.getHeaders().get(EventHubsHeaders.PARTITION_KEY),
-                message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER),
-                message.getHeaders().get(EventHubsHeaders.OFFSET),
-                message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)
-        );
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    @Bean
+    public Consumer&lt;Message&lt;String&gt;&gt; consume() {
+        return message -&gt; {
+            Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+            LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
+                    message.getPayload(),
+                    message.getHeaders().get(EventHubsHeaders.PARTITION_KEY),
+                    message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER),
+                    message.getHeaders().get(EventHubsHeaders.OFFSET),
+                    message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)
+            );
 
-        checkpointer.success()
-                .doOnSuccess(success -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
-                .doOnError(error -&gt; LOGGER.error("Exception found", error))
-                .subscribe();
-    };
-}
+            checkpointer.success()
+                    .doOnSuccess(success -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
+                    .doOnError(error -&gt; LOGGER.error("Exception found", error))
+                    .subscribe();
+        };
+    }
 
-@Bean
-public Supplier&lt;Message&lt;String&gt;&gt; supply() {
-    return () -&gt; {
-        LOGGER.info("Sending message, sequence " + i);
-        return MessageBuilder.withPayload("Hello world, " + i++).build();
-    };
+    @Bean
+    public Supplier&lt;Message&lt;String&gt;&gt; supply() {
+        return () -&gt; {
+            LOGGER.info("Sending message, sequence " + i);
+            return MessageBuilder.withPayload("Hello world, " + i++).build();
+        };
+    }
 }</code></pre>
 </div>
 </div>
@@ -1496,13 +1502,15 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@PostMapping("/messages")
-public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
-    LOGGER.info("Going to add message {} to Sinks.Many.", message);
-    many.emitNext(MessageBuilder.withPayload(message)
-                                .setHeader("&lt;message-header-key&gt;", "Customize partirion key")
-                                .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-    return ResponseEntity.ok("Sent!");
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    @PostMapping("/messages")
+    public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
+        LOGGER.info("Going to add message {} to Sinks.Many.", message);
+        many.emitNext(MessageBuilder.withPayload(message)
+                                    .setHeader("&lt;message-header-key&gt;", "Customize partirion key")
+                                    .build(), Sinks.EmitFailureHandler.FAIL_FAST);
+        return ResponseEntity.ok("Sent!");
+    }
 }</code></pre>
 </div>
 </div>
@@ -1527,13 +1535,15 @@ It will take effect only when the <code>ServiceBusMessageHeaders.SESSION_ID</cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@PostMapping("/messages")
-public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
-    LOGGER.info("Going to add message {} to Sinks.Many.", message);
-    many.emitNext(MessageBuilder.withPayload(message)
-                                .setHeader(ServiceBusMessageHeaders.PARTITION_KEY, "Customize partirion key")
-                                .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-    return ResponseEntity.ok("Sent!");
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    @PostMapping("/messages")
+    public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
+        LOGGER.info("Going to add message {} to Sinks.Many.", message);
+        many.emitNext(MessageBuilder.withPayload(message)
+                                    .setHeader(ServiceBusMessageHeaders.PARTITION_KEY, "Customize partirion key")
+                                    .build(), Sinks.EmitFailureHandler.FAIL_FAST);
+        return ResponseEntity.ok("Sent!");
+    }
 }</code></pre>
 </div>
 </div>
@@ -1542,13 +1552,15 @@ public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@PostMapping("/messages")
-public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
-    LOGGER.info("Going to add message {} to Sinks.Many.", message);
-    many.emitNext(MessageBuilder.withPayload(message)
-                                .setHeader(AzureHeaders.PARTITION_KEY, "Customize partirion key")
-                                .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-    return ResponseEntity.ok("Sent!");
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    @PostMapping("/messages")
+    public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
+        LOGGER.info("Going to add message {} to Sinks.Many.", message);
+        many.emitNext(MessageBuilder.withPayload(message)
+                                    .setHeader(AzureHeaders.PARTITION_KEY, "Customize partirion key")
+                                    .build(), Sinks.EmitFailureHandler.FAIL_FAST);
+        return ResponseEntity.ok("Sent!");
+    }
 }</code></pre>
 </div>
 </div>
@@ -1573,13 +1585,15 @@ When both <code>ServiceBusMessageHeaders.PARTITION_KEY</code> and <code>AzureHea
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@PostMapping("/messages")
-public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
-    LOGGER.info("Going to add message {} to Sinks.Many.", message);
-    many.emitNext(MessageBuilder.withPayload(message)
-                                .setHeader(ServiceBusMessageHeaders.SESSION_ID, "Customize session id")
-                                .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-    return ResponseEntity.ok("Sent!");
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    @PostMapping("/messages")
+    public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
+        LOGGER.info("Going to add message {} to Sinks.Many.", message);
+        many.emitNext(MessageBuilder.withPayload(message)
+                                    .setHeader(ServiceBusMessageHeaders.SESSION_ID, "Customize session id")
+                                    .build(), Sinks.EmitFailureHandler.FAIL_FAST);
+        return ResponseEntity.ok("Sent!");
+    }
 }</code></pre>
 </div>
 </div>
@@ -1609,16 +1623,18 @@ below constants.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
-private Sinks.Many&lt;Message&lt;String&gt;&gt; many;
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    @Autowired
+    private Sinks.Many&lt;Message&lt;String&gt;&gt; many;
 
-@PostMapping("/messages")
-public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
-    many.emitNext(MessageBuilder.withPayload(message)
-    .setHeader(SESSION_ID, "group1")
-    .build(),
-    Sinks.EmitFailureHandler.FAIL_FAST);
-    return ResponseEntity.ok("Sent!");
+    @PostMapping("/messages")
+    public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
+        many.emitNext(MessageBuilder.withPayload(message)
+        .setHeader(SESSION_ID, "group1")
+        .build(),
+        Sinks.EmitFailureHandler.FAIL_FAST);
+        return ResponseEntity.ok("Sent!");
+    }
 }</code></pre>
 </div>
 </div>
@@ -1626,20 +1642,23 @@ public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
 <p>For some Service Bus headers that can be mapped to multiple Spring header constants, the priority of different Spring headers is listed.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 9. Mapping of service bus message header and spring message header</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
 <col style="width: 25%;">
 <col style="width: 25%;">
 </colgroup>
-<tbody>
+<thead>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Service Bus Message Headers and Properties</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Spring Message Header Constants</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Priority
-Number (Descending priority)</p></td>
+<th class="tableblock halign-left valign-top">Service Bus Message Headers and Properties</th>
+<th class="tableblock halign-left valign-top">Spring Message Header Constants</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Priority
+Number (Descending priority)</th>
 </tr>
+</thead>
+<tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ContentType</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.messaging.MessageHeaders.CONTENT_TYPE</p></td>

@@ -218,9 +218,10 @@ window.onload = function() {
 <div class="sect4">
 <h5 id="_azure_common_configuration_options"><a class="link" href="#_azure_common_configuration_options">Azure Common Configuration Options</a></h5>
 <div class="paragraph">
-<p>Below properties can also be configured with the default Spring Cloud Azure unified properties by changing the prefix from <strong>spring.cloud.azure.eventhubs.</strong> to <strong>spring.cloud.azure.</strong>.</p>
+<p>Below properties can also be configured with the default Spring Cloud Azure unified properties by changing the prefix from <strong>spring.cloud.azure.eventhubs</strong> to <strong>spring.cloud.azure</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Common configurable properties of spring-cloud-azure-starter-integration-eventhubs</caption>
 <colgroup>
 <col style="width: 37.5%;">
 <col style="width: 12.5%;">
@@ -322,7 +323,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.resource.resourceId</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Id of the Azure resource group.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ID of the Azure resource group.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.resource.region</p></td>
@@ -413,6 +414,7 @@ window.onload = function() {
 <p>Below options are used to configure Azure Event Hubs SDK Client.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Client configurable properties of spring-cloud-azure-starter-integration-storage-queue</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -464,7 +466,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.processor.checkpointStore.createContainerIfNotExists</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If allowed to create container if not exists.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If allowed creating container if not exists.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.processor.checkpointStore.customerProvidedKey</p></td>
@@ -564,24 +566,26 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">private static final String OUTPUT_CHANNEL = "output";
-private static final String EVENTHUB_NAME = "eh1";
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    private static final String OUTPUT_CHANNEL = "output";
+    private static final String EVENTHUB_NAME = "eh1";
 
-@Bean
-@ServiceActivator(inputChannel = OUTPUT_CHANNEL)
-public MessageHandler messageSender(EventHubsTemplate queueOperation) {
-    DefaultMessageHandler handler = new DefaultMessageHandler(EVENTHUB_NAME, queueOperation);
-    handler.setSendCallback(new ListenableFutureCallback&lt;Void&gt;() {
-        @Override
-        public void onSuccess(Void result) {
-            LOGGER.info("Message was sent successfully.");
-        }
-        @Override
-        public void onFailure(Throwable ex) {
-            LOGGER.error("There was an error sending the message.", ex);
-        }
-    });
-    return handler;
+    @Bean
+    @ServiceActivator(inputChannel = OUTPUT_CHANNEL)
+    public MessageHandler messageSender(EventHubsTemplate queueOperation) {
+        DefaultMessageHandler handler = new DefaultMessageHandler(EVENTHUB_NAME, queueOperation);
+        handler.setSendCallback(new ListenableFutureCallback&lt;Void&gt;() {
+            @Override
+            public void onSuccess(Void result) {
+                LOGGER.info("Message was sent successfully.");
+            }
+            @Override
+            public void onFailure(Throwable ex) {
+                LOGGER.error("There was an error sending the message.", ex);
+            }
+        });
+        return handler;
+    }
 }</code></pre>
 </div>
 </div>
@@ -590,12 +594,14 @@ public MessageHandler messageSender(EventHubsTemplate queueOperation) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
-EventHubOutboundGateway messagingGateway;
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    @Autowired
+    EventHubOutboundGateway messagingGateway;
 
-@MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL)
-public interface EventHubOutboundGateway {
-    void send(String text);
+    @MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL)
+    public interface EventHubOutboundGateway {
+        void send(String text);
+    }
 }</code></pre>
 </div>
 </div>
@@ -604,7 +610,11 @@ public interface EventHubOutboundGateway {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">this.messagingGateway.send(message);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    public void demo() {
+        this.messagingGateway.send(message);
+    }
+}</code></pre>
 </div>
 </div>
 </div>
@@ -618,13 +628,15 @@ public interface EventHubOutboundGateway {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">private static final String INPUT_CHANNEL = "input";
-private static final String EVENTHUB_NAME = "eh1";
-private static final String CONSUMER_GROUP = "$Default";
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    private static final String INPUT_CHANNEL = "input";
+    private static final String EVENTHUB_NAME = "eh1";
+    private static final String CONSUMER_GROUP = "$Default";
 
-@Bean
-public MessageChannel input() {
-    return new DirectChannel();
+    @Bean
+    public MessageChannel input() {
+        return new DirectChannel();
+    }
 }</code></pre>
 </div>
 </div>
@@ -634,16 +646,18 @@ public MessageChannel input() {
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Bean
-public EventHubsInboundChannelAdapter messageChannelAdapter(
-        @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel,
-        EventHubsProcessorContainer processorContainer) {
-    CheckpointConfig config = new CheckpointConfig(CheckpointMode.MANUAL);
+class Demo{
+    public EventHubsInboundChannelAdapter messageChannelAdapter(
+            @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel,
+            EventHubsProcessorContainer processorContainer) {
+        CheckpointConfig config = new CheckpointConfig(CheckpointMode.MANUAL);
 
-    EventHubsInboundChannelAdapter adapter =
-            new EventHubsInboundChannelAdapter(processorContainer, EVENTHUB_NAME,
-                    CONSUMER_GROUP, config);
-    adapter.setOutputChannel(inputChannel);
-    return adapter;
+        EventHubsInboundChannelAdapter adapter =
+                new EventHubsInboundChannelAdapter(processorContainer, EVENTHUB_NAME,
+                        CONSUMER_GROUP, config);
+        adapter.setOutputChannel(inputChannel);
+        return adapter;
+    }
 }</code></pre>
 </div>
 </div>
@@ -652,14 +666,16 @@ public EventHubsInboundChannelAdapter messageChannelAdapter(
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel = INPUT_CHANNEL)
-public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
-    String message = new String(payload);
-    LOGGER.info("New message received: '{}'", message);
-    checkpointer.success()
-            .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
-            .doOnError(e -&gt; LOGGER.error("Error found", e))
-            .subscribe();
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    @ServiceActivator(inputChannel = INPUT_CHANNEL)
+    public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
+        String message = new String(payload);
+        LOGGER.info("New message received: '{}'", message);
+        checkpointer.success()
+                .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
+                .doOnError(e -&gt; LOGGER.error("Error found", e))
+                .subscribe();
+    }
 }</code></pre>
 </div>
 </div>
@@ -691,9 +707,10 @@ public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) C
 <h5 id="_azure_common_configuration_options_2"><a class="link" href="#_azure_common_configuration_options_2">Azure Common Configuration Options</a></h5>
 <div class="paragraph">
 <p>Below properties can also be configured with the default Spring Cloud Azure unified properties by changing the prefix
-from <strong>spring.cloud.azure.servicebus.</strong> to <strong>spring.cloud.azure.</strong>.</p>
+from <strong>spring.cloud.azure.servicebus</strong> to <strong>spring.cloud.azure</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Common configurable properties of spring-cloud-azure-starter-integration-servicebus</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -795,7 +812,7 @@ from <strong>spring.cloud.azure.servicebus.</strong> to <strong>spring.cloud.azu
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.resource.resourceId</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Id of the Azure resource group.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ID of the Azure resource group.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.resource.region</p></td>
@@ -886,19 +903,18 @@ from <strong>spring.cloud.azure.servicebus.</strong> to <strong>spring.cloud.azu
 <p>Below options are used to configure Azure Service Bus SDK Client.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. Client configurable properties of spring-cloud-azure-starter-integration-servicebus</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
 <col style="width: 33.3334%;">
 </colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Properties</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Properties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.connection-string</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
@@ -1003,26 +1019,28 @@ set the entity type for the ServiceBusTemplate.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">private static final String OUTPUT_CHANNEL = "queue.output";
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    private static final String OUTPUT_CHANNEL = "queue.output";
 
-@Bean
-@ServiceActivator(inputChannel = OUTPUT_CHANNEL)
-public MessageHandler queueMessageSender(ServiceBusTemplate serviceBusTemplate) {
-    serviceBusTemplate.setDefaultEntityType(ServiceBusEntityType.QUEUE);
-    DefaultMessageHandler handler = new DefaultMessageHandler(QUEUE_NAME, serviceBusTemplate);
-    handler.setSendCallback(new ListenableFutureCallback&lt;Void&gt;() {
-        @Override
-        public void onSuccess(Void result) {
-            LOGGER.info("Message was sent successfully.");
-        }
+    @Bean
+    @ServiceActivator(inputChannel = OUTPUT_CHANNEL)
+    public MessageHandler queueMessageSender(ServiceBusTemplate serviceBusTemplate) {
+        serviceBusTemplate.setDefaultEntityType(ServiceBusEntityType.QUEUE);
+        DefaultMessageHandler handler = new DefaultMessageHandler(QUEUE_NAME, serviceBusTemplate);
+        handler.setSendCallback(new ListenableFutureCallback&lt;Void&gt;() {
+            @Override
+            public void onSuccess(Void result) {
+                LOGGER.info("Message was sent successfully.");
+            }
 
-        @Override
-        public void onFailure(Throwable ex) {
-            LOGGER.info("There was an error sending the message.");
-        }
-    });
+            @Override
+            public void onFailure(Throwable ex) {
+                LOGGER.info("There was an error sending the message.");
+            }
+        });
 
-    return handler;
+        return handler;
+    }
 }</code></pre>
 </div>
 </div>
@@ -1031,12 +1049,14 @@ public MessageHandler queueMessageSender(ServiceBusTemplate serviceBusTemplate) 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
-QueueOutboundGateway messagingGateway;
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    @Autowired
+    QueueOutboundGateway messagingGateway;
 
-@MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL)
-public interface QueueOutboundGateway {
-    void send(String text);
+    @MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL)
+    public interface QueueOutboundGateway {
+        void send(String text);
+    }
 }</code></pre>
 </div>
 </div>
@@ -1045,7 +1065,11 @@ public interface QueueOutboundGateway {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">this.messagingGateway.send(message);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    public void demo() {
+        this.messagingGateway.send(message);
+    }
+}</code></pre>
 </div>
 </div>
 </div>
@@ -1059,11 +1083,13 @@ public interface QueueOutboundGateway {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">private static final String INPUT_CHANNEL = "input";
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    private static final String INPUT_CHANNEL = "input";
 
-@Bean
-public MessageChannel input() {
-    return new DirectChannel();
+    @Bean
+    public MessageChannel input() {
+        return new DirectChannel();
+    }
 }</code></pre>
 </div>
 </div>
@@ -1072,15 +1098,17 @@ public MessageChannel input() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">private static final String QUEUE_NAME = "queue1";
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    private static final String QUEUE_NAME = "queue1";
 
-@Bean
-public ServiceBusInboundChannelAdapter queueMessageChannelAdapter(
-    @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel, ServiceBusProcessorContainer processorContainer) {
-    ServiceBusInboundChannelAdapter adapter = new ServiceBusInboundChannelAdapter(processorContainer, QUEUE_NAME,
-        new CheckpointConfig(CheckpointMode.MANUAL));
-    adapter.setOutputChannel(inputChannel);
-    return adapter;
+    @Bean
+    public ServiceBusInboundChannelAdapter queueMessageChannelAdapter(
+        @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel, ServiceBusProcessorContainer processorContainer) {
+        ServiceBusInboundChannelAdapter adapter = new ServiceBusInboundChannelAdapter(processorContainer, QUEUE_NAME,
+            new CheckpointConfig(CheckpointMode.MANUAL));
+        adapter.setOutputChannel(inputChannel);
+        return adapter;
+    }
 }</code></pre>
 </div>
 </div>
@@ -1089,14 +1117,16 @@ public ServiceBusInboundChannelAdapter queueMessageChannelAdapter(
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel = INPUT_CHANNEL)
-public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
-    String message = new String(payload);
-    LOGGER.info("New message received: '{}'", message);
-    checkpointer.success()
-            .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
-            .doOnError(e -&gt; LOGGER.error("Error found", e))
-            .subscribe();
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    @ServiceActivator(inputChannel = INPUT_CHANNEL)
+    public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
+        String message = new String(payload);
+        LOGGER.info("New message received: '{}'", message);
+        checkpointer.success()
+                .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
+                .doOnError(e -&gt; LOGGER.error("Error found", e))
+                .subscribe();
+    }
 }</code></pre>
 </div>
 </div>
@@ -1214,9 +1244,10 @@ the value of the session id will eventually be used to overwrite the value of th
 <h5 id="_azure_common_configuration_options_3"><a class="link" href="#_azure_common_configuration_options_3">Azure Common Configuration Options</a></h5>
 <div class="paragraph">
 <p>Below properties can also be configured with the default Spring Cloud Azure unified properties,
-by changing the prefix from <strong>spring.cloud.azure.storage.queue.</strong> to <strong>spring.cloud.azure.</strong>.</p>
+by changing the prefix from <strong>spring.cloud.azure.storage.queue</strong> to <strong>spring.cloud.azure</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. Common configurable properties of spring-cloud-azure-starter-integration-storage-queue</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1318,7 +1349,7 @@ by changing the prefix from <strong>spring.cloud.azure.storage.queue.</strong> t
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.resource.resourceId</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Id of the Azure resource group.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ID of the Azure resource group.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.resource.region</p></td>
@@ -1409,6 +1440,7 @@ by changing the prefix from <strong>spring.cloud.azure.storage.queue.</strong> t
 <p>Below options are used to configure Azure Storage Queue SDK Client.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. Client configurable properties of spring-cloud-azure-starter-integration-storage-queue</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1533,25 +1565,27 @@ by changing the prefix from <strong>spring.cloud.azure.storage.queue.</strong> t
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">private static final String STORAGE_QUEUE_NAME = "example";
-private static final String OUTPUT_CHANNEL = "output";
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    private static final String STORAGE_QUEUE_NAME = "example";
+    private static final String OUTPUT_CHANNEL = "output";
 
-@Bean
-@ServiceActivator(inputChannel = OUTPUT_CHANNEL)
-public MessageHandler messageSender(StorageQueueOperation storageQueueOperation) {
-    DefaultMessageHandler handler = new DefaultMessageHandler(STORAGE_QUEUE_NAME, storageQueueOperation);
-    handler.setSendCallback(new ListenableFutureCallback&lt;Void&gt;() {
-        @Override
-        public void onSuccess(Void result) {
-            LOGGER.info("Message was sent successfully.");
-        }
+    @Bean
+    @ServiceActivator(inputChannel = OUTPUT_CHANNEL)
+    public MessageHandler messageSender(StorageQueueOperation storageQueueOperation) {
+        DefaultMessageHandler handler = new DefaultMessageHandler(STORAGE_QUEUE_NAME, storageQueueOperation);
+        handler.setSendCallback(new ListenableFutureCallback&lt;Void&gt;() {
+            @Override
+            public void onSuccess(Void result) {
+                LOGGER.info("Message was sent successfully.");
+            }
 
-        @Override
-        public void onFailure(Throwable ex) {
-            LOGGER.info("There was an error sending the message.");
-        }
-    });
-    return handler;
+            @Override
+            public void onFailure(Throwable ex) {
+                LOGGER.info("There was an error sending the message.");
+            }
+        });
+        return handler;
+    }
 }</code></pre>
 </div>
 </div>
@@ -1560,12 +1594,14 @@ public MessageHandler messageSender(StorageQueueOperation storageQueueOperation)
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
-StorageQueueOutboundGateway storageQueueOutboundGateway;
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    @Autowired
+    StorageQueueOutboundGateway storageQueueOutboundGateway;
 
-@MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL)
-public interface StorageQueueOutboundGateway {
-    void send(String text);
+    @MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL)
+    public interface StorageQueueOutboundGateway {
+        void send(String text);
+    }
 }</code></pre>
 </div>
 </div>
@@ -1574,7 +1610,11 @@ public interface StorageQueueOutboundGateway {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">this.storageQueueOutboundGateway.send(message);</code></pre>
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    public void demo() {
+        this.storageQueueOutboundGateway.send(message);
+    }
+}</code></pre>
 </div>
 </div>
 </div>
@@ -1588,11 +1628,13 @@ public interface StorageQueueOutboundGateway {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">private static final String INPUT_CHANNEL = "input";
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    private static final String INPUT_CHANNEL = "input";
 
-@Bean
-public MessageChannel input() {
-    return new DirectChannel();
+    @Bean
+    public MessageChannel input() {
+        return new DirectChannel();
+    }
 }</code></pre>
 </div>
 </div>
@@ -1601,15 +1643,17 @@ public MessageChannel input() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">private static final String STORAGE_QUEUE_NAME = "example";
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    private static final String STORAGE_QUEUE_NAME = "example";
 
-@Bean
-@InboundChannelAdapter(channel = INPUT_CHANNEL, poller = @Poller(fixedDelay = "1000"))
-public StorageQueueMessageSource storageQueueMessageSource(StorageQueueOperation storageQueueOperation) {
-    storageQueueOperation.setCheckpointMode(CheckpointMode.MANUAL);
-    storageQueueOperation.setVisibilityTimeoutInSeconds(10);
+    @Bean
+    @InboundChannelAdapter(channel = INPUT_CHANNEL, poller = @Poller(fixedDelay = "1000"))
+    public StorageQueueMessageSource storageQueueMessageSource(StorageQueueOperation storageQueueOperation) {
+        storageQueueOperation.setCheckpointMode(CheckpointMode.MANUAL);
+        storageQueueOperation.setVisibilityTimeoutInSeconds(10);
 
-    return new StorageQueueMessageSource(STORAGE_QUEUE_NAME, storageQueueOperation);
+        return new StorageQueueMessageSource(STORAGE_QUEUE_NAME, storageQueueOperation);
+    }
 }</code></pre>
 </div>
 </div>
@@ -1618,14 +1662,16 @@ public StorageQueueMessageSource storageQueueMessageSource(StorageQueueOperation
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel = INPUT_CHANNEL)
-public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
-    String message = new String(payload);
-    LOGGER.info("New message received: '{}'", message);
-    checkpointer.success()
-        .doOnError(Throwable::printStackTrace)
-        .doOnSuccess(t -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
-        .subscribe();
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo{
+    @ServiceActivator(inputChannel = INPUT_CHANNEL)
+    public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
+        String message = new String(payload);
+        LOGGER.info("New message received: '{}'", message);
+        checkpointer.success()
+            .doOnError(Throwable::printStackTrace)
+            .doOnSuccess(t -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
+            .subscribe();
+    }
 }</code></pre>
 </div>
 </div>
