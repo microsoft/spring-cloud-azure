@@ -6,7 +6,7 @@ IMPORTANT: To learn how to migration to 4.0, please check link:appendix.html#mig
 
 === Unified Development Experience 
 
-We constantly challenge ourselves on how we can make things more consistent and easier to understand, so our customers are not confronted with haphazard development choices. This is a long and self-evolving journey as consistency is relative and there will be things that are outside of our control. We now humbly take another step in this direction to improve to our developer experience by unifying project name, artifact ID and properties.  
+We constantly challenge ourselves on how we can make things more consistent and easier to understand, so our customers are not confronted with haphazard development choices. This is a long and self-evolving journey as consistency is relative and there will be things that are outside our control. We now humbly take another step in this direction to improve to our developer experience by unifying project name, artifact ID and properties.
 
 
 === Simplified dependency management  
@@ -41,5 +41,5 @@ Spring developers have long enjoyed the convenience of defining client options i
 
 === More Production Ready  
 
-Lastly all of the above would be in vain if we do not have enough feature coverage to support our customers in production. Many things come to my mind to make an application production-ready, but observability often arrives at the top. We’ve added health indicators for App Configuration, Event Hubs, Cosmos, Key Vault, Storage Blob, Storage Queue, Storage File, as well as Spring Cloud Sleuth support for all HTTP-based Azure SDKs. As an example, you now can prob if storage blob is up or down via Spring Boot actuator endpoint, as well as track dependencies and latencies going from your application to Cosmos DB.
+Lastly all the above would be in vain if we do not have enough feature coverage to support our customers in production. Many things come to my mind to make an application production-ready, but observability often arrives at the top. We’ve added health indicators for App Configuration, Event Hubs, Cosmos, Key Vault, Storage Blob, Storage Queue, Storage File, as well as Spring Cloud Sleuth support for all HTTP-based Azure SDKs. As an example, you now can prob if storage blob is up or down via Spring Boot actuator endpoint, as well as track dependencies and latencies going from your application to Cosmos DB.
 
