@@ -25,7 +25,7 @@ Add the Spring Cloud Azure Actuator Starter dependency. This dependency will als
 |Storage|management.health.azure-storage.enabled
 |===
 
-NOTE: Calling the health endpoint of Azure servcies may cause extra charge. For example, calling `http://{hostname}:{port}/actuator/health/cosmos` to get the Cosmos DB health info, it will calculate https://docs.microsoft.com/azure/cosmos-db/request-units[RUs].
+NOTE: Calling the health endpoint of Azure services may cause extra charge. For example, calling `http://HOST_NAME:{port}/actuator/health/cosmos` to get the Cosmos DB health info, it will calculate https://docs.microsoft.com/azure/cosmos-db/request-units[RUs].
 
 === Enable Sleuth
 
