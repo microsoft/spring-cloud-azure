@@ -27,7 +27,7 @@ The binder provides the following 3 parts of configuration options:
 
 ===== Azure Common Configuration Options
 Below properties can also be configured with the default Spring Cloud Azure unified properties,
-of which the prefix is changed from *spring.cloud.azure.eventhubs.* to *spring.cloud.azure.*.
+of which the prefix is changed from *spring.cloud.azure.eventhubs* to *spring.cloud.azure*.
 
 .Common configurable properties of spring-cloud-azure-stream-binder-eventhubs
 [cols="<,<,<", options="header"]
@@ -50,7 +50,7 @@ of which the prefix is changed from *spring.cloud.azure.eventhubs.* to *spring.c
 |*spring.cloud.azure.eventhubs*.profile.environment.activeDirectoryEndpoint | String | The Azure Active Directory endpoint to connect to.
 |*spring.cloud.azure.eventhubs*.resource.* | String | Metadata defining an Azure resource.
 |*spring.cloud.azure.eventhubs*.resource.resourceGroup | String | Name of the Azure resource group.
-|*spring.cloud.azure.eventhubs*.resource.resourceId | String | Id of the Azure resource group.
+|*spring.cloud.azure.eventhubs*.resource.resourceId | String | ID of the Azure resource group.
 |*spring.cloud.azure.eventhubs*.resource.region | String | Name of region.
 |*spring.cloud.azure.eventhubs*.client.transportType | AmqpTransportType | Transport type switches available for AMQP protocol.
 |*spring.cloud.azure.eventhubs*.retry.* | NA | Retry properties.
@@ -183,7 +183,7 @@ of ''spring.cloud.azure.eventhubs.'' with `'spring.cloud.stream.eventhubs.bindin
 The configuration in the above first 2 sections(`Azure Common Configuration Options`, `Azure
 Event Hubs
 Client Configuration Options`) can be applied for each specific producer by replacing the prefix
-of 'spring.cloud.azure.eventhubs.' with `spring.cloud.stream.eventhubs.bindings.<binding-name>.producer.`.
+of 'spring.cloud.azure.eventhubs' with `spring.cloud.stream.eventhubs.bindings.<binding-name>.producer`.
 
 
 
@@ -303,31 +303,33 @@ spring:
 ** Define supplier and consumer
 [source,java]
 ----
+class Demo{
 @Bean
-public Consumer<Message<String>> consume() {
-    return message -> {
-        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
-        LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
-                message.getPayload(),
-                message.getHeaders().get(EventHubsHeaders.PARTITION_KEY),
-                message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER),
-                message.getHeaders().get(EventHubsHeaders.OFFSET),
-                message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)
-        );
+    public Consumer<Message<String>> consume() {
+        return message -> {
+            Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+            LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
+                    message.getPayload(),
+                    message.getHeaders().get(EventHubsHeaders.PARTITION_KEY),
+                    message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER),
+                    message.getHeaders().get(EventHubsHeaders.OFFSET),
+                    message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)
+            );
 
-        checkpointer.success()
-                .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
-                .doOnError(error -> LOGGER.error("Exception found", error))
-                .subscribe();
-    };
-}
+            checkpointer.success()
+                    .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
+                    .doOnError(error -> LOGGER.error("Exception found", error))
+                    .subscribe();
+        };
+    }
 
-@Bean
-public Supplier<Message<String>> supply() {
-    return () -> {
-        LOGGER.info("Sending message, sequence " + i);
-        return MessageBuilder.withPayload("Hello world, " + i++).build();
-    };
+    @Bean
+    public Supplier<Message<String>> supply() {
+        return () -> {
+            LOGGER.info("Sending message, sequence " + i);
+            return MessageBuilder.withPayload("Hello world, " + i++).build();
+        };
+    }
 }
 ----
 ==== Samples
@@ -351,7 +353,7 @@ use Event Hubs Binder.
 
 ===== Azure Common Configuration Options
 Below properties can also be configured with the default Spring Cloud Azure unified properties,
-of which the prefix is changed from *spring.cloud.azure.servicebus.* to *spring.cloud.azure.*.
+of which the prefix is changed from *spring.cloud.azure.servicebus* to *spring.cloud.azure*.
 
 .Common configurable properties of spring-cloud-azure-stream-binder-servicebus
 [cols="<,<,<", options="header"]
@@ -382,7 +384,7 @@ Azure Active Directory endpoint to connect to.
 |*spring.cloud.azure.servicebus*.resource.* | String | Metadata defining an Azure resource.
 |*spring.cloud.azure.servicebus*.resource.resource-group | String | Name of the Azure resource
 group.
-|*spring.cloud.azure.servicebus*.resource.resource-id | String | Id of the Azure resource group.
+|*spring.cloud.azure.servicebus*.resource.resource-id | String | ID of the Azure resource group.
 |*spring.cloud.azure.servicebus*.resource.region | String | Name of region.
 |*spring.cloud.azure.servicebus*.client.transport-type | AmqpTransportType | Transport type
 switches available for AMQP protocol.
@@ -484,8 +486,8 @@ of ''spring.cloud.azure.servicebus.'' with `'spring.cloud.stream.servicebus.bind
 
 ====== Advanced Producer Configuration
 The configuration in the above first 2 sections(`Azure Common Configuration Options`, `Azure Service Bus Client Configuration Options`) can be applied for each specific producer by replacing the prefix
-of 'spring.cloud.azure.servicebus.' with `spring.cloud.stream.servicebus.bindings.<binding-name>
-.producer.`.
+of 'spring.cloud.azure.servicebus' with `spring.cloud.stream.servicebus.bindings.<binding-name>
+.producer`.
 
 ==== Basic Usage
 Step 1. Fill the configuration options with credential information.
@@ -593,31 +595,33 @@ spring:
 Step 2. Define supplier and consumer
 [source,java]
 ----
-@Bean
-public Consumer<Message<String>> consume() {
-    return message -> {
-        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
-        LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
-                message.getPayload(),
-                message.getHeaders().get(EventHubsHeaders.PARTITION_KEY),
-                message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER),
-                message.getHeaders().get(EventHubsHeaders.OFFSET),
-                message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)
-        );
+class Demo{
+    @Bean
+    public Consumer<Message<String>> consume() {
+        return message -> {
+            Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+            LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
+                    message.getPayload(),
+                    message.getHeaders().get(EventHubsHeaders.PARTITION_KEY),
+                    message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER),
+                    message.getHeaders().get(EventHubsHeaders.OFFSET),
+                    message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)
+            );
 
-        checkpointer.success()
-                .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
-                .doOnError(error -> LOGGER.error("Exception found", error))
-                .subscribe();
-    };
-}
+            checkpointer.success()
+                    .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
+                    .doOnError(error -> LOGGER.error("Exception found", error))
+                    .subscribe();
+        };
+    }
 
-@Bean
-public Supplier<Message<String>> supply() {
-    return () -> {
-        LOGGER.info("Sending message, sequence " + i);
-        return MessageBuilder.withPayload("Hello world, " + i++).build();
-    };
+    @Bean
+    public Supplier<Message<String>> supply() {
+        return () -> {
+            LOGGER.info("Sending message, sequence " + i);
+            return MessageBuilder.withPayload("Hello world, " + i++).build();
+        };
+    }
 }
 ----
 
@@ -646,13 +650,15 @@ spring:
 
 [source,java]
 ----
-@PostMapping("/messages")
-public ResponseEntity<String> sendMessage(@RequestParam String message) {
-    LOGGER.info("Going to add message {} to Sinks.Many.", message);
-    many.emitNext(MessageBuilder.withPayload(message)
-                                .setHeader("<message-header-key>", "Customize partirion key")
-                                .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-    return ResponseEntity.ok("Sent!");
+class Demo{
+    @PostMapping("/messages")
+    public ResponseEntity<String> sendMessage(@RequestParam String message) {
+        LOGGER.info("Going to add message {} to Sinks.Many.", message);
+        many.emitNext(MessageBuilder.withPayload(message)
+                                    .setHeader("<message-header-key>", "Customize partirion key")
+                                    .build(), Sinks.EmitFailureHandler.FAIL_FAST);
+        return ResponseEntity.ok("Sent!");
+    }
 }
 ----
 
@@ -667,13 +673,15 @@ _Recommended:_ Use `ServiceBusMessageHeaders.PARTITION_KEY` as the key of the he
 
 [source,java]
 ----
-@PostMapping("/messages")
-public ResponseEntity<String> sendMessage(@RequestParam String message) {
-    LOGGER.info("Going to add message {} to Sinks.Many.", message);
-    many.emitNext(MessageBuilder.withPayload(message)
-                                .setHeader(ServiceBusMessageHeaders.PARTITION_KEY, "Customize partirion key")
-                                .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-    return ResponseEntity.ok("Sent!");
+class Demo{
+    @PostMapping("/messages")
+    public ResponseEntity<String> sendMessage(@RequestParam String message) {
+        LOGGER.info("Going to add message {} to Sinks.Many.", message);
+        many.emitNext(MessageBuilder.withPayload(message)
+                                    .setHeader(ServiceBusMessageHeaders.PARTITION_KEY, "Customize partirion key")
+                                    .build(), Sinks.EmitFailureHandler.FAIL_FAST);
+        return ResponseEntity.ok("Sent!");
+    }
 }
 ----
 
@@ -681,13 +689,15 @@ _Not recommended but currently supported:_ `AzureHeaders.PARTITION_KEY` as the k
 
 [source,java]
 ----
-@PostMapping("/messages")
-public ResponseEntity<String> sendMessage(@RequestParam String message) {
-    LOGGER.info("Going to add message {} to Sinks.Many.", message);
-    many.emitNext(MessageBuilder.withPayload(message)
-                                .setHeader(AzureHeaders.PARTITION_KEY, "Customize partirion key")
-                                .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-    return ResponseEntity.ok("Sent!");
+class Demo{
+    @PostMapping("/messages")
+    public ResponseEntity<String> sendMessage(@RequestParam String message) {
+        LOGGER.info("Going to add message {} to Sinks.Many.", message);
+        many.emitNext(MessageBuilder.withPayload(message)
+                                    .setHeader(AzureHeaders.PARTITION_KEY, "Customize partirion key")
+                                    .build(), Sinks.EmitFailureHandler.FAIL_FAST);
+        return ResponseEntity.ok("Sent!");
+    }
 }
 ----
 
@@ -700,13 +710,15 @@ This example demonstrates how to manually set the session id of a message in the
 
 [source,java]
 ----
-@PostMapping("/messages")
-public ResponseEntity<String> sendMessage(@RequestParam String message) {
-    LOGGER.info("Going to add message {} to Sinks.Many.", message);
-    many.emitNext(MessageBuilder.withPayload(message)
-                                .setHeader(ServiceBusMessageHeaders.SESSION_ID, "Customize session id")
-                                .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-    return ResponseEntity.ok("Sent!");
+class Demo{
+    @PostMapping("/messages")
+    public ResponseEntity<String> sendMessage(@RequestParam String message) {
+        LOGGER.info("Going to add message {} to Sinks.Many.", message);
+        many.emitNext(MessageBuilder.withPayload(message)
+                                    .setHeader(ServiceBusMessageHeaders.SESSION_ID, "Customize session id")
+                                    .build(), Sinks.EmitFailureHandler.FAIL_FAST);
+        return ResponseEntity.ok("Sent!");
+    }
 }
 ----
 
@@ -716,23 +728,26 @@ Please use this `sample` as a reference to learn more about how to use this bind
 - https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/servicebus/azure-spring-cloud-stream-binder-servicebus-queue[Service Bus Queue]
 
 
-### Set Service Bus message headers
+=== Set Service Bus message headers
+
 The following table illustrates how Spring message headers are mapped to Service Bus message headers and properties.
 When create a message, developers can specify the header or property of a Service Bus message by
 below constants.
 
 [source,java]
 ----
-@Autowired
-private Sinks.Many<Message<String>> many;
+class Demo{
+    @Autowired
+    private Sinks.Many<Message<String>> many;
 
-@PostMapping("/messages")
-public ResponseEntity<String> sendMessage(@RequestParam String message) {
-    many.emitNext(MessageBuilder.withPayload(message)
-    .setHeader(SESSION_ID, "group1")
-    .build(),
-    Sinks.EmitFailureHandler.FAIL_FAST);
-    return ResponseEntity.ok("Sent!");
+    @PostMapping("/messages")
+    public ResponseEntity<String> sendMessage(@RequestParam String message) {
+        many.emitNext(MessageBuilder.withPayload(message)
+        .setHeader(SESSION_ID, "group1")
+        .build(),
+        Sinks.EmitFailureHandler.FAIL_FAST);
+        return ResponseEntity.ok("Sent!");
+    }
 }
 ----
 
