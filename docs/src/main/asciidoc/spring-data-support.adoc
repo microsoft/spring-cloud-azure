@@ -76,8 +76,7 @@ Connect to Cosmos DB using Spring Data and CosmosDB libraries.
 === Basic Usage
 
 ==== Use private key to access CosmosDB
-The simplest way to connect CosmosDB with `spring-cloud-azure-starter-data-cosmos` is primary key,
-add below properties and you are good to go.
+The simplest way to connect CosmosDB with `spring-cloud-azure-starter-data-cosmos` is primary key, add below properties, and you are good to go.
 
 [source,yaml]
 ----
