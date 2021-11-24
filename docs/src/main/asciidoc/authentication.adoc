@@ -8,7 +8,7 @@ NOTE: DefaultAzureCredential is intended to simplify getting started with the SD
 
 The `DefaultAzureCredential` will attempt to authenticate via the following mechanisms in order.
 
-image::images/default-azure-credential.png[DefaultAzureCredential]
+image::https://user-images.githubusercontent.com/13167207/143148654-f3a37180-85e2-4360-a47d-c1af2da8fada.png[DefaultAzureCredential]
 
 - Environment - The `DefaultAzureCredential` will read account information specified via environment variables and use it to authenticate.
 - Managed Identity - If the application is deployed to an Azure host with Managed Identity enabled, the `DefaultAzureCredential` will authenticate with that account.
