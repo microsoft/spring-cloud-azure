@@ -14,8 +14,8 @@
 
 ==== Configuration
 
-This starter provides the following properties:
-[cols="2*", options="header"]
+.Configurable properties of spring-cloud-azure-starter-active-directory
+[cols="<,<", options="header"]
 |===
 |Properties |Description 
 |*spring.cloud.azure.active-directory*.app-id-uri |It used in resource server, used to validate the audience in access_token. access_token is valid only when the audience in access_token equal to client-id or app-id-uri 
@@ -30,7 +30,7 @@ This starter provides the following properties:
 |*spring.cloud.azure.active-directory*.graph-membership-uri |It's used to load users' groups. The default value is `https://graph.microsoft.com/v1.0/me/memberOf`, this uri just get direct groups. To get all transitive membership, set it to `https://graph.microsoft.com/v1.0/me/transitiveMemberOf`. The 2 uris are both Azure Global, check `Property example 1` if you want to use Azure China.
 |*spring.cloud.azure.active-directory*.post-logout-redirect-uri |Redirect uri for posting log-out. 
 |*spring.cloud.azure.active-directory*.resource-server.principal-claim-name |Principal claim name. Default value is "sub". 
-|*spring.cloud.azure.active-directory*.resource-server.claim-to-authority-prefix-map |Claim to authority prefix map. Default map is: "scp" -&gt; "SCOPE_", "roles" -&gt; "APPROLE_". 
+|*spring.cloud.azure.active-directory*.resource-server.claim-to-authority-prefix-map |Claim to authority prefix map. Default map is: "scp" -&gt; "SCOPE_", "roles" -&gt; `APPROLE_`.
 |*spring.cloud.azure.active-directory*.tenant-id |Azure Tenant ID. 
 |*spring.cloud.azure.active-directory*.user-group.allowed-group-names |Users' group name can be use in `@PreAuthorize(&quot;hasRole(&#39;ROLE_group_name_1&#39;)&quot;)`. Not all group name will take effect, only group names configured in this property will take effect. 
 |*spring.cloud.azure.active-directory*.user-group.allowed-group-ids |Users' group id can be use in `@PreAuthorize(&quot;hasRole(&#39;ROLE_group_id_1&#39;)&quot;)`. Not all group id will take effect, only group id configured in this property will take effect. If this property's value is `all`, then all group id will take effect.
@@ -43,6 +43,8 @@ Here are some examples about how to use these properties:
 ===== Property example 1: Application type
 
 This property(`spring.cloud.azure.active-directory.application-type`) is optional, its value can be inferred by dependencies, only `web_application_and_resource_server` must be configured manually: `spring.cloud.azure.active-directory.application-type=web_application_and_resource_server`.
+
+.Application type of spring-cloud-azure-starter-active-directory
 [cols="4*", options="header"]
 |===
 |Has dependency: spring-security-oauth2-client |Has dependency: spring-security-oauth2-resource-server |Valid values of application type |Default value
@@ -482,9 +484,10 @@ https://github.com/Azure-Samples/azure-spring-boot-samples[Link to sample repo]
 
 ==== Configuration
 
+.Configurable properties of spring-cloud-azure-starter-active-directory-b2c
+[cols="<,<", options="header"]
 |===
-|Parameter |Description 
-
+|Parameter |Description
 |`spring.cloud.azure.active-directory.b2c.base-uri` |Base uri for authorization server, if both `tenant` and `baseUri` are configured at the same time, only `baseUri` takes effect. 
 |`spring.cloud.azure.active-directory.b2c.client-id` |The registered application ID in Azure AD B2C. 
 |`spring.cloud.azure.active-directory.b2c.client-secret` |The client secret of a registered application. 
@@ -714,7 +717,7 @@ Let `Webapp` and `WebApiA` run on port _8080_ and _8081_ respectively.
 
 This scenario not support login. Just protect the server by validating the access token, and if valid, serves the request.
 
-* Step 1: Refer to <<web-application-accessing-resource-servers,Web application accessing resource servers>> to build your `WebApiA` permission.
+* Step 1: Refer to <<#usage-2web-application-accessing-resource-servers,Web application accessing resource servers>> to build your `WebApiA` permission.
 
 * Step 2: Add `WebApiA` permission and grant admin consent for your web application.
 

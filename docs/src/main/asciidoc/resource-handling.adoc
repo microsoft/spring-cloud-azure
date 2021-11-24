@@ -1,6 +1,6 @@
 == Resource Handling
 
-Connect to Azure Storage using Spring Resource abstraction and Azure Storage libraries.
+.Azure Storage related libraries.
 [cols="2,1,5", options="header"]
 |===
 |Starter 
@@ -20,22 +20,23 @@ Connect to Azure Storage using Spring Resource abstraction and Azure Storage lib
 
 [source,xml]
 ----
-<dependency>
-    <groupId>com.azure.spring</groupId>
-    <artifactId>spring-cloud-azure-starter-storage-blob</artifactId> # <1>
-</dependency>
-
-<dependency>
-    <groupId>com.azure.spring</groupId>
-    <artifactId>spring-cloud-azure-starter-storage-file-share</artifactId> # <2>
-</dependency>
+<dependencies>
+    <dependency>
+        <groupId>com.azure.spring</groupId>
+        <artifactId>spring-cloud-azure-starter-storage-blob</artifactId> # <1>
+    </dependency>
+    <dependency>
+        <groupId>com.azure.spring</groupId>
+        <artifactId>spring-cloud-azure-starter-storage-file-share</artifactId> # <2>
+    </dependency>
+</dependencies>
 ----
 <1> Only required when you're using Azure Storage Blob.
 <2> Only required when you're using Azure Storage File Share.
 
 === Configuration
 
-This `spring-cloud-azure-starter-storage-blob` provides the following properties:
+.Configurable properties of spring-cloud-azure-starter-storage-blob
 [cols="3,1,5", options="header"]
 |===
 |Name |Default | Description
@@ -50,14 +51,14 @@ This `spring-cloud-azure-starter-storage-blob` provides the following properties
 
 |spring.cloud.azure.storage.blob.account-key 
 |  
-|Privatekey to connect Azure Blob Storage
+|Private key to connect Azure Blob Storage
 
 |spring.cloud.azure.storage.blob.account-name 
 |  
 |Azure Storage Account Name
 |===
 
-This `spring-cloud-azure-starter-storage-file-share` provides the following properties:
+.Configurable properties of spring-cloud-azure-starter-storage-file-share
 [cols="3,1,5", options="header"]
 |===
 |Name | Default | Description
@@ -72,7 +73,7 @@ This `spring-cloud-azure-starter-storage-file-share` provides the following prop
 
 |spring.cloud.azure.storage.fileshare.account-key 
 |  
-|Privatekey to connect Azure File Storage
+|Private key to connect Azure File Storage
 
 |spring.cloud.azure.storage.fileshare.account-name 
 |  

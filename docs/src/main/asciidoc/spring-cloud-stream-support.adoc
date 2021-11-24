@@ -27,8 +27,10 @@ The binder provides the following 3 parts of configuration options:
 
 ===== Azure Common Configuration Options
 Below properties can also be configured with the default Spring Cloud Azure unified properties,
-of which the prefix is changed from *spring.cloud.azure.eventhubs.* to *spring.cloud.azure.*.
-[cols="6,1,6", options="header"]
+of which the prefix is changed from *spring.cloud.azure.eventhubs* to *spring.cloud.azure*.
+
+.Common configurable properties of spring-cloud-azure-stream-binder-eventhubs
+[cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
 
@@ -169,8 +171,9 @@ of which the prefix is changed from *spring.cloud.azure.eventhubs.* to *spring.c
 | Password used to authenticate with the proxy.
 |===
 ===== Azure Event Hubs Client Configuration Options
-Below options are used to configure Azure Event Hubs SDK Client.
-[cols="6,1,6", options="header"]
+
+.Client configurable properties of spring-cloud-azure-stream-binder-eventhubs
+[cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
 
@@ -281,7 +284,9 @@ Below options are divided into four sections: Consumer Properties, Advanced Cons
 Configurations, Producer PropertiesProducer Properties, and Advanced Producer Configurations.
 
 ====== Consumer Properties
-[cols="5,1,3", options="header"]
+
+.Consumer configurable properties of spring-cloud-azure-stream-binder-eventhubs
+[cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
 
@@ -324,11 +329,14 @@ Configurations, Producer PropertiesProducer Properties, and Advanced Producer Co
 
 ====== Advanced Consumer Configuration
 The configuration in the above first 2 sections(`Azure Common Configuration Options`, `Azure
-Event Hubs Client Configuration Options`) can be applied for each specific consumer by replacing
-the prefix of ''spring.cloud.azure.eventhubs.'' with `'spring.cloud.stream.eventhubs.bindings.<binding-name.consumer.'`.
+Event Hubs
+Client Configuration Options`) can be applied for each specific consumer by replacing the prefix
+of ''spring.cloud.azure.eventhubs.'' with `'spring.cloud.stream.eventhubs.bindings.<binding-name.consumer.'`.
 
 ====== Producer Properties
-[cols="5,1,3", options="header"]
+
+.Producer configurable properties of spring-cloud-azure-stream-binder-eventhubs
+[cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
 
@@ -345,7 +353,7 @@ the prefix of ''spring.cloud.azure.eventhubs.'' with `'spring.cloud.stream.event
 The configuration in the above first 2 sections(`Azure Common Configuration Options`, `Azure
 Event Hubs
 Client Configuration Options`) can be applied for each specific producer by replacing the prefix
-of 'spring.cloud.azure.eventhubs.' with `spring.cloud.stream.eventhubs.bindings.<binding-name>.producer.`.
+of 'spring.cloud.azure.eventhubs' with `spring.cloud.stream.eventhubs.bindings.<binding-name>.producer`.
 
 
 
@@ -410,7 +418,7 @@ spring:
         bindings:
           consume-in-0:
             consumer:
-              checkpoint-mode: ${CHECKPOINT_MODE}
+              checkpoint-mode: MANUAL
       default:
         producer:
           errorChannelEnabled: true
@@ -453,7 +461,7 @@ spring:
         bindings:
           consume-in-0:
             consumer:
-              checkpoint-mode: ${CHECKPOINT_MODE}
+              checkpoint-mode: MANUAL
       default:
         producer:
           errorChannelEnabled: true
@@ -494,7 +502,8 @@ public Supplier<Message<String>> supply() {
 ----
 ==== Samples
 
-Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-stream-binder-eventhubs to learn how to use Event Hubs Binder.
+Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-stream-binder-eventhubs to learn how to
+use Event Hubs Binder.
 
 === Spring Cloud Stream Binder for Azure Service Bus
 
@@ -512,8 +521,10 @@ Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/
 
 ===== Azure Common Configuration Options
 Below properties can also be configured with the default Spring Cloud Azure unified properties,
-of which the prefix is changed from *spring.cloud.azure.servicebus.* to *spring.cloud.azure.*.
-[cols="6,1,6", options="header"]
+of which the prefix is changed from *spring.cloud.azure.servicebus* to *spring.cloud.azure*.
+
+.Common configurable properties of spring-cloud-azure-stream-binder-servicebus
+[cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
 
@@ -651,8 +662,9 @@ of which the prefix is changed from *spring.cloud.azure.servicebus.* to *spring.
 |===
 
 ===== Azure Service Bus Client Configuration Options
-Below options are used to configure Azure Service Bus SDK Client.
-[cols="6,1,6", options="header"]
+
+.Client configurable properties of spring-cloud-azure-stream-binder-servicebus
+[cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
 
@@ -729,7 +741,9 @@ Below options are divided into four sections: Consumer Properties, Advanced Cons
 Configurations, Producer PropertiesProducer Properties, and Advanced Producer Configurations.
 
 ====== Consumer Properties
-[cols="6,1,6", options="header"]
+
+.Consumer configurable properties of spring-cloud-azure-stream-binder-servicebus
+[cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
 
@@ -767,8 +781,8 @@ value for sending of producer.
 
 ====== Advanced Producer Configuration
 The configuration in the above first 2 sections(`Azure Common Configuration Options`, `Azure Service Bus Client Configuration Options`) can be applied for each specific producer by replacing the prefix
-of 'spring.cloud.azure.servicebus.' with `spring.cloud.stream.servicebus.bindings.<binding-name>
-.producer.`.
+of 'spring.cloud.azure.servicebus' with `spring.cloud.stream.servicebus.bindings.<binding-name>
+.producer`.
 
 ==== Basic Usage
 Step 1. Fill the configuration options with credential information.
@@ -974,8 +988,8 @@ public ResponseEntity<String> sendMessage(@RequestParam String message) {
 }
 ----
 
-NOTE: When both `ServiceBusMessageHeaders.PARTITION_KEY` and `AzureHeaders.PARTITION_KEY` are set
-in the message headers, `ServiceBusMessageHeaders.PARTITION_KEY` is preferred.
+NOTE: When both `ServiceBusMessageHeaders.PARTITION_KEY` and `AzureHeaders.PARTITION_KEY` are set in the message headers,
+`ServiceBusMessageHeaders.PARTITION_KEY` is preferred.
 
 *Example: Set the session id for the message*
 
@@ -1020,74 +1034,28 @@ public ResponseEntity<String> sendMessage(@RequestParam String message) {
 ----
 
 For some Service Bus headers that can be mapped to multiple Spring header constants, the priority of different Spring headers is listed.
-[cols="3,4,2,1", options="header"]
 |===
-|Service Bus Message Headers and Properties| Spring Message Header Constants| Type | Priority Number (Descending priority)
+|Service Bus Message Headers and Properties | Spring Message Header Constants | Type | Priority
+Number (Descending priority)
 
-|ContentType
-| org.springframework.messaging.MessageHeaders.CONTENT_TYPE
-| String
-| N/A
-
-|CorrelationId
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.CORRELATION_ID
-|String
-| N/A
-
-|**MessageId**
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.MESSAGE_ID
-| String
-| 1
-
-|**MessageId**
-| com.azure.spring.messaging.AzureHeaders.RAW_ID
-| String
-| 2
-
-|**MessageId**
-| org.springframework.messaging.MessageHeaders.ID
-| UUID
-| 3
-
-|PartitionKey
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.PARTITION_KEY
-|String
-| N/A
-
-|ReplyTo
-| org.springframework.messaging.MessageHeaders.REPLY_CHANNEL
-| String
-| N/A
-
-|ReplyToSessionId
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders .REPLY_TO_SESSION_ID
-| String
-| N/A
-
-|**ScheduledEnqueueTimeUtc**
-| com.azure.spring.messaging.AzureHeaders.SCHEDULED_ENQUEUE_MESSAGE
-| Integer
-| 1
-
-|**ScheduledEnqueueTimeUtc**
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders .SCHEDULED_ENQUEUE_TIME
-| Instant
-| 2
-
-|SessionID
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.SESSION_ID
-| String
-| N/A
-
-|TimeToLive
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.TIME_TO_LIVE
-|Duration
-| N/A
-
-|To
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.TO
-| String
-| N/A
+|ContentType| org.springframework.messaging.MessageHeaders.CONTENT_TYPE | String | N/A
+|CorrelationId | com.azure.spring.servicebus.support.ServiceBusMessageHeaders.CORRELATION_ID |String | N/A
+|**MessageId** | com.azure.spring.servicebus.support.ServiceBusMessageHeaders.MESSAGE_ID | String| 1
+|**MessageId** | com.azure.spring.messaging.AzureHeaders.RAW_ID | String | 2
+|**MessageId** | org.springframework.messaging.MessageHeaders.ID | UUID | 3
+|PartitionKey | com.azure.spring.servicebus.support.ServiceBusMessageHeaders.PARTITION_KEY |
+String | N/A
+|ReplyTo | org.springframework.messaging.MessageHeaders.REPLY_CHANNEL | String | N/A
+|ReplyToSessionId | com.azure.spring.servicebus.support.ServiceBusMessageHeaders
+.REPLY_TO_SESSION_ID | String | N/A
+|**ScheduledEnqueueTimeUtc** | com.azure.spring.messaging.AzureHeaders.SCHEDULED_ENQUEUE_MESSAGE
+| Integer | 1
+|**ScheduledEnqueueTimeUtc** | com.azure.spring.servicebus.support.ServiceBusMessageHeaders
+.SCHEDULED_ENQUEUE_TIME | Instant | 2
+|SessionID | com.azure.spring.servicebus.support.ServiceBusMessageHeaders.SESSION_ID | String | N/A
+|TimeToLive | com.azure.spring.servicebus.support.ServiceBusMessageHeaders.TIME_TO_LIVE |
+Duration | N/A
+|To | com.azure.spring.servicebus.support.ServiceBusMessageHeaders.TO | String | N/A
 |===
 
 
