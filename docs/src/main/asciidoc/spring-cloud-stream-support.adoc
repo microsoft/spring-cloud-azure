@@ -132,7 +132,7 @@ of which the prefix is changed from *spring.cloud.azure.eventhubs* to *spring.cl
 
 |*spring.cloud.azure.eventhubs*.retry.backoff.multiplier
 | Double
-| Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.
+| Multiplier used to calculate the next backoff delay.
 
 |*spring.cloud.azure.eventhubs*.retry.maxAttempts
 | Integer
@@ -170,7 +170,9 @@ of which the prefix is changed from *spring.cloud.azure.eventhubs* to *spring.cl
 | String
 | Password used to authenticate with the proxy.
 |===
+
 ===== Azure Event Hubs Client Configuration Options
+Below options are used to configure Azure Event Hubs SDK Client.
 
 .Client configurable properties of spring-cloud-azure-stream-binder-eventhubs
 [cols="<,<,<", options="header"]
@@ -274,10 +276,9 @@ of which the prefix is changed from *spring.cloud.azure.eventhubs* to *spring.cl
 |===
 
 Notes:
-For configuration of producer, consumer and processors, all the above common and client properties support to be configured individually by changing the origin prefix from `spring.cloud.azure.eventhubs.` to `spring.cloud.azure.eventhubs.producer/consumer/processor`.
-
-
-
+For configuration of producer, consumer and processor, all the above common and client properties
+support to be configured individually by changing the origin prefix from *spring.cloud.azure
+.eventhubs* to *spring.cloud.azure.eventhubs.producer/consumer/processor*.
 
 ===== Azure Event Hubs Binding Configuration Options
 Below options are divided into four sections: Consumer Properties, Advanced Consumer
@@ -329,9 +330,7 @@ Configurations, Producer PropertiesProducer Properties, and Advanced Producer Co
 
 ====== Advanced Consumer Configuration
 The configuration in the above first 2 sections(`Azure Common Configuration Options`, `Azure
-Event Hubs
-Client Configuration Options`) can be applied for each specific consumer by replacing the prefix
-of ''spring.cloud.azure.eventhubs.'' with `'spring.cloud.stream.eventhubs.bindings.<binding-name.consumer.'`.
+Event Hubs Client Configuration Options`) can be applied for each specific consumer by replacing the prefix of *spring.cloud.azure.eventhubs* with *spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.
 
 ====== Producer Properties
 
@@ -351,43 +350,87 @@ of ''spring.cloud.azure.eventhubs.'' with `'spring.cloud.stream.eventhubs.bindin
 
 ====== Advanced Producer Configuration
 The configuration in the above first 2 sections(`Azure Common Configuration Options`, `Azure
-Event Hubs
-Client Configuration Options`) can be applied for each specific producer by replacing the prefix
-of 'spring.cloud.azure.eventhubs' with `spring.cloud.stream.eventhubs.bindings.<binding-name>.producer`.
-
-
+Event Hubs Client Configuration Options`) can be applied for each specific producer by replacing the prefix of *spring.cloud.azure.eventhubs* with *spring.cloud.stream.eventhubs.bindings.<binding-name>.producer*.
 
 ==== Basic Usage
-
-** Fill the configuration options with credential information.
+===== Sending and Receiving messages from/to Event Hubs
+Step 1. Fill the configuration options with credential information.
 
 - For credentials as connection string, configure below properties in application.yml:
 
 [source,yaml]
 ----
-    spring:
-      cloud:
-        azure:
-          eventhubs:
-            # Fill event hub namespace connection string copied from portal
-            connection-string: ${EVENTHUB_NAMESPACE_CONNECTION_STRING}
-            # Fill checkpoint storage account name, access key and container
-            processor:
-              checkpoint-store:
-                container-name: ${CHECKPOINT-CONTAINER}
-                account-name: ${CHECKPOINT-STORAGE-ACCOUNT}
-                account-key: ${CHECKPOINT-ACCESS-KEY}
-        stream:
-          function:
-            definition: consume;supply
-          bindings:
-            consume-in-0:
-              destination: ${EVENTHUB-NAME}
-              group: ${CONSUMER-GROUP}
-            supply-out-0:
-              destination: ${THE-SAME-EVENTHUB-NAME-AS-ABOVE}
+spring:
+  cloud:
+    azure:
+      eventhubs:
+        connection-string: ${EVENTHUB_NAMESPACE_CONNECTION_STRING}
+        processor:
+          checkpoint-store:
+            container-name: ${CHECKPOINT-CONTAINER}
+            account-name: ${CHECKPOINT-STORAGE-ACCOUNT}
+            account-key: ${CHECKPOINT-ACCESS-KEY}
+    stream:
+      function:
+        definition: consume;supply
+      bindings:
+        consume-in-0:
+          destination: ${EVENTHUB-NAME}
+          group: ${CONSUMER-GROUP}
+        supply-out-0:
+          destination: ${THE-SAME-EVENTHUB-NAME-AS-ABOVE}
+      eventhubs:
+        bindings:
+          consume-in-0:
+            consumer:
+              checkpoint:
+                mode: MANUAL
 ----
+
+- For credentials as service principal, configure below properties in application.yml:
+
+[source, yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${SERVICE_PRINCIPAL_ID}
+        client-secret: ${SERVICE-PRINCIPAL_SECRET}
+      profile:
+        tenant-id: ${TENANT_ID}
+        resource-group: ${RESOURCE_GROUP}
+      eventhubs:
+        namespace: ${EVENTHUB_NAMESPACE}
+        processor:
+          checkpoint-store:
+            container-name: ${CONTAINER_NAME}
+            account-name: ${ACCOUNT_NAME}
+    stream:
+      function:
+        definition: consume;supply
+      bindings:
+        consume-in-0:
+          destination: ${EVENTHUB_NAME}
+          group: ${CONSUMER_GROUP}
+        supply-out-0:
+          destination: ${THE_SAME_EVENTHUB_NAME_AS_ABOVE}
+      eventhubs:
+        bindings:
+          consume-in-0:
+            consumer:
+              checkpoint:
+                mode: MANUAL
+      default:
+        producer:
+          errorChannelEnabled: true
+      poller:
+        initial-delay: 0
+        fixed-delay: 1000
+----
+
 - For credentials as MSI, configure below properties in application.yml:
+
 [source, yaml]
 ----
 spring:
@@ -418,7 +461,8 @@ spring:
         bindings:
           consume-in-0:
             consumer:
-              checkpoint-mode: MANUAL
+              checkpoint:
+                mode: MANUAL
       default:
         producer:
           errorChannelEnabled: true
@@ -428,49 +472,8 @@ spring:
 ----
 
 
-- For credentials as service principal, configure below properties in application.yml:
 
-[source, yaml]
-----
-spring:
-  cloud:
-    azure:
-      credential:
-        client-id: ${SERVICE_PRINCIPAL_ID}
-        client-secret: ${SERVICE-PRINCIPAL_SECRET}
-      profile:
-        tenant-id: ${TENANT_ID}
-        resource-group: ${RESOURCE_GROUP}
-      eventhubs:
-        namespace: ${EVENTHUB_NAMESPACE}
-        processor:
-          checkpoint-store:
-            container-name: ${CONTAINER_NAME}
-            account-name: ${ACCOUNT_NAME}
-    stream:
-      function:
-        definition: consume;supply
-      bindings:
-        consume-in-0:
-          destination: ${EVENTHUB_NAME}
-          group: ${CONSUMER_GROUP}
-        supply-out-0:
-          destination: ${THE_SAME_EVENTHUB_NAME_AS_ABOVE}
-
-      eventhubs:
-        bindings:
-          consume-in-0:
-            consumer:
-              checkpoint-mode: MANUAL
-      default:
-        producer:
-          errorChannelEnabled: true
-      poller:
-        initial-delay: 0
-        fixed-delay: 1000
-----
-
-** Define supplier and consumer
+Step2. Define supplier and consumer.
 [source,java]
 ----
 @Bean
@@ -500,6 +503,7 @@ public Supplier<Message<String>> supply() {
     };
 }
 ----
+
 ==== Samples
 
 Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-stream-binder-eventhubs[sample project] to learn how to
@@ -734,7 +738,9 @@ of which the prefix is changed from *spring.cloud.azure.servicebus* to *spring.c
 
 Notes:
 
-For configuration of producer, consumer and processors, all the above common and client properties support to be configured individually by changing the origin prefix from `spring.cloud.azure.servicebus.` to `spring.cloud.azure.servicebus.producer/consumer/processor`.
+For configuration of producer, consumer and processor, all the above common and client properties
+support to be configured individually by changing the origin prefix from *spring.cloud.azure
+.servicebus* to *spring.cloud.azure.servicebus.producer/consumer/processor*.
 
 ===== Azure Service Bus Binding Configuration Options
 Below options are divided into four sections: Consumer Properties, Advanced Consumer
@@ -766,7 +772,7 @@ Configurations, Producer PropertiesProducer Properties, and Advanced Producer Co
 
 ====== Advanced Consumer Configuration
 The configuration in the above first 2 sections(`Azure Common Configuration Options`, `Azure Service Bus Client Configuration Options`) can be applied for each specific consumer by replacing the prefix
-of ''spring.cloud.azure.servicebus.'' with `'spring.cloud.stream.servicebus.bindings.<binding-name>.consumer.'`.
+of *spring.cloud.azure.servicebus* with *spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.
 
 ====== Producer Properties
 .Producer configurable properties of spring-cloud-azure-stream-binder-servicebus
@@ -783,9 +789,10 @@ value for sending of producer.
 
 ====== Advanced Producer Configuration
 The configuration in the above first 2 sections(`Azure Common Configuration Options`, `Azure Service Bus Client Configuration Options`) can be applied for each specific producer by replacing the prefix
-of 'spring.cloud.azure.servicebus' with `spring.cloud.stream.servicebus.bindings.<binding-name>.producer`.
+of *spring.cloud.azure.servicebus* with *spring.cloud.stream.servicebus.bindings.<binding-name>.producer*.
 
 ==== Basic Usage
+===== Sending and Receiving messages from/to Service Bus
 Step 1. Fill the configuration options with credential information.
 
 - For credentials as connection string, configure below properties in application.yml:
@@ -888,7 +895,7 @@ spring:
 
 ----
 
-Step 2. Define supplier and consumer
+Step 2. Define supplier and consumer.
 [source,java]
 ----
 @Bean
@@ -1037,7 +1044,7 @@ public ResponseEntity<String> sendMessage(@RequestParam String message) {
 For some Service Bus headers that can be mapped to multiple Spring header constants, the priority of different Spring headers is listed.
 
 .Mapping between Service Bus Headers and Spring Headers
-[cols="<,<,<", options="header"]
+[cols="<,<,<,<", options="header"]
 |===
 |Service Bus Message Headers and Properties | Spring Message Header Constants | Type | Priority Number (Descending priority)
 
@@ -1106,8 +1113,6 @@ For some Service Bus headers that can be mapped to multiple Spring header consta
 | String
 | N/A
 |===
-
-
 
 Please refer https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/servicebus/spring-cloud-azure-stream-binder-servicebus[sample project] to learn how to use ServiceBus Binder.
 
