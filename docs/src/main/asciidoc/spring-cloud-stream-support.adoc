@@ -422,9 +422,6 @@ spring:
       default:
         producer:
           errorChannelEnabled: true
-      poller:
-        initial-delay: 0
-        fixed-delay: 1000
 ----
 
 - For credentials as MSI, configure below properties in application.yml:
@@ -463,9 +460,6 @@ spring:
       default:
         producer:
           errorChannelEnabled: true
-      poller:
-        initial-delay: 0
-        fixed-delay: 1000
 ----
 
 
@@ -804,7 +798,9 @@ spring:
         definition: consume;supply
       bindings:
         consume-in-0:
-          destination: ${SERVICEBUS_QUEUE_NAME}
+          destination: ${SERVICEBUS_ENTITY_NAME}
+          # If you use Service Bus Topic, please add below configuration
+          # group: ${SUBSCRIPTION_NAME}
         supply-out-0:
           destination: ${SERVICEBUS_QUEUE_NAME_SAME_AS_ABOVE}
       servicebus:
@@ -814,11 +810,7 @@ spring:
               checkpoint-mode: MANUAL
           supply-out-0:
             producer:
-              entity-type: ${ENTITY_TYPE}
-      poller:
-        fixed-delay: 1000
-        initial-delay: 0
-
+              entity-type: queue # set as "topic" if you use Service Bus Topic
 ----
 
 - For credentials as service principal, configure below properties in application.yml:
@@ -828,10 +820,10 @@ spring:
   cloud:
     azure:
       credential:
-        client-id: ${ CLIENT_ID }
-        client-secret: ${ CLIENT_SECRET }
+        client-id: ${CLIENT_ID}
+        client-secret: ${CLIENT_SECRET}
       profile:
-        tenant-id: ${ TENANT_ID }
+        tenant-id: ${TENANT_ID}
       servicebus:
         namespace: ${SERVICEBUS_NAMESPACE}
     stream:
@@ -839,9 +831,11 @@ spring:
         definition: consume;supply
       bindings:
         consume-in-0:
-          destination: ${ SERVICEBUS_QUEUE_NAME }
+          destination: ${SERVICEBUS_ENTITY_NAME}
+          # If you use Service Bus Topic, please add below configuration
+          # group: ${SUBSCRIPTION_NAME}
         supply-out-0:
-          destination: ${ SERVICEBUS_QUEUE_NAME_SAME_AS_ABOVE }
+          destination: ${SERVICEBUS_QUEUE_NAME_SAME_AS_ABOVE}
       servicebus:
         bindings:
           consume-in-0:
@@ -849,12 +843,7 @@ spring:
               checkpoint-mode: MANUAL
           supply-out-0:
             producer:
-              entity-type: ${ENTITY_TYPE}
-      poller:
-        fixed-delay: 1000
-        initial-delay: 0
-
-
+              entity-type: queue # set as "topic" if you use Service Bus Topic
 ----
 
 - For credentials as MSI, configure below properties in application.yml:
@@ -874,9 +863,11 @@ spring:
         definition: consume;supply
       bindings:
         consume-in-0:
-          destination: ${ SERVICEBUS_QUEUE_NAME }
+          destination: ${SERVICEBUS_ENTITY_NAME}
+          # If you use Service Bus Topic, please add below configuration
+          # group: ${SUBSCRIPTION_NAME}
         supply-out-0:
-          destination: ${ SERVICEBUS_QUEUE_NAME_SAME_AS_ABOVE }
+          destination: ${SERVICEBUS_QUEUE_NAME_SAME_AS_ABOVE}
       servicebus:
         bindings:
           consume-in-0:
@@ -884,10 +875,7 @@ spring:
               checkpoint-mode: MANUAL
           supply-out-0:
             producer:
-              entity-type: ${ENTITY_TYPE}
-      poller:
-        fixed-delay: 1000
-        initial-delay: 0
+              entity-type: queue # set as "topic" if you use Service Bus Topic
 
 ----
 
