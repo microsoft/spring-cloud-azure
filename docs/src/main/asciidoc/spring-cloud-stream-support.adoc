@@ -33,104 +33,251 @@ of which the prefix is changed from *spring.cloud.azure.eventhubs* to *spring.cl
 [cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
-|*spring.cloud.azure.eventhubs*.enabled | boolean | Whether an Azure Event Hubs is enabled.
-|*spring.cloud.azure.eventhubs*.credential.* | NA | Properties used for getting token credential.
-|*spring.cloud.azure.eventhubs*.credential.clientId | String | Client id to use when performing service principal authentication with Azure.
-|*spring.cloud.azure.eventhubs*.credential.clientSecret | String | Client secret to use when performing service principal authentication with Azure.
-|*spring.cloud.azure.eventhubs*.credential.clientCertificatePath | String | Path of a PEM certificate file to use when performing service principal authentication with Azure.
-|*spring.cloud.azure.eventhubs*.credential.clientCertificatePassword | String | Password of the certificate file.
-|*spring.cloud.azure.eventhubs*.credential.username | String | Username to use when performing username/password authentication with Azure.
-|*spring.cloud.azure.eventhubs*.credential.password | String | Password to use when performing username/password authentication with Azure.
-|*spring.cloud.azure.eventhubs*.credential.managedIdentityClientId | String | Client id to use when using managed identity to authenticate with Azure.
-|*spring.cloud.azure.eventhubs*.profile.* | String | Properties related to an Azure subscription.
-|*spring.cloud.azure.eventhubs*.profile.tenantId | String | Tenant id for Azure resources.
-|*spring.cloud.azure.eventhubs*.profile.subscriptionId | String | Subscription id to use when connecting to Azure resources.
-|*spring.cloud.azure.eventhubs*.profile.cloud | AzureProfileAware.CloudType | Name of the Azure cloud to connect to.
-|*spring.cloud.azure.eventhubs*.profile.environment.* | NA | Properties to Azure services, such as endpoints, resource ids, etc.
-|*spring.cloud.azure.eventhubs*.profile.environment.activeDirectoryEndpoint | String | The Azure Active Directory endpoint to connect to.
-|*spring.cloud.azure.eventhubs*.resource.* | String | Metadata defining an Azure resource.
-|*spring.cloud.azure.eventhubs*.resource.resourceGroup | String | Name of the Azure resource group.
-|*spring.cloud.azure.eventhubs*.resource.resourceId | String | ID of the Azure resource group.
-|*spring.cloud.azure.eventhubs*.resource.region | String | Name of region.
-|*spring.cloud.azure.eventhubs*.client.transportType | AmqpTransportType | Transport type switches available for AMQP protocol.
-|*spring.cloud.azure.eventhubs*.retry.* | NA | Retry properties.
-|*spring.cloud.azure.eventhubs*.retry.backoff.* | NA | Backoff properties when a retry fails.
-|*spring.cloud.azure.eventhubs*.retry.backoff.delay | Duration | Amount of time to wait between retry attempts.
-|*spring.cloud.azure.eventhubs*.retry.backoff.maxDelay | Duration | Maximum permissible amount of time between retry attempts.
-|*spring.cloud.azure.eventhubs*.retry.backoff.multiplier | Double | Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.
-|*spring.cloud.azure.eventhubs*.retry.maxAttempts | Integer | The maximum number of attempts.
-|*spring.cloud.azure.eventhubs*.retry.timeout | Duration | Amount of time to wait until a timeout.
-|*spring.cloud.azure.eventhubs*.proxy.* | NA | Common proxy properties.
-|*spring.cloud.azure.eventhubs*.proxy.type | String | Type of the proxy.
-|*spring.cloud.azure.eventhubs*.proxy.hostname | String | The host of the proxy.
-|*spring.cloud.azure.eventhubs*.proxy.port | Integer | The port of the proxy.
-|*spring.cloud.azure.eventhubs*.proxy.authenticationType | String | Authentication type used against the proxy.
-|*spring.cloud.azure.eventhubs*.proxy.username | String | Username used to authenticate with the proxy.
-|*spring.cloud.azure.eventhubs*.proxy.password | String | Password used to authenticate with the proxy.
+
+|*spring.cloud.azure.eventhubs*.enabled
+| boolean
+| Whether an Azure Event Hubs is enabled.
+
+|*spring.cloud.azure.eventhubs*.credential.*
+| NA
+| Properties used for getting token credential.
+
+|*spring.cloud.azure.eventhubs*.credential.clientId
+| String
+| Client id to use when performing service principal authentication with Azure.
+
+|*spring.cloud.azure.eventhubs*.credential.clientSecret
+| String
+| Client secret to use when performing service principal authentication with Azure.
+
+|*spring.cloud.azure.eventhubs*.credential.clientCertificatePath
+| String
+| Path of a PEM certificate file to use when performing service principal authentication with Azure.
+
+|*spring.cloud.azure.eventhubs*.credential.clientCertificatePassword
+| String
+| Password of the certificate file.
+
+|*spring.cloud.azure.eventhubs*.credential.username
+| String
+| Username to use when performing username/password authentication with Azure.
+
+|*spring.cloud.azure.eventhubs*.credential.password
+| String
+| Password to use when performing username/password authentication with Azure.
+
+|*spring.cloud.azure.eventhubs*.credential.managedIdentityClientId
+| String
+| The client id to use when using managed identity to authenticate with Azure.
+
+|*spring.cloud.azure.eventhubs*.profile.*
+| String
+| The properties related to an Azure subscription.
+
+|*spring.cloud.azure.eventhubs*.profile.tenantId
+| String
+| Tenant id for Azure resources.
+
+|*spring.cloud.azure.eventhubs*.profile.subscriptionId
+| String
+| Subscription id to use when connecting to Azure resources.
+
+|*spring.cloud.azure.eventhubs*.profile.cloud
+| AzureProfileAware.CloudType
+| The name of the Azure cloud to connect to.
+
+|*spring.cloud.azure.eventhubs*.profile.environment.*
+| NA
+| Properties to Azure services, such as endpoints, resource ids, etc.
+
+|*spring.cloud.azure.eventhubs*.profile.environment.activeDirectoryEndpoint
+| String
+| The Azure Active Directory endpoint to connect to.
+
+|*spring.cloud.azure.eventhubs*.resource.*
+| String
+| Metadata defining an Azure resource.
+
+|*spring.cloud.azure.eventhubs*.resource.resourceGroup
+| String
+| Name of the Azure resource group.
+
+|*spring.cloud.azure.eventhubs*.resource.resourceId
+| String
+| The id of the Azure resource group.
+
+|*spring.cloud.azure.eventhubs*.resource.region
+| String
+| The name of region.
+
+|*spring.cloud.azure.eventhubs*.client.transportType
+| AmqpTransportType
+| The Transport type switches available for AMQP protocol.
+
+|*spring.cloud.azure.eventhubs*.retry.*
+| NA
+| Retry properties.
+
+|*spring.cloud.azure.eventhubs*.retry.backoff.*
+| NA
+| Backoff properties when a retry fails.
+
+|*spring.cloud.azure.eventhubs*.retry.backoff.delay
+| Duration
+| Amount of time to wait between retry attempts.
+
+|*spring.cloud.azure.eventhubs*.retry.backoff.maxDelay
+| Duration
+| The maximum permissible amount of time between retry attempts.
+
+|*spring.cloud.azure.eventhubs*.retry.backoff.multiplier
+| Double
+| Multiplier used to calculate the next backoff delay.
+
+|*spring.cloud.azure.eventhubs*.retry.maxAttempts
+| Integer
+| The maximum number of attempts.
+
+|*spring.cloud.azure.eventhubs*.retry.timeout
+| Duration
+| Amount of time to wait until a timeout.
+
+|*spring.cloud.azure.eventhubs*.proxy.*
+| NA
+| Common proxy properties.
+
+|*spring.cloud.azure.eventhubs*.proxy.type
+| String
+| Type of the proxy.
+
+|*spring.cloud.azure.eventhubs*.proxy.hostname
+| String
+| The host of the proxy.
+
+|*spring.cloud.azure.eventhubs*.proxy.port
+| Integer
+| The port of the proxy.
+
+|*spring.cloud.azure.eventhubs*.proxy.authenticationType
+| String
+| Authentication type used against the proxy.
+
+|*spring.cloud.azure.eventhubs*.proxy.username
+| String
+| Username used to authenticate with the proxy.
+
+|*spring.cloud.azure.eventhubs*.proxy.password
+| String
+| Password used to authenticate with the proxy.
 |===
 
 ===== Azure Event Hubs Client Configuration Options
+Below options are used to configure Azure Event Hubs SDK Client.
 
 .Client configurable properties of spring-cloud-azure-stream-binder-eventhubs
 [cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
 
-|*spring.cloud.azure.eventhubs*.connection-string | String | Event Hubs Namespace connection string value.
-|*spring.cloud.azure.eventhubs*.namespace | String | Event Hubs Namespace value.
-|*spring.cloud.azure.eventhubs*.domain-name | String | Domain name of an Azure Event Hubs
-Namespace value.
-|*spring.cloud.azure.eventhubs*.event-hub-name | String | Name of an Event Hub entity.
-|*spring.cloud.azure.eventhubs*.custom-endpoint-address | String | Custom Endpoint address.
-|*spring.cloud.azure.eventhubs*.is-shared-connection | Boolean | Whether to use the same
-connection for different Event Hub producer / consumer client.
-|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.* | NA | Blob checkpoint store
-configuration options.
-|*spring.cloud.azure.eventhubs*.producer.* | NA | Producer
-configuration options.
-|*spring.cloud.azure.eventhubs*.consumer.* | NA | Consumer
-configuration options.
-|*spring.cloud.azure.eventhubs*.consumer.consumerGroup | NA | Name of the consumer group this consumer is associated with.
-|*spring.cloud.azure.eventhubs*.consumer.prefetchCount | NA | The number of events the Event Hub
-consumer will actively receive and queue locally without regard to whether a receiving operation is currently active.
-|*spring.cloud.azure.eventhubs*.processor.trackLastEnqueuedEventProperties | Boolean |Whether the event processor should request information on the last enqueued event on its associated partition, and track that information as events are received.
-|*spring.cloud.azure.eventhubs*.processor.initialPartitionEventPosition | Map |The map
-containing the event position to use for each partition if a checkpoint for the partition does not exist in CheckpointStore.
-not the event processor should request information on the last enqueued event on its associated partition, and track that information as events are received.
-|*spring.cloud.azure.eventhubs*.processor.partitionOwnershipExpirationInterval | Duration |The time duration after which the ownership of partition expires if it's not renewed by the owning processor instance.
-|*spring.cloud.azure.eventhubs*.processor.batch. maxSize| Integer | Max size of message in one
-batch.
-|*spring.cloud.azure.eventhubs*.processor.batch. max-wait-time| Duration | Max time duration for
-one batch of the max size of message.
-|*spring.cloud.azure.eventhubs*.processor.loadBalancing.updateInterval| Duration | The
-interval of load balancing strategy update.
-|*spring.cloud.azure.eventhubs*.processor.loadBalancing.strategy| String | The strategy used by
-event processor for load balancing the partition ownership to distribute the event processing work with other processor instances.
-|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.create-container-if-not-exists |
-Boolean |
-If allowed creating containers if not exists.
-|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.customer-provided-key | String | Base64
-encoded string of the encryption key.
-|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.encryption-scope | String | Encryption
-scope to encrypt blob contents on the server.
-|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.service-version | BlobServiceVersion |
-The versions of Azure Storage Blob supported by this client library.
-|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.blob-name | String | Storage blob name.
-|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.container-name | String | Storage
-container name.
+|*spring.cloud.azure.eventhubs*.connection-string
+| String
+| Event Hubs Namespace connection string value.
+
+|*spring.cloud.azure.eventhubs*.namespace
+| String
+| Event Hubs Namespace value.
+
+|*spring.cloud.azure.eventhubs*.domain-name
+| String
+| Domain name of an Azure Event Hubs Namespace value.
+
+|*spring.cloud.azure.eventhubs*.event-hub-name
+| String
+| Name of an Event Hub entity.
+
+|*spring.cloud.azure.eventhubs*.custom-endpoint-address
+| String
+| Custom Endpoint address.
+
+|*spring.cloud.azure.eventhubs*.is-shared-connection
+| Boolean
+| Whether to use the same connection for different Event Hub producer / consumer client.
+
+|*spring.cloud.azure.eventhubs*.producer.*
+| NA
+| Producer configuration options.
+
+|*spring.cloud.azure.eventhubs*.consumer.*
+| NA
+| Consumer configuration options.
+
+|*spring.cloud.azure.eventhubs*.consumer.consumerGroup
+| NA
+| Name of the consumer group this consumer is associated with.
+
+|*spring.cloud.azure.eventhubs*.consumer.prefetchCount
+| NA
+| The number of events the Event Hub consumer will actively receive and queue locally without regard to whether a receiving operation is currently active.
+
+|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.*
+| NA
+| Blob checkpoint store configuration options.
+
+|*spring.cloud.azure.eventhubs*.processor.trackLastEnqueuedEventProperties
+| Boolean
+|Whether the event processor should request information on the last enqueued event on its associated partition, and track that information as events are received.
+
+|*spring.cloud.azure.eventhubs*.processor.initialPartitionEventPosition
+| Map
+|The map containing the event position to use for each partition if a checkpoint for the partition does not exist in CheckpointStore.
+
+|*spring.cloud.azure.eventhubs*.processor.partitionOwnershipExpirationInterval
+| Duration
+|The time duration after which the ownership of partition expires if it's not renewed by the owning processor instance.
+
+|*spring.cloud.azure.eventhubs*.processor.batch. maxSize
+| Integer
+| The maximum number of events in a batch.
+
+|*spring.cloud.azure.eventhubs*.processor.batch. max-wait-time
+| Duration | The maximum time duration for one batch of the max size of message.
+
+|*spring.cloud.azure.eventhubs*.processor.loadBalancing.updateInterval
+| Duration
+| The interval of load balancing strategy updating.
+
+|*spring.cloud.azure.eventhubs*.processor.loadBalancing.strategy
+| String
+| The strategy used by event processor for load balancing the partition ownership to distribute the event processing work with other processor instances.
+
+|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.create-container-if-not-exists
+|Boolean
+|If allowed creating containers if not exists.
+
+|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.customer-provided-key
+| String
+| Base64 encoded string of the encryption key.
+
+|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.encryption-scope
+| String
+| Encryption scope to encrypt blob contents on the server.
+
+|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.service-version
+| BlobServiceVersion
+|The versions of Azure Storage Blob supported by this client library.
+
+|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.blob-name
+| String
+| Storage blob name.
+
+|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.container-name
+| String
+| Storage container name.
 |===
 
-Notes:
-
-Follow the prefix of `*spring.cloud.azure.eventhubs*.producer.`, all the common properties in the
-parent level
-(connection-string, namespace, domain-name, event-hub-name, custom-endpoint-address) can be
-recursively applied. The same rule also apply to prefix of `*spring.cloud.azure
-.eventhubs*.producer.` and `*spring.cloud.azure
-.eventhubs*.processor.` respectively.
-
-
-
+NOTE: For configuration of producer, consumer and processor, all the above common and client
+properties
+support to be configured individually by changing the origin prefix from *spring.cloud.azure.eventhubs* to *spring.cloud.azure.eventhubs.producer/consumer/processor*.
 
 ===== Azure Event Hubs Binding Configuration Options
 Below options are divided into four sections: Consumer Properties, Advanced Consumer
@@ -142,30 +289,47 @@ Configurations, Producer PropertiesProducer Properties, and Advanced Producer Co
 [cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.checkpoint.mode |
-CheckpointMode | Checkpoint mode used when consumer decide how to checkpoint message
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.checkpoint.count | Integer |
-Decides the amount of message for each partition to do one checkpoint
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.checkpoint.interval | Duration |Decides the time interval to do one checkpoint
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.batch.max-size | Integer | Max
-size of message for batch consuming.
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.batch.max-wait-time | Duration
-| Max time duration for batch consuming.
+
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.checkpoint.mode
+|CheckpointMode
+| Checkpoint mode used when consumer decide how to checkpoint message
+
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.checkpoint.count
+| Integer
+|Decides the amount of message for each partition to do one checkpoint.
+
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.checkpoint.interval
+| Duration
+|Decides the time interval to do one checkpoint
+
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.batch.max-size
+| Integer
+| The maximum number of events in a batch.
+
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.batch.max-wait-time
+| Duration
+| The maximum time duration for batch consuming.
+
 |*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.load-balancing.update-interval
-|Duration| interval time for update.
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.load-balancing.strategy |
-LoadBalancingStrategy |Load balancing strategy.
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>
-.consumer.track-las-enqueued-event-properties |Boolean | Whether the event processor
-should request information on the last enqueued event on its associated partition, and track that information as events are received.
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.partition-ownership-expiration-interval |Boolean | expiration interval time for partition ownership
+| Duration
+| The interval time duration for updating.
+
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.load-balancing.strategy
+|LoadBalancingStrategy
+|The load balancing strategy.
+
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.track-las-enqueued-event-properties
+|Boolean
+| Whether the event processor should request information on the last enqueued event on its associated partition, and track that information as events are received.
+
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.partition-ownership-expiration-interval
+|Boolean
+| The expiration interval time for partition ownership
 |===
 
 ====== Advanced Consumer Configuration
 The configuration in the above first 2 sections(`Azure Common Configuration Options`, `Azure
-Event Hubs
-Client Configuration Options`) can be applied for each specific consumer by replacing the prefix
-of ''spring.cloud.azure.eventhubs.'' with `'spring.cloud.stream.eventhubs.bindings.<binding-name.consumer.'`.
+Event Hubs Client Configuration Options`) can be applied for each specific consumer by replacing the prefix of *spring.cloud.azure.eventhubs* with *spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.
 
 ====== Producer Properties
 
@@ -173,62 +337,105 @@ of ''spring.cloud.azure.eventhubs.'' with `'spring.cloud.stream.eventhubs.bindin
 [cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.producer
-.sync |boolean | switch flag for sync of producer
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.producer
-.send-timeout |long | timeout value for sending of producer
+
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.producer.sync
+| boolean
+|The switch flag for sync of producer
+
+|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.producer.send-timeout
+| long
+| The timeout value for sending of producer
 |===
 
 ====== Advanced Producer Configuration
 The configuration in the above first 2 sections(`Azure Common Configuration Options`, `Azure
-Event Hubs
-Client Configuration Options`) can be applied for each specific producer by replacing the prefix
-of 'spring.cloud.azure.eventhubs' with `spring.cloud.stream.eventhubs.bindings.<binding-name>.producer`.
-
-
+Event Hubs Client Configuration Options`) can be applied for each specific producer by replacing the prefix of *spring.cloud.azure.eventhubs* with *spring.cloud.stream.eventhubs.bindings.<binding-name>.producer*.
 
 ==== Basic Usage
-
-** Fill the configuration options with credential information.
+===== Sending and Receiving messages from/to Event Hubs
+Step 1. Fill the configuration options with credential information.
 
 - For credentials as connection string, configure below properties in application.yml:
 
 [source,yaml]
 ----
-    spring:
-      cloud:
-        azure:
-          eventhubs:
-            # Fill event hub namespace connection string copied from portal
-            connection-string: ${EVENTHUB_NAMESPACE_CONNECTION_STRING}
-            # Fill checkpoint storage account name, access key and container
-            processor:
-              checkpoint-store:
-                container-name: ${CHECKPOINT-CONTAINER}
-                account-name: ${CHECKPOINT-STORAGE-ACCOUNT}
-                account-key: ${CHECKPOINT-ACCESS-KEY}
-        stream:
-          function:
-            definition: consume;supply
-          bindings:
-            consume-in-0:
-              destination: ${EVENTHUB-NAME}
-              group: ${CONSUMER-GROUP}
-            supply-out-0:
-              destination: ${THE-SAME-EVENTHUB-NAME-AS-ABOVE}
+spring:
+  cloud:
+    azure:
+      eventhubs:
+        connection-string: ${EVENTHUB_NAMESPACE_CONNECTION_STRING}
+        processor:
+          checkpoint-store:
+            container-name: ${CHECKPOINT-CONTAINER}
+            account-name: ${CHECKPOINT-STORAGE-ACCOUNT}
+            account-key: ${CHECKPOINT-ACCESS-KEY}
+    stream:
+      function:
+        definition: consume;supply
+      bindings:
+        consume-in-0:
+          destination: ${EVENTHUB-NAME}
+          group: ${CONSUMER-GROUP}
+        supply-out-0:
+          destination: ${THE-SAME-EVENTHUB-NAME-AS-ABOVE}
+      eventhubs:
+        bindings:
+          consume-in-0:
+            consumer:
+              checkpoint:
+                mode: MANUAL
 ----
-- For credentials as MSI, configure below properties in application.yml:
+
+- For credentials as service principal, configure below properties in application.yml:
+
 [source, yaml]
 ----
 spring:
   cloud:
     azure:
       credential:
-        msi-enabled: true
-        client-id: ${THE_ID_OF_MANAGED_IDENTITY}
-        resource-group: ${RESOURCE-GROUP}
-        subscription-id: ${SUBSCRIPTION-ID}
-      eventhub:
+        client-id: ${SERVICE_PRINCIPAL_ID}
+        client-secret: ${SERVICE-PRINCIPAL_SECRET}
+      profile:
+        tenant-id: ${TENANT_ID}
+      eventhubs:
+        namespace: ${EVENTHUB_NAMESPACE}
+        processor:
+          checkpoint-store:
+            container-name: ${CONTAINER_NAME}
+            account-name: ${ACCOUNT_NAME}
+    stream:
+      function:
+        definition: consume;supply
+      bindings:
+        consume-in-0:
+          destination: ${EVENTHUB_NAME}
+          group: ${CONSUMER_GROUP}
+        supply-out-0:
+          destination: ${THE_SAME_EVENTHUB_NAME_AS_ABOVE}
+      eventhubs:
+        bindings:
+          consume-in-0:
+            consumer:
+              checkpoint:
+                mode: MANUAL
+      default:
+        producer:
+          errorChannelEnabled: true
+----
+
+- For credentials as MSI, configure below properties in application.yml:
+
+[source, yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        managed-identity-client-id: ${AZURE_MANAGED_IDENTITY_CLIENT_ID}
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+      eventhubs:
         namespace: ${EVENTHUB-NAMESPACE}
         processor:
           checkpoint-store:
@@ -244,97 +451,53 @@ spring:
         supply-out-0:
           destination: ${THE_SAME_EVENTHUB_NAME_AS_ABOVE}
 
-      eventhub:
+      eventhubs:
         bindings:
           consume-in-0:
             consumer:
-              checkpoint-mode: ${CHECKPOINT_MODE}
+              checkpoint:
+                mode: MANUAL
       default:
         producer:
           errorChannelEnabled: true
-      poller:
-        initial-delay: 0
-        fixed-delay: 1000
 ----
 
 
-- For credentials as service principal, configure below properties in application.yml:
 
-[source, yaml]
-----
-spring:
-  cloud:
-    azure:
-      credential:
-        client-id: ${SERVICE_PRINCIPAL_ID}
-        client-secret: ${SERVICE-PRINCIPAL_SECRET}
-      profile:
-        tenant-id: ${TENANT_ID}
-        resource-group: ${RESOURCE_GROUP}
-      eventhub:
-        namespace: ${EVENTHUB_NAMESPACE}
-        processor:
-          checkpoint-store:
-            container-name: ${CONTAINER_NAME}
-            account-name: ${ACCOUNT_NAME}
-    stream:
-      function:
-        definition: consume;supply
-      bindings:
-        consume-in-0:
-          destination: ${EVENTHUB_NAME}
-          group: ${CONSUMER_GROUP}
-        supply-out-0:
-          destination: ${THE_SAME_EVENTHUB_NAME_AS_ABOVE}
-
-      eventhub:
-        bindings:
-          consume-in-0:
-            consumer:
-              checkpoint-mode: ${CHECKPOINT_MODE}
-      default:
-        producer:
-          errorChannelEnabled: true
-      poller:
-        initial-delay: 0
-        fixed-delay: 1000
-----
-
-** Define supplier and consumer
+Step2. Define supplier and consumer.
 [source,java]
 ----
-class Demo{
 @Bean
-    public Consumer<Message<String>> consume() {
-        return message -> {
-            Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
-            LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
-                    message.getPayload(),
-                    message.getHeaders().get(EventHubsHeaders.PARTITION_KEY),
-                    message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER),
-                    message.getHeaders().get(EventHubsHeaders.OFFSET),
-                    message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)
-            );
+public Consumer<Message<String>> consume() {
+    return message -> {
+        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
+                message.getPayload(),
+                message.getHeaders().get(EventHubsHeaders.PARTITION_KEY),
+                message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER),
+                message.getHeaders().get(EventHubsHeaders.OFFSET),
+                message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)
+        );
 
-            checkpointer.success()
-                    .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
-                    .doOnError(error -> LOGGER.error("Exception found", error))
-                    .subscribe();
-        };
-    }
+        checkpointer.success()
+                .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
+                .doOnError(error -> LOGGER.error("Exception found", error))
+                .subscribe();
+    };
+}
 
-    @Bean
-    public Supplier<Message<String>> supply() {
-        return () -> {
-            LOGGER.info("Sending message, sequence " + i);
-            return MessageBuilder.withPayload("Hello world, " + i++).build();
-        };
-    }
+@Bean
+public Supplier<Message<String>> supply() {
+    return () -> {
+        LOGGER.info("Sending message, sequence " + i);
+        return MessageBuilder.withPayload("Hello world, " + i++).build();
+    };
 }
 ----
+
 ==== Samples
 
-Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-stream-binder-eventhubs to learn how to
+Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-stream-binder-eventhubs[sample project] to learn how to
 use Event Hubs Binder.
 
 === Spring Cloud Stream Binder for Azure Service Bus
@@ -359,51 +522,138 @@ of which the prefix is changed from *spring.cloud.azure.servicebus* to *spring.c
 [cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
-|*spring.cloud.azure.servicebus*.enabled | boolean | Whether an Azure Service Bus is enabled.
-|*spring.cloud.azure.servicebus*.credential.* | NA | Properties used for getting token credential.
-|*spring.cloud.azure.servicebus*.credential.client-id | String | Client id to use when performing
-service principal authentication with Azure.
-|*spring.cloud.azure.servicebus*.credential.client-secret | String | Client secret to use when
-performing service principal authentication with Azure.
-|*spring.cloud.azure.servicebus*.credential.client-certificate-path | String | Path of a PEM
-certificate file to use when performing service principal authentication with Azure.
-|*spring.cloud.azure.servicebus*.credential.client-certificate-password | String | Password of the
-certificate file.
-|*spring.cloud.azure.servicebus*.credential.username | String | Username to use when performing username/password authentication with Azure.
-|*spring.cloud.azure.servicebus*.credential.password | String | Password to use when performing username/password authentication with Azure.
-|*spring.cloud.azure.servicebus*.credential.managed-identity-clientId | String | Client id to use
-when using managed identity to authenticate with Azure.
-|*spring.cloud.azure.servicebus*.profile.* | String | Properties related to an Azure subscription.
-|*spring.cloud.azure.servicebus*.profile.tenant-id | String | Tenant id for Azure resources.
-|*spring.cloud.azure.servicebus*.profile.subscription-Id | String | Subscription id to use when
-connecting to Azure resources.
-|*spring.cloud.azure.servicebus*.profile.cloud | AzureProfileAware.CloudType | Name of the Azure cloud to connect to.
-|*spring.cloud.azure.servicebus*.profile.environment.* | NA | Properties to Azure services, such as endpoints, resource ids, etc.
-|*spring.cloud.azure.servicebus*.profile.environment.active-directory-endpoint | String | The
-Azure Active Directory endpoint to connect to.
-|*spring.cloud.azure.servicebus*.resource.* | String | Metadata defining an Azure resource.
-|*spring.cloud.azure.servicebus*.resource.resource-group | String | Name of the Azure resource
-group.
-|*spring.cloud.azure.servicebus*.resource.resource-id | String | ID of the Azure resource group.
-|*spring.cloud.azure.servicebus*.resource.region | String | Name of region.
-|*spring.cloud.azure.servicebus*.client.transport-type | AmqpTransportType | Transport type
-switches available for AMQP protocol.
-|*spring.cloud.azure.servicebus*.retry.* | NA | Retry properties.
-|*spring.cloud.azure.servicebus*.retry.backoff.* | NA | Backoff properties when a retry fails.
-|*spring.cloud.azure.servicebus*.retry.backoff.delay | Duration | Amount of time to wait between retry attempts.
-|*spring.cloud.azure.servicebus*.retry.backoff.max-delay | Duration | Maximum permissible amount
-of time between retry attempts.
-|*spring.cloud.azure.servicebus*.retry.backoff.multiplier | Double | Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.
-|*spring.cloud.azure.servicebus*.retry.max-attempts | Integer | The maximum number of attempts.
-|*spring.cloud.azure.servicebus*.retry.timeout | Duration | Amount of time to wait until a timeout.
-|*spring.cloud.azure.servicebus*.proxy.* | NA | Common proxy properties.
-|*spring.cloud.azure.servicebus*.proxy.type | String | Type of the proxy.
-|*spring.cloud.azure.servicebus*.proxy.hostname | String | The host of the proxy.
-|*spring.cloud.azure.servicebus*.proxy.port | Integer | The port of the proxy.
-|*spring.cloud.azure.servicebus*.proxy.authentication-type | String | Authentication type used
-against the proxy.
-|*spring.cloud.azure.servicebus*.proxy.username | String | Username used to authenticate with the proxy.
-|*spring.cloud.azure.servicebus*.proxy.password | String | Password used to authenticate with the proxy.
+
+|*spring.cloud.azure.servicebus*.enabled
+| boolean
+| Whether an Azure Service Bus is enabled.
+
+|*spring.cloud.azure.servicebus*.credential.*
+| NA
+| Properties used for getting token credential.
+|*spring.cloud.azure.servicebus*.credential.client-id
+| String
+| Client id to use when performing service principal authentication with Azure.
+
+|*spring.cloud.azure.servicebus*.credential.client-secret
+| String
+| Client secret to use when performing service principal authentication with Azure.
+
+|*spring.cloud.azure.servicebus*.credential.client-certificate-path
+| String
+| Path of a PEM certificate file to use when performing service principal authentication with Azure.
+
+|*spring.cloud.azure.servicebus*.credential.client-certificate-password
+| String | Password of the certificate file.
+
+|*spring.cloud.azure.servicebus*.credential.username
+| String
+| Username to use when performing username/password authentication with Azure.
+
+|*spring.cloud.azure.servicebus*.credential.password
+| String
+| Password to use when performing username/password authentication with Azure.
+
+|*spring.cloud.azure.servicebus*.credential.managed-identity-clientId
+| String
+| Client id to use when using managed identity to authenticate with Azure.
+
+|*spring.cloud.azure.servicebus*.profile.*
+| String
+| Properties related to an Azure subscription.
+
+|*spring.cloud.azure.servicebus*.profile.tenant-id
+| String
+| Tenant id for Azure resources.
+
+|*spring.cloud.azure.servicebus*.profile.subscription-Id
+| String
+| Subscription id to use when connecting to Azure resources.
+
+|*spring.cloud.azure.servicebus*.profile.cloud
+| AzureProfileAware.CloudType
+| Name of the Azure cloud to connect to.
+
+|*spring.cloud.azure.servicebus*.profile.environment.*
+| NA
+| Properties to Azure services, such as endpoints, resource ids, etc.
+
+|*spring.cloud.azure.servicebus*.profile.environment.active-directory-endpoint
+| String
+| The Azure Active Directory endpoint to connect to.
+
+|*spring.cloud.azure.servicebus*.resource.*
+| String
+| Metadata defining an Azure resource.
+|*spring.cloud.azure.servicebus*.resource.resource-group
+| String
+| Name of the Azure resource group.
+
+|*spring.cloud.azure.servicebus*.resource.resource-id
+| String
+| Id of the Azure resource group.
+
+|*spring.cloud.azure.servicebus*.resource.region
+| String
+| Name of region.
+
+|*spring.cloud.azure.servicebus*.client.transport-type
+| AmqpTransportType
+| Transport type switches available for AMQP protocol.
+
+|*spring.cloud.azure.servicebus*.retry.*
+| NA
+| Retry properties.
+
+|*spring.cloud.azure.servicebus*.retry.backoff.*
+| NA
+| Backoff properties when a retry fails.
+
+|*spring.cloud.azure.servicebus*.retry.backoff.delay
+| Duration
+| Amount of time to wait between retry attempts.
+
+|*spring.cloud.azure.servicebus*.retry.backoff.max-delay
+| Duration
+| Maximum permissible amount of time between retry attempts.
+
+|*spring.cloud.azure.servicebus*.retry.backoff.multiplier
+| Double
+| Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.
+
+|*spring.cloud.azure.servicebus*.retry.max-attempts
+| Integer
+| The maximum number of attempts.
+
+|*spring.cloud.azure.servicebus*.retry.timeout
+| Duration
+| Amount of time to wait until a timeout.
+
+|*spring.cloud.azure.servicebus*.proxy.*
+| NA
+| Common proxy properties.
+
+|*spring.cloud.azure.servicebus*.proxy.type
+| String
+| Type of the proxy.
+|*spring.cloud.azure.servicebus*.proxy.hostname
+| String
+| The host of the proxy.
+
+|*spring.cloud.azure.servicebus*.proxy.port
+| Integer
+| The port of the proxy.
+
+|*spring.cloud.azure.servicebus*.proxy.authentication-type
+| String
+| Authentication type used against the proxy.
+
+|*spring.cloud.azure.servicebus*.proxy.username
+| String
+| Username used to authenticate with the proxy.
+
+|*spring.cloud.azure.servicebus*.proxy.password
+| String
+| Password used to authenticate with the proxy.
 |===
 
 ===== Azure Service Bus Client Configuration Options
@@ -413,39 +663,74 @@ against the proxy.
 |===
 |Properties | Type |Description
 
-|*spring.cloud.azure.servicebus*.connection-string | String | Service Bus Namespace connection string value.
-|*spring.cloud.azure.servicebus*.namespace | String | Service Bus Namespace value.
-|*spring.cloud.azure.servicebus*.domain-name | String | Domain name of an Azure Service Bus
-Namespace value.
-|*spring.cloud.azure.servicebus*.entity-name | String | Entity name of Azure Service Bus queue or
-topic.
-|*spring.cloud.azure.servicebus*.entity-type | ServiceBusEntityType | Entity type of Azure
-Service Bus queue or topic.
-|*spring.cloud.azure.servicebus*.cross-entity-transactions | Boolean | Enable cross entity
-transaction on the connection to Service bus.
-|*spring.cloud.azure.servicebus*.producer.* | see Notes | Producer configuration options.
-|*spring.cloud.azure.servicebus*.consumer.* | see Notes | Consumer configuration options.
-|*spring.cloud.azure.servicebus*.consumer.sessionEnabled | Boolean | Consumer Whether session is
-enabled.
-|*spring.cloud.azure.servicebus*.consumer.autoComplete | Boolean | Consumer whether auto complete
-flag.
-|*spring.cloud.azure.servicebus*.consumer.prefetchCount | Integer | Consumer prefetch count.
-|*spring.cloud.azure.servicebus*.consumer.subQueue | String | Consumer sub queue name.
-|*spring.cloud.azure.servicebus*.consumer.subscriptionName | String | Consumer subscription name.
-|*spring.cloud.azure.servicebus*.consumer.maxAutoLockRenewDuration | Duration | Consumer max
-duration for auto lock renew.
-|*spring.cloud.azure.servicebus*.consumer.receiveMode | String | Consumer receive mode.
-|*spring.cloud.azure.servicebus*.processor.*| see Notes | Processor configuration option.
+|*spring.cloud.azure.servicebus*.connection-string
+| String
+| Service Bus Namespace connection string value.
+
+|*spring.cloud.azure.servicebus*.namespace
+| String
+| Service Bus Namespace value.
+
+|*spring.cloud.azure.servicebus*.domain-name
+| String
+| Domain name of an Azure Service Bus Namespace value.
+
+|*spring.cloud.azure.servicebus*.entity-name
+| String
+| Entity name of Azure Service Bus queue or topic.
+
+|*spring.cloud.azure.servicebus*.entity-type
+| ServiceBusEntityType
+| Entity type of Azure Service Bus queue or topic.
+
+|*spring.cloud.azure.servicebus*.cross-entity-transactions
+| Boolean
+| Enable cross entity transaction on the connection to Service bus.
+
+|*spring.cloud.azure.servicebus*.producer.*
+| see NOTE
+| Producer configuration options.
+
+|*spring.cloud.azure.servicebus*.consumer.*
+| see NOTE
+| Consumer configuration options.
+
+|*spring.cloud.azure.servicebus*.consumer.sessionEnabled
+| Boolean
+| Consumer Whether session is enabled.
+|*spring.cloud.azure.servicebus*.consumer.autoComplete
+| Boolean
+| Consumer whether auto complete flag.
+
+|*spring.cloud.azure.servicebus*.consumer.prefetchCount
+| Integer
+| Consumer prefetch count.
+
+|*spring.cloud.azure.servicebus*.consumer.subQueue
+| String
+| Consumer sub queue name.
+
+|*spring.cloud.azure.servicebus*.consumer.subscriptionName
+| String
+| Consumer subscription name.
+
+|*spring.cloud.azure.servicebus*.consumer.maxAutoLockRenewDuration
+| Duration
+| Consumer max duration for auto lock renew.
+
+|*spring.cloud.azure.servicebus*.consumer.receiveMode
+| String
+| Consumer receive mode.
+
+|*spring.cloud.azure.servicebus*.processor.*
+| see NOTE
+| Processor configuration option.
 |===
 
-Notes:
-
-Follow the prefix of `*spring.cloud.azure.servicebus*.producer.`, all the common properties in the
-parent level
-(connection-string, namespace, domain-name, entity-name, entity-type) can be
-recursively applied. The same rule also apply to prefix of `*spring.cloud.azure
-.servicebus*.consumer.` and `*spring.cloud.azure
-.servicebus*.processor.` respectively.
+NOTE: For configuration of producer, consumer and processor, all the above common and client
+properties
+support to be configured individually by changing the origin prefix from *spring.cloud.azure
+.servicebus* to *spring.cloud.azure.servicebus.producer/consumer/processor*.
 
 ===== Azure Service Bus Binding Configuration Options
 Below options are divided into four sections: Consumer Properties, Advanced Consumer
@@ -457,39 +742,47 @@ Configurations, Producer PropertiesProducer Properties, and Advanced Producer Co
 [cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
-|*spring.cloud.stream.servicebus*.bindings.<binding-name>.consumer.requeue-rejected |If the
-failed messages are routed to the DLQ.
-boolean |
-|*spring.cloud.stream.servicebus*.bindings.<binding-name>.consumer.checkpoint-mode| CheckpointMode
+
+|*spring.cloud.stream.servicebus*.bindings.<binding-name>.consumer.requeue-rejected
+|boolean
+|If the failed messages are routed to the DLQ.
+
+|*spring.cloud.stream.servicebus*.bindings.<binding-name>.consumer.checkpoint-mode
+| CheckpointMode
 | The checkpoint mode of checkpointing message.
-|*spring.cloud.stream.servicebus*.bindings.<binding-name>.consumer.max-concurrent-calls | Integer
+
+|*spring.cloud.stream.servicebus*.bindings.<binding-name>.consumer.max-concurrent-calls
+| Integer
 | The max number of concurrent calls.
-|*spring.cloud.stream.servicebus*.bindings.<binding-name>.consumer.max-concurrent-sessions |
-Integer | The max number of concurrent sessions.
+
+|*spring.cloud.stream.servicebus*.bindings.<binding-name>.consumer.max-concurrent-sessions
+|Integer
+| The max number of concurrent sessions.
 |===
 
 ====== Advanced Consumer Configuration
 The configuration in the above first 2 sections(`Azure Common Configuration Options`, `Azure Service Bus Client Configuration Options`) can be applied for each specific consumer by replacing the prefix
-of ''spring.cloud.azure.servicebus.'' with `'spring.cloud.stream.servicebus.bindings.<binding-name>.consumer.'`.
+of *spring.cloud.azure.servicebus* with *spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.
 
 ====== Producer Properties
-
 .Producer configurable properties of spring-cloud-azure-stream-binder-servicebus
 [cols="<,<,<", options="header"]
 |===
 |Properties | Type |Description
-|*spring.cloud.stream.servicebus*.bindings.<binding-name>.producer
-.sync |boolean | switch flag for sync of producer
-|*spring.cloud.stream.servicebus*.bindings.<binding-name>.producer
-.send-timeout |long | timeout value for sending of producer
+
+|*spring.cloud.stream.servicebus*.bindings.<binding-name>.producer.sync |boolean | Switch flag
+for sync of producer.
+|*spring.cloud.stream.servicebus*.bindings.<binding-name>.producer.send-timeout |long | Timeout
+value for sending of producer.
+
 |===
 
 ====== Advanced Producer Configuration
 The configuration in the above first 2 sections(`Azure Common Configuration Options`, `Azure Service Bus Client Configuration Options`) can be applied for each specific producer by replacing the prefix
-of 'spring.cloud.azure.servicebus' with `spring.cloud.stream.servicebus.bindings.<binding-name>
-.producer`.
+of *spring.cloud.azure.servicebus* with *spring.cloud.stream.servicebus.bindings.<binding-name>.producer*.
 
 ==== Basic Usage
+===== Sending and Receiving messages from/to Service Bus
 Step 1. Fill the configuration options with credential information.
 
 - For credentials as connection string, configure below properties in application.yml:
@@ -505,21 +798,19 @@ spring:
         definition: consume;supply
       bindings:
         consume-in-0:
-          destination: ${SERVICEBUS_QUEUE_NAME}
+          destination: ${SERVICEBUS_ENTITY_NAME}
+          # If you use Service Bus Topic, please add below configuration
+          # group: ${SUBSCRIPTION_NAME}
         supply-out-0:
-          destination: ${SERVICEBUS_QUEUE_NAME_SAME_AS_ABOVE}
+          destination: ${SERVICEBUS_ENTITY_NAME_SAME_AS_ABOVE}
       servicebus:
         bindings:
           consume-in-0:
             consumer:
-              checkpoint-mode: ${CHECKPOINT_MODE}
+              checkpoint-mode: MANUAL
           supply-out-0:
             producer:
-              entity-type: ${ENTITY_TYPE}
-      poller:
-        fixed-delay: 1000
-        initial-delay: 0
-
+              entity-type: queue # set as "topic" if you use Service Bus Topic
 ----
 
 - For credentials as service principal, configure below properties in application.yml:
@@ -529,10 +820,10 @@ spring:
   cloud:
     azure:
       credential:
-        client-id: ${ CLIENT_ID }
-        client-secret: ${ CLIENT_SECRET }
+        client-id: ${CLIENT_ID}
+        client-secret: ${CLIENT_SECRET}
       profile:
-        tenant-id: ${ TENANT_ID }
+        tenant-id: ${TENANT_ID}
       servicebus:
         namespace: ${SERVICEBUS_NAMESPACE}
     stream:
@@ -540,22 +831,19 @@ spring:
         definition: consume;supply
       bindings:
         consume-in-0:
-          destination: ${ SERVICEBUS_QUEUE_NAME }
+          destination: ${SERVICEBUS_ENTITY_NAME}
+          # If you use Service Bus Topic, please add below configuration
+          # group: ${SUBSCRIPTION_NAME}
         supply-out-0:
-          destination: ${ SERVICEBUS_QUEUE_NAME_SAME_AS_ABOVE }
+          destination: ${SERVICEBUS_ENTITY_NAME_SAME_AS_ABOVE}
       servicebus:
         bindings:
           consume-in-0:
             consumer:
-              checkpoint-mode: ${CHECKPOINT_MODE}
+              checkpoint-mode: MANUAL
           supply-out-0:
             producer:
-              entity-type: ${ENTITY_TYPE}
-      poller:
-        fixed-delay: 1000
-        initial-delay: 0
-
-
+              entity-type: queue # set as "topic" if you use Service Bus Topic
 ----
 
 - For credentials as MSI, configure below properties in application.yml:
@@ -575,53 +863,50 @@ spring:
         definition: consume;supply
       bindings:
         consume-in-0:
-          destination: ${ SERVICEBUS_QUEUE_NAME }
+          destination: ${SERVICEBUS_ENTITY_NAME}
+          # If you use Service Bus Topic, please add below configuration
+          # group: ${SUBSCRIPTION_NAME}
         supply-out-0:
-          destination: ${ SERVICEBUS_QUEUE_NAME_SAME_AS_ABOVE }
+          destination: ${SERVICEBUS_ENTITY_NAME_SAME_AS_ABOVE}
       servicebus:
         bindings:
           consume-in-0:
             consumer:
-              checkpoint-mode: ${CHECKPOINT_MODE}
+              checkpoint-mode: MANUAL
           supply-out-0:
             producer:
-              entity-type: ${ENTITY_TYPE}
-      poller:
-        fixed-delay: 1000
-        initial-delay: 0
+              entity-type: queue # set as "topic" if you use Service Bus Topic
 
 ----
 
-Step 2. Define supplier and consumer
+Step 2. Define supplier and consumer.
 [source,java]
 ----
-class Demo{
-    @Bean
-    public Consumer<Message<String>> consume() {
-        return message -> {
-            Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
-            LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
-                    message.getPayload(),
-                    message.getHeaders().get(EventHubsHeaders.PARTITION_KEY),
-                    message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER),
-                    message.getHeaders().get(EventHubsHeaders.OFFSET),
-                    message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)
-            );
+@Bean
+public Consumer<Message<String>> consume() {
+    return message -> {
+        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
+                message.getPayload(),
+                message.getHeaders().get(EventHubsHeaders.PARTITION_KEY),
+                message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER),
+                message.getHeaders().get(EventHubsHeaders.OFFSET),
+                message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)
+        );
 
-            checkpointer.success()
-                    .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
-                    .doOnError(error -> LOGGER.error("Exception found", error))
-                    .subscribe();
-        };
-    }
+        checkpointer.success()
+                .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
+                .doOnError(error -> LOGGER.error("Exception found", error))
+                .subscribe();
+    };
+}
 
-    @Bean
-    public Supplier<Message<String>> supply() {
-        return () -> {
-            LOGGER.info("Sending message, sequence " + i);
-            return MessageBuilder.withPayload("Hello world, " + i++).build();
-        };
-    }
+@Bean
+public Supplier<Message<String>> supply() {
+    return () -> {
+        LOGGER.info("Sending message, sequence " + i);
+        return MessageBuilder.withPayload("Hello world, " + i++).build();
+    };
 }
 ----
 
@@ -635,30 +920,15 @@ This example demonstrates how to manually set the partition key for the message 
 
 This example requires that `spring.cloud.stream.default.producer.partitionKeyExpression` be set `&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;`.
 
-[source,yaml]
-----
-spring:
-  cloud:
-    azure:
-      servicebus:
-        connection-string: ${CONNECTION_STRING}
-    stream:
-      default:
-        producer:
-          partitionKeyExpression:  "'partitionKey-' + headers[<message-header-key>]"
-----
-
 [source,java]
 ----
-class Demo{
-    @PostMapping("/messages")
-    public ResponseEntity<String> sendMessage(@RequestParam String message) {
-        LOGGER.info("Going to add message {} to Sinks.Many.", message);
-        many.emitNext(MessageBuilder.withPayload(message)
-                                    .setHeader("<message-header-key>", "Customize partirion key")
-                                    .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-        return ResponseEntity.ok("Sent!");
-    }
+@PostMapping("/messages")
+public ResponseEntity<String> sendMessage(@RequestParam String message) {
+    LOGGER.info("Going to add message {} to Sinks.Many.", message);
+    many.emitNext(MessageBuilder.withPayload(message)
+                                .setHeader("<message-header-key>", "Customize partirion key")
+                                .build(), Sinks.EmitFailureHandler.FAIL_FAST);
+    return ResponseEntity.ok("Sent!");
 }
 ----
 
@@ -673,15 +943,13 @@ _Recommended:_ Use `ServiceBusMessageHeaders.PARTITION_KEY` as the key of the he
 
 [source,java]
 ----
-class Demo{
-    @PostMapping("/messages")
-    public ResponseEntity<String> sendMessage(@RequestParam String message) {
-        LOGGER.info("Going to add message {} to Sinks.Many.", message);
-        many.emitNext(MessageBuilder.withPayload(message)
-                                    .setHeader(ServiceBusMessageHeaders.PARTITION_KEY, "Customize partirion key")
-                                    .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-        return ResponseEntity.ok("Sent!");
-    }
+@PostMapping("/messages")
+public ResponseEntity<String> sendMessage(@RequestParam String message) {
+    LOGGER.info("Going to add message {} to Sinks.Many.", message);
+    many.emitNext(MessageBuilder.withPayload(message)
+                                .setHeader(ServiceBusMessageHeaders.PARTITION_KEY, "Customize partirion key")
+                                .build(), Sinks.EmitFailureHandler.FAIL_FAST);
+    return ResponseEntity.ok("Sent!");
 }
 ----
 
@@ -689,15 +957,13 @@ _Not recommended but currently supported:_ `AzureHeaders.PARTITION_KEY` as the k
 
 [source,java]
 ----
-class Demo{
-    @PostMapping("/messages")
-    public ResponseEntity<String> sendMessage(@RequestParam String message) {
-        LOGGER.info("Going to add message {} to Sinks.Many.", message);
-        many.emitNext(MessageBuilder.withPayload(message)
-                                    .setHeader(AzureHeaders.PARTITION_KEY, "Customize partirion key")
-                                    .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-        return ResponseEntity.ok("Sent!");
-    }
+@PostMapping("/messages")
+public ResponseEntity<String> sendMessage(@RequestParam String message) {
+    LOGGER.info("Going to add message {} to Sinks.Many.", message);
+    many.emitNext(MessageBuilder.withPayload(message)
+                                .setHeader(AzureHeaders.PARTITION_KEY, "Customize partirion key")
+                                .build(), Sinks.EmitFailureHandler.FAIL_FAST);
+    return ResponseEntity.ok("Sent!");
 }
 ----
 
@@ -710,15 +976,13 @@ This example demonstrates how to manually set the session id of a message in the
 
 [source,java]
 ----
-class Demo{
-    @PostMapping("/messages")
-    public ResponseEntity<String> sendMessage(@RequestParam String message) {
-        LOGGER.info("Going to add message {} to Sinks.Many.", message);
-        many.emitNext(MessageBuilder.withPayload(message)
-                                    .setHeader(ServiceBusMessageHeaders.SESSION_ID, "Customize session id")
-                                    .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-        return ResponseEntity.ok("Sent!");
-    }
+@PostMapping("/messages")
+public ResponseEntity<String> sendMessage(@RequestParam String message) {
+    LOGGER.info("Going to add message {} to Sinks.Many.", message);
+    many.emitNext(MessageBuilder.withPayload(message)
+                                .setHeader(ServiceBusMessageHeaders.SESSION_ID, "Customize session id")
+                                .build(), Sinks.EmitFailureHandler.FAIL_FAST);
+    return ResponseEntity.ok("Sent!");
 }
 ----
 
@@ -728,59 +992,99 @@ Please use this `sample` as a reference to learn more about how to use this bind
 - https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/servicebus/azure-spring-cloud-stream-binder-servicebus-queue[Service Bus Queue]
 
 
-=== Set Service Bus message headers
-
+### Set Service Bus message headers
 The following table illustrates how Spring message headers are mapped to Service Bus message headers and properties.
 When create a message, developers can specify the header or property of a Service Bus message by
 below constants.
 
 [source,java]
 ----
-class Demo{
-    @Autowired
-    private Sinks.Many<Message<String>> many;
+@Autowired
+private Sinks.Many<Message<String>> many;
 
-    @PostMapping("/messages")
-    public ResponseEntity<String> sendMessage(@RequestParam String message) {
-        many.emitNext(MessageBuilder.withPayload(message)
-        .setHeader(SESSION_ID, "group1")
-        .build(),
-        Sinks.EmitFailureHandler.FAIL_FAST);
-        return ResponseEntity.ok("Sent!");
-    }
+@PostMapping("/messages")
+public ResponseEntity<String> sendMessage(@RequestParam String message) {
+    many.emitNext(MessageBuilder.withPayload(message)
+    .setHeader(SESSION_ID, "group1")
+    .build(),
+    Sinks.EmitFailureHandler.FAIL_FAST);
+    return ResponseEntity.ok("Sent!");
 }
 ----
 
 For some Service Bus headers that can be mapped to multiple Spring header constants, the priority of different Spring headers is listed.
 
-.Mapping of service bus message header and spring message header
+.Mapping between Service Bus Headers and Spring Headers
 [cols="<,<,<,<", options="header"]
 |===
-|Service Bus Message Headers and Properties | Spring Message Header Constants | Type | Priority
-Number (Descending priority)
-|ContentType| org.springframework.messaging.MessageHeaders.CONTENT_TYPE | String | N/A
-|CorrelationId | com.azure.spring.servicebus.support.ServiceBusMessageHeaders.CORRELATION_ID |String | N/A
-|**MessageId** | com.azure.spring.servicebus.support.ServiceBusMessageHeaders.MESSAGE_ID | String| 1
-|**MessageId** | com.azure.spring.messaging.AzureHeaders.RAW_ID | String | 2
-|**MessageId** | org.springframework.messaging.MessageHeaders.ID | UUID | 3
-|PartitionKey | com.azure.spring.servicebus.support.ServiceBusMessageHeaders.PARTITION_KEY |
-String | N/A
-|ReplyTo | org.springframework.messaging.MessageHeaders.REPLY_CHANNEL | String | N/A
-|ReplyToSessionId | com.azure.spring.servicebus.support.ServiceBusMessageHeaders
-.REPLY_TO_SESSION_ID | String | N/A
-|**ScheduledEnqueueTimeUtc** | com.azure.spring.messaging.AzureHeaders.SCHEDULED_ENQUEUE_MESSAGE
-| Integer | 1
-|**ScheduledEnqueueTimeUtc** | com.azure.spring.servicebus.support.ServiceBusMessageHeaders
-.SCHEDULED_ENQUEUE_TIME | Instant | 2
-|SessionID | com.azure.spring.servicebus.support.ServiceBusMessageHeaders.SESSION_ID | String | N/A
-|TimeToLive | com.azure.spring.servicebus.support.ServiceBusMessageHeaders.TIME_TO_LIVE |
-Duration | N/A
-|To | com.azure.spring.servicebus.support.ServiceBusMessageHeaders.TO | String | N/A
+|Service Bus Message Headers and Properties | Spring Message Header Constants | Type | Priority Number (Descending priority)
+
+|ContentType
+| org.springframework.messaging.MessageHeaders.CONTENT_TYPE
+| String
+| N/A
+
+|CorrelationId
+| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.CORRELATION_ID
+|String
+| N/A
+
+|**MessageId**
+| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.MESSAGE_ID
+| String
+| 1
+
+|**MessageId**
+| com.azure.spring.messaging.AzureHeaders.RAW_ID
+| String
+| 2
+
+|**MessageId**
+| org.springframework.messaging.MessageHeaders.ID
+| UUID
+| 3
+
+|PartitionKey
+| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.PARTITION_KEY
+|String
+| N/A
+
+|ReplyTo
+| org.springframework.messaging.MessageHeaders.REPLY_CHANNEL
+| String
+| N/A
+
+|ReplyToSessionId
+| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.REPLY_TO_SESSION_ID
+| String
+| N/A
+
+|**ScheduledEnqueueTimeUtc**
+| com.azure.spring.messaging.AzureHeaders.SCHEDULED_ENQUEUE_MESSAGE
+| Integer
+| 1
+
+|**ScheduledEnqueueTimeUtc**
+| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.SCHEDULED_ENQUEUE_TIME
+| Instant
+| 2
+
+|SessionID
+| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.SESSION_ID
+| String
+| N/A
+
+|TimeToLive
+| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.TIME_TO_LIVE
+|Duration
+| N/A
+
+|To
+| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.TO
+| String
+| N/A
 |===
 
-
-
-Please refer https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/servicebus/spring-cloud-azure-stream-binder-servicebus to learn how to
-use ServiceBus Binder.
+Please refer https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/servicebus/spring-cloud-azure-stream-binder-servicebus[sample project] to learn how to use ServiceBus Binder.
 
 
