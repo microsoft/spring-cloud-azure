@@ -2,7 +2,7 @@
 
 This page covers changes made in 4.0 since 3.10. With this major release, we aim to bring better security, leaner dependencies, support for production readiness, and more.
 
-IMPORTANT: To learn how to migration to 4.0, please check link:appendix.html#migration-guide-for-4-0[the Appendix page].
+TIP: To learn how to migration to 4.0, please check link:appendix.html#migration-guide-for-4-0[the Appendix page].
 
 === Unified Development Experience 
 
@@ -13,7 +13,7 @@ We constantly challenge ourselves on how we can make things more consistent and 
 
 Dependency management is one of the core value pillars that has helped Spring establish preeminence over to other Java frameworks. In that spirit, we have also been exploring ways to make dependency management easier for Spring developers on Azure. In this release, we have codified best practices and expertise from Spring experts and condensed all of our dependency BOMs into one, `spring-cloud-azure-dependencies`, which we believe will further bring down the learning curve and avoid ill-handling of dependencies. 
 
-=== Expanded support scope of Azure Support on https://start.spring.io
+=== Expanded support scope of Azure Support on start.spring.io
 
 The Azure Support module in https://start.spring.io[Spring Initializr] provides auto-configuration of many Azure services.  
 

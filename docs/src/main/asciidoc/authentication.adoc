@@ -36,7 +36,7 @@ For applications want to connect to resources that support Azure Active Director
 .Authentication properties
 [cols="<50,<50", options="header"]
 |===
-|Property Name |Description 
+|Property |Description
 
 |client-id 
 |Client id to use when performing service principal authentication with Azure.

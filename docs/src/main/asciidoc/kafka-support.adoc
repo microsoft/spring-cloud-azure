@@ -31,7 +31,7 @@ If you want to retrieve the connection string using Azure Resource Manager, plea
 .Configurable properties when using Kafka support
 [cols="2*", options="header"]
 |===
-|Properties 
+|Property
 |Description
 |*spring.cloud.azure.eventhubs*.kafka.enabled 
 |Whether to enable the Azure Event Hubs Kafka support, default to true.
@@ -86,6 +86,5 @@ spring:
 
 === Samples
 
-Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka[samples for Azure Event Hus for Kafka] for more details.
-
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[azure-spring-boot-samples] for more details.
 

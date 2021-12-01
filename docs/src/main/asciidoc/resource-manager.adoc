@@ -18,7 +18,7 @@ Construct `TokenCredential` by using various credential information, and then co
 .Configurable properties of spring-cloud-azure-resourcemanager
 [cols="2*", options="header"]
 |===
-|Properties |Description
+|Property |Description
 |*spring.cloud.azure.resource-manager*.enabled |Whether the Resource Manager is enabled. Default is true.
 |*spring.cloud.azure.credential*.client-certificate-password |Password of the certificate file.
 |*spring.cloud.azure.credential*.client-certificate-path |Path of a PEM certificate file to use when performing service principal authentication with Azure.
@@ -39,5 +39,5 @@ Azure Resource Manger helps the Azure SDK client to complete authentication and 
 
 === Samples
 
-Please see <<Kafka Support>>, <<Redis Support>> for more information about usage.
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[azure-spring-boot-samples] for more details.
 

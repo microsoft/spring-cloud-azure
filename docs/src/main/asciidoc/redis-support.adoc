@@ -26,7 +26,7 @@ Adding below dependencies if you want to use the Spring Cloud Azure Redis suppor
 .Configurable properties when using Redis support
 [cols="4*", options="header"]
 |===
-|Properties |Description |Default Value | Required
+|Property |Description |Default Value | Required
 |*spring.cloud.azure.redis*.enabled |Azure Cache for Redis instance name.|true | No
 |*spring.cloud.azure.redis*.name |Azure Cache for Redis instance name.| |Yes
 |*spring.cloud.azure.redis*.resource.resource-group |The resource group of Azure Cache for Redis.||Yes
@@ -47,7 +47,6 @@ spring.cloud.azure.redis.resource.resource-group=${AZURE_CACHE_REDIS_RESOURCE_GR
 
 === Samples
 
-Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/cache/spring-cloud-azure-starter/spring-cloud-azure-sample-cache[samples for Azure Cache for Redis] for more details.
-
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[azure-spring-boot-samples] for more details.
 
 

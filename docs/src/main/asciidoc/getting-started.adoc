@@ -7,15 +7,15 @@
 [source,xml,indent=0]
 ----
 <dependencyManagement>
-  <dependencies>
-    <dependency>
-      <groupId>com.azure.spring</groupId>
-      <artifactId>spring-cloud-azure-dependencies</artifactId>
-      <version>4.0.0-beta.2</version>
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>com.azure.spring</groupId>
+            <artifactId>spring-cloud-azure-dependencies</artifactId>
+            <version>4.0.0-beta.2</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+     </dependencies>
 </dependencyManagement>
 ----
 
@@ -28,6 +28,7 @@ For example, if you want to get started using Spring and Azure Cosmos DB for dat
 
 The following application starters are provided by Spring Cloud Azure under the `com.azure.spring` group:
 
+.Starters provided by Spring Cloud Azure
 [cols="2*",options="header"]
 |===
 |Name |Description
@@ -60,6 +61,8 @@ The following application starters are provided by Spring Cloud Azure under the 
 |===
 
 Below are starters for **Spring Data** support:
+
+.Starters provided Spring Data support
 [cols="2*", options="header"]
 |===
 |Name |Description
@@ -68,6 +71,8 @@ Below are starters for **Spring Data** support:
 |===
 
 Below are starters for **Spring Integration** support:
+
+.Starters provided Spring Integration support
 [cols="2*", options="header"]
 |===
 |Name |Description 
@@ -80,16 +85,18 @@ Below are starters for **Spring Integration** support:
 |===
 
 Below are starters for **Spring Cloud Stream** support:
+
+.Starters provided Spring Cloud Stream support
 [cols="2*", options="header"]
 |===
 |Name |Description
 |spring-cloud-azure-starter-stream-eventhubs
-|Starter for using Azure Event Hubs and Spring Cloud Stream Binder
+|Starters for using Azure Event Hubs and Spring Cloud Stream Binder
 |spring-cloud-azure-starter-stream-servicebus
 |Starter for using Azure Service Bus and Spring Cloud Stream Binder
 |===
 
 === Learning Spring Cloud Azure
 
-We prepared a full list of samples to show the usages, can be found at https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[Spring Cloud Azure Samples]
+We prepared a full list of samples to show the usages, can be found at https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[Spring Cloud Azure Samples].
 

@@ -32,7 +32,7 @@ of which the prefix is changed from *spring.cloud.azure.eventhubs* to *spring.cl
 .Common configurable properties of spring-cloud-azure-stream-binder-eventhubs
 [cols="<,<,<", options="header"]
 |===
-|Properties | Type |Description
+|Property | Type |Description
 
 |*spring.cloud.azure.eventhubs*.enabled
 | boolean
@@ -42,31 +42,38 @@ of which the prefix is changed from *spring.cloud.azure.eventhubs* to *spring.cl
 | NA
 | Properties used for getting token credential.
 
-|*spring.cloud.azure.eventhubs*.credential.clientId
+|*spring.cloud.azure.eventhubs*.
+credential.clientId
 | String
 | Client id to use when performing service principal authentication with Azure.
 
-|*spring.cloud.azure.eventhubs*.credential.clientSecret
+|*spring.cloud.azure.eventhubs*.
+credential.clientSecret
 | String
 | Client secret to use when performing service principal authentication with Azure.
 
-|*spring.cloud.azure.eventhubs*.credential.clientCertificatePath
+|*spring.cloud.azure.eventhubs*.
+credential.clientCertificatePath
 | String
 | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 
-|*spring.cloud.azure.eventhubs*.credential.clientCertificatePassword
+|*spring.cloud.azure.eventhubs*.
+credential.clientCertificatePassword
 | String
 | Password of the certificate file.
 
-|*spring.cloud.azure.eventhubs*.credential.username
+|*spring.cloud.azure.eventhubs*.
+credential.username
 | String
 | Username to use when performing username/password authentication with Azure.
 
-|*spring.cloud.azure.eventhubs*.credential.password
+|*spring.cloud.azure.eventhubs*.
+credential.password
 | String
 | Password to use when performing username/password authentication with Azure.
 
-|*spring.cloud.azure.eventhubs*.credential.managedIdentityClientId
+|*spring.cloud.azure.eventhubs*.
+credential.managedIdentityClientId
 | String
 | The client id to use when using managed identity to authenticate with Azure.
 
@@ -74,11 +81,13 @@ of which the prefix is changed from *spring.cloud.azure.eventhubs* to *spring.cl
 | String
 | The properties related to an Azure subscription.
 
-|*spring.cloud.azure.eventhubs*.profile.tenantId
+|*spring.cloud.azure.eventhubs*.
+profile.tenantId
 | String
 | Tenant id for Azure resources.
 
-|*spring.cloud.azure.eventhubs*.profile.subscriptionId
+|*spring.cloud.azure.eventhubs*.
+profile.subscriptionId
 | String
 | Subscription id to use when connecting to Azure resources.
 
@@ -86,11 +95,13 @@ of which the prefix is changed from *spring.cloud.azure.eventhubs* to *spring.cl
 | AzureProfileAware.CloudType
 | The name of the Azure cloud to connect to.
 
-|*spring.cloud.azure.eventhubs*.profile.environment.*
+|*spring.cloud.azure.eventhubs*.
+profile.environment.*
 | NA
 | Properties to Azure services, such as endpoints, resource ids, etc.
 
-|*spring.cloud.azure.eventhubs*.profile.environment.activeDirectoryEndpoint
+|*spring.cloud.azure.eventhubs*.
+profile.environment.activeDirectoryEndpoint
 | String
 | The Azure Active Directory endpoint to connect to.
 
@@ -98,11 +109,13 @@ of which the prefix is changed from *spring.cloud.azure.eventhubs* to *spring.cl
 | String
 | Metadata defining an Azure resource.
 
-|*spring.cloud.azure.eventhubs*.resource.resourceGroup
+|*spring.cloud.azure.eventhubs*.
+resource.resourceGroup
 | String
 | Name of the Azure resource group.
 
-|*spring.cloud.azure.eventhubs*.resource.resourceId
+|*spring.cloud.azure.eventhubs*.
+resource.resourceId
 | String
 | The id of the Azure resource group.
 
@@ -118,23 +131,28 @@ of which the prefix is changed from *spring.cloud.azure.eventhubs* to *spring.cl
 | NA
 | Retry properties.
 
-|*spring.cloud.azure.eventhubs*.retry.backoff.*
+|*spring.cloud.azure.eventhubs*.
+retry.backoff.*
 | NA
 | Backoff properties when a retry fails.
 
-|*spring.cloud.azure.eventhubs*.retry.backoff.delay
+|*spring.cloud.azure.eventhubs*.
+retry.backoff.delay
 | Duration
 | Amount of time to wait between retry attempts.
 
-|*spring.cloud.azure.eventhubs*.retry.backoff.maxDelay
+|*spring.cloud.azure.eventhubs*.
+retry.backoff.maxDelay
 | Duration
 | The maximum permissible amount of time between retry attempts.
 
-|*spring.cloud.azure.eventhubs*.retry.backoff.multiplier
+|*spring.cloud.azure.eventhubs*.
+retry.backoff.multiplier
 | Double
 | Multiplier used to calculate the next backoff delay.
 
-|*spring.cloud.azure.eventhubs*.retry.maxAttempts
+|*spring.cloud.azure.eventhubs*.
+retry.maxAttempts
 | Integer
 | The maximum number of attempts.
 
@@ -158,7 +176,8 @@ of which the prefix is changed from *spring.cloud.azure.eventhubs* to *spring.cl
 | Integer
 | The port of the proxy.
 
-|*spring.cloud.azure.eventhubs*.proxy.authenticationType
+|*spring.cloud.azure.eventhubs*.
+proxy.authenticationType
 | String
 | Authentication type used against the proxy.
 
@@ -177,7 +196,7 @@ Below options are used to configure Azure Event Hubs SDK Client.
 .Client configurable properties of spring-cloud-azure-stream-binder-eventhubs
 [cols="<,<,<", options="header"]
 |===
-|Properties | Type |Description
+|Property | Type |Description
 
 |*spring.cloud.azure.eventhubs*.connection-string
 | String
@@ -195,11 +214,13 @@ Below options are used to configure Azure Event Hubs SDK Client.
 | String
 | Name of an Event Hub entity.
 
-|*spring.cloud.azure.eventhubs*.custom-endpoint-address
+|*spring.cloud.azure.eventhubs*.
+custom-endpoint-address
 | String
 | Custom Endpoint address.
 
-|*spring.cloud.azure.eventhubs*.is-shared-connection
+|*spring.cloud.azure.eventhubs*.
+is-shared-connection
 | Boolean
 | Whether to use the same connection for different Event Hub producer / consumer client.
 
@@ -211,7 +232,8 @@ Below options are used to configure Azure Event Hubs SDK Client.
 | NA
 | Consumer configuration options.
 
-|*spring.cloud.azure.eventhubs*.consumer.consumerGroup
+|*spring.cloud.azure.eventhubs*.
+consumer.consumerGroup
 | NA
 | Name of the consumer group this consumer is associated with.
 
@@ -219,58 +241,72 @@ Below options are used to configure Azure Event Hubs SDK Client.
 | NA
 | The number of events the Event Hub consumer will actively receive and queue locally without regard to whether a receiving operation is currently active.
 
-|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.*
+|*spring.cloud.azure.eventhubs*.
+processor.checkpoint-store.*
 | NA
 | Blob checkpoint store configuration options.
 
-|*spring.cloud.azure.eventhubs*.processor.trackLastEnqueuedEventProperties
+|*spring.cloud.azure.eventhubs*.
+processor.trackLastEnqueuedEventProperties
 | Boolean
 |Whether the event processor should request information on the last enqueued event on its associated partition, and track that information as events are received.
 
-|*spring.cloud.azure.eventhubs*.processor.initialPartitionEventPosition
+|*spring.cloud.azure.eventhubs*.
+processor.initialPartitionEventPosition
 | Map
 |The map containing the event position to use for each partition if a checkpoint for the partition does not exist in CheckpointStore.
 
-|*spring.cloud.azure.eventhubs*.processor.partitionOwnershipExpirationInterval
+|*spring.cloud.azure.eventhubs*.
+processor.partitionOwnershipExpirationInterval
 | Duration
 |The time duration after which the ownership of partition expires if it's not renewed by the owning processor instance.
 
-|*spring.cloud.azure.eventhubs*.processor.batch. maxSize
+|*spring.cloud.azure.eventhubs*.
+processor.batch. maxSize
 | Integer
 | The maximum number of events in a batch.
 
-|*spring.cloud.azure.eventhubs*.processor.batch. max-wait-time
+|*spring.cloud.azure.eventhubs*.
+processor.batch. max-wait-time
 | Duration | The maximum time duration for one batch of the max size of message.
 
-|*spring.cloud.azure.eventhubs*.processor.loadBalancing.updateInterval
+|*spring.cloud.azure.eventhubs*.
+processor.loadBalancing.updateInterval
 | Duration
 | The interval of load balancing strategy updating.
 
-|*spring.cloud.azure.eventhubs*.processor.loadBalancing.strategy
+|*spring.cloud.azure.eventhubs*.
+processor.loadBalancing.strategy
 | String
 | The strategy used by event processor for load balancing the partition ownership to distribute the event processing work with other processor instances.
 
-|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.create-container-if-not-exists
+|*spring.cloud.azure.eventhubs*.
+processor.checkpoint-store.create-container-if-not-exists
 |Boolean
 |If allowed creating containers if not exists.
 
-|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.customer-provided-key
+|*spring.cloud.azure.eventhubs*.
+processor.checkpoint-store.customer-provided-key
 | String
 | Base64 encoded string of the encryption key.
 
-|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.encryption-scope
+|*spring.cloud.azure.eventhubs*.
+processor.checkpoint-store.encryption-scope
 | String
 | Encryption scope to encrypt blob contents on the server.
 
-|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.service-version
+|*spring.cloud.azure.eventhubs*.
+processor.checkpoint-store.service-version
 | BlobServiceVersion
 |The versions of Azure Storage Blob supported by this client library.
 
-|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.blob-name
+|*spring.cloud.azure.eventhubs*.
+processor.checkpoint-store.blob-name
 | String
 | Storage blob name.
 
-|*spring.cloud.azure.eventhubs*.processor.checkpoint-store.container-name
+|*spring.cloud.azure.eventhubs*.
+processor.checkpoint-store.container-name
 | String
 | Storage container name.
 |===
@@ -288,41 +324,41 @@ Configurations, Producer PropertiesProducer Properties, and Advanced Producer Co
 .Consumer configurable properties of spring-cloud-azure-stream-binder-eventhubs
 [cols="<,<,<", options="header"]
 |===
-|Properties | Type |Description
+|Property | Type |Description
 
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.checkpoint.mode
+|*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.checkpoint.mode
 |CheckpointMode
 | Checkpoint mode used when consumer decide how to checkpoint message
 
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.checkpoint.count
+|*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.checkpoint.count
 | Integer
 |Decides the amount of message for each partition to do one checkpoint.
 
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.checkpoint.interval
+|*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.checkpoint.interval
 | Duration
 |Decides the time interval to do one checkpoint
 
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.batch.max-size
+|*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.batch.max-size
 | Integer
 | The maximum number of events in a batch.
 
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.batch.max-wait-time
+|*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.batch.max-wait-time
 | Duration
 | The maximum time duration for batch consuming.
 
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.load-balancing.update-interval
+|*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.load-balancing.update-interval
 | Duration
 | The interval time duration for updating.
 
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.load-balancing.strategy
+|*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.load-balancing.strategy
 |LoadBalancingStrategy
 |The load balancing strategy.
 
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.track-las-enqueued-event-properties
+|*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.track-las-enqueued-event-properties
 |Boolean
 | Whether the event processor should request information on the last enqueued event on its associated partition, and track that information as events are received.
 
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.consumer.partition-ownership-expiration-interval
+|*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.partition-ownership-expiration-interval
 |Boolean
 | The expiration interval time for partition ownership
 |===
@@ -336,13 +372,13 @@ Event Hubs Client Configuration Options`) can be applied for each specific consu
 .Producer configurable properties of spring-cloud-azure-stream-binder-eventhubs
 [cols="<,<,<", options="header"]
 |===
-|Properties | Type |Description
+|Property | Type |Description
 
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.producer.sync
+|*spring.cloud.stream.eventhubs.bindings.<binding-name>.producer*.sync
 | boolean
 |The switch flag for sync of producer
 
-|*spring.cloud.stream.eventhubs*.bindings.<binding-name>.producer.send-timeout
+|*spring.cloud.stream.eventhubs.bindings.<binding-name>.producer*.send-timeout
 | long
 | The timeout value for sending of producer
 |===
@@ -497,8 +533,7 @@ public Supplier<Message<String>> supply() {
 
 ==== Samples
 
-Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-stream-binder-eventhubs[sample project] to learn how to
-use Event Hubs Binder.
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[azure-spring-boot-samples] for more details.
 
 === Spring Cloud Stream Binder for Azure Service Bus
 
@@ -521,7 +556,7 @@ of which the prefix is changed from *spring.cloud.azure.servicebus* to *spring.c
 .Common configurable properties of spring-cloud-azure-stream-binder-servicebus
 [cols="<,<,<", options="header"]
 |===
-|Properties | Type |Description
+|Property | Type |Description
 
 |*spring.cloud.azure.servicebus*.enabled
 | boolean
@@ -538,7 +573,8 @@ of which the prefix is changed from *spring.cloud.azure.servicebus* to *spring.c
 | String
 | Client secret to use when performing service principal authentication with Azure.
 
-|*spring.cloud.azure.servicebus*.credential.client-certificate-path
+|*spring.cloud.azure.servicebus*.
+credential.client-certificate-path
 | String
 | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 
@@ -553,7 +589,8 @@ of which the prefix is changed from *spring.cloud.azure.servicebus* to *spring.c
 | String
 | Password to use when performing username/password authentication with Azure.
 
-|*spring.cloud.azure.servicebus*.credential.managed-identity-clientId
+|*spring.cloud.azure.servicebus*.
+credential.managed-identity-clientId
 | String
 | Client id to use when using managed identity to authenticate with Azure.
 
@@ -573,18 +610,21 @@ of which the prefix is changed from *spring.cloud.azure.servicebus* to *spring.c
 | AzureProfileAware.CloudType
 | Name of the Azure cloud to connect to.
 
-|*spring.cloud.azure.servicebus*.profile.environment.*
+|*spring.cloud.azure.servicebus*.
+profile.environment.*
 | NA
 | Properties to Azure services, such as endpoints, resource ids, etc.
 
-|*spring.cloud.azure.servicebus*.profile.environment.active-directory-endpoint
+|*spring.cloud.azure.servicebus*.
+profile.environment.active-directory-endpoint
 | String
 | The Azure Active Directory endpoint to connect to.
 
 |*spring.cloud.azure.servicebus*.resource.*
 | String
 | Metadata defining an Azure resource.
-|*spring.cloud.azure.servicebus*.resource.resource-group
+|*spring.cloud.azure.servicebus*.
+resource.resource-group
 | String
 | Name of the Azure resource group.
 
@@ -608,23 +648,28 @@ of which the prefix is changed from *spring.cloud.azure.servicebus* to *spring.c
 | NA
 | Backoff properties when a retry fails.
 
-|*spring.cloud.azure.servicebus*.retry.backoff.delay
+|*spring.cloud.azure.servicebus*.
+retry.backoff.delay
 | Duration
 | Amount of time to wait between retry attempts.
 
-|*spring.cloud.azure.servicebus*.retry.backoff.max-delay
+|*spring.cloud.azure.servicebus*.
+retry.backoff.max-delay
 | Duration
 | Maximum permissible amount of time between retry attempts.
 
-|*spring.cloud.azure.servicebus*.retry.backoff.multiplier
+|*spring.cloud.azure.servicebus*.
+retry.backoff.multiplier
 | Double
 | Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.
 
-|*spring.cloud.azure.servicebus*.retry.max-attempts
+|*spring.cloud.azure.servicebus*.
+retry.max-attempts
 | Integer
 | The maximum number of attempts.
 
-|*spring.cloud.azure.servicebus*.retry.timeout
+|*spring.cloud.azure.servicebus*.
+retry.timeout
 | Duration
 | Amount of time to wait until a timeout.
 
@@ -643,7 +688,8 @@ of which the prefix is changed from *spring.cloud.azure.servicebus* to *spring.c
 | Integer
 | The port of the proxy.
 
-|*spring.cloud.azure.servicebus*.proxy.authentication-type
+|*spring.cloud.azure.servicebus*.
+proxy.authentication-type
 | String
 | Authentication type used against the proxy.
 
@@ -661,7 +707,7 @@ of which the prefix is changed from *spring.cloud.azure.servicebus* to *spring.c
 .Client configurable properties of spring-cloud-azure-stream-binder-servicebus
 [cols="<,<,<", options="header"]
 |===
-|Properties | Type |Description
+|Property | Type |Description
 
 |*spring.cloud.azure.servicebus*.connection-string
 | String
@@ -683,7 +729,8 @@ of which the prefix is changed from *spring.cloud.azure.servicebus* to *spring.c
 | ServiceBusEntityType
 | Entity type of Azure Service Bus queue or topic.
 
-|*spring.cloud.azure.servicebus*.cross-entity-transactions
+|*spring.cloud.azure.servicebus*.
+cross-entity-transactions
 | Boolean
 | Enable cross entity transaction on the connection to Service bus.
 
@@ -714,7 +761,8 @@ of which the prefix is changed from *spring.cloud.azure.servicebus* to *spring.c
 | String
 | Consumer subscription name.
 
-|*spring.cloud.azure.servicebus*.consumer.maxAutoLockRenewDuration
+|*spring.cloud.azure.servicebus*.
+consumer.maxAutoLockRenewDuration
 | Duration
 | Consumer max duration for auto lock renew.
 
@@ -741,21 +789,21 @@ Configurations, Producer PropertiesProducer Properties, and Advanced Producer Co
 .Consumer configurable properties of spring-cloud-azure-stream-binder-servicebus
 [cols="<,<,<", options="header"]
 |===
-|Properties | Type |Description
+|Property | Type |Description
 
-|*spring.cloud.stream.servicebus*.bindings.<binding-name>.consumer.requeue-rejected
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.requeue-rejected
 |boolean
 |If the failed messages are routed to the DLQ.
 
-|*spring.cloud.stream.servicebus*.bindings.<binding-name>.consumer.checkpoint-mode
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.checkpoint-mode
 | CheckpointMode
 | The checkpoint mode of checkpointing message.
 
-|*spring.cloud.stream.servicebus*.bindings.<binding-name>.consumer.max-concurrent-calls
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.max-concurrent-calls
 | Integer
 | The max number of concurrent calls.
 
-|*spring.cloud.stream.servicebus*.bindings.<binding-name>.consumer.max-concurrent-sessions
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.max-concurrent-sessions
 |Integer
 | The max number of concurrent sessions.
 |===
@@ -768,11 +816,11 @@ of *spring.cloud.azure.servicebus* with *spring.cloud.stream.servicebus.bindings
 .Producer configurable properties of spring-cloud-azure-stream-binder-servicebus
 [cols="<,<,<", options="header"]
 |===
-|Properties | Type |Description
+|Property | Type |Description
 
-|*spring.cloud.stream.servicebus*.bindings.<binding-name>.producer.sync |boolean | Switch flag
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.producer*.sync |boolean | Switch flag
 for sync of producer.
-|*spring.cloud.stream.servicebus*.bindings.<binding-name>.producer.send-timeout |long | Timeout
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.producer*.send-timeout |long | Timeout
 value for sending of producer.
 
 |===
@@ -1085,6 +1133,5 @@ For some Service Bus headers that can be mapped to multiple Spring header consta
 | N/A
 |===
 
-Please refer https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/servicebus/spring-cloud-azure-stream-binder-servicebus[sample project] to learn how to use ServiceBus Binder.
-
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[azure-spring-boot-samples] for more details.
 

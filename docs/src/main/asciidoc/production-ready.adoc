@@ -18,11 +18,11 @@ Add the Spring Cloud Azure Actuator Starter dependency. This dependency will als
 [cols="<30,<70", options="header"]
 |===
 |Azure Service  |Property
-|App Configuration |management.health.azure-appconfiguration.enabled
-|Cosmos DB |management.health.azure-cosmos.enabled
-|Event Hubs |management.health.azure-eventhubs.enabled
-|Key Vault |management.health.azure-keyvault.enabled
-|Storage|management.health.azure-storage.enabled
+|App Configuration |*management.health.azure*-appconfiguration.enabled
+|Cosmos DB |*management.health.azure*-cosmos.enabled
+|Event Hubs |*management.health.azure*-eventhubs.enabled
+|Key Vault |*management.health.azure*-keyvault.enabled
+|Storage|*management.health.azure*-storage.enabled
 |===
 
 NOTE: Calling the health endpoint of Azure services may cause extra charge. For example, calling `http://HOST_NAME:{port}/actuator/health/cosmos` to get the Cosmos DB health info, it will calculate https://docs.microsoft.com/azure/cosmos-db/request-units[RUs].
