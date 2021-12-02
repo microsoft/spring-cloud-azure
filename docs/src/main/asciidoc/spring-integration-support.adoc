@@ -31,39 +31,84 @@ Below properties can also be configured with the default Spring Cloud Azure unif
 .Common configurable properties of spring-cloud-azure-starter-integration-eventhubs
 [cols="3,1,4", options="header"]
 |===
-|Properties | Type |Description
+|Property | Type |Description
 |*spring.cloud.azure.eventhubs*.enabled | boolean | Whether Azure Event Hubs service is enabled.
 |*spring.cloud.azure.eventhubs*.credential.* | NA | Properties used for getting token credential.
-|*spring.cloud.azure.eventhubs*.credential.clientId | String | Client id to use when performing service principal authentication with Azure.
-|*spring.cloud.azure.eventhubs*.credential.clientSecret | String | Client secret to use when performing service principal authentication with Azure.
-|*spring.cloud.azure.eventhubs*.credential.clientCertificatePath | String | Path of a PEM certificate file to use when performing service principal authentication with Azure.
-|*spring.cloud.azure.eventhubs*.credential.clientCertificatePassword | String | Password of the certificate file.
-|*spring.cloud.azure.eventhubs*.credential.username | String | Username to use when performing username/password authentication with Azure.
-|*spring.cloud.azure.eventhubs*.credential.password | String | Password to use when performing username/password authentication with Azure.
-|*spring.cloud.azure.eventhubs*.credential.managedIdentityClientId | String | Client id to use when using managed identity to authenticate with Azure.
+
+|*spring.cloud.azure.eventhubs*.
+credential.clientId | String | Client id to use when performing service principal authentication with Azure.
+
+|*spring.cloud.azure.eventhubs*.
+credential.clientSecret | String | Client secret to use when performing service principal authentication with Azure.
+
+|*spring.cloud.azure.eventhubs*.
+credential.clientCertificatePath | String | Path of a PEM certificate file to use when performing service principal authentication with Azure.
+
+|*spring.cloud.azure.eventhubs*.
+credential.clientCertificatePassword | String | Password of the certificate file.
+
+|*spring.cloud.azure.eventhubs*.
+credential.username | String | Username to use when performing username/password authentication with Azure.
+
+|*spring.cloud.azure.eventhubs*.
+credential.password | String | Password to use when performing username/password authentication with Azure.
+
+|*spring.cloud.azure.eventhubs*.
+credential.managedIdentityClientId | String | Client id to use when using managed identity to authenticate with Azure.
+
 |*spring.cloud.azure.eventhubs*.profile.* | String | Properties related to an Azure subscription.
 |*spring.cloud.azure.eventhubs*.profile.tenantId | String | Tenant id for Azure resources.
-|*spring.cloud.azure.eventhubs*.profile.subscriptionId | String | Subscription id to use when connecting to Azure resources.
+
+|*spring.cloud.azure.eventhubs*.
+profile.subscriptionId | String | Subscription id to use when connecting to Azure resources.
+
 |*spring.cloud.azure.eventhubs*.profile.cloud | AzureProfileAware.CloudType | Name of the Azure cloud to connect to.
-|*spring.cloud.azure.eventhubs*.profile.environment.* | NA | Properties to Azure services, such as endpoints, resource ids, etc.
-|*spring.cloud.azure.eventhubs*.profile.environment.activeDirectoryEndpoint | String | The Azure Active Directory endpoint to connect to.
+
+|*spring.cloud.azure.eventhubs*.
+profile.environment.* | NA | Properties to Azure services, such as endpoints, resource ids, etc.
+
+|*spring.cloud.azure.eventhubs*.
+profile.environment.activeDirectoryEndpoint | String | The Azure Active Directory endpoint to connect to.
+
 |*spring.cloud.azure.eventhubs*.resource.* | String | Metadata defining an Azure resource.
-|*spring.cloud.azure.eventhubs*.resource.resourceGroup | String | Name of the Azure resource group.
-|*spring.cloud.azure.eventhubs*.resource.resourceId | String | ID of the Azure resource group.
+
+|*spring.cloud.azure.eventhubs*.
+resource.resourceGroup | String | Name of the Azure resource group.
+
+|*spring.cloud.azure.eventhubs*.
+resource.resourceId | String | ID of the Azure resource group.
+
 |*spring.cloud.azure.eventhubs*.resource.region | String | Name of region.
-|*spring.cloud.azure.eventhubs*.client.transportType | AmqpTransportType | Transport type switches available for AMQP protocol.
+
+|*spring.cloud.azure.eventhubs*.
+client.transportType | AmqpTransportType | Transport type switches available for AMQP protocol.
+
 |*spring.cloud.azure.eventhubs*.retry.* | NA | Retry properties.
-|*spring.cloud.azure.eventhubs*.retry.backoff.* | NA | Backoff properties when a retry fails.
-|*spring.cloud.azure.eventhubs*.retry.backoff.delay | Duration | Amount of time to wait between retry attempts.
-|*spring.cloud.azure.eventhubs*.retry.backoff.maxDelay | Duration | Maximum permissible amount of time between retry attempts.
-|*spring.cloud.azure.eventhubs*.retry.backoff.multiplier | Double | Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.
-|*spring.cloud.azure.eventhubs*.retry.maxAttempts | Integer | The maximum number of attempts.
+
+|*spring.cloud.azure.eventhubs*.
+retry.backoff.* | NA | Backoff properties when a retry fails.
+
+|*spring.cloud.azure.eventhubs*.
+retry.backoff.delay | Duration | Amount of time to wait between retry attempts.
+
+|*spring.cloud.azure.eventhubs*.
+retry.backoff.maxDelay | Duration | Maximum permissible amount of time between retry attempts.
+
+|*spring.cloud.azure.eventhubs*.
+retry.backoff.multiplier | Double | Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.
+
+|*spring.cloud.azure.eventhubs*.
+retry.maxAttempts | Integer | The maximum number of attempts.
+
 |*spring.cloud.azure.eventhubs*.retry.timeout | Duration | Amount of time to wait until a timeout.
 |*spring.cloud.azure.eventhubs*.proxy.* | NA | Common proxy properties.
 |*spring.cloud.azure.eventhubs*.proxy.type | String | Type of the proxy.
 |*spring.cloud.azure.eventhubs*.proxy.hostname | String | The host of the proxy.
 |*spring.cloud.azure.eventhubs*.proxy.port | Integer | The port of the proxy.
-|*spring.cloud.azure.eventhubs*.proxy.authenticationType | String | Authentication type used against the proxy.
+
+|*spring.cloud.azure.eventhubs*.
+proxy.authenticationType | String | Authentication type used against the proxy.
+
 |*spring.cloud.azure.eventhubs*.proxy.username | String | Username used to authenticate with the proxy.
 |*spring.cloud.azure.eventhubs*.proxy.password | String | Password used to authenticate with the proxy.
 |===
@@ -74,20 +119,34 @@ Below options are used to configure Azure Event Hubs SDK Client.
 .Client configurable properties of spring-cloud-azure-starter-integration-storage-queue
 [cols="3*", options="header"]
 |===
-|Properties | Type |Description
+|Property | Type |Description
 |*spring.cloud.azure.eventhubs*.connection-string | String | Event Hubs Namespace connection string value.
 |*spring.cloud.azure.eventhubs*.namespace | String | Event Hubs Namespace value.
 |*spring.cloud.azure.eventhubs*.domainName | String | Domain name of an Azure Event Hubs Namespace value.
 |*spring.cloud.azure.eventhubs*.eventHubName | String | Name of an Event Hub entity.
 |*spring.cloud.azure.eventhubs*.customEndpointAddress | String | Custom Endpoint address.
 |*spring.cloud.azure.eventhubs*.isSharedConnection | Boolean | Whether to use the same connection for different Event Hub producer / consumer client.
-|*spring.cloud.azure.eventhubs*.processor.checkpointStore.* | NA | Blob checkpoint store configuration options.
-|*spring.cloud.azure.eventhubs*.processor.checkpointStore.createContainerIfNotExists | Boolean | If allowed creating container if not exists.
-|*spring.cloud.azure.eventhubs*.processor.checkpointStore.customerProvidedKey | String | Base64 encoded string of the encryption key.
-|*spring.cloud.azure.eventhubs*.processor.checkpointStore.encryptionScope | String | Encryption scope to encrypt blob contents on the server.
-|*spring.cloud.azure.eventhubs*.processor.checkpointStore.serviceVersion | BlobServiceVersion | The versions of Azure Storage Blob supported by this client library.
-|*spring.cloud.azure.eventhubs*.processor.checkpointStore.blobName | String | Storage blob name.
-|*spring.cloud.azure.eventhubs*.processor.checkpointStore.containerName | String | Storage container name.
+
+|*spring.cloud.azure.eventhubs*.
+processor.checkpointStore.* | NA | Blob checkpoint store configuration options.
+
+|*spring.cloud.azure.eventhubs*.
+processor.checkpointStore.createContainerIfNotExists | Boolean | If allowed creating container if not exists.
+
+|*spring.cloud.azure.eventhubs*.
+processor.checkpointStore.customerProvidedKey | String | Base64 encoded string of the encryption key.
+
+|*spring.cloud.azure.eventhubs*.
+processor.checkpointStore.encryptionScope | String | Encryption scope to encrypt blob contents on the server.
+
+|*spring.cloud.azure.eventhubs*.
+processor.checkpointStore.serviceVersion | BlobServiceVersion | The versions of Azure Storage Blob supported by this client library.
+
+|*spring.cloud.azure.eventhubs*.
+processor.checkpointStore.blobName | String | Storage blob name.
+
+|*spring.cloud.azure.eventhubs*.
+processor.checkpointStore.containerName | String | Storage container name.
 |===
 
 ==== Basic Usage
@@ -237,7 +296,7 @@ class Demo{
 
 ==== Samples
 
-Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter-integration-eventhubs[sample project] to learn how to use Event Hubs integration.
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[azure-spring-boot-samples] for more details.
 
 === Spring Integration with Azure Service Bus
 
@@ -260,39 +319,86 @@ from *spring.cloud.azure.servicebus* to *spring.cloud.azure*.
 .Common configurable properties of spring-cloud-azure-starter-integration-servicebus
 [cols="<,<,<", options="header"]
 |===
-|Properties | Type |Description
+|Property | Type |Description
 |*spring.cloud.azure.servicebus*.enabled | boolean | Whether an Azure Service Bus is enabled.
 |*spring.cloud.azure.servicebus*.credential.* | NA | Properties used for getting token credential.
-|*spring.cloud.azure.servicebus*.credential.clientId | String | Client id to use when performing service principal authentication with Azure.
-|*spring.cloud.azure.servicebus*.credential.clientSecret | String | Client secret to use when performing service principal authentication with Azure.
-|*spring.cloud.azure.servicebus*.credential.clientCertificatePath | String | Path of a PEM certificate file to use when performing service principal authentication with Azure.
-|*spring.cloud.azure.servicebus*.credential.clientCertificatePassword | String | Password of the certificate file.
-|*spring.cloud.azure.servicebus*.credential.username | String | Username to use when performing username/password authentication with Azure.
-|*spring.cloud.azure.servicebus*.credential.password | String | Password to use when performing username/password authentication with Azure.
-|*spring.cloud.azure.servicebus*.credential.managedIdentityClientId | String | Client id to use when using managed identity to authenticate with Azure.
+
+|*spring.cloud.azure.servicebus*.
+credential.clientId | String | Client id to use when performing service principal authentication with Azure.
+
+|*spring.cloud.azure.servicebus*.
+credential.clientSecret | String | Client secret to use when performing service principal authentication with Azure.
+
+|*spring.cloud.azure.servicebus*.
+credential.clientCertificatePath | String | Path of a PEM certificate file to use when performing service principal authentication with Azure.
+
+|*spring.cloud.azure.servicebus*.
+credential.clientCertificatePassword | String | Password of the certificate file.
+
+|*spring.cloud.azure.servicebus*.
+credential.username | String | Username to use when performing username/password authentication with Azure.
+
+|*spring.cloud.azure.servicebus*.
+credential.password | String | Password to use when performing username/password authentication with Azure.
+
+|*spring.cloud.azure.servicebus*.
+credential.managedIdentityClientId | String | Client id to use when using managed identity to authenticate with Azure.
+
 |*spring.cloud.azure.servicebus*.profile.* | String | Properties related to an Azure subscription.
-|*spring.cloud.azure.servicebus*.profile.tenantId | String | Tenant id for Azure resources.
-|*spring.cloud.azure.servicebus*.profile.subscriptionId | String | Subscription id to use when connecting to Azure resources.
+
+|*spring.cloud.azure.servicebus*.
+profile.tenantId | String | Tenant id for Azure resources.
+
+|*spring.cloud.azure.servicebus*.
+profile.subscriptionId | String | Subscription id to use when connecting to Azure resources.
+
 |*spring.cloud.azure.servicebus*.profile.cloud | AzureProfileAware.CloudType | Name of the Azure cloud to connect to.
-|*spring.cloud.azure.servicebus*.profile.environment.* | NA | Properties to Azure services, such as endpoints, resource ids, etc.
-|*spring.cloud.azure.servicebus*.profile.environment.activeDirectoryEndpoint | String | The Azure Active Directory endpoint to connect to.
+
+|*spring.cloud.azure.servicebus*.
+profile.environment.* | NA | Properties to Azure services, such as endpoints, resource ids, etc.
+
+|*spring.cloud.azure.servicebus*.
+profile.environment.activeDirectoryEndpoint | String | The Azure Active Directory endpoint to connect to.
+
 |*spring.cloud.azure.servicebus*.resource.* | String | Metadata defining an Azure resource.
-|*spring.cloud.azure.servicebus*.resource.resourceGroup | String | Name of the Azure resource group.
-|*spring.cloud.azure.servicebus*.resource.resourceId | String | ID of the Azure resource group.
+
+|*spring.cloud.azure.servicebus*.
+resource.resourceGroup | String | Name of the Azure resource group.
+
+|*spring.cloud.azure.servicebus*.
+resource.resourceId | String | ID of the Azure resource group.
+
 |*spring.cloud.azure.servicebus*.resource.region | String | Name of region.
-|*spring.cloud.azure.servicebus*.client.transportType | AmqpTransportType | Transport type switches available for AMQP protocol.
+
+|*spring.cloud.azure.servicebus*.
+client.transportType | AmqpTransportType | Transport type switches available for AMQP protocol.
+
 |*spring.cloud.azure.servicebus*.retry.* | NA | Retry properties.
-|*spring.cloud.azure.servicebus*.retry.backoff.* | NA | Backoff properties when a retry fails.
-|*spring.cloud.azure.servicebus*.retry.backoff.delay | Duration | Amount of time to wait between retry attempts.
-|*spring.cloud.azure.servicebus*.retry.backoff.maxDelay | Duration | Maximum permissible amount of time between retry attempts.
-|*spring.cloud.azure.servicebus*.retry.backoff.multiplier | Double | Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.
-|*spring.cloud.azure.servicebus*.retry.maxAttempts | Integer | The maximum number of attempts.
+
+|*spring.cloud.azure.servicebus*.
+retry.backoff.* | NA | Backoff properties when a retry fails.
+
+|*spring.cloud.azure.servicebus*.
+retry.backoff.delay | Duration | Amount of time to wait between retry attempts.
+
+|*spring.cloud.azure.servicebus*.
+retry.backoff.maxDelay | Duration | Maximum permissible amount of time between retry attempts.
+
+|*spring.cloud.azure.servicebus*.
+retry.backoff.multiplier | Double | Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.
+
+|*spring.cloud.azure.servicebus*.
+retry.maxAttempts | Integer | The maximum number of attempts.
+
 |*spring.cloud.azure.servicebus*.retry.timeout | Duration | Amount of time to wait until a timeout.
 |*spring.cloud.azure.servicebus*.proxy.* | NA | Common proxy properties.
 |*spring.cloud.azure.servicebus*.proxy.type | String | Type of the proxy.
 |*spring.cloud.azure.servicebus*.proxy.hostname | String | The host of the proxy.
 |*spring.cloud.azure.servicebus*.proxy.port | Integer | The port of the proxy.
-|*spring.cloud.azure.servicebus*.proxy.authenticationType | String | Authentication type used against the proxy.
+
+|*spring.cloud.azure.servicebus*.
+proxy.authenticationType | String | Authentication type used against the proxy.
+
 |*spring.cloud.azure.servicebus*.proxy.username | String | Username used to authenticate with the proxy.
 |*spring.cloud.azure.servicebus*.proxy.password | String | Password used to authenticate with the proxy.
 |===
@@ -303,13 +409,15 @@ Below options are used to configure Azure Service Bus SDK Client.
 .Client configurable properties of spring-cloud-azure-starter-integration-servicebus
 [cols="<,<,<", options="header"]
 |===
-|Properties | Type |Description
+|Property | Type |Description
 |*spring.cloud.azure.servicebus*.connection-string | String | Service Bus Namespace connection string value.
 |*spring.cloud.azure.servicebus*.namespace | String | Service Bus Namespace value.
 |*spring.cloud.azure.servicebus*.domainName | String | Domain name of an Azure Service Bus Namespace value.
 |*spring.cloud.azure.servicebus*.entityName | String | Entity name of Azure Service Bus queue or topic.
 |*spring.cloud.azure.servicebus*.entityType | ServiceBusEntityType | Entity type of Azure Service Bus queue or topic.
-|*spring.cloud.azure.servicebus*.crossEntityTransactions | Boolean | Enable cross entity transaction on the connection to Service bus.
+
+|*spring.cloud.azure.servicebus*.
+crossEntityTransactions | Boolean | Enable cross entity transaction on the connection to Service bus.
 |===
 
 ==== Basic Usage
@@ -459,7 +567,7 @@ class Demo{
 
 ==== Samples
 
-Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/servicebus/spring-cloud-azure-starter-integration-servicebus[sample project] to learn how to use Service Bus integration.
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[azure-spring-boot-samples] for more details.
 
 *Example: Manually set the partition key for the message*
 
@@ -542,41 +650,96 @@ by changing the prefix from *spring.cloud.azure.storage.queue* to *spring.cloud.
 .Common configurable properties of spring-cloud-azure-starter-integration-storage-queue
 [cols="<,<,<", options="header"]
 |===
-|Properties | Type |Description
+|Property | Type |Description
 |*spring.cloud.azure.storage.queue*.enabled | boolean | Whether an Azure Storage Queue is enabled.
 |*spring.cloud.azure.storage.queue*.credential.* | NA | Properties used for getting token credential.
-|*spring.cloud.azure.storage.queue*.credential.clientId | String | Client id to use when performing service principal authentication with Azure.
-|*spring.cloud.azure.storage.queue*.credential.clientSecret | String | Client secret to use when performing service principal authentication with Azure.
-|*spring.cloud.azure.storage.queue*.credential.clientCertificatePath | String | Path of a PEM certificate file to use when performing service principal authentication with Azure.
-|*spring.cloud.azure.storage.queue*.credential.clientCertificatePassword | String | Password of the certificate file.
-|*spring.cloud.azure.storage.queue*.credential.username | String | Username to use when performing username/password authentication with Azure.
-|*spring.cloud.azure.storage.queue*.credential.password | String | Password to use when performing username/password authentication with Azure.
-|*spring.cloud.azure.storage.queue*.credential.managedIdentityClientId | String | Client id to use when using managed identity to authenticate with Azure.
+
+|*spring.cloud.azure.storage.queue*.
+credential.clientId | String | Client id to use when performing service principal authentication with Azure.
+
+|*spring.cloud.azure.storage.queue*.
+credential.clientSecret | String | Client secret to use when performing service principal authentication with Azure.
+
+|*spring.cloud.azure.storage.queue*.
+credential.clientCertificatePath | String | Path of a PEM certificate file to use when performing service principal authentication with Azure.
+
+|*spring.cloud.azure.storage.queue*.
+credential.clientCertificatePassword | String | Password of the certificate file.
+
+|*spring.cloud.azure.storage.queue*.
+credential.username | String | Username to use when performing username/password authentication with Azure.
+
+|*spring.cloud.azure.storage.queue*.
+credential.password | String | Password to use when performing username/password authentication with Azure.
+
+|*spring.cloud.azure.storage.queue*.
+credential.managedIdentityClientId | String | Client id to use when using managed identity to authenticate with Azure.
+
 |*spring.cloud.azure.storage.queue*.profile.* | String | Properties related to an Azure subscription.
-|*spring.cloud.azure.storage.queue*.profile.tenantId | String | Tenant id for Azure resources.
-|*spring.cloud.azure.storage.queue*.profile.subscriptionId | String | Subscription id to use when connecting to Azure resources.
+
+|*spring.cloud.azure.storage.queue*.
+profile.tenantId | String | Tenant id for Azure resources.
+
+|*spring.cloud.azure.storage.queue*.
+profile.subscriptionId | String | Subscription id to use when connecting to Azure resources.
+
 |*spring.cloud.azure.storage.queue*.profile.cloud | AzureProfileAware.CloudType | Name of the Azure cloud to connect to.
-|*spring.cloud.azure.storage.queue*.profile.environment.* | NA | Properties to Azure services, such as endpoints, resource ids, etc.
-|*spring.cloud.azure.storage.queue*.profile.environment.activeDirectoryEndpoint | String | The Azure Active Directory endpoint to connect to.
+
+|*spring.cloud.azure.storage.queue*.
+profile.environment.* | NA | Properties to Azure services, such as endpoints, resource ids, etc.
+
+|*spring.cloud.azure.storage.queue*.
+profile.environment.activeDirectoryEndpoint | String | The Azure Active Directory endpoint to connect to.
+
 |*spring.cloud.azure.storage.queue*.resource.* | String | Metadata defining an Azure resource.
-|*spring.cloud.azure.storage.queue*.resource.resourceGroup | String | Name of the Azure resource group.
-|*spring.cloud.azure.storage.queue*.resource.resourceId | String | ID of the Azure resource group.
+
+|*spring.cloud.azure.storage.queue*.
+resource.resourceGroup | String | Name of the Azure resource group.
+
+|*spring.cloud.azure.storage.queue*.
+resource.resourceId | String | ID of the Azure resource group.
+
 |*spring.cloud.azure.storage.queue*.resource.region | String | Name of region.
-|*spring.cloud.azure.storage.queue*.client.transportType | AmqpTransportType | Transport type switches available for AMQP protocol.
+
+|*spring.cloud.azure.storage.queue*.
+client.transportType | AmqpTransportType | Transport type switches available for AMQP protocol.
+
 |*spring.cloud.azure.storage.queue*.retry.* | NA | Retry properties.
-|*spring.cloud.azure.storage.queue*.retry.backoff.* | NA | Backoff properties when a retry fails.
-|*spring.cloud.azure.storage.queue*.retry.backoff.delay | Duration | Amount of time to wait between retry attempts.
-|*spring.cloud.azure.storage.queue*.retry.backoff.maxDelay | Duration | Maximum permissible amount of time between retry attempts.
-|*spring.cloud.azure.storage.queue*.retry.backoff.multiplier | Double | Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.
-|*spring.cloud.azure.storage.queue*.retry.maxAttempts | Integer | The maximum number of attempts.
-|*spring.cloud.azure.storage.queue*.retry.timeout | Duration | Amount of time to wait until a timeout.
+
+|*spring.cloud.azure.storage.queue*.
+retry.backoff.* | NA | Backoff properties when a retry fails.
+
+|*spring.cloud.azure.storage.queue*.
+retry.backoff.delay | Duration | Amount of time to wait between retry attempts.
+
+|*spring.cloud.azure.storage.queue*.
+retry.backoff.maxDelay | Duration | Maximum permissible amount of time between retry attempts.
+
+|*spring.cloud.azure.storage.queue*.
+retry.backoff.multiplier | Double | Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.
+
+|*spring.cloud.azure.storage.queue*.
+retry.maxAttempts | Integer | The maximum number of attempts.
+
+|*spring.cloud.azure.storage.queue*.
+retry.timeout | Duration | Amount of time to wait until a timeout.
+
 |*spring.cloud.azure.storage.queue*.proxy.* | NA | Common proxy properties.
 |*spring.cloud.azure.storage.queue*.proxy.type | String | Type of the proxy.
-|*spring.cloud.azure.storage.queue*.proxy.hostname | String | The host of the proxy.
+
+|*spring.cloud.azure.storage.queue*.
+proxy.hostname | String | The host of the proxy.
+
 |*spring.cloud.azure.storage.queue*.proxy.port | Integer | The port of the proxy.
-|*spring.cloud.azure.storage.queue*.proxy.authenticationType | String | Authentication type used against the proxy.
-|*spring.cloud.azure.storage.queue*.proxy.username | String | Username used to authenticate with the proxy.
-|*spring.cloud.azure.storage.queue*.proxy.password | String | Password used to authenticate with the proxy.
+
+|*spring.cloud.azure.storage.queue*.
+proxy.authenticationType | String | Authentication type used against the proxy.
+
+|*spring.cloud.azure.storage.queue*.
+proxy.username | String | Username used to authenticate with the proxy.
+
+|*spring.cloud.azure.storage.queue*.
+proxy.password | String | Password used to authenticate with the proxy.
 |===
 
 ===== Azure Storage Queue Client Configuration Options
@@ -585,7 +748,7 @@ Below options are used to configure Azure Storage Queue SDK Client.
 .Client configurable properties of spring-cloud-azure-starter-integration-storage-queue
 [cols="<,<,<", options="header"]
 |===
-|Properties | Type |Description
+|Property | Type |Description
 |*spring.cloud.azure.storage.queue*.connection-string | String | Storage Queue Namespace connection string value.
 |*spring.cloud.azure.storage.queue*.accountName | String | Storage Queue account name.
 |*spring.cloud.azure.storage.queue*.accountKey | String | Storage Queue account key.
@@ -744,5 +907,5 @@ class Demo{
 
 ==== Samples
 
-Please refer to this https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/storage/spring-cloud-azure-starter-integration-storage-queue[sample project] illustrating how to use Storage Queue integration.
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[azure-spring-boot-samples] for more details.
 

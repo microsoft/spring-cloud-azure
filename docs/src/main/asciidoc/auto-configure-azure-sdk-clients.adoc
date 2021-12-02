@@ -81,5 +81,5 @@ class Demo {
 
 === Samples
 
-Check link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[here] for more samples.
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[azure-spring-boot-samples] for more details.
 

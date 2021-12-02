@@ -17,7 +17,7 @@
 .Configurable properties of spring-cloud-azure-starter-active-directory
 [cols="<,<", options="header"]
 |===
-|Properties |Description 
+|Property |Description
 |*spring.cloud.azure.active-directory*.app-id-uri |It used in resource server, used to validate the audience in access_token. access_token is valid only when the audience in access_token equal to client-id or app-id-uri 
 |*spring.cloud.azure.active-directory*.authorization-clients |A map configure the resource APIs the application is going to visit. Each item corresponding to one resource API the application is going to visit. In Spring code, each item corresponding to one OAuth2AuthorizedClient object
 |*spring.cloud.azure.active-directory*.authorization-clients.AZURE_CLIENT_NAME.scopes |API permissions of a resource server that the application is going to acquire.
@@ -466,7 +466,7 @@ public class AADWebApplicationAndResourceServerConfig {
 
 ==== Samples
 
-https://github.com/Azure-Samples/azure-spring-boot-samples[Link to sample repo]
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[azure-spring-boot-samples] for more details.
 
 === Spring Security with Azure AD B2C
 
@@ -488,19 +488,19 @@ https://github.com/Azure-Samples/azure-spring-boot-samples[Link to sample repo]
 [cols="<,<", options="header"]
 |===
 |Parameter |Description
-|`spring.cloud.azure.active-directory.b2c.base-uri` |Base uri for authorization server, if both `tenant` and `baseUri` are configured at the same time, only `baseUri` takes effect. 
-|`spring.cloud.azure.active-directory.b2c.client-id` |The registered application ID in Azure AD B2C. 
-|`spring.cloud.azure.active-directory.b2c.client-secret` |The client secret of a registered application. 
-|`spring.cloud.azure.active-directory.b2c.authorization-clients` |A map to list all authorization clients created on Azure Portal. 
-|`spring.cloud.azure.active-directory.b2c.login-flow` |The key name of sign in user flow. 
-|`spring.cloud.azure.active-directory.b2c.logout-success-url` |The target URL after a successful logout. 
-|`spring.cloud.azure.active-directory.b2c.tenant(Deprecated)` |The Azure AD B2C's tenant name, this is only suitable for Global cloud. 
-|`spring.cloud.azure.active-directory.b2c.tenant-id` |The Azure AD B2C's tenant id. 
-|`spring.cloud.azure.active-directory.b2c.user-flows` |A map to list all user flows defined on Azure Portal. 
-|`spring.cloud.azure.active-directory.b2c.user-name-attribute-name` | The attribute name of the username.
+|*spring.cloud.azure.active-directory.b2c*.base-uri |Base uri for authorization server, if both `tenant` and `baseUri` are configured at the same time, only `baseUri` takes effect.
+|*spring.cloud.azure.active-directory.b2c*.client-id |The registered application ID in Azure AD B2C.
+|*spring.cloud.azure.active-directory.b2c*.client-secret |The client secret of a registered application.
+|*spring.cloud.azure.active-directory.b2c*.authorization-clients |A map to list all authorization clients created on Azure Portal.
+|*spring.cloud.azure.active-directory.b2c*.login-flow |The key name of sign in user flow.
+|*spring.cloud.azure.active-directory.b2c*.logout-success-url |The target URL after a successful logout.
+|*spring.cloud.azure.active-directory.b2c*.tenant(Deprecated) |The Azure AD B2C's tenant name, this is only suitable for Global cloud.
+|*spring.cloud.azure.active-directory.b2c*.tenant-id |The Azure AD B2C's tenant id.
+|*spring.cloud.azure.active-directory.b2c*.user-flows |A map to list all user flows defined on Azure Portal.
+|*spring.cloud.azure.active-directory.b2c*.user-name-attribute-name | The attribute name of the username.
 |===
 
-For full configurations, check appendix.
+For full configurations, check link:appendix.html#migration-guide-for-4-0[the Appendix page].
 
 ==== Basic Usage
 
@@ -862,5 +862,6 @@ Let `WebApiA` and `WebApiB` run on port _8081_ and _8082_ respectively.
 
 ==== Samples
 
-https://github.com/Azure-Samples/azure-spring-boot-samples[Link to sample repo]
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[azure-spring-boot-samples] for more details.
+
 

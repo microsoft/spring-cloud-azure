@@ -39,21 +39,21 @@
 .Configurable properties of spring-cloud-azure-starter-storage-blob
 [cols="3,1,5", options="header"]
 |===
-|Name |Default | Description
+|Property  |Default | Description
 
-|spring.cloud.azure.storage.blob.enabled 
+|*spring.cloud.azure.storage.blob*.enabled
 |true
 |Whether an Azure Blob Storage Service is enabled
 
-|spring.cloud.azure.storage.blob.endpoint 
+|*spring.cloud.azure.storage.blob*.endpoint
 |  
 |Uri to connect Azure Blob Storage
 
-|spring.cloud.azure.storage.blob.account-key 
+|*spring.cloud.azure.storage.blob*.account-key
 |  
 |Private key to connect Azure Blob Storage
 
-|spring.cloud.azure.storage.blob.account-name 
+|*spring.cloud.azure.storage.blob*.account-name
 |  
 |Azure Storage Account Name
 |===
@@ -61,21 +61,21 @@
 .Configurable properties of spring-cloud-azure-starter-storage-file-share
 [cols="3,1,5", options="header"]
 |===
-|Name | Default | Description
+|Property  | Default | Description
 
-|spring.cloud.azure.storage.fileshare.enabled 
+|*spring.cloud.azure.storage.fileshare*.enabled
 |true 
 |Whether Azure File Storage Service is enabled
 
-|spring.cloud.azure.storage.fileshare.endpoint 
+|*spring.cloud.azure.storage.fileshare*.endpoint
 |  
 |Uri to connect Azure File Storage
 
-|spring.cloud.azure.storage.fileshare.account-key 
+|*spring.cloud.azure.storage.fileshare*.account-key
 |  
 |Private key to connect Azure File Storage
 
-|spring.cloud.azure.storage.fileshare.account-name 
+|*spring.cloud.azure.storage.fileshare*.account-name
 |  
 |Azure Storage Account Name
 |===
@@ -104,6 +104,6 @@ spring:
 
 === Samples
 
-A link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/storage/spring-cloud-azure-starter-storage-blob/storage-blob-sample[storage-blob-sample] and link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/storage/spring-cloud-azure-starter-storage-file-share/storage-file-sample[storage-file-sample] are provided to show how to use the `spring-cloud-azure-starter-storage-blob` and `spring-cloud-azure-starter-storage-file-share`.
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[azure-spring-boot-samples] for more details.
 
 

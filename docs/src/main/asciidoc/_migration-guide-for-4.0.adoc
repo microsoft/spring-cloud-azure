@@ -219,11 +219,11 @@ configurations can be divided into five categories:
 [cols="<30,<~", options="header"]
 |===
 |Prefix |Description
-|spring.cloud.azure.client |To configure the transport clients underneath each Azure SDK. 
-|spring.cloud.azure.credential |To configure how to authenticate with Azure Active Directory. 
-|spring.cloud.azure.profile |To configure the Azure cloud environment. 
-|spring.cloud.azure.proxy |To configure the proxy options apply to all Azure SDK clients. 
-|spring.cloud.azure.retry |To configure the retry options apply to all Azure SDK clients. 
+|*spring.cloud.azure*.client |To configure the transport clients underneath each Azure SDK.
+|*spring.cloud.azure*.credential |To configure how to authenticate with Azure Active Directory.
+|*spring.cloud.azure*.profile |To configure the Azure cloud environment.
+|*spring.cloud.azure*.proxy |To configure the proxy options apply to all Azure SDK clients.
+|*spring.cloud.azure*.retry |To configure the retry options apply to all Azure SDK clients.
 |===
 
 Check link:appendix.html[here] for a full list of configurations.
@@ -253,23 +253,23 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-keyvault-secrets`
 [cols="<30,<~", options="header"]
 |===
 | Legacy properties                      | Morden properties
-| azure.keyvault.allow-telemetry         | Not supported anymore.
-| azure.keyvault.case-sensitive-keys     | spring.cloud.azure.keyvault.secret.property-source[n].case-sensitive
-| azure.keyvault.certificate-password    | spring.cloud.azure.keyvault.secret.property-source[n].credential.client-certificate-password
-| azure.keyvault.certificate-path        | spring.cloud.azure.keyvault.secret.property-source[n].credential.client-certificate-path
-| azure.keyvault.client-id               | spring.cloud.azure.keyvault.secret.property-source[n].credential.client-id
-| azure.keyvault.client-key              | spring.cloud.azure.keyvault.secret.property-source[n].credential.client-secret
-| azure.keyvault.enabled                 | spring.cloud.azure.keyvault.secret.enabled and spring.cloud.azure.keyvault.secret.property-source-enabled and spring.cloud.azure.keyvault.secret.property-source[n].enabled
-| azure.keyvault.order                   | Not supported anymore. Use the order in property-source[n] instead.
-| azure.keyvault.refresh-interval        | spring.cloud.azure.keyvault.secret.property-source[n].refresh-interval
-| azure.keyvault.secret-keys             | spring.cloud.azure.keyvault.secret.property-source[n].secret-keys
-| azure.keyvault.tenant-id               | spring.cloud.azure.keyvault.secret.property-source[n].profile.tenant-id
-| azure.keyvault.uri                     | spring.cloud.azure.keyvault.secret.property-source[n].endpoint
-| -                                      | spring.cloud.azure.keyvault.secret.property-source[n].service-version
-| -                                      | spring.cloud.azure.keyvault.secret.property-source[n].client
-| -                                      | spring.cloud.azure.keyvault.secret.property-source[n].proxy
-| -                                      | spring.cloud.azure.keyvault.secret.property-source[n].retry
-| -                                      | spring.cloud.azure.keyvault.secret.property-source[n].resource
+| *azure.keyvault*.allow-telemetry         | Not supported anymore.
+| *azure.keyvault*.case-sensitive-keys     | *spring.cloud.azure.keyvault.secret*.property-source[n].case-sensitive
+| *azure.keyvault*.certificate-password    | *spring.cloud.azure.keyvault.secret*.property-source[n].credential.client-certificate-password
+| *azure.keyvault*.certificate-path        | *spring.cloud.azure.keyvault.secret*.property-source[n].credential.client-certificate-path
+| *azure.keyvault*.client-id               | *spring.cloud.azure.keyvault.secret*.property-source[n].credential.client-id
+| *azure.keyvault*.client-key              | *spring.cloud.azure.keyvault.secret*.property-source[n].credential.client-secret
+| *azure.keyvault*.enabled                 | *spring.cloud.azure.keyvault.secret*.enabled and *spring.cloud.azure.keyvault.secret*.property-source-enabled and *spring.cloud.azure.keyvault.secret*.property-source[n].enabled
+| *azure.keyvault*.order                   | Not supported anymore. Use the order in property-source[n] instead.
+| *azure.keyvault*.refresh-interval        | *spring.cloud.azure.keyvault.secret*.property-source[n].refresh-interval
+| *azure.keyvault*.secret-keys             | *spring.cloud.azure.keyvault.secret*.property-source[n].secret-keys
+| *azure.keyvault*.tenant-id               | *spring.cloud.azure.keyvault.secret*.property-source[n].profile.tenant-id
+| *azure.keyvault*.uri                     | *spring.cloud.azure.keyvault.secret*.property-source[n].endpoint
+| -                                      | *spring.cloud.azure.keyvault.secret*.property-source[n].service-version
+| -                                      | *spring.cloud.azure.keyvault.secret*.property-source[n].client
+| -                                      | *spring.cloud.azure.keyvault.secret*.property-source[n].proxy
+| -                                      | *spring.cloud.azure.keyvault.secret*.property-source[n].retry
+| -                                      | *spring.cloud.azure.keyvault.secret*.property-source[n].resource
 |===
 
 . All configuration property names changed the prefix from `azure.keyvault` to `spring.cloud.azure.keyvault.secret`.
@@ -287,9 +287,9 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-keyvault-secrets`
 [cols="<30,<~", options="header"]
 |===
 |Legacy properties |Morden properties
-|azure.storage.account-name |spring.cloud.azure.storage.blob.account-name 
-|azure.storage.account-key |spring.cloud.azure.storage.blob.account-key 
-|azure.storage.blob-endpoint |spring.cloud.azure.storage.blob.endpoint 
+|*azure.storage*.account-name |*spring.cloud.azure.storage.blob*.account-name
+|*azure.storage*.account-key |*spring.cloud.azure.storage.blob*.account-key
+|*azure.storage*.blob-endpoint |*spring.cloud.azure.storage.blob*.endpoint
 |===
 
 ===== From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share
@@ -300,9 +300,9 @@ All configuration property names changed the prefix from `azure.storage` to `spr
 [cols="<30,<~", options="header"]
 |===
 |Legacy properties |Morden properties
-|azure.storage.account-name |spring.cloud.azure.storage.fileshare.account-name 
-|azure.storage.account-key |spring.cloud.azure.storage.fileshare.account-key 
-|azure.storage.file-endpoint |spring.cloud.azure.storage.fileshare.endpoint 
+|*azure.storage*.account-name |*spring.cloud.azure.storage.fileshare*.account-name
+|*azure.storage*.account-key |*spring.cloud.azure.storage.fileshare*.account-key
+|*azure.storage*.file-endpoint |*spring.cloud.azure.storage.fileshare*.endpoint
 |===
 
 ===== From azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs
@@ -315,9 +315,9 @@ Changes for the child entries for this prefix, please refer the following tables
 [cols="<30,<~", options="header"]
 |===
 |Legacy properties | Morden properties
-|checkpoint-storage-account|processor.checkpoint-store.account-name
-|checkpoint-access-key|processor.checkpoint-store.account-key
-|checkpoint-container|processor.checkpoint-store.container-name
+|*spring.cloud.azure.eventhub*.checkpoint-storage-account|*spring.cloud.azure.eventhubs.processor*.checkpoint-store.account-name
+|*spring.cloud.azure.eventhub*.checkpoint-access-key|*spring.cloud.azure.eventhubs.processor*.checkpoint-store.account-key
+|*spring.cloud.azure.eventhub*.checkpoint-container|*spring.cloud.azure.eventhubs.processor*.checkpoint-store.container-name
 |===
 
 For example, change from:
@@ -375,9 +375,9 @@ All configuration property names changed the prefix from `spring.cloud.azure.sto
 [cols="<30,<~", options="header"]
 |===
 |Legacy properties |Morden properties
-|spring.cloud.azure.storage.account |spring.cloud.azure.storage.queue.account-name 
-|spring.cloud.azure.storage.access-key |spring.cloud.azure.storage.queue.account-key 
-|spring.cloud.azure.storage.resource-group |spring.cloud.azure.storage.queue.resource.resource-group 
+|*spring.cloud.azure.storage*.account |*spring.cloud.azure.storage.queue*.account-name
+|*spring.cloud.azure.storage*.access-key |*spring.cloud.azure.storage.queue*.account-key
+|*spring.cloud.azure.storage*.resource-group |*spring.cloud.azure.storage.queue*.resource.resource-group
 |===
 
 ===== From azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs
@@ -403,11 +403,11 @@ Changes for the child entries for following prefix, please refer the following t
 [cols="<30,<~", options="header"]
 |===
 |Legacy properties |Modern properties
-|consumer.max-batch-size |consumer.batch.max-size
-|consumer.max-wait-time |consumer.batch.max-wait-time
-|consumer.checkpoint-mode |consumer.checkpoint.mode
-|consumer.checkpoint-count |consumer.checkpoint.count
-|consumer.checkpoint-interval |consumer.checkpoint.interval
+|*spring.cloud.stream.eventhub.bindings.<binding-name>.consumer*.max-batch-size |*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.batch.max-size
+|*spring.cloud.stream.eventhub.bindings.<binding-name>.consumer*.max-wait-time |*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.batch.max-wait-time
+|*spring.cloud.stream.eventhub.bindings.<binding-name>.consumer*.checkpoint-mode |*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.checkpoint.mode
+|*spring.cloud.stream.eventhub.bindings.<binding-name>.consumer*.checkpoint-count |*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.checkpoint.count
+|*spring.cloud.stream.eventhub.bindings.<binding-name>.consumer*.checkpoint-interval |*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.checkpoint.interval
 |===
 
 For example, you should change from:
@@ -466,8 +466,8 @@ We have merged these two libraries into one, which supports both topic and queue
 [cols="<30,<~", options="header"]
 |===
 |Legacy properties |Modern properties
-|spring.cloud.stream.servicebus.queue.bindings.* |spring.cloud.stream.servicebus.bindings.*
-|spring.cloud.stream.servicebus.topic.bindings.* |spring.cloud.stream.servicebus.bindings.*
+|*spring.cloud.stream.servicebus*.queue.bindings.* |*spring.cloud.stream.servicebus.bindings*.*
+|*spring.cloud.stream.servicebus*.topic.bindings.* |*spring.cloud.stream.servicebus.bindings*.*
 |===
 
 IMPORTANT: The binder type is renamed from: servicebus-queue/servicebus-topic to `servicebus`.
@@ -569,13 +569,13 @@ spring:
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-|com.azure.spring.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter |com.azure.spring.cloud.autoconfigure.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter 
-|com.azure.spring.aad.webapp.AADWebSecurityConfigurerAdapter |com.azure.spring.cloud.autoconfigure.aad.webapp.AADWebSecurityConfigurerAdapter 
-|com.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter |com.azure.spring.cloud.autoconfigure.aad.filter.AADAppRoleStatelessAuthenticationFilter 
-|com.azure.spring.autoconfigure.aad.AADAuthenticationFilter |com.azure.spring.cloud.autoconfigure.aad.filter.AADAuthenticationFilter 
-|com.azure.spring.autoconfigure.aad.AADAuthenticationProperties |com.azure.spring.cloud.autoconfigure.aad.properties.AADAuthenticationProperties 
-|com.azure.spring.autoconfigure.aad.Membership |com.azure.spring.cloud.autoconfigure.aad.graph.Membership 
-|com.azure.spring.autoconfigure.aad.UserPrincipal |com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipal 
+|com.azure.spring.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter |com.azure.spring.cloud.autoconfigure.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter
+|com.azure.spring.aad.webapp.AADWebSecurityConfigurerAdapter |com.azure.spring.cloud.autoconfigure.aad.webapp.AADWebSecurityConfigurerAdapter
+|com.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter |com.azure.spring.cloud.autoconfigure.aad.filter.AADAppRoleStatelessAuthenticationFilter
+|com.azure.spring.autoconfigure.aad.AADAuthenticationFilter |com.azure.spring.cloud.autoconfigure.aad.filter.AADAuthenticationFilter
+|com.azure.spring.autoconfigure.aad.AADAuthenticationProperties |com.azure.spring.cloud.autoconfigure.aad.properties.AADAuthenticationProperties
+|com.azure.spring.autoconfigure.aad.Membership |com.azure.spring.cloud.autoconfigure.aad.graph.Membership
+|com.azure.spring.autoconfigure.aad.UserPrincipal |com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipal
 |===
 
 ==== From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c
@@ -584,8 +584,8 @@ spring:
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-|com.azure.spring.autoconfigure.b2c.AADB2CJwtBearerTokenAuthenticationConverter |com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2CJwtBearerTokenAuthenticationConverter 
-|com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer |com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2COidcLoginConfigurer 
+|com.azure.spring.autoconfigure.b2c.AADB2CJwtBearerTokenAuthenticationConverter |com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2CJwtBearerTokenAuthenticationConverter
+|com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer |com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2COidcLoginConfigurer
 |===
 
 
@@ -695,15 +695,15 @@ public class Demo {
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-|com.azure.spring.integration.core.EventHubsHeaders |com.azure.spring.eventhubs.support.EventHubsHeaders 
+|com.azure.spring.integration.core.EventHubsHeaders |com.azure.spring.eventhubs.support.EventHubsHeaders
 |com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
-|com.azure.spring.integration.core.api.reactor.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer 
-|com.azure.spring.integration.core.api.CheckpointConfig |com.azure.spring.messaging.checkpoint.CheckpointConfig 
+|com.azure.spring.integration.core.api.reactor.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
+|com.azure.spring.integration.core.api.CheckpointConfig |com.azure.spring.messaging.checkpoint.CheckpointConfig
 |com.azure.spring.integration.core.api.CheckpointMode |com.azure.spring.messaging.checkpoint.CheckpointMode
-|com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.handler.DefaultMessageHandler 
-|com.azure.spring.integration.eventhub.inbound.EventHubInboundChannelAdapter |com.azure.spring.integration.eventhubs.inbound.EventHubsInboundChannelAdapter 
-|com.azure.spring.integration.eventhub.api.EventHubOperation |com.azure.spring.eventhubs.core.EventHubsTemplate 
-|NONE |com.azure.spring.eventhubs.core.EventHubsProcessorContainer 
+|com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.handler.DefaultMessageHandler
+|com.azure.spring.integration.eventhub.inbound.EventHubInboundChannelAdapter |com.azure.spring.integration.eventhubs.inbound.EventHubsInboundChannelAdapter
+|com.azure.spring.integration.eventhub.api.EventHubOperation |com.azure.spring.eventhubs.core.EventHubsTemplate
+|NONE |com.azure.spring.eventhubs.core.EventHubsProcessorContainer
 |===
 
 ==== From azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus
@@ -811,9 +811,9 @@ public class Demo {
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-|com.azure.spring.integration.core.api.CheckpointMode |com.azure.spring.messaging.checkpoint.CheckpointMode 
-|com.azure.spring.integration.core.api.reactor.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer 
-|com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.handler.DefaultMessageHandler 
+|com.azure.spring.integration.core.api.CheckpointMode |com.azure.spring.messaging.checkpoint.CheckpointMode
+|com.azure.spring.integration.core.api.reactor.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
+|com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.handler.DefaultMessageHandler
 |com.azure.spring.integration.storage.queue.inbound.StorageQueueMessageSource |com.azure.spring.integration.storage.queue.inbound.StorageQueueMessageSource
 |com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
 |com.azure.spring.integration.storage.queue.StorageQueueOperation |com.azure.spring.storage.queue.core.StorageQueueOperation
@@ -842,8 +842,8 @@ public class Demo {
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-|com.azure.spring.integration.core.api.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer 
-|com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders 
+|com.azure.spring.integration.core.api.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
+|com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
 |com.azure.spring.integration.servicebus.converter.ServiceBusMessageHeaders |com.azure.spring.servicebus.support.ServiceBusMessageHeaders
 |===
 
