@@ -181,6 +181,19 @@
 |spring.cloud.azure.cosmos.resource.resource-group |  | 
 |spring.cloud.azure.cosmos.resource.resource-id |  | 
 |spring.cloud.azure.cosmos.session-capturing-override-enabled |  | Override enabled, session capturing is enabled by default for {@link ConsistencyLevel#SESSION}
+|spring.cloud.azure.cosmos.throttling-retry-options.max-retry-attempts-on-throttled-requests | `9` | Maximum number of retries in the case where the request fails because the service has applied rate.
+|spring.cloud.azure.cosmos.throttling-retry-options.max-retry-wait-time | `PT30S` | Maximum retry duration.
+|spring.cloud.azure.cosmos.gateway-connection.idle-connection-timeout | `PT60S` | The value of the timeout for an idle connection. After that time, the connection will be automatically closed.
+|spring.cloud.azure.cosmos.gateway-connection.max-connection-pool-size | `1000` | The value of the connection pool size.
+|spring.cloud.azure.cosmos.gateway-connection.network-request-timeout | `PT60S` | The network request timeout interval (time to wait for response from network peer).
+|spring.cloud.azure.cosmos.direct-connection.connection-endpoint-rediscovery-enabled | `false` | The value indicating whether Direct TCP connection endpoint rediscovery is enabled.
+The connection endpoint rediscovery feature is designed to reduce and spread-out latency spikes that may occur during maintenance operations.
+|spring.cloud.azure.cosmos.direct-connection.connect-timeout | `PT5S` | The connect timeout for direct client, represents timeout for establishing connections with an endpoint. Configures timeout for underlying Netty Channel ChannelOption.CONNECT_TIMEOUT_MILLIS By default.
+|spring.cloud.azure.cosmos.direct-connection.idle-connection-timeout | `PT0S` |  Direct client doesn't close a single connection to an endpoint by default unless specified.
+|spring.cloud.azure.cosmos.direct-connection.idle-endpoint-timeout | `PT1H` | If set to Duration.ZERO, idle endpoint check will be disabled. If there are no requests to a specific endpoint for idle endpoint timeout duration, direct client closes all.
+|spring.cloud.azure.cosmos.direct-connection.max-connections-per-endpoint | `130` | The max connections per endpoint This represents the size of connection pool for a specific endpoint.
+|spring.cloud.azure.cosmos.direct-connection.max-requests-per-connection | `30` | The max requests per connection This represents the number of requests that will be queued on a single.
+|spring.cloud.azure.cosmos.direct-connection.network-request-timeout | `PT5S` | The network request timeout interval (time to wait for response from network peer).
 |spring.cloud.azure.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 |spring.cloud.azure.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
