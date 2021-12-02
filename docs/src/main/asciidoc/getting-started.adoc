@@ -7,15 +7,15 @@
 [source,xml,indent=0]
 ----
 <dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>com.azure.spring</groupId>
-            <artifactId>spring-cloud-azure-dependencies</artifactId>
-            <version>4.0.0-beta.2</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-     </dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>com.azure.spring</groupId>
+      <artifactId>spring-cloud-azure-dependencies</artifactId>
+      <version>4.0.0-beta.2</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
 </dependencyManagement>
 ----
 
@@ -28,7 +28,7 @@ For example, if you want to get started using Spring and Azure Cosmos DB for dat
 
 The following application starters are provided by Spring Cloud Azure under the `com.azure.spring` group:
 
-.Starters provided by Spring Cloud Azure
+.Spring Cloud Azure starters
 [cols="2*",options="header"]
 |===
 |Name |Description
@@ -62,7 +62,7 @@ The following application starters are provided by Spring Cloud Azure under the 
 
 Below are starters for **Spring Data** support:
 
-.Starters provided Spring Data support
+.Spring Data related starters
 [cols="2*", options="header"]
 |===
 |Name |Description
@@ -72,7 +72,7 @@ Below are starters for **Spring Data** support:
 
 Below are starters for **Spring Integration** support:
 
-.Starters provided Spring Integration support
+.Spring Integration related starters
 [cols="2*", options="header"]
 |===
 |Name |Description 
@@ -86,7 +86,7 @@ Below are starters for **Spring Integration** support:
 
 Below are starters for **Spring Cloud Stream** support:
 
-.Starters provided Spring Cloud Stream support
+.Spring Cloud Stream related starters
 [cols="2*", options="header"]
 |===
 |Name |Description
