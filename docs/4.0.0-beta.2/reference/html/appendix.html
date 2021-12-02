@@ -6116,23 +6116,23 @@ configurations can be divided into five categories:</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.client</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure</strong>.client</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">To configure the transport clients underneath each Azure SDK.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.credential</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure</strong>.credential</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">To configure how to authenticate with Azure Active Directory.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.profile</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure</strong>.profile</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">To configure the Azure cloud environment.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.proxy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure</strong>.proxy</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">To configure the proxy options apply to all Azure SDK clients.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.retry</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure</strong>.retry</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">To configure the retry options apply to all Azure SDK clients.</p></td>
 </tr>
 </tbody>
@@ -6221,72 +6221,72 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-keyvault-secrets<
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.keyvault.allow-telemetry</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.allow-telemetry</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Not supported anymore.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.keyvault.case-sensitive-keys</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-source[n].case-sensitive</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.case-sensitive-keys</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].case-sensitive</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.keyvault.certificate-password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-source[n].credential.client-certificate-password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.certificate-password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].credential.client-certificate-password</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.keyvault.certificate-path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-source[n].credential.client-certificate-path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.certificate-path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].credential.client-certificate-path</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.keyvault.client-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-source[n].credential.client-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.client-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].credential.client-id</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.keyvault.client-key</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-source[n].credential.client-secret</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.client-key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].credential.client-secret</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.keyvault.enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.enabled and spring.cloud.azure.keyvault.secret.property-source-enabled and spring.cloud.azure.keyvault.secret.property-source[n].enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.enabled and <strong>spring.cloud.azure.keyvault.secret</strong>.property-source-enabled and <strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].enabled</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.keyvault.order</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.order</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Not supported anymore. Use the order in property-source[n] instead.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.keyvault.refresh-interval</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-source[n].refresh-interval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.refresh-interval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].refresh-interval</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.keyvault.secret-keys</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-source[n].secret-keys</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.secret-keys</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].secret-keys</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.keyvault.tenant-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-source[n].profile.tenant-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.tenant-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].profile.tenant-id</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.keyvault.uri</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-source[n].endpoint</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-source[n].service-version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.uri</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].endpoint</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-source[n].client</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].service-version</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-source[n].proxy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].client</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-source[n].retry</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].proxy</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.secret.property-source[n].resource</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].retry</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].resource</p></td>
 </tr>
 </tbody>
 </table>
@@ -6336,16 +6336,16 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-keyvault-secrets<
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.storage.account-name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.blob.account-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.storage</strong>.account-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.blob</strong>.account-name</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.storage.account-key</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.blob.account-key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.storage</strong>.account-key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.blob</strong>.account-key</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.storage.blob-endpoint</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.blob.endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.storage</strong>.blob-endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.blob</strong>.endpoint</p></td>
 </tr>
 </tbody>
 </table>
@@ -6369,16 +6369,16 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-keyvault-secrets<
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.storage.account-name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.fileshare.account-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.storage</strong>.account-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.fileshare</strong>.account-name</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.storage.account-key</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.fileshare.account-key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.storage</strong>.account-key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.fileshare</strong>.account-key</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.storage.file-endpoint</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.fileshare.endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.storage</strong>.file-endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.fileshare</strong>.endpoint</p></td>
 </tr>
 </tbody>
 </table>
@@ -6414,16 +6414,16 @@ Configuration prefix has been changed from <code>spring.cloud.azure.eventhub</co
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">checkpoint-storage-account</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">processor.checkpoint-store.account-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhub</strong>.checkpoint-storage-account</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs.processor</strong>.checkpoint-store.account-name</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">checkpoint-access-key</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">processor.checkpoint-store.account-key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhub</strong>.checkpoint-access-key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs.processor</strong>.checkpoint-store.account-key</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">checkpoint-container</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">processor.checkpoint-store.container-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhub</strong>.checkpoint-container</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs.processor</strong>.checkpoint-store.container-name</p></td>
 </tr>
 </tbody>
 </table>
@@ -6537,16 +6537,16 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus</code>.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.account</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.queue.account-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage</strong>.account</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.account-name</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.access-key</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.queue.account-key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage</strong>.access-key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.account-key</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.resource-group</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.queue.resource.resource-group</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage</strong>.resource-group</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.resource.resource-group</p></td>
 </tr>
 </tbody>
 </table>
@@ -6592,24 +6592,24 @@ to<br>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">consumer.max-batch-size</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">consumer.batch.max-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhub.bindings.&lt;binding-name&gt;.consumer</strong>.max-batch-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.batch.max-size</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">consumer.max-wait-time</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">consumer.batch.max-wait-time</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhub.bindings.&lt;binding-name&gt;.consumer</strong>.max-wait-time</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.batch.max-wait-time</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">consumer.checkpoint-mode</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">consumer.checkpoint.mode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhub.bindings.&lt;binding-name&gt;.consumer</strong>.checkpoint-mode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.checkpoint.mode</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">consumer.checkpoint-count</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">consumer.checkpoint.count</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhub.bindings.&lt;binding-name&gt;.consumer</strong>.checkpoint-count</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.checkpoint.count</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">consumer.checkpoint-interval</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">consumer.checkpoint.interval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhub.bindings.&lt;binding-name&gt;.consumer</strong>.checkpoint-interval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.checkpoint.interval</p></td>
 </tr>
 </tbody>
 </table>
@@ -6704,12 +6704,12 @@ Legacy binder libaries are <code>azure-spring-cloud-stream-binder-servicebus-que
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.stream.servicebus.queue.bindings.*</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.stream.servicebus.bindings.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus</strong>.queue.bindings.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings</strong>.*</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.stream.servicebus.topic.bindings.*</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.stream.servicebus.bindings.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus</strong>.topic.bindings.*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings</strong>.*</p></td>
 </tr>
 </tbody>
 </table>

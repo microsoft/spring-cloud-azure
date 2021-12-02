@@ -200,7 +200,7 @@ window.onload = function() {
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Properties</th>
+<th class="tableblock halign-left valign-top">Property</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
@@ -902,7 +902,7 @@ public class AADWebApplicationAndResourceServerConfig {
 <div class="sect3">
 <h4 id="_samples"><a class="link" href="#_samples">Samples</a></h4>
 <div class="paragraph">
-<p><a href="https://github.com/Azure-Samples/azure-spring-boot-samples">Link to sample repo</a></p>
+<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
@@ -937,49 +937,49 @@ public class AADWebApplicationAndResourceServerConfig {
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.azure.active-directory.b2c.base-uri</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.base-uri</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Base uri for authorization server, if both <code>tenant</code> and <code>baseUri</code> are configured at the same time, only <code>baseUri</code> takes effect.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.azure.active-directory.b2c.client-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.client-id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The registered application ID in Azure AD B2C.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.azure.active-directory.b2c.client-secret</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.client-secret</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The client secret of a registered application.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.azure.active-directory.b2c.authorization-clients</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.authorization-clients</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A map to list all authorization clients created on Azure Portal.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.azure.active-directory.b2c.login-flow</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.login-flow</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The key name of sign in user flow.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.azure.active-directory.b2c.logout-success-url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.logout-success-url</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The target URL after a successful logout.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.azure.active-directory.b2c.tenant(Deprecated)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.tenant(Deprecated)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The Azure AD B2C&#8217;s tenant name, this is only suitable for Global cloud.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.azure.active-directory.b2c.tenant-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.tenant-id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The Azure AD B2C&#8217;s tenant id.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.azure.active-directory.b2c.user-flows</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.user-flows</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A map to list all user flows defined on Azure Portal.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>spring.cloud.azure.active-directory.b2c.user-name-attribute-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.user-name-attribute-name</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The attribute name of the username.</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>For full configurations, check appendix.</p>
+<p>For full configurations, check <a href="appendix.html#migration-guide-for-4-0">the Appendix page</a>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1492,7 +1492,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 <div class="sect3">
 <h4 id="_samples_2"><a class="link" href="#_samples_2">Samples</a></h4>
 <div class="paragraph">
-<p><a href="https://github.com/Azure-Samples/azure-spring-boot-samples">Link to sample repo</a></p>
+<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
