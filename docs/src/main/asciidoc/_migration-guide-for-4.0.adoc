@@ -99,7 +99,7 @@ new artifacts to better serve some scenarios.
 |azure-spring-boot-starter-keyvault-certificates |N/A |Not included in this release, but will be supported in later version. 
 |azure-spring-boot-starter-keyvault-secrets |spring-cloud-azure-starter-keyvault-secrets | Renamed the artifact.
 |azure-spring-boot-starter-servicebus-jms |spring-cloud-azure-starter-servicebus-jms | Renamed the artifact.
-|azure-spring-boot-starter-storage |spring-cloud-azure-starter-storage-blob <br/>spring-cloud-azure-starter-storage-file-share |The legacy artifact contains the functionality of both Storage Blob and File Share, it's been splited into two separate artifacts in 4.0, spring-cloud-azure-starter-storage-blob and spring-cloud-azure-starter-storage-file-share. 
+|azure-spring-boot-starter-storage |spring-cloud-azure-starter-storage-blob <br/>spring-cloud-azure-starter-storage-file-share |The legacy artifact contains the functionality of both Storage Blob and File Share, it's been split into two separate artifacts in 4.0, spring-cloud-azure-starter-storage-blob and spring-cloud-azure-starter-storage-file-share.
 |azure-spring-boot |N/A |This artifact has been deleted with all functionality be merged into the new `spring-cloud-azure-autoconfigure` artifact. 
 |azure-spring-cloud-autoconfigure |N/A |This artifact has been deleted with all functionality be merged into the new `spring-cloud-azure-autoconfigure` artifact. 
 |azure-spring-cloud-context |N/A |This artifact has been deleted with all functionality be merged into the new `spring-cloud-azure-autoconfigure` and `spring-cloud-azure-resourcemanager` artifacts. 
@@ -112,8 +112,8 @@ new artifacts to better serve some scenarios.
 |azure-spring-cloud-storage |N/A |This artifact has been deleted with all functionalities merged into the new `spring-cloud-azure-autoconfigure` artifact. 
 |azure-spring-cloud-stream-binder-eventhubs |spring-cloud-azure-stream-binder-eventhubs |This artifact has been refactored using new redesign, mainly `spring-cloud-azure-stream-binder-eventhubs` and `spring-cloud-azure-stream-binder-eventhubs-core`.
 |azure-spring-cloud-stream-binder-service-core |spring-cloud-azure-stream-binder-servicebus-core | Renamed the artifact.
-|azure-spring-cloud-stream-binder-servicebus-queue |spring-cloud-azure-stream-binder-servicebus |This artifact has been deleted with all funtionality be merged into the `spring-cloud-azure-stream-binder` artifact.
-|azure-spring-cloud-stream-binder-servicebus-topic |spring-cloud-azure-stream-binder-servicebus |This artifact has been deleted with all funtionality be merged into the `spring-cloud-azure-stream-binder` artifact.
+|azure-spring-cloud-stream-binder-servicebus-queue |spring-cloud-azure-stream-binder-servicebus |This artifact has been deleted with all functionality be merged into the `spring-cloud-azure-stream-binder` artifact.
+|azure-spring-cloud-stream-binder-servicebus-topic |spring-cloud-azure-stream-binder-servicebus |This artifact has been deleted with all functionality be merged into the `spring-cloud-azure-stream-binder` artifact.
 |azure-spring-integration-core |spring-integration-azure-core | Renamed the artifact.
 |azure-spring-integration-eventhubs |spring-integration-azure-eventhubs |  Rename the artifact.
 |azure-spring-integration-servicebus |spring-integration-azure-servicebus |  Rename the artifact.
@@ -204,7 +204,7 @@ runtime("org.springframework.boot:spring-boot-properties-migrator")
 
 If you run the app, it will identify the properties that are no longer managed by Spring Cloud Azure. If there is a replacement it will temporarily remap the property for you with a warning. If there isn’t a replacement, an error report will give you more information. Either way, the configuration has to be updated and the dependency removed once you have updated the configuration.
 
-Before you move on, it is a good idea to use the search feature of your IDE to double-check that you aren’t using one of the properties you’ve migrated in an integration test.
+Before you move on, it is a good idea to use the search feature of your IDE to double-check that you are not using one of the properties you’ve migrated in an integration test.
 
 IMPORTANT: We've changed many configuration properties in this change, with using the `spring-boot-properties-migrator` will help smooth your migration.
 
@@ -244,6 +244,22 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory`
 . New property `spring.cloud.azure.active-directory.b2c.enabled=true` is necessary to enable related features.
 
 IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory-b2c`, you have to specify the `spring.cloud.azure.active-directory.b2c.enabled` to true, even if the starter is included in classpath.
+
+.Property mapping from azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c
+[cols="<30,<~", options="header"]
+|===
+| Legacy properties                                      | Morden properties
+| *azure.activedirectory.b2c*.base-uri                   | *spring.cloud.azure.active-directory.b2c*.base-uri
+| *azure.activedirectory.b2c*.client-id                  | *spring.cloud.azure.active-directory.b2c*.credential.client-id
+| *azure.activedirectory.b2c*.client-secret              | *spring.cloud.azure.active-directory.b2c*.credential.client-secret
+| *azure.activedirectory.b2c*.authorization-clients      | *spring.cloud.azure.active-directory.b2c*.authorization-clients
+| *azure.activedirectory.b2c*.login-flow                 | *spring.cloud.azure.active-directory.b2c*.login-flow
+| *azure.activedirectory.b2c*.tenant-id                  | *spring.cloud.azure.active-directory.b2c*.profile.tenant-id
+| *azure.activedirectory.b2c*.user-flows                 | *spring.cloud.azure.active-directory.b2c*.user-flows
+| *azure.activedirectory.b2c*.user-name-attribute-nam    | *spring.cloud.azure.active-directory.b2c*.user-name-attribute-nam
+|===
+
+For properties like `credential.client-id`, `credential.client-secret`, `profile.tenant-id`, if `spring.cloud.azure.active-directory.b2c.PROPERTY` is not configured, `spring.cloud.azure.PROPERTY` will be used.
 
 ===== From azure-spring-boot-starter-keyvault-secrets to spring-cloud-azure-starter-keyvault-secrets
 
