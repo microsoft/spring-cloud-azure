@@ -1101,8 +1101,9 @@ select <strong>Delegated permissions</strong>, check <strong>offline_access</str
             login_hint: xxxxxxxxx          # optional
             prompt: [login,none,consent]   # optional
           base-uri: ${BASE_URI}
-          client-id: ${WEBAPP_AZURE_CLIENT_ID}
-          client-secret: ${WEBAPP_AZURE_CLIENT_SECRET}
+          credential:
+            client-id: ${WEBAPP_AZURE_CLIENT_ID}
+            client-secret: ${WEBAPP_AZURE_CLIENT_SECRET}
           login-flow: ${LOGIN_USER_FLOW_KEY}               # default to sign-up-or-sign-in, will look up the user-flows map with provided key.
           logout-success-url: ${LOGOUT_SUCCESS_URL}
           user-flows:
@@ -1241,7 +1242,8 @@ select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleSc
       active-directory:
         b2c:
           base-uri: ${BASE_URI}             # Such as: https://xxxxb2c.b2clogin.com
-          tenant-id: ${AZURE_TENANT_ID}
+          profile:
+            tenant-id: ${AZURE_TENANT_ID}
           authorization-clients:
             ${RESOURCE_SERVER_A_NAME}:
               authorization-grant-type: client_credentials
@@ -1337,9 +1339,11 @@ select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleSc
       active-directory:
         b2c:
           base-uri: ${BASE_URI}             # Such as: https://xxxxb2c.b2clogin.com
-          tenant-id: ${AZURE_TENANT_ID}
+          profile:
+            tenant-id: ${AZURE_TENANT_ID}
           app-id-uri: ${APP_ID_URI}         # If you are using v1.0 token, please configure app-id-uri for `aud` verification
-          client-id: ${AZURE_CLIENT_ID}           # If you are using v2.0 token, please configure client-id for `aud` verification</pre>
+          credential:
+            client-id: ${AZURE_CLIENT_ID}           # If you are using v2.0 token, please configure client-id for `aud` verification</pre>
 </div>
 </div>
 <div class="ulist">
@@ -1448,7 +1452,8 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
     azure:
       active-directory:
         b2c:
-          client-secret: ${WEB_API_A_AZURE_CLIENT_SECRET}
+          credential:
+            client-secret: ${WEB_API_A_AZURE_CLIENT_SECRET}
           authorization-clients:
             ${RESOURCE_SERVER_B_NAME}:
               authorization-grant-type: client_credentials
