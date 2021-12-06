@@ -261,7 +261,7 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory`
 | azure.activedirectory.user-name-attribute                                                | spring.cloud.azure.active-directory.user-name-attribute
 |===
 
-`azure.activedirectory.graph-membership-uri` has been replaced by 2 properties: `spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint` and `spring.cloud.azure.active-directory.user-group.use-transitive-members`. The first property used to specify the host name, and the second property used to specify the url path: `v1.0/me/memberOf` or `v1.0/me/transitiveMemberOf`. Here are some examples:
+NOTE: `azure.activedirectory.graph-membership-uri` has been replaced by 2 properties: `spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint` and `spring.cloud.azure.active-directory.user-group.use-transitive-members`. The first property used to specify the host name, and the second property used to specify the url path: `v1.0/me/memberOf` or `v1.0/me/transitiveMemberOf`. Here are some examples:
 
 .Examples of replacing `azure.activedirectory.graph-membership-uri`
 [cols="<30,<~", options="header"]
