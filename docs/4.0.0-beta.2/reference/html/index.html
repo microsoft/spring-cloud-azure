@@ -1664,64 +1664,68 @@ public class SampleApplication implements CommandLineRunner {
 <td class="tableblock halign-left valign-top"><p class="tableblock">It used in resource server, used to validate the audience in access_token. access_token is valid only when the audience in access_token equal to client-id or app-id-uri</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.application-type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Refer to <a href="#property-example-1-application-type">Application type</a>.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A map configure the resource APIs the application is going to visit. Each item corresponding to one resource API the application is going to visit. In Spring code, each item corresponding to one OAuth2AuthorizedClient object</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.AZURE_CLIENT_NAME.scopes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">API permissions of a resource server that the application is going to acquire.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.AZURE_CLIENT_NAME.on-demand</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This is used for incremental consent. The default value is false. If it&#8217;s true, it&#8217;s not consent when user login, when application needs the additional permission, incremental consent is performed with one OAuth2 authorization code flow.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.AZURE_CLIENT_NAME.authorization-grant-type</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Type of authorization client. Supported types are <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">authorization_code</a> (default type for webapp), <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow">on_behalf_of</a> (default type for resource-server), <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow">client_credentials</a>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.application-type</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Refer to <a href="#property-example-1-application-type">Application type</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.AZURE_CLIENT_NAME.on-demand</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This is used for incremental consent. The default value is false. If it&#8217;s true, it&#8217;s not consent when user login, when application needs the additional permission, incremental consent is performed with one OAuth2 authorization code flow.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.base-uri</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base uri for authorization server, the default value is <code><a href="https://login.microsoftonline.com/" class="bare">login.microsoftonline.com/</a></code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients.AZURE_CLIENT_NAME.scopes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">API permissions of a resource server that the application is going to acquire.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.client-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.credential.client-id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Registered application ID in Azure AD.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.client-secret</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.credential.client-secret</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">client secret of the registered application.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.graph-membership-uri</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">It&#8217;s used to load users' groups. The default value is <code><a href="https://graph.microsoft.com/v1.0/me/memberOf" class="bare">graph.microsoft.com/v1.0/me/memberOf</a></code>, this uri just get direct groups. To get all transitive membership, set it to <code><a href="https://graph.microsoft.com/v1.0/me/transitiveMemberOf" class="bare">graph.microsoft.com/v1.0/me/transitiveMemberOf</a></code>. The 2 uris are both Azure Global, check <code>Property example 1</code> if you want to use Azure China.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.post-logout-redirect-uri</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Redirect uri for posting log-out.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.resource-server.principal-claim-name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Principal claim name. Default value is "sub".</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.profile.environment.active-directory-endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base uri for authorization server, the default value is <code><a href="https://login.microsoftonline.com/" class="bare">login.microsoftonline.com/</a></code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.profile.environment.microsoft-graph-endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Microsoft graph endpoint. The default value is <code><a href="https://graph.microsoft.com/" class="bare">graph.microsoft.com/</a></code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.profile.tenant-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Tenant ID.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.resource-server.claim-to-authority-prefix-map</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Claim to authority prefix map. Default map is: "scp" -&gt; "SCOPE_", "roles" -&gt; <code>APPROLE_</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.tenant-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Tenant ID.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.resource-server.principal-claim-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Principal claim name. Default value is "sub".</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.user-group.allowed-group-ids</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Users' group id can be use in <code>@PreAuthorize(&quot;hasRole(&#39;ROLE_group_id_1&#39;)&quot;)</code>. Not all group id will take effect, only group id configured in this property will take effect. If this property&#8217;s value is <code>all</code>, then all group id will take effect.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.user-group.allowed-group-names</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Users' group name can be use in <code>@PreAuthorize(&quot;hasRole(&#39;ROLE_group_name_1&#39;)&quot;)</code>. Not all group name will take effect, only group names configured in this property will take effect.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.user-group.allowed-group-ids</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Users' group id can be use in <code>@PreAuthorize(&quot;hasRole(&#39;ROLE_group_id_1&#39;)&quot;)</code>. Not all group id will take effect, only group id configured in this property will take effect. If this property&#8217;s value is <code>all</code>, then all group id will take effect.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.user-group.use-transitive-members</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to use <code>/v1.0/me/transitiveMemberOf</code> instead of  <code>/v1.0/me/memberOf</code> to get groups.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.user-name-attribute</p></td>
@@ -2025,9 +2029,11 @@ The tailing <code>/</code> cannot be omitted.
   cloud:
     azure:
       active-directory:
-        tenant-id: ${AZURE_TENANT_ID}
-        client-id: ${AZURE_CLIENT_ID}
-        client-secret: ${AZURE_CLIENT_SECRET}</code></pre>
+        profile:
+          tenant-id: ${AZURE_TENANT_ID}
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-secret: ${AZURE_CLIENT_SECRET}</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -2086,9 +2092,11 @@ The tailing <code>/</code> cannot be omitted.
   cloud:
     azure:
       active-directory:
-        tenant-id: ${AZURE_TENANT_ID}
-        client-id: ${AZURE_CLIENT_ID}
-        client-secret: ${AZURE_CLIENT_SECRET}
+        profile:
+          tenant-id: ${AZURE_TENANT_ID}
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-secret: ${AZURE_CLIENT_SECRET}
         authorization-clients:
           graph:
             scopes: https://graph.microsoft.com/Analytics.Read, email</code></pre>
@@ -2214,9 +2222,11 @@ The tailing <code>/</code> cannot be omitted.
   cloud:
     azure:
       active-directory:
-        tenant-id: ${AZURE_TENANT_ID}
-        client-id: ${AZURE_CLIENT_ID}
-        client-secret: ${AZURE_CLIENT_SECRET}
+        profile:
+          tenant-id: ${AZURE_TENANT_ID}
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-secret: ${AZURE_CLIENT_SECRET}
         app-id-uri: ${WEB_API_ID_URI}
         authorization-clients:
           graph:
@@ -2295,9 +2305,11 @@ The tailing <code>/</code> cannot be omitted.
   cloud:
     azure:
       active-directory:
-        tenant-id: ${AZURE_TENANT_ID}
-        client-id: ${AZURE_CLIENT_ID}
-        client-secret: ${AZURE_CLIENT_SECRET}
+        profile:
+          tenant-id: ${AZURE_TENANT_ID}
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-secret: ${AZURE_CLIENT_SECRET}
         app-id-uri: ${WEB_API_ID_URI}
         application-type: web_application_and_resource_server  # This is required.
         authorization-clients:
