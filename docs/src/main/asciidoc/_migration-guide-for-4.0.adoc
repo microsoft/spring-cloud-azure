@@ -259,7 +259,7 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory-
 | *azure.activedirectory.b2c*.user-name-attribute-nam    | *spring.cloud.azure.active-directory.b2c*.user-name-attribute-nam
 |===
 
-For properties like `credential.client-id`, `credential.client-secret`, `profile.tenant-id`, if `spring.cloud.azure.active-directory.b2c.PROPERTY` is not configured, `spring.cloud.azure.PROPERTY` will be used.
+NOTE: For properties like `credential.client-id`, `credential.client-secret`, `profile.tenant-id`, if `spring.cloud.azure.active-directory.b2c.PROPERTY` is not configured, `spring.cloud.azure.PROPERTY` will be used.
 
 ===== From azure-spring-boot-starter-keyvault-secrets to spring-cloud-azure-starter-keyvault-secrets
 
