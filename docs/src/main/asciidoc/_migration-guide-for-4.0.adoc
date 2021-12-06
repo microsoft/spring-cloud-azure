@@ -238,6 +238,42 @@ Check link:appendix.html[here] for a full list of configurations.
 
 IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory`, you have to specify the `spring.cloud.azure.active-directory.enabled` to true, even if the starter is included in classpath.
 
+.Property mapping from azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory
+[cols="<30,<~", options="header"]
+|===
+| Legacy properties                                                                        | Morden properties
+| azure.activedirectory.app-id-uri                                                         | spring.cloud.azure.active-directory.app-id-uri
+| azure.activedirectory.application-type                                                   | spring.cloud.azure.active-directory.application-type
+| azure.activedirectory.authorization-clients                                              | spring.cloud.azure.active-directory.authorization-clients
+| azure.activedirectory.authorization-clients.AZURE_CLIENT_NAME.authorization-grant-type   | spring.cloud.azure.active-directory.authorization-clients.AZURE_CLIENT_NAME.authorization-grant-type
+| azure.activedirectory.authorization-clients.AZURE_CLIENT_NAME.on-demand                  | spring.cloud.azure.active-directory.authorization-clients.AZURE_CLIENT_NAME.on-demand
+| azure.activedirectory.authorization-clients.AZURE_CLIENT_NAME.scopes                     | spring.cloud.azure.active-directory.authorization-clients.AZURE_CLIENT_NAME.scopes
+| azure.activedirectory.base-uri                                                           | spring.cloud.azure.active-directory.profile.environment.active-directory-endpoint
+| azure.activedirectory.client-id                                                          | spring.cloud.azure.active-directory.credential.client-id
+| azure.activedirectory.client-secret                                                      | spring.cloud.azure.active-directory.credential.client-secret
+| azure.activedirectory.graph-membership-uri                                               | Please check the following table for more information.
+| azure.activedirectory.post-logout-redirect-uri                                           | spring.cloud.azure.active-directory.post-logout-redirect-uri
+| azure.activedirectory.resource-server.claim-to-authority-prefix-map                      | spring.cloud.azure.active-directory.resource-server.claim-to-authority-prefix-map
+| azure.activedirectory.resource-server.principal-claim-name                               | spring.cloud.azure.active-directory.resource-server.principal-claim-name
+| azure.activedirectory.tenant-id                                                          | spring.cloud.azure.active-directory.tenant-id
+| azure.activedirectory.user-group.allowed-group-ids                                       | spring.cloud.azure.active-directory.user-group.allowed-group-ids
+| azure.activedirectory.user-group.allowed-group-names                                     | spring.cloud.azure.active-directory.user-group.allowed-group-names
+| azure.activedirectory.user-name-attribute                                                | spring.cloud.azure.active-directory.user-name-attribute
+|===
+
+NOTE: `azure.activedirectory.graph-membership-uri` has been replaced by 2 properties: `spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint` and `spring.cloud.azure.active-directory.user-group.use-transitive-members`. The first property used to specify the host name, and the second property used to specify the url path: `v1.0/me/memberOf` or `v1.0/me/transitiveMemberOf`. Here are some examples:
+
+.Examples of replacing `azure.activedirectory.graph-membership-uri`
+[cols="<30,<~", options="header"]
+|===
+| Example value of azure.activedirectory.graph-membership-uri | Morden configuration
+| https://graph.microsoft.com/v1.0/me/memberOf              | spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=`https://graph.microsoft.com/`, spring.cloud.azure.active-directory.user-group.use-transitive-members=`false`
+| https://graph.microsoft.com/v1.0/me/transitiveMemberOf    | spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=`https://graph.microsoft.com/`, spring.cloud.azure.active-directory.user-group.use-transitive-members=`true`
+| https://microsoftgraph.chinacloudapi.cn/v1.0/me/memberOf  | spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=`https://microsoftgraph.chinacloudapi.cn/`,  spring.cloud.azure.active-directory.user-group.use-transitive-members=`false`
+| https://microsoftgraph.chinacloudapi.cn/v1.0/me/transitiveMemberOf | spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=`https://microsoftgraph.chinacloudapi.cn/`, spring.cloud.azure.active-directory.user-group.use-transitive-members=`true`
+|===
+
+
 ===== From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c
 
 . All configuration property names changed the prefix from `azure.activedirectory.b2c` to `spring.cloud.azure.active-directory.b2c`.
