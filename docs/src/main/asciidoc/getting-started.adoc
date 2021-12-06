@@ -1,0 +1,17 @@
+== Setting up your App Configuration Store
+
+To create your Azure App Configuration store, you can use:
+
+[source,azurecli,indent=0]
+----
+az appconfig create --resource-group <your-resource-group> --name <name-of-your-new-store> --sku Standard
+----
+
+This command will create you a new empty configuration store. You can upload you configurations using the import command:
+
+[source,azurecli,indent=0]
+----
+az appconfig kv import -n <name-of-your-new-store> -s file --path <location-of-your-properties-file> --format properties --prefix /application/
+----
+
+It will have you confirm your configurations before loading them. You can upload yaml files by changing the format to yaml. The prefix field is important as it is the default prefix loaded by the client library.

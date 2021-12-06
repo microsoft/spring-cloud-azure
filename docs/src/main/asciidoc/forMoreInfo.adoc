@@ -1,0 +1,3 @@
+== For more information
+
+See link:https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/appconfiguration/azure-spring-cloud-starter-appconfiguration-config[Starter Readme] for more details and compete documentation of all settings.

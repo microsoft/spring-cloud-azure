@@ -1,0 +1,86 @@
+== Client Usage
+
+To use the feature in an application, you can build it as a Spring Boot application. The most convenient way to add the dependency is with our Spring Boot starter `com.azure.spring:azure-spring-cloud-starter-appconfiguration-config`. The following example `pom.xml` file uses Azure App Configuration:
+
+[source,xml,indent=0]
+----
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>{spring-boot-version}</version>
+    <relativePath />
+</parent>
+
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-dependencies</artifactId>
+            <version>{spring-cloud-version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>com.azure.spring</groupId>
+        <artifactId>azure-spring-cloud-starter-appconfiguration-config</artifactId>
+        <version>{azure-appconfiguration-version}</version>
+    </dependency>
+</dependencies>
+<build>
+    <plugins>
+           <plugin>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-maven-plugin</artifactId>
+           </plugin>
+    </plugins>
+</build>
+----
+
+A basic Spring Boot application using App Configuration:
+
+[source,java,indent=0]
+----
+@SpringBootApplication
+@RestController
+public class Application {
+
+    @RequestMapping("/")
+    public String home() {
+        return "Hello World!";
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+----
+
+with `bootstrap.properties` containing:
+
+[source,properties,indent=0]
+----
+spring.cloud.azure.appconfiguration.stores[0].connection-string=${CONFIG_STORE_CONNECTION_STRING}
+----
+
+where `CONFIG_STORE_CONNECTION_STRING` is an Environment Variable with the connection string to your Azure App Configuration Store. You can access your connection string by running:
+
+[source,azurecli,indent=0]
+----
+az appconfig credential list --name <name-of-your-store>
+----
+
+By default, if no configurations are set, then the configurations starting with `/application/` are loaded with a default label of `(No Label)` unless a Spring Profile is set in which case the default label is your Spring Profile. Because the store is empty no configurations are loaded, but the Azure App Configuration Property Source is still generated.
+
+A property source named `/application/https://<name-of-your-store>.azconfig.io/` is created containing the properties of that store.The label used in the request is appended to the end of the name, if no label is set the character `\0` is there, as an empty space.

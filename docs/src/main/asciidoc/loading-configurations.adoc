@@ -1,0 +1,87 @@
+== Loading Configuration
+
+The library supports the loading of one or multiple App Configuration stores. This allows for complex configuration scenarios, such as loading of configurations from multiple stores at once or having fallbacks for added resilience. In the situation where a key is duplicated across multiple stores, loading all stores will result in the highest priority, last one wins, stores configuration being loaded. Example:
+
+[source,properties,indent=0]
+----
+spring.cloud.azure.appconfiguration.stores[0].connection-string=[first-store-connection-string]
+spring.cloud.azure.appconfiguration.stores[1].connection-string=[second-store-connection-string]
+----
+
+In the example, if both the first and second stores have the same configuration, the configuration in the second store has the highest priority, last one wins.
+
+=== Selecting Configurations
+
+Configurations are loaded by their key and label. By default, the configurations that start with the key `/application/` are loaded. The default label is `${spring.profiles.active}`. If `${spring.profiles.active}` is not set then configuration with the null label seen as `(No Label)` in the portal are loaded.
+
+The configurations that are loaded can be configured by selecting different key and label filters.
+
+[source,properties,indent=0]
+----
+spring.cloud.azure.appconfiguration.stores[0].selects[0].key-filter=[my-key]
+spring.cloud.azure.appconfiguration.stores[0].selects[0].label-filter=[my-label]
+----
+
+`key-filter` supports the following filters:
+
+.Key Filters
+[options="header"]
+|===
+|Key Filter |Effect
+|`*`|Matches **any** key
+|`abc`|Matches a key named  **abc**
+|`abc*`|Matches key names that start with **abc**
+|`abc,xyz`|Matches key names **abc** or **xyz** (limited to 5 CSV)
+|===
+
+`label-filter` supports the following filters:
+
+.Label Filters
+[options="header"]
+|===
+|Label |Description
+|`*` |Matches **any** label, which includes `\0`
+|`\0` |Matches `null` labels, seen as `(No Label)` in the portal
+|`1.0.0` |Matches label **1.0.0** exactly
+|`1.0.*` |Matches labels that start with **1.0.**
+|`,1.0.0` |Matches labels `null` or **1.0.0**, limited to five CSVs
+|===
+
+If you are using yaml with label filters and need to start with `null`, then the label filter needs to be surrounded by single quotes.
+
+[source,yml,indent=0]
+----
+spring:
+  cloud:
+    azure:
+      appconfiguration:
+        stores:
+         -
+           selects:
+             -
+              label-filter: ',1.0.0'
+----
+
+NOTE: You are unable to combine `*` with `,` in filters. In that case you need to use an additional select.
+
+=== Spring Profiles
+
+By default, `spring.profiles.active` is set as the default `label-filter` for all selected configurations. This functionality can be overridden by the `label-filter`. The Spring Profiles can be used in the `label-filter` by using `${spring.profiles.active}` in the `label-filter`.
+
+[source,properties,indent=0]
+----
+spring.cloud.azure.appconfiguration.stores[0].selects[0].label-filter=,${spring.profiles.active}
+spring.cloud.azure.appconfiguration.stores[0].selects[1].label-filter=${spring.profiles.active}_local
+----
+
+In the first `label-filter`, all configurations with `null` label are loaded, then all configurations matching the Spring Profiles. Spring Profiles have priority over the `null` configurations, because they are at the end.
+
+In the second `label-filter`, the string `_local` is appended to the end of the Spring Profiles, though only to the last Spring Profile.
+
+=== Disabled Stores
+
+Using the configuration `spring.cloud.azure.appconfiguration.enabled` you can disable loading all configuration stores. With the `spring.cloud.azure.appconfiguration.stores[0].enabled` configuration, you can disable an individual store.
+
+In addition to disabling all stores, stores can be configured to be disabled if they fail to load using the `spring.cloud.azure.appconfiguration.stores[0].fail-fast`. When `fail-fast` is enabled, set to `true`, a `RuntimeException` that would result in the application not starting up will instead have the store disabled with no configurations from it loaded. If a configuration store is disabled on startup it will not be checked for changes with refresh, or attempted to be loaded from if configurations are updated.
+
+If, an error resulting in a `RuntimeException` happens during a refresh check or a reload of configuration the refresh attempt is ended and will be retried after the `refresh-interval` has passed.
