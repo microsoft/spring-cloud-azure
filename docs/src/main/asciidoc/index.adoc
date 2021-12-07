@@ -1,4 +1,4 @@
-= Spring Cloud Azure App Configuration Config
+= Spring Cloud Azure App Configuration
 :revnumber: {project-version}
 
 (C) 2016-2021 the original authors.
