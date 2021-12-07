@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Authentication</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_authentication">Authentication</a>
+<ul class="sectlevel2">
+<li><a href="#_connection_string">Connection String</a></li>
+<li><a href="#_user_assigned_identity">User Assigned Identity</a></li>
+<li><a href="#_system_assigned_identity">System Assigned Identity</a></li>
+<li><a href="#_token_credential">Token Credential</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_authentication"><a class="link" href="#_authentication">Authentication</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The client library supports all forms of Identity supported by the <a href="https://github.com/Azure/azure-sdk-for-java/tree/azure-identity_1.3.6/sdk/identity/azure-identity">Azure Identity Library</a>. Authentication can be done through configuration for Connection Strings and Managed Identity. All other forms of Identity can be done by using the <code>TokenCredentialProvider</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="_connection_string"><a class="link" href="#_connection_string">Connection String</a></h3>
+<div class="paragraph">
+<p>Authentication through connection string is the simplest form to setup. You can access a stores connection strings using:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-azurecli" data-lang="azurecli">az appconfig credential list --name &lt;name-of-your-store&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The connection string can be then set to the property <code>spring.cloud.azure.appconfiguration.stores[0].connection-string</code>. It is highly recommended that the connection string in the local configuration file should be a placeholder value, which should map to an Environment Variable to avoid having it added to source control.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_user_assigned_identity"><a class="link" href="#_user_assigned_identity">User Assigned Identity</a></h3>
+<div class="paragraph">
+<p>If you already don&#8217;t have one, you can create a new Managed Identity using:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-azurecli" data-lang="azurecli">az identity create -g myResourceGroup -n myUserAssignedIdentity</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Connecting to Azure app configuration with any authentication method other connection string requires three steps to setup.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Adding the Identity to the resource connecting to your App Configuration store</p>
+</li>
+<li>
+<p>Adding the required information to your client application.</p>
+</li>
+<li>
+<p>Authorizing the Identity to use App Configuration.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>For user assigned, the identity needs to be added to the azure resource. How the user assigned identity is added varies between resources so you will need to check the specific docs of that resource.</p>
+</div>
+<div class="paragraph">
+<p>Configuration of the client application just needs two values to be set.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.managed-identity.client-id= &lt;your client id&gt;
+spring.cloud.azure.appconfiguration.stores[0].endpoint= &lt;URI of your Configuration Store&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The first property tells us which of the configured User Assigned identities to use. The second is which configuration store we are connecting to. With this method, all configuration stores need to use the same User Assigned Identity.</p>
+</div>
+<div class="paragraph">
+<p>Next, the User Assigned Identity needs to be setup in your configuration store. Setup can be done through IAM in the Azure Portal or using the cli:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-azurecli" data-lang="azurecli">az role assignment  create --role "App Configuration Data Reader" --assignee &lt;your client id&gt; --scope /subscriptions/&lt;your subscription&gt;/resourceGroups/&lt;your stores resource group&gt;/providers/Microsoft.AppConfiguration/configurationStores/&lt;name of your Configuration Store&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_system_assigned_identity"><a class="link" href="#_system_assigned_identity">System Assigned Identity</a></h3>
+<div class="paragraph">
+<p>Setting up System Assigned Identity involves enabling it on the azure resource. How the identity is enabled depends on the resource, so you will need to check the documentation for that resource. Once it is enabled, you need to configure your client application to use it.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].endpoint= &lt;URI of your Configuration Store&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You will then need to assign the System Assigned Identity to read configurations.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-azurecli" data-lang="azurecli">az role assignment  create --role "App Configuration Data Reader" --assignee &lt;your client id&gt; --scope /subscriptions/&lt;your subscription&gt;/resourceGroups/&lt;your stores resource group&gt;/providers/Microsoft.AppConfiguration/configurationStores/&lt;name of your Configuration Store&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_token_credential"><a class="link" href="#_token_credential">Token Credential</a></h3>
+<div class="paragraph">
+<p>To authenticate with any other method supported by the [Azure Identity Library](<a href="https://github.com/Azure/azure-sdk-for-java/tree/azure-identity_1.3.6/sdk/identity/azure-identity" class="bare">https://github.com/Azure/azure-sdk-for-java/tree/azure-identity_1.3.6/sdk/identity/azure-identity</a>), you can use <code>AppConfigurationCredentialProvider</code>. <code>AppConfigurationCredentialProvider</code> allows you to dynamically return any <code>TokenCredential</code> for any given URI to connect to your Configuration stores.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public AppConfigurationCredentialProvider appConfigurationCredentialProvider() {
+    return new AppConfigurationCredentialProvider() {
+
+        @Override
+        public TokenCredential getAppConfigCredential(String uri) {
+
+            ...
+
+            return myTokenCredential;
+        }
+    };
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You will also need to configure the endpoints that you will be connecting too.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].endpoint= &lt;URI of your Configuration Store&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note: Only 1 authentication method can be defined per endpoint; Connection String, User Assigned Identity, Token Credential. If you need to mix and match you can have <code>AppConfigurationCredentialProvider</code> return <code>null</code> for stores that use a different method.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>
