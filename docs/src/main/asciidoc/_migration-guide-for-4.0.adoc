@@ -255,7 +255,7 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory`
 | azure.activedirectory.post-logout-redirect-uri                                           | spring.cloud.azure.active-directory.post-logout-redirect-uri
 | azure.activedirectory.resource-server.claim-to-authority-prefix-map                      | spring.cloud.azure.active-directory.resource-server.claim-to-authority-prefix-map
 | azure.activedirectory.resource-server.principal-claim-name                               | spring.cloud.azure.active-directory.resource-server.principal-claim-name
-| azure.activedirectory.tenant-id                                                          | spring.cloud.azure.active-directory.tenant-id
+| azure.activedirectory.tenant-id                                                          | spring.cloud.azure.active-directory.profile.tenant-id
 | azure.activedirectory.user-group.allowed-group-ids                                       | spring.cloud.azure.active-directory.user-group.allowed-group-ids
 | azure.activedirectory.user-group.allowed-group-names                                     | spring.cloud.azure.active-directory.user-group.allowed-group-names
 | azure.activedirectory.user-name-attribute                                                | spring.cloud.azure.active-directory.user-name-attribute
@@ -621,13 +621,12 @@ spring:
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-|com.azure.spring.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter |com.azure.spring.cloud.autoconfigure.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter
-|com.azure.spring.aad.webapp.AADWebSecurityConfigurerAdapter |com.azure.spring.cloud.autoconfigure.aad.webapp.AADWebSecurityConfigurerAdapter
-|com.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter |com.azure.spring.cloud.autoconfigure.aad.filter.AADAppRoleStatelessAuthenticationFilter
-|com.azure.spring.autoconfigure.aad.AADAuthenticationFilter |com.azure.spring.cloud.autoconfigure.aad.filter.AADAuthenticationFilter
-|com.azure.spring.autoconfigure.aad.AADAuthenticationProperties |com.azure.spring.cloud.autoconfigure.aad.properties.AADAuthenticationProperties
-|com.azure.spring.autoconfigure.aad.Membership |com.azure.spring.cloud.autoconfigure.aad.graph.Membership
-|com.azure.spring.autoconfigure.aad.UserPrincipal |com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipal
+|com.azure.spring.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter | com.azure.spring.cloud.autoconfigure.aad.AADResourceServerWebSecurityConfigurerAdapter
+|com.azure.spring.aad.webapp.AADWebSecurityConfigurerAdapter | com.azure.spring.cloud.autoconfigure.aad.AADWebSecurityConfigurerAdapter
+|com.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter | com.azure.spring.cloud.autoconfigure.aad.filter.AADAppRoleStatelessAuthenticationFilter
+|com.azure.spring.autoconfigure.aad.AADAuthenticationFilter | com.azure.spring.cloud.autoconfigure.aad.filter.filter.AADAuthenticationFilter
+|com.azure.spring.autoconfigure.aad.AADAuthenticationProperties | com.azure.spring.cloud.autoconfigure.aad.properties.AADAuthenticationProperties
+|com.azure.spring.autoconfigure.aad.UserPrincipal | com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipal
 |===
 
 ==== From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c
@@ -636,8 +635,8 @@ spring:
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-|com.azure.spring.autoconfigure.b2c.AADB2CJwtBearerTokenAuthenticationConverter |com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2CJwtBearerTokenAuthenticationConverter
-|com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer |com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2COidcLoginConfigurer
+|com.azure.spring.autoconfigure.b2c.AADB2CJwtBearerTokenAuthenticationConverter | com.azure.spring.cloud.autoconfigure.aadb2c.AADB2CJwtBearerTokenAuthenticationConverter
+|com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer | com.azure.spring.cloud.autoconfigure.aadb2c.AADB2COidcLoginConfigurer
 |===
 
 
