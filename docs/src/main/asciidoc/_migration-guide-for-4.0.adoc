@@ -255,7 +255,7 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory`
 | azure.activedirectory.post-logout-redirect-uri                                           | spring.cloud.azure.active-directory.post-logout-redirect-uri
 | azure.activedirectory.resource-server.claim-to-authority-prefix-map                      | spring.cloud.azure.active-directory.resource-server.claim-to-authority-prefix-map
 | azure.activedirectory.resource-server.principal-claim-name                               | spring.cloud.azure.active-directory.resource-server.principal-claim-name
-| azure.activedirectory.tenant-id                                                          | spring.cloud.azure.active-directory.tenant-id
+| azure.activedirectory.tenant-id                                                          | spring.cloud.azure.active-directory.profile.tenant-id
 | azure.activedirectory.user-group.allowed-group-ids                                       | spring.cloud.azure.active-directory.user-group.allowed-group-ids
 | azure.activedirectory.user-group.allowed-group-names                                     | spring.cloud.azure.active-directory.user-group.allowed-group-names
 | azure.activedirectory.user-name-attribute                                                | spring.cloud.azure.active-directory.user-name-attribute
