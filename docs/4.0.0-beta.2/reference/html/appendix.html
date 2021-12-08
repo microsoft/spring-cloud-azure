@@ -6234,7 +6234,7 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-active-directory<
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">azure.activedirectory.tenant-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.tenant-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.profile.tenant-id</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">azure.activedirectory.user-group.allowed-group-ids</p></td>
@@ -7031,11 +7031,11 @@ The binder type is renamed from: servicebus-queue/servicebus-topic to <code>serv
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.AADResourceServerWebSecurityConfigurerAdapter</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapp.AADWebSecurityConfigurerAdapter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.webapp.AADWebSecurityConfigurerAdapter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.AADWebSecurityConfigurerAdapter</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter</p></td>
@@ -7043,15 +7043,11 @@ The binder type is renamed from: servicebus-queue/servicebus-topic to <code>serv
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.AADAuthenticationFilter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.filter.AADAuthenticationFilter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.filter.filter.AADAuthenticationFilter</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.AADAuthenticationProperties</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.properties.AADAuthenticationProperties</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.Membership</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.graph.Membership</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.UserPrincipal</p></td>
@@ -7077,11 +7073,11 @@ The binder type is renamed from: servicebus-queue/servicebus-topic to <code>serv
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.b2c.AADB2CJwtBearerTokenAuthenticationConverter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2CJwtBearerTokenAuthenticationConverter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aadb2c.AADB2CJwtBearerTokenAuthenticationConverter</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.b2c.AADB2COidcLoginConfigurer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aadb2c.AADB2COidcLoginConfigurer</p></td>
 </tr>
 </tbody>
 </table>
