@@ -33,6 +33,8 @@ Please refer to Javadoc for details.
 
 This starter provides the following 2 parts of configuration options:
 
+NOTE: From version 4.0.0, when the property of **spring.cloud.azure.eventhubs.processor.checkpointStore.createContainerIfNotExists** is not enabled manually, no Storage container will be created automatically with the name from **spring.cloud.azure.eventhubs.eventHubName**.
+
 ===== Azure Common Configuration Options
 Below properties can also be configured with the default Spring Cloud Azure unified properties by changing the prefix from *spring.cloud.azure.eventhubs* to *spring.cloud.azure*.
 
