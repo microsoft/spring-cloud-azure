@@ -23,6 +23,8 @@ Provide Spring Integration support for these Azure services: Event Hubs, Service
 
 ==== Configuration
 
+NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+
 This starter provides the following 2 parts of configuration options:
 
 ===== Azure Common Configuration Options
@@ -311,6 +313,8 @@ Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/
 ----
 
 ==== Configuration
+
+NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
 ===== Azure Common Configuration Options
 Below properties can also be configured with the default Spring Cloud Azure unified properties by changing the prefix
@@ -642,6 +646,8 @@ the value of the session id will eventually be used to overwrite the value of th
 ----
 
 ==== Configuration
+
+NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
 ===== Azure Common Configuration Options
 Below properties can also be configured with the default Spring Cloud Azure unified properties,
