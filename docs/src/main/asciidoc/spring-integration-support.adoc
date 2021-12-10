@@ -15,7 +15,7 @@ Azure Event Hubs is a big data streaming platform and event ingestion service. I
 
 Spring Integration enables lightweight messaging within Spring-based applications and supports integration with external systems via declarative adapters. Those adapters provide a higher-level of abstraction over Spring’s support for remoting, messaging, and scheduling. The *Spring Integration for Event Hubs* extension project provides inbound and outbound channel adapters and gateways for Azure Event Hubs.
 
-Note: RxJava support APIs is dropped from version 4.0.0.
+NOTE: RxJava support APIs is dropped from version 4.0.0.
 Please refer to Javadoc for details.
 
 ==== Dependency Setup
@@ -313,7 +313,7 @@ Spring Integration enables lightweight messaging within Spring-based application
 
 The Spring Integration for Azure Service Bus extension project provides inbound and outbound channel adapters for Azure Service Bus.
 
-Note: CompletableFuture support APIs have been deprecated from version 2.10.0, and is replaced by Reactor Core from version 4.0.0.
+NOTE: CompletableFuture support APIs have been deprecated from version 2.10.0, and is replaced by Reactor Core from version 4.0.0.
 Please refer to Javadoc for details.
 
 ==== Dependency Setup
