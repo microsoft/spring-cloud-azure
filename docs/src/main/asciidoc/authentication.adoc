@@ -7,6 +7,9 @@
 :azure-service-bus-data-owner: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-service-bus-data-owner
 :azure-service-bus-data-receiver: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-service-bus-data-receiver
 :azure-service-bus-data-sender: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-service-bus-data-sender
+:azure-storage-blob-data-owner: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#storage-blob-data-owner
+:azure-storage-blob-data-reader: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#storage-blob-data-reader
+:azure-storage-queue-data-reader: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#storage-queue-data-reader
 :key-vault-access-policy: https://docs.microsoft.com/azure/key-vault/general/assign-access-policy
 :cosmos-db-rbac: https://docs.microsoft.com/azure/cosmos-db/how-to-setup-rbac
 [#authentication]
@@ -120,6 +123,15 @@ Following are the Azure built-in roles for authorizing access to Azure services 
 
 |link:{azure-service-bus-data-sender}[Azure Service Bus Data Sender]
 |Allows for send access to Azure Service Bus resources.
+
+|link:{azure-storage-blob-data-owner}[Storage Blob Data Owner]
+|Provides full access to Azure Storage blob containers and data, including assigning POSIX access control.
+
+|link:{azure-storage-blob-data-reader}[Storage Blob Data Reader]
+|Read and list Azure Storage containers and blobs.
+
+|link:{azure-storage-queue-data-reader}[Storage Queue Data Reader]
+|Read and list Azure Storage queues and queue messages.
 
 |===
 
