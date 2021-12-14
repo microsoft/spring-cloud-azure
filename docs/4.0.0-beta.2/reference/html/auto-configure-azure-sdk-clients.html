@@ -243,6 +243,18 @@ Please refer to <a href="index.html#starter-dependencies">Starter Dependencies</
 </div>
 <div class="sect2">
 <h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>Configuration properties for each Azure service are under prefix <code>spring.cloud.azure</code>.</p>
 </div>
@@ -262,7 +274,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 <div class="sect2">
 <h3 id="_basic_usage"><a class="link" href="#_basic_usage">Basic Usage</a></h3>
 <div class="paragraph">
-<p>Adding below properties to your <code>application.yaml</code> will auto-configure the Cosmos Client for you, both <code>CosmosClient</code> and <code>CosmosAsyncClient</code> are available in the context and could be autowired.</p>
+<p>Adding below properties to your <code>application.yaml</code> will autoconfigure the Cosmos Client for you, both <code>CosmosClient</code> and <code>CosmosAsyncClient</code> are available in the context and could be autowired.</p>
 </div>
 <div class="listingblock">
 <div class="content">

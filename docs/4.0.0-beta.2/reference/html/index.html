@@ -830,6 +830,18 @@ There could be some <code>ERROR</code> logs be printed out while the <code>Defau
 </tr>
 </table>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="managed-identity"><a class="anchor" href="#managed-identity"></a><a class="link" href="#managed-identity">6.2. Managed Identity</a></h3>
@@ -839,6 +851,18 @@ There could be some <code>ERROR</code> logs be printed out while the <code>Defau
 <div class="paragraph">
 <p>We encourage using manged identity instead of using connection string or key in your application for it&#8217;s more secure and will save the trouble of managing secrets and credentials. In this case, <code>DefaultAzureCredential</code> could better serve the scenario of developing locally using account information stored locally and deploying the application to Azure Cloud and using Manged Identity.</p>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="other-credential-types"><a class="anchor" href="#other-credential-types"></a><a class="link" href="#other-credential-types">6.3. Other Credential Types</a></h3>
@@ -846,7 +870,22 @@ There could be some <code>ERROR</code> logs be printed out while the <code>Defau
 <p>Developers who want more control or whose scenario isn&#8217;t served by the <code>DefaultAzureCredential</code> or whose scenario isn&#8217;t served by the default settings should use other credential types.</p>
 </div>
 <div class="sect3">
-<h4 id="authentication-with-azure-active-directory"><a class="anchor" href="#authentication-with-azure-active-directory"></a><a class="link" href="#authentication-with-azure-active-directory">6.3.1. Authentication with Azure Active Directory</a></h4>
+<h4 id="authentication-and-authorization-with-azure-active-directory"><a class="anchor" href="#authentication-and-authorization-with-azure-active-directory"></a><a class="link" href="#authentication-and-authorization-with-azure-active-directory">6.3.1. Authentication and authorization with Azure Active Directory</a></h4>
+<div class="paragraph">
+<p>With Azure AD, you can use Azure role-based access control (Azure RBAC) to grant permissions to a security principal, which may be a user, or an application service principal. When a security principal (a user, or an application) attempts to access an Azure resource, for example an Event Hubs resource, the request must be authorized. With Azure AD, access to a resource is a two-step process.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>First, the security principal&#8217;s identity is authenticated, and an OAuth 2.0 token is returned.</p>
+</li>
+<li>
+<p>Next, the token is passed as part of a request to the Azure service to authorize access to the specified resource.</p>
+</li>
+</ol>
+</div>
+<div class="sect4">
+<h5 id="authenticate-with-azure-active-directory"><a class="anchor" href="#authenticate-with-azure-active-directory"></a><a class="link" href="#authenticate-with-azure-active-directory">Authenticate with Azure Active Directory</a></h5>
 <div class="paragraph">
 <p>For applications want to connect to resources that support Azure Active Directory (Azure AD) authentication, below configurations could be set with prefix <code>spring.cloud.azure.credential</code> or <code>spring.cloud.azure.&lt;azure-service&gt;.credential</code></p>
 </div>
@@ -868,7 +907,7 @@ There could be some <code>ERROR</code> logs be printed out while the <code>Defau
 <td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when performing service principal authentication with Azure.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">client-select</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">client-secret</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure.</p></td>
 </tr>
 <tr>
@@ -906,6 +945,99 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </table>
 </div>
 </div>
+<div class="sect4">
+<h5 id="authorize-access-with-azure-active-directory"><a class="anchor" href="#authorize-access-with-azure-active-directory"></a><a class="link" href="#authorize-access-with-azure-active-directory">Authorize access with Azure Active Directory</a></h5>
+<div class="paragraph">
+<p>The authorization step requires that one or more Azure roles be assigned to the security principal. The roles that are assigned to a security principal determine the permissions that the principal will have.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+To see the list of all Azure built-in roles please check <a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles">Azure built-in roles</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Following are the Azure built-in roles for authorizing access to Azure services supported in Spring Cloud Azure:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 10. Azure built-in roles</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Role</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#app-configuration-data-owner">App Configuration Data Owner</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows full access to App Configuration data.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#app-configuration-data-reader">App Configuration Data Reader</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows read access to App Configuration data.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-event-hubs-data-owner">Azure Event Hubs Data Owner</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows for full access to Azure Event Hubs resources.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-event-hubs-data-receiver">Azure Event Hubs Data Receiver</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows receive access to Azure Event Hubs resources.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-event-hubs-data-send">Azure Event Hubs Data Sender</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows send access to Azure Event Hubs resources.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-service-bus-data-owner">Azure Service Bus Data Owner</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows for full access to Azure Service Bus resources.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-service-bus-data-receiver">Azure Service Bus Data Receiver</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows for receive access to Azure Service Bus resources.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-service-bus-data-sender">Azure Service Bus Data Sender</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows for send access to Azure Service Bus resources.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+A Key Vault access policy determines whether a given security principal, namely a user, application or user group, can perform different operations on Key Vault secrets, keys, and certificates. You can assign access policies using the Azure portal, the Azure CLI, or Azure PowerShell. Check <a href="https://docs.microsoft.com/azure/key-vault/general/assign-access-policy">here</a> for more details.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Azure Cosmos DB exposes 2 built-in role definitions: <code>Cosmos DB Built-in Data Reader</code> and <code>Cosmos DB Built-in Data Contributor</code>. However, Azure portal support for role management is not available yet. Check <a href="https://docs.microsoft.com/azure/cosmos-db/how-to-setup-rbac">here</a> for more details about the permission model, role definitions, and role assignment.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
 <div class="sect3">
 <h4 id="sas-token"><a class="anchor" href="#sas-token"></a><a class="link" href="#sas-token">6.3.2. SAS Token</a></h4>
 <div class="paragraph">
@@ -941,7 +1073,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Configurable properties to enable or disable health indicators for each Azure services</caption>
+<caption class="title">Table 11. Configurable properties to enable or disable health indicators for each Azure services</caption>
 <colgroup>
 <col style="width: 30%;">
 <col style="width: 70%;">
@@ -1083,6 +1215,18 @@ Please refer to <a href="index.html#starter-dependencies">Starter Dependencies</
 </div>
 <div class="sect2">
 <h3 id="configuration-2"><a class="anchor" href="#configuration-2"></a><a class="link" href="#configuration-2">8.2. Configuration</a></h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>Configuration properties for each Azure service are under prefix <code>spring.cloud.azure</code>.</p>
 </div>
@@ -1102,7 +1246,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 <div class="sect2">
 <h3 id="basic-usage"><a class="anchor" href="#basic-usage"></a><a class="link" href="#basic-usage">8.3. Basic Usage</a></h3>
 <div class="paragraph">
-<p>Adding below properties to your <code>application.yaml</code> will auto-configure the Cosmos Client for you, both <code>CosmosClient</code> and <code>CosmosAsyncClient</code> are available in the context and could be autowired.</p>
+<p>Adding below properties to your <code>application.yaml</code> will autoconfigure the Cosmos Client for you, both <code>CosmosClient</code> and <code>CosmosAsyncClient</code> are available in the context and could be autowired.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1144,7 +1288,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 <h2 id="resource-handling"><a class="anchor" href="#resource-handling"></a><a class="link" href="#resource-handling">9. Resource Handling</a></h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. Azure Storage related libraries.</caption>
+<caption class="title">Table 12. Azure Storage related libraries.</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 12.5%;">
@@ -1201,8 +1345,20 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 <div class="sect2">
 <h3 id="configuration-3"><a class="anchor" href="#configuration-3"></a><a class="link" href="#configuration-3">9.2. Configuration</a></h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Configurable properties of spring-cloud-azure-starter-storage-blob</caption>
+<caption class="title">Table 13. Configurable properties of spring-cloud-azure-starter-storage-blob</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 11.1111%;">
@@ -1239,7 +1395,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Configurable properties of spring-cloud-azure-starter-storage-file-share</caption>
+<caption class="title">Table 14. Configurable properties of spring-cloud-azure-starter-storage-file-share</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 11.1111%;">
@@ -1325,8 +1481,20 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 <div class="sect2">
 <h3 id="configuration-4"><a class="anchor" href="#configuration-4"></a><a class="link" href="#configuration-4">10.2. Configuration</a></h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Configurable properties of spring-cloud-azure-starter-keyvault-secrets</caption>
+<caption class="title">Table 15. Configurable properties of spring-cloud-azure-starter-keyvault-secrets</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1522,8 +1690,20 @@ public class SampleApplication implements CommandLineRunner {
 </div>
 <div class="sect2">
 <h3 id="configuration-5"><a class="anchor" href="#configuration-5"></a><a class="link" href="#configuration-5">11.3. Configuration</a></h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Configurable properties of spring-cloud-azure-starter-data-cosmos</caption>
+<caption class="title">Table 16. Configurable properties of spring-cloud-azure-starter-data-cosmos</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 16.6666%;">
@@ -1647,7 +1827,7 @@ public class SampleApplication implements CommandLineRunner {
 <div class="sect3">
 <h4 id="configuration-6"><a class="anchor" href="#configuration-6"></a><a class="link" href="#configuration-6">12.1.2. Configuration</a></h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Configurable properties of spring-cloud-azure-starter-active-directory</caption>
+<caption class="title">Table 17. Configurable properties of spring-cloud-azure-starter-active-directory</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1742,7 +1922,7 @@ public class SampleApplication implements CommandLineRunner {
 <p>This property(<code>spring.cloud.azure.active-directory.application-type</code>) is optional, its value can be inferred by dependencies, only <code>web_application_and_resource_server</code> must be configured manually: <code>spring.cloud.azure.active-directory.application-type=web_application_and_resource_server</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. Application type of spring-cloud-azure-starter-active-directory</caption>
+<caption class="title">Table 18. Application type of spring-cloud-azure-starter-active-directory</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -2390,7 +2570,7 @@ public class AADWebApplicationAndResourceServerConfig {
 <div class="sect3">
 <h4 id="configuration-7"><a class="anchor" href="#configuration-7"></a><a class="link" href="#configuration-7">12.2.2. Configuration</a></h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. Configurable properties of spring-cloud-azure-starter-active-directory-b2c</caption>
+<caption class="title">Table 19. Configurable properties of spring-cloud-azure-starter-active-directory-b2c</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -3028,6 +3208,18 @@ Please refer to Javadoc for details.
 </div>
 <div class="sect3">
 <h4 id="configuration-8"><a class="anchor" href="#configuration-8"></a><a class="link" href="#configuration-8">13.1.3. Configuration</a></h4>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>This starter provides the following 2 parts of configuration options:</p>
 </div>
@@ -3049,7 +3241,7 @@ From version 4.0.0, when the property of <strong>spring.cloud.azure.eventhubs.pr
 <p>Below properties can also be configured with the default Spring Cloud Azure unified properties by changing the prefix from <strong>spring.cloud.azure.eventhubs</strong> to <strong>spring.cloud.azure</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. Common configurable properties of spring-cloud-azure-starter-integration-eventhubs</caption>
+<caption class="title">Table 20. Common configurable properties of spring-cloud-azure-starter-integration-eventhubs</caption>
 <colgroup>
 <col style="width: 37.5%;">
 <col style="width: 12.5%;">
@@ -3261,7 +3453,7 @@ proxy.authenticationType</p></td>
 <p>Below options are used to configure Azure Event Hubs SDK Client.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. Client configurable properties of spring-cloud-azure-starter-integration-storage-queue</caption>
+<caption class="title">Table 21. Client configurable properties of spring-cloud-azure-starter-integration-storage-queue</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -3579,6 +3771,18 @@ Please refer to Javadoc for details.
 </div>
 <div class="sect3">
 <h4 id="configuration-9"><a class="anchor" href="#configuration-9"></a><a class="link" href="#configuration-9">13.2.3. Configuration</a></h4>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
 <div class="sect4">
 <h5 id="azure-common-configuration-options-2"><a class="anchor" href="#azure-common-configuration-options-2"></a><a class="link" href="#azure-common-configuration-options-2">Azure Common Configuration Options</a></h5>
 <div class="paragraph">
@@ -3586,7 +3790,7 @@ Please refer to Javadoc for details.
 from <strong>spring.cloud.azure.servicebus</strong> to <strong>spring.cloud.azure</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. Common configurable properties of spring-cloud-azure-starter-integration-servicebus</caption>
+<caption class="title">Table 22. Common configurable properties of spring-cloud-azure-starter-integration-servicebus</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -3799,7 +4003,7 @@ proxy.authenticationType</p></td>
 <p>Below options are used to configure Azure Service Bus SDK Client.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. Client configurable properties of spring-cloud-azure-starter-integration-servicebus</caption>
+<caption class="title">Table 23. Client configurable properties of spring-cloud-azure-starter-integration-servicebus</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -4042,7 +4246,7 @@ set the entity type for the ServiceBusTemplate.</p>
 <p>For some Service Bus headers that can be mapped to multiple Spring header constants, the priority of different Spring headers is listed.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. Mapping between Service Bus Headers and Spring Headers</caption>
+<caption class="title">Table 24. Mapping between Service Bus Headers and Spring Headers</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -4254,6 +4458,18 @@ the value of the session id will eventually be used to overwrite the value of th
 </div>
 <div class="sect3">
 <h4 id="configuration-10"><a class="anchor" href="#configuration-10"></a><a class="link" href="#configuration-10">13.3.3. Configuration</a></h4>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
 <div class="sect4">
 <h5 id="azure-common-configuration-options-3"><a class="anchor" href="#azure-common-configuration-options-3"></a><a class="link" href="#azure-common-configuration-options-3">Azure Common Configuration Options</a></h5>
 <div class="paragraph">
@@ -4261,7 +4477,7 @@ the value of the session id will eventually be used to overwrite the value of th
 by changing the prefix from <strong>spring.cloud.azure.storage.queue</strong> to <strong>spring.cloud.azure</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. Common configurable properties of spring-cloud-azure-starter-integration-storage-queue</caption>
+<caption class="title">Table 25. Common configurable properties of spring-cloud-azure-starter-integration-storage-queue</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -4478,7 +4694,7 @@ proxy.password</p></td>
 <p>Below options are used to configure Azure Storage Queue SDK Client.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. Client configurable properties of spring-cloud-azure-starter-integration-storage-queue</caption>
+<caption class="title">Table 26. Client configurable properties of spring-cloud-azure-starter-integration-storage-queue</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -4814,6 +5030,18 @@ the checkpoint header only exists when <strong>MANUAL</strong> checkpoint mode i
 </div>
 <div class="sect3">
 <h4 id="configuration-11"><a class="anchor" href="#configuration-11"></a><a class="link" href="#configuration-11">14.1.3. Configuration</a></h4>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>The binder provides the following 3 parts of configuration options:</p>
 </div>
@@ -4836,7 +5064,7 @@ From version 4.0.0, when the property of <strong>spring.cloud.azure.eventhubs.pr
 of which the prefix is changed from <strong>spring.cloud.azure.eventhubs</strong> to <strong>spring.cloud.azure</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 26. Common configurable properties of spring-cloud-azure-stream-binder-eventhubs</caption>
+<caption class="title">Table 27. Common configurable properties of spring-cloud-azure-stream-binder-eventhubs</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -5048,7 +5276,7 @@ proxy.authenticationType</p></td>
 <p>Below options are used to configure Azure Event Hubs SDK Client.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 27. Client configurable properties of spring-cloud-azure-stream-binder-eventhubs</caption>
+<caption class="title">Table 28. Client configurable properties of spring-cloud-azure-stream-binder-eventhubs</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -5225,7 +5453,7 @@ Configurations, Producer PropertiesProducer Properties, and Advanced Producer Co
 <div class="sect5">
 <h6 id="consumer-properties"><a class="anchor" href="#consumer-properties"></a><a class="link" href="#consumer-properties">Consumer Properties</a></h6>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 28. Consumer configurable properties of spring-cloud-azure-stream-binder-eventhubs</caption>
+<caption class="title">Table 29. Consumer configurable properties of spring-cloud-azure-stream-binder-eventhubs</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -5297,7 +5525,7 @@ Event Hubs Client Configuration Options</code>) can be applied for each specific
 <div class="sect5">
 <h6 id="producer-properties"><a class="anchor" href="#producer-properties"></a><a class="link" href="#producer-properties">Producer Properties</a></h6>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 29. Producer configurable properties of spring-cloud-azure-stream-binder-eventhubs</caption>
+<caption class="title">Table 30. Producer configurable properties of spring-cloud-azure-stream-binder-eventhubs</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -5681,6 +5909,18 @@ This binder relies on <code>Subscription</code> of a topic to act as a consumer 
 </div>
 <div class="sect3">
 <h4 id="configuration-12"><a class="anchor" href="#configuration-12"></a><a class="link" href="#configuration-12">14.2.3. Configuration</a></h4>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
 <div class="sect4">
 <h5 id="azure-common-configuration-options-5"><a class="anchor" href="#azure-common-configuration-options-5"></a><a class="link" href="#azure-common-configuration-options-5">Azure Common Configuration Options</a></h5>
 <div class="paragraph">
@@ -5688,7 +5928,7 @@ This binder relies on <code>Subscription</code> of a topic to act as a consumer 
 of which the prefix is changed from <strong>spring.cloud.azure.servicebus</strong> to <strong>spring.cloud.azure</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. Common configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
+<caption class="title">Table 31. Common configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -5889,7 +6129,7 @@ proxy.authentication-type</p></td>
 <div class="sect4">
 <h5 id="azure-service-bus-client-configuration-options-2"><a class="anchor" href="#azure-service-bus-client-configuration-options-2"></a><a class="link" href="#azure-service-bus-client-configuration-options-2">Azure Service Bus Client Configuration Options</a></h5>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 31. Client configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
+<caption class="title">Table 32. Client configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -6012,7 +6252,7 @@ Configurations, Producer PropertiesProducer Properties, and Advanced Producer Co
 <div class="sect5">
 <h6 id="consumer-properties-2"><a class="anchor" href="#consumer-properties-2"></a><a class="link" href="#consumer-properties-2">Consumer Properties</a></h6>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 32. Consumer configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
+<caption class="title">Table 33. Consumer configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -6059,7 +6299,7 @@ of <strong>spring.cloud.azure.servicebus</strong> with <strong>spring.cloud.stre
 <div class="sect5">
 <h6 id="producer-properties-2"><a class="anchor" href="#producer-properties-2"></a><a class="link" href="#producer-properties-2">Producer Properties</a></h6>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 33. Producer configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
+<caption class="title">Table 34. Producer configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -6396,7 +6636,7 @@ public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
 <p>For some Service Bus headers that can be mapped to multiple Spring header constants, the priority of different Spring headers is listed.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 34. Mapping between Service Bus Headers and Spring Headers</caption>
+<caption class="title">Table 35. Mapping between Service Bus Headers and Spring Headers</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -6531,8 +6771,20 @@ public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
 </div>
 <div class="sect2">
 <h3 id="configuration-13"><a class="anchor" href="#configuration-13"></a><a class="link" href="#configuration-13">15.2. Configuration</a></h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 35. Configurable properties when using Kafka support</caption>
+<caption class="title">Table 36. Configurable properties when using Kafka support</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6658,8 +6910,20 @@ Authentication information is also required for authenticating for Azure Resourc
 </div>
 <div class="sect2">
 <h3 id="configuration-14"><a class="anchor" href="#configuration-14"></a><a class="link" href="#configuration-14">16.2. Configuration</a></h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 36. Configurable properties when using Redis support</caption>
+<caption class="title">Table 37. Configurable properties when using Redis support</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -6754,8 +7018,20 @@ Construct <code>TokenCredential</code> by using various credential information, 
 </div>
 <div class="sect2">
 <h3 id="configuration-15"><a class="anchor" href="#configuration-15"></a><a class="link" href="#configuration-15">17.2. Configuration</a></h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 37. Configurable properties of spring-cloud-azure-resourcemanager</caption>
+<caption class="title">Table 38. Configurable properties of spring-cloud-azure-resourcemanager</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
