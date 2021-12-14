@@ -388,7 +388,7 @@ Configurations, Producer PropertiesProducer Properties, and Advanced Producer Co
 |LoadBalancingStrategy
 |The load balancing strategy.
 
-|*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.track-las-enqueued-event-properties
+|*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.track-last-enqueued-event-properties
 |Boolean
 | Whether the event processor should request information on the last enqueued event on its associated partition, and track that information as events are received.
 
