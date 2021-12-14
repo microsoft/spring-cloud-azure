@@ -200,6 +200,59 @@ window.onload = function() {
 <div class="sect2">
 <h3 id="_spring_cloud_stream_binder_for_azure_event_hubs"><a class="link" href="#_spring_cloud_stream_binder_for_azure_event_hubs">Spring Cloud Stream Binder for Azure Event Hubs</a></h3>
 <div class="sect3">
+<h4 id="_key_concepts"><a class="link" href="#_key_concepts">Key concepts</a></h4>
+<div class="paragraph">
+<p>The Spring Cloud Stream Binder for Azure Event Hub provides the binding implementation for the Spring Cloud Stream.
+This implementation uses Spring Integration Event Hub Channel Adapters at its foundation. From design&#8217;s perspective,
+Event Hub is similar as Kafka. Also, Event Hub could be accessed via Kafka API. If your project has tight dependency
+on Kafka API, you can try <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka">Event Hub with Kafka API Sample</a></p>
+</div>
+<div class="sect4">
+<h5 id="_consumer_group"><a class="link" href="#_consumer_group">Consumer Group</a></h5>
+<div class="paragraph">
+<p>Event Hub provides similar support of consumer group as Apache Kafka, but with slight different logic. While Kafka
+stores all committed offsets in the broker, you have to store offsets of event hub messages
+being processed manually. Event Hub SDK provide the function to store such offsets inside Azure Storage Account. So
+that&#8217;s why you have to fill <code>spring.cloud.eventhubs.processor.checkpoint-store.*</code>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_partitioning_support"><a class="link" href="#_partitioning_support">Partitioning Support</a></h5>
+<div class="paragraph">
+<p>Event Hubs provides a similar concept of physical partition as Kafka. But unlike Kafka&#8217;s auto re-balancing between consumers and partitions, Event Hub provides a kind of preemptive mode. The storage account acts as a lease to determine which partition is owned by which consumer. When a new consumer starts, it will try to steal some partitions
+from most heavy-loaded consumers to achieve the workload balancing.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_batch_consumer_support"><a class="link" href="#_batch_consumer_support">Batch Consumer Support</a></h5>
+<div class="paragraph">
+<p>Azure Event Hubs Spring Cloud Stream Binder supports <a href="https://docs.spring.io/spring-cloud-stream/docs/3.1.4/reference/html/spring-cloud-stream.html#_batch_consumers">Spring Cloud Stream Batch Consumer feature</a>.</p>
+</div>
+<div class="paragraph">
+<p>When enabled, an <strong>org.springframework.messaging.Message</strong> of which the payload is a list of batched events will be received and passed to the consumer function. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of <strong>com.azure.spring.integration.core.AzureHeaders#RAW_PARTITION_ID</strong> and <strong>com.azure.spring.integration.core.AzureHeaders.CHECKPOINTER</strong>, they are presented as a single value for the entire batch of events share the same one.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+the checkpoint header only exists when <strong>MANUAL</strong> checkpoint mode is used.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Checkpointing of batch consumer supports two modes: BATCH and MANUAL. BATCH mode is an auto checkpointing mode to checkpoint the entire batch of events together once they are received by the binder. MANUAL mode is to checkpoint the events by users. When used, the
+<strong>com.azure.spring.integration.core.api.reactor.Checkpointer</strong> will be passes into the message header, and users could use it to do checkpointing.</p>
+</div>
+<div class="paragraph">
+<p>The batch size can be specified by properties of <code>max-size</code> and <code>max-wait-time</code> with prefix as <code>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer.batch.</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
@@ -214,6 +267,18 @@ window.onload = function() {
 <h4 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h4>
 <div class="paragraph">
 <p>The binder provides the following 3 parts of configuration options:</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+From version 4.0.0, when the property of <strong>spring.cloud.azure.eventhubs.processor.checkpoint-store.create-container-if-not-exists</strong> is not enabled manually, no Storage container will be created automatically with the name from <strong>spring.cloud.azure.eventhubs.event-hub-name</strong>.
+</td>
+</tr>
+</table>
 </div>
 <div class="sect4">
 <h5 id="_azure_common_configuration_options"><a class="link" href="#_azure_common_configuration_options">Azure Common Configuration Options</a></h5>
@@ -799,10 +864,7 @@ Event Hubs Client Configuration Options</code>) can be applied for each specific
           consume-in-0:
             consumer:
               checkpoint:
-                mode: MANUAL
-      default:
-        producer:
-          errorChannelEnabled: true</code></pre>
+                mode: MANUAL</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -842,10 +904,7 @@ Event Hubs Client Configuration Options</code>) can be applied for each specific
           consume-in-0:
             consumer:
               checkpoint:
-                mode: MANUAL
-      default:
-        producer:
-          errorChannelEnabled: true</code></pre>
+                mode: MANUAL</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -882,6 +941,151 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 </div>
 </div>
 </div>
+<div class="sect4">
+<h5 id="_partitioning_support_2"><a class="link" href="#_partitioning_support_2">Partitioning support</a></h5>
+<div class="paragraph">
+<p>A <code>PartitionSupplier</code> with user-provided partition information will be created to configure the partition information about the message to be sent, the following is the process of obtaining different priorities of the partition ID and key:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/63028776/145347877-fa8afa90-ec28-4c0a-8277-63b9fdaa5d0f.png" alt="145347877 fa8afa90 ec28 4c0a 8277 63b9fdaa5d0f"></span></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_batch_consumer_support_2"><a class="link" href="#_batch_consumer_support_2">Batch Consumer Support</a></h5>
+<div class="paragraph">
+<p>Step 1. Fill the batch configuration options</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    stream:
+      function:
+        definition: consume
+      bindings:
+        consume-in-0:
+          destination: ${AZURE_EVENTHUB_NAME}
+          group: ${AZURE_EVENTHUB_CONSUMER_GROUP}
+          consumer:
+            batch-mode: true
+      eventhubs:
+        bindings:
+          consume-in-0:
+            consumer:
+              batch:
+                max-batch-size: 10 # The default value is 10
+                max-wait-time: 1m # Optional, the default value is null
+              checkpoint:
+                mode: BATCH # or MANUAL as needed</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step2. Define supplier and consumer.</p>
+</div>
+<div class="paragraph">
+<p>For checkpointing mode as BATCH, you can use below code to send messages and consume in batches.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public Consumer&lt;List&lt;String&gt;&gt; consume() {
+    return list -&gt; list.forEach(event -&gt; LOGGER.info("New event received: '{}'",event));
+}
+
+@Bean
+public Supplier&lt;Message&lt;String&gt;&gt; supply() {
+    return () -&gt; {
+        LOGGER.info("Sending message, sequence " + i);
+        return MessageBuilder.withPayload("\"test"+ i++ +"\"").build();
+    };
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For checkpointing mode as MANUAL, you can use below code to send messages and consume/checkpoint in batches.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public Consumer&lt;Message&lt;List&lt;String&gt;&gt;&gt; consume() {
+    return message -&gt; {
+        for (int i = 0; i &lt; message.getPayload().size(); i++) {
+            LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
+                message.getPayload().get(i),
+                ((List&lt;Object&gt;) message.getHeaders().get(EventHubHeaders.PARTITION_KEY)).get(i),
+                ((List&lt;Object&gt;) message.getHeaders().get(EventHubHeaders.SEQUENCE_NUMBER)).get(i),
+                ((List&lt;Object&gt;) message.getHeaders().get(EventHubHeaders.OFFSET)).get(i),
+                ((List&lt;Object&gt;) message.getHeaders().get(EventHubHeaders.ENQUEUED_TIME)).get(i));
+        }
+
+        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        checkpointer.success()
+                    .doOnSuccess(success -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
+                    .doOnError(error -&gt; LOGGER.error("Exception found", error))
+                    .subscribe();
+    };
+}
+
+@Bean
+public Supplier&lt;Message&lt;String&gt;&gt; supply() {
+    return () -&gt; {
+        LOGGER.info("Sending message, sequence " + i);
+        return MessageBuilder.withPayload("\"test"+ i++ +"\"").build();
+    };
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_error_channels"><a class="link" href="#_error_channels">Error channels</a></h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Consumer error channel</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This channel is open by default, you can handle the error message in this way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">// Replace destination with spring.cloud.stream.bindings.input.destination
+// Replace group with spring.cloud.stream.bindings.input.group
+@ServiceActivator(inputChannel = "{destination}.{group}.errors")
+public void consumerError(Message&lt;?&gt; message) {
+    LOGGER.error("Handling customer ERROR: " + message);
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Producer error channel</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This channel is not open by default. You need to add a configuration in your application.properties to enable it, like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.stream.default.producer.errorChannelEnabled=true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can handle the error message in this way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">// Replace destination with spring.cloud.stream.bindings.output.destination
+@ServiceActivator(inputChannel = "{destination}.errors")
+public void producerError(Message&lt;?&gt; message) {
+    LOGGER.error("Handling Producer ERROR: " + message);
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_samples"><a class="link" href="#_samples">Samples</a></h4>
@@ -892,6 +1096,29 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 </div>
 <div class="sect2">
 <h3 id="_spring_cloud_stream_binder_for_azure_service_bus"><a class="link" href="#_spring_cloud_stream_binder_for_azure_service_bus">Spring Cloud Stream Binder for Azure Service Bus</a></h3>
+<div class="sect3">
+<h4 id="_key_concepts_2"><a class="link" href="#_key_concepts_2">Key concepts</a></h4>
+<div class="paragraph">
+<p>The Spring Cloud Stream Binder for Azure Service Bus provides the binding implementation for the Spring Cloud Stream.</p>
+</div>
+<div class="paragraph">
+<p>This implementation uses Spring Integration Service Bus Channel Adapters at its foundation.</p>
+</div>
+<div class="sect4">
+<h5 id="_scheduled_message"><a class="link" href="#_scheduled_message">Scheduled Message</a></h5>
+<div class="paragraph">
+<p>This binder supports submitting messages to a topic for delayed processing. Users can send scheduled messages with header <code>x-delay</code>
+expressing in milliseconds a delay time for the message. The message will be delivered to the respective topics after <code>x-delay</code> milliseconds.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_consumer_group_2"><a class="link" href="#_consumer_group_2">Consumer Group</a></h5>
+<div class="paragraph">
+<p>Service Bus Topic provides similar support of consumer group as Apache Kafka, but with slight different logic.
+This binder relies on <code>Subscription</code> of a topic to act as a consumer group.</p>
+</div>
+</div>
+</div>
 <div class="sect3">
 <h4 id="_dependency_setup_2"><a class="link" href="#_dependency_setup_2">Dependency Setup</a></h4>
 <div class="listingblock">

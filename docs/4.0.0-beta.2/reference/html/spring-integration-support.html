@@ -200,6 +200,28 @@ window.onload = function() {
 <div class="sect2">
 <h3 id="_spring_integration_with_azure_event_hubs"><a class="link" href="#_spring_integration_with_azure_event_hubs">Spring Integration with Azure Event Hubs</a></h3>
 <div class="sect3">
+<h4 id="_key_concepts"><a class="link" href="#_key_concepts">Key concepts</a></h4>
+<div class="paragraph">
+<p>Azure Event Hubs is a big data streaming platform and event ingestion service. It can receive and process millions of events per second. Data sent to an event hub can be transformed and stored by using any real-time analytics provider or batching/storage adapters.</p>
+</div>
+<div class="paragraph">
+<p>Spring Integration enables lightweight messaging within Spring-based applications and supports integration with external systems via declarative adapters. Those adapters provide a higher-level of abstraction over Spring’s support for remoting, messaging, and scheduling. The <strong>Spring Integration for Event Hubs</strong> extension project provides inbound and outbound channel adapters and gateways for Azure Event Hubs.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+RxJava support APIs is dropped from version 4.0.0.
+Please refer to Javadoc for details.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
@@ -214,6 +236,18 @@ window.onload = function() {
 <h4 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h4>
 <div class="paragraph">
 <p>This starter provides the following 2 parts of configuration options:</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+From version 4.0.0, when the property of <strong>spring.cloud.azure.eventhubs.processor.checkpoint-store.create-container-if-not-exists</strong> is not enabled manually, no Storage container will be created automatically with the name from <strong>spring.cloud.azure.eventhubs.event-hub-name</strong>.
+</td>
+</tr>
+</table>
 </div>
 <div class="sect4">
 <h5 id="_azure_common_configuration_options"><a class="link" href="#_azure_common_configuration_options">Azure Common Configuration Options</a></h5>
@@ -717,6 +751,28 @@ class Demo{
 <div class="sect2">
 <h3 id="_spring_integration_with_azure_service_bus"><a class="link" href="#_spring_integration_with_azure_service_bus">Spring Integration with Azure Service Bus</a></h3>
 <div class="sect3">
+<h4 id="_key_concepts_2"><a class="link" href="#_key_concepts_2">Key concepts</a></h4>
+<div class="paragraph">
+<p>Spring Integration enables lightweight messaging within Spring-based applications and supports integration with external systems via declarative adapters.</p>
+</div>
+<div class="paragraph">
+<p>The Spring Integration for Azure Service Bus extension project provides inbound and outbound channel adapters for Azure Service Bus.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+CompletableFuture support APIs have been deprecated from version 2.10.0, and is replaced by Reactor Core from version 4.0.0.
+Please refer to Javadoc for details.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_dependency_setup_2"><a class="link" href="#_dependency_setup_2">Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
@@ -1180,6 +1236,115 @@ set the entity type for the ServiceBusTemplate.</p>
 </div>
 </div>
 </div>
+<div class="sect4">
+<h5 id="_configure_servicebusmessageconverter_to_customize_objectmapper"><a class="link" href="#_configure_servicebusmessageconverter_to_customize_objectmapper">Configure ServiceBusMessageConverter to customize ObjectMapper</a></h5>
+<div class="paragraph">
+<p><code>ServiceBusMessageConverter</code> is made as a configurable bean to allow users to customize ObjectMapper.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_support_for_service_bus_message_headers_and_properties"><a class="link" href="#_support_for_service_bus_message_headers_and_properties">Support for Service Bus Message Headers and Properties</a></h5>
+<div class="paragraph">
+<p>For some Service Bus headers that can be mapped to multiple Spring header constants, the priority of different Spring headers is listed.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. Mapping between Service Bus Headers and Spring Headers</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Service Bus Message Headers and Properties</th>
+<th class="tableblock halign-left valign-top">Spring Message Header Constants</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Priority Number (Descending priority)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ContentType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.messaging.MessageHeaders.CONTENT_TYPE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CorrelationId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.CORRELATION_ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>MessageId</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.MESSAGE_ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>MessageId</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.AzureHeaders.RAW_ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>MessageId</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.messaging.MessageHeaders.ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UUID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PartitionKey</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.PARTITION_KEY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ReplyTo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.messaging.MessageHeaders.REPLY_CHANNEL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ReplyToSessionId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.REPLY_TO_SESSION_ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>ScheduledEnqueueTimeUtc</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.AzureHeaders.SCHEDULED_ENQUEUE_MESSAGE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>ScheduledEnqueueTimeUtc</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.SCHEDULED_ENQUEUE_TIME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Instant</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SessionID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.SESSION_ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TimeToLive</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.TIME_TO_LIVE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.TO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_samples_2"><a class="link" href="#_samples_2">Samples</a></h4>
@@ -1277,6 +1442,12 @@ the value of the session id will eventually be used to overwrite the value of th
 <div class="sect2">
 <h3 id="_spring_integration_with_azure_storage_queue"><a class="link" href="#_spring_integration_with_azure_storage_queue">Spring Integration with Azure Storage Queue</a></h3>
 <div class="sect3">
+<h4 id="_key_concepts_3"><a class="link" href="#_key_concepts_3">Key concepts</a></h4>
+<div class="paragraph">
+<p>Azure Queue Storage is a service for storing large numbers of messages. You access messages from anywhere in the world via authenticated calls using HTTP or HTTPS. A queue message can be up to 64 KB in size. A queue may contain millions of messages, up to the total capacity limit of a storage account. Queues are commonly used to create a backlog of work to process asynchronously.</p>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_dependency_setup_3"><a class="link" href="#_dependency_setup_3">Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
@@ -1296,7 +1467,7 @@ the value of the session id will eventually be used to overwrite the value of th
 by changing the prefix from <strong>spring.cloud.azure.storage.queue</strong> to <strong>spring.cloud.azure</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. Common configurable properties of spring-cloud-azure-starter-integration-storage-queue</caption>
+<caption class="title">Table 6. Common configurable properties of spring-cloud-azure-starter-integration-storage-queue</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1513,7 +1684,7 @@ proxy.password</p></td>
 <p>Below options are used to configure Azure Storage Queue SDK Client.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Client configurable properties of spring-cloud-azure-starter-integration-storage-queue</caption>
+<caption class="title">Table 7. Client configurable properties of spring-cloud-azure-starter-integration-storage-queue</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
