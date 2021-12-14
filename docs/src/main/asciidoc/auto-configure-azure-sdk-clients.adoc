@@ -44,13 +44,15 @@ TIP: Please refer to link:index.html#starter-dependencies[Starter Dependencies] 
 
 === Configuration
 
+NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+
 Configuration properties for each Azure service are under prefix `spring.cloud.azure`.
 
 TIP: To see the list of all Spring Cloud Azure related configuration properties please check link:appendix.html[the Appendix page].
 
 === Basic Usage
 
-Adding below properties to your `application.yaml` will auto-configure the Cosmos Client for you, both `CosmosClient` and `CosmosAsyncClient` are available in the context and could be autowired.
+Adding below properties to your `application.yaml` will autoconfigure the Cosmos Client for you, both `CosmosClient` and `CosmosAsyncClient` are available in the context and could be autowired.
 
 [source,yaml]
 ----

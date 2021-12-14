@@ -1,3 +1,14 @@
+:azure-built-in-roles: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles
+:app-configuration-data-owner: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#app-configuration-data-owner
+:app-configuration-data-reader: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#app-configuration-data-reader
+:azure-event-hubs-data-owner: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-event-hubs-data-owner
+:azure-event-hubs-data-receiver: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-event-hubs-data-receiver
+:azure-event-hubs-data-sender: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-event-hubs-data-send
+:azure-service-bus-data-owner: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-service-bus-data-owner
+:azure-service-bus-data-receiver: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-service-bus-data-receiver
+:azure-service-bus-data-sender: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-service-bus-data-sender
+:key-vault-access-policy: https://docs.microsoft.com/azure/key-vault/general/assign-access-policy
+:cosmos-db-rbac: https://docs.microsoft.com/azure/cosmos-db/how-to-setup-rbac
 [#authentication]
 == Authentication
 
@@ -19,6 +30,8 @@ image::https://user-images.githubusercontent.com/13167207/143148654-f3a37180-85e
 
 IMPORTANT: There could be some `ERROR` logs be printed out while the `DefaultAzureCredential` running the chain and trying to find the first available credential.It doesn't mean the `DefaultAzureCredential` is broken or unavailable.Meanwhile, we'll keep improving this logging experience.
 
+TIP: Please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+
 
 === Managed Identity
 
@@ -26,11 +39,19 @@ A common challenge for developers is the management of secrets and credentials u
 
 We encourage using manged identity instead of using connection string or key in your application for it's more secure and will save the trouble of managing secrets and credentials. In this case, `DefaultAzureCredential` could better serve the scenario of developing locally using account information stored locally and deploying the application to Azure Cloud and using Manged Identity.
 
+TIP: Please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+
 === Other Credential Types
 
 Developers who want more control or whose scenario isn't served by the `DefaultAzureCredential` or whose scenario isn't served by the default settings should use other credential types.
 
-==== Authentication with Azure Active Directory
+==== Authentication and authorization with Azure Active Directory
+With Azure AD, you can use Azure role-based access control (Azure RBAC) to grant permissions to a security principal, which may be a user, or an application service principal. When a security principal (a user, or an application) attempts to access an Azure resource, for example an Event Hubs resource, the request must be authorized. With Azure AD, access to a resource is a two-step process.
+
+1. First, the security principal's identity is authenticated, and an OAuth 2.0 token is returned.
+2. Next, the token is passed as part of a request to the Azure service to authorize access to the specified resource.
+
+===== Authenticate with Azure Active Directory
 For applications want to connect to resources that support Azure Active Directory (Azure AD) authentication, below configurations could be set with prefix `spring.cloud.azure.credential` or `spring.cloud.azure.<azure-service>.credential`
 
 .Authentication properties
@@ -38,22 +59,22 @@ For applications want to connect to resources that support Azure Active Director
 |===
 |Property |Description
 
-|client-id 
+|client-id
 |Client id to use when performing service principal authentication with Azure.
 
-|client-select
+|client-secret
 |Client secret to use when performing service principal authentication with Azure.
 
-|client-certificate-path 
+|client-certificate-path
 |Client secret to use when performing service principal authentication with Azure.
 
-|client-certificate-password 
+|client-certificate-password
 |Password of the certificate file.
 
-|username 
+|username
 |Username to use when performing username/password authentication with Azure.
 
-|password 
+|password
 |Password to use when performing username/password authentication with Azure.
 
 |managed-identity-client-id
@@ -61,6 +82,50 @@ For applications want to connect to resources that support Azure Active Director
 |===
 
 TIP: To see the list of all Spring Cloud Azure related configuration properties please check link:appendix.html[the Appendix page].
+
+[#authorize-access-with-azure-active-directory]
+===== Authorize access with Azure Active Directory
+
+The authorization step requires that one or more Azure roles be assigned to the security principal. The roles that are assigned to a security principal determine the permissions that the principal will have.
+
+TIP: To see the list of all Azure built-in roles please check {azure-built-in-roles}[Azure built-in roles].
+
+Following are the Azure built-in roles for authorizing access to Azure services supported in Spring Cloud Azure:
+
+.Azure built-in roles
+[cols="<50,<50",options="header"]
+|===
+|Role |Description
+
+|link:{app-configuration-data-owner}[App Configuration Data Owner]
+|Allows full access to App Configuration data.
+
+|link:{app-configuration-data-reader}[App Configuration Data Reader]
+|Allows read access to App Configuration data.
+
+|link:{azure-event-hubs-data-owner}[Azure Event Hubs Data Owner]
+|Allows for full access to Azure Event Hubs resources.
+
+|link:{azure-event-hubs-data-receiver}[Azure Event Hubs Data Receiver]
+|Allows receive access to Azure Event Hubs resources.
+
+|link:{azure-event-hubs-data-sender}[Azure Event Hubs Data Sender]
+|Allows send access to Azure Event Hubs resources.
+
+|link:{azure-service-bus-data-owner}[Azure Service Bus Data Owner]
+|Allows for full access to Azure Service Bus resources.
+
+|link:{azure-service-bus-data-receiver}[Azure Service Bus Data Receiver]
+|Allows for receive access to Azure Service Bus resources.
+
+|link:{azure-service-bus-data-sender}[Azure Service Bus Data Sender]
+|Allows for send access to Azure Service Bus resources.
+
+|===
+
+NOTE: A Key Vault access policy determines whether a given security principal, namely a user, application or user group, can perform different operations on Key Vault secrets, keys, and certificates. You can assign access policies using the Azure portal, the Azure CLI, or Azure PowerShell. Check {key-vault-access-policy}[here] for more details.
+
+IMPORTANT: Azure Cosmos DB exposes 2 built-in role definitions: `Cosmos DB Built-in Data Reader` and `Cosmos DB Built-in Data Contributor`. However, Azure portal support for role management is not available yet. Check {cosmos-db-rbac}[here] for more details about the permission model, role definitions, and role assignment.
 
 ==== SAS Token
 It's also configurable for services support authenticating with Shared Access Signature (SAS). `spring.cloud.azure.<azure-service>.sas-token` is the property to configure. For example, using `spring.cloud.azure.storage.blob.sas-token` to authenticate to Storage Blob service.
