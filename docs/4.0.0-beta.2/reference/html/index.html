@@ -5812,6 +5812,18 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 }</code></pre>
 </div>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In the batch-consuming mode, the default content type of Spring Cloud Stream binder is <code>application/json</code>, so make sure the message payload is aligned with the content type. For example, when using the default content type of <code>application/json</code> to receive messages with <code>String</code> payload, the payload should be JSON String, surrounded with double quotes for the original String text. While for <code>text/plain</code> content type, it can be a <code>String</code> object directly. For more details, please refer to the official doc of <a href="https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#content-type-management">Spring Cloud Stream Content Type Negotiation</a>.
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect4">
 <h5 id="error-channels"><a class="anchor" href="#error-channels"></a><a class="link" href="#error-channels">Error channels</a></h5>
