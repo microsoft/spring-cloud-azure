@@ -905,6 +905,12 @@ public class Demo {
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
+|com.azure.spring.autoconfigure.storage.resource.AzureStorageProtocolResolver |com.azure.spring.core.resource.AzureStorageBlobProtocolResolver
+|com.azure.spring.autoconfigure.storage.resource.BlobStorageResource|com.azure.spring.core.resource.StorageBlobResource
+|com.azure.spring.autoconfigure.storage.resource.StorageRuntimeException|com.azure.spring.core.resource.StorageRuntimeException
+|com.azure.spring.autoconfigure.storage.resource.StorageType|com.azure.spring.core.resource.StorageType
+|com.azure.spring.autoconfigure.storage.StorageProperties|com.azure.spring.service.storage.common.StorageProperties
+|com.azure.spring.autoconfigure.storage.resource.AzureStorageResourcePatternResolver|com.azure.spring.core.resource.AzureStorageBlobProtocolResolver
 |===
 
 ==== From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share
@@ -913,7 +919,14 @@ public class Demo {
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
+|com.azure.spring.autoconfigure.storage.resource.AzureStorageProtocolResolver |com.azure.spring.core.resource.AzureStorageFileProtocolResolver
+|com.azure.spring.autoconfigure.storage.resource.FileStorageResource|com.azure.spring.core.resource.StorageFileResource
+|com.azure.spring.autoconfigure.storage.resource.StorageRuntimeException|com.azure.spring.core.resource.StorageRuntimeException
+|com.azure.spring.autoconfigure.storage.resource.StorageType|com.azure.spring.core.resource.StorageType
+|com.azure.spring.autoconfigure.storage.StorageProperties|com.azure.spring.service.storage.common.StorageProperties
+|com.azure.spring.autoconfigure.storage.resource.AzureStorageResourcePatternResolver|com.azure.spring.core.resource.AzureStorageFileProtocolResolver
 |===
+
 
 
 
