@@ -1,6 +1,6 @@
 == Resource Handling
 
-The project provides  Spring Boot Starters `spring-cloud-azure-starter-storage-blob` and `spring-cloud-azure-starter-storage-file-share`  to auto-configure Azure Storage Blob and Azure Storage File Share in your Spring projects. It implements Spring Resource abstraction for Azure Storage service which allows you to interact with Azure storage Blob and File Share using Spring programming model.
+This article describes using Spring Cloud Azure Starters `spring-cloud-azure-starter-storage-blob` and `spring-cloud-azure-starter-storage-file-share` to auto-configure Azure Storage Blob and Azure Storage File Share in your Spring projects. It implements Spring Resource abstraction for Azure Storage service which allows you to interact with Azure storage Blob and File Share using Spring programming model.
 
 
 .Azure Storage related libraries.

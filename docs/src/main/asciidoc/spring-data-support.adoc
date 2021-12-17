@@ -111,12 +111,20 @@ spring:
         key: ${AZURE_COSMOS_KEY}
         endpoint: ${AZURE_COSMOS_ENDPOINT}
         database: ${AZURE_COSMOS_DATABASE}
+----
+
+
+(Optional) Property `spring.cloud.azure.cosmos.consistency-level` is also supported.
+----
+spring:
+  cloud:
+    azure:
+      cosmos:
         consistency-level: ${CONSISTENCY_LEVEL}
 ----
 
-Property `spring.cloud.azure.consistency-level` is also supported.
-
-AzureKeyCredential feature provides capability to rotate keys on the fly. You can use AzureKeyCredential.update() methods to rotate key. For more information on this, see the link:https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/cosmos/azure-spring-data-cosmos/src/samples/java/com/azure/spring/data/cosmos/SampleApplication.java[Sample Application] code.
+AzureKeyCredential feature provides capability to rotate keys on the fly. You can use AzureKeyCredential.update() methods to rotate key. 
+For more information on this, see the link:https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/cosmos/azure-spring-data-cosmos/src/samples/java/com/azure/spring/data/cosmos/SampleApplication.java[Sample Application] code.
 
 ==== (Optional) Add Spring Boot Actuator
 
