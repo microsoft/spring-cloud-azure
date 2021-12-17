@@ -1,3 +1,4 @@
+:content-type-negotiation: https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#content-type-management
 == Spring Cloud Stream Support
 
 Spring Cloud Stream is a framework for building highly scalable event-driven microservices connected with shared messaging systems.
@@ -388,7 +389,7 @@ Configurations, Producer PropertiesProducer Properties, and Advanced Producer Co
 |LoadBalancingStrategy
 |The load balancing strategy.
 
-|*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.track-las-enqueued-event-properties
+|*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.track-last-enqueued-event-properties
 |Boolean
 | Whether the event processor should request information on the last enqueued event on its associated partition, and track that information as events are received.
 
@@ -641,6 +642,8 @@ public Supplier<Message<String>> supply() {
     };
 }
 ----
+
+NOTE: In the batch-consuming mode, the default content type of Spring Cloud Stream binder is `application/json`, so make sure the message payload is aligned with the content type. For example, when using the default content type of `application/json` to receive messages with `String` payload, the payload should be JSON String, surrounded with double quotes for the original String text. While for `text/plain` content type, it can be a `String` object directly. For more details, please refer to the official doc of {content-type-negotiation}[Spring Cloud Stream Content Type Negotiation].
 
 ===== Error channels
 - Consumer error channel
