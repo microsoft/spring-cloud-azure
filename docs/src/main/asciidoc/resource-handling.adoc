@@ -158,7 +158,7 @@ You can use implementation class `AzureStorageBlobProtocolResolver` of `Resource
 
 ----
 @Autowire
- ResourcePatternResolver storageResourcePatternResolver;
+ResourcePatternResolver storageResourcePatternResolver;
 
 Resource[] resources = storageResourcePatternResolver.getResources(searchPattern);
 Resource resource = storageResourcePatternResolver.getResource(searchLocation);
