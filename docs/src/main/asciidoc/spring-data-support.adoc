@@ -126,35 +126,6 @@ spring:
 AzureKeyCredential feature provides capability to rotate keys on the fly. You can use AzureKeyCredential.update() methods to rotate key. 
 For more information on this, see the link:https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/cosmos/azure-spring-data-cosmos/src/samples/java/com/azure/spring/data/cosmos/SampleApplication.java[Sample Application] code.
 
-==== (Optional) Add Spring Boot Actuator
-
-If you choose to add Spring Boot Actuator for Cosmos DB, add management.health.azure-cosmos.enabled=true to application.yml.
-
-----
-management:
-  health:
-    azure-cosmos:
-      enabled: true
-----
-
-Include actuator dependencies.
-
-----
-<dependency>
-    <groupId>com.azure.spring</groupId>
-    <artifactId>spring-cloud-azure-starter-actuator<artifactId>
-  </dependency>
-
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-web</artifactId>
-</dependency>
-----
-
-
-Call http://{hostname}:{port}/actuator/health/cosmos to get the Cosmos DB health info. Please note: it will calculate link:https://docs.microsoft.com/azure/cosmos-db/request-units[RUs].
-
-
 ==== Define an entity
 Define a simple entity as Document in Cosmos DB.
 ----
