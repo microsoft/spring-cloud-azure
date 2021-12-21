@@ -123,9 +123,6 @@ spring:
         consistency-level: ${CONSISTENCY_LEVEL}
 ----
 
-AzureKeyCredential feature provides capability to rotate keys on the fly. You can use AzureKeyCredential.update() methods to rotate key. 
-For more information on this, see the link:https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/cosmos/azure-spring-data-cosmos/src/samples/java/com/azure/spring/data/cosmos/SampleApplication.java[Sample Application] code.
-
 ==== Define an entity
 Define a simple entity as Document in Cosmos DB.
 ----
