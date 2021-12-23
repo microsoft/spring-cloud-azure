@@ -12,6 +12,7 @@
 :azure-storage-queue-data-reader: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#storage-queue-data-reader
 :key-vault-access-policy: https://docs.microsoft.com/azure/key-vault/general/assign-access-policy
 :cosmos-db-rbac: https://docs.microsoft.com/azure/cosmos-db/how-to-setup-rbac
+:managed-identity: https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview
 [#authentication]
 == Authentication
 
@@ -45,12 +46,14 @@ We encourage using manged identity instead of using connection string or key in 
 ==== Managed Identity Types
 There are two types of managed identities:
 
-- System-assigned Some Azure services allow you to enable a managed identity directly on a service instance. When you enable a system-assigned managed identity an identity is created in Azure AD that is tied to the lifecycle of that service instance. So when the resource is deleted, Azure automatically deletes the identity for you. By design, only that Azure resource can use this identity to request tokens from Azure AD.
-- User-assigned You may also create a managed identity as a standalone Azure resource. You can create a user-assigned managed identity and assign it to one or more instances of an Azure service. In the case of user-assigned managed identities, the identity is managed separately from the resources that use it.
+- *System-assigned* Some Azure services allow you to enable a managed identity directly on a service instance. When you enable a system-assigned managed identity an identity is created in Azure AD that is tied to the lifecycle of that service instance. So when the resource is deleted, Azure automatically deletes the identity for you. By design, only that Azure resource can use this identity to request tokens from Azure AD.
+- *User-assigned* You may also create a managed identity as a standalone Azure resource. You can create a user-assigned managed identity and assign it to one or more instances of an Azure service. In the case of user-assigned managed identities, the identity is managed separately from the resources that use it.
 
-NOTE: When a user-assigned managed identity is used, you can specify it by `spring.cloud.azure.credential.managed-identity-client-id` or `spring.cloud.azure.<azure-service>.credential.managed-identity-client-id`.
+NOTE: When a user-assigned managed identity is used, you can specify it by `spring.cloud.azure.credential.managed-identity-client-id` or `spring.cloud.azure.<azure-service>.credential.managed-identity-client-id`. No credential configuration is needed if a system-assigned managed identity is used.
 
 TIP: Please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+
+TIP: Please refer to link:{managed-identity}[What are managed identities for Azure resources?] for more details about manged identity.
 
 === Other Credential Types
 
