@@ -128,7 +128,7 @@
 |spring.cloud.azure.cosmos.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
 |spring.cloud.azure.cosmos.connection-mode |  | 
 |spring.cloud.azure.cosmos.connection-sharing-across-clients-enabled |  | 
-|spring.cloud.azure.cosmos.consistency-level |  | 
+|spring.cloud.azure.cosmos.consistency-level |  | link:https://docs.microsoft.com/azure/cosmos-db/consistency-levels[Consistency levels] in Azure Cosmos DB
 |spring.cloud.azure.cosmos.content-response-on-write-enabled |  | 
 |spring.cloud.azure.cosmos.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.cosmos.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.

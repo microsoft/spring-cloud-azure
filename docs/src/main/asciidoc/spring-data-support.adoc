@@ -73,6 +73,10 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 |*spring.cloud.azure.cosmos*.populate-query-metrics
 |false  
 |Populate Diagnostics Strings and Query metrics.
+
+|*spring.cloud.azure.cosmos*.consistency-level
+|
+| link:https://docs.microsoft.com/azure/cosmos-db/consistency-levels[Consistency levels] in Azure Cosmos DB
 |===
 
 
