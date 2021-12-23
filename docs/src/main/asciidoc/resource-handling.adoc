@@ -88,7 +88,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 
 === Basic Usage As Spring Resources
 
-Please use this link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0-beta.2/storage[sample] as a reference for how to use Azure Spring Boot Storage Starter in your projects.
+Please use this link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.2/storage[sample] as a reference for how to use Azure Spring Boot Storage Starter in your projects.
 
 
 Provide the properties below in your configuration file.
@@ -156,7 +156,7 @@ Files larger than 4 MiB will be uploaded to Azure Storage in parallel.
 
 === Samples
 
-Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0-beta.2/storage[azure-spring-boot-samples] for more details.
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.2/storage[azure-spring-boot-samples] for more details.
 
 
 ==== Autowire the BlobServiceClientBuilder
