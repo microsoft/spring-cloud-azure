@@ -77,7 +77,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 
 
 === Key concepts
-* Spring Data ReactiveCrudRepository basic CRUD functionality
+* Spring Data CrudRepository and ReactiveCrudRepository basic CRUD functionality
   ** save
   ** findAll
   ** findOne by Id
