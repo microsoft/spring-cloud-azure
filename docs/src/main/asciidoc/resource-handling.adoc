@@ -86,7 +86,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 |===
 
 
-=== Basic Usage As Spring Resources
+=== Basic Usage
 
 Please use this link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.2/storage[sample] as a reference for how to use Azure Spring Boot Storage Starter in your projects.
 
