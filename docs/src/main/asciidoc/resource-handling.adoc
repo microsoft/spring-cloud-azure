@@ -1,6 +1,6 @@
 == Resource Handling
 
-This article describes using Spring Cloud Azure Starters `spring-cloud-azure-starter-storage-blob` and `spring-cloud-azure-starter-storage-file-share` to auto-configure Azure Storage Blob and Azure Storage File Share in your Spring projects. It implements Spring Resource abstraction for Azure Storage service which allows you to interact with Azure storage Blob and File Share using Spring programming model.
+Spring project provides an abstraction called link:https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#resources[Spring Resources] to access a number of low-level resources. It provides interfaces like `Resource`, `ResourceLoader` and `ResourcePatternResolver`. Spring Cloud Azure implements these interfaces for Azure Storage Service which allows you to interact with Azure storage Blob and File Share using Spring programming model. It provides `spring-cloud-azure-starter-storage-blob` and `spring-cloud-azure-starter-storage-file-share` to auto-configure Azure Storage Blob and Azure Storage File Share.
 
 
 .Azure Storage related libraries.
@@ -86,7 +86,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 |===
 
 
-=== Basic Usage
+=== Basic Usage As Spring Resources
 
 Please use this link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0-beta.2/storage[sample] as a reference for how to use Azure Spring Boot Storage Starter in your projects.
 
@@ -123,7 +123,7 @@ You can use the annotation of @Value("azure-file://[your-fileshare-name]/[your-f
 private Resource storageResource;
 ----
 
-==== Read and write to a resource
+==== Upload and download a file
 
 You can read a resource from Azure Blob storage with `getInputStream()` method.
 
@@ -137,27 +137,6 @@ You can write to a resource in Azure Blob storage by casting the Spring `Resourc
  ((WritableResource) this.azureBlobResource).getOutputStream();
 ----
 
-
-#### Multipart upload
-Files larger than 4 MiB will be uploaded to Azure Storage in parallel.
-
-=== Samples
-
-Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0-beta.2/storage[azure-spring-boot-samples] for more details.
-
-
-==== Other operations
-The Spring Resource abstraction for Azure Storage also supports link:https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#resources[other operations] defined in Spring's `Resource` and `WritableResource` interface.
-
-==== Autowire the BlobServiceClientBuilder
-You can autowire the `BlobServiceClientBuilder` and create a client using:
-----
-@Autowire
-private BlobServiceClientBuilder blobServiceClientBuilder;
-
-private final BlobServiceAsyncClient blobServiceAsyncClient = blobServiceClientBuilder.buildAsyncClient();
-
-----
 ==== Search for resources
 You can use implementation class `AzureStorageBlobProtocolResolver` of `ResourcePatternResolver` to search `blob` resource, and `AzureStorageFileProtocolResolver` of `ResourcePatternResolver` to search `file` resource
 
@@ -171,3 +150,22 @@ ResourcePatternResolver storageResourcePatternResolver;
 Resource[] resources = storageResourcePatternResolver.getResources(searchPattern);
 Resource resource = storageResourcePatternResolver.getResource(searchLocation);
 ----
+
+#### Multipart upload
+Files larger than 4 MiB will be uploaded to Azure Storage in parallel.
+
+=== Samples
+
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0-beta.2/storage[azure-spring-boot-samples] for more details.
+
+
+==== Autowire the BlobServiceClientBuilder
+You can autowire the `BlobServiceClientBuilder` and create a client using:
+----
+@Autowire
+private BlobServiceClientBuilder blobServiceClientBuilder;
+
+private final BlobServiceAsyncClient blobServiceAsyncClient = blobServiceClientBuilder.buildAsyncClient();
+
+----
+
