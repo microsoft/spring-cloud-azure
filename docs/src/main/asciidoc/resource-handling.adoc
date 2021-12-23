@@ -123,16 +123,16 @@ private Resource storageResource;
 
 ==== Upload and download a file
 
-You can read a resource from Azure Blob storage with `getInputStream()` method.
+You can download a resource from Azure Blob or file storage with `getInputStream()` method.
 
 ----
  this.storageResource.getInputStream();
 ----
 
-You can write to a resource in Azure Blob storage by casting the Spring `Resource` to `WritableResource`.
+You can upload to a resource to Azure Blob or file storage by casting the Spring `Resource` to `WritableResource`.
 
 ----
- ((WritableResource) this.azureBlobResource).getOutputStream();
+ ((WritableResource) this.storageResource).getOutputStream();
 ----
 
 ==== Search for resources
