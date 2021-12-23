@@ -132,7 +132,10 @@ You can download a resource from Azure Blob or file storage with `getInputStream
 You can upload to a resource to Azure Blob or file storage by casting the Spring `Resource` to `WritableResource`.
 
 ----
- ((WritableResource) this.storageResource).getOutputStream();
+String data = "samples";
+try (OutputStream os = ((WritableResource) this.storageResource).getOutputStream()) {
+    os.write(data.getBytes());
+}
 ----
 
 ==== Search for resources
