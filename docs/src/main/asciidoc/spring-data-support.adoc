@@ -178,7 +178,7 @@ public class User {
 }
 ----
 
-`id`` field will be used as document `id`` in Azure Cosmos DB. Or you can annotate any field with `@Id to map it to document `id`.
+`id` field will be used as document `id` in Azure Cosmos DB. Or you can annotate any field with `@Id` to map it to document `id`.
 
 Annotation `@Container(containerName = "mycollection")` is used to specify the collection name of your document in Azure Cosmos DB.
 
