@@ -117,16 +117,6 @@ spring:
         database: ${AZURE_COSMOS_DATABASE}
 ----
 
-
-(Optional) Property `spring.cloud.azure.cosmos.consistency-level` is also supported.
-----
-spring:
-  cloud:
-    azure:
-      cosmos:
-        consistency-level: ${CONSISTENCY_LEVEL}
-----
-
 ==== Define an entity
 Define a simple entity as Document in Cosmos DB.
 ----
