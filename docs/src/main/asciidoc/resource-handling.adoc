@@ -1,6 +1,6 @@
 == Resource Handling
 
-Spring project provides link:https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#resources[Spring Resources] abstraction to access a number of low-level resources. It provides interfaces like `Resource`, `ResourceLoader` and `ResourcePatternResolver`. Spring Cloud Azure implements these interfaces for Azure Storage Service which allows you to interact with Azure storage Blob and File Share using Spring programming model. It provides `spring-cloud-azure-starter-storage-blob` and `spring-cloud-azure-starter-storage-file-share` to auto-configure Azure Storage Blob and Azure Storage File Share.
+Spring project provides link:https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#resources[Spring Resources] abstraction to access a number of low-level resources. It provides interfaces like `Resource`, `ResourceLoader` and `ResourcePatternResolver`. Spring Cloud Azure implements these interfaces for Azure Storage Services which allows you to interact with Azure storage Blob and File Share using Spring programming model. It provides `spring-cloud-azure-starter-storage-blob` and `spring-cloud-azure-starter-storage-file-share` to auto-configure Azure Storage Blob and Azure Storage File Share.
 
 
 .Azure Storage related libraries.
