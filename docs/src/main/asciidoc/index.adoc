@@ -1,11 +1,8 @@
-= Spring Cloud Azure
-:revnumber: {project-version}
-
-(C) 2016-2021 the original authors.
+= Spring Cloud Azure - Reference Documentation
 
 include::_attributes.adoc[]
+include::version-information.adoc[]
 include::legal.adoc[]
-
 include::intro.adoc[]
 
 include::getting-help.adoc[]
