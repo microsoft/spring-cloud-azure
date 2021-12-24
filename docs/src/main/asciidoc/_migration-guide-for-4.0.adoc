@@ -99,7 +99,8 @@ new artifacts to better serve some scenarios.
 |azure-spring-boot-starter-keyvault-certificates |N/A |Not included in this release, but will be supported in later version. 
 |azure-spring-boot-starter-keyvault-secrets |spring-cloud-azure-starter-keyvault-secrets | Renamed the artifact.
 |azure-spring-boot-starter-servicebus-jms |spring-cloud-azure-starter-servicebus-jms | Renamed the artifact.
-|azure-spring-boot-starter-storage |spring-cloud-azure-starter-storage-blob <br/>spring-cloud-azure-starter-storage-file-share |The legacy artifact contains the functionality of both Storage Blob and File Share, it's been split into two separate artifacts in 4.0, spring-cloud-azure-starter-storage-blob and spring-cloud-azure-starter-storage-file-share.
+|azure-spring-boot-starter-storage |spring-cloud-azure-starter-storage-blob +
+spring-cloud-azure-starter-storage-file-share |The legacy artifact contains the functionality of both Storage Blob and File Share, it's been split into two separate artifacts in 4.0, spring-cloud-azure-starter-storage-blob and spring-cloud-azure-starter-storage-file-share.
 |azure-spring-boot |N/A |This artifact has been deleted with all functionality be merged into the new `spring-cloud-azure-autoconfigure` artifact. 
 |azure-spring-cloud-autoconfigure |N/A |This artifact has been deleted with all functionality be merged into the new `spring-cloud-azure-autoconfigure` artifact. 
 |azure-spring-cloud-context |N/A |This artifact has been deleted with all functionality be merged into the new `spring-cloud-azure-autoconfigure` and `spring-cloud-azure-resourcemanager` artifacts. 
@@ -897,6 +898,29 @@ public class Demo {
 |com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
 |com.azure.spring.integration.servicebus.converter.ServiceBusMessageHeaders |com.azure.spring.servicebus.support.ServiceBusMessageHeaders
 |===
+
+==== From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob
+
+.Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob
+[cols="<~,<~", options="header"]
+|===
+|Legacy class |Modern class
+|com.azure.spring.autoconfigure.storage.resource.AzureStorageProtocolResolver |com.azure.spring.core.resource.AzureStorageBlobProtocolResolver
+|com.azure.spring.autoconfigure.storage.resource.BlobStorageResource|com.azure.spring.core.resource.StorageBlobResource
+|com.azure.spring.autoconfigure.storage.resource.AzureStorageResourcePatternResolver|com.azure.spring.core.resource.AzureStorageBlobProtocolResolver
+|===
+
+==== From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share
+
+.Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share
+[cols="<~,<~", options="header"]
+|===
+|Legacy class |Modern class
+|com.azure.spring.autoconfigure.storage.resource.AzureStorageProtocolResolver |com.azure.spring.core.resource.AzureStorageFileProtocolResolver
+|com.azure.spring.autoconfigure.storage.resource.FileStorageResource|com.azure.spring.core.resource.StorageFileResource
+|com.azure.spring.autoconfigure.storage.resource.AzureStorageResourcePatternResolver|com.azure.spring.core.resource.AzureStorageFileProtocolResolver
+|===
+
 
 
 

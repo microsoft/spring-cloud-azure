@@ -1,5 +1,8 @@
 == Resource Handling
 
+Spring project provides link:https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#resources[Spring Resources] abstraction to access a number of low-level resources. It provides interfaces like `Resource`, `ResourceLoader` and `ResourcePatternResolver`. Spring Cloud Azure implements these interfaces for Azure Storage services which allows you to interact with Azure storage Blob and File Share using Spring programming model. It provides `spring-cloud-azure-starter-storage-blob` and `spring-cloud-azure-starter-storage-file-share` to auto-configure Azure Storage Blob and Azure Storage File Share.
+
+
 .Azure Storage related libraries.
 [cols="2,1,5", options="header"]
 |===
@@ -85,6 +88,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 
 === Basic Usage
 
+
 Provide the properties below in your configuration file.
 
 [source,yaml]
@@ -103,9 +107,101 @@ spring:
           endpoint:  ${STORAGE_FILESHARE_ENDPOINT}
 ----
 
+==== Get a resource 
+
+===== Get a resource with @Value
+You can use the annotation of `@Value("azure-blob://[your-container-name]/[your-blob-name]")` to autowire a blob Resource.
+----
+@Value("azure-blob://[your-container-name]/[your-blob-name]") 
+private Resource storageResource;
+----
+
+You can use the annotation of @Value("azure-file://[your-fileshare-name]/[your-file-name]") to autowire a file Resource.
+
+----
+@Value("azure-file://[your-fileshare-name]/[your-file-name]") 
+private Resource storageResource;
+----
+
+===== Get a resource with ResourceLoader
+
+----
+@Autowired
+private ResourceLoader resourceLoader;
+...
+// get a BlobResource
+Resource storageBlobResource = resourceLoader.getResource("azure-blob://[your-container-name]/[your-blob-name]");
+// get a FileResource
+Resource storageFileResource = resourceLoader.getResource("azure-file://[your-fileshare-name]/[your-file-name]");
+----
+
+===== Get resources by searching pattern
+You can use implementation class `AzureStorageBlobProtocolResolver` of `ResourcePatternResolver` to search `blob` resource, and `AzureStorageFileProtocolResolver` of `ResourcePatternResolver` to search `file` resource
+
+- Pattern search, the **searchPattern** should start with `azure-blob://` or `azure-file://`. Such as `azure-blob://**/**`, it means list all blobs in all containers; `azure-blob://demo-container/**`, it means list all blobs in the demo-container container, including any sub-folder.
+- Location search, the **searchLocation** should start with `azure-blob://` or `azure-file://`, the remaining file path should exist, otherwise an exception will be thrown.
+
+----
+@Autowire 
+private AzureStorageBlobProtocolResolver azureStorageBlobProtocolResolver;
+
+@Autowire 
+private AzureStorageFileProtocolResolver azureStorageFileProtocolResolver;
+
+// get all text blobs
+Resource[] blobTextResources = azureStorageBlobProtocolResolver.getResources("azure-blob://[container-pattern]/*.txt"); 
+// get all text files
+Resource[] fileTextResources = azureStorageFileProtocolResolver.getResources("azure-file://[fileshare-pattern]/*.txt"); 
+
+----
+
+
+==== Handling with resource 
+
+===== Download data from specific resource.
+
+You can download a resource from Azure Blob or file storage with the `getInputStream()` method of Resource.
+
+----
+@Value("azure-blob://[your-container-name]/[your-blob-name]") 
+private Resource storageBlobResource;
+
+@Value("azure-file://[your-fileshare-name]/[your-file-name]") 
+private Resource storageFileResource;
+....
+// download data as stream from blob resource
+InputStream inputblobStream = storageBlobResource.getInputStream();
+// download data as stream from file resource
+InputStream inputfileStream = storageFileResource.getInputStream();
+----
+
+===== Upload data to specific resource.
+
+You can upload to a resource to Azure Blob or file storage by casting the Spring `Resource` to `WritableResource`.
+
+----
+@Value("azure-blob://[your-container-name]/[your-blob-name]") 
+private Resource storageBlobResource;
+
+@Value("azure-file://[your-fileshare-name]/[your-file-name]") 
+private Resource storageFileResource;
+
+String data = "sampledata";
+
+// upload string data to blob
+try (OutputStream blobos = ((WritableResource) this.storageBlobResource).getOutputStream()) {
+  blobos.write(data.getBytes());
+}
+// upload string data to file
+try (OutputStream fileos = ((WritableResource) this.storageFileResource).getOutputStream()) {
+  fileos.write(data.getBytes());
+}
+
+----
+
+#### Multipart upload
+Files larger than 4 MiB will be uploaded to Azure Storage in parallel.
 
 === Samples
 
-Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[azure-spring-boot-samples] for more details.
-
-
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.2/storage/spring-cloud-azure-starter-storage-blob/storage-blob-sample[storage-blob-sample] and link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.2/storage/spring-cloud-azure-starter-storage-file-share/storage-file-sample[storage-file-sample] for more details.
