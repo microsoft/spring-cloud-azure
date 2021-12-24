@@ -217,6 +217,8 @@ window.onload = function() {
 <li><a href="#from-azure-spring-cloud-starter-storage-queue-to-spring-cloud-azure-starter-integration-storage-queue-2">B.9.5. From azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue</a></li>
 <li><a href="#from-azure-spring-cloud-stream-binder-eventhubs-to-spring-cloud-azure-stream-binder-eventhubs-2">B.9.6. From azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs</a></li>
 <li><a href="#from-azure-spring-cloud-stream-binder-servicebus-to-spring-cloud-azure-stream-binder-servicebus-2">B.9.7. From azure-spring-cloud-stream-binder-servicebus to spring-cloud-azure-stream-binder-servicebus</a></li>
+<li><a href="#from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-blob-2">B.9.8. From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</a></li>
+<li><a href="#from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-file-share-2">B.9.9. From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</a></li>
 </ul>
 </li>
 </ul>
@@ -5772,7 +5774,8 @@ new artifacts to better serve some scenarios.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">azure-spring-boot-starter-storage</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring-cloud-azure-starter-storage-blob &lt;br/&gt;spring-cloud-azure-starter-storage-file-share</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-cloud-azure-starter-storage-blob<br>
+spring-cloud-azure-starter-storage-file-share</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The legacy artifact contains the functionality of both Storage Blob and File Share, it&#8217;s been split into two separate artifacts in 4.0, spring-cloud-azure-starter-storage-blob and spring-cloud-azure-starter-storage-file-share.</p></td>
 </tr>
 <tr>
@@ -7507,6 +7510,66 @@ for the <code>ProducerProperties#entityType</code>.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.integration.servicebus.converter.ServiceBusMessageHeaders</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-blob-2"><a class="anchor" href="#from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-blob-2"></a><a class="link" href="#from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-blob-2">B.9.8. From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 25. Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</caption>
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Legacy class</th>
+<th class="tableblock halign-left valign-top">Modern class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.storage.resource.AzureStorageProtocolResolver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.core.resource.AzureStorageBlobProtocolResolver</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.storage.resource.BlobStorageResource</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.core.resource.StorageBlobResource</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.storage.resource.AzureStorageResourcePatternResolver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.core.resource.AzureStorageBlobProtocolResolver</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-file-share-2"><a class="anchor" href="#from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-file-share-2"></a><a class="link" href="#from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-file-share-2">B.9.9. From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 26. Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</caption>
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Legacy class</th>
+<th class="tableblock halign-left valign-top">Modern class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.storage.resource.AzureStorageProtocolResolver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.core.resource.AzureStorageFileProtocolResolver</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.storage.resource.FileStorageResource</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.core.resource.StorageFileResource</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.storage.resource.AzureStorageResourcePatternResolver</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.core.resource.AzureStorageFileProtocolResolver</p></td>
 </tr>
 </tbody>
 </table>

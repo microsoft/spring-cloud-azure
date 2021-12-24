@@ -179,6 +179,9 @@ window.onload = function() {
 <div class="sect1">
 <h2 id="_resource_handling"><a class="link" href="#_resource_handling">Resource Handling</a></h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Spring project provides <a href="https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#resources">Spring Resources</a> abstraction to access a number of low-level resources. It provides interfaces like <code>Resource</code>, <code>ResourceLoader</code> and <code>ResourcePatternResolver</code>. Spring Cloud Azure implements these interfaces for Azure Storage services which allows you to interact with Azure storage Blob and File Share using Spring programming model. It provides <code>spring-cloud-azure-starter-storage-blob</code> and <code>spring-cloud-azure-starter-storage-file-share</code> to auto-configure Azure Storage Blob and Azure Storage File Share.</p>
+</div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. Azure Storage related libraries.</caption>
 <colgroup>
@@ -345,11 +348,134 @@ If you choose to use a security principal to authenticate and authorize with Azu
           endpoint:  ${STORAGE_FILESHARE_ENDPOINT}</code></pre>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_get_a_resource"><a class="link" href="#_get_a_resource">Get a resource</a></h4>
+<div class="sect4">
+<h5 id="_get_a_resource_with_value"><a class="link" href="#_get_a_resource_with_value">Get a resource with @Value</a></h5>
+<div class="paragraph">
+<p>You can use the annotation of <code>@Value("azure-blob://[your-container-name]/[your-blob-name]")</code> to autowire a blob Resource.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@Value("azure-blob://[your-container-name]/[your-blob-name]")
+private Resource storageResource;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can use the annotation of @Value("azure-file://[your-fileshare-name]/[your-file-name]") to autowire a file Resource.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@Value("azure-file://[your-fileshare-name]/[your-file-name]")
+private Resource storageResource;</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_get_a_resource_with_resourceloader"><a class="link" href="#_get_a_resource_with_resourceloader">Get a resource with ResourceLoader</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre>@Autowired
+private ResourceLoader resourceLoader;
+...
+// get a BlobResource
+Resource storageBlobResource = resourceLoader.getResource("azure-blob://[your-container-name]/[your-blob-name]");
+// get a FileResource
+Resource storageFileResource = resourceLoader.getResource("azure-file://[your-fileshare-name]/[your-file-name]");</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_get_resources_by_searching_pattern"><a class="link" href="#_get_resources_by_searching_pattern">Get resources by searching pattern</a></h5>
+<div class="paragraph">
+<p>You can use implementation class <code>AzureStorageBlobProtocolResolver</code> of <code>ResourcePatternResolver</code> to search <code>blob</code> resource, and <code>AzureStorageFileProtocolResolver</code> of <code>ResourcePatternResolver</code> to search <code>file</code> resource</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Pattern search, the <strong>searchPattern</strong> should start with <code>azure-blob://</code> or <code>azure-file://</code>. Such as <code>azure-blob://<strong>/</strong></code>, it means list all blobs in all containers; <code>azure-blob://demo-container/**</code>, it means list all blobs in the demo-container container, including any sub-folder.</p>
+</li>
+<li>
+<p>Location search, the <strong>searchLocation</strong> should start with <code>azure-blob://</code> or <code>azure-file://</code>, the remaining file path should exist, otherwise an exception will be thrown.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@Autowire
+private AzureStorageBlobProtocolResolver azureStorageBlobProtocolResolver;
+
+@Autowire
+private AzureStorageFileProtocolResolver azureStorageFileProtocolResolver;
+
+// get all text blobs
+Resource[] blobTextResources = azureStorageBlobProtocolResolver.getResources("azure-blob://[container-pattern]/*.txt");
+// get all text files
+Resource[] fileTextResources = azureStorageFileProtocolResolver.getResources("azure-file://[fileshare-pattern]/*.txt");</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_handling_with_resource"><a class="link" href="#_handling_with_resource">Handling with resource</a></h4>
+<div class="sect4">
+<h5 id="_download_data_from_specific_resource"><a class="link" href="#_download_data_from_specific_resource">Download data from specific resource.</a></h5>
+<div class="paragraph">
+<p>You can download a resource from Azure Blob or file storage with the <code>getInputStream()</code> method of Resource.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@Value("azure-blob://[your-container-name]/[your-blob-name]")
+private Resource storageBlobResource;
+
+@Value("azure-file://[your-fileshare-name]/[your-file-name]")
+private Resource storageFileResource;
+....
+// download data as stream from blob resource
+InputStream inputblobStream = storageBlobResource.getInputStream();
+// download data as stream from file resource
+InputStream inputfileStream = storageFileResource.getInputStream();</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_upload_data_to_specific_resource"><a class="link" href="#_upload_data_to_specific_resource">Upload data to specific resource.</a></h5>
+<div class="paragraph">
+<p>You can upload to a resource to Azure Blob or file storage by casting the Spring <code>Resource</code> to <code>WritableResource</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@Value("azure-blob://[your-container-name]/[your-blob-name]")
+private Resource storageBlobResource;
+
+@Value("azure-file://[your-fileshare-name]/[your-file-name]")
+private Resource storageFileResource;
+
+String data = "sampledata";
+
+// upload string data to blob
+try (OutputStream blobos = ((WritableResource) this.storageBlobResource).getOutputStream()) {
+  blobos.write(data.getBytes());
+}
+// upload string data to file
+try (OutputStream fileos = ((WritableResource) this.storageFileResource).getOutputStream()) {
+  fileos.write(data.getBytes());
+}</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_multipart_upload"><a class="link" href="#_multipart_upload">Multipart upload</a></h4>
+<div class="paragraph">
+<p>Files larger than 4 MiB will be uploaded to Azure Storage in parallel.</p>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_samples"><a class="link" href="#_samples">Samples</a></h3>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0">azure-spring-boot-samples</a> for more details.</p>
+<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.2/storage/spring-cloud-azure-starter-storage-blob/storage-blob-sample">storage-blob-sample</a> and <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.2/storage/spring-cloud-azure-starter-storage-file-share/storage-file-sample">storage-file-sample</a> for more details.</p>
 </div>
 </div>
 </div>
