@@ -255,6 +255,33 @@ Please refer to <a href="index.html#authorize-access-with-azure-active-directory
 <div class="paragraph">
 <p>We encourage using manged identity instead of using connection string or key in your application for it&#8217;s more secure and will save the trouble of managing secrets and credentials. In this case, <code>DefaultAzureCredential</code> could better serve the scenario of developing locally using account information stored locally and deploying the application to Azure Cloud and using Manged Identity.</p>
 </div>
+<div class="sect3">
+<h4 id="_managed_identity_types"><a class="link" href="#_managed_identity_types">Managed Identity Types</a></h4>
+<div class="paragraph">
+<p>There are two types of managed identities:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>System-assigned</strong> Some Azure services allow you to enable a managed identity directly on a service instance. When you enable a system-assigned managed identity an identity is created in Azure AD that is tied to the lifecycle of that service instance. So when the resource is deleted, Azure automatically deletes the identity for you. By design, only that Azure resource can use this identity to request tokens from Azure AD.</p>
+</li>
+<li>
+<p><strong>User-assigned</strong> You may also create a managed identity as a standalone Azure resource. You can create a user-assigned managed identity and assign it to one or more instances of an Azure service. In the case of user-assigned managed identities, the identity is managed separately from the resources that use it.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When a user-assigned managed identity is used, you can specify it by <code>spring.cloud.azure.credential.managed-identity-client-id</code> or <code>spring.cloud.azure.&lt;azure-service&gt;.credential.managed-identity-client-id</code>. No credential configuration is needed if a system-assigned managed identity is used.
+</td>
+</tr>
+</table>
+</div>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -266,6 +293,19 @@ Please refer to <a href="index.html#authorize-access-with-azure-active-directory
 </td>
 </tr>
 </table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Please refer to <a href="https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview">What are managed identities for Azure resources?</a> for more details about manged identity.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -332,7 +372,7 @@ Please refer to <a href="index.html#authorize-access-with-azure-active-directory
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">managed-identity-client-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when using managed identity to authenticate with Azure.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when using user-assigned managed identity or app registration (when working with AKS pod-identity) to authenticate with Azure.</p></td>
 </tr>
 </tbody>
 </table>
