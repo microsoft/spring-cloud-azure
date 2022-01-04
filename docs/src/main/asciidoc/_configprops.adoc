@@ -1,72 +1,71 @@
-
-== Configuration properties
-
-.Configuration properties
-[cols="<,<,<", options="header"]
 |===
 |Name | Default | Description
-|spring.cloud.azure.active-directory.active-directory-groups |  |
+
+|spring.cloud.azure.active-directory.active-directory-groups |  | 
 |spring.cloud.azure.active-directory.allow-telemetry | `true` | If Telemetry events should be published to Azure AD.
 |spring.cloud.azure.active-directory.app-id-uri |  | App ID URI which might be used in the <code>"aud"</code> claim of an <code>id_token</code>.
 |spring.cloud.azure.active-directory.application-type |  | 
 |spring.cloud.azure.active-directory.authenticate-additional-parameters |  | Add additional parameters to the Authorization URL.
 |spring.cloud.azure.active-directory.authorization-clients |  | 
 |spring.cloud.azure.active-directory.b2c.allow-telemetry | `true` | Telemetry data will be collected if true, or disable data collection.
-|spring.cloud.azure.active-directory.b2c.app-id-uri |  | App ID URI which might be used in the <code>"aud"</code> claim of an token.
+|spring.cloud.azure.active-directory.b2c.app-id-uri |  | App ID URI which might be used in the "aud" claim of a token.
 |spring.cloud.azure.active-directory.b2c.authenticate-additional-parameters |  | 
 |spring.cloud.azure.active-directory.b2c.authorization-clients |  | Specify client configuration
 |spring.cloud.azure.active-directory.b2c.base-uri |  | AAD B2C endpoint base uri.
-|spring.cloud.azure.active-directory.b2c.client-id |  | The application ID that registered under b2c tenant.
-|spring.cloud.azure.active-directory.b2c.client-secret |  | The application secret that registered under b2c tenant.
+|spring.cloud.azure.active-directory.b2c.credential |  | AAD B2C credential information.
 |spring.cloud.azure.active-directory.b2c.jwt-connect-timeout |  | Connection Timeout for the JWKSet Remote URL call.
 |spring.cloud.azure.active-directory.b2c.jwt-read-timeout |  | Read Timeout for the JWKSet Remote URL call.
 |spring.cloud.azure.active-directory.b2c.jwt-size-limit |  | Size limit in Bytes of the JWKSet Remote URL call.
 |spring.cloud.azure.active-directory.b2c.login-flow | `sign-up-or-sign-in` | Specify the primary sign in flow key.
 |spring.cloud.azure.active-directory.b2c.logout-success-url | `http://localhost:8080/login` | 
+|spring.cloud.azure.active-directory.b2c.profile |  | AAD B2C profile information.
 |spring.cloud.azure.active-directory.b2c.reply-url | `{baseUrl}/login/oauth2/code/` | 
 |spring.cloud.azure.active-directory.b2c.tenant |  | The name of the b2c tenant. @deprecated It's recommended to use 'baseUri' instead.
-|spring.cloud.azure.active-directory.b2c.tenant-id |  | The name of the b2c tenant id.
 |spring.cloud.azure.active-directory.b2c.user-flows |  | 
 |spring.cloud.azure.active-directory.b2c.user-name-attribute-name |  | User name attribute name
-|spring.cloud.azure.active-directory.base-uri |  | 
-|spring.cloud.azure.active-directory.client-id |  | Registered application ID in Azure AD. Must be configured when OAuth2 authentication is done in front end
-|spring.cloud.azure.active-directory.client-secret |  | API Access Key of the registered application. Must be configured when OAuth2 authentication is done in front end
-|spring.cloud.azure.active-directory.graph-base-uri |  | 
-|spring.cloud.azure.active-directory.graph-membership-uri |  | 
+|spring.cloud.azure.active-directory.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
+|spring.cloud.azure.active-directory.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
 |spring.cloud.azure.active-directory.jwk-set-cache-lifespan | `5` | The lifespan of the cached JWK set before it expires, default is 5 minutes.
 |spring.cloud.azure.active-directory.jwk-set-cache-refresh-time | `5` | The refresh time of the cached JWK set before it expires, default is 5 minutes.
 |spring.cloud.azure.active-directory.jwt-connect-timeout |  | Connection Timeout for the JWKSet Remote URL call.
 |spring.cloud.azure.active-directory.jwt-read-timeout |  | Read Timeout for the JWKSet Remote URL call.
 |spring.cloud.azure.active-directory.jwt-size-limit |  | Size limit in Bytes of the JWKSet Remote URL call.
 |spring.cloud.azure.active-directory.post-logout-redirect-uri |  | 
-|spring.cloud.azure.active-directory.redirect-uri-template |  | Redirection Endpoint: Used by the authorization server to return responses containing authorization credentials to the client via the resource owner user-agent.
+|spring.cloud.azure.active-directory.profile.cloud |  | Name of the Azure cloud to connect to. Supported types are: AZURE, AZURE_CHINA, AZURE_GERMANY, AZURE_US_GOVERNMENT, OTHER.
+|spring.cloud.azure.active-directory.profile.environment |  | Properties to Azure Active Directory endpoints.
+|spring.cloud.azure.active-directory.profile.tenant-id |  | Azure Tenant ID.
+|spring.cloud.azure.active-directory.redirect-uri-template | `{baseUrl}/login/oauth2/code/` | Redirection Endpoint: Used by the authorization server to return responses containing authorization credentials to the client via the resource owner user-agent.
 |spring.cloud.azure.active-directory.resource-server.claim-to-authority-prefix-map |  | <pre> Configure which claim will be used to build GrantedAuthority, and prefix of the GrantedAuthority's string value. Default value is: "scp" -> "SCOPE_", "roles" -> "APPROLE_". Example: If use the default value, and the access_token's "scp" scope value is "testValue", then GrantedAuthority with "SCOPE_testValue" will be created.. </pre> @see org.springframework.security.core.GrantedAuthority
 |spring.cloud.azure.active-directory.resource-server.principal-claim-name |  | <pre> Configure which claim in access token be returned in AuthenticatedPrincipal#getName. Default value is "sub". Example: If use the default value, and the access_token's "sub" scope value is "testValue", then AuthenticatedPrincipal#getName will return "testValue". </pre> @see org.springframework.security.core.AuthenticatedPrincipal#getName
-|spring.cloud.azure.active-directory.session-stateless | `false` | If <code>true</code> activates the stateless auth filter {@link AADAppRoleStatelessAuthenticationFilter}. The default is <code>false</code> which activates {@link AADAuthenticationFilter}.
-|spring.cloud.azure.active-directory.tenant-id |  | Azure Tenant ID.
+|spring.cloud.azure.active-directory.session-stateless | `false` | If true activates the stateless auth filter AADAppRoleStatelessAuthenticationFilter. The default is false which activates AADAuthenticationFilter.
 |spring.cloud.azure.active-directory.user-group.allowed-group-ids |  | 
-|spring.cloud.azure.active-directory.user-group.allowed-group-names |  | Expected UserGroups that an authority will be granted to if found in the response from the MemeberOf Graph API Call.
+|spring.cloud.azure.active-directory.user-group.allowed-group-names |  | Expected UserGroups that an authority will be granted to if found in the response from the MemberOf Graph API Call.
 |spring.cloud.azure.active-directory.user-group.allowed-groups |  | 
 |spring.cloud.azure.active-directory.user-group.enable-full-list | `false` | enableFullList is used to control whether to list all group id, default is false
-|spring.cloud.azure.active-directory.user-name-attribute |  | Decide which claim to be principal's name..
+|spring.cloud.azure.active-directory.user-group.use-transitive-members | `false` | 
+|spring.cloud.azure.active-directory.user-name-attribute |  | Decide which claim to be principal's name.
 |spring.cloud.azure.appconfiguration.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
-|spring.cloud.azure.appconfiguration.client.connect-timeout |  | 
-|spring.cloud.azure.appconfiguration.client.connection-idle-timeout |  | 
+|spring.cloud.azure.appconfiguration.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
+|spring.cloud.azure.appconfiguration.client.connection-idle-timeout |  | Amount of time before an idle connection.
 |spring.cloud.azure.appconfiguration.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
-|spring.cloud.azure.appconfiguration.client.maximum-connection-pool-size |  | 
-|spring.cloud.azure.appconfiguration.client.read-timeout |  | 
-|spring.cloud.azure.appconfiguration.client.response-timeout |  | 
-|spring.cloud.azure.appconfiguration.client.write-timeout |  | 
-|spring.cloud.azure.appconfiguration.connection-string |  | 
+|spring.cloud.azure.appconfiguration.client.logging.allowed-header-names |  | Comma-delimited list of whitelisted headers that should be logged.
+|spring.cloud.azure.appconfiguration.client.logging.allowed-query-param-names |  | Comma-delimited list of whitelisted query parameters.
+|spring.cloud.azure.appconfiguration.client.logging.level |  | The level of detail to log on HTTP messages.
+|spring.cloud.azure.appconfiguration.client.logging.pretty-print-body |  | Whether to pretty print the message bodies.
+|spring.cloud.azure.appconfiguration.client.maximum-connection-pool-size |  | Maximum connection pool size used by the underlying HTTP client.
+|spring.cloud.azure.appconfiguration.client.read-timeout |  | Amount of time used when reading the server response.
+|spring.cloud.azure.appconfiguration.client.response-timeout |  | Amount of time used when waiting for a server to reply.
+|spring.cloud.azure.appconfiguration.client.write-timeout |  | Amount of time each request being sent over the wire.
+|spring.cloud.azure.appconfiguration.connection-string |  | Connection string of the Azure App Configuration instance.
 |spring.cloud.azure.appconfiguration.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.appconfiguration.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 |spring.cloud.azure.appconfiguration.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
 |spring.cloud.azure.appconfiguration.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.appconfiguration.credential.managed-identity-client-id |  | Client id to use when using managed identity to authenticate with Azure.
+|spring.cloud.azure.appconfiguration.credential.managed-identity-client-id |  | Client id to use when using user-assigned managed identity or app registration (when working with AKS pod-identity) to authenticate with Azure.
 |spring.cloud.azure.appconfiguration.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.appconfiguration.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.appconfiguration.enabled | `true` | Whether an Azure Service is enabled.
-|spring.cloud.azure.appconfiguration.endpoint |  | 
+|spring.cloud.azure.appconfiguration.endpoint |  | Endpoint of the Azure App Configuration instance.
 |spring.cloud.azure.appconfiguration.profile.cloud |  | Name of the Azure cloud to connect to.
 |spring.cloud.azure.appconfiguration.profile.environment.active-directory-endpoint |  | 
 |spring.cloud.azure.appconfiguration.profile.environment.active-directory-graph-api-version |  | 
@@ -106,7 +105,7 @@
 |spring.cloud.azure.appconfiguration.retry.retry-after-header |  | HTTP header, such as Retry-After or x-ms-retry-after-ms, to lookup for the retry delay. If the value is null, will calculate the delay using backoff and ignore the delay provided in response header.
 |spring.cloud.azure.appconfiguration.retry.retry-after-time-unit |  | Time unit to use when applying the retry delay.
 |spring.cloud.azure.appconfiguration.retry.timeout |  | Amount of time to wait until a timeout.
-|spring.cloud.azure.appconfiguration.service-version |  | 
+|spring.cloud.azure.appconfiguration.service-version |  | Version of the service to be used when making request.
 |spring.cloud.azure.auto-create-resources | `false` | 
 |spring.cloud.azure.client-id |  | 
 |spring.cloud.azure.client-secret |  | 
@@ -134,13 +133,23 @@
 |spring.cloud.azure.cosmos.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 |spring.cloud.azure.cosmos.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
 |spring.cloud.azure.cosmos.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.cosmos.credential.managed-identity-client-id |  | Client id to use when using managed identity to authenticate with Azure.
+|spring.cloud.azure.cosmos.credential.managed-identity-client-id |  | Client id to use when using user-assigned managed identity or app registration (when working with AKS pod-identity) to authenticate with Azure.
 |spring.cloud.azure.cosmos.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.cosmos.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.cosmos.database |  | 
+|spring.cloud.azure.cosmos.direct-connection.connect-timeout |  | 
+|spring.cloud.azure.cosmos.direct-connection.connection-endpoint-rediscovery-enabled |  | 
+|spring.cloud.azure.cosmos.direct-connection.idle-connection-timeout |  | 
+|spring.cloud.azure.cosmos.direct-connection.idle-endpoint-timeout |  | 
+|spring.cloud.azure.cosmos.direct-connection.max-connections-per-endpoint |  | 
+|spring.cloud.azure.cosmos.direct-connection.max-requests-per-connection |  | 
+|spring.cloud.azure.cosmos.direct-connection.network-request-timeout |  | 
 |spring.cloud.azure.cosmos.enabled | `true` | Whether an Azure Service is enabled.
 |spring.cloud.azure.cosmos.endpoint |  | 
 |spring.cloud.azure.cosmos.endpoint-discovery-enabled |  | 
+|spring.cloud.azure.cosmos.gateway-connection.idle-connection-timeout |  | 
+|spring.cloud.azure.cosmos.gateway-connection.max-connection-pool-size |  | 
+|spring.cloud.azure.cosmos.gateway-connection.proxy |  | 
 |spring.cloud.azure.cosmos.key |  | 
 |spring.cloud.azure.cosmos.multiple-write-regions-enabled |  | 
 |spring.cloud.azure.cosmos.permissions |  | 
@@ -181,11 +190,13 @@
 |spring.cloud.azure.cosmos.resource.resource-group |  | 
 |spring.cloud.azure.cosmos.resource.resource-id |  | 
 |spring.cloud.azure.cosmos.session-capturing-override-enabled |  | Override enabled, session capturing is enabled by default for {@link ConsistencyLevel#SESSION}
+|spring.cloud.azure.cosmos.throttling-retry-options.max-retry-attempts-on-throttled-requests |  | 
+|spring.cloud.azure.cosmos.throttling-retry-options.max-retry-wait-time |  | 
 |spring.cloud.azure.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 |spring.cloud.azure.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
 |spring.cloud.azure.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.credential.managed-identity-client-id |  | Client id to use when using managed identity to authenticate with Azure.
+|spring.cloud.azure.credential.managed-identity-client-id |  | Client id to use when using user-assigned managed identity or app registration (when working with AKS pod-identity) to authenticate with Azure.
 |spring.cloud.azure.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.environment |  | 
@@ -196,25 +207,25 @@
 |spring.cloud.azure.eventhub.namespace |  | 
 |spring.cloud.azure.eventhubs.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
 |spring.cloud.azure.eventhubs.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
-|spring.cloud.azure.eventhubs.client.transport-type |  | 
-|spring.cloud.azure.eventhubs.connection-string |  | 
+|spring.cloud.azure.eventhubs.client.transport-type |  | Transport type for AMQP-based client.
+|spring.cloud.azure.eventhubs.connection-string |  | Connection string to connect to an event hub.
 |spring.cloud.azure.eventhubs.consumer.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
 |spring.cloud.azure.eventhubs.consumer.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
-|spring.cloud.azure.eventhubs.consumer.client.transport-type |  | 
-|spring.cloud.azure.eventhubs.consumer.connection-string |  | 
+|spring.cloud.azure.eventhubs.consumer.client.transport-type |  | Transport type for AMQP-based client.
+|spring.cloud.azure.eventhubs.consumer.connection-string |  | Connection string to connect to an event hub.
 |spring.cloud.azure.eventhubs.consumer.consumer-group |  | Name of the consumer group this consumer is associated with.
 |spring.cloud.azure.eventhubs.consumer.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.eventhubs.consumer.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 |spring.cloud.azure.eventhubs.consumer.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
 |spring.cloud.azure.eventhubs.consumer.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.eventhubs.consumer.credential.managed-identity-client-id |  | Client id to use when using managed identity to authenticate with Azure.
+|spring.cloud.azure.eventhubs.consumer.credential.managed-identity-client-id |  | Client id to use when using user-assigned managed identity or app registration (when working with AKS pod-identity) to authenticate with Azure.
 |spring.cloud.azure.eventhubs.consumer.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.consumer.credential.username |  | Username to use when performing username/password authentication with Azure.
-|spring.cloud.azure.eventhubs.consumer.custom-endpoint-address |  | 
-|spring.cloud.azure.eventhubs.consumer.domain-name | `servicebus.windows.net` | 
+|spring.cloud.azure.eventhubs.consumer.custom-endpoint-address |  | A custom endpoint address when connecting to the Event Hubs service. This can be useful when your network does not allow connecting to the standard Azure Event Hubs endpoint address, but does allow connecting through an intermediary. For example: https://my.custom.endpoint.com:55300.
+|spring.cloud.azure.eventhubs.consumer.domain-name | `servicebus.windows.net` | The domain name of an Event Hub namespace.
 |spring.cloud.azure.eventhubs.consumer.enabled | `true` | Whether an Azure Service is enabled.
-|spring.cloud.azure.eventhubs.consumer.event-hub-name |  | 
-|spring.cloud.azure.eventhubs.consumer.namespace |  | 
+|spring.cloud.azure.eventhubs.consumer.event-hub-name |  | The name of an event hub.
+|spring.cloud.azure.eventhubs.consumer.namespace |  | The namespace of an event hub.
 |spring.cloud.azure.eventhubs.consumer.prefetch-count |  | The number of events the Event Hub consumer will actively receive and queue locally without regard to whether a receiving operation is currently active.
 |spring.cloud.azure.eventhubs.consumer.profile.cloud |  | Name of the Azure cloud to connect to.
 |spring.cloud.azure.eventhubs.consumer.profile.environment.active-directory-endpoint |  | 
@@ -256,27 +267,31 @@
 |spring.cloud.azure.eventhubs.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 |spring.cloud.azure.eventhubs.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
 |spring.cloud.azure.eventhubs.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.eventhubs.credential.managed-identity-client-id |  | Client id to use when using managed identity to authenticate with Azure.
+|spring.cloud.azure.eventhubs.credential.managed-identity-client-id |  | Client id to use when using user-assigned managed identity or app registration (when working with AKS pod-identity) to authenticate with Azure.
 |spring.cloud.azure.eventhubs.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.credential.username |  | Username to use when performing username/password authentication with Azure.
-|spring.cloud.azure.eventhubs.custom-endpoint-address |  | 
-|spring.cloud.azure.eventhubs.domain-name | `servicebus.windows.net` | 
+|spring.cloud.azure.eventhubs.custom-endpoint-address |  | A custom endpoint address when connecting to the Event Hubs service. This can be useful when your network does not allow connecting to the standard Azure Event Hubs endpoint address, but does allow connecting through an intermediary. For example: https://my.custom.endpoint.com:55300.
+|spring.cloud.azure.eventhubs.domain-name | `servicebus.windows.net` | The domain name of an Event Hub namespace.
 |spring.cloud.azure.eventhubs.enabled | `true` | Whether an Azure Service is enabled.
-|spring.cloud.azure.eventhubs.event-hub-name |  | 
-|spring.cloud.azure.eventhubs.namespace |  | 
+|spring.cloud.azure.eventhubs.event-hub-name |  | The name of an event hub.
+|spring.cloud.azure.eventhubs.namespace |  | The namespace of an event hub.
 |spring.cloud.azure.eventhubs.processor.batch.max-size |  | 
 |spring.cloud.azure.eventhubs.processor.batch.max-wait-time |  | 
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.account-key |  | 
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.account-name |  | 
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.blob-name |  | 
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
-|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.connect-timeout |  | 
-|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.connection-idle-timeout |  | 
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.connection-idle-timeout |  | Amount of time before an idle connection.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
-|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.maximum-connection-pool-size |  | 
-|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.read-timeout |  | 
-|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.response-timeout |  | 
-|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.write-timeout |  | 
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.logging.allowed-header-names |  | Comma-delimited list of whitelisted headers that should be logged.
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.logging.allowed-query-param-names |  | Comma-delimited list of whitelisted query parameters.
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.logging.level |  | The level of detail to log on HTTP messages.
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.logging.pretty-print-body |  | Whether to pretty print the message bodies.
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.maximum-connection-pool-size |  | Maximum connection pool size used by the underlying HTTP client.
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.read-timeout |  | Amount of time used when reading the server response.
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.response-timeout |  | Amount of time used when waiting for a server to reply.
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.write-timeout |  | Amount of time each request being sent over the wire.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.connection-string |  | 
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.container-name |  | 
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.create-container-if-not-exists |  | 
@@ -284,7 +299,7 @@
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.eventhubs.processor.checkpoint-store.credential.managed-identity-client-id |  | Client id to use when using managed identity to authenticate with Azure.
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.credential.managed-identity-client-id |  | Client id to use when using user-assigned managed identity or app registration (when working with AKS pod-identity) to authenticate with Azure.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.customer-provided-key |  | 
@@ -327,32 +342,33 @@
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.retry.backoff.max-delay |  | 
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.retry.backoff.multiplier |  | 
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.retry.max-attempts |  | The maximum number of attempts
-|spring.cloud.azure.eventhubs.processor.checkpoint-store.retry.retry-after-header |  | 
-|spring.cloud.azure.eventhubs.processor.checkpoint-store.retry.retry-after-time-unit |  | 
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.retry.retry-after-header |  | HTTP header, such as Retry-After or x-ms-retry-after-ms, to lookup for the retry delay. If the value is null, will calculate the delay using backoff and ignore the delay provided in response header.
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.retry.retry-after-time-unit |  | Time unit to use when applying the retry delay.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.retry.secondary-host |  | 
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.retry.timeout |  | How long to wait until a timeout
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.sas-token |  | 
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.service-version |  | 
 |spring.cloud.azure.eventhubs.processor.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
 |spring.cloud.azure.eventhubs.processor.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
-|spring.cloud.azure.eventhubs.processor.client.transport-type |  | 
-|spring.cloud.azure.eventhubs.processor.connection-string |  | 
+|spring.cloud.azure.eventhubs.processor.client.transport-type |  | Transport type for AMQP-based client.
+|spring.cloud.azure.eventhubs.processor.connection-string |  | Connection string to connect to an event hub.
 |spring.cloud.azure.eventhubs.processor.consumer-group |  | Name of the consumer group this consumer is associated with.
 |spring.cloud.azure.eventhubs.processor.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.eventhubs.processor.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 |spring.cloud.azure.eventhubs.processor.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
 |spring.cloud.azure.eventhubs.processor.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.eventhubs.processor.credential.managed-identity-client-id |  | Client id to use when using managed identity to authenticate with Azure.
+|spring.cloud.azure.eventhubs.processor.credential.managed-identity-client-id |  | Client id to use when using user-assigned managed identity or app registration (when working with AKS pod-identity) to authenticate with Azure.
 |spring.cloud.azure.eventhubs.processor.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.processor.credential.username |  | Username to use when performing username/password authentication with Azure.
-|spring.cloud.azure.eventhubs.processor.custom-endpoint-address |  | 
-|spring.cloud.azure.eventhubs.processor.domain-name | `servicebus.windows.net` | 
+|spring.cloud.azure.eventhubs.processor.custom-endpoint-address |  | A custom endpoint address when connecting to the Event Hubs service. This can be useful when your network does not allow connecting to the standard Azure Event Hubs endpoint address, but does allow connecting through an intermediary. For example: https://my.custom.endpoint.com:55300.
+|spring.cloud.azure.eventhubs.processor.domain-name | `servicebus.windows.net` | The domain name of an Event Hub namespace.
 |spring.cloud.azure.eventhubs.processor.enabled | `true` | Whether an Azure Service is enabled.
-|spring.cloud.azure.eventhubs.processor.event-hub-name |  | 
+|spring.cloud.azure.eventhubs.processor.event-hub-name |  | The name of an event hub.
 |spring.cloud.azure.eventhubs.processor.initial-partition-event-position |  | 
+|spring.cloud.azure.eventhubs.processor.load-balancing.partition-ownership-expiration-interval |  | 
 |spring.cloud.azure.eventhubs.processor.load-balancing.strategy |  | 
 |spring.cloud.azure.eventhubs.processor.load-balancing.update-interval |  | 
-|spring.cloud.azure.eventhubs.processor.namespace |  | 
+|spring.cloud.azure.eventhubs.processor.namespace |  | The namespace of an event hub.
 |spring.cloud.azure.eventhubs.processor.partition-ownership-expiration-interval |  | 
 |spring.cloud.azure.eventhubs.processor.prefetch-count |  | The number of events the Event Hub consumer will actively receive and queue locally without regard to whether a receiving operation is currently active.
 |spring.cloud.azure.eventhubs.processor.profile.cloud |  | Name of the Azure cloud to connect to.
@@ -394,20 +410,20 @@
 |spring.cloud.azure.eventhubs.processor.track-last-enqueued-event-properties |  | 
 |spring.cloud.azure.eventhubs.producer.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
 |spring.cloud.azure.eventhubs.producer.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
-|spring.cloud.azure.eventhubs.producer.client.transport-type |  | 
-|spring.cloud.azure.eventhubs.producer.connection-string |  | 
+|spring.cloud.azure.eventhubs.producer.client.transport-type |  | Transport type for AMQP-based client.
+|spring.cloud.azure.eventhubs.producer.connection-string |  | Connection string to connect to an event hub.
 |spring.cloud.azure.eventhubs.producer.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.eventhubs.producer.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 |spring.cloud.azure.eventhubs.producer.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
 |spring.cloud.azure.eventhubs.producer.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.eventhubs.producer.credential.managed-identity-client-id |  | Client id to use when using managed identity to authenticate with Azure.
+|spring.cloud.azure.eventhubs.producer.credential.managed-identity-client-id |  | Client id to use when using user-assigned managed identity or app registration (when working with AKS pod-identity) to authenticate with Azure.
 |spring.cloud.azure.eventhubs.producer.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.producer.credential.username |  | Username to use when performing username/password authentication with Azure.
-|spring.cloud.azure.eventhubs.producer.custom-endpoint-address |  | 
-|spring.cloud.azure.eventhubs.producer.domain-name | `servicebus.windows.net` | 
+|spring.cloud.azure.eventhubs.producer.custom-endpoint-address |  | A custom endpoint address when connecting to the Event Hubs service. This can be useful when your network does not allow connecting to the standard Azure Event Hubs endpoint address, but does allow connecting through an intermediary. For example: https://my.custom.endpoint.com:55300.
+|spring.cloud.azure.eventhubs.producer.domain-name | `servicebus.windows.net` | The domain name of an Event Hub namespace.
 |spring.cloud.azure.eventhubs.producer.enabled | `true` | Whether an Azure Service is enabled.
-|spring.cloud.azure.eventhubs.producer.event-hub-name |  | 
-|spring.cloud.azure.eventhubs.producer.namespace |  | 
+|spring.cloud.azure.eventhubs.producer.event-hub-name |  | The name of an event hub.
+|spring.cloud.azure.eventhubs.producer.namespace |  | The namespace of an event hub.
 |spring.cloud.azure.eventhubs.producer.profile.cloud |  | Name of the Azure cloud to connect to.
 |spring.cloud.azure.eventhubs.producer.profile.environment.active-directory-endpoint |  | 
 |spring.cloud.azure.eventhubs.producer.profile.environment.active-directory-graph-api-version |  | 
@@ -483,18 +499,22 @@
 |spring.cloud.azure.eventhubs.retry.timeout |  | Amount of time to wait until a timeout.
 |spring.cloud.azure.eventhubs.shared-connection |  | 
 |spring.cloud.azure.keyvault.certificate.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
-|spring.cloud.azure.keyvault.certificate.client.connect-timeout |  | 
-|spring.cloud.azure.keyvault.certificate.client.connection-idle-timeout |  | 
+|spring.cloud.azure.keyvault.certificate.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
+|spring.cloud.azure.keyvault.certificate.client.connection-idle-timeout |  | Amount of time before an idle connection.
 |spring.cloud.azure.keyvault.certificate.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
-|spring.cloud.azure.keyvault.certificate.client.maximum-connection-pool-size |  | 
-|spring.cloud.azure.keyvault.certificate.client.read-timeout |  | 
-|spring.cloud.azure.keyvault.certificate.client.response-timeout |  | 
-|spring.cloud.azure.keyvault.certificate.client.write-timeout |  | 
+|spring.cloud.azure.keyvault.certificate.client.logging.allowed-header-names |  | Comma-delimited list of whitelisted headers that should be logged.
+|spring.cloud.azure.keyvault.certificate.client.logging.allowed-query-param-names |  | Comma-delimited list of whitelisted query parameters.
+|spring.cloud.azure.keyvault.certificate.client.logging.level |  | The level of detail to log on HTTP messages.
+|spring.cloud.azure.keyvault.certificate.client.logging.pretty-print-body |  | Whether to pretty print the message bodies.
+|spring.cloud.azure.keyvault.certificate.client.maximum-connection-pool-size |  | Maximum connection pool size used by the underlying HTTP client.
+|spring.cloud.azure.keyvault.certificate.client.read-timeout |  | Amount of time used when reading the server response.
+|spring.cloud.azure.keyvault.certificate.client.response-timeout |  | Amount of time used when waiting for a server to reply.
+|spring.cloud.azure.keyvault.certificate.client.write-timeout |  | Amount of time each request being sent over the wire.
 |spring.cloud.azure.keyvault.certificate.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.keyvault.certificate.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 |spring.cloud.azure.keyvault.certificate.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
 |spring.cloud.azure.keyvault.certificate.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.keyvault.certificate.credential.managed-identity-client-id |  | Client id to use when using managed identity to authenticate with Azure.
+|spring.cloud.azure.keyvault.certificate.credential.managed-identity-client-id |  | Client id to use when using user-assigned managed identity or app registration (when working with AKS pod-identity) to authenticate with Azure.
 |spring.cloud.azure.keyvault.certificate.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.keyvault.certificate.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.keyvault.certificate.enabled | `true` | Whether an Azure Service is enabled.
@@ -538,20 +558,24 @@
 |spring.cloud.azure.keyvault.certificate.retry.retry-after-header |  | HTTP header, such as Retry-After or x-ms-retry-after-ms, to lookup for the retry delay. If the value is null, will calculate the delay using backoff and ignore the delay provided in response header.
 |spring.cloud.azure.keyvault.certificate.retry.retry-after-time-unit |  | Time unit to use when applying the retry delay.
 |spring.cloud.azure.keyvault.certificate.retry.timeout |  | Amount of time to wait until a timeout.
-|spring.cloud.azure.keyvault.certificate.service-version |  | 
+|spring.cloud.azure.keyvault.certificate.service-version |  | The version of Azure Key Vault Certificate Service.
 |spring.cloud.azure.keyvault.secret.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
-|spring.cloud.azure.keyvault.secret.client.connect-timeout |  | 
-|spring.cloud.azure.keyvault.secret.client.connection-idle-timeout |  | 
+|spring.cloud.azure.keyvault.secret.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
+|spring.cloud.azure.keyvault.secret.client.connection-idle-timeout |  | Amount of time before an idle connection.
 |spring.cloud.azure.keyvault.secret.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
-|spring.cloud.azure.keyvault.secret.client.maximum-connection-pool-size |  | 
-|spring.cloud.azure.keyvault.secret.client.read-timeout |  | 
-|spring.cloud.azure.keyvault.secret.client.response-timeout |  | 
-|spring.cloud.azure.keyvault.secret.client.write-timeout |  | 
+|spring.cloud.azure.keyvault.secret.client.logging.allowed-header-names |  | Comma-delimited list of whitelisted headers that should be logged.
+|spring.cloud.azure.keyvault.secret.client.logging.allowed-query-param-names |  | Comma-delimited list of whitelisted query parameters.
+|spring.cloud.azure.keyvault.secret.client.logging.level |  | The level of detail to log on HTTP messages.
+|spring.cloud.azure.keyvault.secret.client.logging.pretty-print-body |  | Whether to pretty print the message bodies.
+|spring.cloud.azure.keyvault.secret.client.maximum-connection-pool-size |  | Maximum connection pool size used by the underlying HTTP client.
+|spring.cloud.azure.keyvault.secret.client.read-timeout |  | Amount of time used when reading the server response.
+|spring.cloud.azure.keyvault.secret.client.response-timeout |  | Amount of time used when waiting for a server to reply.
+|spring.cloud.azure.keyvault.secret.client.write-timeout |  | Amount of time each request being sent over the wire.
 |spring.cloud.azure.keyvault.secret.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.keyvault.secret.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 |spring.cloud.azure.keyvault.secret.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
 |spring.cloud.azure.keyvault.secret.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.keyvault.secret.credential.managed-identity-client-id |  | Client id to use when using managed identity to authenticate with Azure.
+|spring.cloud.azure.keyvault.secret.credential.managed-identity-client-id |  | Client id to use when using user-assigned managed identity or app registration (when working with AKS pod-identity) to authenticate with Azure.
 |spring.cloud.azure.keyvault.secret.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.keyvault.secret.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.keyvault.secret.enabled | `true` | Whether an Azure Service is enabled.
@@ -643,18 +667,18 @@
 |spring.cloud.azure.retry.timeout |  | Amount of time to wait until a timeout.
 |spring.cloud.azure.servicebus.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
 |spring.cloud.azure.servicebus.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
-|spring.cloud.azure.servicebus.client.transport-type |  | 
+|spring.cloud.azure.servicebus.client.transport-type |  | Transport type for AMQP-based client.
 |spring.cloud.azure.servicebus.connection-string |  | 
 |spring.cloud.azure.servicebus.consumer.auto-complete |  | 
 |spring.cloud.azure.servicebus.consumer.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
 |spring.cloud.azure.servicebus.consumer.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
-|spring.cloud.azure.servicebus.consumer.client.transport-type |  | 
+|spring.cloud.azure.servicebus.consumer.client.transport-type |  | Transport type for AMQP-based client.
 |spring.cloud.azure.servicebus.consumer.connection-string |  | 
 |spring.cloud.azure.servicebus.consumer.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.servicebus.consumer.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 |spring.cloud.azure.servicebus.consumer.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
 |spring.cloud.azure.servicebus.consumer.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.servicebus.consumer.credential.managed-identity-client-id |  | Client id to use when using managed identity to authenticate with Azure.
+|spring.cloud.azure.servicebus.consumer.credential.managed-identity-client-id |  | Client id to use when using user-assigned managed identity or app registration (when working with AKS pod-identity) to authenticate with Azure.
 |spring.cloud.azure.servicebus.consumer.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.servicebus.consumer.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.servicebus.consumer.domain-name | `servicebus.windows.net` | 
@@ -708,7 +732,7 @@
 |spring.cloud.azure.servicebus.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 |spring.cloud.azure.servicebus.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
 |spring.cloud.azure.servicebus.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.servicebus.credential.managed-identity-client-id |  | Client id to use when using managed identity to authenticate with Azure.
+|spring.cloud.azure.servicebus.credential.managed-identity-client-id |  | Client id to use when using user-assigned managed identity or app registration (when working with AKS pod-identity) to authenticate with Azure.
 |spring.cloud.azure.servicebus.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.servicebus.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.servicebus.cross-entity-transactions |  | 
@@ -720,13 +744,13 @@
 |spring.cloud.azure.servicebus.processor.auto-complete |  | 
 |spring.cloud.azure.servicebus.processor.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
 |spring.cloud.azure.servicebus.processor.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
-|spring.cloud.azure.servicebus.processor.client.transport-type |  | 
+|spring.cloud.azure.servicebus.processor.client.transport-type |  | Transport type for AMQP-based client.
 |spring.cloud.azure.servicebus.processor.connection-string |  | 
 |spring.cloud.azure.servicebus.processor.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.servicebus.processor.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 |spring.cloud.azure.servicebus.processor.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
 |spring.cloud.azure.servicebus.processor.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.servicebus.processor.credential.managed-identity-client-id |  | Client id to use when using managed identity to authenticate with Azure.
+|spring.cloud.azure.servicebus.processor.credential.managed-identity-client-id |  | Client id to use when using user-assigned managed identity or app registration (when working with AKS pod-identity) to authenticate with Azure.
 |spring.cloud.azure.servicebus.processor.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.servicebus.processor.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.servicebus.processor.domain-name | `servicebus.windows.net` | 
@@ -780,13 +804,13 @@
 |spring.cloud.azure.servicebus.processor.subscription-name |  | 
 |spring.cloud.azure.servicebus.producer.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
 |spring.cloud.azure.servicebus.producer.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
-|spring.cloud.azure.servicebus.producer.client.transport-type |  | 
+|spring.cloud.azure.servicebus.producer.client.transport-type |  | Transport type for AMQP-based client.
 |spring.cloud.azure.servicebus.producer.connection-string |  | 
 |spring.cloud.azure.servicebus.producer.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.servicebus.producer.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 |spring.cloud.azure.servicebus.producer.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
 |spring.cloud.azure.servicebus.producer.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.servicebus.producer.credential.managed-identity-client-id |  | Client id to use when using managed identity to authenticate with Azure.
+|spring.cloud.azure.servicebus.producer.credential.managed-identity-client-id |  | Client id to use when using user-assigned managed identity or app registration (when working with AKS pod-identity) to authenticate with Azure.
 |spring.cloud.azure.servicebus.producer.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.servicebus.producer.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.servicebus.producer.domain-name | `servicebus.windows.net` | 
@@ -879,20 +903,24 @@
 |spring.cloud.azure.storage.blob.account-name |  | 
 |spring.cloud.azure.storage.blob.blob-name |  | 
 |spring.cloud.azure.storage.blob.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
-|spring.cloud.azure.storage.blob.client.connect-timeout |  | 
-|spring.cloud.azure.storage.blob.client.connection-idle-timeout |  | 
+|spring.cloud.azure.storage.blob.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
+|spring.cloud.azure.storage.blob.client.connection-idle-timeout |  | Amount of time before an idle connection.
 |spring.cloud.azure.storage.blob.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
-|spring.cloud.azure.storage.blob.client.maximum-connection-pool-size |  | 
-|spring.cloud.azure.storage.blob.client.read-timeout |  | 
-|spring.cloud.azure.storage.blob.client.response-timeout |  | 
-|spring.cloud.azure.storage.blob.client.write-timeout |  | 
+|spring.cloud.azure.storage.blob.client.logging.allowed-header-names |  | Comma-delimited list of whitelisted headers that should be logged.
+|spring.cloud.azure.storage.blob.client.logging.allowed-query-param-names |  | Comma-delimited list of whitelisted query parameters.
+|spring.cloud.azure.storage.blob.client.logging.level |  | The level of detail to log on HTTP messages.
+|spring.cloud.azure.storage.blob.client.logging.pretty-print-body |  | Whether to pretty print the message bodies.
+|spring.cloud.azure.storage.blob.client.maximum-connection-pool-size |  | Maximum connection pool size used by the underlying HTTP client.
+|spring.cloud.azure.storage.blob.client.read-timeout |  | Amount of time used when reading the server response.
+|spring.cloud.azure.storage.blob.client.response-timeout |  | Amount of time used when waiting for a server to reply.
+|spring.cloud.azure.storage.blob.client.write-timeout |  | Amount of time each request being sent over the wire.
 |spring.cloud.azure.storage.blob.connection-string |  | 
 |spring.cloud.azure.storage.blob.container-name |  | 
 |spring.cloud.azure.storage.blob.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.storage.blob.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 |spring.cloud.azure.storage.blob.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
 |spring.cloud.azure.storage.blob.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.storage.blob.credential.managed-identity-client-id |  | Client id to use when using managed identity to authenticate with Azure.
+|spring.cloud.azure.storage.blob.credential.managed-identity-client-id |  | Client id to use when using user-assigned managed identity or app registration (when working with AKS pod-identity) to authenticate with Azure.
 |spring.cloud.azure.storage.blob.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.storage.blob.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.storage.blob.customer-provided-key |  | 
@@ -935,8 +963,8 @@
 |spring.cloud.azure.storage.blob.retry.backoff.max-delay |  | 
 |spring.cloud.azure.storage.blob.retry.backoff.multiplier |  | 
 |spring.cloud.azure.storage.blob.retry.max-attempts |  | The maximum number of attempts
-|spring.cloud.azure.storage.blob.retry.retry-after-header |  | 
-|spring.cloud.azure.storage.blob.retry.retry-after-time-unit |  | 
+|spring.cloud.azure.storage.blob.retry.retry-after-header |  | HTTP header, such as Retry-After or x-ms-retry-after-ms, to lookup for the retry delay. If the value is null, will calculate the delay using backoff and ignore the delay provided in response header.
+|spring.cloud.azure.storage.blob.retry.retry-after-time-unit |  | Time unit to use when applying the retry delay.
 |spring.cloud.azure.storage.blob.retry.secondary-host |  | 
 |spring.cloud.azure.storage.blob.retry.timeout |  | How long to wait until a timeout
 |spring.cloud.azure.storage.blob.sas-token |  | 
@@ -944,19 +972,23 @@
 |spring.cloud.azure.storage.fileshare.account-key |  | 
 |spring.cloud.azure.storage.fileshare.account-name |  | 
 |spring.cloud.azure.storage.fileshare.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
-|spring.cloud.azure.storage.fileshare.client.connect-timeout |  | 
-|spring.cloud.azure.storage.fileshare.client.connection-idle-timeout |  | 
+|spring.cloud.azure.storage.fileshare.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
+|spring.cloud.azure.storage.fileshare.client.connection-idle-timeout |  | Amount of time before an idle connection.
 |spring.cloud.azure.storage.fileshare.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
-|spring.cloud.azure.storage.fileshare.client.maximum-connection-pool-size |  | 
-|spring.cloud.azure.storage.fileshare.client.read-timeout |  | 
-|spring.cloud.azure.storage.fileshare.client.response-timeout |  | 
-|spring.cloud.azure.storage.fileshare.client.write-timeout |  | 
+|spring.cloud.azure.storage.fileshare.client.logging.allowed-header-names |  | Comma-delimited list of whitelisted headers that should be logged.
+|spring.cloud.azure.storage.fileshare.client.logging.allowed-query-param-names |  | Comma-delimited list of whitelisted query parameters.
+|spring.cloud.azure.storage.fileshare.client.logging.level |  | The level of detail to log on HTTP messages.
+|spring.cloud.azure.storage.fileshare.client.logging.pretty-print-body |  | Whether to pretty print the message bodies.
+|spring.cloud.azure.storage.fileshare.client.maximum-connection-pool-size |  | Maximum connection pool size used by the underlying HTTP client.
+|spring.cloud.azure.storage.fileshare.client.read-timeout |  | Amount of time used when reading the server response.
+|spring.cloud.azure.storage.fileshare.client.response-timeout |  | Amount of time used when waiting for a server to reply.
+|spring.cloud.azure.storage.fileshare.client.write-timeout |  | Amount of time each request being sent over the wire.
 |spring.cloud.azure.storage.fileshare.connection-string |  | 
 |spring.cloud.azure.storage.fileshare.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.storage.fileshare.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 |spring.cloud.azure.storage.fileshare.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
 |spring.cloud.azure.storage.fileshare.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.storage.fileshare.credential.managed-identity-client-id |  | Client id to use when using managed identity to authenticate with Azure.
+|spring.cloud.azure.storage.fileshare.credential.managed-identity-client-id |  | Client id to use when using user-assigned managed identity or app registration (when working with AKS pod-identity) to authenticate with Azure.
 |spring.cloud.azure.storage.fileshare.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.storage.fileshare.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.storage.fileshare.enabled | `true` | Whether an Azure Service is enabled.
@@ -998,8 +1030,8 @@
 |spring.cloud.azure.storage.fileshare.retry.backoff.max-delay |  | 
 |spring.cloud.azure.storage.fileshare.retry.backoff.multiplier |  | 
 |spring.cloud.azure.storage.fileshare.retry.max-attempts |  | The maximum number of attempts
-|spring.cloud.azure.storage.fileshare.retry.retry-after-header |  | 
-|spring.cloud.azure.storage.fileshare.retry.retry-after-time-unit |  | 
+|spring.cloud.azure.storage.fileshare.retry.retry-after-header |  | HTTP header, such as Retry-After or x-ms-retry-after-ms, to lookup for the retry delay. If the value is null, will calculate the delay using backoff and ignore the delay provided in response header.
+|spring.cloud.azure.storage.fileshare.retry.retry-after-time-unit |  | Time unit to use when applying the retry delay.
 |spring.cloud.azure.storage.fileshare.retry.secondary-host |  | 
 |spring.cloud.azure.storage.fileshare.retry.timeout |  | How long to wait until a timeout
 |spring.cloud.azure.storage.fileshare.sas-token |  | 
@@ -1008,19 +1040,23 @@
 |spring.cloud.azure.storage.queue.account-key |  | 
 |spring.cloud.azure.storage.queue.account-name |  | 
 |spring.cloud.azure.storage.queue.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
-|spring.cloud.azure.storage.queue.client.connect-timeout |  | 
-|spring.cloud.azure.storage.queue.client.connection-idle-timeout |  | 
+|spring.cloud.azure.storage.queue.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
+|spring.cloud.azure.storage.queue.client.connection-idle-timeout |  | Amount of time before an idle connection.
 |spring.cloud.azure.storage.queue.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
-|spring.cloud.azure.storage.queue.client.maximum-connection-pool-size |  | 
-|spring.cloud.azure.storage.queue.client.read-timeout |  | 
-|spring.cloud.azure.storage.queue.client.response-timeout |  | 
-|spring.cloud.azure.storage.queue.client.write-timeout |  | 
+|spring.cloud.azure.storage.queue.client.logging.allowed-header-names |  | Comma-delimited list of whitelisted headers that should be logged.
+|spring.cloud.azure.storage.queue.client.logging.allowed-query-param-names |  | Comma-delimited list of whitelisted query parameters.
+|spring.cloud.azure.storage.queue.client.logging.level |  | The level of detail to log on HTTP messages.
+|spring.cloud.azure.storage.queue.client.logging.pretty-print-body |  | Whether to pretty print the message bodies.
+|spring.cloud.azure.storage.queue.client.maximum-connection-pool-size |  | Maximum connection pool size used by the underlying HTTP client.
+|spring.cloud.azure.storage.queue.client.read-timeout |  | Amount of time used when reading the server response.
+|spring.cloud.azure.storage.queue.client.response-timeout |  | Amount of time used when waiting for a server to reply.
+|spring.cloud.azure.storage.queue.client.write-timeout |  | Amount of time each request being sent over the wire.
 |spring.cloud.azure.storage.queue.connection-string |  | 
 |spring.cloud.azure.storage.queue.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.storage.queue.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 |spring.cloud.azure.storage.queue.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
 |spring.cloud.azure.storage.queue.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.storage.queue.credential.managed-identity-client-id |  | Client id to use when using managed identity to authenticate with Azure.
+|spring.cloud.azure.storage.queue.credential.managed-identity-client-id |  | Client id to use when using user-assigned managed identity or app registration (when working with AKS pod-identity) to authenticate with Azure.
 |spring.cloud.azure.storage.queue.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.storage.queue.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.storage.queue.enabled | `true` | Whether an Azure Service is enabled.
@@ -1063,8 +1099,8 @@
 |spring.cloud.azure.storage.queue.retry.backoff.max-delay |  | 
 |spring.cloud.azure.storage.queue.retry.backoff.multiplier |  | 
 |spring.cloud.azure.storage.queue.retry.max-attempts |  | The maximum number of attempts
-|spring.cloud.azure.storage.queue.retry.retry-after-header |  | 
-|spring.cloud.azure.storage.queue.retry.retry-after-time-unit |  | 
+|spring.cloud.azure.storage.queue.retry.retry-after-header |  | HTTP header, such as Retry-After or x-ms-retry-after-ms, to lookup for the retry delay. If the value is null, will calculate the delay using backoff and ignore the delay provided in response header.
+|spring.cloud.azure.storage.queue.retry.retry-after-time-unit |  | Time unit to use when applying the retry delay.
 |spring.cloud.azure.storage.queue.retry.secondary-host |  | 
 |spring.cloud.azure.storage.queue.retry.timeout |  | How long to wait until a timeout
 |spring.cloud.azure.storage.queue.sas-token |  | 
@@ -1072,4 +1108,5 @@
 |spring.cloud.azure.storage.resource-group |  | 
 |spring.cloud.azure.subscription-id |  | 
 |spring.cloud.azure.tenant-id |  | 
+
 |===
