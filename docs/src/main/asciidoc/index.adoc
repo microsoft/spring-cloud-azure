@@ -1,7 +1,7 @@
 = Spring Cloud Azure
 :revnumber: {project-version}
 
-(C) 2016-2021 the original authors.
+(C) 2016-2022 the original authors.
 
 include::_attributes.adoc[]
 include::legal.adoc[]
