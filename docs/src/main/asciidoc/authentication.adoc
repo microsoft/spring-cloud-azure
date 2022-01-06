@@ -146,7 +146,10 @@ Following are the Azure built-in roles for authorizing access to Azure services 
 
 |===
 
-NOTE: A Key Vault access policy determines whether a given security principal, namely a user, application or user group, can perform different operations on Key Vault secrets, keys, and certificates. You can assign access policies using the Azure portal, the Azure CLI, or Azure PowerShell. Check {key-vault-access-policy}[here] for more details.
+NOTE:
+
+- A Key Vault access policy determines whether a given security principal, namely a user, application or user group, can perform different operations on Key Vault secrets, keys, and certificates. You can assign access policies using the Azure portal, the Azure CLI, or Azure PowerShell. Check {key-vault-access-policy}[here] for more details.
+- Currently, Azure Cache for Redis is a special case, and data can be read and written without additional assignment of specific roles.
 
 IMPORTANT: Azure Cosmos DB exposes 2 built-in role definitions: `Cosmos DB Built-in Data Reader` and `Cosmos DB Built-in Data Contributor`. However, Azure portal support for role management is not available yet. Check {cosmos-db-rbac}[here] for more details about the permission model, role definitions, and role assignment.
 
