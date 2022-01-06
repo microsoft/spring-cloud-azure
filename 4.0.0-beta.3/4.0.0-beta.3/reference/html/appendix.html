@@ -260,12 +260,12 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.app-id-uri</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">App ID URI which might be used in the &lt;code&gt;"aud"&lt;/code&gt; claim of an &lt;code&gt;id_token&lt;/code&gt;.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">App ID URI which might be used in the "aud" claim of an id_token.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.application-type</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of the AAD application.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.authenticate-additional-parameters</p></td>
@@ -325,7 +325,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.b2c.login-flow</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>sign-up-or-sign-in</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the primary sign in flow key.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the primary sign-in flow key.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.b2c.logout-success-url</p></td>
@@ -420,12 +420,12 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.resource-server.claim-to-authority-prefix-map</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;pre&gt; Configure which claim will be used to build GrantedAuthority, and prefix of the GrantedAuthority&#8217;s string value. Default value is: "scp" &#8594; "SCOPE_", "roles" &#8594; "APPROLE_". Example: If use the default value, and the access_token&#8217;s "scp" scope value is "testValue", then GrantedAuthority with "SCOPE_testValue" will be created.. &lt;/pre&gt; @see org.springframework.security.core.GrantedAuthority</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configure which claim will be used to build GrantedAuthority, and prefix of the GrantedAuthority&#8217;s string value. Default value is: "scp" &#8594; "SCOPE_", "roles" &#8594; "APPROLE_". @see org.springframework.security.core.GrantedAuthority</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.resource-server.principal-claim-name</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;pre&gt; Configure which claim in access token be returned in AuthenticatedPrincipal#getName. Default value is "sub". Example: If use the default value, and the access_token&#8217;s "sub" scope value is "testValue", then AuthenticatedPrincipal#getName will return "testValue". &lt;/pre&gt; @see org.springframework.security.core.AuthenticatedPrincipal#getName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configure which claim in access token be returned in AuthenticatedPrincipal#getName. Default value is "sub".</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.session-stateless</p></td>
@@ -930,37 +930,37 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.direct-connection.connect-timeout</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Connect timeout for direct client, represents timeout for establishing connections with an endpoint.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.direct-connection.connection-endpoint-rediscovery-enabled</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable the direct TCP connection endpoint rediscovery.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.direct-connection.idle-connection-timeout</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Idle connection timeout for the direct client. Direct client doesn&#8217;t close a single connection to an endpoint by default unless specified.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.direct-connection.idle-endpoint-timeout</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Idle connection timeout for the direct client. If there are no requests to a specific endpoint for idle endpoint timeout duration, direct client closes all connections to that endpoint to save resources and I/O cost.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.direct-connection.max-connections-per-endpoint</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Max connections per endpoint, represents the size of connection pool for a specific endpoint.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.direct-connection.max-requests-per-connection</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Max requests per connection, represents the number of requests that will be queued on a single connection for a specific endpoint.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.direct-connection.network-request-timeout</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Network request timeout interval (time to wait for response from network peer).</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.enabled</p></td>
@@ -980,17 +980,17 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.gateway-connection.idle-connection-timeout</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Timeout for an idle connection. After that time, the connection will be automatically closed.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.gateway-connection.max-connection-pool-size</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Size of the connection pool.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.gateway-connection.proxy</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Proxy options for the gateway client.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.key</p></td>
@@ -1005,7 +1005,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.permissions</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Permission list  which contains the resource tokens needed to access resources.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Permission list which contains the resource tokens needed to access resources.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.populate-query-metrics</p></td>
@@ -1195,12 +1195,12 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.throttling-retry-options.max-retry-attempts-on-throttled-requests</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum number of retries in the case where the request fails because the service has applied rate limiting on the client.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.cosmos.throttling-retry-options.max-retry-wait-time</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum retry time in seconds. When a request fails due to a throttle error, the service sends back a response that contains a value indicating the client should not retry before the time period has elapsed (Retry-After). The MaxRetryWaitTime flag allows the application to set a maximum wait time for all retry attempts. If the cumulative wait time exceeds the MaxRetryWaitTime, the SDK will stop retrying and return the error to the application.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.credential.client-certificate-password</p></td>
@@ -2730,7 +2730,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.eventhubs.shared-connection</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to share the same connection for producers or consumers.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.keyvault.certificate.client.application-id</p></td>
@@ -3585,12 +3585,12 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.connection-string</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Connection string to connect to a service bus.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.consumer.auto-complete</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable auto-complete.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.consumer.client.application-id</p></td>
@@ -3610,7 +3610,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.consumer.connection-string</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Connection string to connect to a service bus.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.consumer.credential.client-certificate-password</p></td>
@@ -3650,7 +3650,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.consumer.domain-name</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>servicebus.windows.net</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The domain name of a Service Bus namespace.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.consumer.enabled</p></td>
@@ -3660,27 +3660,27 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.consumer.entity-name</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of a Service Bus Queue or Topic.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.consumer.entity-type</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of Service Bus entity, which is a Queue or a Topic.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.consumer.max-auto-lock-renew-duration</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of time to continue auto-renewing the lock.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.consumer.namespace</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The namespace of a service bus.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.consumer.prefetch-count</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Prefetch count of the consumer.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.consumer.profile.cloud</p></td>
@@ -3825,7 +3825,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.consumer.receive-mode</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mode for receiving messages.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.consumer.resource.region</p></td>
@@ -3870,17 +3870,17 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.consumer.session-enabled</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable session for the consumer.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.consumer.sub-queue</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of the SubQueue to connect to.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.consumer.subscription-name</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name for a topic subscription.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.credential.client-certificate-password</p></td>
@@ -3920,12 +3920,12 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.cross-entity-transactions</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable cross entity transaction on the connection to Service bus.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.domain-name</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>servicebus.windows.net</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The domain name of a Service Bus namespace.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.enabled</p></td>
@@ -3935,22 +3935,22 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.entity-name</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of a Service Bus Queue or Topic.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.entity-type</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of Service Bus entity, which is a Queue or a Topic.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.namespace</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The namespace of a service bus.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.processor.auto-complete</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable auto-complete.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.processor.client.application-id</p></td>
@@ -3970,7 +3970,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.processor.connection-string</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Connection string to connect to a service bus.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.processor.credential.client-certificate-password</p></td>
@@ -4010,7 +4010,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.processor.domain-name</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>servicebus.windows.net</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The domain name of a Service Bus namespace.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.processor.enabled</p></td>
@@ -4020,37 +4020,37 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.processor.entity-name</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of a Service Bus Queue or Topic.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.processor.entity-type</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of Service Bus entity, which is a Queue or a Topic.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.processor.max-auto-lock-renew-duration</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of time to continue auto-renewing the lock.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.processor.max-concurrent-calls</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Max concurrent messages to process.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.processor.max-concurrent-sessions</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum number of concurrent sessions to process at any given time.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.processor.namespace</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The namespace of a service bus.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.processor.prefetch-count</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Prefetch count of the consumer.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.processor.profile.cloud</p></td>
@@ -4195,7 +4195,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.processor.receive-mode</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mode for receiving messages.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.processor.resource.region</p></td>
@@ -4240,17 +4240,17 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.processor.session-enabled</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable session for the consumer.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.processor.sub-queue</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of the SubQueue to connect to.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.processor.subscription-name</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name for a topic subscription.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.producer.client.application-id</p></td>
@@ -4270,7 +4270,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.producer.connection-string</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Connection string to connect to a service bus.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.producer.credential.client-certificate-password</p></td>
@@ -4310,7 +4310,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.producer.domain-name</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>servicebus.windows.net</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The domain name of a Service Bus namespace.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.producer.enabled</p></td>
@@ -4320,17 +4320,17 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.producer.entity-name</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of a Service Bus Queue or Topic.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.producer.entity-type</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of Service Bus entity, which is a Queue or a Topic.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.producer.namespace</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The namespace of a service bus.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.servicebus.producer.profile.cloud</p></td>
