@@ -28,7 +28,7 @@ If you want to retrieve the connection string using Azure Resource Manager, plea
 
 === Configuration
 
-NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource. The security principal inherits the `Contributor` role of the `Subscription` by default.
+NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
 .Configurable properties when using Kafka support
 [cols="2*", options="header"]
