@@ -1,6 +1,6 @@
 == Spring Security Support
 
-=== Spring Security with Azure AD
+=== Spring Security With Azure AD
 
 When you are building a web application, identity and access management will always be foundational pieces.
 
@@ -50,7 +50,7 @@ The `spring-cloud-azure-starter-active-directory` (`aad-starter` for short) prov
 Here are some examples about how to use these properties:
 
 [#property-example-1-application-type]
-===== Property example 1: Application type
+===== Property Example 1: Application Type
 
 This property(`spring.cloud.azure.active-directory.application-type`) is optional, its value can be inferred by dependencies, only `web_application_and_resource_server` must be configured manually: `spring.cloud.azure.active-directory.application-type=web_application_and_resource_server`.
 
@@ -63,7 +63,7 @@ This property(`spring.cloud.azure.active-directory.application-type`) is optiona
 |Yes |Yes |`web_application`,`resource_server`,`resource_server_with_obo`, `web_application_and_resource_server` |`resource_server_with_obo`
 |===
 
-===== Property example 2: Use https://docs.microsoft.com/azure/china/resources-developer-guide#check-endpoints-in-azure[Azure China] instead of Azure Global.
+===== Property Example 2: Use https://docs.microsoft.com/azure/china/resources-developer-guide#check-endpoints-in-azure[Azure China] Instead of Azure Global
 
 * Step 1: Add property in application.yml
 [source,yaml]
@@ -76,7 +76,7 @@ spring:
         graph-base-uri: https://microsoftgraph.chinacloudapi.cn
 ----
 
-===== Property example 3: Use `group name` or `group id` to protect some method in web application.
+===== Property Example 3: Use `Group Name` Or `Group ID` To Protect Some Method in Web Application
 
 * Step 1: Add property in application.yml
 
@@ -151,7 +151,7 @@ public class RoleController {
 }
 ----
 
-===== Property example 4: https://docs.microsoft.com/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison#incremental-and-dynamic-consent[Incremental consent] in Web application visiting resource servers.
+===== Property Example 4: https://docs.microsoft.com/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison#incremental-and-dynamic-consent[Incremental consent] In Web Application Visiting Resource Servers
 
 * Step 1: Add property in application.yml
 
@@ -179,7 +179,7 @@ After the scopes have been consented, AAD server will remember that this user ha
 the permission to the web application. So incremental consent will not happen anymore after user
 consented.
 
-===== Property example 5: [Client credential flow] in resource server visiting resource servers.
+===== Property Example 5: https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow[Client credential flow] In Resource Server Visiting Resource Servers
 
 * Step 1: Add property in application.yml
 
@@ -200,7 +200,7 @@ spring:
 
 ==== Basic Usage
 
-===== Usage 1:Accessing a web application
+===== Usage 1: Accessing a Web Application
 
 This scenario uses https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow[The OAuth 2.0 authorization code grant] flow to log in a user with a Microsoft account.
 
@@ -274,7 +274,7 @@ The `AADWebSecurityConfigurerAdapter` contains necessary web security configurat
     }
 ----
 
-===== Usage 2:Web application accessing resource servers
+===== Usage 2: Web Application Accessing Resource Servers
 
 *System diagram*:
 
@@ -335,7 +335,7 @@ public class Demo {
 
 Here, `graph` is the client name configured in step 2. OAuth2AuthorizedClient contains access_token. access_token can be used to access resource server.
 
-===== Usage 3:Accessing a resource server
+===== Usage 3: Accessing a Resource Server
 
 This scenario doesn't support login, just protect the server by validating the access_token. If the access token is valid, the server serves the request.
 
@@ -400,7 +400,7 @@ public class AADOAuth2ResourceServerSecurityConfig extends AADResourceServerWebS
 }
 ----
 
-===== Usage 4:Resource server visiting other resource servers
+===== Usage 4: Resource Server Visiting Other Resource Servers
 
 This scenario support visit other resource servers in resource servers.
 
@@ -464,7 +464,7 @@ public class SampleController {
 }
 ----
 
-===== Usage 5:Web application and Resource server in one application
+===== Usage 5: Web Application and Resource Server in One Application
 
 This scenario supports `Web application` and `Resource server` in one application.
 
@@ -607,7 +607,7 @@ class Demo {
 }
 ----
 
-===== Support Conditional Access in web application.
+===== Support Conditional Access in Web Application
 
 This starter supports https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/[Conditional Access] policy. By using Conditional Access policies, you can apply the right **access controls** when needed to keep your organization secure. **Access controls** has many concepts, https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/howto-conditional-access-policy-block-access[Block Access] and https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/concept-conditional-access-grant[Grant Access] are important. In some scenarios, this stater will help you complete Grant Access controls.
 
@@ -638,7 +638,7 @@ image:https://user-images.githubusercontent.com/13167207/149294469-f2785eee-ddfc
 2. **webapiA**: https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/aad/azure-spring-boot-starter-active-directory/aad-resource-server-obo#configure-your-middle-tier-web-api-a[configure webapiA]
 3. **webapp**: https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/aad/azure-spring-boot-starter-active-directory/aad-web-application#configure-web-app[configure webapp]
 
-===== Support setting redirect-uri-template.
+===== Support Setting Redirect-URI-Template
 
 Developers can customize the redirect-uri.
 
@@ -689,7 +689,7 @@ public class AADOAuth2LoginSecurityConfig extends AADWebSecurityConfigurerAdapte
 
 Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[azure-spring-boot-samples] for more details.
 
-=== Spring Security with Azure AD B2C
+=== Spring Security With Azure AD B2C
 
 ==== Dependency Setup
 
@@ -735,7 +735,7 @@ accept or deny access after validating access_token obtained from Azure AD. We w
 
 image:https://user-images.githubusercontent.com/13167207/142620440-f970b572-2646-4f50-9f77-db62d6e965f1.png[B2C Web application &amp; Web Api Overall]
 
-===== Usage 1:Accessing a web application
+===== Usage 1: Accessing a Web Application
 
 This scenario uses https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow[The OAuth 2.0 authorization code grant] flow to log in a user with your Azure AD B2C user.
 
@@ -844,7 +844,7 @@ Copy the _home.html_ from https://github.com/Azure-Samples/azure-spring-boot-sam
 
 Let `Webapp` run on port _8080_.
 
-===== Usage 2:Web application accessing resource servers
+===== Usage 2: Web Application Accessing Resource Servers
 
 This scenario is based on *Accessing a web application* scenario to allow application to access other resources, that is [The OAuth 2.0 client credentials grant] flow.
 
@@ -936,11 +936,11 @@ public class SampleConfiguration {
 Let `Webapp` and `WebApiA` run on port _8080_ and _8081_ respectively.
  Start `Webapp` and `WebApiA` application, return to the home page after logging successfully, you can access `http://localhost:8080/webapp/webApiA` to get *WebApiA* resource response.
 
-===== Usage 3:Accessing a resource server
+===== Usage 3: Accessing a Resource Server
 
 This scenario not support login. Just protect the server by validating the access token, and if valid, serves the request.
 
-* Step 1: Refer to <<#usage-2web-application-accessing-resource-servers,Web application accessing resource servers>> to build your `WebApiA` permission.
+* Step 1: Refer to <<#usage-2-web-application-accessing-resource-servers,Usage 2: Web Application Accessing Resource Servers>> to build your `WebApiA` permission.
 
 * Step 2: Add `WebApiA` permission and grant admin consent for your web application.
 
@@ -1004,7 +1004,7 @@ Let `WebApiA` run on port _8081_.
  Get the access token for `webApiA` resource and access `http://localhost:8081/webApiA/sample`
  as the Bearer authorization header.
 
-===== Usage 4:Resource server accessing other resource servers
+===== Usage 4:Resource Server Accessing Other Resource Servers
 
 This scenario is an upgrade of *Accessing a resource server*, supports access to other application resources, based on OAuth2 client credentials flow.
 
