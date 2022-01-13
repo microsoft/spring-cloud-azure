@@ -41,7 +41,7 @@ NOTE: Authentication information is also required for authenticating for Azure R
 
 Add below properties and you are good to go.
 
-[source]
+[source,properties]
 ----
 spring.cloud.azure.redis.name=${AZURE_CACHE_REDIS_NAME}
 spring.cloud.azure.redis.resource.resource-group=${AZURE_CACHE_REDIS_RESOURCE_GROUP}
