@@ -689,7 +689,10 @@ public class AADOAuth2LoginSecurityConfig extends AADWebSecurityConfigurerAdapte
 
 Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[azure-spring-boot-samples] for more details.
 
+
 === Spring Security With Azure AD B2C
+
+Azure Active Directory (Azure AD) B2C is an identity management service that enables you to customize and control how customers sign up, sign in, and manage their profiles when using your applications. Azure AD B2C enables these actions while protecting the identities of your customers at the same time.
 
 ==== Dependency Setup
 
@@ -725,8 +728,7 @@ For full configurations, check link:appendix.html#migration-guide-for-4-0[the Ap
 
 ==== Basic Usage
 
-A `web application` is any web based application that allows user to login Azure AD, whereas a `resource server` will either
-accept or deny access after validating access_token obtained from Azure AD. We will cover 4 scenarios in this guide:
+A `web application` is any web based application that allows user to login Azure AD, whereas a `resource server` will either accept or deny access after validating access_token obtained from Azure AD. We will cover 4 scenarios in this guide:
 
 . Accessing a web application.
 . Web application accessing resource servers.
@@ -813,6 +815,28 @@ spring:
 
 Controller code can refer to the following:
 
+[source,java]
+----
+@Controller
+public class WebController {
+
+    private void initializeModel(Model model, OAuth2AuthenticationToken token) {
+        if (token != null) {
+            final OAuth2User user = token.getPrincipal();
+            model.addAllAttributes(user.getAttributes());
+            model.addAttribute("grant_type", user.getAuthorities());
+            model.addAttribute("name", user.getName());
+        }
+    }
+
+    @GetMapping(value = { "/", "/home" })
+    public String index(Model model, OAuth2AuthenticationToken token) {
+        initializeModel(model, token);
+        return "home";
+    }
+}
+----
+
 Security configuration code can refer to the following:
 
 [source,java]
@@ -838,11 +862,17 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 }
 ----
 
-Copy the _home.html_ from https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-oidc/src/main/resources/templates[Azure AD B2C Spring Boot Sample], and replace the `PROFILE_EDIT_USER_FLOW` and `PASSWORD_RESET_USER_FLOW` with your user flow name respectively that completed earlier.
+Copy the _home.html_ from https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0.0-beta.3/aad/spring-cloud-azure-starter-active-directory-b2c/aad-b2c-web-application/src/main/resources/templates/home.html[aad-b2c-web-application sample], and replace the `PROFILE_EDIT_USER_FLOW` and `PASSWORD_RESET_USER_FLOW` with your user flow name respectively that completed earlier.
 
 * Step 11: Build and test your app
 
 Let `Webapp` run on port _8080_.
+
+1. After your application is built and started by Maven, open `http://localhost:8080/` in a web browser; you should be redirected to login page.
+
+2. Click link with the login user flow, you should be redirected Azure AD B2C to start the authentication process.
+
+3. After you have logged in successfully, you should see the sample `home page` from the browser.
 
 ===== Usage 2: Web Application Accessing Resource Servers
 
@@ -876,8 +906,7 @@ This scenario is based on *Accessing a web application* scenario to allow applic
 
 image:https://user-images.githubusercontent.com/13167207/142620567-59a91df7-7a97-4027-b525-1f422f25fb22.png[Configure WebApiA appRoles]
 
-* Step 6: Select *API permissions* &gt; *Add a permission* &gt; *My APIs*, select *_WebApiA_* application name,
- select *Application Permissions*, select *WebApiA.SampleScope* permission, select *Add permission* to complete the process.
+* Step 6: Select *API permissions* &gt; *Add a permission* &gt; *My APIs*, select *_WebApiA_* application name, select *Application Permissions*, select *WebApiA.SampleScope* permission, select *Add permission* to complete the process.
 
 * Step 7: Grant admin consent for *_WebApiA_* permissions.
  image:https://user-images.githubusercontent.com/13167207/142620601-660400fa-7cff-4989-9d7f-2b32a9aa1244.png[Add WebApiA permission]
@@ -913,7 +942,32 @@ spring:
 
 Controller code can refer to the following:
 
-Security configuration code is the same with *Accessing a web application* scenario, another bean `webClient`is added as follows:
+[source,java]
+----
+class Demo {
+    /**
+     * Access to protected data from Webapp to WebApiA through client credential flow. The access token is obtained by webclient, or
+     * <p>@RegisteredOAuth2AuthorizedClient("webApiA")</p>. In the end, these two approaches will be executed to
+     * DefaultOAuth2AuthorizedClientManager#authorize method, get the access token.
+     *
+     * @return Respond to protected data from WebApi A.
+     */
+    @GetMapping("/webapp/webApiA")
+    public String callWebApiA() {
+        String body = webClient
+            .get()
+            .uri(LOCAL_WEB_API_A_SAMPLE_ENDPOINT)
+            .attributes(clientRegistrationId("webApiA"))
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+        LOGGER.info("Call callWebApiA(), request '/webApiA/sample' returned: {}", body);
+        return "Request '/webApiA/sample'(WebApi A) returned a " + (body != null ? "success." : "failure.");
+    }
+}
+----
+
+Security configuration code is the same with *Accessing a web application* scenario, another bean `webClient` is added as follows:
 
 [source,java]
 ----
@@ -980,6 +1034,22 @@ spring:
 
 Controller code can refer to the following:
 
+[source,java]
+----
+class Demo {
+    /**
+     * webApiA resource api for web app
+     * @return test content
+     */
+    @PreAuthorize("hasAuthority('APPROLE_WebApiA.SampleScope')")
+    @GetMapping("/webApiA/sample")
+    public String webApiASample() {
+        LOGGER.info("Call webApiASample()");
+        return "Request '/webApiA/sample'(WebApi A) returned successfully.";
+    }
+}
+----
+
 Security configuration code can refer to the following:
 
 [source,java]
@@ -1009,6 +1079,7 @@ Let `WebApiA` run on port _8081_.
 This scenario is an upgrade of *Accessing a resource server*, supports access to other application resources, based on OAuth2 client credentials flow.
 
 * Step 1: Referring to the previous steps, we create a `WebApiB` application and expose an application permission `WebApiB.SampleScope`.
+
 [source,json]
 ----
 {
@@ -1060,6 +1131,32 @@ spring:
 
 WebApiA controller code can refer to the following:
 
+[source,java]
+----
+public class SampleController {
+    /**
+     * Access to protected data from WebApiA to WebApiB through client credential flow. The access token is obtained by webclient, or
+     * <p>@RegisteredOAuth2AuthorizedClient("webApiA")</p>. In the end, these two approaches will be executed to
+     * DefaultOAuth2AuthorizedClientManager#authorize method, get the access token.
+     *
+     * @return Respond to protected data from WebApi B.
+     */
+    @GetMapping("/webApiA/webApiB/sample")
+    @PreAuthorize("hasAuthority('APPROLE_WebApiA.SampleScope')")
+    public String callWebApiB() {
+        String body = webClient
+            .get()
+            .uri(LOCAL_WEB_API_B_SAMPLE_ENDPOINT)
+            .attributes(clientRegistrationId("webApiB"))
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+        LOGGER.info("Call callWebApiB(), request '/webApiB/sample' returned: {}", body);
+        return "Request 'webApiA/webApiB/sample'(WebApi A) returned a " + (body != null ? "success." : "failure.");
+    }
+}
+----
+
 WebApiB controller code can refer to the following:
 
 [source,java]
@@ -1078,7 +1175,21 @@ public class SampleController {
 }
 ----
 
-Security configuration code is the same with *Accessing a resource server* scenario, another bean `webClient`is added as follows
+Security configuration code is the same with *Accessing a resource server* scenario, another bean `webClient` is added as follows
+
+[source,java]
+----
+public class SampleConfiguration {
+    @Bean
+    public WebClient webClient(OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager) {
+        ServletOAuth2AuthorizedClientExchangeFilterFunction function =
+            new ServletOAuth2AuthorizedClientExchangeFilterFunction(oAuth2AuthorizedClientManager);
+        return WebClient.builder()
+                        .apply(function.oauth2Configuration())
+                        .build();
+    }
+}
+----
 
 * Step 6: Build and test your app
 
