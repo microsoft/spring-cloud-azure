@@ -9,7 +9,6 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<groupId>com.azure.spring</groupId>
 	<artifactId>spring-cloud-azure-build-docs</artifactId>
 	<name>spring-cloud-azure-build-docs</name>
 	<packaging>jar</packaging>
