@@ -3,10 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-	    <groupId>com.azure.spring</groupId>
-	    <artifactId>spring-cloud-azure-aggregator</artifactId>
-	    <version>4.0.0-beta.3</version>
-	    <relativePath>../pom.xml</relativePath>
+		<groupId>com.azure.spring</groupId>
+		<artifactId>spring-cloud-azure-aggregator</artifactId>
+		<version>4.0.0-beta.3</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<groupId>com.azure.spring</groupId>
