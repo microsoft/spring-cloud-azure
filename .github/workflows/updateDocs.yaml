@@ -5,6 +5,7 @@ on:
     branches:
     - main
     - docs
+    - 4.*
     # paths:
     # - 'docs/**'
   # release:

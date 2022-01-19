@@ -1091,6 +1091,7 @@
 |spring.cloud.azure.storage.queue.proxy.port |  | The port of the proxy.
 |spring.cloud.azure.storage.queue.proxy.type |  | Type of the proxy.
 |spring.cloud.azure.storage.queue.proxy.username |  | Username used to authenticate with the proxy.
+|spring.cloud.azure.storage.queue.queue-name |  | Name of the storage queue.
 |spring.cloud.azure.storage.queue.resource.name |  | Name of the storage account.
 |spring.cloud.azure.storage.queue.resource.region |  | The region of an Azure resource.
 |spring.cloud.azure.storage.queue.resource.resource-group |  | The resource group holds an Azure resource.
