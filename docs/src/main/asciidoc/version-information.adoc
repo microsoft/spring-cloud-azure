@@ -1,7 +1,2 @@
 
-This reference doc is only for this version of Spring Cloud Azure: **{project-version}**
-
-Please refer to https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Versions-Mapping[Spring Versions Mapping] to get more information about:
-
-. Spring Cloud Azure support policy.
-. Version mapping between Spring Boot and Spring Cloud Azure.
+This doc is only for Spring Cloud Azure: **{project-version}**. Please refer to https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Versions-Mapping[Spring Versions Mapping] to get more information about supported versions.
