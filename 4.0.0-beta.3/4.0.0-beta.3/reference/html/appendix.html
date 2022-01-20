@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Migration Guide for 4.0</title>
+<title>Configuration Properties</title>
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -164,74 +164,31 @@ window.onload = function() {
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#migration-guide-for-4-0">Appendix A: Migration Guide for 4.0</a>
+<li><a href="#_configuration_properties">Appendix A: Configuration Properties</a></li>
+<li><a href="#migration-guide-for-4-0">Appendix B: Migration Guide for 4.0</a>
 <ul class="sectlevel2">
-<li><a href="#migration-benefits">A.1. Migration benefits</a></li>
-<li><a href="#overview">A.2. Overview</a></li>
-<li><a href="#naming-changes">A.3. Naming changes</a></li>
-<li><a href="#bom">A.4. BOM</a></li>
-<li><a href="#artifact-changes-renamed-added-deleted">A.5. Artifact changes: renamed / added / deleted</a></li>
-<li><a href="#dependencies-changes">A.6. Dependencies changes</a>
-<ul class="sectlevel3">
-<li><a href="#spring-cloud-azure-starter">A.6.1. spring-cloud-azure-starter</a></li>
-<li><a href="#spring-cloud-azure-starter-active-directory">A.6.2. spring-cloud-azure-starter-active-directory</a></li>
-<li><a href="#spring-cloud-azure-starter-active-directory-b2c">A.6.3. spring-cloud-azure-starter-active-directory-b2c</a></li>
+<li><a href="#_migration_benefits">Migration benefits</a></li>
+<li><a href="#_overview">Overview</a></li>
+<li><a href="#_naming_changes">Naming changes</a></li>
+<li><a href="#_bom">BOM</a></li>
+<li><a href="#_artifact_changes_renamed_added_deleted">Artifact changes: renamed / added / deleted</a></li>
+<li><a href="#_dependencies_changes">Dependencies changes</a></li>
+<li><a href="#_authentication">Authentication</a></li>
+<li><a href="#_configuration_properties_2">Configuration properties</a></li>
+<li><a href="#_api_breaking_changes">API breaking changes</a></li>
 </ul>
 </li>
-<li><a href="#authentication">A.7. Authentication</a></li>
-<li><a href="#configuration-properties">A.8. Configuration properties</a>
-<ul class="sectlevel3">
-<li><a href="#properties-migration">A.8.1. Properties Migration</a></li>
-<li><a href="#global-configurations">A.8.2. Global configurations</a></li>
-<li><a href="#each-sdk-configurations">A.8.3. Each SDK configurations</a>
-<ul class="sectlevel4">
-<li><a href="#from-azure-spring-boot-starter-active-directory-to-spring-cloud-azure-starter-active-directory">From azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory</a></li>
-<li><a href="#from-azure-spring-boot-starter-active-directory-b2c-to-spring-cloud-azure-starter-active-directory-b2c">From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c</a></li>
-<li><a href="#from-azure-spring-boot-starter-keyvault-secrets-to-spring-cloud-azure-starter-keyvault-secrets">From azure-spring-boot-starter-keyvault-secrets to spring-cloud-azure-starter-keyvault-secrets</a></li>
-<li><a href="#from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-blob">From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</a></li>
-<li><a href="#from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-file-share">From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</a></li>
-<li><a href="#from-azure-spring-cloud-starter-eventhubs-to-spring-cloud-azure-starter-integration-eventhubs">From azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs</a></li>
-<li><a href="#from-azure-spring-cloud-starter-servicebus-to-spring-cloud-azure-starter-integration-servicebus">From azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus</a></li>
-<li><a href="#from-azure-spring-cloud-starter-storage-queue-to-spring-cloud-azure-starter-integration-storage-queue">From azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue</a></li>
-<li><a href="#from-azure-spring-cloud-stream-binder-eventhubs-to-spring-cloud-azure-stream-binder-eventhubs">From azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs</a></li>
-<li><a href="#from-azure-spring-cloud-stream-binder-servicebus-to-spring-cloud-azure-stream-binder-servicebus">From azure-spring-cloud-stream-binder-servicebus-* to spring-cloud-azure-stream-binder-servicebus</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#api-breaking-changes">A.9. API breaking changes</a>
-<ul class="sectlevel3">
-<li><a href="#from-azure-spring-boot-starter-active-directory-to-spring-cloud-azure-starter-active-directory-2">A.9.1. From azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory</a></li>
-<li><a href="#from-azure-spring-boot-starter-active-directory-b2c-to-spring-cloud-azure-starter-active-directory-b2c-2">A.9.2. From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c</a></li>
-<li><a href="#from-azure-spring-cloud-starter-eventhubs-to-spring-cloud-azure-starter-integration-eventhubs-2">A.9.3. From azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs</a>
-<ul class="sectlevel4">
-<li><a href="#sample-code-snippet">Sample code snippet</a></li>
-</ul>
-</li>
-<li><a href="#from-azure-spring-cloud-starter-servicebus-to-spring-cloud-azure-starter-integration-servicebus-2">A.9.4. From azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus</a>
-<ul class="sectlevel4">
-<li><a href="#sample-code-snippet-2">Sample code snippet</a></li>
-</ul>
-</li>
-<li><a href="#from-azure-spring-cloud-starter-storage-queue-to-spring-cloud-azure-starter-integration-storage-queue-2">A.9.5. From azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue</a></li>
-<li><a href="#from-azure-spring-cloud-stream-binder-eventhubs-to-spring-cloud-azure-stream-binder-eventhubs-2">A.9.6. From azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs</a></li>
-<li><a href="#from-azure-spring-cloud-stream-binder-servicebus-to-spring-cloud-azure-stream-binder-servicebus-2">A.9.7. From azure-spring-cloud-stream-binder-servicebus to spring-cloud-azure-stream-binder-servicebus</a></li>
-<li><a href="#from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-blob-2">A.9.8. From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</a></li>
-<li><a href="#from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-file-share-2">A.9.9. From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#known-issues">Appendix B: Known Issues</a>
+<li><a href="#_known_issues">Appendix C: Known Issues</a>
 <ul class="sectlevel2">
-<li><a href="#error-logs-when-using-defaultazurecredential">B.1. Error logs when using DefaultAzureCredential</a></li>
+<li><a href="#_error_logs_when_using_defaultazurecredential">Error logs when using DefaultAzureCredential</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 <div id="content">
-<div id="preamble">
+<div class="sect1">
+<h2 id="_configuration_properties"><a class="link" href="#_configuration_properties">Appendix A: Configuration Properties</a></h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -329,7 +286,7 @@ window.onload = function() {
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.b2c.logout-success-url</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="http://localhost:8080/login" class="bare">localhost:8080/login</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="http://localhost:8080/login" class="bare">http://localhost:8080/login</a></code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
@@ -1350,7 +1307,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.eventhubs.consumer.custom-endpoint-address</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A custom endpoint address when connecting to the Event Hubs service. This can be useful when your network does not allow connecting to the standard Azure Event Hubs endpoint address, but does allow connecting through an intermediary. For example: <a href="https://my.custom.endpoint.com:55300" class="bare">my.custom.endpoint.com:55300</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A custom endpoint address when connecting to the Event Hubs service. This can be useful when your network does not allow connecting to the standard Azure Event Hubs endpoint address, but does allow connecting through an intermediary. For example: <a href="https://my.custom.endpoint.com:55300" class="bare">https://my.custom.endpoint.com:55300</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.eventhubs.consumer.domain-name</p></td>
@@ -1595,7 +1552,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.eventhubs.custom-endpoint-address</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A custom endpoint address when connecting to the Event Hubs service. This can be useful when your network does not allow connecting to the standard Azure Event Hubs endpoint address, but does allow connecting through an intermediary. For example: <a href="https://my.custom.endpoint.com:55300" class="bare">my.custom.endpoint.com:55300</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A custom endpoint address when connecting to the Event Hubs service. This can be useful when your network does not allow connecting to the standard Azure Event Hubs endpoint address, but does allow connecting through an intermediary. For example: <a href="https://my.custom.endpoint.com:55300" class="bare">https://my.custom.endpoint.com:55300</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.eventhubs.domain-name</p></td>
@@ -2045,7 +2002,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.eventhubs.processor.custom-endpoint-address</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A custom endpoint address when connecting to the Event Hubs service. This can be useful when your network does not allow connecting to the standard Azure Event Hubs endpoint address, but does allow connecting through an intermediary. For example: <a href="https://my.custom.endpoint.com:55300" class="bare">my.custom.endpoint.com:55300</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A custom endpoint address when connecting to the Event Hubs service. This can be useful when your network does not allow connecting to the standard Azure Event Hubs endpoint address, but does allow connecting through an intermediary. For example: <a href="https://my.custom.endpoint.com:55300" class="bare">https://my.custom.endpoint.com:55300</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.eventhubs.processor.domain-name</p></td>
@@ -2340,7 +2297,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.eventhubs.producer.custom-endpoint-address</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A custom endpoint address when connecting to the Event Hubs service. This can be useful when your network does not allow connecting to the standard Azure Event Hubs endpoint address, but does allow connecting through an intermediary. For example: <a href="https://my.custom.endpoint.com:55300" class="bare">my.custom.endpoint.com:55300</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A custom endpoint address when connecting to the Event Hubs service. This can be useful when your network does not allow connecting to the standard Azure Event Hubs endpoint address, but does allow connecting through an intermediary. For example: <a href="https://my.custom.endpoint.com:55300" class="bare">https://my.custom.endpoint.com:55300</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.eventhubs.producer.domain-name</p></td>
@@ -5792,7 +5749,7 @@ window.onload = function() {
 </div>
 </div>
 <div class="sect1">
-<h2 id="migration-guide-for-4-0"><a class="anchor" href="#migration-guide-for-4-0"></a><a class="link" href="#migration-guide-for-4-0">Appendix A: Migration Guide for 4.0</a></h2>
+<h2 id="migration-guide-for-4-0"><a class="link" href="#migration-guide-for-4-0">Appendix B: Migration Guide for 4.0</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This guide assists in the migration to <strong>Spring Cloud Azure 4.0</strong> from legacy Azure Spring libraries.</p>
@@ -5813,7 +5770,7 @@ or <code>com.azure.spring:azure-spring-integration-*</code> package is assumed.<
 <p>For those new to the Spring Cloud Azure 4.0 libraries, please refer to the <a href="index.html">Spring Cloud Azure 4.0 Reference Doc</a> rather than this guide.</p>
 </div>
 <div class="sect2">
-<h3 id="migration-benefits"><a class="anchor" href="#migration-benefits"></a><a class="link" href="#migration-benefits">A.1. Migration benefits</a></h3>
+<h3 id="_migration_benefits"><a class="link" href="#_migration_benefits">Migration benefits</a></h3>
 <div class="paragraph">
 <p>A natural question to ask when considering whether to adopt a new version or library is its benefits. As Azure has
 matured and been embraced by a more diverse group of developers, we have been focused on learning the patterns and
@@ -5851,7 +5808,7 @@ projects, for example Spring Boot, Spring Integration, Spring Cloud Stream, etc.
 </div>
 </div>
 <div class="sect2">
-<h3 id="overview"><a class="anchor" href="#overview"></a><a class="link" href="#overview">A.2. Overview</a></h3>
+<h3 id="_overview"><a class="link" href="#_overview">Overview</a></h3>
 <div class="paragraph">
 <p>This migration guide will be consisted of following sections:</p>
 </div>
@@ -5879,7 +5836,7 @@ projects, for example Spring Boot, Spring Integration, Spring Cloud Stream, etc.
 </div>
 </div>
 <div class="sect2">
-<h3 id="naming-changes"><a class="anchor" href="#naming-changes"></a><a class="link" href="#naming-changes">A.3. Naming changes</a></h3>
+<h3 id="_naming_changes"><a class="link" href="#_naming_changes">Naming changes</a></h3>
 <div class="paragraph">
 <p>There has never been a consistent or official name to call all the Spring Cloud Azure libraries, some of them were
 called <code>Azure Spring Boot</code> and some of them <code>Spring on Azure</code> , and all these names will make developer confused. Since
@@ -5887,7 +5844,7 @@ called <code>Azure Spring Boot</code> and some of them <code>Spring on Azure</co
 </div>
 </div>
 <div class="sect2">
-<h3 id="bom"><a class="anchor" href="#bom"></a><a class="link" href="#bom">A.4. BOM</a></h3>
+<h3 id="_bom"><a class="link" href="#_bom">BOM</a></h3>
 <div class="paragraph">
 <p>We used to ship two BOMs for our libraries, the <code>azure-spring-boot-bom</code> and <code>azure-spring-cloud-dependencies</code>, but we
 combined these two BOMs into one BOM since 4.0, the <code>spring-cloud-azure-dependencies</code>. Please add an entry in the
@@ -5900,7 +5857,7 @@ dependencyManagement of your project to benefit from the dependency management.<
         &lt;dependency&gt;
             &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
             &lt;artifactId&gt;spring-cloud-azure-dependencies&lt;/artifactId&gt;
-            &lt;version&gt;4.0.0-beta.2&lt;/version&gt;
+            &lt;version&gt;version&lt;/version&gt;
             &lt;type&gt;pom&lt;/type&gt;
             &lt;scope&gt;import&lt;/scope&gt;
         &lt;/dependency&gt;
@@ -5908,9 +5865,12 @@ dependencyManagement of your project to benefit from the dependency management.<
 &lt;/dependencyManagement&gt;</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>The version for spring-cloud-azure-dependencies is 4.0.0-beta.3.</p>
+</div>
 </div>
 <div class="sect2">
-<h3 id="artifact-changes-renamed-added-deleted"><a class="anchor" href="#artifact-changes-renamed-added-deleted"></a><a class="link" href="#artifact-changes-renamed-added-deleted">A.5. Artifact changes: renamed / added / deleted</a></h3>
+<h3 id="_artifact_changes_renamed_added_deleted"><a class="link" href="#_artifact_changes_renamed_added_deleted">Artifact changes: renamed / added / deleted</a></h3>
 <div class="paragraph">
 <p>Group ids are the same for modern and legacy Spring Cloud Azure libraries, they are all <code>com.azure.spring</code>. Artifact ids
 for the modern Spring Cloud Azure libraries have changed. And according to which Spring project it belongs, Spring Boot,
@@ -6159,14 +6119,14 @@ spring-cloud-azure-starter-storage-file-share</p></td>
 </table>
 </div>
 <div class="sect2">
-<h3 id="dependencies-changes"><a class="anchor" href="#dependencies-changes"></a><a class="link" href="#dependencies-changes">A.6. Dependencies changes</a></h3>
+<h3 id="_dependencies_changes"><a class="link" href="#_dependencies_changes">Dependencies changes</a></h3>
 <div class="paragraph">
 <p>Some unnecessary dependencies were included in the legacy artifacts, which we have removed in the modern Spring Cloud
 Azure 4.0 libraries. Please make sure add the removed dependencies manually to your project to prevent unintentionally
 crash.</p>
 </div>
 <div class="sect3">
-<h4 id="spring-cloud-azure-starter"><a class="anchor" href="#spring-cloud-azure-starter"></a><a class="link" href="#spring-cloud-azure-starter">A.6.1. spring-cloud-azure-starter</a></h4>
+<h4 id="_spring_cloud_azure_starter"><a class="link" href="#_spring_cloud_azure_starter">spring-cloud-azure-starter</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 2. Removed dependencies of spring-cloud-starter</caption>
 <colgroup>
@@ -6188,7 +6148,7 @@ crash.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="spring-cloud-azure-starter-active-directory"><a class="anchor" href="#spring-cloud-azure-starter-active-directory"></a><a class="link" href="#spring-cloud-azure-starter-active-directory">A.6.2. spring-cloud-azure-starter-active-directory</a></h4>
+<h4 id="_spring_cloud_azure_starter_active_directory"><a class="link" href="#_spring_cloud_azure_starter_active_directory">spring-cloud-azure-starter-active-directory</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 3. Removed dependencies of spring-cloud-azure-starter-active-directory</caption>
 <colgroup>
@@ -6210,7 +6170,7 @@ crash.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="spring-cloud-azure-starter-active-directory-b2c"><a class="anchor" href="#spring-cloud-azure-starter-active-directory-b2c"></a><a class="link" href="#spring-cloud-azure-starter-active-directory-b2c">A.6.3. spring-cloud-azure-starter-active-directory-b2c</a></h4>
+<h4 id="_spring_cloud_azure_starter_active_directory_b2c"><a class="link" href="#_spring_cloud_azure_starter_active_directory_b2c">spring-cloud-azure-starter-active-directory-b2c</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 4. Removed dependencies of spring-cloud-azure-starter-active-directory-b2c</caption>
 <colgroup>
@@ -6233,7 +6193,7 @@ crash.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="authentication"><a class="anchor" href="#authentication"></a><a class="link" href="#authentication">A.7. Authentication</a></h3>
+<h3 id="_authentication"><a class="link" href="#_authentication">Authentication</a></h3>
 <div class="paragraph">
 <p>Spring Cloud Azure 4.0 supports all the authentication methods each Azure Service SDK supports. It allows configuring a
 global token credential as well as providing the token credential at each service level. But credential is not required
@@ -6258,9 +6218,9 @@ There could be some <code>ERROR</code> logs be printed out while the <code>Defau
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-properties"><a class="anchor" href="#configuration-properties"></a><a class="link" href="#configuration-properties">A.8. Configuration properties</a></h3>
+<h3 id="_configuration_properties_2"><a class="link" href="#_configuration_properties_2">Configuration properties</a></h3>
 <div class="sect3">
-<h4 id="properties-migration"><a class="anchor" href="#properties-migration"></a><a class="link" href="#properties-migration">A.8.1. Properties Migration</a></h4>
+<h4 id="_properties_migration"><a class="link" href="#_properties_migration">Properties Migration</a></h4>
 <div class="paragraph">
 <p>We&#8217;ve created an <code>additional-spring-configuration-metadata.json</code> file to smooth the property migration when using with <code>spring-boot-properties-migrator</code>. Before doing so, let’s add the property migrator to your application</p>
 </div>
@@ -6301,7 +6261,7 @@ We&#8217;ve changed many configuration properties in this change, with using the
 </div>
 </div>
 <div class="sect3">
-<h4 id="global-configurations"><a class="anchor" href="#global-configurations"></a><a class="link" href="#global-configurations">A.8.2. Global configurations</a></h4>
+<h4 id="_global_configurations"><a class="link" href="#_global_configurations">Global configurations</a></h4>
 <div class="paragraph">
 <p>The modern <code>spring-cloud-azure-starter</code> allows developers to define properties that apply to all Azure SDKs in the
 namespace <code>spring.cloud.azure</code>. It was not supported in the legacy <code>azure-spring-boot-starter</code>. The global
@@ -6347,9 +6307,9 @@ configurations can be divided into five categories:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="each-sdk-configurations"><a class="anchor" href="#each-sdk-configurations"></a><a class="link" href="#each-sdk-configurations">A.8.3. Each SDK configurations</a></h4>
+<h4 id="_each_sdk_configurations"><a class="link" href="#_each_sdk_configurations">Each SDK configurations</a></h4>
 <div class="sect4">
-<h5 id="from-azure-spring-boot-starter-active-directory-to-spring-cloud-azure-starter-active-directory"><a class="anchor" href="#from-azure-spring-boot-starter-active-directory-to-spring-cloud-azure-starter-active-directory"></a><a class="link" href="#from-azure-spring-boot-starter-active-directory-to-spring-cloud-azure-starter-active-directory">From azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory</a></h5>
+<h5 id="_from_azure_spring_boot_starter_active_directory_to_spring_cloud_azure_starter_active_directory"><a class="link" href="#_from_azure_spring_boot_starter_active_directory_to_spring_cloud_azure_starter_active_directory">From azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory</a></h5>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -6481,26 +6441,26 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-active-directory<
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://graph.microsoft.com/v1.0/me/memberOf" class="bare">graph.microsoft.com/v1.0/me/memberOf</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=<code><a href="https://graph.microsoft.com/" class="bare">graph.microsoft.com/</a></code>, spring.cloud.azure.active-directory.user-group.use-transitive-members=<code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://graph.microsoft.com/v1.0/me/memberOf" class="bare">https://graph.microsoft.com/v1.0/me/memberOf</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=<code><a href="https://graph.microsoft.com/" class="bare">https://graph.microsoft.com/</a></code>, spring.cloud.azure.active-directory.user-group.use-transitive-members=<code>false</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://graph.microsoft.com/v1.0/me/transitiveMemberOf" class="bare">graph.microsoft.com/v1.0/me/transitiveMemberOf</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=<code><a href="https://graph.microsoft.com/" class="bare">graph.microsoft.com/</a></code>, spring.cloud.azure.active-directory.user-group.use-transitive-members=<code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://graph.microsoft.com/v1.0/me/transitiveMemberOf" class="bare">https://graph.microsoft.com/v1.0/me/transitiveMemberOf</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=<code><a href="https://graph.microsoft.com/" class="bare">https://graph.microsoft.com/</a></code>, spring.cloud.azure.active-directory.user-group.use-transitive-members=<code>true</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://microsoftgraph.chinacloudapi.cn/v1.0/me/memberOf" class="bare">microsoftgraph.chinacloudapi.cn/v1.0/me/memberOf</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=<code><a href="https://microsoftgraph.chinacloudapi.cn/" class="bare">microsoftgraph.chinacloudapi.cn/</a></code>,  spring.cloud.azure.active-directory.user-group.use-transitive-members=<code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://microsoftgraph.chinacloudapi.cn/v1.0/me/memberOf" class="bare">https://microsoftgraph.chinacloudapi.cn/v1.0/me/memberOf</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=<code><a href="https://microsoftgraph.chinacloudapi.cn/" class="bare">https://microsoftgraph.chinacloudapi.cn/</a></code>,  spring.cloud.azure.active-directory.user-group.use-transitive-members=<code>false</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://microsoftgraph.chinacloudapi.cn/v1.0/me/transitiveMemberOf" class="bare">microsoftgraph.chinacloudapi.cn/v1.0/me/transitiveMemberOf</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=<code><a href="https://microsoftgraph.chinacloudapi.cn/" class="bare">microsoftgraph.chinacloudapi.cn/</a></code>, spring.cloud.azure.active-directory.user-group.use-transitive-members=<code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://microsoftgraph.chinacloudapi.cn/v1.0/me/transitiveMemberOf" class="bare">https://microsoftgraph.chinacloudapi.cn/v1.0/me/transitiveMemberOf</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=<code><a href="https://microsoftgraph.chinacloudapi.cn/" class="bare">https://microsoftgraph.chinacloudapi.cn/</a></code>, spring.cloud.azure.active-directory.user-group.use-transitive-members=<code>true</code></p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="sect4">
-<h5 id="from-azure-spring-boot-starter-active-directory-b2c-to-spring-cloud-azure-starter-active-directory-b2c"><a class="anchor" href="#from-azure-spring-boot-starter-active-directory-b2c-to-spring-cloud-azure-starter-active-directory-b2c"></a><a class="link" href="#from-azure-spring-boot-starter-active-directory-b2c-to-spring-cloud-azure-starter-active-directory-b2c">From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c</a></h5>
+<h5 id="_from_azure_spring_boot_starter_active_directory_b2c_to_spring_cloud_azure_starter_active_directory_b2c"><a class="link" href="#_from_azure_spring_boot_starter_active_directory_b2c_to_spring_cloud_azure_starter_active_directory_b2c">From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c</a></h5>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -6584,7 +6544,7 @@ For properties like <code>credential.client-id</code>, <code>credential.client-s
 </div>
 </div>
 <div class="sect4">
-<h5 id="from-azure-spring-boot-starter-keyvault-secrets-to-spring-cloud-azure-starter-keyvault-secrets"><a class="anchor" href="#from-azure-spring-boot-starter-keyvault-secrets-to-spring-cloud-azure-starter-keyvault-secrets"></a><a class="link" href="#from-azure-spring-boot-starter-keyvault-secrets-to-spring-cloud-azure-starter-keyvault-secrets">From azure-spring-boot-starter-keyvault-secrets to spring-cloud-azure-starter-keyvault-secrets</a></h5>
+<h5 id="_from_azure_spring_boot_starter_keyvault_secrets_to_spring_cloud_azure_starter_keyvault_secrets"><a class="link" href="#_from_azure_spring_boot_starter_keyvault_secrets_to_spring_cloud_azure_starter_keyvault_secrets">From azure-spring-boot-starter-keyvault-secrets to spring-cloud-azure-starter-keyvault-secrets</a></h5>
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -6704,7 +6664,7 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-keyvault-secrets<
 </div>
 </div>
 <div class="sect4">
-<h5 id="from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-blob"><a class="anchor" href="#from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-blob"></a><a class="link" href="#from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-blob">From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</a></h5>
+<h5 id="_from_azure_spring_boot_starter_storage_to_spring_cloud_azure_starter_storage_blob"><a class="link" href="#_from_azure_spring_boot_starter_storage_to_spring_cloud_azure_starter_storage_blob">From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</a></h5>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -6741,7 +6701,7 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-keyvault-secrets<
 </table>
 </div>
 <div class="sect4">
-<h5 id="from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-file-share"><a class="anchor" href="#from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-file-share"></a><a class="link" href="#from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-file-share">From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</a></h5>
+<h5 id="_from_azure_spring_boot_starter_storage_to_spring_cloud_azure_starter_storage_file_share"><a class="link" href="#_from_azure_spring_boot_starter_storage_to_spring_cloud_azure_starter_storage_file_share">From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</a></h5>
 <div class="paragraph">
 <p>All configuration property names changed the prefix from <code>azure.storage</code> to <code>spring.cloud.azure.storage.fileshare</code>.</p>
 </div>
@@ -6774,7 +6734,7 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-keyvault-secrets<
 </table>
 </div>
 <div class="sect4">
-<h5 id="from-azure-spring-cloud-starter-eventhubs-to-spring-cloud-azure-starter-integration-eventhubs"><a class="anchor" href="#from-azure-spring-cloud-starter-eventhubs-to-spring-cloud-azure-starter-integration-eventhubs"></a><a class="link" href="#from-azure-spring-cloud-starter-eventhubs-to-spring-cloud-azure-starter-integration-eventhubs">From azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs</a></h5>
+<h5 id="_from_azure_spring_cloud_starter_eventhubs_to_spring_cloud_azure_starter_integration_eventhubs"><a class="link" href="#_from_azure_spring_cloud_starter_eventhubs_to_spring_cloud_azure_starter_integration_eventhubs">From azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs</a></h5>
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -6851,7 +6811,7 @@ Configuration prefix has been changed from <code>spring.cloud.azure.eventhub</co
 </div>
 </div>
 <div class="sect4">
-<h5 id="from-azure-spring-cloud-starter-servicebus-to-spring-cloud-azure-starter-integration-servicebus"><a class="anchor" href="#from-azure-spring-cloud-starter-servicebus-to-spring-cloud-azure-starter-integration-servicebus"></a><a class="link" href="#from-azure-spring-cloud-starter-servicebus-to-spring-cloud-azure-starter-integration-servicebus">From azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus</a></h5>
+<h5 id="_from_azure_spring_cloud_starter_servicebus_to_spring_cloud_azure_starter_integration_servicebus"><a class="link" href="#_from_azure_spring_cloud_starter_servicebus_to_spring_cloud_azure_starter_integration_servicebus">From azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus</a></h5>
 <div class="paragraph">
 <p>For all configuration options supported in spring-cloud-azure-starter-integration-servicebus and spring-integration-azure-servicebus libraries,
 the prefix remains to be as <code>spring.cloud.azure.servicebus</code>.</p>
@@ -6909,7 +6869,7 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus</code>.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="from-azure-spring-cloud-starter-storage-queue-to-spring-cloud-azure-starter-integration-storage-queue"><a class="anchor" href="#from-azure-spring-cloud-starter-storage-queue-to-spring-cloud-azure-starter-integration-storage-queue"></a><a class="link" href="#from-azure-spring-cloud-starter-storage-queue-to-spring-cloud-azure-starter-integration-storage-queue">From azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue</a></h5>
+<h5 id="_from_azure_spring_cloud_starter_storage_queue_to_spring_cloud_azure_starter_integration_storage_queue"><a class="link" href="#_from_azure_spring_cloud_starter_storage_queue_to_spring_cloud_azure_starter_integration_storage_queue">From azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue</a></h5>
 <div class="paragraph">
 <p>All configuration property names changed the prefix from <code>spring.cloud.azure.storage</code> to <code>spring.cloud.azure.storage.queue</code>.</p>
 </div>
@@ -6942,7 +6902,7 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus</code>.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="from-azure-spring-cloud-stream-binder-eventhubs-to-spring-cloud-azure-stream-binder-eventhubs"><a class="anchor" href="#from-azure-spring-cloud-stream-binder-eventhubs-to-spring-cloud-azure-stream-binder-eventhubs"></a><a class="link" href="#from-azure-spring-cloud-stream-binder-eventhubs-to-spring-cloud-azure-stream-binder-eventhubs">From azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs</a></h5>
+<h5 id="_from_azure_spring_cloud_stream_binder_eventhubs_to_spring_cloud_azure_stream_binder_eventhubs"><a class="link" href="#_from_azure_spring_cloud_stream_binder_eventhubs_to_spring_cloud_azure_stream_binder_eventhubs">From azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs</a></h5>
 <div class="ulist">
 <ul>
 <li>
@@ -7045,7 +7005,7 @@ to<br>
 </div>
 </div>
 <div class="sect4">
-<h5 id="from-azure-spring-cloud-stream-binder-servicebus-to-spring-cloud-azure-stream-binder-servicebus"><a class="anchor" href="#from-azure-spring-cloud-stream-binder-servicebus-to-spring-cloud-azure-stream-binder-servicebus"></a><a class="link" href="#from-azure-spring-cloud-stream-binder-servicebus-to-spring-cloud-azure-stream-binder-servicebus">From azure-spring-cloud-stream-binder-servicebus-* to spring-cloud-azure-stream-binder-servicebus</a></h5>
+<h5 id="_from_azure_spring_cloud_stream_binder_servicebus_to_spring_cloud_azure_stream_binder_servicebus"><a class="link" href="#_from_azure_spring_cloud_stream_binder_servicebus_to_spring_cloud_azure_stream_binder_servicebus">From azure-spring-cloud-stream-binder-servicebus-* to spring-cloud-azure-stream-binder-servicebus</a></h5>
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -7218,9 +7178,9 @@ The binder type is renamed from: servicebus-queue/servicebus-topic to <code>serv
 </div>
 </div>
 <div class="sect2">
-<h3 id="api-breaking-changes"><a class="anchor" href="#api-breaking-changes"></a><a class="link" href="#api-breaking-changes">A.9. API breaking changes</a></h3>
+<h3 id="_api_breaking_changes"><a class="link" href="#_api_breaking_changes">API breaking changes</a></h3>
 <div class="sect3">
-<h4 id="from-azure-spring-boot-starter-active-directory-to-spring-cloud-azure-starter-active-directory-2"><a class="anchor" href="#from-azure-spring-boot-starter-active-directory-to-spring-cloud-azure-starter-active-directory-2"></a><a class="link" href="#from-azure-spring-boot-starter-active-directory-to-spring-cloud-azure-starter-active-directory-2">A.9.1. From azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory</a></h4>
+<h4 id="_from_azure_spring_boot_starter_active_directory_to_spring_cloud_azure_starter_active_directory_2"><a class="link" href="#_from_azure_spring_boot_starter_active_directory_to_spring_cloud_azure_starter_active_directory_2">From azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 18. Class mapping from azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory</caption>
 <colgroup>
@@ -7262,7 +7222,7 @@ The binder type is renamed from: servicebus-queue/servicebus-topic to <code>serv
 </table>
 </div>
 <div class="sect3">
-<h4 id="from-azure-spring-boot-starter-active-directory-b2c-to-spring-cloud-azure-starter-active-directory-b2c-2"><a class="anchor" href="#from-azure-spring-boot-starter-active-directory-b2c-to-spring-cloud-azure-starter-active-directory-b2c-2"></a><a class="link" href="#from-azure-spring-boot-starter-active-directory-b2c-to-spring-cloud-azure-starter-active-directory-b2c-2">A.9.2. From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c</a></h4>
+<h4 id="_from_azure_spring_boot_starter_active_directory_b2c_to_spring_cloud_azure_starter_active_directory_b2c_2"><a class="link" href="#_from_azure_spring_boot_starter_active_directory_b2c_to_spring_cloud_azure_starter_active_directory_b2c_2">From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 19. Class mapping from azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c</caption>
 <colgroup>
@@ -7288,7 +7248,7 @@ The binder type is renamed from: servicebus-queue/servicebus-topic to <code>serv
 </table>
 </div>
 <div class="sect3">
-<h4 id="from-azure-spring-cloud-starter-eventhubs-to-spring-cloud-azure-starter-integration-eventhubs-2"><a class="anchor" href="#from-azure-spring-cloud-starter-eventhubs-to-spring-cloud-azure-starter-integration-eventhubs-2"></a><a class="link" href="#from-azure-spring-cloud-starter-eventhubs-to-spring-cloud-azure-starter-integration-eventhubs-2">A.9.3. From azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs</a></h4>
+<h4 id="_from_azure_spring_cloud_starter_eventhubs_to_spring_cloud_azure_starter_integration_eventhubs_2"><a class="link" href="#_from_azure_spring_cloud_starter_eventhubs_to_spring_cloud_azure_starter_integration_eventhubs_2">From azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs</a></h4>
 <div class="ulist">
 <ul>
 <li>
@@ -7307,7 +7267,7 @@ Event Hubs, and change constructor signature as well.</p>
 </ul>
 </div>
 <div class="sect4">
-<h5 id="sample-code-snippet"><a class="anchor" href="#sample-code-snippet"></a><a class="link" href="#sample-code-snippet">Sample code snippet</a></h5>
+<h5 id="_sample_code_snippet"><a class="link" href="#_sample_code_snippet">Sample code snippet</a></h5>
 <div class="paragraph">
 <p>1.EventHubsInboundChannelAdapter sample code:</p>
 </div>
@@ -7460,7 +7420,7 @@ Event Hubs, and change constructor signature as well.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="from-azure-spring-cloud-starter-servicebus-to-spring-cloud-azure-starter-integration-servicebus-2"><a class="anchor" href="#from-azure-spring-cloud-starter-servicebus-to-spring-cloud-azure-starter-integration-servicebus-2"></a><a class="link" href="#from-azure-spring-cloud-starter-servicebus-to-spring-cloud-azure-starter-integration-servicebus-2">A.9.4. From azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus</a></h4>
+<h4 id="_from_azure_spring_cloud_starter_servicebus_to_spring_cloud_azure_starter_integration_servicebus_2"><a class="link" href="#_from_azure_spring_cloud_starter_servicebus_to_spring_cloud_azure_starter_integration_servicebus_2">From azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus</a></h4>
 <div class="ulist">
 <ul>
 <li>
@@ -7495,7 +7455,7 @@ for the <code>ProducerProperties#entityType</code>.</p>
 </ul>
 </div>
 <div class="sect4">
-<h5 id="sample-code-snippet-2"><a class="anchor" href="#sample-code-snippet-2"></a><a class="link" href="#sample-code-snippet-2">Sample code snippet</a></h5>
+<h5 id="_sample_code_snippet_2"><a class="link" href="#_sample_code_snippet_2">Sample code snippet</a></h5>
 <div class="ulist">
 <ul>
 <li>
@@ -7595,7 +7555,7 @@ for the <code>ProducerProperties#entityType</code>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="from-azure-spring-cloud-starter-storage-queue-to-spring-cloud-azure-starter-integration-storage-queue-2"><a class="anchor" href="#from-azure-spring-cloud-starter-storage-queue-to-spring-cloud-azure-starter-integration-storage-queue-2"></a><a class="link" href="#from-azure-spring-cloud-starter-storage-queue-to-spring-cloud-azure-starter-integration-storage-queue-2">A.9.5. From azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue</a></h4>
+<h4 id="_from_azure_spring_cloud_starter_storage_queue_to_spring_cloud_azure_starter_integration_storage_queue_2"><a class="link" href="#_from_azure_spring_cloud_starter_storage_queue_to_spring_cloud_azure_starter_integration_storage_queue_2">From azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 21. Class mapping from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue</caption>
 <colgroup>
@@ -7657,7 +7617,7 @@ for the <code>ProducerProperties#entityType</code>.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="from-azure-spring-cloud-stream-binder-eventhubs-to-spring-cloud-azure-stream-binder-eventhubs-2"><a class="anchor" href="#from-azure-spring-cloud-stream-binder-eventhubs-to-spring-cloud-azure-stream-binder-eventhubs-2"></a><a class="link" href="#from-azure-spring-cloud-stream-binder-eventhubs-to-spring-cloud-azure-stream-binder-eventhubs-2">A.9.6. From azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs</a></h4>
+<h4 id="_from_azure_spring_cloud_stream_binder_eventhubs_to_spring_cloud_azure_stream_binder_eventhubs_2"><a class="link" href="#_from_azure_spring_cloud_stream_binder_eventhubs_to_spring_cloud_azure_stream_binder_eventhubs_2">From azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 22. Class mapping from azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs</caption>
 <colgroup>
@@ -7687,7 +7647,7 @@ for the <code>ProducerProperties#entityType</code>.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="from-azure-spring-cloud-stream-binder-servicebus-to-spring-cloud-azure-stream-binder-servicebus-2"><a class="anchor" href="#from-azure-spring-cloud-stream-binder-servicebus-to-spring-cloud-azure-stream-binder-servicebus-2"></a><a class="link" href="#from-azure-spring-cloud-stream-binder-servicebus-to-spring-cloud-azure-stream-binder-servicebus-2">A.9.7. From azure-spring-cloud-stream-binder-servicebus to spring-cloud-azure-stream-binder-servicebus</a></h4>
+<h4 id="_from_azure_spring_cloud_stream_binder_servicebus_to_spring_cloud_azure_stream_binder_servicebus_2"><a class="link" href="#_from_azure_spring_cloud_stream_binder_servicebus_to_spring_cloud_azure_stream_binder_servicebus_2">From azure-spring-cloud-stream-binder-servicebus to spring-cloud-azure-stream-binder-servicebus</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 23. Class mapping from azure-spring-cloud-stream-binder-servicebus to spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
@@ -7717,7 +7677,7 @@ for the <code>ProducerProperties#entityType</code>.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-blob-2"><a class="anchor" href="#from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-blob-2"></a><a class="link" href="#from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-blob-2">A.9.8. From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</a></h4>
+<h4 id="_from_azure_spring_boot_starter_storage_to_spring_cloud_azure_starter_storage_blob_2"><a class="link" href="#_from_azure_spring_boot_starter_storage_to_spring_cloud_azure_starter_storage_blob_2">From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 24. Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</caption>
 <colgroup>
@@ -7747,7 +7707,7 @@ for the <code>ProducerProperties#entityType</code>.</p>
 </table>
 </div>
 <div class="sect3">
-<h4 id="from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-file-share-2"><a class="anchor" href="#from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-file-share-2"></a><a class="link" href="#from-azure-spring-boot-starter-storage-to-spring-cloud-azure-starter-storage-file-share-2">A.9.9. From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</a></h4>
+<h4 id="_from_azure_spring_boot_starter_storage_to_spring_cloud_azure_starter_storage_file_share_2"><a class="link" href="#_from_azure_spring_boot_starter_storage_to_spring_cloud_azure_starter_storage_file_share_2">From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 25. Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</caption>
 <colgroup>
@@ -7780,10 +7740,10 @@ for the <code>ProducerProperties#entityType</code>.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="known-issues"><a class="anchor" href="#known-issues"></a><a class="link" href="#known-issues">Appendix B: Known Issues</a></h2>
+<h2 id="_known_issues"><a class="link" href="#_known_issues">Appendix C: Known Issues</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="error-logs-when-using-defaultazurecredential"><a class="anchor" href="#error-logs-when-using-defaultazurecredential"></a><a class="link" href="#error-logs-when-using-defaultazurecredential">B.1. Error logs when using DefaultAzureCredential</a></h3>
+<h3 id="_error_logs_when_using_defaultazurecredential"><a class="link" href="#_error_logs_when_using_defaultazurecredential">Error logs when using DefaultAzureCredential</a></h3>
 <div class="paragraph">
 <p>There could be some <code>ERROR</code> logs be printed out while the <code>DefaultAzureCredential</code> running the chain and trying to find the first available credential. It doesn&#8217;t mean the <code>DefaultAzureCredential</code> is broken or unavailable. Meanwhile, we&#8217;ll keep improving this logging experience.</p>
 </div>
