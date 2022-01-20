@@ -23,7 +23,8 @@ The `spring-cloud-azure-starter-active-directory` (`aad-starter` for short) prov
 ==== Configuration
 
 .Configurable properties of spring-cloud-azure-starter-active-directory
-[cols="<,<", options="header"]
+
+[cols="<,<,<", options="header"]
 |===
 |Name |Default |Description
 |*spring.cloud.azure.active-directory*.app-id-uri |  | App ID URI which might be used in the "aud" claim of an id_token.
@@ -713,7 +714,7 @@ Azure Active Directory (Azure AD) B2C is an identity management service that ena
 ==== Configuration
 
 .Configurable properties of spring-cloud-azure-starter-active-directory-b2c
-[cols="<,<", options="header"]
+[cols="<,<,<", options="header"]
 |===
 |Name |Default | Description
 |*spring.cloud.azure.active-directory.b2c*.app-id-uri |  | App ID URI which might be used in the "aud" claim of a token.
