@@ -150,7 +150,7 @@ Following are the Azure built-in roles for authorizing access to Azure services 
 
 |===
 
-When using Spring Cloud Azure Resource Manager to get the connection strings of Event Hubs, Service Bus, and Storage Queue, and properties of Cache for Redis, assign the Azure built-in role `Contributor`. Azure Cache for Redis is special, and you can also assign the `Redis Cache Contributor` role to get the Redis properties.
+NOTE: When using Spring Cloud Azure Resource Manager to get the connection strings of Event Hubs, Service Bus, and Storage Queue, and properties of Cache for Redis, assign the Azure built-in role `Contributor`. Azure Cache for Redis is special, and you can also assign the `Redis Cache Contributor` role to get the Redis properties.
 
 NOTE: A Key Vault access policy determines whether a given security principal, namely a user, application or user group, can perform different operations on Key Vault secrets, keys, and certificates. You can assign access policies using the Azure portal, the Azure CLI, or Azure PowerShell. Check {key-vault-access-policy}[here] for more details.
 
