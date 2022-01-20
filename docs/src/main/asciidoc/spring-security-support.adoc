@@ -232,7 +232,7 @@ image:https://user-images.githubusercontent.com/13167207/142617785-b4ca1afc-79f6
 </dependencies>
 ----
 
-* Step 3: Add properties in application.yml. These values should be got in https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/spring/azure-spring-boot-starter-active-directory#prerequisites[prerequisite].
+* Step 3: Add properties in application.yml.
 
 [source,yaml]
 ----
@@ -280,7 +280,7 @@ The `AADWebSecurityConfigurerAdapter` contains necessary web security configurat
 
 image:https://user-images.githubusercontent.com/13167207/142617853-0526205f-fdef-47f9-ac01-77963f8c34be.png[web-application-visiting-resource-servers.png]
 
-* Step 1: Make sure `redirect URI` has been set, just like https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/spring/azure-spring-boot-starter-active-directory#accessing-a-web-application[Accessing a web application].
+* Step 1: Make sure `redirect URI` has been set.
 
 * Step 2: Add the following dependencies in you pom.xml.
 
