@@ -13,7 +13,6 @@
 	<name>spring-cloud-azure-build-docs</name>
 	<packaging>jar</packaging>
 	<description>Spring Cloud Azure Build Docs</description>
-	<version>4.0.0-beta.4</version>
 
 	<properties>
 		<docs.main>spring-cloud-azure</docs.main>
