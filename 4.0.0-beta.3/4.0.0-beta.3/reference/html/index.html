@@ -235,8 +235,8 @@ window.onload = function() {
 </li>
 <li><a href="#spring-security-support">12. Spring Security Support</a>
 <ul class="sectlevel2">
-<li><a href="#spring-security-with-azure-ad">12.1. Spring Security with Azure AD</a></li>
-<li><a href="#spring-security-with-azure-ad-b2c">12.2. Spring Security with Azure AD B2C</a></li>
+<li><a href="#spring-security-with-azure-ad">12.1. Spring Security With Azure AD</a></li>
+<li><a href="#spring-security-with-azure-ad-b2c">12.2. Spring Security With Azure AD B2C</a></li>
 </ul>
 </li>
 <li><a href="#spring-integration-support">13. Spring Integration Support</a>
@@ -2270,7 +2270,19 @@ public class CosmosSampleApplication implements CommandLineRunner {
 <h2 id="spring-security-support"><a class="anchor" href="#spring-security-support"></a><a class="link" href="#spring-security-support">12. Spring Security Support</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="spring-security-with-azure-ad"><a class="anchor" href="#spring-security-with-azure-ad"></a><a class="link" href="#spring-security-with-azure-ad">12.1. Spring Security with Azure AD</a></h3>
+<h3 id="spring-security-with-azure-ad"><a class="anchor" href="#spring-security-with-azure-ad"></a><a class="link" href="#spring-security-with-azure-ad">12.1. Spring Security With Azure AD</a></h3>
+<div class="paragraph">
+<p>When you are building a web application, identity and access management will always be foundational pieces.</p>
+</div>
+<div class="paragraph">
+<p>Azure offers a great platform to democratize your application development journey, as it not only offers a cloud-base identity service, but also deep integration with the rest of the Azure ecosystem.</p>
+</div>
+<div class="paragraph">
+<p>Spring Security has made it easy to secure your Spring based applications with powerful abstractions and extensible interfaces. However, as powerful as the Spring framework can be, it is not tailored to a specific identity provider.</p>
+</div>
+<div class="paragraph">
+<p>The <code>spring-cloud-azure-starter-active-directory</code> (<code>aad-starter</code> for short) provides the most optimal way to connect your <code>web application</code> to an Azure Active Directory(AAD for short) tenant and protect <code>resource server</code> with AAD. It uses the Oauth 2.0 protocol to protect <code>web applications</code> and <code>resource servers</code>.</p>
+</div>
 <div class="sect3">
 <h4 id="dependency-setup-5"><a class="anchor" href="#dependency-setup-5"></a><a class="link" href="#dependency-setup-5">12.1.1. Dependency Setup</a></h4>
 <div class="listingblock">
@@ -2327,7 +2339,7 @@ public class CosmosSampleApplication implements CommandLineRunner {
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.credential.client-secret</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">client secret of the registered application.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client secret of the registered application.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.post-logout-redirect-uri</p></td>
@@ -2344,6 +2356,10 @@ public class CosmosSampleApplication implements CommandLineRunner {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.profile.tenant-id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Azure Tenant ID.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.redirect-uri-template</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Used by the authorization server to return responses containing authorization credentials to the client via the resource owner user-agent.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.resource-server.claim-to-authority-prefix-map</p></td>
@@ -2375,7 +2391,7 @@ public class CosmosSampleApplication implements CommandLineRunner {
 <p>Here are some examples about how to use these properties:</p>
 </div>
 <div class="sect4">
-<h5 id="property-example-1-application-type"><a class="anchor" href="#property-example-1-application-type"></a><a class="link" href="#property-example-1-application-type">Property example 1: Application type</a></h5>
+<h5 id="property-example-1-application-type"><a class="anchor" href="#property-example-1-application-type"></a><a class="link" href="#property-example-1-application-type">Property Example 1: Application Type</a></h5>
 <div class="paragraph">
 <p>This property(<code>spring.cloud.azure.active-directory.application-type</code>) is optional, its value can be inferred by dependencies, only <code>web_application_and_resource_server</code> must be configured manually: <code>spring.cloud.azure.active-directory.application-type=web_application_and_resource_server</code>.</p>
 </div>
@@ -2418,7 +2434,7 @@ public class CosmosSampleApplication implements CommandLineRunner {
 </table>
 </div>
 <div class="sect4">
-<h5 id="property-example-2-use-azure-china-instead-of-azure-global"><a class="anchor" href="#property-example-2-use-azure-china-instead-of-azure-global"></a><a class="link" href="#property-example-2-use-azure-china-instead-of-azure-global">Property example 2: Use <a href="https://docs.microsoft.com/azure/china/resources-developer-guide#check-endpoints-in-azure">Azure China</a> instead of Azure Global.</a></h5>
+<h5 id="property-example-2-use-azure-china-instead-of-azure-global"><a class="anchor" href="#property-example-2-use-azure-china-instead-of-azure-global"></a><a class="link" href="#property-example-2-use-azure-china-instead-of-azure-global">Property Example 2: Use <a href="https://docs.microsoft.com/azure/china/resources-developer-guide#check-endpoints-in-azure">Azure China</a> Instead of Azure Global</a></h5>
 <div class="ulist">
 <ul>
 <li>
@@ -2438,7 +2454,7 @@ public class CosmosSampleApplication implements CommandLineRunner {
 </div>
 </div>
 <div class="sect4">
-<h5 id="property-example-3-use-group-name-or-group-id-to-protect-some-method-in-web-application"><a class="anchor" href="#property-example-3-use-group-name-or-group-id-to-protect-some-method-in-web-application"></a><a class="link" href="#property-example-3-use-group-name-or-group-id-to-protect-some-method-in-web-application">Property example 3: Use <code>group name</code> or <code>group id</code> to protect some method in web application.</a></h5>
+<h5 id="property-example-3-use-group-name-or-group-id-to-protect-some-method-in-web-application"><a class="anchor" href="#property-example-3-use-group-name-or-group-id-to-protect-some-method-in-web-application"></a><a class="link" href="#property-example-3-use-group-name-or-group-id-to-protect-some-method-in-web-application">Property Example 3: Use <code>Group Name</code> Or <code>Group ID</code> To Protect Some Method in Web Application</a></h5>
 <div class="ulist">
 <ul>
 <li>
@@ -2480,7 +2496,7 @@ public class AADOAuth2LoginSecurityConfig extends AADWebSecurityConfigurerAdapte
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         http.authorizeRequests()
-                .anyRequest().authenticated();
+            .anyRequest().authenticated();
         // Do some custom configuration
     }
 }</code></pre>
@@ -2525,7 +2541,7 @@ public class RoleController {
 </div>
 </div>
 <div class="sect4">
-<h5 id="property-example-4-incremental-consent-in-web-application-visiting-resource-servers"><a class="anchor" href="#property-example-4-incremental-consent-in-web-application-visiting-resource-servers"></a><a class="link" href="#property-example-4-incremental-consent-in-web-application-visiting-resource-servers">Property example 4: <a href="https://docs.microsoft.com/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison#incremental-and-dynamic-consent">Incremental consent</a> in Web application visiting resource servers.</a></h5>
+<h5 id="property-example-4-incremental-consent-in-web-application-visiting-resource-servers"><a class="anchor" href="#property-example-4-incremental-consent-in-web-application-visiting-resource-servers"></a><a class="link" href="#property-example-4-incremental-consent-in-web-application-visiting-resource-servers">Property Example 4: <a href="https://docs.microsoft.com/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison#incremental-and-dynamic-consent">Incremental consent</a> In Web Application Visiting Resource Servers</a></h5>
 <div class="ulist">
 <ul>
 <li>
@@ -2566,7 +2582,7 @@ consented.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="property-example-5-client-credential-flow-in-resource-server-visiting-resource-servers"><a class="anchor" href="#property-example-5-client-credential-flow-in-resource-server-visiting-resource-servers"></a><a class="link" href="#property-example-5-client-credential-flow-in-resource-server-visiting-resource-servers">Property example 5: [Client credential flow] in resource server visiting resource servers.</a></h5>
+<h5 id="property-example-5-client-credential-flow-in-resource-server-visiting-resource-servers"><a class="anchor" href="#property-example-5-client-credential-flow-in-resource-server-visiting-resource-servers"></a><a class="link" href="#property-example-5-client-credential-flow-in-resource-server-visiting-resource-servers">Property Example 5: <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow">Client credential flow</a> In Resource Server Visiting Resource Servers</a></h5>
 <div class="ulist">
 <ul>
 <li>
@@ -2599,7 +2615,7 @@ consented.</p>
 <div class="sect3">
 <h4 id="basic-usage-5"><a class="anchor" href="#basic-usage-5"></a><a class="link" href="#basic-usage-5">12.1.3. Basic Usage</a></h4>
 <div class="sect4">
-<h5 id="usage-1accessing-a-web-application"><a class="anchor" href="#usage-1accessing-a-web-application"></a><a class="link" href="#usage-1accessing-a-web-application">Usage 1:Accessing a web application</a></h5>
+<h5 id="usage-1-accessing-a-web-application"><a class="anchor" href="#usage-1-accessing-a-web-application"></a><a class="link" href="#usage-1-accessing-a-web-application">Usage 1: Accessing a Web Application</a></h5>
 <div class="paragraph">
 <p>This scenario uses <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">The OAuth 2.0 authorization code grant</a> flow to log in a user with a Microsoft account.</p>
 </div>
@@ -2684,9 +2700,34 @@ The tailing <code>/</code> cannot be omitted.
 <div class="paragraph">
 <p>The <code>AADWebSecurityConfigurerAdapter</code> contains necessary web security configuration for <strong>aad-starter</strong>.</p>
 </div>
+<div class="paragraph">
+<p>(A). <code>DefaultAADWebSecurityConfigurerAdapter</code> is configured automatically if you not provide one.</p>
+</div>
+<div class="paragraph">
+<p>(B). You can provide one by extending <code>AADWebSecurityConfigurerAdapter</code> and call <code>super.configure(http)</code> explicitly in the <code>configure(HttpSecurity http)</code> function. Here is an example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">    @EnableWebSecurity
+    @EnableGlobalMethodSecurity(prePostEnabled = true)
+    public class AADOAuth2LoginSecurityConfig extends AADWebSecurityConfigurerAdapter {
+
+        /**
+         * Add configuration logic as needed.
+         */
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            super.configure(http);
+            http.authorizeRequests()
+                    .anyRequest().authenticated();
+            // Do some custom configuration
+        }
+    }</code></pre>
+</div>
+</div>
 </div>
 <div class="sect4">
-<h5 id="usage-2web-application-accessing-resource-servers"><a class="anchor" href="#usage-2web-application-accessing-resource-servers"></a><a class="link" href="#usage-2web-application-accessing-resource-servers">Usage 2:Web application accessing resource servers</a></h5>
+<h5 id="usage-2-web-application-accessing-resource-servers"><a class="anchor" href="#usage-2-web-application-accessing-resource-servers"></a><a class="link" href="#usage-2-web-application-accessing-resource-servers">Usage 2: Web Application Accessing Resource Servers</a></h5>
 <div class="paragraph">
 <p><strong>System diagram</strong>:</p>
 </div>
@@ -2750,9 +2791,26 @@ The tailing <code>/</code> cannot be omitted.
 </li>
 </ul>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre>public class Demo {
+    @GetMapping("/graph")
+    @ResponseBody
+    public String graph(
+    @RegisteredOAuth2AuthorizedClient("graph") OAuth2AuthorizedClient graphClient) {
+        // toJsonString() is just a demo.
+        // oAuth2AuthorizedClient contains access_token. We can use this access_token to access resource server.
+        return toJsonString(graphClient);
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here, <code>graph</code> is the client name configured in step 2. OAuth2AuthorizedClient contains access_token. access_token can be used to access resource server.</p>
+</div>
 </div>
 <div class="sect4">
-<h5 id="usage-3accessing-a-resource-server"><a class="anchor" href="#usage-3accessing-a-resource-server"></a><a class="link" href="#usage-3accessing-a-resource-server">Usage 3:Accessing a resource server</a></h5>
+<h5 id="usage-3-accessing-a-resource-server"><a class="anchor" href="#usage-3-accessing-a-resource-server"></a><a class="link" href="#usage-3-accessing-a-resource-server">Usage 3: Accessing a Resource Server</a></h5>
 <div class="paragraph">
 <p>This scenario doesn&#8217;t support login, just protect the server by validating the access_token. If the access token is valid, the server serves the request.</p>
 </div>
@@ -2793,6 +2851,19 @@ The tailing <code>/</code> cannot be omitted.
 </li>
 </ul>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      active-directory:
+        client-id: &lt;client-id&gt;
+        app-id-uri: &lt;app-id-uri&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Both <code>client-id</code> and <code>app-id-uri</code> can be used to verify access token. <code>app-id-uri</code> can be got in Azure Portal:</p>
+</div>
 <div class="paragraph">
 <p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142617979-167e7509-b82e-4475-99b7-91bcf0ec249c.png" alt="get-app-id-uri-1.png"></span>
 <span class="image"><img src="https://user-images.githubusercontent.com/13167207/142618069-074289df-11aa-4d2c-ac8e-9a8a61c96288.png" alt="get-app-id-uri-2.png"></span></p>
@@ -2807,9 +2878,31 @@ The tailing <code>/</code> cannot be omitted.
 <div class="paragraph">
 <p>The <code>AADResourceServerWebSecurityConfigurerAdapter</code> contains necessary web security configuration for resource server.</p>
 </div>
+<div class="paragraph">
+<p>(A). <code>DefaultAADResourceServerWebSecurityConfigurerAdapter</code> is configured automatically if you not provide one.</p>
+</div>
+<div class="paragraph">
+<p>(B). You can provide one by extending <code>AADResourceServerWebSecurityConfigurerAdapter</code> and call <code>super.configure(http)</code> explicitly in the <code>configure(HttpSecurity http)</code> function. Here is an example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class AADOAuth2ResourceServerSecurityConfig extends AADResourceServerWebSecurityConfigurerAdapter {
+    /**
+     * Add configuration logic as needed.
+     */
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        super.configure(http);
+        http.authorizeRequests((requests) -&gt; requests.anyRequest().authenticated());
+    }
+}</code></pre>
+</div>
+</div>
 </div>
 <div class="sect4">
-<h5 id="usage-4resource-server-visiting-other-resource-servers"><a class="anchor" href="#usage-4resource-server-visiting-other-resource-servers"></a><a class="link" href="#usage-4resource-server-visiting-other-resource-servers">Usage 4:Resource server visiting other resource servers</a></h5>
+<h5 id="usage-4-resource-server-visiting-other-resource-servers"><a class="anchor" href="#usage-4-resource-server-visiting-other-resource-servers"></a><a class="link" href="#usage-4-resource-server-visiting-other-resource-servers">Usage 4: Resource Server Visiting Other Resource Servers</a></h5>
 <div class="paragraph">
 <p>This scenario support visit other resource servers in resource servers.</p>
 </div>
@@ -2895,7 +2988,7 @@ The tailing <code>/</code> cannot be omitted.
 </div>
 </div>
 <div class="sect4">
-<h5 id="usage-5web-application-and-resource-server-in-one-application"><a class="anchor" href="#usage-5web-application-and-resource-server-in-one-application"></a><a class="link" href="#usage-5web-application-and-resource-server-in-one-application">Usage 5:Web application and Resource server in one application</a></h5>
+<h5 id="usage-5-web-application-and-resource-server-in-one-application"><a class="anchor" href="#usage-5-web-application-and-resource-server-in-one-application"></a><a class="link" href="#usage-5-web-application-and-resource-server-in-one-application">Usage 5: Web Application and Resource Server in One Application</a></h5>
 <div class="paragraph">
 <p>This scenario supports <code>Web application</code> and <code>Resource server</code> in one application.</p>
 </div>
@@ -3004,14 +3097,232 @@ public class AADWebApplicationAndResourceServerConfig {
 </div>
 </div>
 <div class="sect3">
-<h4 id="samples-5"><a class="anchor" href="#samples-5"></a><a class="link" href="#samples-5">12.1.4. Samples</a></h4>
+<h4 id="advanced-features"><a class="anchor" href="#advanced-features"></a><a class="link" href="#advanced-features">12.1.4. Advanced Features</a></h4>
+<div class="sect4">
+<h5 id="support-access-control-by-id-token-in-web-application"><a class="anchor" href="#support-access-control-by-id-token-in-web-application"></a><a class="link" href="#support-access-control-by-id-token-in-web-application">Support Access Control by ID Token in Web Application</a></h5>
+<div class="paragraph">
+<p>This starter supports creating <code>GrantedAuthority</code> from id_token&#8217;s <code>roles</code> claim to allow using <code>id_token</code> for authorization in web application. Developers can use the <code>appRoles</code> feature of Azure Active Directory to create <code>roles</code> claim and implement access control.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>roles</code> claim generated from <code>appRoles</code> is decorated with prefix <code>APPROLE_</code>. When using <code>appRoles</code> as <code>roles</code> claim, please avoid configuring group attribute as <code>roles</code> at the same time. The latter will override the claim to contain group information instead of <code>appRoles</code>. Below configuration in manifest should be avoided:
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+    "optionalClaims": {
+        "idtoken": [{
+            "name": "groups",
+            "additionalProperties": ["emit_as_roles"]
+        }]
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Follow <a href="https://docs.microsoft.com/azure/active-directory/develop/howto-add-app-roles-in-azure-ad-apps">the guide</a> to add app roles in your application and assign to users or groups.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 1: Add below <code>appRoles</code> configuration in your application&#8217;s manifest:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+    "appRoles": [
+        {
+        "allowedMemberTypes": [
+          "User"
+        ],
+        "displayName": "Admin",
+        "id": "2fa848d0-8054-4e11-8c73-7af5f1171001",
+        "isEnabled": true,
+        "description": "Full admin access",
+        "value": "Admin"
+        }
+    ]
+}</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 2: Write Java code:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+    @GetMapping("Admin")
+    @ResponseBody
+    @PreAuthorize("hasAuthority('APPROLE_Admin')")
+    public String admin() {
+        return "Admin message";
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="support-conditional-access-in-web-application"><a class="anchor" href="#support-conditional-access-in-web-application"></a><a class="link" href="#support-conditional-access-in-web-application">Support Conditional Access in Web Application</a></h5>
+<div class="paragraph">
+<p>This starter supports <a href="https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/">Conditional Access</a> policy. By using Conditional Access policies, you can apply the right <strong>access controls</strong> when needed to keep your organization secure. <strong>Access controls</strong> has many concepts, <a href="https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/howto-conditional-access-policy-block-access">Block Access</a> and <a href="https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/concept-conditional-access-grant">Grant Access</a> are important. In some scenarios, this stater will help you complete Grant Access controls.</p>
+</div>
+<div class="paragraph">
+<p>In <code>Resource server visiting other resource server</code> scenario(For better description, we think that resource server with OBO function as <strong>webapiA</strong> and the other resource servers as <strong>webapiB</strong>), When we configure the webapiB application with Conditional Access(such as <a href="https://docs.microsoft.com/en-us/azure/active-directory/authentication/concept-mfa-howitworks">multi-factor authentication</a>), this stater will help us send the Conditional Access information of the webapiA to the web application and the web application will help us complete the Conditional Access Policy. As shown below:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/149291667-930e8559-b8ce-4955-b9ae-11a0a8013ea9.png" alt="aad-conditional-access-flow.png"></span></p>
+</div>
+<div class="paragraph">
+<p>We can use our sample to create a Conditional Access scenario.</p>
+</div>
+<div class="paragraph">
+<p><strong>webapp</strong>: <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.3/aad/spring-cloud-azure-starter-active-directory/aad-web-application">aad-web-application</a>.</p>
+</div>
+<div class="paragraph">
+<p><strong>webapiA</strong>:  <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.3/aad/spring-cloud-azure-starter-active-directory/aad-resource-server-obo">aad-resource-server-obo</a>.</p>
+</div>
+<div class="paragraph">
+<p><strong>webapiB</strong>: <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.3/aad/spring-cloud-azure-starter-active-directory/aad-resource-server">aad-resource-server</a>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 1: Follow the guide to create conditional access policy for webapiB.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/149294175-af143a10-a242-476d-a20b-5ab91b45cee3.png" alt="aad-create-conditional-access"></span></p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/149294294-75af3386-89b6-43fa-84e6-7a21c3da0352.png" alt="aad-conditional-access-add-application"></span></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 2: <a href="https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/howto-conditional-access-policy-all-users-mfa">Require MFA for all users</a> or specify the user account in your policy.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/149294469-f2785eee-ddfc-49f0-b16e-efc29aca626e.png" alt="aad-create-conditional-access"></span></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 3: Follow the guide, configure and run sample</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>webapiB</strong>: <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.3/aad/spring-cloud-azure-starter-active-directory/aad-resource-server#configure-web-api">configure webapiB</a></p>
+</li>
+<li>
+<p><strong>webapiA</strong>: <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/aad/azure-spring-boot-starter-active-directory/aad-resource-server-obo#configure-your-middle-tier-web-api-a">configure webapiA</a></p>
+</li>
+<li>
+<p><strong>webapp</strong>: <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/aad/azure-spring-boot-starter-active-directory/aad-web-application#configure-web-app">configure webapp</a></p>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="support-setting-redirect-uri-template"><a class="anchor" href="#support-setting-redirect-uri-template"></a><a class="link" href="#support-setting-redirect-uri-template">Support Setting Redirect-URI-Template</a></h5>
+<div class="paragraph">
+<p>Developers can customize the redirect-uri.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/149295662-072ca3d5-f9e1-4f25-bb0e-be7bb751e9af.png" alt="redirect-uri"></span></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 1: Add <code>redirect-uri-template</code> properties in application.yml.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      active-directory
+        redirect-uri-template: ${REDIRECT-URI-TEMPLATE}</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 2: Update the configuration of the azure cloud platform in the portal.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>We need to configure the same redirect-uri as application.yml:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/149296913-a4259df9-e0c3-4e38-8d4e-77ee845de4ad.png" alt="web-application-config-redirect-uri"></span></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 3: Write your Java code:</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>After we set redirect-uri-template, we need to update <code>SecurityConfigurerAdapter</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class AADOAuth2LoginSecurityConfig extends AADWebSecurityConfigurerAdapter {
+    /**
+     * Add configuration logic as needed.
+     */
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        super.configure(http);
+        http.oauth2Login()
+                .loginProcessingUrl("${REDIRECT-URI-TEMPLATE}")
+                .and()
+            .authorizeRequests()
+                .anyRequest().authenticated();
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="samples-5"><a class="anchor" href="#samples-5"></a><a class="link" href="#samples-5">12.1.5. Samples</a></h4>
 <div class="paragraph">
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="spring-security-with-azure-ad-b2c"><a class="anchor" href="#spring-security-with-azure-ad-b2c"></a><a class="link" href="#spring-security-with-azure-ad-b2c">12.2. Spring Security with Azure AD B2C</a></h3>
+<h3 id="spring-security-with-azure-ad-b2c"><a class="anchor" href="#spring-security-with-azure-ad-b2c"></a><a class="link" href="#spring-security-with-azure-ad-b2c">12.2. Spring Security With Azure AD B2C</a></h3>
+<div class="paragraph">
+<p>Azure Active Directory (Azure AD) B2C is an identity management service that enables you to customize and control how customers sign up, sign in, and manage their profiles when using your applications. Azure AD B2C enables these actions while protecting the identities of your customers at the same time.</p>
+</div>
 <div class="sect3">
 <h4 id="dependency-setup-6"><a class="anchor" href="#dependency-setup-6"></a><a class="link" href="#dependency-setup-6">12.2.1. Dependency Setup</a></h4>
 <div class="listingblock">
@@ -3089,8 +3400,7 @@ public class AADWebApplicationAndResourceServerConfig {
 <div class="sect3">
 <h4 id="basic-usage-6"><a class="anchor" href="#basic-usage-6"></a><a class="link" href="#basic-usage-6">12.2.3. Basic Usage</a></h4>
 <div class="paragraph">
-<p>A <code>web application</code> is any web based application that allows user to login Azure AD, whereas a <code>resource server</code> will either
-accept or deny access after validating access_token obtained from Azure AD. We will cover 4 scenarios in this guide:</p>
+<p>A <code>web application</code> is any web based application that allows user to login Azure AD, whereas a <code>resource server</code> will either accept or deny access after validating access_token obtained from Azure AD. We will cover 4 scenarios in this guide:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -3112,7 +3422,7 @@ accept or deny access after validating access_token obtained from Azure AD. We w
 <p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142620440-f970b572-2646-4f50-9f77-db62d6e965f1.png" alt="B2C Web application &amp; Web Api Overall"></span></p>
 </div>
 <div class="sect4">
-<h5 id="usage-1accessing-a-web-application-2"><a class="anchor" href="#usage-1accessing-a-web-application-2"></a><a class="link" href="#usage-1accessing-a-web-application-2">Usage 1:Accessing a web application</a></h5>
+<h5 id="usage-1-accessing-a-web-application-2"><a class="anchor" href="#usage-1-accessing-a-web-application-2"></a><a class="link" href="#usage-1-accessing-a-web-application-2">Usage 1: Accessing a Web Application</a></h5>
 <div class="paragraph">
 <p>This scenario uses <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">The OAuth 2.0 authorization code grant</a> flow to log in a user with your Azure AD B2C user.</p>
 </div>
@@ -3213,6 +3523,28 @@ select <strong>Delegated permissions</strong>, check <strong>offline_access</str
 <div class="paragraph">
 <p>Controller code can refer to the following:</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Controller
+public class WebController {
+
+    private void initializeModel(Model model, OAuth2AuthenticationToken token) {
+        if (token != null) {
+            final OAuth2User user = token.getPrincipal();
+            model.addAllAttributes(user.getAttributes());
+            model.addAttribute("grant_type", user.getAuthorities());
+            model.addAttribute("name", user.getName());
+        }
+    }
+
+    @GetMapping(value = { "/", "/home" })
+    public String index(Model model, OAuth2AuthenticationToken token) {
+        initializeModel(model, token);
+        return "home";
+    }
+}</code></pre>
+</div>
+</div>
 <div class="paragraph">
 <p>Security configuration code can refer to the following:</p>
 </div>
@@ -3240,7 +3572,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 </div>
 <div class="paragraph">
-<p>Copy the <em>home.html</em> from <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/aad/azure-spring-boot-sample-active-directory-b2c-oidc/src/main/resources/templates">Azure AD B2C Spring Boot Sample</a>, and replace the <code>PROFILE_EDIT_USER_FLOW</code> and <code>PASSWORD_RESET_USER_FLOW</code> with your user flow name respectively that completed earlier.</p>
+<p>Copy the <em>home.html</em> from <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0.0-beta.3/aad/spring-cloud-azure-starter-active-directory-b2c/aad-b2c-web-application/src/main/resources/templates/home.html">aad-b2c-web-application sample</a>, and replace the <code>PROFILE_EDIT_USER_FLOW</code> and <code>PASSWORD_RESET_USER_FLOW</code> with your user flow name respectively that completed earlier.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -3252,9 +3584,22 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 <div class="paragraph">
 <p>Let <code>Webapp</code> run on port <em>8080</em>.</p>
 </div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>After your application is built and started by Maven, open <code><a href="http://localhost:8080/" class="bare">localhost:8080/</a></code> in a web browser; you should be redirected to login page.</p>
+</li>
+<li>
+<p>Click link with the login user flow, you should be redirected Azure AD B2C to start the authentication process.</p>
+</li>
+<li>
+<p>After you have logged in successfully, you should see the sample <code>home page</code> from the browser.</p>
+</li>
+</ol>
+</div>
 </div>
 <div class="sect4">
-<h5 id="usage-2web-application-accessing-resource-servers-2"><a class="anchor" href="#usage-2web-application-accessing-resource-servers-2"></a><a class="link" href="#usage-2web-application-accessing-resource-servers-2">Usage 2:Web application accessing resource servers</a></h5>
+<h5 id="usage-2-web-application-accessing-resource-servers-2"><a class="anchor" href="#usage-2-web-application-accessing-resource-servers-2"></a><a class="link" href="#usage-2-web-application-accessing-resource-servers-2">Usage 2: Web Application Accessing Resource Servers</a></h5>
 <div class="paragraph">
 <p>This scenario is based on <strong>Accessing a web application</strong> scenario to allow application to access other resources, that is [The OAuth 2.0 client credentials grant] flow.</p>
 </div>
@@ -3299,8 +3644,7 @@ record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_UR
 <div class="ulist">
 <ul>
 <li>
-<p>Step 6: Select <strong>API permissions</strong> &gt; <strong>Add a permission</strong> &gt; <strong>My APIs</strong>, select <strong><em>WebApiA</em></strong> application name,
-select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleScope</strong> permission, select <strong>Add permission</strong> to complete the process.</p>
+<p>Step 6: Select <strong>API permissions</strong> &gt; <strong>Add a permission</strong> &gt; <strong>My APIs</strong>, select <strong><em>WebApiA</em></strong> application name, select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleScope</strong> permission, select <strong>Add permission</strong> to complete the process.</p>
 </li>
 <li>
 <p>Step 7: Grant admin consent for <strong><em>WebApiA</em></strong> permissions.
@@ -3352,20 +3696,45 @@ select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleSc
 <div class="paragraph">
 <p>Controller code can refer to the following:</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+    /**
+     * Access to protected data from Webapp to WebApiA through client credential flow. The access token is obtained by webclient, or
+     * &lt;p&gt;@RegisteredOAuth2AuthorizedClient("webApiA")&lt;/p&gt;. In the end, these two approaches will be executed to
+     * DefaultOAuth2AuthorizedClientManager#authorize method, get the access token.
+     *
+     * @return Respond to protected data from WebApi A.
+     */
+    @GetMapping("/webapp/webApiA")
+    public String callWebApiA() {
+        String body = webClient
+            .get()
+            .uri(LOCAL_WEB_API_A_SAMPLE_ENDPOINT)
+            .attributes(clientRegistrationId("webApiA"))
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+        LOGGER.info("Call callWebApiA(), request '/webApiA/sample' returned: {}", body);
+        return "Request '/webApiA/sample'(WebApi A) returned a " + (body != null ? "success." : "failure.");
+    }
+}</code></pre>
+</div>
+</div>
 <div class="paragraph">
-<p>Security configuration code is the same with <strong>Accessing a web application</strong> scenario, another bean `webClient`is added as follows:</p>
+<p>Security configuration code is the same with <strong>Accessing a web application</strong> scenario, another bean <code>webClient</code> is added as follows:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">public class SampleConfiguration {
-        @Bean
-        public WebClient webClient(OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager) {
-                ServletOAuth2AuthorizedClientExchangeFilterFunction function =
-                        new ServletOAuth2AuthorizedClientExchangeFilterFunction(oAuth2AuthorizedClientManager);
-                return WebClient.builder()
-                                                .apply(function.oauth2Configuration())
-                                                .build();
-        }
+    @Bean
+    public WebClient webClient(OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager) {
+        ServletOAuth2AuthorizedClientExchangeFilterFunction function =
+            new ServletOAuth2AuthorizedClientExchangeFilterFunction(oAuth2AuthorizedClientManager);
+        return WebClient.builder()
+                        .apply(function.oauth2Configuration())
+                        .build();
+    }
 }</code></pre>
 </div>
 </div>
@@ -3385,14 +3754,14 @@ select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleSc
 </div>
 </div>
 <div class="sect4">
-<h5 id="usage-3accessing-a-resource-server-2"><a class="anchor" href="#usage-3accessing-a-resource-server-2"></a><a class="link" href="#usage-3accessing-a-resource-server-2">Usage 3:Accessing a resource server</a></h5>
+<h5 id="usage-3-accessing-a-resource-server-2"><a class="anchor" href="#usage-3-accessing-a-resource-server-2"></a><a class="link" href="#usage-3-accessing-a-resource-server-2">Usage 3: Accessing a Resource Server</a></h5>
 <div class="paragraph">
 <p>This scenario not support login. Just protect the server by validating the access token, and if valid, serves the request.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Step 1: Refer to <a href="#usage-2web-application-accessing-resource-servers">Web application accessing resource servers</a> to build your <code>WebApiA</code> permission.</p>
+<p>Step 1: Refer to <a href="#usage-2-web-application-accessing-resource-servers">Usage 2: Web Application Accessing Resource Servers</a> to build your <code>WebApiA</code> permission.</p>
 </li>
 <li>
 <p>Step 2: Add <code>WebApiA</code> permission and grant admin consent for your web application.</p>
@@ -3448,6 +3817,22 @@ select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleSc
 <div class="paragraph">
 <p>Controller code can refer to the following:</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+    /**
+     * webApiA resource api for web app
+     * @return test content
+     */
+    @PreAuthorize("hasAuthority('APPROLE_WebApiA.SampleScope')")
+    @GetMapping("/webApiA/sample")
+    public String webApiASample() {
+        LOGGER.info("Call webApiASample()");
+        return "Request '/webApiA/sample'(WebApi A) returned successfully.";
+    }
+}</code></pre>
+</div>
+</div>
 <div class="paragraph">
 <p>Security configuration code can refer to the following:</p>
 </div>
@@ -3481,7 +3866,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 </div>
 <div class="sect4">
-<h5 id="usage-4resource-server-accessing-other-resource-servers"><a class="anchor" href="#usage-4resource-server-accessing-other-resource-servers"></a><a class="link" href="#usage-4resource-server-accessing-other-resource-servers">Usage 4:Resource server accessing other resource servers</a></h5>
+<h5 id="usage-4resource-server-accessing-other-resource-servers"><a class="anchor" href="#usage-4resource-server-accessing-other-resource-servers"></a><a class="link" href="#usage-4resource-server-accessing-other-resource-servers">Usage 4:Resource Server Accessing Other Resource Servers</a></h5>
 <div class="paragraph">
 <p>This scenario is an upgrade of <strong>Accessing a resource server</strong>, supports access to other application resources, based on OAuth2 client credentials flow.</p>
 </div>
@@ -3494,7 +3879,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>{
+<pre class="highlight"><code class="language-json" data-lang="json">{
     "allowedMemberTypes": [
         "Application"
     ],
@@ -3505,7 +3890,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
     "lang": null,
     "origin": "Application",
     "value": "WebApiB.SampleScope"
-}</pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3562,27 +3947,67 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 <div class="paragraph">
 <p>WebApiA controller code can refer to the following:</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
+    /**
+     * Access to protected data from WebApiA to WebApiB through client credential flow. The access token is obtained by webclient, or
+     * &lt;p&gt;@RegisteredOAuth2AuthorizedClient("webApiA")&lt;/p&gt;. In the end, these two approaches will be executed to
+     * DefaultOAuth2AuthorizedClientManager#authorize method, get the access token.
+     *
+     * @return Respond to protected data from WebApi B.
+     */
+    @GetMapping("/webApiA/webApiB/sample")
+    @PreAuthorize("hasAuthority('APPROLE_WebApiA.SampleScope')")
+    public String callWebApiB() {
+        String body = webClient
+            .get()
+            .uri(LOCAL_WEB_API_B_SAMPLE_ENDPOINT)
+            .attributes(clientRegistrationId("webApiB"))
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+        LOGGER.info("Call callWebApiB(), request '/webApiB/sample' returned: {}", body);
+        return "Request 'webApiA/webApiB/sample'(WebApi A) returned a " + (body != null ? "success." : "failure.");
+    }
+}</code></pre>
+</div>
+</div>
 <div class="paragraph">
 <p>WebApiB controller code can refer to the following:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
-        /**
-         * webApiB resource api for other web application
-         * @return test content
-         */
-        @PreAuthorize("hasAuthority('APPROLE_WebApiB.SampleScope')")
-        @GetMapping("/webApiB/sample")
-        public String webApiBSample() {
-                LOGGER.info("Call webApiBSample()");
-                return "Request '/webApiB/sample'(WebApi B) returned successfully.";
-        }
+    /**
+     * webApiB resource api for other web application
+     * @return test content
+     */
+    @PreAuthorize("hasAuthority('APPROLE_WebApiB.SampleScope')")
+    @GetMapping("/webApiB/sample")
+    public String webApiBSample() {
+        LOGGER.info("Call webApiBSample()");
+        return "Request '/webApiB/sample'(WebApi B) returned successfully.";
+    }
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Security configuration code is the same with <strong>Accessing a resource server</strong> scenario, another bean `webClient`is added as follows</p>
+<p>Security configuration code is the same with <strong>Accessing a resource server</strong> scenario, another bean <code>webClient</code> is added as follows</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class SampleConfiguration {
+    @Bean
+    public WebClient webClient(OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager) {
+        ServletOAuth2AuthorizedClientExchangeFilterFunction function =
+            new ServletOAuth2AuthorizedClientExchangeFilterFunction(oAuth2AuthorizedClientManager);
+        return WebClient.builder()
+                        .apply(function.oauth2Configuration())
+                        .build();
+    }
+}</code></pre>
+</div>
 </div>
 <div class="ulist">
 <ul>
