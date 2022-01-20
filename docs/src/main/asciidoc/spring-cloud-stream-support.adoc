@@ -16,7 +16,7 @@ Current binder implementations include:
 The Spring Cloud Stream Binder for Azure Event Hub provides the binding implementation for the Spring Cloud Stream.
 This implementation uses Spring Integration Event Hub Channel Adapters at its foundation. From design's perspective,
 Event Hub is similar as Kafka. Also, Event Hub could be accessed via Kafka API. If your project has tight dependency
-on Kafka API, you can try link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka[Event Hub with Kafka API Sample]
+on Kafka API, you can try link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.3/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka[Event Hubs with Kafka API Sample]
 
 ===== Consumer Group
 
@@ -181,8 +181,7 @@ retry.backoff.max-delay
 | Duration
 | The maximum permissible amount of time between retry attempts.
 
-|*spring.cloud.azure.eventhubs*.
-retry.backoff.multiplier
+|*spring.cloud.azure.eventhubs*.retry.backoff.multiplier
 | Double
 | Multiplier used to calculate the next backoff delay.
 
@@ -212,7 +211,7 @@ retry.maxAttempts
 | The port of the proxy.
 
 |*spring.cloud.azure.eventhubs*.
-proxy.authenticationType
+proxy.authentication-type
 | String
 | Authentication type used against the proxy.
 
@@ -268,11 +267,11 @@ is-shared-connection
 | Consumer configuration options.
 
 |*spring.cloud.azure.eventhubs*.
-consumer.consumerGroup
+consumer.consumer-group
 | NA
 | Name of the consumer group this consumer is associated with.
 
-|*spring.cloud.azure.eventhubs*.consumer.prefetchCount
+|*spring.cloud.azure.eventhubs*.consumer.prefetch-count
 | NA
 | The number of events the Event Hub consumer will actively receive and queue locally without regard to whether a receiving operation is currently active.
 
@@ -282,22 +281,22 @@ processor.checkpoint-store.*
 | Blob checkpoint store configuration options.
 
 |*spring.cloud.azure.eventhubs*.
-processor.trackLastEnqueuedEventProperties
+processor.track-last-enqueued-event-properties
 | Boolean
 |Whether the event processor should request information on the last enqueued event on its associated partition, and track that information as events are received.
 
 |*spring.cloud.azure.eventhubs*.
-processor.initialPartitionEventPosition
+processor.initial-partition-event-position
 | Map
 |The map containing the event position to use for each partition if a checkpoint for the partition does not exist in CheckpointStore.
 
 |*spring.cloud.azure.eventhubs*.
-processor.partitionOwnershipExpirationInterval
+processor.partition-ownership-expiration-interval
 | Duration
 |The time duration after which the ownership of partition expires if it's not renewed by the owning processor instance.
 
 |*spring.cloud.azure.eventhubs*.
-processor.batch. maxSize
+processor.batch.max-size
 | Integer
 | The maximum number of events in a batch.
 
@@ -306,12 +305,12 @@ processor.batch. max-wait-time
 | Duration | The maximum time duration for one batch of the max size of message.
 
 |*spring.cloud.azure.eventhubs*.
-processor.loadBalancing.updateInterval
+processor.loadBalancing.update-interval
 | Duration
 | The interval of load balancing strategy updating.
 
 |*spring.cloud.azure.eventhubs*.
-processor.loadBalancing.strategy
+processor.load-balancing.strategy
 | String
 | The strategy used by event processor for load balancing the partition ownership to distribute the event processing work with other processor instances.
 
@@ -903,31 +902,31 @@ cross-entity-transactions
 | see NOTE
 | Consumer configuration options.
 
-|*spring.cloud.azure.servicebus*.consumer.sessionEnabled
+|*spring.cloud.azure.servicebus*.consumer.session-enabled
 | Boolean
 | Consumer Whether session is enabled.
-|*spring.cloud.azure.servicebus*.consumer.autoComplete
+|*spring.cloud.azure.servicebus*.consumer.auto-complete
 | Boolean
 | Consumer whether auto complete flag.
 
-|*spring.cloud.azure.servicebus*.consumer.prefetchCount
+|*spring.cloud.azure.servicebus*.consumer.prefetch-count
 | Integer
 | Consumer prefetch count.
 
-|*spring.cloud.azure.servicebus*.consumer.subQueue
+|*spring.cloud.azure.servicebus*.consumer.sub-queue
 | String
 | Consumer sub queue name.
 
-|*spring.cloud.azure.servicebus*.consumer.subscriptionName
+|*spring.cloud.azure.servicebus*.consumer.subscription-name
 | String
 | Consumer subscription name.
 
 |*spring.cloud.azure.servicebus*.
-consumer.maxAutoLockRenewDuration
+consumer.max-auto-lock-renew-duration
 | Duration
 | Consumer max duration for auto lock renew.
 
-|*spring.cloud.azure.servicebus*.consumer.receiveMode
+|*spring.cloud.azure.servicebus*.consumer.receive-mode
 | String
 | Consumer receive mode.
 
