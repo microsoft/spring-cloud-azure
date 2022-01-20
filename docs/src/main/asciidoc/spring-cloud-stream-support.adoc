@@ -78,22 +78,22 @@ of which the prefix is changed from *spring.cloud.azure.eventhubs* to *spring.cl
 | Properties used for getting token credential.
 
 |*spring.cloud.azure.eventhubs*.
-credential.clientId
+credential.client-id
 | String
 | Client id to use when performing service principal authentication with Azure.
 
 |*spring.cloud.azure.eventhubs*.
-credential.clientSecret
+credential.client-secret
 | String
 | Client secret to use when performing service principal authentication with Azure.
 
 |*spring.cloud.azure.eventhubs*.
-credential.clientCertificatePath
+credential.client-certificate-path
 | String
 | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 
 |*spring.cloud.azure.eventhubs*.
-credential.clientCertificatePassword
+credential.client-certificate-password
 | String
 | Password of the certificate file.
 
@@ -108,7 +108,7 @@ credential.password
 | Password to use when performing username/password authentication with Azure.
 
 |*spring.cloud.azure.eventhubs*.
-credential.managedIdentityClientId
+credential.managed-identity-client-id
 | String
 | The client id to use when using managed identity to authenticate with Azure.
 
@@ -117,12 +117,12 @@ credential.managedIdentityClientId
 | The properties related to an Azure subscription.
 
 |*spring.cloud.azure.eventhubs*.
-profile.tenantId
+profile.tenant-id
 | String
 | Tenant id for Azure resources.
 
 |*spring.cloud.azure.eventhubs*.
-profile.subscriptionId
+profile.subscription-id
 | String
 | Subscription id to use when connecting to Azure resources.
 
@@ -136,7 +136,7 @@ profile.environment.*
 | Properties to Azure services, such as endpoints, resource ids, etc.
 
 |*spring.cloud.azure.eventhubs*.
-profile.environment.activeDirectoryEndpoint
+profile.environment.active-directory-endpoint
 | String
 | The Azure Active Directory endpoint to connect to.
 
@@ -145,12 +145,12 @@ profile.environment.activeDirectoryEndpoint
 | Metadata defining an Azure resource.
 
 |*spring.cloud.azure.eventhubs*.
-resource.resourceGroup
+resource.resource-group
 | String
 | Name of the Azure resource group.
 
 |*spring.cloud.azure.eventhubs*.
-resource.resourceId
+resource.resource-id
 | String
 | The id of the Azure resource group.
 
@@ -158,7 +158,7 @@ resource.resourceId
 | String
 | The name of region.
 
-|*spring.cloud.azure.eventhubs*.client.transportType
+|*spring.cloud.azure.eventhubs*.client.transport-type
 | AmqpTransportType
 | The Transport type switches available for AMQP protocol.
 
@@ -177,7 +177,7 @@ retry.backoff.delay
 | Amount of time to wait between retry attempts.
 
 |*spring.cloud.azure.eventhubs*.
-retry.backoff.maxDelay
+retry.backoff.max-delay
 | Duration
 | The maximum permissible amount of time between retry attempts.
 
@@ -751,7 +751,7 @@ credential.client-certificate-path
 | Password to use when performing username/password authentication with Azure.
 
 |*spring.cloud.azure.servicebus*.
-credential.managed-identity-clientId
+credential.managed-identity-client-id
 | String
 | Client id to use when using managed identity to authenticate with Azure.
 
@@ -763,7 +763,7 @@ credential.managed-identity-clientId
 | String
 | Tenant id for Azure resources.
 
-|*spring.cloud.azure.servicebus*.profile.subscription-Id
+|*spring.cloud.azure.servicebus*.profile.subscription-id
 | String
 | Subscription id to use when connecting to Azure resources.
 

@@ -645,7 +645,7 @@ spring:
 
 * Annotation of `@AzureMessageListeners`, `@AzureMessageListener` and `@EnableAzureMessaging` are dropped.
 * Drop `EventHubOperation`, and move its `subscribe` API to class of `EventHubsProcessorContainer`.
-* Rename `EventHubsInboundChannelAdapter` as `EventHubsInboundChannelAdapter` to keep consistent with the service of Azure
+* Rename `EventHubInboundChannelAdapter` as `EventHubsInboundChannelAdapter` to keep consistent with the service of Azure
 Event Hubs, and change constructor signature as well.
 * Change `CheckpointConfig` instantiation style to simple constructor instead of build style.
 
