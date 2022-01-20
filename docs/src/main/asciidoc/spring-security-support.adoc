@@ -42,7 +42,7 @@ The `spring-cloud-azure-starter-active-directory` (`aad-starter` for short) prov
 |*spring.cloud.azure.active-directory*.profile.environment |  | Properties to Azure Active Directory endpoints.
 |*spring.cloud.azure.active-directory*.profile.tenant-id |  | Azure Tenant ID.
 |*spring.cloud.azure.active-directory*.redirect-uri-template | `{baseUrl}/login/oauth2/code/` | Redirection Endpoint: Used by the authorization server to return responses containing authorization credentials to the client via the resource owner user-agent.
-|*spring.cloud.azure.active-directory*.resource-server.claim-to-authority-prefix-map |  | Configure which claim will be used to build GrantedAuthority, and prefix of the GrantedAuthority's string value. Default value is: "scp" -> "SCOPE_", "roles" -> "APPROLE_". @see org.springframework.security.core.GrantedAuthority .
+|*spring.cloud.azure.active-directory*.resource-server.claim-to-authority-prefix-map |  | Configure which claim will be used to build GrantedAuthority, and prefix of the GrantedAuthority's string value. Default value is: "scp" -> "SCOPE_", "roles" -> "APPROLE_".
 |*spring.cloud.azure.active-directory*.resource-server.principal-claim-name |  | Configure which claim in access token be returned in AuthenticatedPrincipal#getName. Default value is "sub".
 |*spring.cloud.azure.active-directory*.session-stateless | `false` | If true activates the stateless auth filter AADAppRoleStatelessAuthenticationFilter. The default is false which activates AADAuthenticationFilter.
 |*spring.cloud.azure.active-directory*.user-group.allowed-group-ids |  | The group ids can be used to construct GrantedAuthority.
