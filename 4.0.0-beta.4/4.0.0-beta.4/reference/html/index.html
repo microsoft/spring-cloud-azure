@@ -5548,25 +5548,25 @@ of which the prefix is changed from <strong>spring.cloud.azure.eventhubs</strong
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.
-credential.clientId</p></td>
+credential.client-id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when performing service principal authentication with Azure.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.
-credential.clientSecret</p></td>
+credential.client-secret</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.
-credential.clientCertificatePath</p></td>
+credential.client-certificate-path</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Path of a PEM certificate file to use when performing service principal authentication with Azure.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.
-credential.clientCertificatePassword</p></td>
+credential.client-certificate-password</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
 </tr>
@@ -5584,7 +5584,7 @@ credential.password</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.
-credential.managedIdentityClientId</p></td>
+credential.managed-identity-client-id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The client id to use when using managed identity to authenticate with Azure.</p></td>
 </tr>
@@ -5595,13 +5595,13 @@ credential.managedIdentityClientId</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.
-profile.tenantId</p></td>
+profile.tenant-id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Tenant id for Azure resources.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.
-profile.subscriptionId</p></td>
+profile.subscription-id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Subscription id to use when connecting to Azure resources.</p></td>
 </tr>
@@ -5618,7 +5618,7 @@ profile.environment.*</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.
-profile.environment.activeDirectoryEndpoint</p></td>
+profile.environment.active-directory-endpoint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The Azure Active Directory endpoint to connect to.</p></td>
 </tr>
@@ -5629,13 +5629,13 @@ profile.environment.activeDirectoryEndpoint</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.
-resource.resourceGroup</p></td>
+resource.resource-group</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the Azure resource group.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.
-resource.resourceId</p></td>
+resource.resource-id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The id of the Azure resource group.</p></td>
 </tr>
@@ -5645,7 +5645,7 @@ resource.resourceId</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The name of region.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.client.transportType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.client.transport-type</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AmqpTransportType</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The Transport type switches available for AMQP protocol.</p></td>
 </tr>
@@ -5668,7 +5668,7 @@ retry.backoff.delay</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.
-retry.backoff.maxDelay</p></td>
+retry.backoff.max-delay</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The maximum permissible amount of time between retry attempts.</p></td>
 </tr>
@@ -6455,7 +6455,7 @@ credential.client-certificate-path</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.
-credential.managed-identity-clientId</p></td>
+credential.managed-identity-client-id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when using managed identity to authenticate with Azure.</p></td>
 </tr>
@@ -6470,7 +6470,7 @@ credential.managed-identity-clientId</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Tenant id for Azure resources.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.profile.subscription-Id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.profile.subscription-id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Subscription id to use when connecting to Azure resources.</p></td>
 </tr>
