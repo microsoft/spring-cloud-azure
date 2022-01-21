@@ -18,6 +18,8 @@ include::loading-configurations.adoc[]
 
 include::authentication.adoc[]
 
-include::key-vault-references.adoc[]
+include::key-values.adoc[]
+
+include::health-indicator.adoc[]
 
 include::forMoreInfo.adoc[]
