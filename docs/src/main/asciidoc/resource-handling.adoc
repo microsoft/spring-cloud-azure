@@ -142,10 +142,10 @@ You can use implementation class `AzureStorageBlobProtocolResolver` of `Resource
 - Location search, the **searchLocation** should start with `azure-blob://` or `azure-file://`, the remaining file path should exist, otherwise an exception will be thrown.
 
 ----
-@Autowire 
+@Autowired
 private AzureStorageBlobProtocolResolver azureStorageBlobProtocolResolver;
 
-@Autowire 
+@Autowired
 private AzureStorageFileProtocolResolver azureStorageFileProtocolResolver;
 
 // get all text blobs
