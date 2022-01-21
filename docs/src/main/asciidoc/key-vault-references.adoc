@@ -1,0 +1,60 @@
+== Key Vault References
+
+Azure App Configuration and its client libraries support referencing secrets stored in Key Vault. In App Configuration keys can be created the have values that are URIs that map to secrets in a Key Vault. This enables using secrets as configuration without storing them as configurations.
+
+Your application uses the client provider to retrieve Key Vault references, just as it does for any other keys stored in App Configuration. Because the client recognizes the keys as Key Vault references, they have a unique content-type, the client will connect to Key Vault to retrieve their values.
+
+NOTE: Key Vault only allows for secrets to be retrieved one at a time, so each key vault reference stored in App Configuration will result in a pull against Key Vault.
+
+=== Creating Key Vault References
+
+You can easily create a Key Vault reference in the Azure Portal in the Configuration explorer using the Create -> Key Vault reference option. You will be able to select a secret to make a reference to from any Key Vault you have access to. You can also create arbitrary Key Vault references using the Input option.
+
+You can also create a Key Vault reference through the cli using:
+
+[source,azurecli,indent=0]
+----
+az appconfig kv set-keyvault --name <name-of-your-store> --key <key-name> --secret-identifier <uri-to-your-secret>
+----
+
+=== Using Key Vault References
+
+If you are using User Assigned or System Assigned Identity all you need to do is make sure that identity also has access to the Key Vault and reading secrets.
+
+Otherwise, you need to provide a Token Credential for the client library to use to connect to your Key Vault with.
+
+[source,java,indent=0]
+----
+public class MyCredentials implements KeyVaultCredentialProvider {
+
+    @Override
+    public TokenCredential getKeyVaultCredential(String uri) {
+            return buildCredential();
+    }
+
+    TokenCredential buildCredential() {
+            return new DefaultAzureCredentialBuilder().build();
+    }
+
+}
+----
+
+Using the KeyVaultCredentialProvider you can provide any TokenCredential type supported by the link:https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/identity/azure-identity#credential-classes[Azure Identity Library].
+
+=== Resolve Non Key Vault Secrets
+
+The App Configuration client provides a method of locally resolving secrets that don't have a Key Vault associated with them. This is done through the `KeyVaultSecretProvider`.
+
+WARNING: Creating a `KeyVaultSecretProvider` overrides the automatic use of System Assigned Identity. In order to use both `KeyVaultCredentialProvider` needs to be used and return `null` for URI's that need to resolve using `KeyVaultSecretProvider`.
+
+[source,java,indent=0]
+----
+public class MySecretProvider implements KeyVaultSecretProvider {
+
+    @Override
+    public String getSecret(String uri) {
+        ...
+    }
+
+}
+----
