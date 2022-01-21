@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Key Values</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_key_values">Key Values</a>
+<ul class="sectlevel2">
+<li><a href="#_placeholders">Placeholders</a></li>
+<li><a href="#_json">JSON</a></li>
+<li><a href="#_key_vault_references">Key Vault References</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_key_values"><a class="link" href="#_key_values">Key Values</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Azure App Configuration Supports multiple types of key values, some of which have special features built into them.</p>
+</div>
+<div class="sect2">
+<h3 id="_placeholders"><a class="link" href="#_placeholders">Placeholders</a></h3>
+<div class="paragraph">
+<p>The client library supports configurations with <code>${}</code>-style environment placeholders. If referencing a Azure App Configuration key with a placeholder any prefix needs to be removed in the reference. For example: <code>/application/config.message</code> is referenced as <code>${config.message}</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The prefix being removed matches the value <code>spring.cloud.azure.appconfiguration.stores[0].selects[0].key-filter</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_json"><a class="link" href="#_json">JSON</a></h3>
+<div class="paragraph">
+<p>Configurations that have the a content-type <code>application/json</code> are processed as json objects. This enables one configuration mapping to a complex object in a <code>@Configuration</code>. The json key <code>/application/config.colors</code> with the value</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+	"Red": {
+		"value": [255, 0, 0]
+	},
+	"Blue": {
+		"value": [0, 255, 0]
+	},
+	"Green": {
+		"value": [0, 0, 255]
+	}
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>maps to</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@ConfigurationProperties(prefix = "config")
+public class MyConfigurations {
+
+    private HashMap&lt;String, Color&gt; colors;
+
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_key_vault_references"><a class="link" href="#_key_vault_references">Key Vault References</a></h3>
+<div class="paragraph">
+<p>Azure App Configuration and its client libraries support referencing secrets stored in Key Vault. In App Configuration keys can be created the have values that are URIs that map to secrets in a Key Vault. This enables using secrets as configuration without storing them as configurations.</p>
+</div>
+<div class="paragraph">
+<p>Your application uses the client provider to retrieve Key Vault references, just as it does for any other keys stored in App Configuration. Because the client recognizes the keys as Key Vault references, they have a unique content-type, the client will connect to Key Vault to retrieve their values.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Key Vault only allows for secrets to be retrieved one at a time, so each key vault reference stored in App Configuration will result in a pull against Key Vault.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_creating_key_vault_references"><a class="link" href="#_creating_key_vault_references">Creating Key Vault References</a></h4>
+<div class="paragraph">
+<p>You can easily create a Key Vault reference in the Azure Portal in the Configuration explorer using the Create &#8594; Key Vault reference option. You will be able to select a secret to make a reference to from any Key Vault you have access to. You can also create arbitrary Key Vault references using the Input option.</p>
+</div>
+<div class="paragraph">
+<p>You can also create a Key Vault reference through the cli using:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-azurecli" data-lang="azurecli">az appconfig kv set-keyvault --name &lt;name-of-your-store&gt; --key &lt;key-name&gt; --secret-identifier &lt;uri-to-your-secret&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_using_key_vault_references"><a class="link" href="#_using_key_vault_references">Using Key Vault References</a></h4>
+<div class="paragraph">
+<p>If you are using User Assigned or System Assigned Identity all you need to do is make sure that identity also has access to the Key Vault and reading secrets.</p>
+</div>
+<div class="paragraph">
+<p>Otherwise, you need to provide a Token Credential for the client library to use to connect to your Key Vault with.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyCredentials implements KeyVaultCredentialProvider {
+
+    @Override
+    public TokenCredential getKeyVaultCredential(String uri) {
+            return buildCredential();
+    }
+
+    TokenCredential buildCredential() {
+            return new DefaultAzureCredentialBuilder().build();
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using the KeyVaultCredentialProvider you can provide any TokenCredential type supported by the <a href="https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/identity/azure-identity#credential-classes">Azure Identity Library</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_resolve_non_key_vault_secrets"><a class="link" href="#_resolve_non_key_vault_secrets">Resolve Non Key Vault Secrets</a></h4>
+<div class="paragraph">
+<p>The App Configuration client provides a method of locally resolving secrets that don&#8217;t have a Key Vault associated with them. This is done through the <code>KeyVaultSecretProvider</code>.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Creating a <code>KeyVaultSecretProvider</code> overrides the automatic use of System Assigned Identity. In order to use both <code>KeyVaultCredentialProvider</code> needs to be used and return <code>null</code> for URI&#8217;s that need to resolve using <code>KeyVaultSecretProvider</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class MySecretProvider implements KeyVaultSecretProvider {
+
+    @Override
+    public String getSecret(String uri) {
+        ...
+    }
+
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>
