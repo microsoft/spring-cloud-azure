@@ -1,0 +1,129 @@
+[#spring-jms-support]
+== Spring Jms Support
+
+To use Azure Service Bus by the Jms API integrated into the Spring-Jms framework. Azure Service Bus connection string have to be provided which is to be parsed into the login username, password and remote URI for the AMQP broker.
+
+
+=== Dependency Setup
+
+Adding below dependencies if you want to migrate your Spring Jms application to use Azure Service Bus.
+
+[source,xml]
+----
+<dependency>
+    <groupId>com.azure.spring</groupId>
+    <artifactId>spring-cloud-azure-starter-servicebus-jms</artifactId>
+</dependency>
+----
+
+=== Configuration
+
+.Configurable properties when using Spring Jms support
+[cols="2*", options="header"]
+|===
+|Property
+|Description
+
+|*spring.jms.servicebus*.connection-string
+|Azure Service Bus connection string. Should be provided when want to provide the connection string directly.
+
+|*spring.jms.servicebus*.topic-client-id
+|JMS clientID. Only works for the bean of topicJmsListenerContainerFactory.
+
+|*spring.jms.servicebus*.idle-timeout
+| The duration for idle.
+
+|*spring.jms.servicebus*.pricing-tier
+| The Azure Service Bus Price Tier.
+
+|*spring.jms.servicebus*.listener.reply-pub-sub-domain
+| Whether the reply destination type is topic.
+
+|*spring.jms.servicebus*.listener.phase
+| Specify the phase in which this container should be started and stopped.
+
+|*spring.jms.servicebus*.listener.reply-qos-settings
+| Configure the {@link QosSettings} to use when sending a reply.
+
+|*spring.jms.servicebus*.listener.subscription-durable
+| Whether to make the subscription durable. Only works for the bean of topicJmsListenerContainerFactory.
+
+|*spring.jms.servicebus*.listener.subscription-shared
+| Whether to make the subscription shared. Only works for the bean of topicJmsListenerContainerFactory.
+
+|*spring.jms.servicebus*.password
+| Login password of the AMQP broker
+
+
+| *spring.jms.servicebus*.pool.block-if-full
+| [[jms-servicebus-pool-configuration]]]Whether to block when a connection is requested and the pool is full.
+
+|*spring.jms.servicebus*.pool.block-if-full-timeout
+|Blocking period before throwing an exception if the pool is still full.
+
+|*spring.jms.servicebus*.pool.enabled
+|Whether a JmsPoolConnectionFactory should be created, instead of a regularConnectionFactory.
+
+|*spring.jms.servicebus*.pool.idle-timeout
+|Connection idle timeout.
+
+|*spring.jms.servicebus*.pool.max-connections
+|Maximum number of pooled connections.
+
+|*spring.jms.servicebus*.pool.max-sessions-per-connection
+|Maximum number of pooled sessions per connection in the pool.
+
+|*spring.jms.servicebus*.pool.time-between-expiration-check
+|Time to sleep between runs of the idle connection eviction thread.
+
+|*spring.jms.servicebus*.pool.use-anonymous-producers
+|Whether to use only one anonymous "MessageProducer" instance.
+
+|*spring.jms.servicebus*.prefetch-policy.all
+| Prefetch value for all.
+
+|*spring.jms.servicebus*.prefetch-policy.durable-topic-prefetch
+| Durable topic prefetch value.
+
+|*spring.jms.servicebus*.prefetch-policy.queue-browser-prefetch
+| Queue browser prefetch value.
+
+|*spring.jms.servicebus*.prefetch-policy.queue-prefetch
+| Queue prefetch value.
+
+|*spring.jms.servicebus*.prefetch-policy.topic-prefetch
+|Topic prefetch value.
+
+|*spring.jms.servicebus*.remote-url
+| URL of the AMQP broker.
+
+|*spring.jms.servicebus*.username
+| Login user of the AMQP broker.
+|===
+
+NOTE: Spring Jms general configuration is omited for short. Please refer to link:https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/jms.html[Spring Jms Doc] for more details.
+
+=== Basic Usage
+
+==== Use Service Bus Connection String
+
+The simplest way to connect to Service Bus for Spring Jms application is with the connection string.
+
+Add below properties and you are good to go.
+
+[source,yaml]
+----
+spring:
+  jms:
+    servicebus:
+      connection-string: ${AZURE_SERVICEBUS_CONNECTION_STRING}
+      idle-timeout: 5m
+      pricing-tier: ${PRICING_TIER}
+----
+
+NOTE: The default enabled `ConnectionFactory` is the `CachingConnectionFactory` which adds Session caching as well MessageProducer caching . If you want to activate the connection pooling featured one of JmsPoolConnectionFactory, the property of `*spring.jms.servicebus*.pool.enabled` should be specified `true`. The other pooling configuration options(`*spring.jms.servicebus*.pool.*` prefix) can be found in the above
+<<jms-servicebus-pool-configuration, Configuration>> section.
+
+=== Samples
+
+Please refer to link:https://githu.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.3[azure-spring-boot-samples] for more details.
