@@ -181,7 +181,7 @@ window.onload = function() {
 <div class="sect2">
 <h3 id="_defaultazurecredential"><a class="link" href="#_defaultazurecredential">DefaultAzureCredential</a></h3>
 <div class="paragraph">
-<p>The <code>DefaultAzureCredential</code> is appropriate for most scenarios where the application is intended to ultimately be run in the Azure Cloud.This is because the DefaultAzureCredential combines credentials commonly used to authenticate when deployed, with credentials used to authenticate in a development environment.</p>
+<p>The <code>DefaultAzureCredential</code> is appropriate for most scenarios where the application is intended to ultimately be run in the Azure Cloud. This is because the DefaultAzureCredential combines credentials commonly used to authenticate when deployed, with credentials used to authenticate in a development environment.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -190,7 +190,7 @@ window.onload = function() {
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-DefaultAzureCredential is intended to simplify getting started with the SDK by handling common scenarios with reasonable default behaviors.Developers who want more control or whose scenario isn&#8217;t served by the default settings should use other credential types.
+DefaultAzureCredential is intended to simplify getting started with the SDK by handling common scenarios with reasonable default behaviors. Developers who want more control or whose scenario isn&#8217;t served by the default settings should use other credential types.
 </td>
 </tr>
 </table>
@@ -466,8 +466,24 @@ To see the list of all Azure built-in roles please check <a href="https://docs.m
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#storage-queue-data-reader">Storage Queue Data Reader</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Read and list Azure Storage queues and queue messages.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#redis-cache-contributor">Redis Cache Contributor</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Manage Redis caches.</p></td>
+</tr>
 </tbody>
 </table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When using Spring Cloud Azure Resource Manager to get the connection strings of Event Hubs, Service Bus, and Storage Queue, or properties of Cache for Redis, assign the Azure built-in role <code>Contributor</code>. Azure Cache for Redis is special, and you can also assign the <code>Redis Cache Contributor</code> role to get the Redis properties.
+</td>
+</tr>
+</table>
+</div>
 <div class="admonitionblock note">
 <table>
 <tr>
