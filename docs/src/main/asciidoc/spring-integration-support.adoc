@@ -306,6 +306,55 @@ class Demo{
 }
 ----
 
+===== Event Hubs message headers
+
+The following table illustrates how Event Hubs message properties are mapped to Spring message headers. For Azure Event Hubs, message is called as `event`.
+
+.Mapping between Event Hubs properties and Spring Headers
+[cols="<,<,<,<", options="header"]
+|===
+|Event Hubs Event Properties | Spring Message Header Constants | Type | Description
+
+|Enqueued time
+|com.azure.spring.eventhubs.support.EventHubsHeaders#ENQUEUED_TIME
+|Instant
+|The instant, in UTC, of when the event was enqueued in the Event Hub partition.
+
+|Offset
+|com.azure.spring.eventhubs.support.EventHubsHeaders#OFFSET
+|Long
+|The offset of the event when it was received from the associated Event Hub partition.
+
+|Partition key
+|com.azure.spring.messaging.AzureHeaders#PARTITION_KEY
+|String
+|The partition hashing key if it was set when originally publishing the event.
+
+|Partition id
+|com.azure.spring.messaging.AzureHeaders#RAW_PARTITION_ID
+|String
+|The partition id of the Event Hub.
+
+|Sequence number
+|com.azure.spring.eventhubs.support.EventHubsHeaders#SEQUENCE_NUMBER
+|Long
+|The sequence number assigned to the event when it was enqueued in the associated Event Hub partition.
+
+|Last enqueued event properties
+|com.azure.spring.eventhubs.support.EventHubsHeaders#LAST_ENQUEUED_EVENT_PROPERTIES
+|LastEnqueuedEventProperties
+|The properties of the last enqueued event in this partition.
+
+|NA
+|com.azure.spring.messaging.AzureHeaders#CHECKPOINTER
+|com.azure.spring.messaging.checkpoint.Checkpointer
+|The header for checkpoint the specific message.
+|===
+
+Users can parse the message headers for the related information of each event. To set a message header for the event, all customized headers will be put as an application property of an event, where the header is set as the property key. When events are received from Event Hubs, all application properties will be converted to the message header.
+
+NOTE: Message headers of partition key, enqueued time, offset and sequence number is not supported to be set manually.
+
 ==== Samples
 
 Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[azure-spring-boot-samples] for more details.
