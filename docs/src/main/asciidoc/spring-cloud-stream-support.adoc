@@ -35,7 +35,7 @@ To specify the load balancing strategy, properties of `spring.cloud.stream.event
 ===== Batch Consumer Support
 Azure Spring Cloud Stream Event Hubs binder supports link:https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_batch_consumers[Spring Cloud Stream Batch Consumer feature].
 
-To work with the batch-consumer mode, the property of `spring.cloud.stream.bindings.<binding-name>.consumer.batch-mode` should be set as `true`. When enabled, an **org.springframework.messaging.Message** of which the payload is a list of batched events will be received and passed to the consumer function. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of partition id, checkpointer and last enqueued properties, they are presented as a single value for the entire batch of events shares the same one. See <<spring-cloud-stream-support.html#event-hubs-message-headers, Event Hubs Message Headers>> for more details.
+To work with the batch-consumer mode, the property of `spring.cloud.stream.bindings.<binding-name>.consumer.batch-mode` should be set as `true`. When enabled, an **org.springframework.messaging.Message** of which the payload is a list of batched events will be received and passed to the consumer function. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of partition id, checkpointer and last enqueued properties, they are presented as a single value for the entire batch of events shares the same one. See <<scs-eh-headers, Event Hubs Message Headers>> for more details.
 
 NOTE: The checkpoint header only exists when **MANUAL** checkpoint mode is used.
 
@@ -475,8 +475,9 @@ public void producerError(Message<?> message) {
 }
 ----
 
+[#scs-eh-headers]
 ===== Event Hubs message headers
-See the link:spring-integration-support.html#_event_hubs_message_headers[Event Hubs message headers] for the basic message headers supported.
+See the <<si-eh-headers, Event Hubs message headers>> for the basic message headers supported.
 
 When the batch-consumer mode is enabled, the specific headers of batched messages are listed as below, which contains a list of values from each single Event Hubs event.
 
