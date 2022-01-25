@@ -752,11 +752,93 @@ class Demo{
 </div>
 </div>
 </div>
+<div class="sect4">
+<h5 id="_event_hubs_message_headers"><a class="link" href="#_event_hubs_message_headers">Event Hubs message headers</a></h5>
+<div class="paragraph">
+<p>The following table illustrates how Event Hubs message properties are mapped to Spring message headers. For Azure Event Hubs, message is called as <code>event</code>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Mapping between Event Hubs Properties and Spring Headers</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Event Hubs Event Properties</th>
+<th class="tableblock halign-left valign-top">Spring Message Header Constants</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enqueued time</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.eventhubs.support.EventHubsHeaders#ENQUEUED_TIME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Instant</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The instant, in UTC, of when the event was enqueued in the Event Hub partition.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Offset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.eventhubs.support.EventHubsHeaders#OFFSET</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The offset of the event when it was received from the associated Event Hub partition.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Partition key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.AzureHeaders#PARTITION_KEY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The partition hashing key if it was set when originally publishing the event.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Partition id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.AzureHeaders#RAW_PARTITION_ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The partition id of the Event Hub.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sequence number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.eventhubs.support.EventHubsHeaders#SEQUENCE_NUMBER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The sequence number assigned to the event when it was enqueued in the associated Event Hub partition.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Last enqueued event properties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.eventhubs.support.EventHubsHeaders#LAST_ENQUEUED_EVENT_PROPERTIES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LastEnqueuedEventProperties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The properties of the last enqueued event in this partition.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.AzureHeaders#CHECKPOINTER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.checkpoint.Checkpointer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The header for checkpoint the specific message.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Users can parse the message headers for the related information of each event. To set a message header for the event, all customized headers will be put as an application property of an event, where the header is set as the property key. When events are received from Event Hubs, all application properties will be converted to the message header.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Message headers of partition key, enqueued time, offset and sequence number is not supported to be set manually.
+</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_samples"><a class="link" href="#_samples">Samples</a></h4>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0">azure-spring-boot-samples</a> for more details.</p>
+<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.2/eventhubs/spring-cloud-azure-starter-integration-eventhubs/eventhubs-integration">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
@@ -816,7 +898,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 from <strong>spring.cloud.azure.servicebus</strong> to <strong>spring.cloud.azure</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Common configurable properties of spring-cloud-azure-starter-integration-servicebus</caption>
+<caption class="title">Table 4. Common configurable properties of spring-cloud-azure-starter-integration-servicebus</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1029,7 +1111,7 @@ proxy.authenticationType</p></td>
 <p>Below options are used to configure Azure Service Bus SDK Client.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. Client configurable properties of spring-cloud-azure-starter-integration-servicebus</caption>
+<caption class="title">Table 5. Client configurable properties of spring-cloud-azure-starter-integration-servicebus</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1272,7 +1354,7 @@ set the entity type for the ServiceBusTemplate.</p>
 <p>For some Service Bus headers that can be mapped to multiple Spring header constants, the priority of different Spring headers is listed.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. Mapping between Service Bus Headers and Spring Headers</caption>
+<caption class="title">Table 6. Mapping between Service Bus Headers and Spring Headers</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -1373,7 +1455,7 @@ set the entity type for the ServiceBusTemplate.</p>
 <div class="sect3">
 <h4 id="_samples_2"><a class="link" href="#_samples_2">Samples</a></h4>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0">azure-spring-boot-samples</a> for more details.</p>
+<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.2/servicebus/spring-cloud-azure-starter-integration-servicebus">azure-spring-boot-samples</a> for more details.</p>
 </div>
 <div class="paragraph">
 <p><strong>Example: Manually set the partition key for the message</strong></p>
@@ -1503,7 +1585,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 by changing the prefix from <strong>spring.cloud.azure.storage.queue</strong> to <strong>spring.cloud.azure</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Common configurable properties of spring-cloud-azure-starter-integration-storage-queue</caption>
+<caption class="title">Table 7. Common configurable properties of spring-cloud-azure-starter-integration-storage-queue</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1720,7 +1802,7 @@ proxy.password</p></td>
 <p>Below options are used to configure Azure Storage Queue SDK Client.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. Client configurable properties of spring-cloud-azure-starter-integration-storage-queue</caption>
+<caption class="title">Table 8. Client configurable properties of spring-cloud-azure-starter-integration-storage-queue</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1960,7 +2042,7 @@ proxy.password</p></td>
 <div class="sect3">
 <h4 id="_samples_3"><a class="link" href="#_samples_3">Samples</a></h4>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0">azure-spring-boot-samples</a> for more details.</p>
+<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.2/storage/spring-cloud-azure-starter-integration-storage-queue">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
