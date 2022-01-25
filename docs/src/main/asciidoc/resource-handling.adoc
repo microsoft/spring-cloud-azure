@@ -204,4 +204,4 @@ Files larger than 4 MiB will be uploaded to Azure Storage in parallel.
 
 === Samples
 
-Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.2/storage/spring-cloud-azure-starter-storage-blob/storage-blob-sample[storage-blob-sample] and link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.2/storage/spring-cloud-azure-starter-storage-file-share/storage-file-sample[storage-file-sample] for more details.
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/storage/spring-cloud-azure-starter-storage-blob/storage-blob-sample[storage-blob-sample] and link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/storage/spring-cloud-azure-starter-storage-file-share/storage-file-sample[storage-file-sample] for more details.

@@ -357,7 +357,7 @@ NOTE: Message headers of partition key, enqueued time, offset and sequence numbe
 
 ==== Samples
 
-Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[azure-spring-boot-samples] for more details.
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/eventhubs/spring-cloud-azure-starter-integration-eventhubs/eventhubs-integration[azure-spring-boot-samples] for more details.
 
 === Spring Integration with Azure Service Bus
 
@@ -716,7 +716,7 @@ For some Service Bus headers that can be mapped to multiple Spring header consta
 
 ==== Samples
 
-Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[azure-spring-boot-samples] for more details.
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/servicebus/spring-cloud-azure-starter-integration-servicebus[azure-spring-boot-samples] for more details.
 
 *Example: Manually set the partition key for the message*
 
@@ -1061,5 +1061,5 @@ class Demo{
 
 ==== Samples
 
-Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[azure-spring-boot-samples] for more details.
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/storage/spring-cloud-azure-starter-integration-storage-queue[azure-spring-boot-samples] for more details.
 

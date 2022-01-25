@@ -9,7 +9,7 @@ If you have any questions about this doc, please ask by creating GitHub issue. A
 |===
 |GitHub repositories | Description
 
-|https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/spring[Azure/azure-sdk-for-java]
+|https://github.com/Azure/azure-sdk-for-java/tree/spring-cloud-azure_{project-version}/sdk/spring[Azure/azure-sdk-for-java]
 |This repository used to hold the source code.
 
 |https://github.com/microsoft/spring-cloud-azure/tree/docs/docs/src/main/asciidoc[microsoft/spring-cloud-azure]
