@@ -419,10 +419,10 @@ public Consumer<Message<List<String>>> consume() {
         for (int i = 0; i < message.getPayload().size(); i++) {
             LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
                 message.getPayload().get(i),
-                ((List<Object>) message.getHeaders().get(EventHubHeaders.PARTITION_KEY)).get(i),
-                ((List<Object>) message.getHeaders().get(EventHubHeaders.SEQUENCE_NUMBER)).get(i),
-                ((List<Object>) message.getHeaders().get(EventHubHeaders.OFFSET)).get(i),
-                ((List<Object>) message.getHeaders().get(EventHubHeaders.ENQUEUED_TIME)).get(i));
+                ((List<Object>) message.getHeaders().get(EventHubHeaders.BATCH_CONVERTED_PARTITION_KEY)).get(i),
+                ((List<Object>) message.getHeaders().get(EventHubHeaders.BATCH_CONVERTED_SEQUENCE_NUMBER)).get(i),
+                ((List<Object>) message.getHeaders().get(EventHubHeaders.BATCH_CONVERTED_OFFSET)).get(i),
+                ((List<Object>) message.getHeaders().get(EventHubHeaders.BATCH_CONVERTED_ENQUEUED_TIME)).get(i));
         }
 
         Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
