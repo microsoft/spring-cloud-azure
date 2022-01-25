@@ -204,7 +204,7 @@ window.onload = function() {
 <p>The Spring Cloud Stream Binder for Azure Event Hubs provides the binding implementation for the Spring Cloud Stream framework.
 This implementation uses Spring Integration Event Hubs Channel Adapters at its foundation. From design&#8217;s perspective,
 Event Hubs is similar as Kafka. Also, Event Hubs could be accessed via Kafka API. If your project has tight dependency
-on Kafka API, you can try <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka">Events Hub with Kafka API Sample</a></p>
+on Kafka API, you can try <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.3/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka">Events Hub with Kafka API Sample</a></p>
 </div>
 <div class="sect4">
 <h5 id="_consumer_group"><a class="link" href="#_consumer_group">Consumer Group</a></h5>
@@ -228,10 +228,10 @@ from most heavy-loaded consumers to achieve the workload balancing.</p>
 <div class="sect4">
 <h5 id="_batch_consumer_support"><a class="link" href="#_batch_consumer_support">Batch Consumer Support</a></h5>
 <div class="paragraph">
-<p>Azure Event Hubs Spring Cloud Stream Binder supports <a href="https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_batch_consumers">Spring Cloud Stream Batch Consumer feature</a>.</p>
+<p>Azure Spring Cloud Stream Event Hubs binder supports <a href="https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_batch_consumers">Spring Cloud Stream Batch Consumer feature</a>.</p>
 </div>
 <div class="paragraph">
-<p>To work with the batch-consumer mode, the property of <code>spring.cloud.stream.bindings.&lt;binding-name&gt;.consumer.batch-mode</code> should be set as <code>true</code>. When enabled, an <strong>org.springframework.messaging.Message</strong> of which the payload is a list of batched events will be received and passed to the consumer function. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of partition id, checkpointer and last enqueued properties, they are presented as a single value for the entire batch of events shares the same one. See <a href="#_event_hubs_message_headers">Event Hubs Message Headers</a> for more details.</p>
+<p>To work with the batch-consumer mode, the property of <code>spring.cloud.stream.bindings.&lt;binding-name&gt;.consumer.batch-mode</code> should be set as <code>true</code>. When enabled, an <strong>org.springframework.messaging.Message</strong> of which the payload is a list of batched events will be received and passed to the consumer function. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of partition id, checkpointer and last enqueued properties, they are presented as a single value for the entire batch of events shares the same one. See <a href="#scs-eh-headers">Event Hubs Message Headers</a> for more details.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -240,7 +240,7 @@ from most heavy-loaded consumers to achieve the workload balancing.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-the checkpoint header only exists when <strong>MANUAL</strong> checkpoint mode is used.
+The checkpoint header only exists when <strong>MANUAL</strong> checkpoint mode is used.
 </td>
 </tr>
 </table>
@@ -261,6 +261,17 @@ the checkpoint header only exists when <strong>MANUAL</strong> checkpoint mode i
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
 	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
 	&lt;artifactId&gt;spring-cloud-azure-stream-binder-eventhubs&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, you can also use the Azure Spring Cloud Stream Event Hubs Starter, as shown in the following example for Maven:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-cloud-azure-starter-stream-eventhubs&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -336,7 +347,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-Common Azure Service SDK configuration options are configurable for the Spring Cloud Stream Event Hubs binder as well. The supported configuration options are introduced in <a href="configuration.html">the Configuration page</a>, and could be configured with either the unified prefix <code>spring.cloud.azure.</code> or the prefix of <code>spring.cloud.azure.eventhubs.</code>.
+Common Azure Service SDK configuration options are configurable for the Azure Spring Cloud Stream Event Hubs binder as well. The supported configuration options are introduced in <a href="configuration.html">the Configuration page</a>, and could be configured with either the unified prefix <code>spring.cloud.azure.</code> or the prefix of <code>spring.cloud.azure.eventhubs.</code>.
 </td>
 </tr>
 </table>
@@ -355,7 +366,7 @@ for the configuration of <code>BlobCheckpointStore</code>, which is the default 
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-From version 4.0.0, when the property of <strong>spring.cloud.azure.eventhubs.processor.checkpoint-store.create-container-if-not-exists</strong> is not enabled manually, no Storage container will be created automatically with the name from <strong>spring.cloud.azure.eventhubs.event-hub-name</strong>.
+From version 4.0.0, when the property of <strong>spring.cloud.azure.eventhubs.processor.checkpoint-store.create-container-if-not-exists</strong> is not enabled manually, no Storage container will be created automatically with the name from <strong>spring.cloud.stream.bindings.&lt;binding-name&gt;.destination</strong>.
 </td>
 </tr>
 </table>
@@ -426,7 +437,7 @@ The default maximum connection pool size of the Storage Blob client is changed f
 <h5 id="_azure_event_hubs_binding_configuration_options"><a class="link" href="#_azure_event_hubs_binding_configuration_options">Azure Event Hubs Binding Configuration Options</a></h5>
 <div class="paragraph">
 <p>Below options are divided into four sections: Consumer Properties, Advanced Consumer
-Configurations, Producer PropertiesProducer Properties, and Advanced Producer Configurations.</p>
+Configurations, Producer Properties and Advanced Producer Configurations.</p>
 </div>
 <div class="sect5">
 <h6 id="eventhubs-consumer-properties"><a class="link" href="#eventhubs-consumer-properties">Consumer Properties</a></h6>
@@ -533,7 +544,7 @@ Configurations, Producer PropertiesProducer Properties, and Advanced Producer Co
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.producer</strong>.send-timeout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The amount of time to wait for a response after a send operation. Will take effect only when a sync producer is enabled.</p></td>
 </tr>
 </tbody>
@@ -644,8 +655,6 @@ Configurations, Producer PropertiesProducer Properties, and Advanced Producer Co
     azure:
       credential:
         managed-identity-client-id: ${AZURE_MANAGED_IDENTITY_CLIENT_ID}
-      profile:
-        tenant-id: ${AZURE_TENANT_ID}
       eventhubs:
         namespace: ${EVENTHUB-NAMESPACE}
         processor:
@@ -736,7 +745,7 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
           consume-in-0:
             consumer:
               batch:
-                max-batch-size: 10
+                max-batch-size: 10 # Required for batch-consumer mode
                 max-wait-time: 1m # Optional, the default value is null
               checkpoint:
                 mode: BATCH # or MANUAL as needed</code></pre>
@@ -785,10 +794,10 @@ public Consumer&lt;Message&lt;List&lt;String&gt;&gt;&gt; consume() {
         for (int i = 0; i &lt; message.getPayload().size(); i++) {
             LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
                 message.getPayload().get(i),
-                ((List&lt;Object&gt;) message.getHeaders().get(EventHubHeaders.PARTITION_KEY)).get(i),
-                ((List&lt;Object&gt;) message.getHeaders().get(EventHubHeaders.SEQUENCE_NUMBER)).get(i),
-                ((List&lt;Object&gt;) message.getHeaders().get(EventHubHeaders.OFFSET)).get(i),
-                ((List&lt;Object&gt;) message.getHeaders().get(EventHubHeaders.ENQUEUED_TIME)).get(i));
+                ((List&lt;Object&gt;) message.getHeaders().get(EventHubHeaders.BATCH_CONVERTED_PARTITION_KEY)).get(i),
+                ((List&lt;Object&gt;) message.getHeaders().get(EventHubHeaders.BATCH_CONVERTED_SEQUENCE_NUMBER)).get(i),
+                ((List&lt;Object&gt;) message.getHeaders().get(EventHubHeaders.BATCH_CONVERTED_OFFSET)).get(i),
+                ((List&lt;Object&gt;) message.getHeaders().get(EventHubHeaders.BATCH_CONVERTED_ENQUEUED_TIME)).get(i));
         }
 
         Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
@@ -872,9 +881,9 @@ public void producerError(Message&lt;?&gt; message) {
 </div>
 </div>
 <div class="sect4">
-<h5 id="_event_hubs_message_headers"><a class="link" href="#_event_hubs_message_headers">Event Hubs message headers</a></h5>
+<h5 id="scs-eh-headers"><a class="link" href="#scs-eh-headers">Event Hubs message headers</a></h5>
 <div class="paragraph">
-<p>See the <a href="spring-integration-support.html#_event_hubs_message_headers">Event Hubs message headers</a> for the basic message headers supported.</p>
+<p>See the <a href="#si-eh-headers">Event Hubs message headers</a> for the basic message headers supported.</p>
 </div>
 <div class="paragraph">
 <p>When the batch-consumer mode is enabled, the specific headers of batched messages are listed as below, which contains a list of values from each single Event Hubs event.</p>
@@ -930,7 +939,7 @@ public void producerError(Message&lt;?&gt; message) {
 <td class="tableblock halign-left valign-top"><p class="tableblock">Application properties</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.eventhubs.support.EventHubsHeaders#BATCH_CONVERTED_APPLICATION_PROPERTIES</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">List of Map</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List of the applocation properties of each event, where all customzied message headers or event properties are placed.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of the applocation properties of each event, where all customized message headers or event properties are placed.</p></td>
 </tr>
 </tbody>
 </table>
@@ -951,7 +960,7 @@ When publish messages, all the above batch headers if exist will be removed from
 <div class="sect3">
 <h4 id="_samples"><a class="link" href="#_samples">Samples</a></h4>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0">azure-spring-boot-samples</a> for more details.</p>
+<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.3/eventhubs/spring-cloud-azure-stream-binder-eventhubs">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
@@ -987,6 +996,17 @@ This binder relies on <code>Subscription</code> of a topic to act as a consumer 
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
 	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
 	&lt;artifactId&gt;spring-cloud-azure-stream-binder-servicebus&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, you can also use the Azure Spring Cloud Stream Service Bus Starter, as shown in the following example for Maven:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-cloud-azure-starter-stream-servicebus&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1405,7 +1425,7 @@ for sync of producer.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.producer</strong>.send-timeout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Timeout
 value for sending of producer.</p></td>
 </tr>
@@ -1686,8 +1706,6 @@ public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
 <td class="content">
 When the <code>ServiceBusMessageHeaders.SESSION_ID</code> is set in the message headers, and a different <code>ServiceBusMessageHeaders.PARTITION_KEY</code> (or <code>AzureHeaders.PARTITION_KEY</code>) header is also set,
 the value of the session id will eventually be used to overwrite the value of the partition key.
-Please use this <code>sample</code> as a reference to learn more about how to use this binder in your project.
-- <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/servicebus/azure-spring-cloud-stream-binder-servicebus-queue">Service Bus Queue</a>
 </td>
 </tr>
 </table>
@@ -1816,7 +1834,7 @@ For some Service Bus headers that can be mapped to multiple Spring header consta
 </tbody>
 </table>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0">azure-spring-boot-samples</a> for more details.</p>
+<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.3/servicebus/spring-cloud-azure-stream-binder-servicebus">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
