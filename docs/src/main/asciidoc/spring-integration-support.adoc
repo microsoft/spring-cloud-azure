@@ -306,6 +306,7 @@ class Demo{
 }
 ----
 
+[#si-eh-headers]
 ===== Event Hubs message headers
 
 The following table illustrates how Event Hubs message properties are mapped to Spring message headers. For Azure Event Hubs, message is called as `event`.

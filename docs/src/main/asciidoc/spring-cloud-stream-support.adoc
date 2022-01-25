@@ -35,9 +35,9 @@ To specify the load balancing strategy, properties of `spring.cloud.stream.event
 ===== Batch Consumer Support
 Azure Spring Cloud Stream Event Hubs binder supports link:https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_batch_consumers[Spring Cloud Stream Batch Consumer feature].
 
-To work with the batch-consumer mode, the property of `spring.cloud.stream.bindings.<binding-name>.consumer.batch-mode` should be set as `true`. When enabled, an **org.springframework.messaging.Message** of which the payload is a list of batched events will be received and passed to the consumer function. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of partition id, checkpointer and last enqueued properties, they are presented as a single value for the entire batch of events shares the same one. See <<Event Hubs message headers, Event Hubs Message Headers>> for more details.
+To work with the batch-consumer mode, the property of `spring.cloud.stream.bindings.<binding-name>.consumer.batch-mode` should be set as `true`. When enabled, an **org.springframework.messaging.Message** of which the payload is a list of batched events will be received and passed to the consumer function. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of partition id, checkpointer and last enqueued properties, they are presented as a single value for the entire batch of events shares the same one. See <<scs-eh-headers, Event Hubs Message Headers>> for more details.
 
-NOTE: the checkpoint header only exists when **MANUAL** checkpoint mode is used.
+NOTE: The checkpoint header only exists when **MANUAL** checkpoint mode is used.
 
 Checkpointing of batch consumer supports two modes: `BATCH` and `MANUAL`. `BATCH` mode is an auto checkpointing mode to checkpoint the entire batch of events together once they are received by the binder. `MANUAL` mode is to checkpoint the events by users. When used, the
 **com.azure.spring.messaging.checkpoint.Checkpointer** will be passes into the message header, and users could use it to do checkpointing.
@@ -53,7 +53,7 @@ The batch size can be specified by properties of `max-size` and `max-wait-time` 
 	<artifactId>spring-cloud-azure-stream-binder-eventhubs</artifactId>
 </dependency>
 ----
-Alternatively, you can also use the Azure Spring Cloud Stream Event Hubs Starter, as shown inn the following example for Maven:
+Alternatively, you can also use the Azure Spring Cloud Stream Event Hubs Starter, as shown in the following example for Maven:
 
 [source,xml]
 ----
@@ -136,7 +136,7 @@ NOTE: The default maximum connection pool size of the Storage Blob client is cha
 
 ===== Azure Event Hubs Binding Configuration Options
 Below options are divided into four sections: Consumer Properties, Advanced Consumer
-Configurations, Producer Properties, and Advanced Producer Configurations.
+Configurations, Producer Properties and Advanced Producer Configurations.
 
 [#eventhubs-consumer-properties]
 ====== Consumer Properties
@@ -202,7 +202,7 @@ The above <<eventhubs-connection-configration, connection>>, <<Checkpoint Config
 |The switch flag for sync of producer. If true, the producer will wait for a response after a send operation.
 
 |*spring.cloud.stream.eventhubs.bindings.<binding-name>.producer*.send-timeout
-| Duration
+| long
 |The amount of time to wait for a response after a send operation. Will take effect only when a sync producer is enabled.
 |===
 
@@ -371,7 +371,7 @@ spring:
           consume-in-0:
             consumer:
               batch:
-                max-batch-size: 10
+                max-batch-size: 10 # Required for batch-consumer mode
                 max-wait-time: 1m # Optional, the default value is null
               checkpoint:
                 mode: BATCH # or MANUAL as needed
@@ -388,10 +388,10 @@ public Consumer<Message<List<String>>> consume() {
             for (int i = 0; i < message.getPayload().size(); i++) {
                 LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
                         message.getPayload().get(i),
-                        ((List<Object>) message.getHeaders().get(EventHubsHeaders.BATCH_CONVERTED_PARTITION_KEY)).get(i),
-                        ((List<Object>) message.getHeaders().get(EventHubsHeaders.BATCH_CONVERTED_SEQUENCE_NUMBER)).get(i),
-                        ((List<Object>) message.getHeaders().get(EventHubsHeaders.BATCH_CONVERTED_OFFSET)).get(i),
-                        ((List<Object>) message.getHeaders().get(EventHubsHeaders.BATCH_CONVERTED_ENQUEUED_TIME)).get(i));
+                        ((List<Object>) message.getHeaders().get(EventHubsHeaders.PARTITION_KEY)).get(i),
+                        ((List<Object>) message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER)).get(i),
+                        ((List<Object>) message.getHeaders().get(EventHubsHeaders.OFFSET)).get(i),
+                        ((List<Object>) message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)).get(i));
             }
 
         };
@@ -471,8 +471,9 @@ public void producerError(Message<?> message) {
 }
 ----
 
+[#scs-eh-headers]
 ===== Event Hubs message headers
-See the link:spring-integration-support.html#_event_hubs_message_headers[Event Hubs message headers] for the basic message headers supported.
+See the <<si-eh-headers, Event Hubs message headers>> for the basic message headers supported.
 
 When the batch-consumer mode is enabled, the specific headers of batched messages are listed as below, which contains a list of values from each single Event Hubs event.
 
@@ -541,7 +542,7 @@ This binder relies on `Subscription` of a topic to act as a consumer group.
 	<artifactId>spring-cloud-azure-stream-binder-servicebus</artifactId>
 </dependency>
 ----
-Alternatively, you can also use the Azure Spring Cloud Stream Service Bus Starter, as shown inn the following example for Maven:
+Alternatively, you can also use the Azure Spring Cloud Stream Service Bus Starter, as shown in the following example for Maven:
 
 [source,xml]
 ----
@@ -788,7 +789,7 @@ support to be configured individually by changing the origin prefix from *spring
 
 ===== Azure Service Bus Binding Configuration Options
 Below options are divided into four sections: Consumer Properties, Advanced Consumer
-Configurations, Producer PropertiesProducer Properties, and Advanced Producer Configurations.
+Configurations, Producer Properties and Advanced Producer Configurations.
 
 ====== Consumer Properties
 
@@ -826,7 +827,7 @@ of *spring.cloud.azure.servicebus* with *spring.cloud.stream.servicebus.bindings
 
 |*spring.cloud.stream.servicebus.bindings.<binding-name>.producer*.sync |boolean | Switch flag
 for sync of producer.
-|*spring.cloud.stream.servicebus.bindings.<binding-name>.producer*.send-timeout |Duration | Timeout
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.producer*.send-timeout |long | Timeout
 value for sending of producer.
 
 |===
