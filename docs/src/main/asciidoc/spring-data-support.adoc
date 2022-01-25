@@ -261,8 +261,8 @@ Autowired UserRepository interface, then can do save, delete and find operations
 
 === Samples
 
-Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.2/cosmos[azure-spring-boot-samples] for more details.
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/cosmos[azure-spring-boot-samples] for more details.
 
 
-Besides using this Azure Cosmos DB Spring Boot Starter, you can directly use Spring Data for Azure Cosmos DB package for more complex scenarios. Please refer to link:https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/cosmos/azure-spring-data-cosmos[Spring Data for Azure Cosmos DB] for more details.
+Besides using this Azure Cosmos DB Spring Boot Starter, you can directly use Spring Data for Azure Cosmos DB package for more complex scenarios. Please refer to link:https://github.com/Azure/azure-sdk-for-java/tree/spring-cloud-azure_{project-version}/sdk/cosmos/azure-spring-data-cosmos[Spring Data for Azure Cosmos DB] for more details.
 

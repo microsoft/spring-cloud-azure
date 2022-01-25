@@ -1,3 +1,4 @@
+[#configuration]
 == Configuration
 
 Most of Azure Service SDKs could be divided into two categories by transport type, HTTP-based and AMQP-based. There are properties that are common to all SDKs such as authentication principals and Azure environment settings. Or common to HTTP-based clients, such as logging level to log http requests and responses. In Spring Cloud Azure 4.0 we added five common categories of configuration properties, which could be specified to each Azure service.

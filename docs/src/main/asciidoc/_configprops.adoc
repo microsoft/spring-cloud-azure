@@ -1072,4 +1072,5 @@
 |spring.cloud.azure.storage.resource-group |  | 
 |spring.cloud.azure.subscription-id |  | 
 |spring.cloud.azure.tenant-id |  | 
+
 |===
