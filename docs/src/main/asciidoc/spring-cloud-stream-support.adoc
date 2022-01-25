@@ -30,7 +30,7 @@ that's why you have to fill `spring.cloud.eventhubs.processor.checkpoint-store.*
 Event Hubs provides a similar concept of physical partition as Kafka. But unlike Kafka's auto re-balancing between consumers and partitions, Event Hubs provides a kind of preemptive mode. The storage account acts as a lease to determine which partition is owned by which consumer. When a new consumer starts, it will try to steal some partitions
 from most heavy-loaded consumers to achieve the workload balancing.
 
-To specify the load balancing strategy, properties of `spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer.load-balancing.*` are providec. See <<eventhubs-consumer-properties, the consumer properties>> for more details.
+To specify the load balancing strategy, properties of `spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer.load-balancing.*` are provided. See <<eventhubs-consumer-properties, the consumer properties>> for more details.
 
 ===== Batch Consumer Support
 Azure Event Hubs Spring Cloud Stream Binder supports link:https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_batch_consumers[Spring Cloud Stream Batch Consumer feature].
