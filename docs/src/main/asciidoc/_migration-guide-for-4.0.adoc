@@ -179,7 +179,7 @@ to configure in Spring Cloud Azure 4.0, it can leverage the credential stored in
 managed identity in Azure Services, just make sure the principal has been granted sufficient permission to access the
 target Azure resources.
 
-NOTE: When assign roles to the security principals to interact with Azure messaging services, the `Data Owner` role is required to send / receive messages. For Azure Spring Cloud Stream Event Hubs / Service Bus Binder libraries, `Owner` role is required when the function of auto creating resources is needed.
+NOTE: When assign roles to the security principals to interact with Azure messaging services, the `Data Owner` role is required to send / receive messages. For Azure Spring Cloud Stream Event Hubs / Service Bus Binder libraries, `Contributor` role is required when the function of auto creating resources is needed.
 
 A chained credential, the https://docs.microsoft.com/en-us/java/api/overview/azure/identity-readme?view=azure-java-stable#defaultazurecredential[DefaultAzureCredential] bean is auto-configured by default and will be used by all components if no more authentication information is specified.
 
