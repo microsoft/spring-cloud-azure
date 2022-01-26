@@ -16,7 +16,7 @@ Current binder implementations include:
 The Spring Cloud Stream Binder for Azure Event Hub provides the binding implementation for the Spring Cloud Stream.
 This implementation uses Spring Integration Event Hub Channel Adapters at its foundation. From design's perspective,
 Event Hub is similar as Kafka. Also, Event Hub could be accessed via Kafka API. If your project has tight dependency
-on Kafka API, you can try link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.3/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka[Event Hubs with Kafka API Sample]
+on Kafka API, you can try link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka[Event Hubs with Kafka API Sample]
 
 ===== Consumer Group
 
@@ -1293,5 +1293,5 @@ For some Service Bus headers that can be mapped to multiple Spring header consta
 | N/A
 |===
 
-Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0[azure-spring-boot-samples] for more details.
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}[azure-spring-boot-samples] for more details.
 

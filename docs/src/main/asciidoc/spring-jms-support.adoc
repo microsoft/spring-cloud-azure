@@ -1,12 +1,12 @@
 [#spring-jms-support]
-== Spring Jms Support
+== Spring JMS Support
 
-To use Azure Service Bus by the Jms API integrated into the Spring-Jms framework. Azure Service Bus connection string have to be provided which is to be parsed into the login username, password and remote URI for the AMQP broker.
-
+To use Azure Service Bus by the JMS API integrated into the Spring-JMS framework.
+Azure Service Bus connection string have to be provided which is to be parsed into the login username, password and remote URI for the AMQP broker.
 
 === Dependency Setup
 
-Adding below dependencies if you want to migrate your Spring Jms application to use Azure Service Bus.
+Adding below dependencies if you want to migrate your Spring JMS application to use Azure Service Bus.
 
 [source,xml]
 ----
@@ -18,8 +18,8 @@ Adding below dependencies if you want to migrate your Spring Jms application to 
 
 === Configuration
 
-.Configurable properties when using Spring Jms support
-[cols="2*", options="header"]
+.Configurable properties when using Spring JMS support
+[cols="2*",options="header"]
 |===
 |Property
 |Description
@@ -56,7 +56,8 @@ Adding below dependencies if you want to migrate your Spring Jms application to 
 
 
 | *spring.jms.servicebus*.pool.block-if-full
-| [[jms-servicebus-pool-configuration]]]Whether to block when a connection is requested and the pool is full.
+|
+[[jms-servicebus-pool-configuration]]]Whether to block when a connection is requested and the pool is full.
 
 |*spring.jms.servicebus*.pool.block-if-full-timeout
 |Blocking period before throwing an exception if the pool is still full.
@@ -101,13 +102,14 @@ Adding below dependencies if you want to migrate your Spring Jms application to 
 | Login user of the AMQP broker.
 |===
 
-NOTE: Spring Jms general configuration is omited for short. Please refer to link:https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/jms.html[Spring Jms Doc] for more details.
+NOTE: Spring JMS general configuration is omited for short.
+Please refer to link:https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/jms.html[Spring JMS Doc] for more details.
 
 === Basic Usage
 
 ==== Use Service Bus Connection String
 
-The simplest way to connect to Service Bus for Spring Jms application is with the connection string.
+The simplest way to connect to Service Bus for Spring JMS application is with the connection string.
 
 Add below properties and you are good to go.
 
@@ -117,7 +119,6 @@ spring:
   jms:
     servicebus:
       connection-string: ${AZURE_SERVICEBUS_CONNECTION_STRING}
-      idle-timeout: 5m
       pricing-tier: ${PRICING_TIER}
 ----
 
@@ -126,4 +127,4 @@ NOTE: The default enabled `ConnectionFactory` is the `CachingConnectionFactory` 
 
 === Samples
 
-Please refer to link:https://githu.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.3[azure-spring-boot-samples] for more details.
+Please refer to link:https://githu.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}[azure-spring-boot-samples] for more details.
