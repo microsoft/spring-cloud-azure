@@ -122,7 +122,7 @@ spring:
       pricing-tier: ${PRICING_TIER}
 ----
 
-NOTE: The default enabled `ConnectionFactory` is the `CachingConnectionFactory` which adds Session caching as well MessageProducer caching . If you want to activate the connection pooling featured one of JmsPoolConnectionFactory, the property of `*spring.jms.servicebus*.pool.enabled` should be specified `true`. The other pooling configuration options(`*spring.jms.servicebus*.pool.*` prefix) can be found in the above
+NOTE: The default enabled `ConnectionFactory` is the `CachingConnectionFactory` which adds Session caching as well MessageProducer caching. If you want to activate the connection pooling featured one of JmsPoolConnectionFactory, the property of `*spring.jms.servicebus*.pool.enabled` should be specified `true`. The other pooling configuration options(`*spring.jms.servicebus*.pool.*` prefix) can be found in the above
 <<jms-servicebus-pool-configuration, Configuration>> section.
 
 === Samples
