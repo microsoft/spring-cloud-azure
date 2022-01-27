@@ -1,7 +1,7 @@
 [#spring-jms-support]
 == Spring JMS Support
 
-To use Azure Service Bus by the JMS API integrated into the Spring-JMS framework.
+To use Azure Service Bus by the JMS API integrated into the Spring JMS framework.
 Azure Service Bus connection string have to be provided which is to be parsed into the login username, password and remote URI for the AMQP broker.
 
 === Dependency Setup
@@ -57,7 +57,7 @@ Adding below dependencies if you want to migrate your Spring JMS application to 
 
 | *spring.jms.servicebus*.pool.block-if-full
 |
-[[jms-servicebus-pool-configuration]]]Whether to block when a connection is requested and the pool is full.
+[[jms-servicebus-pool-configuration]] Whether to block when a connection is requested and the pool is full.
 
 |*spring.jms.servicebus*.pool.block-if-full-timeout
 |Blocking period before throwing an exception if the pool is still full.

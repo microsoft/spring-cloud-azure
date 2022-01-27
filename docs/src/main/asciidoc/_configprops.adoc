@@ -991,10 +991,9 @@
 |spring.cloud.azure.storage.fileshare.credential.managed-identity-client-id |  | Client id to use when using user-assigned managed identity or app registration (when working with AKS pod-identity) to authenticate with Azure.
 |spring.cloud.azure.storage.fileshare.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.storage.fileshare.credential.username |  | Username to use when performing username/password authentication with Azure.
-|spring.cloud.azure.storage.fileshare.directory-path |  | Path to the directory. For instance, 'directory1/directory2'.
 |spring.cloud.azure.storage.fileshare.enabled | `true` | Whether an Azure Service is enabled.
 |spring.cloud.azure.storage.fileshare.endpoint |  | Endpoint for Azure Storage service.
-|spring.cloud.azure.storage.fileshare.file-path |  | Path to the file. For instance, 'directory1/file1'.
+|spring.cloud.azure.storage.fileshare.file-name |  | Name of the file.
 |spring.cloud.azure.storage.fileshare.profile.cloud |  | Name of the Azure cloud to connect to.
 |spring.cloud.azure.storage.fileshare.profile.environment.active-directory-endpoint |  | The Azure Active Directory endpoint to connect to.
 |spring.cloud.azure.storage.fileshare.profile.environment.active-directory-graph-api-version |  | The Azure Active Directory Graph API version.
