@@ -925,8 +925,7 @@ public class Demo {
 |com.azure.spring.autoconfigure.storage.resource.AzureStorageResourcePatternResolver|com.azure.spring.core.resource.AzureStorageFileProtocolResolver
 |===
 
+==== From azure-spring-boot-starter-servicebus-jms to spring-cloud-azure-starter-servicebus-jms
 
-
-
-
+Configuration type for `spring.jms.servicebus.idle-timeout` changed from `long`(milliseconds) to `Duration` pattern for readability.
 
