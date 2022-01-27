@@ -5744,6 +5744,131 @@ window.onload = function() {
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Tenant id for Azure resources. This is a legacy property.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.connection-string</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Connection string to connect to service bus.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.idle-timeout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>30m</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Connection idle timeout duration.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.listener.phase</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The phase in which this container should be started and stopped.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.listener.reply-pub-sub-domain</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether the reply destination type is topic. Only works for the bean of topicJmsListenerContainerFactory.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.listener.reply-qos-settings</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The QosSettings to use when sending a reply.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.listener.subscription-durable</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to make the subscription durable. Only works for the bean of topicJmsListenerContainerFactory.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.listener.subscription-shared</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to make the subscription shared. Only works for the bean of topicJmsListenerContainerFactory.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.password</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Login password of the AMQP broker.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.pool.block-if-full</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to block when a connection is requested and the pool is full. Set it to false to throw a 'JMSException' instead.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.pool.block-if-full-timeout</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Blocking period before throwing an exception if the pool is still full.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.pool.enabled</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether a JmsPoolConnectionFactory should be created, instead of a regular ConnectionFactory.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.pool.idle-timeout</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Connection idle timeout.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.pool.max-connections</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum number of pooled connections.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.pool.max-sessions-per-connection</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum number of pooled sessions per connection in the pool.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.pool.time-between-expiration-check</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time to sleep between runs of the idle connection eviction thread. When negative, no idle connection eviction thread runs.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.pool.use-anonymous-producers</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to use only one anonymous 'MessageProducer' instance. Set it to false to create one 'MessageProducer' every time one is required.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.prefetch-policy.all</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fallback value for prefetch option in this Service Bus namespace.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.prefetch-policy.durable-topic-prefetch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of prefetch for durable topic.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.prefetch-policy.queue-browser-prefetch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of prefetch for queue browser.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.prefetch-policy.queue-prefetch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of prefetch for queue.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.prefetch-policy.topic-prefetch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of prefetch for topic.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.pricing-tier</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pricing tier for service bus namespace.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.remote-url</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>amqp://localhost:5672</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URL of the AMQP broker. Auto-generated by default.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.topic-client-id</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service bus topic client ID. Only works for the bean of topicJmsListenerContainerFactory.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.username</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Login user of the AMQP broker.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -7747,6 +7872,12 @@ for the <code>ProducerProperties#entityType</code>.</p>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect3">
+<h4 id="_from_azure_spring_boot_starter_servicebus_jms_to_spring_cloud_azure_starter_servicebus_jms"><a class="link" href="#_from_azure_spring_boot_starter_servicebus_jms_to_spring_cloud_azure_starter_servicebus_jms">From azure-spring-boot-starter-servicebus-jms to spring-cloud-azure-starter-servicebus-jms</a></h4>
+<div class="paragraph">
+<p>Configuration type for <code>spring.jms.servicebus.idle-timeout</code> changed from <code>long</code>(milliseconds) to <code>Duration</code> pattern for readability.</p>
+</div>
 </div>
 </div>
 </div>
