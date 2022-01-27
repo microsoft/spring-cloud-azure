@@ -81,19 +81,19 @@ Adding below dependencies if you want to migrate your Spring JMS application to 
 |Whether to use only one anonymous "MessageProducer" instance.
 
 |*spring.jms.servicebus*.prefetch-policy.all
-| Prefetch value for all.
+| Fallback value for prefetch option in this Service Bus namespace.
 
 |*spring.jms.servicebus*.prefetch-policy.durable-topic-prefetch
-| Durable topic prefetch value.
+| The number of prefetch for durable topic.
 
 |*spring.jms.servicebus*.prefetch-policy.queue-browser-prefetch
-| Queue browser prefetch value.
+| The number of prefetch for queue browser.
 
 |*spring.jms.servicebus*.prefetch-policy.queue-prefetch
-| Queue prefetch value.
+| The number of prefetch for queue.
 
 |*spring.jms.servicebus*.prefetch-policy.topic-prefetch
-|Topic prefetch value.
+| The number of prefetch for topic.
 
 |*spring.jms.servicebus*.remote-url
 | URL of the AMQP broker.
