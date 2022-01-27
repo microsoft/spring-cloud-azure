@@ -43,7 +43,7 @@ Adding below dependencies if you want to migrate your Spring JMS application to 
 | Specify the phase in which this container should be started and stopped.
 
 |*spring.jms.servicebus*.listener.reply-qos-settings
-| Configure the {@link QosSettings} to use when sending a reply.
+| Configure the QosSettings to use when sending a reply.
 
 |*spring.jms.servicebus*.listener.subscription-durable
 | Whether to make the subscription durable. Only works for the bean of topicJmsListenerContainerFactory.
