@@ -599,18 +599,6 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 | String
 | Domain name of an Azure Service Bus Namespace value.
 
-|*spring.cloud.azure.servicebus*.entity-name
-| String
-| Entity name of Azure Service Bus queue or topic.
-
-|*spring.cloud.azure.servicebus*.entity-type
-| ServiceBusEntityType
-| Entity type of Azure Service Bus queue or topic.
-
-|*spring.cloud.azure.servicebus*.cross-entity-transactions
-| Boolean
-| Whether to enable cross entity transaction on the connection to Service bus.
-
 |===
 
 TIP: Common Azure Service SDK configuration options are configurable for the Azure Spring Cloud Stream Service Bus binder as well. The supported configuration options are introduced in link:configuration.html[the Configuration page], and could be configured with either the unified prefix `spring.cloud.azure.` or the prefix of `spring.cloud.azure.servicebus.`.
@@ -812,11 +800,9 @@ public Supplier<Message<String>> supply() {
 }
 ----
 
-===== Partitioning support
+===== Partition key support
 
 The binder supports link:https://docs.microsoft.com/azure/service-bus-messaging/service-bus-partitioning[Service Bus partitioning] by allowing setting partition key and session id in the message header. This section introduces how to set partition key for messages.
-
-*Approach 1:* Set partition key by SpEL expression.
 
 Spring Cloud Stream provides a partition key SpEL expression property `spring.cloud.stream.bindings.<binding-name>.producer.partition-key-expression`. For example, setting this properts as `&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;` and add a header called <message-header-key>. Spring Cloud Stream will use the value for this header when evaluating the above expression to assign a partition key. Here is an example producer code:
 
@@ -832,46 +818,6 @@ public Supplier<Message<String>> generate() {
     };
 }
 ----
-
-
-NOTE: When using `application.yml` to configure the partition key, its priority will be the lowest.
-It will take effect only when none of the headers of `ServiceBusMessageHeaders#SESSION_ID`, `ServiceBusMessageHeaders#PARTITION_KEY`, `AzureHeaders#PARTITION_KEY` is configured.
-
-*Approach 2:* Use partition Key message header
-
-
-_Recommended:_ Use `ServiceBusMessageHeaders#PARTITION_KEY` as the key of the header.
-
-[source,java]
-----
-@Bean
-public Supplier<Message<String>> generate() {
-    return () -> {
-        String value = “random payload”;
-    	return MessageBuilder.withPayload(value)
-            .setHeader(ServiceBusMessageHeaders.PARTITION_KEY, "Customize partirion key")
-            .build();
-    };
-}
-----
-
-_Not recommended but currently supported:_ `AzureHeaders.PARTITION_KEY` as the key of the header.
-
-[source,java]
-----
-@Bean
-public Supplier<Message<String>> generate() {
-    return () -> {
-        String value = “random payload”;
-    	return MessageBuilder.withPayload(value)
-            .setHeader(AzureHeaders.PARTITION_KEY, "Customize partirion key")
-            .build();
-    };
-}
-----
-
-NOTE: When both `ServiceBusMessageHeaders.PARTITION_KEY` and `AzureHeaders.PARTITION_KEY` are set in the message headers,
-`ServiceBusMessageHeaders.PARTITION_KEY` is preferred.
 
 ===== Session support
 
@@ -890,7 +836,7 @@ public Supplier<Message<String>> generate() {
 }
 ----
 
-NOTE: When the `ServiceBusMessageHeaders.SESSION_ID` is set in the message headers, and a different `ServiceBusMessageHeaders.PARTITION_KEY` (or `AzureHeaders.PARTITION_KEY`) header is also set,
+NOTE: According to link:https://docs.microsoft.com/azure/service-bus-messaging/service-bus-partitioning[Service Bus partitioning], session id has higher priority than partition key. So when both of `ServiceBusMessageHeaders#SESSION_ID` and `ServiceBusMessageHeaders#PARTITION_KEY` (or `AzureHeaders#PARTITION_KEY`) headers are set,
 the value of the session id will eventually be used to overwrite the value of the partition key.
 
 ===== Error channels
@@ -943,6 +889,8 @@ public void producerError(Message<?> message) {
 ===== Service Bus message headers
 
 See the <<si-sb-headers, Service Bus message headers>> for the basic message headers supported.
+
+NOTE: When setting the partiton key, the priority of message header is higher than Spring Cloud Stream property. So `spring.cloud.stream.bindings.<binding-name>.producer.partition-key-expression` will take effect only when none of the headers of `ServiceBusMessageHeaders#SESSION_ID`, `ServiceBusMessageHeaders#PARTITION_KEY`, `AzureHeaders#PARTITION_KEY` is configured.
 
 ==== Samples
 
