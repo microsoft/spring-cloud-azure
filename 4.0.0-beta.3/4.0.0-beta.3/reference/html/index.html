@@ -252,7 +252,7 @@ window.onload = function() {
 <li><a href="#spring-cloud-stream-binder-for-azure-service-bus">14.2. Spring Cloud Stream Binder for Azure Service Bus</a></li>
 </ul>
 </li>
-<li><a href="#kafka-support">15. Kafka Support</a>
+<li><a href="#spring-jms-support">15. Spring JMS Support</a>
 <ul class="sectlevel2">
 <li><a href="#dependency-setup-12">15.1. Dependency Setup</a></li>
 <li><a href="#configuration-13">15.2. Configuration</a></li>
@@ -260,7 +260,7 @@ window.onload = function() {
 <li><a href="#samples-12">15.4. Samples</a></li>
 </ul>
 </li>
-<li><a href="#redis-support">16. Redis Support</a>
+<li><a href="#kafka-support">16. Kafka Support</a>
 <ul class="sectlevel2">
 <li><a href="#dependency-setup-13">16.1. Dependency Setup</a></li>
 <li><a href="#configuration-14">16.2. Configuration</a></li>
@@ -268,7 +268,7 @@ window.onload = function() {
 <li><a href="#samples-13">16.4. Samples</a></li>
 </ul>
 </li>
-<li><a href="#resource-manager">17. Resource Manager</a>
+<li><a href="#redis-support">17. Redis Support</a>
 <ul class="sectlevel2">
 <li><a href="#dependency-setup-14">17.1. Dependency Setup</a></li>
 <li><a href="#configuration-15">17.2. Configuration</a></li>
@@ -276,12 +276,20 @@ window.onload = function() {
 <li><a href="#samples-14">17.4. Samples</a></li>
 </ul>
 </li>
-<li><a href="#configuration-properties">18. Configuration Properties</a></li>
-<li><a href="#appendix">19. Appendix</a>
+<li><a href="#resource-manager">18. Resource Manager</a>
 <ul class="sectlevel2">
-<li><a href="#configuration-properties-2">19.1. Configuration properties</a></li>
-<li><a href="#migration-guide-for-4-0-2">19.2. Migration guide for 4.0</a></li>
-<li><a href="#known-issues">19.3. Known issues</a></li>
+<li><a href="#dependency-setup-15">18.1. Dependency Setup</a></li>
+<li><a href="#configuration-16">18.2. Configuration</a></li>
+<li><a href="#basic-usage-15">18.3. Basic Usage</a></li>
+<li><a href="#samples-15">18.4. Samples</a></li>
+</ul>
+</li>
+<li><a href="#configuration-properties">19. Configuration Properties</a></li>
+<li><a href="#appendix">20. Appendix</a>
+<ul class="sectlevel2">
+<li><a href="#configuration-properties-2">20.1. Configuration properties</a></li>
+<li><a href="#migration-guide-for-4-0-2">20.2. Migration guide for 4.0</a></li>
+<li><a href="#known-issues">20.3. Known issues</a></li>
 </ul>
 </li>
 </ul>
@@ -7590,13 +7598,207 @@ For some Service Bus headers that can be mapped to multiple Spring header consta
 </div>
 </div>
 <div class="sect1">
-<h2 id="kafka-support"><a class="anchor" href="#kafka-support"></a><a class="link" href="#kafka-support">15. Kafka Support</a></h2>
+<h2 id="spring-jms-support"><a class="anchor" href="#spring-jms-support"></a><a class="link" href="#spring-jms-support">15. Spring JMS Support</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To use Azure Service Bus by the JMS API integrated into the Spring JMS framework.
+Azure Service Bus connection string have to be provided which is to be parsed into the login username, password and remote URI for the AMQP broker.</p>
+</div>
+<div class="sect2">
+<h3 id="dependency-setup-12"><a class="anchor" href="#dependency-setup-12"></a><a class="link" href="#dependency-setup-12">15.1. Dependency Setup</a></h3>
+<div class="paragraph">
+<p>Adding below dependencies if you want to migrate your Spring JMS application to use Azure Service Bus.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-azure-starter-servicebus-jms&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configuration-13"><a class="anchor" href="#configuration-13"></a><a class="link" href="#configuration-13">15.2. Configuration</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 38. Configurable properties when using Spring JMS support</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.connection-string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Service Bus connection string. Should be provided when want to provide the connection string directly.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.topic-client-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JMS clientID. Only works for the bean of topicJmsListenerContainerFactory.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.idle-timeout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The duration for idle.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.pricing-tier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Azure Service Bus Price Tier.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.listener.reply-pub-sub-domain</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether the reply destination type is topic.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.listener.phase</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the phase in which this container should be started and stopped.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.listener.reply-qos-settings</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configure the QosSettings to use when sending a reply.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.listener.subscription-durable</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to make the subscription durable. Only works for the bean of topicJmsListenerContainerFactory.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.listener.subscription-shared</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to make the subscription shared. Only works for the bean of topicJmsListenerContainerFactory.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Login password of the AMQP broker</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.pool.block-if-full</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a id="jms-servicebus-pool-configuration"></a> Whether to block when a connection is requested and the pool is full.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.pool.block-if-full-timeout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Blocking period before throwing an exception if the pool is still full.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.pool.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether a JmsPoolConnectionFactory should be created, instead of a regularConnectionFactory.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.pool.idle-timeout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Connection idle timeout.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.pool.max-connections</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum number of pooled connections.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.pool.max-sessions-per-connection</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum number of pooled sessions per connection in the pool.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.pool.time-between-expiration-check</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time to sleep between runs of the idle connection eviction thread.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.pool.use-anonymous-producers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to use only one anonymous "MessageProducer" instance.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.prefetch-policy.all</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fallback value for prefetch option in this Service Bus namespace.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.prefetch-policy.durable-topic-prefetch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of prefetch for durable topic.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.prefetch-policy.queue-browser-prefetch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of prefetch for queue browser.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.prefetch-policy.queue-prefetch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of prefetch for queue.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.prefetch-policy.topic-prefetch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of prefetch for topic.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.remote-url</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URL of the AMQP broker.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.jms.servicebus</strong>.username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Login user of the AMQP broker.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Spring JMS general configuration is omited for short.
+Please refer to <a href="https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/jms.html">Spring JMS Doc</a> for more details.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="basic-usage-12"><a class="anchor" href="#basic-usage-12"></a><a class="link" href="#basic-usage-12">15.3. Basic Usage</a></h3>
+<div class="sect3">
+<h4 id="use-service-bus-connection-string"><a class="anchor" href="#use-service-bus-connection-string"></a><a class="link" href="#use-service-bus-connection-string">15.3.1. Use Service Bus Connection String</a></h4>
+<div class="paragraph">
+<p>The simplest way to connect to Service Bus for Spring JMS application is with the connection string.</p>
+</div>
+<div class="paragraph">
+<p>Add below properties and you are good to go.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  jms:
+    servicebus:
+      connection-string: ${AZURE_SERVICEBUS_CONNECTION_STRING}
+      pricing-tier: ${PRICING_TIER}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The default enabled <code>ConnectionFactory</code> is the <code>CachingConnectionFactory</code> which adds Session caching as well MessageProducer caching. If you want to activate the connection pooling featured one of JmsPoolConnectionFactory, the property of <code><strong>spring.jms.servicebus</strong>.pool.enabled</code> should be specified <code>true</code>. The other pooling configuration options(<code><strong>spring.jms.servicebus</strong>.pool.*</code> prefix) can be found in the above
+<a href="#jms-servicebus-pool-configuration">Configuration</a> section.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="samples-12"><a class="anchor" href="#samples-12"></a><a class="link" href="#samples-12">15.4. Samples</a></h3>
+<div class="paragraph">
+<p>Please refer to <a href="https://githu.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.3">azure-spring-boot-samples</a> for more details.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="kafka-support"><a class="anchor" href="#kafka-support"></a><a class="link" href="#kafka-support">16. Kafka Support</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Connect to Azure Event Hubs (<a href="https://azure.microsoft.com/pricing/details/event-hubs/#explore-pricing-options">Basic pricing tier is not supported</a>) using Spring Kafka libraries. There are two approaches to connect to Azure Event Hubs for Kafka, the first one is to provide the Azure Event Hubs connection string directly, the other is to use Azure Resource Manager to retrieve the connection string.</p>
 </div>
 <div class="sect2">
-<h3 id="dependency-setup-12"><a class="anchor" href="#dependency-setup-12"></a><a class="link" href="#dependency-setup-12">15.1. Dependency Setup</a></h3>
+<h3 id="dependency-setup-13"><a class="anchor" href="#dependency-setup-13"></a><a class="link" href="#dependency-setup-13">16.1. Dependency Setup</a></h3>
 <div class="paragraph">
 <p>Adding below dependencies if you want to migrate your Apache Kafka application to use Azure Event Hubs for Kafka.</p>
 </div>
@@ -7621,7 +7823,7 @@ For some Service Bus headers that can be mapped to multiple Spring header consta
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-13"><a class="anchor" href="#configuration-13"></a><a class="link" href="#configuration-13">15.2. Configuration</a></h3>
+<h3 id="configuration-14"><a class="anchor" href="#configuration-14"></a><a class="link" href="#configuration-14">16.2. Configuration</a></h3>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -7635,7 +7837,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 38. Configurable properties when using Kafka support</caption>
+<caption class="title">Table 39. Configurable properties when using Kafka support</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7683,9 +7885,9 @@ Authentication information is also required for authenticating for Azure Resourc
 </div>
 </div>
 <div class="sect2">
-<h3 id="basic-usage-12"><a class="anchor" href="#basic-usage-12"></a><a class="link" href="#basic-usage-12">15.3. Basic Usage</a></h3>
+<h3 id="basic-usage-13"><a class="anchor" href="#basic-usage-13"></a><a class="link" href="#basic-usage-13">16.3. Basic Usage</a></h3>
 <div class="sect3">
-<h4 id="use-event-hubs-connection-string"><a class="anchor" href="#use-event-hubs-connection-string"></a><a class="link" href="#use-event-hubs-connection-string">15.3.1. Use Event Hubs connection string</a></h4>
+<h4 id="use-event-hubs-connection-string"><a class="anchor" href="#use-event-hubs-connection-string"></a><a class="link" href="#use-event-hubs-connection-string">16.3.1. Use Event Hubs connection string</a></h4>
 <div class="paragraph">
 <p>The simplest way to connect to Event Hubs for Kafka is with the connection string.</p>
 </div>
@@ -7703,7 +7905,7 @@ Authentication information is also required for authenticating for Azure Resourc
 </div>
 </div>
 <div class="sect3">
-<h4 id="use-azure-resource-manager-to-retrieve-connection-string"><a class="anchor" href="#use-azure-resource-manager-to-retrieve-connection-string"></a><a class="link" href="#use-azure-resource-manager-to-retrieve-connection-string">15.3.2. Use Azure Resource Manager to retrieve connection string</a></h4>
+<h4 id="use-azure-resource-manager-to-retrieve-connection-string"><a class="anchor" href="#use-azure-resource-manager-to-retrieve-connection-string"></a><a class="link" href="#use-azure-resource-manager-to-retrieve-connection-string">16.3.2. Use Azure Resource Manager to retrieve connection string</a></h4>
 <div class="paragraph">
 <p>If you don&#8217;t want to configure connection string in your application, it&#8217;s also possible to use Azure Resource Manager to retrieve the connection string. And you could use credentials stored in Azure CLI or other local development tool, like Visual Studio Code or Intellij IDEA to authenticate with Azure Resource Manager. Or Managed Identity if your application is deployed to Azure Cloud. Just make sure the principal have sufficient permission to read resource metadata.</p>
 </div>
@@ -7726,7 +7928,7 @@ Authentication information is also required for authenticating for Azure Resourc
 </div>
 </div>
 <div class="sect2">
-<h3 id="samples-12"><a class="anchor" href="#samples-12"></a><a class="link" href="#samples-12">15.4. Samples</a></h3>
+<h3 id="samples-13"><a class="anchor" href="#samples-13"></a><a class="link" href="#samples-13">16.4. Samples</a></h3>
 <div class="paragraph">
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.3">azure-spring-boot-samples</a> for more details.</p>
 </div>
@@ -7734,13 +7936,13 @@ Authentication information is also required for authenticating for Azure Resourc
 </div>
 </div>
 <div class="sect1">
-<h2 id="redis-support"><a class="anchor" href="#redis-support"></a><a class="link" href="#redis-support">16. Redis Support</a></h2>
+<h2 id="redis-support"><a class="anchor" href="#redis-support"></a><a class="link" href="#redis-support">17. Redis Support</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Connect to Azure Cache for Redis using Spring Redis libraries. With adding <code>spring-cloud-azure-starter</code> and <code>spring-cloud-azure-resourcemanager</code> to your application, it&#8217;s possible to read the Azure Cache for Redis connection information through Azure Resource Manager and auto-configure the Redis properties.</p>
 </div>
 <div class="sect2">
-<h3 id="dependency-setup-13"><a class="anchor" href="#dependency-setup-13"></a><a class="link" href="#dependency-setup-13">16.1. Dependency Setup</a></h3>
+<h3 id="dependency-setup-14"><a class="anchor" href="#dependency-setup-14"></a><a class="link" href="#dependency-setup-14">17.1. Dependency Setup</a></h3>
 <div class="paragraph">
 <p>Adding below dependencies if you want to use the Spring Cloud Azure Redis support to your Spring Boot application using Redis.</p>
 </div>
@@ -7760,7 +7962,7 @@ Authentication information is also required for authenticating for Azure Resourc
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-14"><a class="anchor" href="#configuration-14"></a><a class="link" href="#configuration-14">16.2. Configuration</a></h3>
+<h3 id="configuration-15"><a class="anchor" href="#configuration-15"></a><a class="link" href="#configuration-15">17.2. Configuration</a></h3>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -7774,7 +7976,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 39. Configurable properties when using Redis support</caption>
+<caption class="title">Table 40. Configurable properties when using Redis support</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -7830,7 +8032,7 @@ Authentication information is also required for authenticating for Azure Resourc
 </div>
 </div>
 <div class="sect2">
-<h3 id="basic-usage-13"><a class="anchor" href="#basic-usage-13"></a><a class="link" href="#basic-usage-13">16.3. Basic Usage</a></h3>
+<h3 id="basic-usage-14"><a class="anchor" href="#basic-usage-14"></a><a class="link" href="#basic-usage-14">17.3. Basic Usage</a></h3>
 <div class="paragraph">
 <p>Add below properties and you are good to go.</p>
 </div>
@@ -7842,7 +8044,7 @@ spring.cloud.azure.redis.resource.resource-group=${AZURE_CACHE_REDIS_RESOURCE_GR
 </div>
 </div>
 <div class="sect2">
-<h3 id="samples-13"><a class="anchor" href="#samples-13"></a><a class="link" href="#samples-13">16.4. Samples</a></h3>
+<h3 id="samples-14"><a class="anchor" href="#samples-14"></a><a class="link" href="#samples-14">17.4. Samples</a></h3>
 <div class="paragraph">
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.3">azure-spring-boot-samples</a> for more details.</p>
 </div>
@@ -7850,14 +8052,14 @@ spring.cloud.azure.redis.resource.resource-group=${AZURE_CACHE_REDIS_RESOURCE_GR
 </div>
 </div>
 <div class="sect1">
-<h2 id="resource-manager"><a class="anchor" href="#resource-manager"></a><a class="link" href="#resource-manager">17. Resource Manager</a></h2>
+<h2 id="resource-manager"><a class="anchor" href="#resource-manager"></a><a class="link" href="#resource-manager">18. Resource Manager</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Connect to Azure Resources for All Azure SDKs service, which Spring Cloud used.
 Construct <code>TokenCredential</code> by using various credential information, and then construct <code>AzureResourceManager</code> to help Azure SDKs Client to authenticate and authorize.</p>
 </div>
 <div class="sect2">
-<h3 id="dependency-setup-14"><a class="anchor" href="#dependency-setup-14"></a><a class="link" href="#dependency-setup-14">17.1. Dependency Setup</a></h3>
+<h3 id="dependency-setup-15"><a class="anchor" href="#dependency-setup-15"></a><a class="link" href="#dependency-setup-15">18.1. Dependency Setup</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -7868,7 +8070,7 @@ Construct <code>TokenCredential</code> by using various credential information, 
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-15"><a class="anchor" href="#configuration-15"></a><a class="link" href="#configuration-15">17.2. Configuration</a></h3>
+<h3 id="configuration-16"><a class="anchor" href="#configuration-16"></a><a class="link" href="#configuration-16">18.2. Configuration</a></h3>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -7882,7 +8084,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 40. Configurable properties of spring-cloud-azure-resourcemanager</caption>
+<caption class="title">Table 41. Configurable properties of spring-cloud-azure-resourcemanager</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7946,13 +8148,13 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </table>
 </div>
 <div class="sect2">
-<h3 id="basic-usage-14"><a class="anchor" href="#basic-usage-14"></a><a class="link" href="#basic-usage-14">17.3. Basic Usage</a></h3>
+<h3 id="basic-usage-15"><a class="anchor" href="#basic-usage-15"></a><a class="link" href="#basic-usage-15">18.3. Basic Usage</a></h3>
 <div class="paragraph">
 <p>Azure Resource Manger helps the Azure SDK client to complete authentication and authorization. It can be integrated into a specific Spring Cloud Azure Starter and work together, or it can be used with Spring Cloud Azure auto-configuration modules and third-party libraries to complete authentication, such as: <a href="#kafka-support">Kafka Support</a>, <a href="#redis-support">Redis Support</a>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="samples-14"><a class="anchor" href="#samples-14"></a><a class="link" href="#samples-14">17.4. Samples</a></h3>
+<h3 id="samples-15"><a class="anchor" href="#samples-15"></a><a class="link" href="#samples-15">18.4. Samples</a></h3>
 <div class="paragraph">
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.3">azure-spring-boot-samples</a> for more details.</p>
 </div>
@@ -7960,7 +8162,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 </div>
 <div class="sect1">
-<h2 id="configuration-properties"><a class="anchor" href="#configuration-properties"></a><a class="link" href="#configuration-properties">18. Configuration Properties</a></h2>
+<h2 id="configuration-properties"><a class="anchor" href="#configuration-properties"></a><a class="link" href="#configuration-properties">19. Configuration Properties</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>To see the list of all Spring Cloud Azure related configuration properties please check <a href="appendix.html">the Appendix page</a>.</p>
@@ -7968,18 +8170,18 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 </div>
 <div class="sect1">
-<h2 id="appendix"><a class="anchor" href="#appendix"></a><a class="link" href="#appendix">19. Appendix</a></h2>
+<h2 id="appendix"><a class="anchor" href="#appendix"></a><a class="link" href="#appendix">20. Appendix</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="configuration-properties-2"><a class="anchor" href="#configuration-properties-2"></a><a class="link" href="#configuration-properties-2">19.1. <a href="appendix.html##configuration-properties">Configuration properties</a></a></h3>
+<h3 id="configuration-properties-2"><a class="anchor" href="#configuration-properties-2"></a><a class="link" href="#configuration-properties-2">20.1. <a href="appendix.html##configuration-properties">Configuration properties</a></a></h3>
 
 </div>
 <div class="sect2">
-<h3 id="migration-guide-for-4-0-2"><a class="anchor" href="#migration-guide-for-4-0-2"></a><a class="link" href="#migration-guide-for-4-0-2">19.2. <a href="appendix.html#migration-guide-for-4-0">Migration guide for 4.0</a></a></h3>
+<h3 id="migration-guide-for-4-0-2"><a class="anchor" href="#migration-guide-for-4-0-2"></a><a class="link" href="#migration-guide-for-4-0-2">20.2. <a href="appendix.html#migration-guide-for-4-0">Migration guide for 4.0</a></a></h3>
 
 </div>
 <div class="sect2">
-<h3 id="known-issues"><a class="anchor" href="#known-issues"></a><a class="link" href="#known-issues">19.3. <a href="appendix.html#known-issues">Known issues</a></a></h3>
+<h3 id="known-issues"><a class="anchor" href="#known-issues"></a><a class="link" href="#known-issues">20.3. <a href="appendix.html#known-issues">Known issues</a></a></h3>
 
 </div>
 </div>
