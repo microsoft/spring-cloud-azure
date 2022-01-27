@@ -640,7 +640,9 @@ class Demo{
 ===== Configure ServiceBusMessageConverter to customize ObjectMapper
 `ServiceBusMessageConverter` is made as a configurable bean to allow users to customize ObjectMapper.
 
-===== Support for Service Bus Message Headers and Properties
+
+[#si-sb-headers]
+===== Service Bus message headers
 For some Service Bus headers that can be mapped to multiple Spring header constants, the priority of different Spring headers is listed.
 
 .Mapping between Service Bus Headers and Spring Headers
