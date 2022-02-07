@@ -617,11 +617,11 @@ image:https://user-images.githubusercontent.com/13167207/149291667-930e8559-b8ce
 
 We can use our sample to create a Conditional Access scenario.
 
-**webapp**: https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.3/aad/spring-cloud-azure-starter-active-directory/aad-web-application[aad-web-application].
+**webapp**: https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/aad/spring-cloud-azure-starter-active-directory/aad-web-application[aad-web-application].
 
-**webapiA**:  https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.3/aad/spring-cloud-azure-starter-active-directory/aad-resource-server-obo[aad-resource-server-obo].
+**webapiA**:  https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/aad/spring-cloud-azure-starter-active-directory/aad-resource-server-obo[aad-resource-server-obo].
 
-**webapiB**: https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.3/aad/spring-cloud-azure-starter-active-directory/aad-resource-server[aad-resource-server].
+**webapiB**: https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/aad/spring-cloud-azure-starter-active-directory/aad-resource-server[aad-resource-server].
 
 * Step 1: Follow the guide to create conditional access policy for webapiB.
 
@@ -634,7 +634,7 @@ image:https://user-images.githubusercontent.com/13167207/149294294-75af3386-89b6
 image:https://user-images.githubusercontent.com/13167207/149294469-f2785eee-ddfc-49f0-b16e-efc29aca626e.png[aad-create-conditional-access]
 
 * Step 3: Follow the guide, configure and run sample
-1. **webapiB**: https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.3/aad/spring-cloud-azure-starter-active-directory/aad-resource-server#configure-web-api[configure webapiB]
+1. **webapiB**: https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/aad/spring-cloud-azure-starter-active-directory/aad-resource-server#configure-web-api[configure webapiB]
 2. **webapiA**: https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/aad/azure-spring-boot-starter-active-directory/aad-resource-server-obo#configure-your-middle-tier-web-api-a[configure webapiA]
 3. **webapp**: https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/aad/azure-spring-boot-starter-active-directory/aad-web-application#configure-web-app[configure webapp]
 
@@ -862,7 +862,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 }
 ----
 
-Copy the _home.html_ from https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0.0-beta.3/aad/spring-cloud-azure-starter-active-directory-b2c/aad-b2c-web-application/src/main/resources/templates/home.html[aad-b2c-web-application sample], and replace the `PROFILE_EDIT_USER_FLOW` and `PASSWORD_RESET_USER_FLOW` with your user flow name respectively that completed earlier.
+Copy the _home.html_ from https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_{project-version}/aad/spring-cloud-azure-starter-active-directory-b2c/aad-b2c-web-application/src/main/resources/templates/home.html[aad-b2c-web-application sample], and replace the `PROFILE_EDIT_USER_FLOW` and `PASSWORD_RESET_USER_FLOW` with your user flow name respectively that completed earlier.
 
 * Step 11: Build and test your app
 
