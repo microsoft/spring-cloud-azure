@@ -205,16 +205,6 @@ window.onload = function() {
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.active-directory-groups</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.allow-telemetry</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If Telemetry events should be published to Azure AD.</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.app-id-uri</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">App ID URI which might be used in the "aud" claim of an id_token.</p></td>
@@ -232,12 +222,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.authorization-clients</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.b2c.allow-telemetry</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Telemetry data will be collected if true, or disable data collection.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The OAuth2 authorization clients.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.b2c.app-id-uri</p></td>
@@ -247,12 +232,12 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.b2c.authenticate-additional-parameters</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additional parameters for authentication.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.b2c.authorization-clients</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specify client configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify client configuration.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.b2c.base-uri</p></td>
@@ -287,7 +272,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.b2c.logout-success-url</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="http://localhost:8080/login" class="bare">http://localhost:8080/login</a></code></p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Redirect url after logout.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.b2c.profile</p></td>
@@ -297,22 +282,17 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.b2c.reply-url</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{baseUrl}/login/oauth2/code/</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.b2c.tenant</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the b2c tenant. @deprecated It&#8217;s recommended to use 'baseUri' instead.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reply url after get authorization code.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.b2c.user-flows</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User flows.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.b2c.user-name-attribute-name</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">User name attribute name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User name attribute name.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.credential.client-id</p></td>
@@ -352,7 +332,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.post-logout-redirect-uri</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The redirect uri after logout.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.profile.cloud</p></td>
@@ -377,7 +357,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.resource-server.claim-to-authority-prefix-map</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Configure which claim will be used to build GrantedAuthority, and prefix of the GrantedAuthority&#8217;s string value. Default value is: "scp" &#8594; "SCOPE_", "roles" &#8594; "APPROLE_". @see org.springframework.security.core.GrantedAuthority</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configure which claim will be used to build GrantedAuthority, and prefix of the GrantedAuthority&#8217;s string value. Default value is: "scp" &#8594; "SCOPE_", "roles" &#8594; "APPROLE_".</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.resource-server.principal-claim-name</p></td>
@@ -392,27 +372,17 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.user-group.allowed-group-ids</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The group ids can be used to construct GrantedAuthority.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.user-group.allowed-group-names</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Expected UserGroups that an authority will be granted to if found in the response from the MemberOf Graph API Call.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.user-group.allowed-groups</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.user-group.enable-full-list</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">enableFullList is used to control whether to list all group id, default is false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The group names can be used to construct GrantedAuthority.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.user-group.use-transitive-members</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If "true", use "v1.0/me/transitiveMemberOf" to get members. Otherwise, use "v1.0/me/memberOf".</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.user-name-attribute</p></td>
