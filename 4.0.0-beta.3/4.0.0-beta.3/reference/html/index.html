@@ -5232,7 +5232,7 @@ set the entity type for the ServiceBusTemplate.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="support-for-service-bus-message-headers-and-properties"><a class="anchor" href="#support-for-service-bus-message-headers-and-properties"></a><a class="link" href="#support-for-service-bus-message-headers-and-properties">Support for Service Bus Message Headers and Properties</a></h5>
+<h5 id="si-sb-headers"><a class="anchor" href="#si-sb-headers"></a><a class="link" href="#si-sb-headers">Service Bus message headers</a></h5>
 <div class="paragraph">
 <p>For some Service Bus headers that can be mapped to multiple Spring header constants, the priority of different Spring headers is listed.</p>
 </div>
@@ -6191,7 +6191,7 @@ The default maximum connection pool size of the Storage Blob client is changed f
 </div>
 </div>
 <div class="sect4">
-<h5 id="azure-event-hubs-binding-configuration-options"><a class="anchor" href="#azure-event-hubs-binding-configuration-options"></a><a class="link" href="#azure-event-hubs-binding-configuration-options">Azure Event Hubs Binding Configuration Options</a></h5>
+<h5 id="azure-event-hubs-binding-configuration-properties"><a class="anchor" href="#azure-event-hubs-binding-configuration-properties"></a><a class="link" href="#azure-event-hubs-binding-configuration-properties">Azure Event Hubs Binding Configuration Properties</a></h5>
 <div class="paragraph">
 <p>Below options are divided into four sections: Consumer Properties, Advanced Consumer
 Configurations, Producer Properties and Advanced Producer Configurations.</p>
@@ -6318,7 +6318,7 @@ Configurations, Producer Properties and Advanced Producer Configurations.</p>
 <div class="sect3">
 <h4 id="basic-usage-10"><a class="anchor" href="#basic-usage-10"></a><a class="link" href="#basic-usage-10">14.1.4. Basic Usage</a></h4>
 <div class="sect4">
-<h5 id="sending-and-receiving-messages-fromto-event-hubs"><a class="anchor" href="#sending-and-receiving-messages-fromto-event-hubs"></a><a class="link" href="#sending-and-receiving-messages-fromto-event-hubs">Sending and Receiving messages from/to Event Hubs</a></h5>
+<h5 id="sending-and-receiving-messages-fromto-event-hubs"><a class="anchor" href="#sending-and-receiving-messages-fromto-event-hubs"></a><a class="link" href="#sending-and-receiving-messages-fromto-event-hubs">Sending and receiving messages from/to Event Hubs</a></h5>
 <div class="paragraph">
 <p>Step 1. Fill the configuration options with credential information.</p>
 </div>
@@ -6636,6 +6636,24 @@ public void producerError(Message&lt;?&gt; message) {
 }</code></pre>
 </div>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>Global default error channel</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A global error channel called "errorChannel" is created by default Spring Integration, which allows users to subscribe many endpoints to it.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel = "errorChannel")
+public void producerError(Message&lt;?&gt; message) {
+    LOGGER.error("Handling ERROR: " + message);
+}</code></pre>
+</div>
+</div>
 </div>
 <div class="sect4">
 <h5 id="scs-eh-headers"><a class="anchor" href="#scs-eh-headers"></a><a class="link" href="#scs-eh-headers">Event Hubs message headers</a></h5>
@@ -6726,10 +6744,8 @@ When publish messages, all the above batch headers if exist will be removed from
 <div class="sect3">
 <h4 id="key-concepts-6"><a class="anchor" href="#key-concepts-6"></a><a class="link" href="#key-concepts-6">14.2.1. Key concepts</a></h4>
 <div class="paragraph">
-<p>The Spring Cloud Stream Binder for Azure Service Bus provides the binding implementation for the Spring Cloud Stream.</p>
-</div>
-<div class="paragraph">
-<p>This implementation uses Spring Integration Service Bus Channel Adapters at its foundation.</p>
+<p>The Spring Cloud Stream Binder for Azure Service Bus provides the binding implementation for the Spring Cloud Stream Framework.
+This implementation uses Spring Integration Service Bus Channel Adapters at its foundation.</p>
 </div>
 <div class="sect4">
 <h5 id="scheduled-message"><a class="anchor" href="#scheduled-message"></a><a class="link" href="#scheduled-message">Scheduled Message</a></h5>
@@ -6770,6 +6786,14 @@ This binder relies on <code>Subscription</code> of a topic to act as a consumer 
 </div>
 <div class="sect3">
 <h4 id="configuration-12"><a class="anchor" href="#configuration-12"></a><a class="link" href="#configuration-12">14.2.3. Configuration</a></h4>
+<div class="paragraph">
+<p>The binder provides the following 3 parts of configuration options:</p>
+</div>
+<div class="sect4">
+<h5 id="servicebus-connection-configration"><a class="anchor" href="#servicebus-connection-configration"></a><a class="link" href="#servicebus-connection-configration">Connection Configuration Properties</a></h5>
+<div class="paragraph">
+<p>These properties are exposed via <code>com.azure.spring.cloud.autoconfigure.servicebus.properties.AzureServiceBusProperties</code>.</p>
+</div>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -6781,12 +6805,6 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </td>
 </tr>
 </table>
-</div>
-<div class="sect4">
-<h5 id="azure-common-configuration-options-4"><a class="anchor" href="#azure-common-configuration-options-4"></a><a class="link" href="#azure-common-configuration-options-4">Azure Common Configuration Options</a></h5>
-<div class="paragraph">
-<p>Below properties can also be configured with the default Spring Cloud Azure unified properties,
-of which the prefix is changed from <strong>spring.cloud.azure.servicebus</strong> to <strong>spring.cloud.azure</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 33. Common configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
@@ -6809,202 +6827,6 @@ of which the prefix is changed from <strong>spring.cloud.azure.servicebus</stron
 <td class="tableblock halign-left valign-top"><p class="tableblock">Whether an Azure Service Bus is enabled.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.credential.*</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Properties used for getting token credential.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.credential.client-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when performing service principal authentication with Azure.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.credential.client-secret</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.
-credential.client-certificate-path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path of a PEM certificate file to use when performing service principal authentication with Azure.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.credential.client-certificate-password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.credential.username</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Username to use when performing username/password authentication with Azure.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.credential.password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Password to use when performing username/password authentication with Azure.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.
-credential.managed-identity-client-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when using managed identity to authenticate with Azure.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.profile.*</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Properties related to an Azure subscription.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.profile.tenant-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tenant id for Azure resources.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.profile.subscription-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Subscription id to use when connecting to Azure resources.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.profile.cloud</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AzureProfileAware.CloudType</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the Azure cloud to connect to.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.
-profile.environment.*</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Properties to Azure services, such as endpoints, resource ids, etc.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.
-profile.environment.active-directory-endpoint</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Azure Active Directory endpoint to connect to.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.resource.*</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Metadata defining an Azure resource.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.
-resource.resource-group</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the Azure resource group.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.resource.resource-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Id of the Azure resource group.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.resource.region</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of region.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.client.transport-type</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AmqpTransportType</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Transport type switches available for AMQP protocol.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry.*</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Retry properties.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry.backoff.*</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Backoff properties when a retry fails.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.
-retry.backoff.delay</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of time to wait between retry attempts.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.
-retry.backoff.max-delay</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum permissible amount of time between retry attempts.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.
-retry.backoff.multiplier</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Double</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.
-retry.max-attempts</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of attempts.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.
-retry.timeout</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of time to wait until a timeout.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.proxy.*</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Common proxy properties.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.proxy.type</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type of the proxy.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.proxy.hostname</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The host of the proxy.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.proxy.port</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The port of the proxy.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.
-proxy.authentication-type</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Authentication type used against the proxy.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.proxy.username</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Username used to authenticate with the proxy.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.proxy.password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Password used to authenticate with the proxy.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="azure-service-bus-client-configuration-options-2"><a class="anchor" href="#azure-service-bus-client-configuration-options-2"></a><a class="link" href="#azure-service-bus-client-configuration-options-2">Azure Service Bus Client Configuration Options</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 34. Client configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.connection-string</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service Bus Namespace connection string value.</p></td>
@@ -7019,101 +6841,31 @@ proxy.authentication-type</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Domain name of an Azure Service Bus Namespace value.</p></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.entity-name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Entity name of Azure Service Bus queue or topic.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.entity-type</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusEntityType</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Entity type of Azure Service Bus queue or topic.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.
-cross-entity-transactions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enable cross entity transaction on the connection to Service bus.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.producer.*</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">see NOTE</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Producer configuration options.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.consumer.*</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">see NOTE</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Consumer configuration options.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.consumer.sessionEnabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Consumer Whether session is enabled.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.consumer.autoComplete</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Consumer whether auto complete flag.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.consumer.prefetchCount</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Consumer prefetch count.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.consumer.subQueue</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Consumer sub queue name.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.consumer.subscriptionName</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Consumer subscription name.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.
-consumer.maxAutoLockRenewDuration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Consumer max duration for auto lock renew.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.consumer.receiveMode</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Consumer receive mode.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.processor.*</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">see NOTE</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Processor configuration option.</p></td>
-</tr>
 </tbody>
 </table>
-<div class="admonitionblock note">
+<div class="admonitionblock tip">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-note" title="Note"></i>
+<i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-For configuration of producer, consumer and processor, all the above common and client
-properties
-support to be configured individually by changing the origin prefix from <strong>spring.cloud.azure
-.servicebus</strong> to <strong>spring.cloud.azure.servicebus.producer/consumer/processor</strong>.
+Common Azure Service SDK configuration options are configurable for the Azure Spring Cloud Stream Service Bus binder as well. The supported configuration options are introduced in <a href="configuration.html">the Configuration page</a>, and could be configured with either the unified prefix <code>spring.cloud.azure.</code> or the prefix of <code>spring.cloud.azure.servicebus.</code>.
 </td>
 </tr>
 </table>
 </div>
 </div>
 <div class="sect4">
-<h5 id="azure-service-bus-binding-configuration-options"><a class="anchor" href="#azure-service-bus-binding-configuration-options"></a><a class="link" href="#azure-service-bus-binding-configuration-options">Azure Service Bus Binding Configuration Options</a></h5>
+<h5 id="azure-service-bus-binding-configuration-properties"><a class="anchor" href="#azure-service-bus-binding-configuration-properties"></a><a class="link" href="#azure-service-bus-binding-configuration-properties">Azure Service Bus Binding Configuration Properties</a></h5>
 <div class="paragraph">
 <p>Below options are divided into four sections: Consumer Properties, Advanced Consumer
-Configurations, Producer PropertiesProducer Properties, and Advanced Producer Configurations.</p>
+Configurations, Producer Properties and Advanced Producer Configurations.</p>
 </div>
 <div class="sect5">
 <h6 id="consumer-properties"><a class="anchor" href="#consumer-properties"></a><a class="link" href="#consumer-properties">Consumer Properties</a></h6>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 35. Consumer configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
+<caption class="title">Table 34. Consumer configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -7135,17 +6887,42 @@ Configurations, Producer PropertiesProducer Properties, and Advanced Producer Co
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.checkpoint-mode</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">CheckpointMode</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The checkpoint mode of checkpointing message.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The checkpoint mode of checkpointing message. The supported modes are <code>MANUAL</code> and <code>RECORD</code>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.max-concurrent-calls</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The max number of concurrent calls.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Max concurrent messages that the Service Bus processor client should process.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.max-concurrent-sessions</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The max number of concurrent sessions.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum number of concurrent sessions to process at any given time.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.session-aware</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether session is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.prefetch-count</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The prefetch count of the Service Bus processor client.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.sub-queue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SubQueue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of the sub queue to connect to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.max-auto-lock-renew-duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The amount of time to continue auto-renewing the lock.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.receive-mode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusReceiveMode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The receive mode of the Service Bus processor client.</p></td>
 </tr>
 </tbody>
 </table>
@@ -7153,14 +6930,13 @@ Configurations, Producer PropertiesProducer Properties, and Advanced Producer Co
 <div class="sect5">
 <h6 id="advanced-consumer-configuration-2"><a class="anchor" href="#advanced-consumer-configuration-2"></a><a class="link" href="#advanced-consumer-configuration-2">Advanced Consumer Configuration</a></h6>
 <div class="paragraph">
-<p>The configuration in the above first 2 sections(<code>Azure Common Configuration Options</code>, <code>Azure Service Bus Client Configuration Options</code>) can be applied for each specific consumer by replacing the prefix
-of <strong>spring.cloud.azure.servicebus</strong> with <strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.</p>
+<p>The above <a href="#servicebus-connection-configration">connection</a> and <a href="Configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder consumer, which can be configured with the prefix <code>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer.</code>.</p>
 </div>
 </div>
 <div class="sect5">
 <h6 id="producer-properties-2"><a class="anchor" href="#producer-properties-2"></a><a class="link" href="#producer-properties-2">Producer Properties</a></h6>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 36. Producer configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
+<caption class="title">Table 35. Producer configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -7186,14 +6962,30 @@ for sync of producer.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Timeout
 value for sending of producer.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.producer</strong>.entity-type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusEntityType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service Bus entity type of the producer, required for the binding producer.</p></td>
+</tr>
 </tbody>
 </table>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When using the binding producer, property of <code>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.producer.entity-type</code> is required to be configured.
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect5">
 <h6 id="advanced-producer-configuration-2"><a class="anchor" href="#advanced-producer-configuration-2"></a><a class="link" href="#advanced-producer-configuration-2">Advanced Producer Configuration</a></h6>
 <div class="paragraph">
-<p>The configuration in the above first 2 sections(<code>Azure Common Configuration Options</code>, <code>Azure Service Bus Client Configuration Options</code>) can be applied for each specific producer by replacing the prefix
-of <strong>spring.cloud.azure.servicebus</strong> with <strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.producer</strong>.</p>
+<p>The above <a href="#servicebus-connection-configration">connection</a> and <a href="Configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder producer, which can be configured with the prefix <code>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.producer.</code>.</p>
 </div>
 </div>
 </div>
@@ -7201,7 +6993,7 @@ of <strong>spring.cloud.azure.servicebus</strong> with <strong>spring.cloud.stre
 <div class="sect3">
 <h4 id="basic-usage-11"><a class="anchor" href="#basic-usage-11"></a><a class="link" href="#basic-usage-11">14.2.4. Basic Usage</a></h4>
 <div class="sect4">
-<h5 id="sending-and-receiving-messages-fromto-service-bus"><a class="anchor" href="#sending-and-receiving-messages-fromto-service-bus"></a><a class="link" href="#sending-and-receiving-messages-fromto-service-bus">Sending and Receiving messages from/to Service Bus</a></h5>
+<h5 id="sending-and-receiving-messages-fromto-service-bus"><a class="anchor" href="#sending-and-receiving-messages-fromto-service-bus"></a><a class="link" href="#sending-and-receiving-messages-fromto-service-bus">Sending and receiving messages from/to Service Bus</a></h5>
 <div class="paragraph">
 <p>Step 1. Fill the configuration options with credential information.</p>
 </div>
@@ -7292,8 +7084,6 @@ of <strong>spring.cloud.azure.servicebus</strong> with <strong>spring.cloud.stre
     azure:
       credential:
         managed-identity-client-id: ${MANAGED_IDENTITY_CLIENT_ID}
-      profile:
-        tenant-id: ${TENANT_ID}
       servicebus:
         namespace: ${SERVICEBUS_NAMESPACE}
     stream:
@@ -7350,30 +7140,43 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 </div>
 </div>
 </div>
-</div>
-<div class="sect3">
-<h4 id="samples-11"><a class="anchor" href="#samples-11"></a><a class="link" href="#samples-11">14.2.5. Samples</a></h4>
+<div class="sect4">
+<h5 id="partition-key-support"><a class="anchor" href="#partition-key-support"></a><a class="link" href="#partition-key-support">Partition key support</a></h5>
 <div class="paragraph">
-<p><strong>Example: Manually set the partition key for the message</strong></p>
-</div>
-<div class="paragraph">
-<p>This example demonstrates how to manually set the partition key for the message in the application.</p>
+<p>The binder supports <a href="https://docs.microsoft.com/azure/service-bus-messaging/service-bus-partitioning">Service Bus partitioning</a> by allowing setting partition key and session id in the message header. This section introduces how to set partition key for messages.</p>
 </div>
 <div class="paragraph">
-<p><strong>Approach 1:</strong> Set partition key expression.</p>
-</div>
-<div class="paragraph">
-<p>This example requires that <code>spring.cloud.stream.default.producer.partitionKeyExpression</code> be set <code>&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;</code>.</p>
+<p>Spring Cloud Stream provides a partition key SpEL expression property <code>spring.cloud.stream.bindings.&lt;binding-name&gt;.producer.partition-key-expression</code>. For example, setting this properts as <code>&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;</code> and add a header called &lt;message-header-key&gt;. Spring Cloud Stream will use the value for this header when evaluating the above expression to assign a partition key. Here is an example producer code:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@PostMapping("/messages")
-public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
-    LOGGER.info("Going to add message {} to Sinks.Many.", message);
-    many.emitNext(MessageBuilder.withPayload(message)
-                                .setHeader("&lt;message-header-key&gt;", "Customize partirion key")
-                                .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-    return ResponseEntity.ok("Sent!");
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public Supplier&lt;Message&lt;String&gt;&gt; generate() {
+    return () -&gt; {
+        String value = “random payload”;
+        return MessageBuilder.withPayload(value)
+            .setHeader("&lt;message-header-key&gt;", value.length() % 4)
+            .build();
+    };
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="session-support"><a class="anchor" href="#session-support"></a><a class="link" href="#session-support">Session support</a></h5>
+<div class="paragraph">
+<p>The binder supports <a href="https://docs.microsoft.com/azure/service-bus-messaging/message-sessions">message sessions</a> of Service Bus. Session id of a message could be set via the message header.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public Supplier&lt;Message&lt;String&gt;&gt; generate() {
+    return () -&gt; {
+        String value = “random payload”;
+        return MessageBuilder.withPayload(value)
+            .setHeader(ServiceBusMessageHeaders.SESSION_ID, "Customize session id")
+            .build();
+    };
 }</code></pre>
 </div>
 </div>
@@ -7384,212 +7187,105 @@ public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-When using <code>application.yml</code> to configure the partition key, its priority will be the lowest.
-It will take effect only when the <code>ServiceBusMessageHeaders.SESSION_ID</code>, <code>ServiceBusMessageHeaders.PARTITION_KEY</code>, <code>AzureHeaders.PARTITION_KEY</code> are not configured.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p><strong>Approach 2:</strong> Manually add the partition Key in the message header by code.</p>
-</div>
-<div class="paragraph">
-<p><em>Recommended:</em> Use <code>ServiceBusMessageHeaders.PARTITION_KEY</code> as the key of the header.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@PostMapping("/messages")
-public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
-    LOGGER.info("Going to add message {} to Sinks.Many.", message);
-    many.emitNext(MessageBuilder.withPayload(message)
-                                .setHeader(ServiceBusMessageHeaders.PARTITION_KEY, "Customize partirion key")
-                                .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-    return ResponseEntity.ok("Sent!");
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><em>Not recommended but currently supported:</em> <code>AzureHeaders.PARTITION_KEY</code> as the key of the header.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@PostMapping("/messages")
-public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
-    LOGGER.info("Going to add message {} to Sinks.Many.", message);
-    many.emitNext(MessageBuilder.withPayload(message)
-                                .setHeader(AzureHeaders.PARTITION_KEY, "Customize partirion key")
-                                .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-    return ResponseEntity.ok("Sent!");
-}</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-When both <code>ServiceBusMessageHeaders.PARTITION_KEY</code> and <code>AzureHeaders.PARTITION_KEY</code> are set in the message headers,
-<code>ServiceBusMessageHeaders.PARTITION_KEY</code> is preferred.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p><strong>Example: Set the session id for the message</strong></p>
-</div>
-<div class="paragraph">
-<p>This example demonstrates how to manually set the session id of a message in the application.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@PostMapping("/messages")
-public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
-    LOGGER.info("Going to add message {} to Sinks.Many.", message);
-    many.emitNext(MessageBuilder.withPayload(message)
-                                .setHeader(ServiceBusMessageHeaders.SESSION_ID, "Customize session id")
-                                .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-    return ResponseEntity.ok("Sent!");
-}</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-When the <code>ServiceBusMessageHeaders.SESSION_ID</code> is set in the message headers, and a different <code>ServiceBusMessageHeaders.PARTITION_KEY</code> (or <code>AzureHeaders.PARTITION_KEY</code>) header is also set,
+According to <a href="https://docs.microsoft.com/azure/service-bus-messaging/service-bus-partitioning">Service Bus partitioning</a>, session id has higher priority than partition key. So when both of <code>ServiceBusMessageHeaders#SESSION_ID</code> and <code>ServiceBusMessageHeaders#PARTITION_KEY</code> (or <code>AzureHeaders#PARTITION_KEY</code>) headers are set,
 the value of the session id will eventually be used to overwrite the value of the partition key.
 </td>
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p><strong>Example: Set Service Bus message headers</strong></p>
+</div>
+<div class="sect4">
+<h5 id="error-channels-2"><a class="anchor" href="#error-channels-2"></a><a class="link" href="#error-channels-2">Error channels</a></h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Consumer error channel</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>When create a message, developers can specify the header or property of a Service Bus message by
-below constants.</p>
+<p>This channel is open by default, and a default consumer error channel handler is used to send failed messages to the dead-letter queue when <code>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer.requeue-rejected</code> is enabled, otherwise the failed messages will be abandoned.</p>
+</div>
+<div class="paragraph">
+<p>To customize the consumer error channel handler, you can register you own error handler to the related consumer error channel in this way:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
-private Sinks.Many&lt;Message&lt;String&gt;&gt; many;
-
-@PostMapping("/messages")
-public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
-    many.emitNext(MessageBuilder.withPayload(message)
-    .setHeader(SESSION_ID, "group1")
-    .build(),
-    Sinks.EmitFailureHandler.FAIL_FAST);
-    return ResponseEntity.ok("Sent!");
+<pre class="highlight"><code class="language-java" data-lang="java">// Replace destination with spring.cloud.stream.bindings.input.destination
+// Replace group with spring.cloud.stream.bindings.input.group
+@ServiceActivator(inputChannel = "{destination}.{group}.errors")
+public void consumerError(Message&lt;?&gt; message) {
+    LOGGER.error("Handling customer ERROR: " + message);
 }</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>The following table illustrates how Spring message headers are mapped to Service Bus message headers and properties.
-For some Service Bus headers that can be mapped to multiple Spring header constants, the priority of different Spring headers is listed.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Producer error channel</p>
+</li>
+</ul>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 37. Mapping between Service Bus Headers and Spring Headers</caption>
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<thead>
+<div class="paragraph">
+<p>This channel is not open by default. You need to add a configuration in your application.properties to enable it, like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.stream.default.producer.errorChannelEnabled=true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can handle the error message in this way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">// Replace destination with spring.cloud.stream.bindings.output.destination
+@ServiceActivator(inputChannel = "{destination}.errors")
+public void producerError(Message&lt;?&gt; message) {
+    LOGGER.error("Handling Producer ERROR: " + message);
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Global default error channel</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A global error channel called "errorChannel" is created by default Spring Integration, which allows users to subscribe many endpoints to it.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel = "errorChannel")
+public void producerError(Message&lt;?&gt; message) {
+    LOGGER.error("Handling ERROR: " + message);
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="scs-sb-headers"><a class="anchor" href="#scs-sb-headers"></a><a class="link" href="#scs-sb-headers">Service Bus message headers</a></h5>
+<div class="paragraph">
+<p>See the <a href="#si-sb-headers">Service Bus message headers</a> for the basic message headers supported.</p>
+</div>
+<div class="admonitionblock note">
+<table>
 <tr>
-<th class="tableblock halign-left valign-top">Service Bus Message Headers and Properties</th>
-<th class="tableblock halign-left valign-top">Spring Message Header Constants</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Priority Number (Descending priority)</th>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When setting the partiton key, the priority of message header is higher than Spring Cloud Stream property. So <code>spring.cloud.stream.bindings.&lt;binding-name&gt;.producer.partition-key-expression</code> will take effect only when none of the headers of <code>ServiceBusMessageHeaders#SESSION_ID</code>, <code>ServiceBusMessageHeaders#PARTITION_KEY</code>, <code>AzureHeaders#PARTITION_KEY</code> is configured.
+</td>
 </tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ContentType</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.messaging.MessageHeaders.CONTENT_TYPE</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CorrelationId</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.CORRELATION_ID</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>MessageId</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.MESSAGE_ID</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>MessageId</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.AzureHeaders.RAW_ID</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>MessageId</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.messaging.MessageHeaders.ID</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">UUID</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">PartitionKey</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.PARTITION_KEY</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ReplyTo</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.messaging.MessageHeaders.REPLY_CHANNEL</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ReplyToSessionId</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.REPLY_TO_SESSION_ID</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>ScheduledEnqueueTimeUtc</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.AzureHeaders.SCHEDULED_ENQUEUE_MESSAGE</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>ScheduledEnqueueTimeUtc</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.SCHEDULED_ENQUEUE_TIME</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instant</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SessionID</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.SESSION_ID</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">TimeToLive</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.TIME_TO_LIVE</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">To</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.TO</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
-</tr>
-</tbody>
 </table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="samples-11"><a class="anchor" href="#samples-11"></a><a class="link" href="#samples-11">14.2.5. Samples</a></h4>
 <div class="paragraph">
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.3/servicebus/spring-cloud-azure-stream-binder-servicebus">azure-spring-boot-samples</a> for more details.</p>
 </div>
@@ -7621,7 +7317,7 @@ Azure Service Bus connection string have to be provided which is to be parsed in
 <div class="sect2">
 <h3 id="configuration-13"><a class="anchor" href="#configuration-13"></a><a class="link" href="#configuration-13">15.2. Configuration</a></h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 38. Configurable properties when using Spring JMS support</caption>
+<caption class="title">Table 36. Configurable properties when using Spring JMS support</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7837,7 +7533,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 39. Configurable properties when using Kafka support</caption>
+<caption class="title">Table 37. Configurable properties when using Kafka support</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7976,7 +7672,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 40. Configurable properties when using Redis support</caption>
+<caption class="title">Table 38. Configurable properties when using Redis support</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -8084,7 +7780,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 41. Configurable properties of spring-cloud-azure-resourcemanager</caption>
+<caption class="title">Table 39. Configurable properties of spring-cloud-azure-resourcemanager</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
