@@ -23,28 +23,33 @@ The `spring-cloud-azure-starter-active-directory` (`aad-starter` for short) prov
 ==== Configuration
 
 .Configurable properties of spring-cloud-azure-starter-active-directory
-[cols="<,<", options="header"]
+
+[cols="<,<,<", options="header"]
 |===
-|Property |Description
-|*spring.cloud.azure.active-directory*.app-id-uri |It used in resource server, used to validate the audience in access_token. access_token is valid only when the audience in access_token equal to client-id or app-id-uri 
-|*spring.cloud.azure.active-directory*.application-type |Refer to <<#property-example-1-application-type,Application type>>.
-|*spring.cloud.azure.active-directory*.authorization-clients |A map configure the resource APIs the application is going to visit. Each item corresponding to one resource API the application is going to visit. In Spring code, each item corresponding to one OAuth2AuthorizedClient object
-|*spring.cloud.azure.active-directory*.authorization-clients.AZURE_CLIENT_NAME.authorization-grant-type |Type of authorization client. Supported types are https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow[authorization_code] (default type for webapp), https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow[on_behalf_of] (default type for resource-server), https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow[client_credentials].
-|*spring.cloud.azure.active-directory*.authorization-clients.AZURE_CLIENT_NAME.on-demand |This is used for incremental consent. The default value is false. If it's true, it's not consent when user login, when application needs the additional permission, incremental consent is performed with one OAuth2 authorization code flow.
-|*spring.cloud.azure.active-directory*.authorization-clients.AZURE_CLIENT_NAME.scopes |API permissions of a resource server that the application is going to acquire.
-|*spring.cloud.azure.active-directory*.credential.client-id |Registered application ID in Azure AD.
-|*spring.cloud.azure.active-directory*.credential.client-secret |Client secret of the registered application.
-|*spring.cloud.azure.active-directory*.post-logout-redirect-uri |Redirect uri for posting log-out.
-|*spring.cloud.azure.active-directory*.profile.environment.active-directory-endpoint |Base uri for authorization server, the default value is `https://login.microsoftonline.com/`.
-|*spring.cloud.azure.active-directory*.profile.environment.microsoft-graph-endpoint |Microsoft graph endpoint. The default value is `https://graph.microsoft.com/`.
-|*spring.cloud.azure.active-directory*.profile.tenant-id |Azure Tenant ID.
-|*spring.cloud.azure.active-directory*.redirect-uri-template |Used by the authorization server to return responses containing authorization credentials to the client via the resource owner user-agent.
-|*spring.cloud.azure.active-directory*.resource-server.claim-to-authority-prefix-map |Claim to authority prefix map. Default map is: "scp" -&gt; "SCOPE_", "roles" -&gt; `APPROLE_`.
-|*spring.cloud.azure.active-directory*.resource-server.principal-claim-name |Principal claim name. Default value is "sub".
-|*spring.cloud.azure.active-directory*.user-group.allowed-group-ids |Users' group id can be use in `@PreAuthorize(&quot;hasRole(&#39;ROLE_group_id_1&#39;)&quot;)`. Not all group id will take effect, only group id configured in this property will take effect. If this property's value is `all`, then all group id will take effect.
-|*spring.cloud.azure.active-directory*.user-group.allowed-group-names |Users' group name can be use in `@PreAuthorize(&quot;hasRole(&#39;ROLE_group_name_1&#39;)&quot;)`. Not all group name will take effect, only group names configured in this property will take effect.
-|*spring.cloud.azure.active-directory*.user-group.use-transitive-members |Whether to use `/v1.0/me/transitiveMemberOf` instead of  `/v1.0/me/memberOf` to get groups.
-|*spring.cloud.azure.active-directory*.user-name-attribute |Decide which claim to be principal's name. 
+|Name |Default |Description
+|*spring.cloud.azure.active-directory*.app-id-uri |  | App ID URI which might be used in the "aud" claim of an id_token.
+|*spring.cloud.azure.active-directory*.application-type |  | Type of the AAD application.
+|*spring.cloud.azure.active-directory*.authenticate-additional-parameters |  | Add additional parameters to the Authorization URL.
+|*spring.cloud.azure.active-directory*.authorization-clients |  | The OAuth2 authorization clients.
+|*spring.cloud.azure.active-directory*.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.active-directory*.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.active-directory*.jwk-set-cache-lifespan | `5` | The lifespan of the cached JWK set before it expires, default is 5 minutes.
+|*spring.cloud.azure.active-directory*.jwk-set-cache-refresh-time | `5` | The refresh time of the cached JWK set before it expires, default is 5 minutes.
+|*spring.cloud.azure.active-directory*.jwt-connect-timeout |  | Connection Timeout for the JWKSet Remote URL call.
+|*spring.cloud.azure.active-directory*.jwt-read-timeout |  | Read Timeout for the JWKSet Remote URL call.
+|*spring.cloud.azure.active-directory*.jwt-size-limit |  | Size limit in Bytes of the JWKSet Remote URL call.
+|*spring.cloud.azure.active-directory*.post-logout-redirect-uri |  | The redirect uri after logout.
+|*spring.cloud.azure.active-directory*.profile.cloud |  | Name of the Azure cloud to connect to. Supported types are: AZURE, AZURE_CHINA, AZURE_GERMANY, AZURE_US_GOVERNMENT, OTHER.
+|*spring.cloud.azure.active-directory*.profile.environment |  | Properties to Azure Active Directory endpoints.
+|*spring.cloud.azure.active-directory*.profile.tenant-id |  | Azure Tenant ID.
+|*spring.cloud.azure.active-directory*.redirect-uri-template | `{baseUrl}/login/oauth2/code/` | Redirection Endpoint: Used by the authorization server to return responses containing authorization credentials to the client via the resource owner user-agent.
+|*spring.cloud.azure.active-directory*.resource-server.claim-to-authority-prefix-map |  | Configure which claim will be used to build GrantedAuthority, and prefix of the GrantedAuthority's string value. Default value is: "scp" -> "SCOPE_", "roles" -> "APPROLE_".
+|*spring.cloud.azure.active-directory*.resource-server.principal-claim-name |  | Configure which claim in access token be returned in AuthenticatedPrincipal#getName. Default value is "sub".
+|*spring.cloud.azure.active-directory*.session-stateless | `false` | If true activates the stateless auth filter AADAppRoleStatelessAuthenticationFilter. The default is false which activates AADAuthenticationFilter.
+|*spring.cloud.azure.active-directory*.user-group.allowed-group-ids |  | The group ids can be used to construct GrantedAuthority.
+|*spring.cloud.azure.active-directory*.user-group.allowed-group-names |  | The group names can be used to construct GrantedAuthority.
+|*spring.cloud.azure.active-directory*.user-group.use-transitive-members | `false` | If "true", use "v1.0/me/transitiveMemberOf" to get members. Otherwise, use "v1.0/me/memberOf".
+|*spring.cloud.azure.active-directory*.user-name-attribute |  | Decide which claim to be principal's name.
 |===
 
 Here are some examples about how to use these properties:
@@ -709,19 +714,23 @@ Azure Active Directory (Azure AD) B2C is an identity management service that ena
 ==== Configuration
 
 .Configurable properties of spring-cloud-azure-starter-active-directory-b2c
-[cols="<,<", options="header"]
+[cols="<,<,<", options="header"]
 |===
-|Parameter |Description
-|*spring.cloud.azure.active-directory.b2c*.base-uri |Base uri for authorization server, if both `tenant` and `baseUri` are configured at the same time, only `baseUri` takes effect.
-|*spring.cloud.azure.active-directory.b2c*.client-id |The registered application ID in Azure AD B2C.
-|*spring.cloud.azure.active-directory.b2c*.client-secret |The client secret of a registered application.
-|*spring.cloud.azure.active-directory.b2c*.authorization-clients |A map to list all authorization clients created on Azure Portal.
-|*spring.cloud.azure.active-directory.b2c*.login-flow |The key name of sign in user flow.
-|*spring.cloud.azure.active-directory.b2c*.logout-success-url |The target URL after a successful logout.
-|*spring.cloud.azure.active-directory.b2c*.tenant(Deprecated) |The Azure AD B2C's tenant name, this is only suitable for Global cloud.
-|*spring.cloud.azure.active-directory.b2c*.tenant-id |The Azure AD B2C's tenant id.
-|*spring.cloud.azure.active-directory.b2c*.user-flows |A map to list all user flows defined on Azure Portal.
-|*spring.cloud.azure.active-directory.b2c*.user-name-attribute-name | The attribute name of the username.
+|Name |Default | Description
+|*spring.cloud.azure.active-directory.b2c*.app-id-uri |  | App ID URI which might be used in the "aud" claim of a token.
+|*spring.cloud.azure.active-directory.b2c*.authenticate-additional-parameters |  | Additional parameters for authentication.
+|*spring.cloud.azure.active-directory.b2c*.authorization-clients |  | Specify client configuration.
+|*spring.cloud.azure.active-directory.b2c*.base-uri |  | AAD B2C endpoint base uri.
+|*spring.cloud.azure.active-directory.b2c*.credential |  | AAD B2C credential information.
+|*spring.cloud.azure.active-directory.b2c*.jwt-connect-timeout |  | Connection Timeout for the JWKSet Remote URL call.
+|*spring.cloud.azure.active-directory.b2c*.jwt-read-timeout |  | Read Timeout for the JWKSet Remote URL call.
+|*spring.cloud.azure.active-directory.b2c*.jwt-size-limit |  | Size limit in Bytes of the JWKSet Remote URL call.
+|*spring.cloud.azure.active-directory.b2c*.login-flow | `sign-up-or-sign-in` | Specify the primary sign-in flow key.
+|*spring.cloud.azure.active-directory.b2c*.logout-success-url | `http://localhost:8080/login` | Redirect url after logout.
+|*spring.cloud.azure.active-directory.b2c*.profile |  | AAD B2C profile information.
+|*spring.cloud.azure.active-directory.b2c*.reply-url | `{baseUrl}/login/oauth2/code/` | Reply url after get authorization code.
+|*spring.cloud.azure.active-directory.b2c*.user-flows |  | User flows.
+|*spring.cloud.azure.active-directory.b2c*.user-name-attribute-name |  | User name attribute name.
 |===
 
 For full configurations, check link:appendix.html#migration-guide-for-4-0[the Appendix page].
