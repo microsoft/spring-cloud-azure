@@ -475,44 +475,6 @@ public void producerError(Message<?> message) {
 ===== Event Hubs message headers
 See the <<si-eh-headers, Event Hubs message headers>> for the basic message headers supported.
 
-When the batch-consumer mode is enabled, the specific headers of batched messages are listed as below, which contains a list of values from each single Event Hubs event.
-
-.Mapping between Batch Event Hubs Properties and Spring Headers
-[cols="<,<,<,<", options="header"]
-|===
-|Event Hubs Event Properties | Spring Batch Message Header Constants | Type | Description
-
-|Enqueued time
-|com.azure.spring.eventhubs.support.EventHubsHeaders#ENQUEUED_TIME
-|List of Instant
-|List of the instant, in UTC, of when each event was enqueued in the Event Hub partition.
-
-|Offset
-|com.azure.spring.eventhubs.support.EventHubsHeaders#OFFSET
-|List of Long
-|List of the offset of each event when it was received from the associated Event Hub partition.
-
-|Partition key
-|ccom.azure.spring.messaging.AzureHeaders#PARTITION_KEY
-|List of String
-|List of the partition hashing key if it was set when originally publishing each event.
-
-|Sequence number
-|com.azure.spring.eventhubs.support.EventHubsHeaders#SEQUENCE_NUMBER
-|List of Long
-|List of the sequence number assigned to each event when it was enqueued in the associated Event Hub partition.
-
-|System properties
-|com.azure.spring.eventhubs.support.EventHubsHeaders#BATCH_CONVERTED_SYSTEM_PROPERTIES
-|List of Map
-|List of the system properties of each event.
-
-|Application properties
-|com.azure.spring.eventhubs.support.EventHubsHeaders#BATCH_CONVERTED_APPLICATION_PROPERTIES
-|List of Map
-|List of the applocation properties of each event, where all customized message headers or event properties are placed.
-|===
-
 ==== Samples
 
 Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/eventhubs/spring-cloud-azure-stream-binder-eventhubs[azure-spring-boot-samples] for more details.
