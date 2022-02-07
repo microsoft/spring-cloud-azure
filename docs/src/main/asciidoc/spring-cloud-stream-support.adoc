@@ -134,7 +134,7 @@ TIP: Common Azure Service SDK configuration options are configurable for Storage
 
 NOTE: The default maximum connection pool size of the Storage Blob client is changed from `500` in version 3.x to `16` now, and the pending acquire queue size which is double of pool size is then `32` now. To override them, please set the property `spring.cloud.azure.eventhubs.processor.checkpoint-store.client.maximum-connection-pool-size`.
 
-===== Azure Event Hubs Binding Configuration Options
+===== Azure Event Hubs Binding Configuration Properties
 Below options are divided into four sections: Consumer Properties, Advanced Consumer
 Configurations, Producer Properties and Advanced Producer Configurations.
 
@@ -214,7 +214,7 @@ The above <<eventhubs-connection-configration, connection>>, <<Checkpoint Config
 The above <<eventhubs-connection-configration, connection>> and <<Configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder producer, which can be configured with the prefix `spring.cloud.stream.eventhubs.bindings.<binding-name>.producer.`.
 
 ==== Basic Usage
-===== Sending and Receiving messages from/to Event Hubs
+===== Sending and receiving messages from/to Event Hubs
 Step 1. Fill the configuration options with credential information.
 
 - For credentials as connection string, configure below properties in application.yml:
@@ -475,6 +475,18 @@ public void producerError(Message<?> message) {
 }
 ----
 
+- Global default error channel
+
+A global error channel called "errorChannel" is created by default Spring Integration, which allows users to subscribe many endpoints to it.
+
+[source,java]
+----
+@ServiceActivator(inputChannel = "errorChannel")
+public void producerError(Message<?> message) {
+    LOGGER.error("Handling ERROR: " + message);
+}
+----
+
 [#scs-eh-headers]
 ===== Event Hubs message headers
 See the <<si-eh-headers, Event Hubs message headers>> for the basic message headers supported.
@@ -526,8 +538,7 @@ Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/
 === Spring Cloud Stream Binder for Azure Service Bus
 
 ==== Key concepts
-The Spring Cloud Stream Binder for Azure Service Bus provides the binding implementation for the Spring Cloud Stream.
-
+The Spring Cloud Stream Binder for Azure Service Bus provides the binding implementation for the Spring Cloud Stream Framework.
 This implementation uses Spring Integration Service Bus Channel Adapters at its foundation.
 
 ===== Scheduled Message
@@ -559,12 +570,13 @@ Alternatively, you can also use the Azure Spring Cloud Stream Service Bus Starte
 ----
 
 ==== Configuration
+The binder provides the following 3 parts of configuration options:
+
+[#servicebus-connection-configration]
+===== Connection Configuration Properties
+These properties are exposed via `com.azure.spring.cloud.autoconfigure.servicebus.properties.AzureServiceBusProperties`.
 
 NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
-
-===== Azure Common Configuration Options
-Below properties can also be configured with the default Spring Cloud Azure unified properties,
-of which the prefix is changed from *spring.cloud.azure.servicebus* to *spring.cloud.azure*.
 
 .Common configurable properties of spring-cloud-azure-stream-binder-servicebus
 [cols="<,<,<", options="header"]
@@ -574,153 +586,6 @@ of which the prefix is changed from *spring.cloud.azure.servicebus* to *spring.c
 |*spring.cloud.azure.servicebus*.enabled
 | boolean
 | Whether an Azure Service Bus is enabled.
-
-|*spring.cloud.azure.servicebus*.credential.*
-| NA
-| Properties used for getting token credential.
-|*spring.cloud.azure.servicebus*.credential.client-id
-| String
-| Client id to use when performing service principal authentication with Azure.
-
-|*spring.cloud.azure.servicebus*.credential.client-secret
-| String
-| Client secret to use when performing service principal authentication with Azure.
-
-|*spring.cloud.azure.servicebus*.
-credential.client-certificate-path
-| String
-| Path of a PEM certificate file to use when performing service principal authentication with Azure.
-
-|*spring.cloud.azure.servicebus*.credential.client-certificate-password
-| String | Password of the certificate file.
-
-|*spring.cloud.azure.servicebus*.credential.username
-| String
-| Username to use when performing username/password authentication with Azure.
-
-|*spring.cloud.azure.servicebus*.credential.password
-| String
-| Password to use when performing username/password authentication with Azure.
-
-|*spring.cloud.azure.servicebus*.
-credential.managed-identity-client-id
-| String
-| Client id to use when using managed identity to authenticate with Azure.
-
-|*spring.cloud.azure.servicebus*.profile.*
-| String
-| Properties related to an Azure subscription.
-
-|*spring.cloud.azure.servicebus*.profile.tenant-id
-| String
-| Tenant id for Azure resources.
-
-|*spring.cloud.azure.servicebus*.profile.subscription-id
-| String
-| Subscription id to use when connecting to Azure resources.
-
-|*spring.cloud.azure.servicebus*.profile.cloud
-| AzureProfileAware.CloudType
-| Name of the Azure cloud to connect to.
-
-|*spring.cloud.azure.servicebus*.
-profile.environment.*
-| NA
-| Properties to Azure services, such as endpoints, resource ids, etc.
-
-|*spring.cloud.azure.servicebus*.
-profile.environment.active-directory-endpoint
-| String
-| The Azure Active Directory endpoint to connect to.
-
-|*spring.cloud.azure.servicebus*.resource.*
-| String
-| Metadata defining an Azure resource.
-|*spring.cloud.azure.servicebus*.
-resource.resource-group
-| String
-| Name of the Azure resource group.
-
-|*spring.cloud.azure.servicebus*.resource.resource-id
-| String
-| Id of the Azure resource group.
-
-|*spring.cloud.azure.servicebus*.resource.region
-| String
-| Name of region.
-
-|*spring.cloud.azure.servicebus*.client.transport-type
-| AmqpTransportType
-| Transport type switches available for AMQP protocol.
-
-|*spring.cloud.azure.servicebus*.retry.*
-| NA
-| Retry properties.
-
-|*spring.cloud.azure.servicebus*.retry.backoff.*
-| NA
-| Backoff properties when a retry fails.
-
-|*spring.cloud.azure.servicebus*.
-retry.backoff.delay
-| Duration
-| Amount of time to wait between retry attempts.
-
-|*spring.cloud.azure.servicebus*.
-retry.backoff.max-delay
-| Duration
-| Maximum permissible amount of time between retry attempts.
-
-|*spring.cloud.azure.servicebus*.
-retry.backoff.multiplier
-| Double
-| Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.
-
-|*spring.cloud.azure.servicebus*.
-retry.max-attempts
-| Integer
-| The maximum number of attempts.
-
-|*spring.cloud.azure.servicebus*.
-retry.timeout
-| Duration
-| Amount of time to wait until a timeout.
-
-|*spring.cloud.azure.servicebus*.proxy.*
-| NA
-| Common proxy properties.
-
-|*spring.cloud.azure.servicebus*.proxy.type
-| String
-| Type of the proxy.
-|*spring.cloud.azure.servicebus*.proxy.hostname
-| String
-| The host of the proxy.
-
-|*spring.cloud.azure.servicebus*.proxy.port
-| Integer
-| The port of the proxy.
-
-|*spring.cloud.azure.servicebus*.
-proxy.authentication-type
-| String
-| Authentication type used against the proxy.
-
-|*spring.cloud.azure.servicebus*.proxy.username
-| String
-| Username used to authenticate with the proxy.
-
-|*spring.cloud.azure.servicebus*.proxy.password
-| String
-| Password used to authenticate with the proxy.
-|===
-
-===== Azure Service Bus Client Configuration Options
-
-.Client configurable properties of spring-cloud-azure-stream-binder-servicebus
-[cols="<,<,<", options="header"]
-|===
-|Property | Type |Description
 
 |*spring.cloud.azure.servicebus*.connection-string
 | String
@@ -734,68 +599,13 @@ proxy.authentication-type
 | String
 | Domain name of an Azure Service Bus Namespace value.
 
-|*spring.cloud.azure.servicebus*.entity-name
-| String
-| Entity name of Azure Service Bus queue or topic.
-
-|*spring.cloud.azure.servicebus*.entity-type
-| ServiceBusEntityType
-| Entity type of Azure Service Bus queue or topic.
-
-|*spring.cloud.azure.servicebus*.
-cross-entity-transactions
-| Boolean
-| Enable cross entity transaction on the connection to Service bus.
-
-|*spring.cloud.azure.servicebus*.producer.*
-| see NOTE
-| Producer configuration options.
-
-|*spring.cloud.azure.servicebus*.consumer.*
-| see NOTE
-| Consumer configuration options.
-
-|*spring.cloud.azure.servicebus*.consumer.sessionEnabled
-| Boolean
-| Consumer Whether session is enabled.
-|*spring.cloud.azure.servicebus*.consumer.autoComplete
-| Boolean
-| Consumer whether auto complete flag.
-
-|*spring.cloud.azure.servicebus*.consumer.prefetchCount
-| Integer
-| Consumer prefetch count.
-
-|*spring.cloud.azure.servicebus*.consumer.subQueue
-| String
-| Consumer sub queue name.
-
-|*spring.cloud.azure.servicebus*.consumer.subscriptionName
-| String
-| Consumer subscription name.
-
-|*spring.cloud.azure.servicebus*.
-consumer.maxAutoLockRenewDuration
-| Duration
-| Consumer max duration for auto lock renew.
-
-|*spring.cloud.azure.servicebus*.consumer.receiveMode
-| String
-| Consumer receive mode.
-
-|*spring.cloud.azure.servicebus*.processor.*
-| see NOTE
-| Processor configuration option.
 |===
 
-NOTE: For configuration of producer, consumer and processor, all the above common and client
-properties
-support to be configured individually by changing the origin prefix from *spring.cloud.azure
-.servicebus* to *spring.cloud.azure.servicebus.producer/consumer/processor*.
+TIP: Common Azure Service SDK configuration options are configurable for the Azure Spring Cloud Stream Service Bus binder as well. The supported configuration options are introduced in link:configuration.html[the Configuration page], and could be configured with either the unified prefix `spring.cloud.azure.` or the prefix of `spring.cloud.azure.servicebus.`.
 
-===== Azure Service Bus Binding Configuration Options
+===== Azure Service Bus Binding Configuration Properties
 Below options are divided into four sections: Consumer Properties, Advanced Consumer
-Configurations, Producer PropertiesProducer Properties, and Advanced Producer Configurations.
+Configurations, Producer Properties and Advanced Producer Configurations.
 
 ====== Consumer Properties
 
@@ -810,20 +620,40 @@ Configurations, Producer PropertiesProducer Properties, and Advanced Producer Co
 
 |*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.checkpoint-mode
 | CheckpointMode
-| The checkpoint mode of checkpointing message.
+| The checkpoint mode of checkpointing message. The supported modes are `MANUAL` and `RECORD`.
 
 |*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.max-concurrent-calls
 | Integer
-| The max number of concurrent calls.
+| Max concurrent messages that the Service Bus processor client should process.
 
 |*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.max-concurrent-sessions
 |Integer
-| The max number of concurrent sessions.
+| Maximum number of concurrent sessions to process at any given time.
+
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.session-aware
+| Boolean
+| Whether session is enabled.
+
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.prefetch-count
+| Integer
+| The prefetch count of the Service Bus processor client.
+
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.sub-queue
+| SubQueue
+| The type of the sub queue to connect to.
+
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.max-auto-lock-renew-duration
+| Duration
+| The amount of time to continue auto-renewing the lock.
+
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.receive-mode
+| ServiceBusReceiveMode
+| The receive mode of the Service Bus processor client.
+
 |===
 
 ====== Advanced Consumer Configuration
-The configuration in the above first 2 sections(`Azure Common Configuration Options`, `Azure Service Bus Client Configuration Options`) can be applied for each specific consumer by replacing the prefix
-of *spring.cloud.azure.servicebus* with *spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.
+The above <<servicebus-connection-configration, connection>> and <<Configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder consumer, which can be configured with the prefix `spring.cloud.stream.servicebus.bindings.<binding-name>.consumer.`.
 
 ====== Producer Properties
 .Producer configurable properties of spring-cloud-azure-stream-binder-servicebus
@@ -835,15 +665,16 @@ of *spring.cloud.azure.servicebus* with *spring.cloud.stream.servicebus.bindings
 for sync of producer.
 |*spring.cloud.stream.servicebus.bindings.<binding-name>.producer*.send-timeout |long | Timeout
 value for sending of producer.
-
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.producer*.entity-type |ServiceBusEntityType | Service Bus entity type of the producer, required for the binding producer.
 |===
 
+IMPORTANT: When using the binding producer, property of `spring.cloud.stream.servicebus.bindings.<binding-name>.producer.entity-type` is required to be configured.
+
 ====== Advanced Producer Configuration
-The configuration in the above first 2 sections(`Azure Common Configuration Options`, `Azure Service Bus Client Configuration Options`) can be applied for each specific producer by replacing the prefix
-of *spring.cloud.azure.servicebus* with *spring.cloud.stream.servicebus.bindings.<binding-name>.producer*.
+The above <<servicebus-connection-configration, connection>> and <<Configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder producer, which can be configured with the prefix `spring.cloud.stream.servicebus.bindings.<binding-name>.producer.`.
 
 ==== Basic Usage
-===== Sending and Receiving messages from/to Service Bus
+===== Sending and receiving messages from/to Service Bus
 Step 1. Fill the configuration options with credential information.
 
 - For credentials as connection string, configure below properties in application.yml:
@@ -915,8 +746,6 @@ spring:
     azure:
       credential:
         managed-identity-client-id: ${MANAGED_IDENTITY_CLIENT_ID}
-      profile:
-        tenant-id: ${TENANT_ID}
       servicebus:
         namespace: ${SERVICEBUS_NAMESPACE}
     stream:
@@ -971,178 +800,98 @@ public Supplier<Message<String>> supply() {
 }
 ----
 
-==== Samples
+===== Partition key support
 
-*Example: Manually set the partition key for the message*
+The binder supports link:https://docs.microsoft.com/azure/service-bus-messaging/service-bus-partitioning[Service Bus partitioning] by allowing setting partition key and session id in the message header. This section introduces how to set partition key for messages.
 
-This example demonstrates how to manually set the partition key for the message in the application.
-
-*Approach 1:* Set partition key expression.
-
-This example requires that `spring.cloud.stream.default.producer.partitionKeyExpression` be set `&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;`.
+Spring Cloud Stream provides a partition key SpEL expression property `spring.cloud.stream.bindings.<binding-name>.producer.partition-key-expression`. For example, setting this properts as `&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;` and add a header called <message-header-key>. Spring Cloud Stream will use the value for this header when evaluating the above expression to assign a partition key. Here is an example producer code:
 
 [source,java]
 ----
-@PostMapping("/messages")
-public ResponseEntity<String> sendMessage(@RequestParam String message) {
-    LOGGER.info("Going to add message {} to Sinks.Many.", message);
-    many.emitNext(MessageBuilder.withPayload(message)
-                                .setHeader("<message-header-key>", "Customize partirion key")
-                                .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-    return ResponseEntity.ok("Sent!");
+@Bean
+public Supplier<Message<String>> generate() {
+    return () -> {
+        String value = “random payload”;
+    	return MessageBuilder.withPayload(value)
+            .setHeader("<message-header-key>", value.length() % 4)
+            .build();
+    };
 }
 ----
 
+===== Session support
 
-NOTE: When using `application.yml` to configure the partition key, its priority will be the lowest.
-It will take effect only when the `ServiceBusMessageHeaders.SESSION_ID`, `ServiceBusMessageHeaders.PARTITION_KEY`, `AzureHeaders.PARTITION_KEY` are not configured.
-
-*Approach 2:* Manually add the partition Key in the message header by code.
-
-
-_Recommended:_ Use `ServiceBusMessageHeaders.PARTITION_KEY` as the key of the header.
+The binder supports link:https://docs.microsoft.com/azure/service-bus-messaging/message-sessions[message sessions] of Service Bus. Session id of a message could be set via the message header.
 
 [source,java]
 ----
-@PostMapping("/messages")
-public ResponseEntity<String> sendMessage(@RequestParam String message) {
-    LOGGER.info("Going to add message {} to Sinks.Many.", message);
-    many.emitNext(MessageBuilder.withPayload(message)
-                                .setHeader(ServiceBusMessageHeaders.PARTITION_KEY, "Customize partirion key")
-                                .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-    return ResponseEntity.ok("Sent!");
+@Bean
+public Supplier<Message<String>> generate() {
+    return () -> {
+        String value = “random payload”;
+    	return MessageBuilder.withPayload(value)
+            .setHeader(ServiceBusMessageHeaders.SESSION_ID, "Customize session id")
+            .build();
+    };
 }
 ----
 
-_Not recommended but currently supported:_ `AzureHeaders.PARTITION_KEY` as the key of the header.
-
-[source,java]
-----
-@PostMapping("/messages")
-public ResponseEntity<String> sendMessage(@RequestParam String message) {
-    LOGGER.info("Going to add message {} to Sinks.Many.", message);
-    many.emitNext(MessageBuilder.withPayload(message)
-                                .setHeader(AzureHeaders.PARTITION_KEY, "Customize partirion key")
-                                .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-    return ResponseEntity.ok("Sent!");
-}
-----
-
-NOTE: When both `ServiceBusMessageHeaders.PARTITION_KEY` and `AzureHeaders.PARTITION_KEY` are set in the message headers,
-`ServiceBusMessageHeaders.PARTITION_KEY` is preferred.
-
-*Example: Set the session id for the message*
-
-This example demonstrates how to manually set the session id of a message in the application.
-
-[source,java]
-----
-@PostMapping("/messages")
-public ResponseEntity<String> sendMessage(@RequestParam String message) {
-    LOGGER.info("Going to add message {} to Sinks.Many.", message);
-    many.emitNext(MessageBuilder.withPayload(message)
-                                .setHeader(ServiceBusMessageHeaders.SESSION_ID, "Customize session id")
-                                .build(), Sinks.EmitFailureHandler.FAIL_FAST);
-    return ResponseEntity.ok("Sent!");
-}
-----
-
-NOTE: When the `ServiceBusMessageHeaders.SESSION_ID` is set in the message headers, and a different `ServiceBusMessageHeaders.PARTITION_KEY` (or `AzureHeaders.PARTITION_KEY`) header is also set,
+NOTE: According to link:https://docs.microsoft.com/azure/service-bus-messaging/service-bus-partitioning[Service Bus partitioning], session id has higher priority than partition key. So when both of `ServiceBusMessageHeaders#SESSION_ID` and `ServiceBusMessageHeaders#PARTITION_KEY` (or `AzureHeaders#PARTITION_KEY`) headers are set,
 the value of the session id will eventually be used to overwrite the value of the partition key.
 
-*Example: Set Service Bus message headers*
+===== Error channels
+- Consumer error channel
 
-When create a message, developers can specify the header or property of a Service Bus message by
-below constants.
+This channel is open by default, and a default consumer error channel handler is used to send failed messages to the dead-letter queue when `spring.cloud.stream.servicebus.bindings.<binding-name>.consumer.requeue-rejected` is enabled, otherwise the failed messages will be abandoned.
 
+To customize the consumer error channel handler, you can register you own error handler to the related consumer error channel in this way:
 [source,java]
 ----
-@Autowired
-private Sinks.Many<Message<String>> many;
-
-@PostMapping("/messages")
-public ResponseEntity<String> sendMessage(@RequestParam String message) {
-    many.emitNext(MessageBuilder.withPayload(message)
-    .setHeader(SESSION_ID, "group1")
-    .build(),
-    Sinks.EmitFailureHandler.FAIL_FAST);
-    return ResponseEntity.ok("Sent!");
+// Replace destination with spring.cloud.stream.bindings.input.destination
+// Replace group with spring.cloud.stream.bindings.input.group
+@ServiceActivator(inputChannel = "{destination}.{group}.errors")
+public void consumerError(Message<?> message) {
+    LOGGER.error("Handling customer ERROR: " + message);
 }
 ----
 
-The following table illustrates how Spring message headers are mapped to Service Bus message headers and properties.
-For some Service Bus headers that can be mapped to multiple Spring header constants, the priority of different Spring headers is listed.
+- Producer error channel
 
-.Mapping between Service Bus Headers and Spring Headers
-[cols="<,<,<,<", options="header"]
-|===
-|Service Bus Message Headers and Properties | Spring Message Header Constants | Type | Priority Number (Descending priority)
+This channel is not open by default. You need to add a configuration in your application.properties to enable it, like this:
+[source,properties]
+----
+spring.cloud.stream.default.producer.errorChannelEnabled=true
+----
 
-|ContentType
-| org.springframework.messaging.MessageHeaders.CONTENT_TYPE
-| String
-| N/A
+You can handle the error message in this way:
+[source,java]
+----
+// Replace destination with spring.cloud.stream.bindings.output.destination
+@ServiceActivator(inputChannel = "{destination}.errors")
+public void producerError(Message<?> message) {
+    LOGGER.error("Handling Producer ERROR: " + message);
+}
+----
 
-|CorrelationId
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.CORRELATION_ID
-|String
-| N/A
+- Global default error channel
 
-|**MessageId**
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.MESSAGE_ID
-| String
-| 1
+A global error channel called "errorChannel" is created by default Spring Integration, which allows users to subscribe many endpoints to it.
 
-|**MessageId**
-| com.azure.spring.messaging.AzureHeaders.RAW_ID
-| String
-| 2
+[source,java]
+----
+@ServiceActivator(inputChannel = "errorChannel")
+public void producerError(Message<?> message) {
+    LOGGER.error("Handling ERROR: " + message);
+}
+----
 
-|**MessageId**
-| org.springframework.messaging.MessageHeaders.ID
-| UUID
-| 3
+[#scs-sb-headers]
+===== Service Bus message headers
 
-|PartitionKey
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.PARTITION_KEY
-|String
-| N/A
+See the <<si-sb-headers, Service Bus message headers>> for the basic message headers supported.
 
-|ReplyTo
-| org.springframework.messaging.MessageHeaders.REPLY_CHANNEL
-| String
-| N/A
+NOTE: When setting the partiton key, the priority of message header is higher than Spring Cloud Stream property. So `spring.cloud.stream.bindings.<binding-name>.producer.partition-key-expression` will take effect only when none of the headers of `ServiceBusMessageHeaders#SESSION_ID`, `ServiceBusMessageHeaders#PARTITION_KEY`, `AzureHeaders#PARTITION_KEY` is configured.
 
-|ReplyToSessionId
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.REPLY_TO_SESSION_ID
-| String
-| N/A
-
-|**ScheduledEnqueueTimeUtc**
-| com.azure.spring.messaging.AzureHeaders.SCHEDULED_ENQUEUE_MESSAGE
-| Integer
-| 1
-
-|**ScheduledEnqueueTimeUtc**
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.SCHEDULED_ENQUEUE_TIME
-| Instant
-| 2
-
-|SessionID
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.SESSION_ID
-| String
-| N/A
-
-|TimeToLive
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.TIME_TO_LIVE
-|Duration
-| N/A
-
-|To
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.TO
-| String
-| N/A
-|===
+==== Samples
 
 Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/servicebus/spring-cloud-azure-stream-binder-servicebus[azure-spring-boot-samples] for more details.
-
