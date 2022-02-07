@@ -15,8 +15,34 @@ Azure Event Hubs is a big data streaming platform and event ingestion service. I
 
 Spring Integration enables lightweight messaging within Spring-based applications and supports integration with external systems via declarative adapters. Those adapters provide a higher-level of abstraction over Spring’s support for remoting, messaging, and scheduling. The *Spring Integration for Event Hubs* extension project provides inbound and outbound channel adapters and gateways for Azure Event Hubs.
 
-NOTE: RxJava support APIs is dropped from version 4.0.0.
+NOTE: RxJava support APIs are dropped from version 4.0.0.
 Please refer to Javadoc for details.
+
+===== Consumer Group
+
+Event Hubs provides similar support of consumer group as Apache Kafka, but with slight different logic. While Kafka
+stores all committed offsets in the broker, you have to store offsets of Event Hubs messages
+being processed manually. Event Hubs SDK provide the function to store such offsets inside Azure Storage Account. So
+that's why you have to fill `spring.cloud.eventhubs.processor.checkpoint-store.*`.
+
+===== Partitioning Support
+
+Event Hubs provides a similar concept of physical partition as Kafka. But unlike Kafka's auto re-balancing between consumers and partitions, Event Hubs provides a kind of preemptive mode. The storage account acts as a lease to determine which partition is owned by which consumer. When a new consumer starts, it will try to steal some partitions
+from most heavy-loaded consumers to achieve the workload balancing.
+
+To specify the load balancing strategy, a bean of `com.azure.spring.messaging.PropertiesSupplier` should be provided with the key as the event hub name, and the value as `com.azure.spring.eventhubs.core.properties.ProcessorProperties` where the load balancing policy can be configured.
+
+===== Batch Consumer Support
+The `EventHubsInboundChannelAdapter` supports the batch-consuming mode. To enable it, users can specify the listener mode as `com.azure.spring.messaging.ListenerMode.BATCH` when construct an `EventHubsInboundChannelAdapter` instance.
+When enabled, an **org.springframework.messaging.Message** of which the payload is a list of batched events will be received and passed to the consumer function. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of partition id, checkpointer and last enqueued properties, they are presented as a single value for the entire batch of events shares the same one. See <<si-eh-headers, Event Hubs Message Headers>> for more details.
+
+NOTE: The checkpoint header only exists when **MANUAL** checkpoint mode is used.
+
+Checkpointing of batch consumer supports two modes: `BATCH` and `MANUAL`. `BATCH` mode is an auto checkpointing mode to checkpoint the entire batch of events together once they are received by the binder. `MANUAL` mode is to checkpoint the events by users. When used, the
+**com.azure.spring.messaging.checkpoint.Checkpointer** will be passes into the message header, and users could use it to do checkpointing.
+
+The batch consuming policy can be specified by properties of `max-size` and `max-wait-time`, where `max-size` is a necessary property while `max-wait-time` is optional.
+To specify the batch consuming strategy, a bean of `com.azure.spring.messaging.PropertiesSupplier` should be provided with the key as the event hub name, and the value as `com.azure.spring.eventhubs.core.properties.ProcessorProperties` where the batch consuming policy can be configured.
 
 ==== Dependency Setup
 
@@ -26,7 +52,6 @@ Please refer to Javadoc for details.
 	<groupId>com.azure.spring</groupId>
 	<artifactId>spring-cloud-azure-starter-integration-eventhubs</artifactId>
 </dependency>
-
 ----
 
 ==== Configuration
@@ -37,129 +62,78 @@ This starter provides the following 2 parts of configuration options:
 
 NOTE: From version 4.0.0, when the property of **spring.cloud.azure.eventhubs.processor.checkpoint-store.create-container-if-not-exists** is not enabled manually, no Storage container will be created automatically with the name from **spring.cloud.azure.eventhubs.event-hub-name**.
 
-===== Azure Common Configuration Options
-Below properties can also be configured with the default Spring Cloud Azure unified properties by changing the prefix from *spring.cloud.azure.eventhubs* to *spring.cloud.azure*.
+[#eventhubs-connection-configration]
+===== Connection Configuration Properties
+These properties are exposed via `com.azure.spring.cloud.autoconfigure.eventhubs.properties.AzureEventHubsProperties`.
 
-.Common configurable properties of spring-cloud-azure-starter-integration-eventhubs
-[cols="3,1,4", options="header"]
+NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+
+.Connection configurable properties of spring-cloud-azure-stream-binder-eventhubs
+[cols="<,<,<", options="header"]
 |===
 |Property | Type |Description
-|*spring.cloud.azure.eventhubs*.enabled | boolean | Whether Azure Event Hubs service is enabled.
-|*spring.cloud.azure.eventhubs*.credential.* | NA | Properties used for getting token credential.
 
-|*spring.cloud.azure.eventhubs*.
-credential.clientId | String | Client id to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.eventhubs*.enabled
+| boolean
+| Whether an Azure Event Hubs is enabled.
 
-|*spring.cloud.azure.eventhubs*.
-credential.clientSecret | String | Client secret to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.eventhubs*.connection-string
+| String
+| Event Hubs Namespace connection string value.
 
-|*spring.cloud.azure.eventhubs*.
-credential.clientCertificatePath | String | Path of a PEM certificate file to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.eventhubs*.namespace
+| String
+| Event Hubs Namespace value.
 
-|*spring.cloud.azure.eventhubs*.
-credential.clientCertificatePassword | String | Password of the certificate file.
+|*spring.cloud.azure.eventhubs*.domain-name
+| String
+| Domain name of an Azure Event Hubs Namespace value.
 
-|*spring.cloud.azure.eventhubs*.
-credential.username | String | Username to use when performing username/password authentication with Azure.
+|*spring.cloud.azure.eventhubs*.custom-endpoint-address
+| String
+| Custom Endpoint address.
 
-|*spring.cloud.azure.eventhubs*.
-credential.password | String | Password to use when performing username/password authentication with Azure.
-
-|*spring.cloud.azure.eventhubs*.
-credential.managedIdentityClientId | String | Client id to use when using managed identity to authenticate with Azure.
-
-|*spring.cloud.azure.eventhubs*.profile.* | String | Properties related to an Azure subscription.
-|*spring.cloud.azure.eventhubs*.profile.tenantId | String | Tenant id for Azure resources.
-
-|*spring.cloud.azure.eventhubs*.
-profile.subscriptionId | String | Subscription id to use when connecting to Azure resources.
-
-|*spring.cloud.azure.eventhubs*.profile.cloud | AzureProfileAware.CloudType | Name of the Azure cloud to connect to.
-
-|*spring.cloud.azure.eventhubs*.
-profile.environment.* | NA | Properties to Azure services, such as endpoints, resource ids, etc.
-
-|*spring.cloud.azure.eventhubs*.
-profile.environment.activeDirectoryEndpoint | String | The Azure Active Directory endpoint to connect to.
-
-|*spring.cloud.azure.eventhubs*.resource.* | String | Metadata defining an Azure resource.
-
-|*spring.cloud.azure.eventhubs*.
-resource.resourceGroup | String | Name of the Azure resource group.
-
-|*spring.cloud.azure.eventhubs*.
-resource.resourceId | String | ID of the Azure resource group.
-
-|*spring.cloud.azure.eventhubs*.resource.region | String | Name of region.
-
-|*spring.cloud.azure.eventhubs*.
-client.transportType | AmqpTransportType | Transport type switches available for AMQP protocol.
-
-|*spring.cloud.azure.eventhubs*.retry.* | NA | Retry properties.
-
-|*spring.cloud.azure.eventhubs*.
-retry.backoff.* | NA | Backoff properties when a retry fails.
-
-|*spring.cloud.azure.eventhubs*.
-retry.backoff.delay | Duration | Amount of time to wait between retry attempts.
-
-|*spring.cloud.azure.eventhubs*.
-retry.backoff.maxDelay | Duration | Maximum permissible amount of time between retry attempts.
-
-|*spring.cloud.azure.eventhubs*.
-retry.backoff.multiplier | Double | Multiplier used to calculate the next backoff delay. If positive, then used as a multiplier for generating the next delay for backoff.
-
-|*spring.cloud.azure.eventhubs*.
-retry.maxAttempts | Integer | The maximum number of attempts.
-
-|*spring.cloud.azure.eventhubs*.retry.timeout | Duration | Amount of time to wait until a timeout.
-|*spring.cloud.azure.eventhubs*.proxy.* | NA | Common proxy properties.
-|*spring.cloud.azure.eventhubs*.proxy.type | String | Type of the proxy.
-|*spring.cloud.azure.eventhubs*.proxy.hostname | String | The host of the proxy.
-|*spring.cloud.azure.eventhubs*.proxy.port | Integer | The port of the proxy.
-
-|*spring.cloud.azure.eventhubs*.
-proxy.authenticationType | String | Authentication type used against the proxy.
-
-|*spring.cloud.azure.eventhubs*.proxy.username | String | Username used to authenticate with the proxy.
-|*spring.cloud.azure.eventhubs*.proxy.password | String | Password used to authenticate with the proxy.
 |===
 
-===== Azure Event Hubs Client Configuration Options
-Below options are used to configure Azure Event Hubs SDK Client.
+TIP: Common Azure Service SDK configuration options are configurable for the Azure Spring Cloud Stream Event Hubs binder as well. The supported configuration options are introduced in link:configuration.html[the Configuration page], and could be configured with either the unified prefix `spring.cloud.azure.` or the prefix of `spring.cloud.azure.eventhubs.`.
 
-.Client configurable properties of spring-cloud-azure-starter-integration-storage-queue
-[cols="3*", options="header"]
+===== Checkpoint Configuration Properties
+These properties are exposed via `com.azure.spring.cloud.autoconfigure.eventhubs.properties.AzureEventHubsProperties.Processor.BlobCheckpointStore`
+for the configuration of `BlobCheckpointStore`, which is the default implementation of `CheckpointStore` to use Storage Blobs for persisting partition ownership and checkpoint information.
+
+NOTE: From version 4.0.0, when the property of **spring.cloud.azure.eventhubs.processor.checkpoint-store.create-container-if-not-exists** is not enabled manually, no Storage container will be created automatically with the name from **spring.cloud.stream.bindings.<binding-name>.destination**.
+
+.Checkpointing configurable properties of spring-cloud-azure-stream-binder-eventhubs
+[cols="<,<,<", options="header"]
 |===
 |Property | Type |Description
-|*spring.cloud.azure.eventhubs*.connection-string | String | Event Hubs Namespace connection string value.
-|*spring.cloud.azure.eventhubs*.namespace | String | Event Hubs Namespace value.
-|*spring.cloud.azure.eventhubs*.domainName | String | Domain name of an Azure Event Hubs Namespace value.
-|*spring.cloud.azure.eventhubs*.eventHubName | String | Name of an Event Hub entity.
-|*spring.cloud.azure.eventhubs*.customEndpointAddress | String | Custom Endpoint address.
-|*spring.cloud.azure.eventhubs*.isSharedConnection | Boolean | Whether to use the same connection for different Event Hub producer / consumer client.
 
-|*spring.cloud.azure.eventhubs*.
-processor.checkpointStore.* | NA | Blob checkpoint store configuration options.
+|*spring.cloud.azure.eventhubs.processor.checkpoint-store*.create-container-if-not-exists
+|Boolean
+|If allowed creating containers if not exists.
 
-|*spring.cloud.azure.eventhubs*.
-processor.checkpointStore.createContainerIfNotExists | Boolean | If allowed creating container if not exists.
+|*spring.cloud.azure.eventhubs.processor.checkpoint-store*.account-name
+| String
+| Name for the storage account.
 
-|*spring.cloud.azure.eventhubs*.
-processor.checkpointStore.customerProvidedKey | String | Base64 encoded string of the encryption key.
+|*spring.cloud.azure.eventhubs.processor.checkpoint-store*.account-key
+| String
+| Storage account access key.
 
-|*spring.cloud.azure.eventhubs*.
-processor.checkpointStore.encryptionScope | String | Encryption scope to encrypt blob contents on the server.
-
-|*spring.cloud.azure.eventhubs*.
-processor.checkpointStore.serviceVersion | BlobServiceVersion | The versions of Azure Storage Blob supported by this client library.
-
-|*spring.cloud.azure.eventhubs*.
-processor.checkpointStore.blobName | String | Storage blob name.
-
-|*spring.cloud.azure.eventhubs*.
-processor.checkpointStore.containerName | String | Storage container name.
+|*spring.cloud.azure.eventhubs.processor.checkpoint-store*.container-name
+| String
+| Storage container name.
 |===
+
+TIP: Common Azure Service SDK configuration options are configurable for Storage Blob checkpoint store as well. The supported configuration options are introduced in link:configuration.html[the Configuration page], and could be configured with either the unified prefix `spring.cloud.azure.` or the prefix of `spring.cloud.azure.eventhubs.processor.checkpoint-store`.
+
+NOTE: The default maximum connection pool size of the Storage Blob client is changed from `500` in version 3.x to `16` now, and the pending acquire queue size which is double of pool size is then `32` now. To override them, please set the property `spring.cloud.azure.eventhubs.processor.checkpoint-store.client.maximum-connection-pool-size`.
+
+===== Event Hub Processor Configuration Properties
+
+The `EventHubsInboundChannelAdapter` uses the `EventProcessorClient` to consume messages from an Event Hub, to configure the overall properties of an `EventProcessorClient`,
+a bean of `com.azure.spring.messaging.PropertiesSupplier` should be provided with the key as the event hub name, and the value as `com.azure.spring.eventhubs.core.properties.ProcessorProperties` where the customized properties can be configured.
+
 
 ==== Basic Usage
 ===== Send messages to Azure Event Hubs
@@ -173,6 +147,11 @@ spring:
     azure:
       eventhubs:
         connection-string: ${AZURE_SERVICE_BUS_CONNECTION_STRING}
+        processor:
+          checkpoint-store:
+            container-name: ${CHECKPOINT-CONTAINER}
+            account-name: ${CHECKPOINT-STORAGE-ACCOUNT}
+            account-key: ${CHECKPOINT-ACCESS-KEY}
 ----
 
 * For credentials as MSI, configure below properties in `application.yml`:
@@ -183,10 +162,12 @@ spring:
     azure:
       credential:
         managed-identity-client-id: ${AZURE_CLIENT_ID}
-      profile:
-        tenant-id: ${AZURE_TENANT_ID}
       eventhubs:
         namespace: ${AZURE_SERVICE_BUS_NAMESPACE}
+        processor:
+          checkpoint-store:
+            container-name: ${CONTAINER_NAME}
+            account-name: ${ACCOUNT_NAME}
 ----
 
 * For credentials as service principal, configure below properties in application.yml:
@@ -202,6 +183,10 @@ spring:
         tenant-id: ${AZURE_TENANT_ID}
       eventhubs:
         namespace: ${AZURE_SERVICE_BUS_NAMESPACE}
+        processor:
+          checkpoint-store:
+            container-name: ${CONTAINER_NAME}
+            account-name: ${ACCOUNT_NAME}
 ----
 
 Step 2. Create `DefaultMessageHandler` with the bean of `EventHubsTemplate` to send messages to Event Hubs.
@@ -260,10 +245,6 @@ Step 2. Create a bean of message channel as the input channel.
 [source,java]
 ----
 class Demo{
-    private static final String INPUT_CHANNEL = "input";
-    private static final String EVENTHUB_NAME = "eh1";
-    private static final String CONSUMER_GROUP = "$Default";
-
     @Bean
     public MessageChannel input() {
         return new DirectChannel();
@@ -276,6 +257,10 @@ Step 3. Create `EventHubsInboundChannelAdapter` with the bean of `EventHubsProce
 ----
 @Bean
 class Demo{
+    private static final String INPUT_CHANNEL = "input";
+    private static final String EVENTHUB_NAME = "eh1";
+    private static final String CONSUMER_GROUP = "$Default";
+
     public EventHubsInboundChannelAdapter messageChannelAdapter(
             @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel,
             EventHubsProcessorContainer processorContainer) {
@@ -306,12 +291,44 @@ class Demo{
 }
 ----
 
+[#si-eh-batch]
+===== Batch Consumer Support
+To consume messages from Event Hubs in batches is similar with the above sample, besides users should set the batch-consuming related configuration options for `EventHubsInboundChannelAdapter`.
+
+When create `EventHubsInboundChannelAdapter`, the listener mode should be set as `BATCH`. And set the checkpoint mode as either `MANUAL`
+or `BATCH` as needed.
+
+[source,java]
+----
+@Bean
+class Demo{
+    private static final String INPUT_CHANNEL = "input";
+    private static final String EVENTHUB_NAME = "eh1";
+    private static final String CONSUMER_GROUP = "$Default";
+
+    public EventHubsInboundChannelAdapter messageChannelAdapter(
+            @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel,
+            EventHubsProcessorContainer processorContainer) {
+        //Supported checkpoint modes are MANUAL AND BATCH only.
+        CheckpointConfig config = new CheckpointConfig(CheckpointMode.MANUAL);
+
+        EventHubsInboundChannelAdapter adapter =
+                new EventHubsInboundChannelAdapter(processorContainer, EVENTHUB_NAME,
+                        CONSUMER_GROUP, ListenerMode.BATCH, config);
+        adapter.setOutputChannel(inputChannel);
+        return adapter;
+    }
+}
+----
+
+Then a bean of `com.azure.spring.messaging.PropertiesSupplier` should be provided with the key as the event hub name, and the value as `com.azure.spring.eventhubs.core.properties.ProcessorProperties` where the batch consuming policy can be configured.
+
 [#si-eh-headers]
 ===== Event Hubs message headers
 
 The following table illustrates how Event Hubs message properties are mapped to Spring message headers. For Azure Event Hubs, message is called as `event`.
 
-.Mapping between Event Hubs Properties and Spring Headers
+.Mapping between Record Event Hubs Properties and Spring Headers
 [cols="<,<,<,<", options="header"]
 |===
 |Event Hubs Event Properties | Spring Message Header Constants | Type | Description
@@ -355,6 +372,44 @@ The following table illustrates how Event Hubs message properties are mapped to 
 Users can parse the message headers for the related information of each event. To set a message header for the event, all customized headers will be put as an application property of an event, where the header is set as the property key. When events are received from Event Hubs, all application properties will be converted to the message header.
 
 NOTE: Message headers of partition key, enqueued time, offset and sequence number is not supported to be set manually.
+
+When the batch-consumer mode is enabled, the specific headers of batched messages are listed as below, which contains a list of values from each single Event Hubs event.
+
+.Mapping between Batch Event Hubs Properties and Spring Headers
+[cols="<,<,<,<", options="header"]
+|===
+|Event Hubs Event Properties | Spring Batch Message Header Constants | Type | Description
+
+|Enqueued time
+|com.azure.spring.eventhubs.support.EventHubsHeaders#ENQUEUED_TIME
+|List of Instant
+|List of the instant, in UTC, of when each event was enqueued in the Event Hub partition.
+
+|Offset
+|com.azure.spring.eventhubs.support.EventHubsHeaders#OFFSET
+|List of Long
+|List of the offset of each event when it was received from the associated Event Hub partition.
+
+|Partition key
+|ccom.azure.spring.messaging.AzureHeaders#PARTITION_KEY
+|List of String
+|List of the partition hashing key if it was set when originally publishing each event.
+
+|Sequence number
+|com.azure.spring.eventhubs.support.EventHubsHeaders#SEQUENCE_NUMBER
+|List of Long
+|List of the sequence number assigned to each event when it was enqueued in the associated Event Hub partition.
+
+|System properties
+|com.azure.spring.eventhubs.support.EventHubsHeaders#BATCH_CONVERTED_SYSTEM_PROPERTIES
+|List of Map
+|List of the system properties of each event.
+
+|Application properties
+|com.azure.spring.eventhubs.support.EventHubsHeaders#BATCH_CONVERTED_APPLICATION_PROPERTIES
+|List of Map
+|List of the applocation properties of each event, where all customized message headers or event properties are placed.
+|===
 
 ==== Samples
 
