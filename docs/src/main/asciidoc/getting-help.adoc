@@ -8,10 +8,10 @@ If you have any questions about this doc, please ask by creating GitHub issue. A
 |===
 |GitHub repositories | Description
 
-|https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/spring[Azure/azure-sdk-for-java
+|https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/spring[Azure/azure-sdk-for-java]
 |This repository used to hold the source code.
 
-|https://github.com/Azure/AppConfiguration]
+|https://github.com/Azure/AppConfiguration
 |This repository used to hold release notes, and general Azure App Configuration Issues.
 
 |https://github.com/microsoft/spring-cloud-azure/tree/docs/docs/src/main/asciidoc[microsoft/spring-cloud-azure]
