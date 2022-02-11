@@ -1,6 +1,6 @@
 ## Health Indicator
 
-The client library comes with a Health Indicator that check whether the connection to the Azure App Configuration store(s) is healthy or not. If enabled, for each store it gives a status of:
+The client library comes with a Health Indicator that checks whether the connection to the Azure App Configuration store(s) is healthy or not. If enabled for each store, it gives a status of:
 
  * UP - The last connection was successful
  * DOWN- The last connection resulted in a non 200 error code
