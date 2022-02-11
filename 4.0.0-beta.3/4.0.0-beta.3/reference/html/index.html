@@ -1884,6 +1884,18 @@ public class SampleApplication implements CommandLineRunner {
 <div class="paragraph">
 <p><code>.</code> is not supported in secret name. If your application have property name which contain <code>.</code>, like <code>spring.datasource.url</code>, just replace <code>.</code> to <code>-</code> when save secret in Azure Key Vault. For example: Save <code>spring-datasource-url</code> in Azure Key Vault. In your application, you can still use <code>spring.datasource.url</code> to retrieve property value.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This method can not satisfy requirement like <code>spring.datasource-url</code>. When you save <code>spring-datasource-url</code> in Key Vault, only <code>spring.datasource.url</code> and <code>spring-datasource-url</code> is supported to retrieve property value, <code>spring.datasource-url</code> is not supported. To handle this case, please refer to the following section: Use property placeholders.
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect4">
 <h5 id="use-property-placeholders"><a class="anchor" href="#use-property-placeholders"></a><a class="link" href="#use-property-placeholders">Use Property Placeholders</a></h5>
