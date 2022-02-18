@@ -468,7 +468,7 @@ Changes for the child entries for following prefix, please refer the following t
 |*spring.cloud.stream.eventhub.bindings.<binding-name>.consumer*.start-position |*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.initial-partition-event-position
 |===
 
-NOTE: the value type of the start position configuration is also changed. It is changed from an enum of `com.azure.spring.integration.core.api.StartPosition` to a `map` to specify the initial position for each event hub. Thus, the key is the name of each event hub, and the value is of an enum which accepts strings of `EARLIEST` and `LATEST`.
+NOTE: the value type of the start position configuration is also changed. It is changed from an enum of `com.azure.spring.integration.core.api.StartPosition` to a `map` to specify the initial position for each partition. Thus, the key is the partition id, and the value is of an enum which accepts strings of `EARLIEST` and `LATEST`.
 
 For example, you should change from:
 
@@ -509,7 +509,7 @@ spring:
                     count: [checkpoint-count]
                     interval: [checkpoint-interval]
                   initial-partition-event-position:
-                    <event-hub-name>: EARLIEST
+                    <paritition-id>: EARLIEST
 ----
 
 ===== From azure-spring-cloud-stream-binder-servicebus-* to spring-cloud-azure-stream-binder-servicebus
