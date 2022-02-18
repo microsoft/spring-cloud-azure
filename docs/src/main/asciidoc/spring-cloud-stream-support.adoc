@@ -183,9 +183,11 @@ Configurations, Producer Properties and Advanced Producer Configurations.
 |The count used by the consumer to control the number of events the Event Hub consumer will actively receive and queue locally.
 
 |*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.initial-partition-event-position
-|Map of `StartPositionProperties`
+|Map with the key as the partition id, and values of `EARLIEST` and `LATEST`
 |The map containing the event position to use for each partition if a checkpoint for the partition does not exist in checkpoint store. This map is keyed off of the partition id.
 |===
+
+NOTE: The `initial-partition-event-position` configuration accepts a `map` to specify the initial position for each event hub. Thus, its key is the partition id, and the value is of an enum which accepts strings of `EARLIEST` and `LATEST`. For example, you can set it as `spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer.initial-partition-event-position.<partition-id>=EARLIEST`
 
 ====== Advanced Consumer Configuration
 The above <<eventhubs-connection-configration, connection>>, <<Checkpoint Configuration Properties, checkpoint>> and <<Configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder consumer, which can be configured with the prefix `spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer.`.
