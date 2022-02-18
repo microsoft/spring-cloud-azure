@@ -503,11 +503,23 @@ Configurations, Producer Properties and Advanced Producer Configurations.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.initial-partition-event-position</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Map of <code>StartPositionProperties</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map with the key as the partition id, and values of <code>EARLIEST</code> and <code>LATEST</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The map containing the event position to use for each partition if a checkpoint for the partition does not exist in checkpoint store. This map is keyed off of the partition id.</p></td>
 </tr>
 </tbody>
 </table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>initial-partition-event-position</code> configuration accepts a <code>map</code> to specify the initial position for each event hub. Thus, its key is the partition id, and the value is of an enum which accepts strings of <code>EARLIEST</code> and <code>LATEST</code>. For example, you can set it as <code>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer.initial-partition-event-position.&lt;partition-id&gt;=EARLIEST</code>
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect5">
 <h6 id="_advanced_consumer_configuration"><a class="link" href="#_advanced_consumer_configuration">Advanced Consumer Configuration</a></h6>
