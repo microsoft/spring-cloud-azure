@@ -7068,8 +7068,24 @@ to<br>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhub.bindings.&lt;binding-name&gt;.consumer</strong>.checkpoint-interval</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.checkpoint.interval</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhub.bindings.&lt;binding-name&gt;.consumer</strong>.start-position</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.initial-partition-event-position</p></td>
+</tr>
 </tbody>
 </table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The value type of the start position configuration is also changed. It is changed from an enum of <code>com.azure.spring.integration.core.api.StartPosition</code> to a <code>map</code> of <code>StartPositionProperties</code> for each partition. Thus, the key is the partition id, and the value is of <code>com.azure.spring.service.eventhubs.properties.StartPositionProperties</code> which includes properties of offset, sequence number, enqueued date time and whether inclusive.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>For example, you should change from:</p>
 </div>
@@ -7086,7 +7102,8 @@ to<br>
                   max-wait-time: [max-wait-time]
                   checkpoint-mode: [check-point-mode]
                   checkpoint-count: [checkpoint-count]
-                  checkpoint-interval: [checkpoint-interval]</code></pre>
+                  checkpoint-interval: [checkpoint-interval]
+                  start-position: EARLIEST</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7107,7 +7124,16 @@ to<br>
                   checkpoint:
                     mode: [check-point-mode]
                     count: [checkpoint-count]
-                    interval: [checkpoint-interval]</code></pre>
+                    interval: [checkpoint-interval]
+                  initial-partition-event-position:
+                    0:
+                      offset: earliest
+                    1:
+                      sequence-number: 100
+                    2:
+                      enqueued-date-time: 2022-01-12T13:32:47.650005Z
+                    4:
+                      inclusive: false</code></pre>
 </div>
 </div>
 </div>
