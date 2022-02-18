@@ -191,7 +191,7 @@ Configurations, Producer Properties and Advanced Producer Configurations.
 |The map containing the event position to use for each partition if a checkpoint for the partition does not exist in checkpoint store. This map is keyed off of the partition id.
 |===
 
-NOTE: The `initial-partition-event-position` configuration accepts a `map` to specify the initial position for each event hub. Thus, its key is the partition id, and the value is of `com.azure.spring.service.eventhubs.properties.StartPositionProperties` which includes properties of offset, sequence number, enqueued date time and if inclusive. For example, you can set it as
+NOTE: The `initial-partition-event-position` configuration accepts a `map` to specify the initial position for each event hub. Thus, its key is the partition id, and the value is of `com.azure.spring.service.eventhubs.properties.StartPositionProperties` which includes properties of offset, sequence number, enqueued date time and whether inclusive. For example, you can set it as
 
 [source,yaml]
 ----
