@@ -643,17 +643,6 @@ class Demo{
 
 [#si-sb-headers]
 ===== Service Bus message headers
-
-The following table illustrates how Spring message headers are mapped to Service Bus message headers and properties. When create a message, developers can specify the header or property of a Service Bus message by below constants.
-[source,java]
-----
-@MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL, defaultHeaders = @GatewayHeader(name = SESSION_ID,
-value="group"))
-public interface QueueOutboundGateway {
-    void send(String text);
-}
-----
-
 For some Service Bus headers that can be mapped to multiple Spring header constants, the priority of different Spring headers is listed.
 
 .Mapping between Service Bus Headers and Spring Headers
