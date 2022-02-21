@@ -283,18 +283,18 @@ spring:
         connection-string: ${EVENTHUB_NAMESPACE_CONNECTION_STRING}
         processor:
           checkpoint-store:
-            container-name: ${CHECKPOINT-CONTAINER}
-            account-name: ${CHECKPOINT-STORAGE-ACCOUNT}
-            account-key: ${CHECKPOINT-ACCESS-KEY}
+            container-name: ${CHECKPOINT_CONTAINER}
+            account-name: ${CHECKPOINT_STORAGE_ACCOUNT}
+            account-key: ${CHECKPOINT_ACCESS_KEY}
     stream:
       function:
         definition: consume;supply
       bindings:
         consume-in-0:
-          destination: ${EVENTHUB-NAME}
-          group: ${CONSUMER-GROUP}
+          destination: ${EVENTHUB_NAME}
+          group: ${CONSUMER_GROUP}
         supply-out-0:
-          destination: ${THE-SAME-EVENTHUB-NAME-AS-ABOVE}
+          destination: ${THE_SAME_EVENTHUB_NAME_AS_ABOVE}
       eventhubs:
         bindings:
           consume-in-0:
@@ -312,7 +312,7 @@ spring:
     azure:
       credential:
         client-id: ${SERVICE_PRINCIPAL_ID}
-        client-secret: ${SERVICE-PRINCIPAL_SECRET}
+        client-secret: ${SERVICE_PRINCIPAL_SECRET}
       profile:
         tenant-id: ${TENANT_ID}
       eventhubs:
@@ -348,11 +348,11 @@ spring:
       credential:
         managed-identity-client-id: ${AZURE_MANAGED_IDENTITY_CLIENT_ID}
       eventhubs:
-        namespace: ${EVENTHUB-NAMESPACE}
+        namespace: ${EVENTHUB_NAMESPACE}
         processor:
           checkpoint-store:
-            container-name: ${CONTAINER-NAME}
-            account-name: ${ACCOUNT-NAME}
+            container-name: ${CONTAINER_NAME}
+            account-name: ${ACCOUNT_NAME}
     stream:
       function:
         definition: consume;supply
@@ -586,6 +586,112 @@ When the batch-consumer mode is enabled, the specific headers of batched message
 
 NOTE: When publish messages, all the above batch headers if exist will be removed from the messages to send.
 
+===== Multi Binders Support
+Step 1. To use multiBinders of EventHubs, we need to configure below properties in application.yml
+[source,yaml]
+----
+spring:
+  cloud:
+    stream:
+      function:
+        definition: consume1;supply1;consume2;supply2
+      bindings:
+        consume1-in-0:
+          destination: ${EVENTHUB_NAME_01}
+          group: ${CONSUMER_GROUP_01}
+        supply1-out-0:
+          destination: ${THE_SAME_EVENTHUB_NAME_01_AS_ABOVE}
+        consume2-in-0:
+          binder: eventhub-2
+          destination: ${EVENTHUB_NAME_02}
+          group: ${CONSUMER_GROUP_02}
+        supply2-out-0:
+          binder: eventhub-2
+          destination: ${THE_SAME_EVENTHUB_NAME_02_AS_ABOVE}
+      binders:
+        eventhub-1:
+          type: eventhubs
+          default-candidate: true
+          environment:
+            spring:
+              cloud:
+                azure:
+                  eventhubs:
+                    namespace: ${EVENTHUB_NAMESPACE_01}
+                    processor:
+                      checkpoint-store:
+                        container-name: ${CHECKPOINT_CONTAINER}
+                        account-name: ${CHECKPOINT_STORAGE_ACCOUNT}
+        eventhub-2:
+          type: eventhubs
+          default-candidate: false
+          environment:
+            spring:
+              cloud:
+                azure:
+                  eventhubs:
+                    namespace: ${EVENTHUB_NAMESPACE_02}
+                    processor:
+                      checkpoint-store:
+                        container-name: ${CHECKPOINT_CONTAINER}
+                        account-name: ${CHECKPOINT_STORAGE_ACCOUNT}
+      eventhubs:
+        bindings:
+          consume1-in-0:
+            consumer:
+              checkpoint:
+                mode: MANUAL
+          consume2-in-0:
+            consumer:
+              checkpoint:
+                mode: MANUAL
+      poller:
+        initial-delay: 0
+        fixed-delay: 1000
+----
+Step 2. we need define two suppliers and two consumers
+[source,java]
+----
+@Bean
+public Supplier<Message<String>> supply1() {
+    return () -> {
+        LOGGER.info("Sending message1, sequence1 " + i);
+        return MessageBuilder.withPayload("Hello world1, " + i++).build();
+    };
+}
+
+@Bean
+public Supplier<Message<String>> supply2() {
+    return () -> {
+        LOGGER.info("Sending message2, sequence2 " + j);
+        return MessageBuilder.withPayload("Hello world2, " + j++).build();
+    };
+}
+
+@Bean
+public Consumer<Message<String>> consume1() {
+    return message -> {
+        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        LOGGER.info("New message1 received: '{}'", message);
+        checkpointer.success()
+                .doOnSuccess(success -> LOGGER.info("Message1 '{}' successfully checkpointed", message))
+                .doOnError(error -> LOGGER.error("Exception found", error))
+                .subscribe();
+    };
+}
+
+@Bean
+public Consumer<Message<String>> consume2() {
+    return message -> {
+        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        LOGGER.info("New message2 received: '{}'", message);
+        checkpointer.success()
+                .doOnSuccess(success -> LOGGER.info("Message2 '{}' successfully checkpointed", message))
+                .doOnError(error -> LOGGER.error("Exception found", error))
+                .subscribe();
+    };
+}
+----
 ==== Samples
 
 Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/eventhubs/spring-cloud-azure-stream-binder-eventhubs[azure-spring-boot-samples] for more details.
@@ -981,6 +1087,109 @@ public ResponseEntity<String> sendMessage(@RequestParam String message) {
 See the <<si-sb-headers, Service Bus message headers>> for the basic message headers supported.
 
 NOTE: When setting the partiton key, the priority of message header is higher than Spring Cloud Stream property. So `spring.cloud.stream.bindings.<binding-name>.producer.partition-key-expression` will take effect only when none of the headers of `ServiceBusMessageHeaders#SESSION_ID`, `ServiceBusMessageHeaders#PARTITION_KEY`, `AzureHeaders#PARTITION_KEY` is configured.
+
+===== Multi Binders Support
+Step 1. To use multiBinders of ServiceBus, we need to configure below properties in application.yml
+[source,yaml]
+----
+spring:
+  cloud:
+    stream:
+      function:
+        definition: consume1;supply1;consume2;supply2
+      bindings:
+        consume1-in-0:
+          destination: ${SERVICEBUS_TOPIC_NAME}
+          group: ${SUBSCRIPTION_NAME}
+        supply1-out-0:
+          destination: ${SERVICEBUS_TOPIC_NAME_SAME_AS_ABOVE}
+        consume2-in-0:
+          binder: servicebus-2
+          destination: ${SERVICEBUS_QUEUE_NAME}
+        supply2-out-0:
+          binder: servicebus-2
+          destination: ${SERVICEBUS_QUEUE_NAME_SAME_AS_ABOVE}
+      binders:
+        servicebus-1:
+          type: servicebus
+          default-candidate: true
+          environment:
+            spring:
+              cloud:
+                azure:
+                  servicebus:
+                    namespace: ${SERVICEBUS_NAMESPACE_01}
+        servicebus-2:
+          type: servicebus
+          default-candidate: false
+          environment:
+            spring:
+              cloud:
+                azure:
+                  servicebus:
+                    namespace: ${SERVICEBUS_NAMESPACE_02}
+      servicebus:
+        bindings:
+          consume1-in-0:
+            consumer:
+              checkpoint-mode: MANUAL
+          supply1-out-0:
+            producer:
+              entity-type: topic
+          consume2-in-0:
+            consumer:
+              checkpoint-mode: MANUAL
+          supply2-out-0:
+            producer:
+              entity-type: queue
+      poller:
+        initial-delay: 0
+        fixed-delay: 1000
+----
+Step 2. we need define two suppliers and two consumers
+[source,java]
+----
+@Bean
+public Supplier<Message<String>> supply1() {
+    return () -> {
+        LOGGER.info("Sending message1, sequence1 " + i);
+        return MessageBuilder.withPayload("Hello world1, " + i++).build();
+    };
+}
+
+@Bean
+public Supplier<Message<String>> supply2() {
+    return () -> {
+        LOGGER.info("Sending message2, sequence2 " + j);
+        return MessageBuilder.withPayload("Hello world2, " + j++).build();
+    };
+}
+
+@Bean
+public Consumer<Message<String>> consume1() {
+    return message -> {
+        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        LOGGER.info("New message1 received: '{}'", message);
+        checkpointer.success()
+                .doOnSuccess(s -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
+                .doOnError(e -> LOGGER.error("Error found", e))
+                .subscribe();
+    };
+}
+
+@Bean
+public Consumer<Message<String>> consume2() {
+    return message -> {
+        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        LOGGER.info("New message2 received: '{}'", message);
+        checkpointer.success()
+                .doOnSuccess(s -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
+                .doOnError(e -> LOGGER.error("Error found", e))
+                .subscribe();
+    };
+
+}
+----
 
 ==== Samples
 
