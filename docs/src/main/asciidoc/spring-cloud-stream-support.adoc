@@ -42,6 +42,61 @@ NOTE: The checkpoint header only exists when **MANUAL** checkpoint mode is used.
 Checkpointing of batch consumer supports two modes: `BATCH` and `MANUAL`. `BATCH` mode is an auto checkpointing mode to checkpoint the entire batch of events together once they are received by the binder. `MANUAL` mode is to checkpoint the events by users. When used, the
 **com.azure.spring.messaging.checkpoint.Checkpointer** will be passes into the message header, and users could use it to do checkpointing.
 
+For checkpointing mode as BATCH, you can use below code to send messages and consume in batches, see the https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.0.0-beta.4/eventhubs/spring-cloud-azure-stream-binder-eventhubs/eventhubs-binder/src/main/java/com/azure/spring/sample/eventhubs/binder/BatchProducerAndConsumerConfiguration.java[BatchProducerAndConsumerConfiguration.java]
+
+[source,java]
+----
+@Bean
+public Consumer<List<String>> consume() {
+    return list -> list.forEach(event -> LOGGER.info("New event received: '{}'",event));
+}
+
+@Bean
+public Supplier<Message<String>> supply() {
+    return () -> {
+        LOGGER.info("Sending message, sequence " + i);
+        return MessageBuilder.withPayload("\"Hello world "+ i++ +"\"").build();
+    };
+}
+----
+
+For checkpointing mode as MANUAL, you can use below code to send messages and consume/checkpoint in batches.
+
+[source,java]
+----
+@Bean
+public Consumer<Message<List<String>>> consume() {
+    return message -> {
+        for (int i = 0; i < message.getPayload().size(); i++) {
+            LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
+                message.getPayload().get(i),
+                ((List<Object>) message.getHeaders().get(EventHubHeaders.PARTITION_KEY)).get(i),
+                ((List<Object>) message.getHeaders().get(EventHubHeaders.SEQUENCE_NUMBER)).get(i),
+                ((List<Object>) message.getHeaders().get(EventHubHeaders.OFFSET)).get(i),
+                ((List<Object>) message.getHeaders().get(EventHubHeaders.ENQUEUED_TIME)).get(i));
+        }
+
+        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        checkpointer.success()
+                    .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
+                    .doOnError(error -> LOGGER.error("Exception found", error))
+                    .subscribe();
+    };
+}
+
+@Bean
+public Supplier<Message<String>> supply() {
+    return () -> {
+        LOGGER.info("Sending message, sequence " + i);
+        return MessageBuilder.withPayload("\"Hello world "+ i++ +"\"").build();
+    };
+}
+----
+
+Note: in the batch-consuming mode, the default content type of Spring Cloud Stream binder is *application/json*, so make sure the message payload is aligned with the content-type. For example, when using the default content type of *application/json* to received messages with *String* payload, the payload should be a JSON String, surrounded with double quotes for the original String text. While for *text/plain* content type, it can be a *String* object directly.
+
+For more details, please refer to the official doc of https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#content-type-management[Spring Cloud Stream Content Type Negotiation].
+
 The batch size can be specified by properties of `max-size` and `max-wait-time` with prefix as `spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer.batch.`, where `max-size` is a necessary property while `max-wait-time` is optional. See <<eventhubs-consumer-properties, the consumer properties>> for more details.
 
 ==== Dependency Setup
@@ -610,46 +665,66 @@ Configurations, Producer Properties and Advanced Producer Configurations.
 ====== Consumer Properties
 
 .Consumer configurable properties of spring-cloud-azure-stream-binder-servicebus
-[cols="<,<,<", options="header"]
+[cols="<,<,<,<", options="header"]
 |===
-|Property | Type |Description
+|Property | Type |Default |Description
 
 |*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.requeue-rejected
 |boolean
+|false
 |If the failed messages are routed to the DLQ.
 
 |*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.checkpoint-mode
 | CheckpointMode
+| RECORD
 | The checkpoint mode of checkpointing message. The supported modes are `MANUAL` and `RECORD`.
 
 |*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.max-concurrent-calls
 | Integer
+| 1
 | Max concurrent messages that the Service Bus processor client should process.
 
 |*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.max-concurrent-sessions
 |Integer
+|1
 | Maximum number of concurrent sessions to process at any given time.
 
-|*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.session-aware
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.concurrency
+|Integer
+|1
+|if sessionsEnabled is true, controls the maximum number of concurrent sessions to process, else controls the max concurrent calls of service bus message handler and the size of fixed thread pool that handles user's business logic.
+
+Deprecated, replaced with maxConcurrentSessions when sessionsEnabled is true and maxConcurrentCalls when sessionsEnabled is false.
+
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.session-enabled
 | Boolean
+| false
 | Whether session is enabled.
 
 |*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.prefetch-count
 | Integer
+| 1
 | The prefetch count of the Service Bus processor client.
 
 |*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.sub-queue
 | SubQueue
+| SubQueue.NONE
 | The type of the sub queue to connect to.
 
 |*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.max-auto-lock-renew-duration
 | Duration
+| Duration.ofMinutes(5)
 | The amount of time to continue auto-renewing the lock.
 
 |*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.receive-mode
 | ServiceBusReceiveMode
+| PEEK_LOCK
 | The receive mode of the Service Bus processor client.
 
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.enable-auto-complete
+| Boolean
+| false
+| Enable auto-complete and auto-abandon of received messages. 'enableAutoComplete' is not needed in for RECEIVE_AND_DELETE mode.
 |===
 
 ====== Advanced Consumer Configuration
@@ -657,15 +732,15 @@ The above <<servicebus-connection-configration, connection>> and <<Configuration
 
 ====== Producer Properties
 .Producer configurable properties of spring-cloud-azure-stream-binder-servicebus
-[cols="<,<,<", options="header"]
+[cols="<,<,<,<", options="header"]
 |===
-|Property | Type |Description
+|Property | Type | Default |Description
 
-|*spring.cloud.stream.servicebus.bindings.<binding-name>.producer*.sync |boolean | Switch flag
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.producer*.sync |boolean |false | Switch flag
 for sync of producer.
-|*spring.cloud.stream.servicebus.bindings.<binding-name>.producer*.send-timeout |long | Timeout
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.producer*.send-timeout |long |10000 | Timeout
 value for sending of producer.
-|*spring.cloud.stream.servicebus.bindings.<binding-name>.producer*.entity-type |ServiceBusEntityType | Service Bus entity type of the producer, required for the binding producer.
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.producer*.entity-type |ServiceBusEntityType |null | Service Bus entity type of the producer, required for the binding producer.
 |===
 
 IMPORTANT: When using the binding producer, property of `spring.cloud.stream.servicebus.bindings.<binding-name>.producer.entity-type` is required to be configured.
@@ -887,6 +962,21 @@ public void producerError(Message<?> message) {
 
 [#scs-sb-headers]
 ===== Service Bus message headers
+The following table illustrates how Spring message headers are mapped to Service Bus message headers and properties. When create a message, developers can specify the header or property of a Service Bus message by below constants.
+[source,java]
+----
+@Autowired
+private Sinks.Many<Message<String>> many;
+
+@PostMapping("/messages")
+public ResponseEntity<String> sendMessage(@RequestParam String message) {
+    many.emitNext(MessageBuilder.withPayload(message)
+    .setHeader(SESSION_ID, "group1")
+    .build(),
+    Sinks.EmitFailureHandler.FAIL_FAST);
+    return ResponseEntity.ok("Sent!");
+    }
+----
 
 See the <<si-sb-headers, Service Bus message headers>> for the basic message headers supported.
 
