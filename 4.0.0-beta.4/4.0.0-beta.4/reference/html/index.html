@@ -6455,18 +6455,18 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
         connection-string: ${EVENTHUB_NAMESPACE_CONNECTION_STRING}
         processor:
           checkpoint-store:
-            container-name: ${CHECKPOINT-CONTAINER}
-            account-name: ${CHECKPOINT-STORAGE-ACCOUNT}
-            account-key: ${CHECKPOINT-ACCESS-KEY}
+            container-name: ${CHECKPOINT_CONTAINER}
+            account-name: ${CHECKPOINT_STORAGE_ACCOUNT}
+            account-key: ${CHECKPOINT_ACCESS_KEY}
     stream:
       function:
         definition: consume;supply
       bindings:
         consume-in-0:
-          destination: ${EVENTHUB-NAME}
-          group: ${CONSUMER-GROUP}
+          destination: ${EVENTHUB_NAME}
+          group: ${CONSUMER_GROUP}
         supply-out-0:
-          destination: ${THE-SAME-EVENTHUB-NAME-AS-ABOVE}
+          destination: ${THE_SAME_EVENTHUB_NAME_AS_ABOVE}
       eventhubs:
         bindings:
           consume-in-0:
@@ -6489,7 +6489,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
     azure:
       credential:
         client-id: ${SERVICE_PRINCIPAL_ID}
-        client-secret: ${SERVICE-PRINCIPAL_SECRET}
+        client-secret: ${SERVICE_PRINCIPAL_SECRET}
       profile:
         tenant-id: ${TENANT_ID}
       eventhubs:
@@ -6530,11 +6530,11 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
       credential:
         managed-identity-client-id: ${AZURE_MANAGED_IDENTITY_CLIENT_ID}
       eventhubs:
-        namespace: ${EVENTHUB-NAMESPACE}
+        namespace: ${EVENTHUB_NAMESPACE}
         processor:
           checkpoint-store:
-            container-name: ${CONTAINER-NAME}
-            account-name: ${ACCOUNT-NAME}
+            container-name: ${CONTAINER_NAME}
+            account-name: ${ACCOUNT_NAME}
     stream:
       function:
         definition: consume;supply
@@ -6848,6 +6848,125 @@ When publish messages, all the above batch headers if exist will be removed from
 </table>
 </div>
 </div>
+<div class="sect4">
+<h5 id="multi-binder-support"><a class="anchor" href="#multi-binder-support"></a><a class="link" href="#multi-binder-support">Multi Binder Support</a></h5>
+<div class="paragraph">
+<p>Connection to mutiple Event Hubs namespaces is also supported by using multi binders.This sample takes connection string as example. Credentials of service priciple and MSI are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
+</div>
+<div class="paragraph">
+<p>Step 1. To use multiple binders of EventHubs, we need to configure below properties in application.yml</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    stream:
+      function:
+        definition: consume1;supply1;consume2;supply2
+      bindings:
+        consume1-in-0:
+          destination: ${EVENTHUB_NAME_01}
+          group: ${CONSUMER_GROUP_01}
+        supply1-out-0:
+          destination: ${THE_SAME_EVENTHUB_NAME_01_AS_ABOVE}
+        consume2-in-0:
+          binder: eventhub-2
+          destination: ${EVENTHUB_NAME_02}
+          group: ${CONSUMER_GROUP_02}
+        supply2-out-0:
+          binder: eventhub-2
+          destination: ${THE_SAME_EVENTHUB_NAME_02_AS_ABOVE}
+      binders:
+        eventhub-1:
+          type: eventhubs
+          default-candidate: true
+          environment:
+            spring:
+              cloud:
+                azure:
+                  eventhubs:
+                    connection-string: ${EVENTHUB_NAMESPACE_01_CONNECTION_STRING}
+                    processor:
+                      checkpoint-store:
+                        container-name: ${CHECKPOINT_CONTAINER_01}
+                        account-name: ${CHECKPOINT_STORAGE_ACCOUNT}
+                        account-key: ${CHECKPOINT_ACCESS_KEY}
+        eventhub-2:
+          type: eventhubs
+          default-candidate: false
+          environment:
+            spring:
+              cloud:
+                azure:
+                  eventhubs:
+                    connection-string: ${EVENTHUB_NAMESPACE_02_CONNECTION_STRING}
+                    processor:
+                      checkpoint-store:
+                        container-name: ${CHECKPOINT_CONTAINER_02}
+                        account-name: ${CHECKPOINT_STORAGE_ACCOUNT}
+                        account-key: ${CHECKPOINT_ACCESS_KEY}
+      eventhubs:
+        bindings:
+          consume1-in-0:
+            consumer:
+              checkpoint:
+                mode: MANUAL
+          consume2-in-0:
+            consumer:
+              checkpoint:
+                mode: MANUAL
+      poller:
+        initial-delay: 0
+        fixed-delay: 1000</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step 2. we need define two suppliers and two consumers</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public Supplier&lt;Message&lt;String&gt;&gt; supply1() {
+    return () -&gt; {
+        LOGGER.info("Sending message1, sequence1 " + i);
+        return MessageBuilder.withPayload("Hello world1, " + i++).build();
+    };
+}
+
+@Bean
+public Supplier&lt;Message&lt;String&gt;&gt; supply2() {
+    return () -&gt; {
+        LOGGER.info("Sending message2, sequence2 " + j);
+        return MessageBuilder.withPayload("Hello world2, " + j++).build();
+    };
+}
+
+@Bean
+public Consumer&lt;Message&lt;String&gt;&gt; consume1() {
+    return message -&gt; {
+        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        LOGGER.info("New message1 received: '{}'", message);
+        checkpointer.success()
+                .doOnSuccess(success -&gt; LOGGER.info("Message1 '{}' successfully checkpointed", message))
+                .doOnError(error -&gt; LOGGER.error("Exception found", error))
+                .subscribe();
+    };
+}
+
+@Bean
+public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
+    return message -&gt; {
+        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        LOGGER.info("New message2 received: '{}'", message);
+        checkpointer.success()
+                .doOnSuccess(success -&gt; LOGGER.info("Message2 '{}' successfully checkpointed", message))
+                .doOnError(error -&gt; LOGGER.error("Exception found", error))
+                .subscribe();
+    };
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="samples-10"><a class="anchor" href="#samples-10"></a><a class="link" href="#samples-10">14.1.5. Samples</a></h4>
@@ -6984,14 +7103,16 @@ Configurations, Producer Properties and Advanced Producer Configurations.</p>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 34. Consumer configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Property</th>
 <th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
@@ -6999,46 +7120,55 @@ Configurations, Producer Properties and Advanced Producer Configurations.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.requeue-rejected</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If the failed messages are routed to the DLQ.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.checkpoint-mode</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">CheckpointMode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RECORD</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The checkpoint mode of checkpointing message. The supported modes are <code>MANUAL</code> and <code>RECORD</code>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.max-concurrent-calls</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Max concurrent messages that the Service Bus processor client should process.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.max-concurrent-sessions</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Maximum number of concurrent sessions to process at any given time.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.session-aware</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.session-enabled</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Whether session is enabled.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.prefetch-count</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The prefetch count of the Service Bus processor client.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.sub-queue</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SubQueue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The type of the sub queue to connect to.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.max-auto-lock-renew-duration</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5m</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The amount of time to continue auto-renewing the lock.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.receive-mode</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusReceiveMode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">peek_lock</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The receive mode of the Service Bus processor client.</p></td>
 </tr>
 </tbody>
@@ -7055,14 +7185,16 @@ Configurations, Producer Properties and Advanced Producer Configurations.</p>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 35. Producer configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Property</th>
 <th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
@@ -7070,18 +7202,21 @@ Configurations, Producer Properties and Advanced Producer Configurations.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.producer</strong>.sync</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Switch flag
 for sync of producer.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.producer</strong>.send-timeout</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Timeout
 value for sending of producer.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.producer</strong>.entity-type</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusEntityType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Service Bus entity type of the producer, required for the binding producer.</p></td>
 </tr>
 </tbody>
@@ -7398,6 +7533,119 @@ When setting the partiton key, the priority of message header is higher than Spr
 </td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="multi-binder-support-2"><a class="anchor" href="#multi-binder-support-2"></a><a class="link" href="#multi-binder-support-2">Multi Binder Support</a></h5>
+<div class="paragraph">
+<p>Connection to mutiple Service Bus namespaces is also supported by using multi binders.This sample takes connection string as example. Credentials of service priciple and MSI are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
+</div>
+<div class="paragraph">
+<p>Step 1. To use multiple binders of ServiceBus, we need to configure below properties in application.yml</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    stream:
+      function:
+        definition: consume1;supply1;consume2;supply2
+      bindings:
+        consume1-in-0:
+          destination: ${SERVICEBUS_TOPIC_NAME}
+          group: ${SUBSCRIPTION_NAME}
+        supply1-out-0:
+          destination: ${SERVICEBUS_TOPIC_NAME_SAME_AS_ABOVE}
+        consume2-in-0:
+          binder: servicebus-2
+          destination: ${SERVICEBUS_QUEUE_NAME}
+        supply2-out-0:
+          binder: servicebus-2
+          destination: ${SERVICEBUS_QUEUE_NAME_SAME_AS_ABOVE}
+      binders:
+        servicebus-1:
+          type: servicebus
+          default-candidate: true
+          environment:
+            spring:
+              cloud:
+                azure:
+                  servicebus:
+                    connection-string: ${SERVICEBUS_NAMESPACE_01_CONNECTION_STRING}
+        servicebus-2:
+          type: servicebus
+          default-candidate: false
+          environment:
+            spring:
+              cloud:
+                azure:
+                  servicebus:
+                    connection-string: ${SERVICEBUS_NAMESPACE_02_CONNECTION_STRING}
+      servicebus:
+        bindings:
+          consume1-in-0:
+            consumer:
+              checkpoint-mode: MANUAL
+          supply1-out-0:
+            producer:
+              entity-type: topic
+          consume2-in-0:
+            consumer:
+              checkpoint-mode: MANUAL
+          supply2-out-0:
+            producer:
+              entity-type: queue
+      poller:
+        initial-delay: 0
+        fixed-delay: 1000</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step 2. we need define two suppliers and two consumers</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public Supplier&lt;Message&lt;String&gt;&gt; supply1() {
+    return () -&gt; {
+        LOGGER.info("Sending message1, sequence1 " + i);
+        return MessageBuilder.withPayload("Hello world1, " + i++).build();
+    };
+}
+
+@Bean
+public Supplier&lt;Message&lt;String&gt;&gt; supply2() {
+    return () -&gt; {
+        LOGGER.info("Sending message2, sequence2 " + j);
+        return MessageBuilder.withPayload("Hello world2, " + j++).build();
+    };
+}
+
+@Bean
+public Consumer&lt;Message&lt;String&gt;&gt; consume1() {
+    return message -&gt; {
+        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        LOGGER.info("New message1 received: '{}'", message);
+        checkpointer.success()
+                .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
+                .doOnError(e -&gt; LOGGER.error("Error found", e))
+                .subscribe();
+    };
+}
+
+@Bean
+public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
+    return message -&gt; {
+        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        LOGGER.info("New message2 received: '{}'", message);
+        checkpointer.success()
+                .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
+                .doOnError(e -&gt; LOGGER.error("Error found", e))
+                .subscribe();
+    };
+
+}</code></pre>
+</div>
 </div>
 </div>
 </div>

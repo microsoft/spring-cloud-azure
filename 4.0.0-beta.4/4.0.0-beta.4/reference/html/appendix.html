@@ -7208,6 +7208,37 @@ The binder type is renamed from: servicebus-queue/servicebus-topic to <code>serv
 </tr>
 </table>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 18. Property mapping from azure-spring-cloud-stream-binder-servicebus to spring-cloud-azure-stream-binder-servicebus</caption>
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Legacy class</th>
+<th class="tableblock halign-left valign-top">Modern class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer.concurrency</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer.maxConcurrentSessions/maxConcurrentCalls</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+replaced with maxConcurrentSessions when sessionsEnabled is <code>true</code> and maxConcurrentCalls when sessionsEnabled is <code>false</code>
+</td>
+</tr>
+</table>
+</div>
 <div class="ulist">
 <ul>
 <li>
@@ -7315,7 +7346,7 @@ The binder type is renamed from: servicebus-queue/servicebus-topic to <code>serv
 <div class="sect3">
 <h4 id="_from_azure_spring_boot_starter_active_directory_to_spring_cloud_azure_starter_active_directory_2"><a class="link" href="#_from_azure_spring_boot_starter_active_directory_to_spring_cloud_azure_starter_active_directory_2">From azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory</a></h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. Class mapping from azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory</caption>
+<caption class="title">Table 19. Class mapping from azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory</caption>
 <colgroup>
 <col>
 <col>
@@ -7357,7 +7388,7 @@ The binder type is renamed from: servicebus-queue/servicebus-topic to <code>serv
 <div class="sect3">
 <h4 id="_from_azure_spring_boot_starter_active_directory_b2c_to_spring_cloud_azure_starter_active_directory_b2c_2"><a class="link" href="#_from_azure_spring_boot_starter_active_directory_b2c_to_spring_cloud_azure_starter_active_directory_b2c_2">From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c</a></h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. Class mapping from azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c</caption>
+<caption class="title">Table 20. Class mapping from azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c</caption>
 <colgroup>
 <col>
 <col>
@@ -7500,7 +7531,7 @@ Event Hubs, and change constructor signature as well.</p>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. Class mapping from azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs</caption>
+<caption class="title">Table 21. Class mapping from azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs</caption>
 <colgroup>
 <col>
 <col>
@@ -7690,7 +7721,7 @@ for the <code>ProducerProperties#entityType</code>.</p>
 <div class="sect3">
 <h4 id="_from_azure_spring_cloud_starter_storage_queue_to_spring_cloud_azure_starter_integration_storage_queue_2"><a class="link" href="#_from_azure_spring_cloud_starter_storage_queue_to_spring_cloud_azure_starter_integration_storage_queue_2">From azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue</a></h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. Class mapping from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue</caption>
+<caption class="title">Table 22. Class mapping from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue</caption>
 <colgroup>
 <col>
 <col>
@@ -7752,7 +7783,7 @@ for the <code>ProducerProperties#entityType</code>.</p>
 <div class="sect3">
 <h4 id="_from_azure_spring_cloud_stream_binder_eventhubs_to_spring_cloud_azure_stream_binder_eventhubs_2"><a class="link" href="#_from_azure_spring_cloud_stream_binder_eventhubs_to_spring_cloud_azure_stream_binder_eventhubs_2">From azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs</a></h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. Class mapping from azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs</caption>
+<caption class="title">Table 23. Class mapping from azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs</caption>
 <colgroup>
 <col>
 <col>
@@ -7782,7 +7813,7 @@ for the <code>ProducerProperties#entityType</code>.</p>
 <div class="sect3">
 <h4 id="_from_azure_spring_cloud_stream_binder_servicebus_to_spring_cloud_azure_stream_binder_servicebus_2"><a class="link" href="#_from_azure_spring_cloud_stream_binder_servicebus_to_spring_cloud_azure_stream_binder_servicebus_2">From azure-spring-cloud-stream-binder-servicebus to spring-cloud-azure-stream-binder-servicebus</a></h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. Class mapping from azure-spring-cloud-stream-binder-servicebus to spring-cloud-azure-stream-binder-servicebus</caption>
+<caption class="title">Table 24. Class mapping from azure-spring-cloud-stream-binder-servicebus to spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
 <col>
 <col>
@@ -7812,7 +7843,7 @@ for the <code>ProducerProperties#entityType</code>.</p>
 <div class="sect3">
 <h4 id="_from_azure_spring_boot_starter_storage_to_spring_cloud_azure_starter_storage_blob_2"><a class="link" href="#_from_azure_spring_boot_starter_storage_to_spring_cloud_azure_starter_storage_blob_2">From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</a></h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</caption>
+<caption class="title">Table 25. Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</caption>
 <colgroup>
 <col>
 <col>
@@ -7842,7 +7873,7 @@ for the <code>ProducerProperties#entityType</code>.</p>
 <div class="sect3">
 <h4 id="_from_azure_spring_boot_starter_storage_to_spring_cloud_azure_starter_storage_file_share_2"><a class="link" href="#_from_azure_spring_boot_starter_storage_to_spring_cloud_azure_starter_storage_file_share_2">From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</a></h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</caption>
+<caption class="title">Table 26. Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</caption>
 <colgroup>
 <col>
 <col>
