@@ -1150,7 +1150,7 @@ spring:
     stream:
       servicebus:
         bindings:
-          servicebus-binding:
+          <binding-name>:
             consumer:
               entity-type: ${SERVICEBUS_CONSUMER_ENTITY_TYPE}
 ----
