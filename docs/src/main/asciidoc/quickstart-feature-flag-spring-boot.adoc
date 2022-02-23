@@ -1,0 +1,331 @@
+
+[#quickstart-feature-flag-spring-boot]
+==== Add feature flags
+
+In this quickstart, you incorporate Azure App Configuration into a Spring Boot web app to create an end-to-end implementation of feature management. You can use the App Configuration service to centrally store all your feature flags and control their states.
+
+The Spring Boot Feature Management libraries extend the framework with comprehensive feature flag support. These libraries do **not** have a dependency on any Azure libraries. They seamlessly integrate with App Configuration through its Spring Boot configuration provider.
+
+===== Prerequisites
+
+* Azure subscription - link:https://azure.microsoft.com/free/[create one for free]
+* A supported link:https://docs.microsoft.com/en-us/azure/developer/java/fundamentals/?view=azure-java-stable[Java Development Kit SDK] with version 8.
+* link:https://maven.apache.org/download.cgi[Apache Maven] version 3.0 or above.
+
+===== Create an App Configuration instance
+
+* Step1. To create a new App Configuration store, sign in to the link:https://portal.azure.com[Azure portal]. In the upper-left corner of the home page, select **Create a resource**. In the **Search the Marketplace** box, enter *App Configuration* and select `Enter`.
+
+image:https://docs.microsoft.com/en-us/azure/includes/media/azure-app-configuration-create/azure-portal-search.png[Search for App Configuration]
+
+
+* Step2. Select **App Configuration** from the search results, and then select **Create**.
+
+image:https://docs.microsoft.com/en-us/azure/includes/media/azure-app-configuration-create/azure-portal-app-configuration-create.png[Select Create]
+
+* Step3. On the **Create App Configuration** pane, enter the following settings:
+
+.Create App Configuration
+[cols="<,<,<", options="header"]
+|===
+| Setting | Suggested value | Description
+
+| **Subscription** | Your subscription | Select the Azure subscription that you want to use to test App Configuration. If your account has only one subscription, it's automatically selected and the **Subscription** list isn't displayed.
+| **Resource group** | *AppConfigTestResources* | Select or create a resource group for your App Configuration store resource. This group is useful for organizing multiple resources that you might want to delete at the same time by deleting the resource group. For more information, see link:https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/overview[Use resource groups to manage your Azure resources].
+| **Resource name** | Globally unique name | Enter a unique resource name to use for the App Configuration store resource. The name must be a string between 5 and 50 characters and contain only numbers, letters, and the `-` character. The name can't start or end with the `-` character.
+| **Location** | *Central US* | Use **Location** to specify the geographic location in which your app configuration store is hosted. For the best performance, create the resource in the same region as other components of your application.
+| **Pricing tier** | *Free* | Select the desired pricing tier. For more information, see the link:https://azure.microsoft.com/pricing/details/app-configuration[App Configuration pricing page].
+
+|===
+
+* Step4. Select **Review + create** to validate your settings.
+
+* Step5. Select **Create**. The deployment might take a few minutes.
+
+* Step6. After the deployment finishes, navigate to the App Configuration resource. Select **Settings** > **Access keys**. Make a note of the primary read-only key connection string. You'll use this connection string later to configure your application to communicate with the App Configuration store that you created.
+
+* Step7. Select **Feature Manager** > **+Add** to add a feature flag called `Beta`.
+
+image:https://docs.microsoft.com/en-us/azure/azure-app-configuration/media/add-beta-feature-flag.png[Enable feature flag named Beta]
+
+Leave `label` undefined for now.
+
+===== Create a Spring Boot app
+
+Use the link:https://start.spring.io/[Spring Initializr] to create a new Spring Boot project.
+
+* Step1. Browse to <https://start.spring.io/>.
+
+* Step2. Specify the following options:
+
+** Generate a **Maven** project with **Java**.
+** Specify a **Spring Boot** version that's equal to or greater than 2.0.
+** Specify the **Group** and **Artifact** names for your application.  This article uses `com.example` and `demo`.
+** Add the **Spring Web** dependency.
+
+* Step3. After you specify the previous options, select **Generate Project**. When prompted, download the project to your local computer.
+
+===== Add feature management
+
+* Step1. After you extract the files on your local system, your Spring Boot application is ready for editing. Locate  *pom.xml* in the root directory of your app.
+
+* Step2. Open the *pom.xml* file in a text editor and add the following to the list of `<dependencies>`:
+
+[source,xml]
+----
+    <dependency>
+        <groupId>com.azure.spring</groupId>
+        <artifactId>azure-spring-cloud-appconfiguration-config-web</artifactId>
+        <version>2.0.0</version>
+    </dependency>
+    <dependency>
+        <groupId>com.azure.spring</groupId>
+        <artifactId>azure-spring-cloud-feature-management-web</artifactId>
+        <version>2.0.0</version>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
+----
+
+[NOTE]
+====
+
+* If you need to support an older version of Spring Boot see our link:https://github.com/Azure/azure-sdk-for-java/blob/spring-cloud-starter-azure-appconfiguration-config_1.2.9/sdk/appconfiguration/spring-cloud-starter-azure-appconfiguration-config/README.md[old appconfiguration library] and our link:https://github.com/Azure/azure-sdk-for-java/blob/spring-cloud-starter-azure-appconfiguration-config_1.2.9/sdk/appconfiguration/spring-cloud-azure-feature-management/README.md[old feature flag library].
+ * There is a non-web Feature Management Library that doesn't have a dependency on spring-web. Refer to GitHub's link:https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/appconfiguration/azure-spring-cloud-feature-management[documentation] for differences.
+====
+
+===== Connect to an App Configuration store
+
+* Step1. Navigate to the `resources` directory of your app and open `bootstrap.properties`.  If the file does not exist, create it. Add the following line to the file.
+
+[source,properties]
+----
+    spring.cloud.azure.appconfiguration.stores[0].connection-string= ${APP_CONFIGURATION_CONNECTION_STRING}
+    spring.cloud.azure.appconfiguration.stores[0].feature-flags.enabled=true
+----
+
+* Step2. In the App Configuration portal for your config store, select `Access keys` from the sidebar. Select the Read-only keys tab. Copy the value of the primary connection string.
+
+* Step3. Add the primary connection string as an environment variable using the variable name `APP_CONFIGURATION_CONNECTION_STRING`.
+
+* Step4. Open the main application Java file, and add `@EnableConfigurationProperties` to enable this feature.
+
+[source,java]
+----
+    package com.example.demo;
+
+    import org.springframework.boot.SpringApplication;
+    import org.springframework.boot.context.properties.ConfigurationProperties;
+    import org.springframework.boot.context.properties.EnableConfigurationProperties;
+    import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+    @SpringBootApplication
+    @EnableConfigurationProperties(MessageProperties.class)
+    public class DemoApplication {
+
+        public static void main(String[] args) {
+            SpringApplication.run(DemoApplication.class, args);
+        }
+    }
+----
+
+* Step5. Create a new Java file named *MessageProperties.java* in the package directory of your app.
+
+[source,java]
+----
+    package com.example.demo;
+
+    import org.springframework.boot.context.properties.ConfigurationProperties;
+    import org.springframework.context.annotation.Configuration;
+
+    @Configuration
+    @ConfigurationProperties(prefix = "config")
+    public class MessageProperties {
+        private String message;
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+    }
+----
+
+* Step6. Create a new Java file named *HelloController.java* in the package directory of your app.
+
+[source,java]
+----
+    package com.example.demo;
+
+    import org.springframework.boot.context.properties.ConfigurationProperties;
+    import org.springframework.stereotype.Controller;
+    import org.springframework.ui.Model;
+
+    import com.azure.spring.cloud.feature.manager.FeatureManager;
+    import org.springframework.web.bind.annotation.GetMapping;
+
+
+    @Controller
+    @ConfigurationProperties("controller")
+    public class HelloController {
+
+        private FeatureManager featureManager;
+
+        public HelloController(FeatureManager featureManager) {
+            this.featureManager = featureManager;
+        }
+
+        @GetMapping("/welcome")
+        public String mainWithParam(Model model) {
+            model.addAttribute("Beta", featureManager.isEnabledAsync("Beta").block());
+            return "welcome";
+        }
+    }
+----
+
+* Step7. Create a new HTML file named *welcome.html* in the templates directory of your app.
+
+[source,html]
+----
+    <!DOCTYPE html>
+    <html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Feature Management with Spring Cloud Azure</title>
+
+        <link rel="stylesheet" href="/css/main.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    </head>
+    <body>
+        <header>
+        <!-- Fixed navbar -->
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand" href="#">TestFeatureFlags</a>
+            <button class="navbar-toggler" aria-expanded="false" aria-controls="navbarCollapse" aria-label="Toggle navigation" type="button" data-target="#navbarCollapse" data-toggle="collapse">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item" th:if="${Beta}">
+                <a class="nav-link" href="#">Beta</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#">Privacy</a>
+                </li>
+            </ul>
+            </div>
+        </nav>
+        </header>
+        <div class="container body-content">
+            <h1 class="mt-5">Welcome</h1>
+            <p>Learn more about <a href="https://github.com/Azure/azure-sdk-for-java/blob/master/sdk/appconfiguration/azure-spring-cloud-feature-management/README.md">Feature Management with Spring Cloud Azure</a></p>
+
+        </div>
+        <footer class="footer">
+            <div class="container">
+            <span class="text-muted">&copy; 2019 - Projects</span>
+        </div>
+
+        </footer>
+    </body>
+    </html>
+
+----
+
+* Step8. Create a new folder named CSS under `static` and inside of it a new CSS file named *main.css*.
+
+[source,css]
+----
+    html {
+     position: relative;
+     min-height: 100%;
+    }
+    body {
+     margin-bottom: 60px;
+    }
+    .footer {
+     position: absolute;
+     bottom: 0;
+     width: 100%;
+     height: 60px;
+     line-height: 60px;
+     background-color: #f5f5f5;
+    }
+
+    body > .container {
+     padding: 60px 15px 0;
+    }
+
+    .footer > .container {
+     padding-right: 15px;
+     padding-left: 15px;
+    }
+
+    code {
+     font-size: 80%;
+    }
+----
+
+===== Build and run the app locally
+
+* Step1. Build your Spring Boot application with Maven and run it.
+
+[source,shell script]
+----
+    mvn clean package
+    mvn spring-boot:run
+----
+
+* Step2. Open a browser window, and go to the URL: `http://localhost:8080/welcome`.
+
+image:https://docs.microsoft.com/en-us/azure/azure-app-configuration/media/quickstarts/spring-boot-feature-flag-local-before.png[Screenshot shows a browser window with a Welcome message.]
+
+* Step3. In the App Configuration portal select **Feature Manager**, and change the state of the **Beta** key to **On**:
+
+.key-value pairs
+[cols="<,<", options="header"]
+|===
+| Key               |             State
+
+| Beta               |             On
+
+|===
+
+* Step4. Refresh the browser page to see the new configuration settings.
+
+image:https://docs.microsoft.com/en-us/azure/azure-app-configuration/media/quickstarts/spring-boot-feature-flag-local-after.png[Screenshot shows a browser window with a Welcome message and a Beta link called out.]
+
+===== Clean up resources
+
+If you do not want to continue using the resources created in this article, delete the resource group you created here to avoid charges.
+
+IMPORTANT: Deleting a resource group is irreversible. The resource group and all the resources in it are permanently deleted. Make sure that you don't accidentally delete the wrong resource group or resources. If you created the resources for this article inside a resource group that contains other resources you want to keep, delete each resource individually from its respective pane instead of deleting the resource group.
+
+1. Sign in to the link:https://portal.azure.com[Azure portal], and select **Resource groups**.
+2. In the **Filter by name** box, enter the name of your resource group.
+3. In the result list, select the resource group name to see an overview.
+4. Select **Delete resource group**.
+5. You're asked to confirm the deletion of the resource group. Enter the name of your resource group to confirm, and select **Delete**.
+
+After a few moments, the resource group and all its resources are deleted.
+
+===== Next steps
+
+In this quickstart, you created a new App Configuration store and used it to manage features in a Spring Boot web app via the link:https://docs.microsoft.com/en-us/dotnet/api/Microsoft.Extensions.Configuration.AzureAppConfiguration?view=azure-dotnet[Feature Management libraries].
+
+* Learn more about link:https://docs.microsoft.com/en-us/azure/azure-app-configuration/concept-feature-management[feature management].
+* link:https://docs.microsoft.com/en-us/azure/azure-app-configuration/manage-feature-flags[Manage feature flags].
+* link:https://docs.microsoft.com/en-us/azure/azure-app-configuration/use-feature-flags-spring-boot[Use feature flags in a Spring Boot Core app].

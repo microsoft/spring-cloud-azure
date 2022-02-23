@@ -1,0 +1,177 @@
+
+==== Azure Cosmos DB Apache Cassandra API
+
+This article demonstrates creating a sample application that uses link:https://spring.io/projects/spring-data[Spring Data] to store and retrieve information using the link:https://docs.microsoft.com/en-us/azure/cosmos-db/cassandra/cassandra-introduction[Azure Cosmos DB Cassandra API].
+
+===== Prerequisites
+
+The following prerequisites are required in order to complete the steps in this article:
+
+* An Azure subscription; if you don't already have an Azure subscription, you can activate your link:https://azure.microsoft.com/en-us/pricing/member-offers/credit-for-visual-studio-subscribers/[MSDN subscriber benefits] or sign up for a link:https://azure.microsoft.com/en-us/free/[free Azure account].
+* A supported Java Development Kit (JDK). For more information about the JDKs available for use when developing on Azure, see link:https://docs.microsoft.com/en-us/azure/developer/java/fundamentals/java-support-on-azure[Java support on Azure and Azure Stack].
+* link:http://maven.apache.org/[Apache Maven], version 3.0 or later.
+* link:https://curl.haxx.se/[Curl] or similar HTTP utility to test functionality.
+* A link:https://git-scm.com/downloads[Git] client.
+
+===== Create an Azure Cosmos DB account
+
+The following procedure creates and configures a Cosmos account in the Azure portal.
+
+====== Create a Cosmos DB account using the Azure portal
+
+NOTE: You can read more detailed information about creating Azure Cosmos DB accounts in link:https://docs.microsoft.com/en-us/azure/cosmos-db/[Azure Cosmos DB Documentation].
+
+* Step1. Browse to the Azure portal at <https://portal.azure.com/> and sign in.
+
+* Step2. Select **Create a resource**, then **Get started**, and then select **Azure Cosmos DB**.
+
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-data-apache-cassandra-with-cosmos-db/create-cosmos-db-01.png[Azure portal, create a resource, search for Azure Cosmos DB.]
+
+* Step3. On the **Select API option** screen, select **Cassandra**.
+
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-data-apache-cassandra-with-cosmos-db/create-cosmos-db-02.png[Azure portal, create a resource, select API option, Cassandra selected.]
+
+* Step4. Specify the following information:
+
+- **Subscription**: Specify your Azure subscription to use.
+- **Resource group**: Specify whether to create a new resource group, or choose an existing resource group.
+- **Account name**: Choose a unique name for your Cosmos DB account; this will be used to create a fully-qualified domain name like *wingtiptoyscassandra.documents.azure.com*.
+- **API**: Specify *Cassandra* for this tutorial.
+- **Location**: Specify the closest geographic region for your database.
+
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-data-apache-cassandra-with-cosmos-db/create-cosmos-db-03.png[Specify your Cosmos DB account settings.]
+
+* Step5. When you have entered all of the above information, click **Review + create**.
+
+* Step6. If everything looks correct on the review page, click **Create**.
+
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-data-apache-cassandra-with-cosmos-db/create-cosmos-db-04.png[Review your Cosmos DB account settings.]
+
+It will take a few minutes to deploy the database.
+
+====== Add a keyspace to your Azure Cosmos DB account
+
+* Step1. Browse to the Azure portal at <https://portal.azure.com/> and sign in.
+
+* Step2. Select **All Resources**, then select the Azure Cosmos DB account you just created.
+
+* Step3. Select **Data Explorer**, select down arrow and select **New Keyspace**. Enter a unique identifier for your **Keyspace id**, then select **OK**.
+
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-data-apache-cassandra-with-cosmos-db/create-cosmos-db-05.png[Select new keyspace.]
+
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-data-apache-cassandra-with-cosmos-db/create-cosmos-db-05-1.png[Create a Cosmos DB keyspace.]
+
+====== Retrieve the connection settings for your Azure Cosmos DB account
+
+* Step1. Browse to the Azure portal at <https://portal.azure.com/> and sign in.
+
+* Step2. Select **All Resources**, then select the Azure Cosmos DB account you just created.
+
+* Step3. Select **Connection strings**, and copy the values for the **Contact Point**, **Port**, **Username**, and **Primary Password** fields; you will use those values to configure your application later.
+
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-data-apache-cassandra-with-cosmos-db/create-cosmos-db-06.png[Retrieve your Cosmos DB connection settings.]
+
+===== Configure the sample application
+
+The following procedure configures the test application.
+
+* Step1. Open a command shell and clone the sample project using a git command like the following example:
+
+[source,bash]
+----
+   git clone https://github.com/Azure-Samples/spring-data-cassandra-on-azure.git
+----
+
+* Step2. Locate the *application.properties* file in the *resources* directory of the sample project, or create the file if it does not already exist.
+
+* Step3. Open the *application.properties* file in a text editor, and add or configure the following lines in the file, and replace the sample values with the appropriate values from earlier:
+
+[source,properties]
+----
+   spring.data.cassandra.contact-points=wingtiptoyscassandra.cassandra.cosmos.azure.com
+   spring.data.cassandra.port=10350
+   spring.data.cassandra.username=wingtiptoyscassandra
+   spring.data.cassandra.password=********
+----
+
+.Configurable properties
+[cols="<,<", options="header"]
+|===
+| Parameter | Description
+
+| *spring.data.cassandra*.contact-points | Specifies the **Contact Point** from earlier in this article.
+| *spring.data.cassandra*.port | Specifies the **Port** from earlier in this article.
+| *spring.data.cassandra*.username | Specifies your **Username** from earlier in this article.
+| *spring.data.cassandra*.password | Specifies your **Primary Password** from earlier in this article.
+
+|===
+
+* Step4. Save and close the *application.properties* file.
+
+===== Package and test the sample application
+
+Browse to the directory that contains the .pom file to build and test the application.
+
+* Step1. Build the sample application with Maven; for example:
+
+[source,bash]
+----
+   mvn clean package
+----
+
+* Step2. Start the sample application; for example:
+
+[source,bash]
+----
+   java -jar target/spring-data-cassandra-on-azure-0.1.0-SNAPSHOT.jar
+----
+
+* Step3. Create new records using `curl` from a command prompt like the following examples:
+
+[source,bash]
+----
+   curl -s -d "{\"name\":\"dog\",\"species\":\"canine\"}" -H "Content-Type: application/json" -X POST http://localhost:8080/pets
+
+   curl -s -d "{\"name\":\"cat\",\"species\":\"feline\"}" -H "Content-Type: application/json" -X POST http://localhost:8080/pets
+----
+
+Your application should return values like the following:
+
+[source,bash]
+----
+   Added Pet{id=60fa8cb0-0423-11e9-9a70-39311962166b, name='dog', species='canine'}.
+
+   Added Pet{id=72c1c9e0-0423-11e9-9a70-39311962166b, name='cat', species='feline'}.
+----
+
+* Step4. Retrieve all of the existing records using `curl` from a command prompt like the following examples:
+
+[source,bash]
+----
+   curl -s http://localhost:8080/pets
+----
+
+Your application should return values like the following:
+
+[source,json]
+----
+   [{"id":"60fa8cb0-0423-11e9-9a70-39311962166b","name":"dog","species":"canine"},{"id":"72c1c9e0-0423-11e9-9a70-39311962166b","name":"cat","species":"feline"}]
+----
+
+===== Summary
+
+In this tutorial, you created a sample Java application that uses Spring Data to store and retrieve information using the Azure Cosmos DB Cassandra API.
+
+===== Clean up resources
+
+When no longer needed, use the link:https://portal.azure.com/[Azure portal] to delete the resources created in this article to avoid unexpected charges.
+
+===== Next steps
+
+To learn more about Spring and Azure, continue to the Spring on Azure documentation center.
+
+- link:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/[Spring on Azure]
+
+====== Additional Resources
+
+For more information about using Azure with Java, see the link:https://docs.microsoft.com/en-us/azure/developer/java/[Azure for Java Developers] and the link:https://docs.microsoft.com/en-us/azure/devops/?view=azure-devops[Working with Azure DevOps and Java].

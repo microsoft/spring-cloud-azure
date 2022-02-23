@@ -1,0 +1,407 @@
+
+==== R2DBC with Azure PostgreSQL
+
+This article demonstrates creating a sample application that uses link:https://spring.io/projects/spring-data-r2dbc[Spring Data R2DBC] to store and retrieve information in an link:https://docs.microsoft.com/en-us/azure/postgresql/[Azure Database for PostgreSQL] database. The sample will use the R2DBC implementation for PostgreSQL from the link:https://github.com/pgjdbc/r2dbc-postgresql[r2dbc-postgresql] repository on GitHub.
+
+lilnk:https://r2dbc.io/[R2DBC] brings reactive APIs to traditional relational databases. You can use it with Spring WebFlux to create fully reactive Spring Boot applications that use non-blocking APIs. It provides better scalability than the classic "one thread per connection" approach.
+
+===== Prerequisites
+
+- An Azure account. If you don't have one, link:https://azure.microsoft.com/free/[get a free trial].
+- link:https://docs.microsoft.com/en-us/azure/cloud-shell/quickstart[Azure Cloud Shell] or link:https://docs.microsoft.com/en-us/cli/azure/install-azure-cli[Azure CLI]. We recommend Azure Cloud Shell so you'll be logged in automatically and have access to all the tools you'll need.
+- A supported link:https://docs.microsoft.com/en-us/azure/developer/java/fundamentals/java-support-on-azure[Java Development Kit], version 8 (included in Azure Cloud Shell).
+- link:https://curl.haxx.se[cURL] or a similar HTTP utility to test functionality.
+
+===== Sample application
+
+In this article, we will code a sample application. If you want to go faster, this application is already coded and available at link:https://github.com/Azure-Samples/quickstart-spring-data-r2dbc-postgresql[https://github.com/Azure-Samples/quickstart-spring-data-r2dbc-postgresql].
+
+===== Prepare the working environment
+
+First, set up some environment variables by using the following commands:
+
+[source,bash]
+----
+AZ_RESOURCE_GROUP=database-workshop
+AZ_DATABASE_NAME=<YOUR_DATABASE_NAME>
+AZ_LOCATION=<YOUR_AZURE_REGION>
+AZ_POSTGRESQL_USERNAME=spring
+AZ_POSTGRESQL_PASSWORD=<YOUR_POSTGRESQL_PASSWORD>
+AZ_LOCAL_IP_ADDRESS=<YOUR_LOCAL_IP_ADDRESS>
+----
+
+Replace the placeholders with the following values, which are used throughout this article:
+
+- `<YOUR_DATABASE_NAME>`: The name of your PostgreSQL server. It should be unique across Azure.
+- `<YOUR_AZURE_REGION>`: The Azure region you'll use. You can use `eastus` by default, but we recommend that you configure a region closer to where you live. You can have the full list of available regions by entering `az account list-locations`.
+- `<YOUR_POSTGRESQL_PASSWORD>`: The password of your PostgreSQL database server. That password should have a minimum of eight characters. The characters should be from three of the following categories: English uppercase letters, English lowercase letters, numbers (0-9), and non-alphanumeric characters (!, $, #, %, and so on).
+- `<YOUR_LOCAL_IP_ADDRESS>`: The IP address of your local computer, from which you'll run your Spring Boot application. One convenient way to find it is to point your browser to link:http://whatismyip.akamai.com/[whatismyip.akamai.com].
+
+Next, create a resource group:
+
+[source,bash]
+----
+az group create \
+    --name $AZ_RESOURCE_GROUP \
+    --location $AZ_LOCATION \
+    | jq
+----
+
+NOTE: We use the `jq` utility, which is installed by default on link:https://shell.azure.com/[Azure Cloud Shell] to display JSON data and make it more readable. If you don't like that utility, you can safely remove the `| jq` part of all the commands we'll use.
+
+===== Create an Azure Database for MySQL instance
+
+The first thing we'll create is a managed MySQL server.
+
+NOTE: You can read more detailed information about creating PostgreSQL servers in link:https://docs.microsoft.com/en-us/azure/postgresql/quickstart-create-server-database-portal[Create an Azure Database for PostgreSQL server by using the Azure portal].
+
+In link:https://shell.azure.com/[Azure Cloud Shell], run the following script:
+
+[source,bash]
+----
+az postgres server create \
+    --resource-group $AZ_RESOURCE_GROUP \
+    --name $AZ_DATABASE_NAME \
+    --location $AZ_LOCATION \
+    --sku-name B_Gen5_1 \
+    --storage-size 5120 \
+    --admin-user $AZ_POSTGRESQL_USERNAME \
+    --admin-password $AZ_POSTGRESQL_PASSWORD \
+    | jq
+----
+
+This command creates a small PostgreSQL server.
+
+====== Configure a firewall rule for your PostgreSQL server
+
+Azure Database for PostgreSQL instances are secured by default. They have a firewall that doesn't allow any incoming connection. To be able to use your database, you need to add a firewall rule that will allow the local IP address to access the database server.
+
+Because you configured your local IP address at the beginning of this article, you can open the server's firewall by running the following command:
+
+[source,bash]
+----
+az postgres server firewall-rule create \
+    --resource-group $AZ_RESOURCE_GROUP \
+    --name $AZ_DATABASE_NAME-database-allow-local-ip \
+    --server $AZ_DATABASE_NAME \
+    --start-ip-address $AZ_LOCAL_IP_ADDRESS \
+    --end-ip-address $AZ_LOCAL_IP_ADDRESS \
+    | jq
+----
+
+====== Configure a PostgreSQL database
+
+The PostgreSQL server that you created earlier is empty. It doesn't have any database that you can use with the Spring Boot application. Create a new database called `demo` by using the following command:
+
+[source,bash]
+----
+az postgres db create \
+    --resource-group $AZ_RESOURCE_GROUP \
+    --name demo \
+    --server-name $AZ_DATABASE_NAME \
+    | jq
+----
+
+
+===== Create a reactive Spring Boot application
+
+To create a reactive Spring Boot application, we'll use link:https://start.spring.io/[Spring Initializr]. The application that we'll create uses:
+
+- Spring Boot 2.3.4.RELEASE.
+- The following dependencies: Spring Reactive Web (also known as Spring WebFlux) and Spring Data R2DBC.
+
+====== Generate the application by using Spring Initializr
+
+Generate the application on the command line by using the following command:
+
+[source,bash]
+----
+curl https://start.spring.io/starter.tgz -d dependencies=webflux,data-r2dbc -d baseDir=azure-database-workshop -d bootVersion=2.3.4.RELEASE -d javaVersion=8 | tar -xzvf -
+----
+
+====== Add the reactive PostgreSQL driver implementation
+
+Open the generated project's *pom.xml* file, and then add the reactive PostgreSQL driver from the [r2dbc-postgresql repository on GitHub](https://github.com/pgjdbc/r2dbc-postgresql). After the `spring-boot-starter-webflux` dependency, add the following text:
+
+[source,xml]
+----
+<dependency>
+    <groupId>io.r2dbc</groupId>
+    <artifactId>r2dbc-postgresql</artifactId>
+    <scope>runtime</scope>
+</dependency>
+----
+
+====== Configure Spring Boot to use Azure Database for PostgreSQL
+
+Open the *src/main/resources/application.properties* file, and add the following text:
+
+[source,properties]
+----
+logging.level.org.springframework.data.r2dbc=DEBUG
+
+spring.r2dbc.url=r2dbc:pool:postgres://$AZ_DATABASE_NAME.postgres.database.azure.com:5432/demo
+spring.r2dbc.username=spring@$AZ_DATABASE_NAME
+spring.r2dbc.password=$AZ_POSTGRESQL_PASSWORD
+spring.r2dbc.properties.sslMode=REQUIRE
+----
+
+WARNING: For security reasons, Azure Database for PostgreSQL requires to use SSL connections. This is why you need to add the `spring.r2dbc.properties.sslMode=REQUIRE` configuration property, otherwise the R2DBC PostgreSQL driver will try to connect using an insecure connection, which will fail.
+
+Replace the two `$AZ_DATABASE_NAME` variables and the `$AZ_POSTGRESQL_PASSWORD` variable with the values that you configured at the beginning of this article.
+
+NOTE: For better performance, the `spring.r2dbc.url` property is configured to use a connection pool using https://github.com/r2dbc/r2dbc-pool[r2dbc-pool].
+
+You should now be able to start your application by using the provided Maven wrapper as follows:
+
+[source,bash]
+----
+./mvnw spring-boot:run
+----
+
+Here's a screenshot of the application running for the first time:
+
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-data-r2dbc-with-azure-postgresql/create-postgresql-01.png[The running application]
+
+====== Create the database schema
+
+Inside the main `DemoApplication` class, configure a new Spring bean that will create a database schema, using the following code:
+
+[source,java]
+----
+package com.example.demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.r2dbc.connectionfactory.init.ConnectionFactoryInitializer;
+import org.springframework.data.r2dbc.connectionfactory.init.ResourceDatabasePopulator;
+
+import io.r2dbc.spi.ConnectionFactory;
+
+@SpringBootApplication
+public class DemoApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
+
+    @Bean
+    public ConnectionFactoryInitializer initializer(ConnectionFactory connectionFactory) {
+        ConnectionFactoryInitializer initializer = new ConnectionFactoryInitializer();
+        initializer.setConnectionFactory(connectionFactory);
+        ResourceDatabasePopulator populator = new ResourceDatabasePopulator(new ClassPathResource("schema.sql"));
+        initializer.setDatabasePopulator(populator);
+        return initializer;
+    }
+}
+----
+
+This Spring bean uses a file called *schema.sql*, so create that file in the *src/main/resources* folder, and add the following text:
+
+[source,sql]
+----
+DROP TABLE IF EXISTS todo;
+CREATE TABLE todo (id SERIAL PRIMARY KEY, description VARCHAR(255), details VARCHAR(4096), done BOOLEAN);
+----
+
+Stop the running application, and start it again using the following command. The application will now use the `demo` database that you created earlier, and create a `todo` table inside it.
+
+[source,bash]
+----
+./mvnw spring-boot:run
+----
+
+Here's a screenshot of the database table as it's being created:
+
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-data-r2dbc-with-azure-postgresql/create-postgresql-02.png[Creation of the database table]
+
+===== Code the application
+
+Next, add the Java code that will use R2DBC to store and retrieve data from your PostgreSQL server.
+
+Create a new `Todo` Java class, next to the `DemoApplication` class, using the following code:
+
+[source,java]
+----
+package com.example.demo;
+
+import org.springframework.data.annotation.Id;
+
+public class Todo {
+
+    public Todo() {
+    }
+
+    public Todo(String description, String details, boolean done) {
+        this.description = description;
+        this.details = details;
+        this.done = done;
+    }
+
+    @Id
+    private Long id;
+
+    private String description;
+
+    private String details;
+
+    private boolean done;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
+
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
+    }
+}
+----
+
+This class is a domain model mapped on the `todo` table that you created before.
+
+To manage that class, you'll need a repository. Define a new `TodoRepository` interface in the same package, using the following code:
+
+[source,java]
+----
+package com.example.demo;
+
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+
+public interface TodoRepository extends ReactiveCrudRepository<Todo, Long> {
+}
+----
+
+This repository is a reactive repository that Spring Data R2DBC manages.
+
+Finish the application by creating a controller that can store and retrieve data. Implement a `TodoController` class in the same package, and add the following code:
+
+[source,java]
+----
+package com.example.demo;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+@RestController
+@RequestMapping("/")
+public class TodoController {
+
+    private final TodoRepository todoRepository;
+
+    public TodoController(TodoRepository todoRepository) {
+        this.todoRepository = todoRepository;
+    }
+
+    @PostMapping("/")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Mono<Todo> createTodo(@RequestBody Todo todo) {
+        return todoRepository.save(todo);
+    }
+
+    @GetMapping("/")
+    public Flux<Todo> getTodos() {
+        return todoRepository.findAll();
+    }
+}
+----
+
+Finally, halt the application and start it again using the following command:
+
+[source,bash]
+----
+./mvnw spring-boot:run
+----
+
+===== Test the application
+
+To test the application, you can use cURL.
+
+First, create a new "todo" item in the database using the following command:
+
+[source,bash]
+----
+curl --header "Content-Type: application/json" \
+    --request POST \
+    --data '{"description":"configuration","details":"congratulations, you have set up R2DBC correctly!","done": "true"}' \
+    http://127.0.0.1:8080
+----
+
+This command should return the created item, as shown here:
+
+[source,json]
+----
+{"id":1,"description":"configuration","details":"congratulations, you have set up R2DBC correctly!","done":true}
+----
+
+Next, retrieve the data by using a new cURL request with the following command:
+
+[source,bash]
+----
+curl http://127.0.0.1:8080
+----
+
+This command will return the list of "todo" items, including the item you've created, as shown here:
+
+[source,json]
+----
+[{"id":1,"description":"configuration","details":"congratulations, you have set up R2DBC correctly!","done":true}]
+----
+
+
+Here's a screenshot of these cURL requests:
+
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-data-r2dbc-with-azure-postgresql/create-postgresql-03.png[Test with cURL]
+
+Congratulations! You've created a fully reactive Spring Boot application that uses R2DBC to store and retrieve data from Azure Database for PostgreSQL.
+
+===== Clean up resources
+
+To clean up all resources used during this quickstart, delete the resource group using the following command:
+
+[source,bash]
+----
+az group delete \
+    --name $AZ_RESOURCE_GROUP \
+    --yes
+----
+
+===== Next steps
+
+To learn more about Spring and Azure, continue to the Spring on Azure documentation center.
+
+- link:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/[Spring on Azure]
+
+
+====== Additional resources
+
+For more information about Spring Data R2DBC, see Spring's link:https://docs.spring.io/spring-data/r2dbc/docs/current/reference/html/#reference[reference documentation].
+
+For more information about using Azure with Java, see link:https://docs.microsoft.com/en-us/azure/developer/java/[Azure for Java developers] and link:https://docs.microsoft.com/en-us/azure/devops/?view=azure-devops[Working with Azure DevOps and Java].

@@ -1,0 +1,6 @@
+
+=== Spring Security
+
+include::spring-boot-starter-for-azure-active-directory-developer-guide.adoc[]
+include::configure-spring-boot-starter-java-app-with-azure-active-directory.adoc[]
+include::configure-spring-boot-starter-java-app-with-azure-active-directory-b2c-oidc.adoc[]

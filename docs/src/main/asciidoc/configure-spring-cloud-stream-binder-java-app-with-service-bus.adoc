@@ -1,0 +1,369 @@
+
+==== Azure Service Bus
+
+This article demonstrates how to use the Spring Cloud Stream Binder to send messages to and receive messages from Service Bus `queues` and `topics`.
+
+IMPORTANT: Spring Boot 2.0 (or later) is required to complete the steps in this article.
+
+Azure provides an asynchronous messaging platform called link:https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-messaging-overview[Azure Service Bus] ("Service Bus") that is based on the link:http://www.amqp.org/[Advanced Message Queueing Protocol 1.0] ("AMQP 1.0") standard. Service Bus can be used across the range of supported Azure platforms.
+
+===== Prerequisites
+
+The following prerequisites are required for this article:
+
+1. An Azure subscription; if you don't already have an Azure subscription, you can activate your link:https://azure.microsoft.com/pricing/member-offers/credit-for-visual-studio-subscribers/[MSDN subscriber benefits] or sign up for a link:https://azure.microsoft.com/free/[free account].
+
+2. A supported Java Development Kit (JDK), version 8 or later. For more information about the JDKs available for use when developing on Azure, see link:https://docs.microsoft.com/en-us/azure/developer/java/fundamentals/java-support-on-azure[Java support on Azure and Azure Stack].
+
+3. Apache's link:http://maven.apache.org/[Maven], version 3.2 or later.
+
+4. If you already have a configured Service Bus queue or topic, ensure that the Service Bus namespace meets the following requirements:
+
+a. Allows access from all networks
+b. Is Standard (or higher)
+c. Has an access policy with read/write access for your queue and topic
+
+5. If you don't have a configured Service Bus queue or topic, use the Azure portal to link:https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-quickstart-portal[create a Service Bus queue] or link:https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-quickstart-topics-subscriptions-portal[create a Service Bus topic]. Ensure that the namespace meets the requirements specified in the previous step. Also, make note of the connection string in the namespace as you need it for this tutorial's test app.
+
+6. If you don't have a Spring Boot application, create a **Maven** project with the link:https://start.spring.io/[Spring Initializr]. Remember to select **Maven Project** and, under **Dependencies**, add the **Web** dependency, under **Spring Boot**, select **2.4.6**, select **8** Java version.
+
+
+===== Use the Spring Cloud Stream Binder starter
+
+* Step1. Locate the *pom.xml* file in the parent directory of your app; for example:
+
+[source,bash]
+----
+    C:\SpringBoot\servicebus\pom.xml
+----
+
+or
+
+[source,bash]
+----
+    /users/example/home/servicebus/pom.xml
+----
+
+* Step2. Open the *pom.xml* file in a text editor.
+
+* Step3. Add the following code block under the **&lt;dependencies>** element, depending on whether you're using a Service Bus queue or topic:
+
+**Service Bus queue**
+
+[source,xml]
+----
+    <dependency>
+        <groupId>com.azure.spring</groupId>
+        <artifactId>azure-spring-cloud-stream-binder-servicebus-queue</artifactId>
+        <version>2.13.0</version>
+    </dependency>
+----
+
+**Service Bus topic**
+
+[source,xml]
+----
+    <dependency>
+        <groupId>com.azure.spring</groupId>
+        <artifactId>azure-spring-cloud-stream-binder-servicebus-topic</artifactId>
+        <version>2.13.0</version>
+    </dependency>
+----
+
+
+* Step4. Save and close the *pom.xml* file.
+
+===== Configure the app for your service bus
+
+You can configure your app based on either the connection string or service principal. This tutorial uses a connection string. For more information about using service principal, see the link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/servicebus/azure-spring-cloud-stream-binder-servicebus-queue/servicebus-queue-binder[Spring Cloud Azure Stream Binder for Service Bus queue Code Sample]
+ and link:https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/spring/azure-spring-cloud-stream-binder-servicebus-topic[Spring Cloud Azure Stream Binder for Service Bus topic Code Sample].
+
+* Step1. Add an *application.yaml* in the *resources* directory of your app; for example:
+
+[source,bash]
+----
+   C:\SpringBoot\servicebus\src\main\resources\application.yaml
+----
+
+or
+
+[source,bash]
+----
+   /users/example/home/servicebus/src/main/resources/application.yaml
+----
+
+* Step2. Open the *application.yaml* file in a text editor, append the appropriate code to the end of the *application.yaml* file depending on whether you're using a Service Bus queue or topic. Use the [Field descriptions table](#fd) to replace the sample values with the appropriate properties for your service bus.
+
+**Service Bus queue**
+
+[source,yaml]
+----
+    spring:
+      cloud:
+        azure:
+          servicebus:
+            connection-string: <ServiceBusNamespaceConnectionString>
+        stream:
+          bindings:
+            consume-in-0:
+              destination: examplequeue
+            supply-out-0:
+              destination: examplequeue
+          servicebus:
+            queue:
+              bindings:
+                consume-in-0:
+                  consumer:
+                    checkpoint-mode: MANUAL
+          function:
+            definition: consume;supply;
+          poller:
+            fixed-delay: 1000
+            initial-delay: 0
+----
+
+**Service Bus topic**
+
+[source,yaml]
+----
+    spring:
+      cloud:
+        azure:
+          servicebus:
+            connection-string: <ServiceBusNamespaceConnectionString>
+        stream:
+          bindings:
+            consume-in-0:
+              destination: exampletopic
+              group: examplesubscription
+            supply-out-0:
+              destination: exampletopic
+          servicebus:
+            topic:
+              bindings:
+                consume-in-0:
+                  consumer:
+                    checkpoint-mode: MANUAL
+          function:
+            definition: consume;supply;
+          poller:
+            fixed-delay: 1000
+            initial-delay: 0
+----
+
+.Field descriptions
+[cols="<,<", options="header"]
+|===
+
+|    Field   |      Description
+| *spring.cloud*.azure.function.definition |  Specify which functional bean to bind to the external destination(s) exposed by the bindings.
+| *spring.cloud*.azure.poller.fixed-delay  |  Specify fixed delay for default poller in milliseconds, default 1000L.
+| *spring.cloud*.azure.poller.initial-delay |  Specify initial delay for periodic triggers, default 0.
+| *spring.cloud*.azure.servicebus.connection-string |  Specify the connection string you obtained in your Service Bus namespace from the Azure portal.
+| *spring.cloud*.stream.bindings.consume-in-0.destination    |    Specify the Service Bus queue or Service Bus topic you used in this tutorial.
+| *spring.cloud*.stream.bindings.consume-in-0.group    |    If you used a Service Bus topic, specify the topic subscription.
+| *spring.cloud*.stream.bindings.supply-out-0.destination     |      Specify the same value used for input destination.
+| *spring.cloud*.stream.servicebus.queue.bindings.consume-in-0.consumer.checkpoint-mode |        Specify `MANUAL`.
+| *spring.cloud*.stream.servicebus.topic.bindings.consume-in-0.consumer.checkpoint-mode |          Specify `MANUAL`.
+
+|===
+
+* Step3. Save and close the *application.yaml* file.
+
+===== Implement basic Service Bus functionality
+
+In this section, you create the necessary Java classes for sending messages to your service bus.
+
+====== Modify the main application class
+
+* Step1. Locate the main application Java file in the package directory of your app; for example:
+
+[source,bash]
+----
+    C:\SpringBoot\servicebus\src\main\java\com\example\servicebus\ServiceBusApplication.java
+----
+
+or
+
+[source,bash]
+----
+   /users/example/home/servicebus/src/main/java/com/example/servicebus/ServiceBusApplication.java
+----
+
+* Step2. Open the main application Java file in a text editor.
+
+* Step3. Add the following code to the file:
+
+[source,java]
+----
+   package com.example.servicebus;
+
+   import com.azure.spring.integration.core.api.Checkpointer;
+   import org.slf4j.Logger;
+   import org.slf4j.LoggerFactory;
+   import org.springframework.boot.SpringApplication;
+   import org.springframework.boot.autoconfigure.SpringBootApplication;
+   import org.springframework.context.annotation.Bean;
+   import org.springframework.messaging.Message;
+
+   import java.util.function.Consumer;
+
+   import static com.azure.spring.integration.core.AzureHeaders.CHECKPOINTER;
+
+   @SpringBootApplication
+   public class ServiceBusApplication {
+
+       private static final Logger LOGGER = LoggerFactory.getLogger(ServiceBusApplication.class);
+
+       public static void main(String[] args) {
+           SpringApplication.run(ServiceBusApplication.class, args);
+       }
+
+       @Bean
+       public Consumer<Message<String>> consume() {
+           return message -> {
+               Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+               LOGGER.info("New message received: '{}'", message.getPayload());
+               checkpointer.success().handle((r, ex) -> {
+                   if (ex == null) {
+                       LOGGER.info("Message '{}' successfully checkpointed", message.getPayload());
+                   }
+                   return null;
+               });
+           };
+       }
+   }
+----
+
+* Step4. Save and close the file.
+
+====== Create a new producer configuration class
+
+* Step1. Using a text editor, create a Java file named *ServiceProducerConfiguration.java* in the package directory of your app.
+
+* Step2. Add the following code to the new file:
+
+[source,java]
+----
+   package com.example.servicebus;
+
+   import org.slf4j.Logger;
+   import org.slf4j.LoggerFactory;
+   import org.springframework.context.annotation.Bean;
+   import org.springframework.context.annotation.Configuration;
+   import org.springframework.messaging.Message;
+   import reactor.core.publisher.Flux;
+   import reactor.core.publisher.Sinks;
+
+   import java.util.function.Supplier;
+
+   @Configuration
+   public class ServiceProducerConfiguration {
+
+       private static final Logger LOGGER = LoggerFactory.getLogger(ServiceProducerConfiguration.class);
+
+       @Bean
+       public Sinks.Many<Message<String>> many() {
+           return Sinks.many().unicast().onBackpressureBuffer();
+       }
+
+       @Bean
+       public Supplier<Flux<Message<String>>> supply(Sinks.Many<Message<String>> many) {
+           return () -> many.asFlux()
+                            .doOnNext(m -> LOGGER.info("Manually sending message {}", m))
+                            .doOnError(t -> LOGGER.error("Error encountered", t));
+       }
+   }
+----
+
+* Step3. Save and close the *ServiceProducerConfiguration.java* file.
+
+====== Create a new controller class
+
+* Step1. Using a text editor, create a Java file named *ServiceProducerController.java* in the package directory of your app.
+
+* Step2. Add the following lines of code to the new file:
+
+[source,java]
+----
+   package com.example.servicebus;
+
+   import org.slf4j.Logger;
+   import org.slf4j.LoggerFactory;
+   import org.springframework.beans.factory.annotation.Autowired;
+   import org.springframework.http.ResponseEntity;
+   import org.springframework.messaging.Message;
+   import org.springframework.messaging.support.MessageBuilder;
+   import org.springframework.web.bind.annotation.PostMapping;
+   import org.springframework.web.bind.annotation.RequestParam;
+   import org.springframework.web.bind.annotation.RestController;
+   import reactor.core.publisher.Sinks;
+
+   @RestController
+   public class ServiceProducerController {
+
+       private static final Logger LOGGER = LoggerFactory.getLogger(ServiceProducerController.class);
+
+       @Autowired
+       private Sinks.Many<Message<String>> many;
+
+       @PostMapping("/messages")
+       public ResponseEntity<String> sendMessage(@RequestParam String message) {
+           LOGGER.info("Going to add message {} to Sinks.Many.", message);
+           many.emitNext(MessageBuilder.withPayload(message).build(), Sinks.EmitFailureHandler.FAIL_FAST);
+           return ResponseEntity.ok("Sent!");
+       }
+   }
+----
+
+* Step3. Save and close the *ServiceProducerController.java* file.
+
+===== Build and test your application
+
+* Step1. Open a command prompt.
+
+* Step2. Change the directory to the location of your *pom.xml* file; for example:
+
+[source,bash]
+----
+    cd C:\SpringBoot\servicebus
+----
+
+or
+
+[source,bash]
+----
+    cd /users/example/home/servicebus
+----
+
+* Step3. Build your Spring Boot application with Maven and run it:
+
+[source,shell script]
+----
+    mvn clean spring-boot:run
+----
+
+* Step4. Once your application is running, you can use *curl* to test your application:
+
+[source,shell script]
+----
+    curl -X POST localhost:8080/messages?message=hello
+----
+
+You should see "hello" posted to your application's log:
+
+[source,shell script]
+----
+    New message received: 'hello'
+    Message 'hello' successfully checkpointed
+----
+
+===== Clean up resources
+
+When no longer needed, use the link:https://portal.azure.com/[Azure portal] to delete the resources created in this article to avoid unexpected charges.
+
+===== Next steps
+
+To learn more about Spring and Azure, continue to the Spring on Azure documentation center.
+
+- link:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/[Spring on Azure]

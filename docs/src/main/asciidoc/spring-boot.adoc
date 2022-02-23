@@ -1,0 +1,8 @@
+
+=== Spring Boot
+
+include::spring-boot-starters-for-azure.adoc[]
+include::configure-spring-boot-starter-java-app-with-azure-storage.adoc[]
+include::configure-spring-boot-starter-java-app-with-azure-key-vault.adoc[]
+include::configure-spring-boot-starter-java-app-with-azure-key-vault-certificates.adoc[]
+include::configure-spring-boot-starter-java-app-with-azure-service-bus.adoc[]

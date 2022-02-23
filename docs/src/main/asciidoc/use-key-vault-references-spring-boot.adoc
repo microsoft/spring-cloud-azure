@@ -1,0 +1,271 @@
+
+==== Use Key Vault references
+
+In this tutorial, you learn how to use the Azure App Configuration service together with Azure Key Vault. App Configuration and Key Vault are complementary services used side by side in most application deployments.
+
+App Configuration helps you use the services together by creating keys that reference values stored in Key Vault. When App Configuration creates such keys, it stores the URIs of Key Vault values rather than the values themselves.
+
+Your application uses the App Configuration client provider to retrieve Key Vault references, just as it does for any other keys stored in App Configuration. In this case, the values stored in App Configuration are URIs that reference the values in the Key Vault. They are not Key Vault values or credentials. Because the client provider recognizes the keys as Key Vault references, it uses Key Vault to retrieve their values.
+
+Your application is responsible for authenticating properly to both App Configuration and Key Vault. The two services don't communicate directly.
+
+This tutorial shows you how to implement Key Vault references in your code. It builds on the web app introduced in the quickstarts. Before you continue, complete link:#quickstart-java-spring-app[Create a Java Spring app with App Configuration] first.
+
+You can use any code editor to do the steps in this tutorial. For example, link:https://code.visualstudio.com/[Visual Studio Code] is a cross-platform code editor that's available for the Windows, macOS, and Linux operating systems.
+
+In this tutorial, you learn how to:
+
+ * Create an App Configuration key that references a value stored in Key Vault.
+ * Access the value of this key from a Java Spring application.
+
+===== Prerequisites
+
+* Azure subscription - link:https://azure.microsoft.com/free/[create one for free]
+* A supported link:https://docs.microsoft.com/en-us/azure/developer/java/fundamentals/?view=azure-java-stable[Java Development Kit SDK] with version 8.
+* link:https://maven.apache.org/download.cgi[Apache Maven] version 3.0 or above.
+
+===== Create a vault
+
+* Step1. Select the **Create a resource** option in the upper-left corner of the Azure portal:
+
+image:https://docs.microsoft.com/en-us/azure/azure-app-configuration/media/quickstarts/search-services.png[Screenshot shows the Create a resource option in the Azure portal.]
+
+* Step2. In the search box, enter **Key Vault**.
+* Step3. From the results list, select **Key vaults** on the left.
+* Step4. In **Key vaults**, select **Add**.
+* Step5. On the right in **Create key vault**, provide the following information:
+    ** Select **Subscription** to choose a subscription.
+    ** In **Resource Group**, select **Create new** and enter a resource group name.
+    ** In **Key vault name**, a unique name is required. For this tutorial, enter **Contoso-vault2**.
+    ** In the **Region** drop-down list, choose a location.
+* Step6. Leave the other **Create key vault** options with their default values.
+* Step7. Select **Create**.
+
+At this point, your Azure account is the only one authorized to access this new vault.
+
+image:https://docs.microsoft.com/en-us/azure/azure-app-configuration/media/quickstarts/vault-properties.png[Screenshot shows your key vault.]
+
+===== Add a secret to Key Vault
+
+To add a secret to the vault, you need to take just a few additional steps. In this case, add a message that you can use to test Key Vault retrieval. The message is called **Message**, and you store the value "Hello from Key Vault" in it.
+
+* Step1. From the Key Vault properties pages, select **Secrets**.
+* Step2. Select **Generate/Import**.
+* Step3. In the **Create a secret** pane, enter the following values:
+** **Upload options**: Enter **Manual**.
+** **Name**: Enter **Message**.
+** **Value**: Enter **Hello from Key Vault**.
+* Step4. Leave the other **Create a secret** properties with their default values.
+* Step5. Select **Create**.
+
+===== Add a Key Vault reference to App Configuration
+
+* Step1. Sign in to the link:https://portal.azure.com[Azure portal]. Select **All resources**, and then select the App Configuration store instance that you created in the quickstart.
+
+* Step2. Select **Configuration Explorer**.
+
+* Step3. Select **+ Create** > **Key vault reference**, and then specify the following values:
+** **Key**: Select **/application/config.keyvaultmessage**
+** **Label**: Leave this value blank.
+** **Subscription**, **Resource group**, and **Key vault**: Enter the values corresponding to the values in the key vault you created in the previous section.
+** **Secret**: Select the secret named **Message** that you created in the previous section.
+
+===== Connect to Key Vault
+
+* Step1. In this tutorial, you use a service principal for authentication to Key Vault. To create this service principal, use the Azure CLI link:https://docs.microsoft.com/en-us/cli/azure/ad/sp?view=azure-cli-latest#az_ad_sp_create_for_rbac[az ad sp create-for-rbac] command:
+
+[source,bash]
+----
+    az ad sp create-for-rbac -n "http://mySP" --role Contributor --sdk-auth
+----
+
+This operation returns a series of key/value pairs:
+
+[source,json]
+----
+    {
+    "clientId": "7da18cae-779c-41fc-992e-0527854c6583",
+    "clientSecret": "b421b443-1669-4cd7-b5b1-394d5c945002",
+    "subscriptionId": "443e30da-feca-47c4-b68f-1636b75e16b3",
+    "tenantId": "35ad10f1-7799-4766-9acf-f2d946161b77",
+    "activeDirectoryEndpointUrl": "https://login.microsoftonline.com",
+    "resourceManagerEndpointUrl": "https://management.azure.com/",
+    "sqlManagementEndpointUrl": "https://management.core.windows.net:8443/",
+    "galleryEndpointUrl": "https://gallery.azure.com/",
+    "managementEndpointUrl": "https://management.core.windows.net/"
+    }
+----
+
+* Step2. Run the following command to let the service principal access your key vault:
+
+[source,bash]
+----
+    az keyvault set-policy -n <your-unique-keyvault-name> --spn <clientId-of-your-service-principal> --secret-permissions delete get
+----
+
+* Step3. Run the following command to get your object-id, then add it to App Configuration.
+
+[source,bash]
+----
+    az ad sp show --id <clientId-of-your-service-principal>
+    az role assignment create --role "App Configuration Data Reader" --assignee-object-id <objectId-of-your-service-principal> --resource-group <your-resource-group>
+----
+
+* Step4. Create the environment variables **AZURE_CLIENT_ID**, **AZURE_CLIENT_SECRET**, and **AZURE_TENANT_ID**. Use the values for the service principal that were displayed in the previous steps. At the command line, run the following commands and restart the command prompt to allow the change to take effect:
+
+[source,bash]
+----
+    setx AZURE_CLIENT_ID "clientId"
+    setx AZURE_CLIENT_SECRET "clientSecret"
+    setx AZURE_TENANT_ID "tenantId"
+----
+
+If you use Windows PowerShell, run the following command:
+
+[source,bash]
+----
+    $Env:AZURE_CLIENT_ID = "clientId"
+    $Env:AZURE_CLIENT_SECRET = "clientSecret"
+    $Env:AZURE_TENANT_ID = "tenantId"
+----
+
+If you use macOS or Linux, run the following command:
+
+[source,bash]
+----
+    export AZURE_CLIENT_ID ='clientId'
+    export AZURE_CLIENT_SECRET ='clientSecret'
+    export AZURE_TENANT_ID ='tenantId'
+----
+
+NOTE: These Key Vault credentials are only used within your application.  Your application authenticates directly with Key Vault using these credentials without involving the App Configuration service.  The Key Vault provides authentication for both your application and your App Configuration service without sharing or exposing keys.
+
+===== Update your code to use a Key Vault reference
+
+* Step1. Create an environment variable called **APP_CONFIGURATION_ENDPOINT**. Set its value to the endpoint of your App Configuration store. You can find the endpoint on the **Access Keys** blade in the Azure portal. Restart the command prompt to allow the change to take effect.
+
+* Step2. Open *bootstrap.properties* in the *resources* folder. Update this file to use the **APP_CONFIGURATION_ENDPOINT** value. Remove any references to a connection string in this file.
+
+[source,properties]
+----
+    spring.cloud.azure.appconfiguration.stores[0].endpoint= ${APP_CONFIGURATION_ENDPOINT}
+----
+
+* Step3. Open *MessageProperties.java*. Add a new variable called *keyVaultMessage*:
+
+[source,java]
+----
+    private String keyVaultMessage;
+
+    public String getKeyVaultMessage() {
+        return keyVaultMessage;
+    }
+
+    public void setKeyVaultMessage(String keyVaultMessage) {
+        this.keyVaultMessage = keyVaultMessage;
+    }
+----
+
+* Step4. Open *HelloController.java*. Update the *getMessage* method to include the message retrieved from Key Vault.
+
+[source,java]
+----
+    @GetMapping
+    public String getMessage() {
+        return "Message: " + properties.getMessage() + "\nKey Vault message: " + properties.getKeyVaultMessage();
+    }
+----
+
+* Step5. Create a new file called *AzureCredentials.java* and add the code below.
+
+[source,java]
+----
+    package com.example.demo;
+
+    import com.azure.core.credential.TokenCredential;
+    import com.azure.identity.EnvironmentCredentialBuilder;
+    import com.azure.spring.cloud.config.AppConfigurationCredentialProvider;
+    import com.azure.spring.cloud.config.KeyVaultCredentialProvider;
+
+    public class AzureCredentials implements AppConfigurationCredentialProvider, KeyVaultCredentialProvider{
+
+        @Override
+        public TokenCredential getKeyVaultCredential(String uri) {
+            return getCredential();
+        }
+
+        @Override
+        public TokenCredential getAppConfigCredential(String uri) {
+            return getCredential();
+        }
+
+        private TokenCredential getCredential() {
+            return new EnvironmentCredentialBuilder().build();
+        }
+
+    }
+----
+
+* Step6. Create a new file called *AppConfiguration.java*. And add the code below.
+
+[source,java]
+----
+    package com.example.demo;
+
+    import org.springframework.context.annotation.Bean;
+    import org.springframework.context.annotation.Configuration;
+
+    @Configuration
+    public class AppConfiguration {
+
+        @Bean
+        public AzureCredentials azureCredentials() {
+            return new AzureCredentials();
+        }
+    }
+----
+
+* Step7. Create a new file in your resources META-INF directory called *spring.factories* and add the code below.
+
+[source,java]
+----
+    org.springframework.cloud.bootstrap.BootstrapConfiguration=\
+    com.example.demo.AppConfiguration
+----
+
+* Step8. Build your Spring Boot application with Maven and run it, for example:
+
+[source,shell script]
+----
+    mvn clean package
+    mvn spring-boot:run
+----
+
+* Step9. After your application is running, use *curl* to test your application, for example:
+
+[source,shell script]
+----
+      curl -X GET http://localhost:8080/
+----
+
+You see the message that you entered in the App Configuration store. You also see the message that you entered in Key Vault.
+
+===== Clean up resources
+
+If you do not want to continue using the resources created in this article, delete the resource group you created here to avoid charges.
+
+IMPORTANT: Deleting a resource group is irreversible. The resource group and all the resources in it are permanently deleted. Make sure that you don't accidentally delete the wrong resource group or resources. If you created the resources for this article inside a resource group that contains other resources you want to keep, delete each resource individually from its respective pane instead of deleting the resource group.
+
+1. Sign in to the link:https://portal.azure.com[Azure portal], and select **Resource groups**.
+2. In the **Filter by name** box, enter the name of your resource group.
+3. In the result list, select the resource group name to see an overview.
+4. Select **Delete resource group**.
+5. You're asked to confirm the deletion of the resource group. Enter the name of your resource group to confirm, and select **Delete**.
+
+After a few moments, the resource group and all its resources are deleted.
+
+===== Next steps
+
+In this tutorial, you created an App Configuration key that references a value stored in Key Vault. To learn how to use feature flags in your Java Spring application, continue to the next tutorial.
+
+- link:#quickstart-feature-flag-spring-boot[Managed identity integration]

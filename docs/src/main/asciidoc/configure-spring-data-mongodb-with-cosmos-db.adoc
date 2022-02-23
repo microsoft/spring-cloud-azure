@@ -1,0 +1,138 @@
+
+==== Azure Cosmos DB MongoDB API
+
+This article demonstrates creating a sample application that uses link:https://spring.io/projects/spring-data[Spring Data] to store and retrieve information using the link:https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb/mongodb-introduction[Azure Cosmos DB MongoDB API].
+
+===== Prerequisites
+
+The following prerequisites are required in order to complete the steps in this article:
+
+* An Azure subscription; if you don't already have an Azure subscription, you can activate your link:https://azure.microsoft.com/en-us/pricing/member-offers/credit-for-visual-studio-subscribers/[MSDN subscriber benefits] or sign up for a link:https://azure.microsoft.com/en-us/free/[free Azure account].
+* A supported Java Development Kit (JDK). For more information about the JDKs available for use when developing on Azure, see link:https://docs.microsoft.com/en-us/azure/developer/java/fundamentals/java-support-on-azure[Java support on Azure and Azure Stack].
+* Apache's link:http://maven.apache.org/[Maven], version 3.0 or later.
+* A link:https://git-scm.com/downloads[Git] client.
+
+===== Create an Azure Cosmos DB account
+
+====== Create a Cosmos DB account using the Azure portal
+
+NOTE: You can read more detailed information about creating Azure Cosmos DB accounts in link:https://docs.microsoft.com/en-us/azure/cosmos-db/[Azure Cosmos DB Documentation].
+
+* Step1. Browse to the Azure portal at <https://portal.azure.com/> and sign in.
+
+* Step2. Select **Create a resource**, then **Databases**, then **Azure Cosmos DB**.
+
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-data-mongodb-with-cosmos-db/create-cosmos-db-01.png[Azure portal, create a resource, search for Azure Cosmos DB.]
+
+* Step3. On the **Select API option** screen, select **Azure Cosmos DB API for MongoDB**.
+
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-data-mongodb-with-cosmos-db/create-cosmos-db-02.png[Azure portal, create a resource, select API option, Azure Cosmos DB API for MongoDB selected.]
+
+* Step4. Specify the following information:
+
+- **Subscription**: Specify your Azure subscription to use.
+- **Resource group**: Specify whether to create a new resource group, or choose an existing resource group.
+- **Account name**: Choose a unique name for your Cosmos DB account; this will be used to create a fully-qualified domain name like *wingtiptoysmongodb.documents.azure.com*.
+- **API**: Specify `Azure Cosmos DB for MongoDB API` for this tutorial.
+- **Location**: Specify the closest geographic region for your database.
+
+* Step5. When you have entered all of the above information, click **Review + create**.
+
+* Step6. If everything looks correct on the review page, click **Create**.
+
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-data-mongodb-with-cosmos-db/create-cosmos-db-03.png[Review your Cosmos DB account settings.]
+
+====== Retrieve the connection string for your Azure Cosmos DB account
+
+* Step1. Browse to the Azure portal at <https://portal.azure.com/> and sign in.
+
+* Step2. Click **All Resources**, then click the Azure Cosmos DB account you just created.
+
+* Step3. Click **Connection strings**, and copy the value for the **Primary Connection String** field; you will use that value to configure your application later.
+
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-data-mongodb-with-cosmos-db/create-cosmos-db-06.png[Retrieve your Cosmos DB connection string.]
+
+===== Configure the sample application
+
+* Step1. Open a command shell and clone the sample project using a git command like the following example:
+
+[source,bash]
+----
+   git clone https://github.com/spring-guides/gs-accessing-data-mongodb.git
+----
+
+* Step2. Create a *resources* directory in the *&lt;project root&gt;/complete/src/main* directory of the sample project, and create an *application.properties* file in the *resources* directory.
+
+* Step3. Open the *application.properties* file in a text editor, and add the following lines in the file, and replace the sample values with the appropriate values from earlier:
+
+[source,properties]
+----
+   spring.data.mongodb.database=wingtiptoysmongodb
+   spring.data.mongodb.uri=mongodb://wingtiptoysmongodb:AbCdEfGhIjKlMnOpQrStUvWxYz==@wingtiptoysmongodb.documents.azure.com:10255/?ssl=true&replicaSet=globaldb
+----
+
+.Configurable properties
+[cols="<,<", options="header"]
+|===
+| Parameter | Description
+
+| *spring.data.mongodb*.database | Specifies the name of your Cosmos DB account from earlier in this article.
+| *spring.data.mongodb*.uri | Specifies the **Primary Connection String** from earlier in this article.
+
+|===
+
+* Step4. Save and close the *application.properties* file.
+
+===== Package and test the sample application
+
+To build the application, browse to the directory */gs-accessing-data-mongodb/complete*, which contains the pom.xml file.
+
+1. Build the sample application with Maven, and configure Maven to skip tests; for example:
+
+[source,bash]
+----
+   mvn clean package -DskipTests
+----
+
+1. Start the sample application; for example:
+
+[source,bash]
+----
+   java -jar target/accessing-data-mongodb-0.0.1-SNAPSHOT.jar
+----
+
+Your application should return values like the following:
+
+[source,json]
+----
+   Customers found with findAll():
+   -------------------------------
+   Customer[id=5c1b4ae4d0b5080ac105cc13, firstName='Alice', lastName='Smith']
+   Customer[id=5c1b4ae4d0b5080ac105cc14, firstName='Bob', lastName='Smith']
+
+   Customer found with findByFirstName('Alice'):
+   --------------------------------
+   Customer[id=5c1b4ae4d0b5080ac105cc13, firstName='Alice', lastName='Smith']
+   Customers found with findByLastName('Smith'):
+   --------------------------------
+   Customer[id=5c1b4ae4d0b5080ac105cc13, firstName='Alice', lastName='Smith']
+   Customer[id=5c1b4ae4d0b5080ac105cc14, firstName='Bob', lastName='Smith']
+----
+
+===== Summary
+
+In this tutorial, you created a sample Java application that uses Spring Data to store and retrieve information using the Azure Cosmos DB MongoDB API.
+
+===== Clean up resources
+
+When no longer needed, use the link:https://portal.azure.com/[Azure portal] to delete the resources created in this article to avoid unexpected charges.
+
+===== Next steps
+
+To learn more about Spring and Azure, continue to the Spring on Azure documentation center.
+
+- link:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/[Spring on Azure]
+
+====== Additional Resources
+
+For more information about using Azure with Java, see the link:https://docs.microsoft.com/en-us/azure/developer/java/[Azure for Java Developers] and the link:https://docs.microsoft.com/en-us/azure/devops/?view=azure-devops[Working with Azure DevOps and Java].

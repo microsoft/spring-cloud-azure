@@ -1,0 +1,17 @@
+
+=== Spring Data
+
+include::how-to-guides-spring-data-cosmosdb.adoc[]
+include::configure-spring-boot-starter-java-app-with-cosmos-db.adoc[]
+include::configure-spring-app-with-cosmos-db-on-app-service-linux.adoc[]
+include::configure-spring-data-apache-cassandra-with-cosmos-db.adoc[]
+include::configure-spring-data-mongodb-with-cosmos-db.adoc[]
+include::configure-spring-data-jdbc-with-azure-mysql.adoc[]
+include::configure-spring-data-jdbc-with-azure-postgresql.adoc[]
+include::configure-spring-data-jdbc-with-azure-sql-server.adoc[]
+include::configure-spring-data-r2dbc-with-azure-mysql.adoc[]
+include::configure-spring-data-r2dbc-with-azure-postgresql.adoc[]
+include::configure-spring-data-r2dbc-with-azure-sql-server.adoc[]
+include::configure-spring-data-jpa-with-azure-mysql.adoc[]
+include::configure-spring-data-jpa-with-azure-postgresql.adoc[]
+include::configure-spring-data-jpa-with-azure-sql-server.adoc[]

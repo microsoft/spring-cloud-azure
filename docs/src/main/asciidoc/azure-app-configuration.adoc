@@ -1,0 +1,8 @@
+
+=== Azure App Configuration
+
+include::quickstart-java-spring-app.adoc[]
+include::quickstart-feature-flag-spring-boot.adoc[]
+include::enable-dynamic-configuration-java-spring-app.adoc[]
+include::use-key-vault-references-spring-boot.adoc[]
+include::use-feature-flags-spring-boot.adoc[]

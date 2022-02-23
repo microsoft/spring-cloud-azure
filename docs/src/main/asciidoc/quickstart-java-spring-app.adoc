@@ -1,0 +1,221 @@
+
+[#quickstart-java-spring-app]
+==== Create an app
+
+In this quickstart, you incorporate Azure App Configuration into a Java Spring app to centralize storage and management of application settings separate from your code.
+
+===== Prerequisites
+
+- Azure subscription - link:https://azure.microsoft.com/free/[create one for free]
+- A supported link:https://docs.microsoft.com/en-us/azure/developer/java/fundamentals/?view=azure-java-stable[Java Development Kit (JDK)] with version 8.
+- link:https://maven.apache.org/download.cgi[Apache Maven] version 3.0 or above.
+
+===== Create an App Configuration store
+
+* Step1. To create a new App Configuration store, sign in to the link:https://portal.azure.com[Azure portal]. In the upper-left corner of the home page, select **Create a resource**. In the **Search the Marketplace** box, enter *App Configuration* and select `Enter`.
+
+image:https://docs.microsoft.com/en-us/azure/includes/media/azure-app-configuration-create/azure-portal-search.png[Search for App Configuration]
+
+
+* Step2. Select **App Configuration** from the search results, and then select **Create**.
+
+image:https://docs.microsoft.com/en-us/azure/includes/media/azure-app-configuration-create/azure-portal-app-configuration-create.png[Select Create]
+
+* Step3. On the **Create App Configuration** pane, enter the following settings:
+
+.Create App Configuration
+[cols="<,<,<", options="header"]
+|===
+| Setting | Suggested value | Description
+
+| **Subscription** | Your subscription | Select the Azure subscription that you want to use to test App Configuration. If your account has only one subscription, it's automatically selected and the **Subscription** list isn't displayed.
+| **Resource group** | *AppConfigTestResources* | Select or create a resource group for your App Configuration store resource. This group is useful for organizing multiple resources that you might want to delete at the same time by deleting the resource group. For more information, see link:https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/overview[Use resource groups to manage your Azure resources].
+| **Resource name** | Globally unique name | Enter a unique resource name to use for the App Configuration store resource. The name must be a string between 5 and 50 characters and contain only numbers, letters, and the `-` character. The name can't start or end with the `-` character.
+| **Location** | *Central US* | Use **Location** to specify the geographic location in which your app configuration store is hosted. For the best performance, create the resource in the same region as other components of your application.
+| **Pricing tier** | *Free* | Select the desired pricing tier. For more information, see the link:https://azure.microsoft.com/pricing/details/app-configuration[App Configuration pricing page].
+
+|===
+
+* Step4. Select **Review + create** to validate your settings.
+
+* Step5. Select **Create**. The deployment might take a few minutes.
+
+* Step6. After the deployment finishes, navigate to the App Configuration resource. Select **Settings** > **Access keys**. Make a note of the primary read-only key connection string. You'll use this connection string later to configure your application to communicate with the App Configuration store that you created.
+
+* Step7. Select **Configuration Explorer** > **+ Create** > **Key-value** to add the following key-value pairs:
+
+.key-value pairs
+[cols="<,<", options="header"]
+|===
+| Key | Value
+
+| /application/config.message | Hello
+
+|===
+
+Leave **Label** and **Content Type** empty for now.
+
+* Step8. Select **Apply**.
+
+===== Create a Spring Boot app
+
+Use the link:https://start.spring.io/[Spring Initializr] to create a new Spring Boot project.
+
+* Step1. Browse to <https://start.spring.io/>.
+
+* Step2. Specify the following options:
+
+- Generate a **Maven** project with **Java**.
+- Specify a **Spring Boot** version that's equal to or greater than 2.0.
+- Specify the **Group** and **Artifact** names for your application.
+- Add the **Spring Web** dependency.
+
+* Step3. After you specify the previous options, select **Generate Project**. When prompted, download the project to a path on your local computer.
+
+===== Connect to an App Configuration store
+
+* Step1. After you extract the files on your local system, your simple Spring Boot application is ready for editing. Locate the *pom.xml* file in the root directory of your app.
+
+* Step2. Open the *pom.xml* file in a text editor, and add the Spring Cloud Azure Config starter to the list of `<dependencies>`:
+
+**Spring Boot 2.4**
+
+[source,xml]
+----
+    <dependency>
+        <groupId>com.azure.spring</groupId>
+        <artifactId>azure-spring-cloud-appconfiguration-config</artifactId>
+        <version>2.0.0</version>
+    </dependency>
+----
+
+NOTE: If you need to support an older version of Spring Boot see our link:https://github.com/Azure/azure-sdk-for-java/blob/spring-cloud-starter-azure-appconfiguration-config_1.2.9/sdk/appconfiguration/spring-cloud-starter-azure-appconfiguration-config/README.md[old library].
+
+* Step3. Create a new Java file named *MessageProperties.java* in the package directory of your app. Add the following lines:
+
+[source,java]
+----
+    package com.example.demo;
+
+    import org.springframework.boot.context.properties.ConfigurationProperties;
+
+    @ConfigurationProperties(prefix = "config")
+    public class MessageProperties {
+        private String message;
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+    }
+----
+
+* Step4. Create a new Java file named *HelloController.java* in the package directory of your app. Add the following lines:
+
+[source,java]
+----
+    package com.example.demo;
+
+    import org.springframework.web.bind.annotation.GetMapping;
+    import org.springframework.web.bind.annotation.RestController;
+
+    @RestController
+    public class HelloController {
+        private final MessageProperties properties;
+
+        public HelloController(MessageProperties properties) {
+            this.properties = properties;
+        }
+
+        @GetMapping
+        public String getMessage() {
+            return "Message: " + properties.getMessage();
+        }
+    }
+----
+
+* Step5. Open the main application Java file, and add `@EnableConfigurationProperties` to enable this feature.
+
+[source,java]
+----
+    import org.springframework.boot.context.properties.EnableConfigurationProperties;
+
+    @SpringBootApplication
+    @EnableConfigurationProperties(MessageProperties.class)
+    public class DemoApplication {
+        public static void main(String[] args) {
+            SpringApplication.run(DemoApplication.class, args);
+        }
+    }
+----
+
+* Step6. Create a new file named `bootstrap.properties` under the resources directory of your app, and add the following lines to the file. Replace the sample values with the appropriate properties for your App Configuration store.
+
+[source,properties]
+----
+    spring.cloud.azure.appconfiguration.stores[0].connection-string= ${APP_CONFIGURATION_CONNECTION_STRING}
+----
+
+* Step7. Set an environment variable named **APP_CONFIGURATION_CONNECTION_STRING**, and set it to the access key to your App Configuration store. At the command line, run the following command and restart the command prompt to allow the change to take effect:
+
+[source,shell script]
+----
+    setx APP_CONFIGURATION_CONNECTION_STRING "connection-string-of-your-app-configuration-store"
+----
+
+If you use Windows PowerShell, run the following command:
+
+[source,shell script]
+----
+    $Env:APP_CONFIGURATION_CONNECTION_STRING = "connection-string-of-your-app-configuration-store"
+----
+
+If you use macOS or Linux, run the following command:
+
+[source,shell script]
+----
+    export APP_CONFIGURATION_CONNECTION_STRING='connection-string-of-your-app-configuration-store'
+----
+
+===== Build and run the app locally
+
+* Step1. Build your Spring Boot application with Maven and run it, for example:
+
+[source,shell script]
+----
+    mvn clean package
+    mvn spring-boot:run
+----
+
+* Step2. After your application is running, use *curl* to test your application, for example:
+
+[source,shell script]
+----
+      curl -X GET http://localhost:8080/
+----
+
+You see the message that you entered in the App Configuration store.
+
+===== Clean up resources
+
+If you do not want to continue using the resources created in this article, delete the resource group you created here to avoid charges.
+
+IMPORTANT: Deleting a resource group is irreversible. The resource group and all the resources in it are permanently deleted. Make sure that you don't accidentally delete the wrong resource group or resources. If you created the resources for this article inside a resource group that contains other resources you want to keep, delete each resource individually from its respective pane instead of deleting the resource group.
+
+1. Sign in to the link:https://portal.azure.com[Azure portal], and select **Resource groups**.
+2. In the **Filter by name** box, enter the name of your resource group.
+3. In the result list, select the resource group name to see an overview.
+4. Select **Delete resource group**.
+5. You're asked to confirm the deletion of the resource group. Enter the name of your resource group to confirm, and select **Delete**.
+
+After a few moments, the resource group and all its resources are deleted.
+
+===== Next steps
+
+In this quickstart, you created a new App Configuration store and used it with a Java Spring app. For more information, see link:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/[Spring on Azure]. To learn how to enable your Java Spring app to dynamically refresh configuration settings, continue to the next tutorial.
+
+
+- link:https://docs.microsoft.com/en-us/azure/azure-app-configuration/enable-dynamic-configuration-java-spring-app[Enable dynamic configuration]
