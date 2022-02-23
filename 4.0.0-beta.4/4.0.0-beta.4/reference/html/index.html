@@ -6967,6 +6967,26 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
 </div>
 </div>
 </div>
+<div class="sect4">
+<h5 id="resource-provision"><a class="anchor" href="#resource-provision"></a><a class="link" href="#resource-provision">Resource Provision</a></h5>
+<div class="paragraph">
+<p>Event Hubs binder supports provisioning of event hub and consumer group, users could use below properties to enable provisioning.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      credential:
+        tenant-id: ${AZURE_TENANT_ID}
+      profile:
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
+      eventhubs:
+        resource:
+          resource-group: ${AZURE_EVENTHUBS_RESOURECE_GROUP}</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="samples-10"><a class="anchor" href="#samples-10"></a><a class="link" href="#samples-10">14.1.5. Samples</a></h4>
@@ -7645,6 +7665,32 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
     };
 
 }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="resource-provision-2"><a class="anchor" href="#resource-provision-2"></a><a class="link" href="#resource-provision-2">Resource Provision</a></h5>
+<div class="paragraph">
+<p>Service bus binder supports provisioning of queue, topic and subscription, users could use below properties to enable provisioning.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      credential:
+        tenant-id: ${AZURE_TENANT_ID}
+      profile:
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
+      servicebus:
+        resource:
+          resource-group: ${AZURE_SERVICEBUS_RESOURECE_GROUP}
+    stream:
+      servicebus:
+        bindings:
+          &lt;binding-name&gt;:
+            consumer:
+              entity-type: ${SERVICEBUS_CONSUMER_ENTITY_TYPE}</code></pre>
 </div>
 </div>
 </div>
