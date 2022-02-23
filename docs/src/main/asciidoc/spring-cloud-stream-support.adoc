@@ -643,7 +643,7 @@ public Consumer<Message<String>> consume2() {
 ----
 
 ===== Resource Provision
-EventHub and ConsumerGroup could be auto create by add such properties:
+Event Hubs binder supports provisioning of event hub and consumer group, users could use below properties to enable provisioning.
 [source,yaml]
 ----
 spring:
@@ -1134,7 +1134,7 @@ public Consumer<Message<String>> consume2() {
 ----
 
 ===== Resource Provision
-Servicebus topic, queue and subscription could be auto create by add such properties:
+Service bus binder supports provisioning of queue, topic and subscription, users could use below properties to enable provisioning.
 [source,yaml]
 ----
 spring:
