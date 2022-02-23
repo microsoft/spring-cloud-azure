@@ -641,6 +641,23 @@ public Consumer<Message<String>> consume2() {
     };
 }
 ----
+
+===== Resource Provision
+EventHub and ConsumerGroup could be auto create by add such properties:
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        tenant-id: ${AZURE_TENANT_ID}
+      profile:
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
+      eventhubs:
+        resource:
+          resource-group: ${AZURE_EVENTHUBS_RESOURECE_GROUP}
+----
+
 ==== Samples
 
 Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/eventhubs/spring-cloud-azure-stream-binder-eventhubs[azure-spring-boot-samples] for more details.
@@ -1114,6 +1131,28 @@ public Consumer<Message<String>> consume2() {
     };
 
 }
+----
+
+===== Resource Provision
+Servicebus topic, queue and subscription could be auto create by add such properties:
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        tenant-id: ${AZURE_TENANT_ID}
+      profile:
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
+      servicebus:
+        resource:
+          resource-group: ${AZURE_SERVICEBUS_RESOURECE_GROUP}
+    stream:
+      servicebus:
+        bindings:
+          servicebus-binding:
+            consumer:
+              entity-type: ${SERVICEBUS_CONSUMER_ENTITY_TYPE}
 ----
 
 ==== Samples
