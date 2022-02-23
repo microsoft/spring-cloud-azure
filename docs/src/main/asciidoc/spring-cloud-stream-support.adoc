@@ -663,6 +663,23 @@ public Consumer<Message<String>> consume2() {
     };
 }
 ----
+
+===== Resource Provision
+Event Hubs binder supports provisioning of event hub and consumer group, users could use below properties to enable provisioning.
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        tenant-id: ${AZURE_TENANT_ID}
+      profile:
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
+      eventhubs:
+        resource:
+          resource-group: ${AZURE_EVENTHUBS_RESOURECE_GROUP}
+----
+
 ==== Samples
 
 Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/eventhubs/spring-cloud-azure-stream-binder-eventhubs[azure-spring-boot-samples] for more details.
@@ -1136,6 +1153,28 @@ public Consumer<Message<String>> consume2() {
     };
 
 }
+----
+
+===== Resource Provision
+Service bus binder supports provisioning of queue, topic and subscription, users could use below properties to enable provisioning.
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        tenant-id: ${AZURE_TENANT_ID}
+      profile:
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
+      servicebus:
+        resource:
+          resource-group: ${AZURE_SERVICEBUS_RESOURECE_GROUP}
+    stream:
+      servicebus:
+        bindings:
+          <binding-name>:
+            consumer:
+              entity-type: ${SERVICEBUS_CONSUMER_ENTITY_TYPE}
 ----
 
 ==== Samples
