@@ -102,8 +102,49 @@ Below are starters for **Spring Cloud Stream** support:
 
 We prepared a full list of samples to show the usages, can be found at https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}[Spring Cloud Azure Samples].
 
-include::spring-boot.adoc[]
-include::spring-data.adoc[]
-include::spring-security.adoc[]
-include::spring-cloud.adoc[]
-include::azure-app-configuration.adoc[]
+=== Spring Boot
+
+include::spring-boot-starters-for-azure.adoc[]
+include::configure-spring-boot-starter-java-app-with-azure-storage.adoc[]
+include::configure-spring-boot-starter-java-app-with-azure-key-vault.adoc[]
+include::configure-spring-boot-starter-java-app-with-azure-key-vault-certificates.adoc[]
+include::configure-spring-boot-starter-java-app-with-azure-service-bus.adoc[]
+
+=== Spring Data
+
+include::how-to-guides-spring-data-cosmosdb.adoc[]
+include::configure-spring-boot-starter-java-app-with-cosmos-db.adoc[]
+include::configure-spring-app-with-cosmos-db-on-app-service-linux.adoc[]
+include::configure-spring-data-apache-cassandra-with-cosmos-db.adoc[]
+include::configure-spring-data-mongodb-with-cosmos-db.adoc[]
+include::configure-spring-data-jdbc-with-azure-mysql.adoc[]
+include::configure-spring-data-jdbc-with-azure-postgresql.adoc[]
+include::configure-spring-data-jdbc-with-azure-sql-server.adoc[]
+include::configure-spring-data-r2dbc-with-azure-mysql.adoc[]
+include::configure-spring-data-r2dbc-with-azure-postgresql.adoc[]
+include::configure-spring-data-r2dbc-with-azure-sql-server.adoc[]
+include::configure-spring-data-jpa-with-azure-mysql.adoc[]
+include::configure-spring-data-jpa-with-azure-postgresql.adoc[]
+include::configure-spring-data-jpa-with-azure-sql-server.adoc[]
+
+=== Spring Security
+
+include::spring-boot-starter-for-azure-active-directory-developer-guide.adoc[]
+include::configure-spring-boot-starter-java-app-with-azure-active-directory.adoc[]
+include::configure-spring-boot-starter-java-app-with-azure-active-directory-b2c-oidc.adoc[]
+
+=== Spring Cloud
+
+include::configure-spring-cloud-stream-binder-java-app-azure-event-hub.adoc[]
+include::configure-spring-cloud-stream-binder-java-app-kafka-azure-event-hub.adoc[]
+include::getting-started-with-spring-cloud-function-in-azure.adoc[]
+include::configure-spring-cloud-stream-binder-java-app-with-service-bus.adoc[]
+
+=== Azure App Configuration
+
+include::quickstart-java-spring-app.adoc[]
+include::quickstart-feature-flag-spring-boot.adoc[]
+include::enable-dynamic-configuration-java-spring-app.adoc[]
+include::use-key-vault-references-spring-boot.adoc[]
+include::use-feature-flags-spring-boot.adoc[]
+
