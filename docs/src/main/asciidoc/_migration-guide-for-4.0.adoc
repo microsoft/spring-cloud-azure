@@ -297,7 +297,7 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory-
 | *azure.activedirectory.b2c*.login-flow                 | *spring.cloud.azure.active-directory.b2c*.login-flow
 | *azure.activedirectory.b2c*.tenant-id                  | *spring.cloud.azure.active-directory.b2c*.profile.tenant-id
 | *azure.activedirectory.b2c*.user-flows                 | *spring.cloud.azure.active-directory.b2c*.user-flows
-| *azure.activedirectory.b2c*.user-name-attribute-name    | *spring.cloud.azure.active-directory.b2c*.user-name-attribute-name
+| *azure.activedirectory.b2c*.user-name-attribute-nam    | *spring.cloud.azure.active-directory.b2c*.user-name-attribute-nam
 |===
 
 NOTE: For properties like `credential.client-id`, `credential.client-secret`, `profile.tenant-id`, if `spring.cloud.azure.active-directory.b2c.PROPERTY` is not configured, `spring.cloud.azure.PROPERTY` will be used.
@@ -413,7 +413,7 @@ For all configuration options supported in spring-cloud-azure-starter-integratio
 the prefix remains to be as `spring.cloud.azure.servicebus`.
 
 .Property mapping from azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus
-[cols="<,<,<", options="header"]
+[cols="<30,<~", options="header"]
 |===
 |Legacy properties suffix value |Current properties suffix value |Current type
 |transport-type |client.transport-type |AmqpTransportType
