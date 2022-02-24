@@ -8,7 +8,7 @@ Azure offers a great platform to democratize your application development journe
 
 Spring Security has made it easy to secure your Spring based applications with powerful abstractions and extensible interfaces. However, as powerful as the Spring framework can be, it is not tailored to a specific identity provider.
 
-The `spring-cloud-azure-starter-active-directory` (`aad-starter` for short) provides the most optimal way to connect your `web application` to an Azure Active Directory(AAD for short) tenant and protect `resource server` with AAD. It uses the Oauth 2.0 protocol to protect `web applications` and `resource servers`.
+The `spring-cloud-azure-starter-active-directory` (`aad-starter` for short) provides the most optimal way to connect your `web application` to an Azure Active Directory(Aad for short) tenant and protect `resource server` with Aad. It uses the Oauth 2.0 protocol to protect `web applications` and `resource servers`.
 
 ==== Dependency Setup
 
@@ -28,7 +28,7 @@ The `spring-cloud-azure-starter-active-directory` (`aad-starter` for short) prov
 |===
 |Name |Default |Description
 |*spring.cloud.azure.active-directory*.app-id-uri |  | App ID URI which might be used in the "aud" claim of an id_token.
-|*spring.cloud.azure.active-directory*.application-type |  | Type of the AAD application.
+|*spring.cloud.azure.active-directory*.application-type |  | Type of the Aad application.
 |*spring.cloud.azure.active-directory*.authenticate-additional-parameters |  | Add additional parameters to the Authorization URL.
 |*spring.cloud.azure.active-directory*.authorization-clients |  | The OAuth2 authorization clients.
 |*spring.cloud.azure.active-directory*.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
@@ -45,7 +45,7 @@ The `spring-cloud-azure-starter-active-directory` (`aad-starter` for short) prov
 |*spring.cloud.azure.active-directory*.redirect-uri-template | `{baseUrl}/login/oauth2/code/` | Redirection Endpoint: Used by the authorization server to return responses containing authorization credentials to the client via the resource owner user-agent.
 |*spring.cloud.azure.active-directory*.resource-server.claim-to-authority-prefix-map |  | Configure which claim will be used to build GrantedAuthority, and prefix of the GrantedAuthority's string value. Default value is: "scp" -> "SCOPE_", "roles" -> "APPROLE_".
 |*spring.cloud.azure.active-directory*.resource-server.principal-claim-name |  | Configure which claim in access token be returned in AuthenticatedPrincipal#getName. Default value is "sub".
-|*spring.cloud.azure.active-directory*.session-stateless | `false` | If true activates the stateless auth filter AADAppRoleStatelessAuthenticationFilter. The default is false which activates AADAuthenticationFilter.
+|*spring.cloud.azure.active-directory*.session-stateless | `false` | If true activates the stateless auth filter AadAppRoleStatelessAuthenticationFilter. The default is false which activates AadAuthenticationFilter.
 |*spring.cloud.azure.active-directory*.user-group.allowed-group-ids |  | The group ids can be used to construct GrantedAuthority.
 |*spring.cloud.azure.active-directory*.user-group.allowed-group-names |  | The group names can be used to construct GrantedAuthority.
 |*spring.cloud.azure.active-directory*.user-group.use-transitive-members | `false` | If "true", use "v1.0/me/transitiveMemberOf" to get members. Otherwise, use "v1.0/me/memberOf".
@@ -105,7 +105,7 @@ spring:
 ----
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled == true)
-public class AADOAuth2LoginSecurityConfig extends AADWebSecurityConfigurerAdapter {
+public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
 
     /**
      * Add configuration logic as needed.
@@ -180,7 +180,7 @@ After these steps. `arm`'s scopes (https://management.core.windows.net/user_impe
 need to be consented at login time. When user request `/arm` endpoint, user need to consent the
 scope. That's `incremental consent` means.
 
-After the scopes have been consented, AAD server will remember that this user has already granted
+After the scopes have been consented, Aad server will remember that this user has already granted
 the permission to the web application. So incremental consent will not happen anymore after user
 consented.
 
@@ -254,17 +254,17 @@ spring:
 
 * Step 4: Write your Java code:
 
-The `AADWebSecurityConfigurerAdapter` contains necessary web security configuration for *aad-starter*.
+The `AadWebSecurityConfigurerAdapter` contains necessary web security configuration for *aad-starter*.
 
-(A). `DefaultAADWebSecurityConfigurerAdapter` is configured automatically if you not provide one.
+(A). `DefaultAadWebSecurityConfigurerAdapter` is configured automatically if you not provide one.
 
-(B). You can provide one by extending `AADWebSecurityConfigurerAdapter` and call `super.configure(http)` explicitly in the `configure(HttpSecurity http)` function. Here is an example:
+(B). You can provide one by extending `AadWebSecurityConfigurerAdapter` and call `super.configure(http)` explicitly in the `configure(HttpSecurity http)` function. Here is an example:
 
 [source,java]
 ----
     @EnableWebSecurity
     @EnableGlobalMethodSecurity(prePostEnabled = true)
-    public class AADOAuth2LoginSecurityConfig extends AADWebSecurityConfigurerAdapter {
+    public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
 
         /**
          * Add configuration logic as needed.
@@ -383,17 +383,17 @@ image:https://user-images.githubusercontent.com/13167207/142618069-074289df-11aa
 
 * Step 3: Write Java code:
 
-The `AADResourceServerWebSecurityConfigurerAdapter` contains necessary web security configuration for resource server.
+The `AadResourceServerWebSecurityConfigurerAdapter` contains necessary web security configuration for resource server.
 
-(A). `DefaultAADResourceServerWebSecurityConfigurerAdapter` is configured automatically if you not provide one.
+(A). `DefaultAadResourceServerWebSecurityConfigurerAdapter` is configured automatically if you not provide one.
 
-(B). You can provide one by extending `AADResourceServerWebSecurityConfigurerAdapter` and call `super.configure(http)` explicitly in the `configure(HttpSecurity http)` function. Here is an example:
+(B). You can provide one by extending `AadResourceServerWebSecurityConfigurerAdapter` and call `super.configure(http)` explicitly in the `configure(HttpSecurity http)` function. Here is an example:
 
 [source,java]
 ----
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class AADOAuth2ResourceServerSecurityConfig extends AADResourceServerWebSecurityConfigurerAdapter {
+public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebSecurityConfigurerAdapter {
     /**
      * Add configuration logic as needed.
      */
@@ -521,17 +521,17 @@ spring:
 
 * Step 3: Write Java code:
 
-Configure multiple HttpSecurity instances, `AADOAuth2SecurityMultiConfig` contain two security configurations for resource server and web application.
+Configure multiple HttpSecurity instances, `AadOAuth2SecurityMultiConfig` contain two security configurations for resource server and web application.
 
 [source,java]
 ----
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled == true)
-public class AADWebApplicationAndResourceServerConfig {
+public class AadWebApplicationAndResourceServerConfig {
 
     @Order(1)
     @Configuration
-    public static class ApiWebSecurityConfigurationAdapter extends AADResourceServerWebSecurityConfigurerAdapter {
+    public static class ApiWebSecurityConfigurationAdapter extends AadResourceServerWebSecurityConfigurerAdapter {
         protected void configure(HttpSecurity http) throws Exception {
             super.configure(http);
             // All the paths that match `/api/**`(configurable) work as `Resource Server`, other paths work as `Web application`.
@@ -541,7 +541,7 @@ public class AADWebApplicationAndResourceServerConfig {
     }
 
     @Configuration
-    public static class HtmlWebSecurityConfigurerAdapter extends AADWebSecurityConfigurerAdapter {
+    public static class HtmlWebSecurityConfigurerAdapter extends AadWebSecurityConfigurerAdapter {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -616,7 +616,7 @@ class Demo {
 
 This starter supports https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/[Conditional Access] policy. By using Conditional Access policies, you can apply the right **access controls** when needed to keep your organization secure. **Access controls** has many concepts, https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/howto-conditional-access-policy-block-access[Block Access] and https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/concept-conditional-access-grant[Grant Access] are important. In some scenarios, this stater will help you complete Grant Access controls.
 
-In `Resource server visiting other resource server` scenario(For better description, we think that resource server with OBO function as **webapiA** and the other resource servers as **webapiB**), When we configure the webapiB application with Conditional Access(such as https://docs.microsoft.com/en-us/azure/active-directory/authentication/concept-mfa-howitworks[multi-factor authentication]), this stater will help us send the Conditional Access information of the webapiA to the web application and the web application will help us complete the Conditional Access Policy. As shown below:
+In `Resource server visiting other resource server` scenario(For better description, we think that resource server with Obo function as **webapiA** and the other resource servers as **webapiB**), When we configure the webapiB application with Conditional Access(such as https://docs.microsoft.com/en-us/azure/active-directory/authentication/concept-mfa-howitworks[multi-factor authentication]), this stater will help us send the Conditional Access information of the webapiA to the web application and the web application will help us complete the Conditional Access Policy. As shown below:
 
 image:https://user-images.githubusercontent.com/13167207/149291667-930e8559-b8ce-4955-b9ae-11a0a8013ea9.png[aad-conditional-access-flow.png]
 
@@ -673,7 +673,7 @@ After we set redirect-uri-template, we need to update `SecurityConfigurerAdapter
 ----
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class AADOAuth2LoginSecurityConfig extends AADWebSecurityConfigurerAdapter {
+public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
     /**
      * Add configuration logic as needed.
      */
@@ -695,9 +695,9 @@ public class AADOAuth2LoginSecurityConfig extends AADWebSecurityConfigurerAdapte
 Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}[azure-spring-boot-samples] for more details.
 
 
-=== Spring Security With Azure AD B2C
+=== Spring Security With Azure AD B2c
 
-Azure Active Directory (Azure AD) B2C is an identity management service that enables you to customize and control how customers sign up, sign in, and manage their profiles when using your applications. Azure AD B2C enables these actions while protecting the identities of your customers at the same time.
+Azure Active Directory (Azure AD) B2c is an identity management service that enables you to customize and control how customers sign up, sign in, and manage their profiles when using your applications. Azure AD B2c enables these actions while protecting the identities of your customers at the same time.
 
 ==== Dependency Setup
 
@@ -720,14 +720,14 @@ Azure Active Directory (Azure AD) B2C is an identity management service that ena
 |*spring.cloud.azure.active-directory.b2c*.app-id-uri |  | App ID URI which might be used in the "aud" claim of a token.
 |*spring.cloud.azure.active-directory.b2c*.authenticate-additional-parameters |  | Additional parameters for authentication.
 |*spring.cloud.azure.active-directory.b2c*.authorization-clients |  | Specify client configuration.
-|*spring.cloud.azure.active-directory.b2c*.base-uri |  | AAD B2C endpoint base uri.
-|*spring.cloud.azure.active-directory.b2c*.credential |  | AAD B2C credential information.
+|*spring.cloud.azure.active-directory.b2c*.base-uri |  | Aad B2c endpoint base uri.
+|*spring.cloud.azure.active-directory.b2c*.credential |  | Aad B2c credential information.
 |*spring.cloud.azure.active-directory.b2c*.jwt-connect-timeout |  | Connection Timeout for the JWKSet Remote URL call.
 |*spring.cloud.azure.active-directory.b2c*.jwt-read-timeout |  | Read Timeout for the JWKSet Remote URL call.
 |*spring.cloud.azure.active-directory.b2c*.jwt-size-limit |  | Size limit in Bytes of the JWKSet Remote URL call.
 |*spring.cloud.azure.active-directory.b2c*.login-flow | `sign-up-or-sign-in` | Specify the primary sign-in flow key.
 |*spring.cloud.azure.active-directory.b2c*.logout-success-url | `http://localhost:8080/login` | Redirect url after logout.
-|*spring.cloud.azure.active-directory.b2c*.profile |  | AAD B2C profile information.
+|*spring.cloud.azure.active-directory.b2c*.profile |  | Aad B2c profile information.
 |*spring.cloud.azure.active-directory.b2c*.reply-url | `{baseUrl}/login/oauth2/code/` | Reply url after get authorization code.
 |*spring.cloud.azure.active-directory.b2c*.user-flows |  | User flows.
 |*spring.cloud.azure.active-directory.b2c*.user-name-attribute-name |  | User name attribute name.
@@ -744,13 +744,13 @@ A `web application` is any web based application that allows user to login Azure
 . Accessing a resource server.
 . Resource server accessing other resource servers.
 
-image:https://user-images.githubusercontent.com/13167207/142620440-f970b572-2646-4f50-9f77-db62d6e965f1.png[B2C Web application &amp; Web Api Overall]
+image:https://user-images.githubusercontent.com/13167207/142620440-f970b572-2646-4f50-9f77-db62d6e965f1.png[B2c Web application &amp; Web Api Overall]
 
 ===== Usage 1: Accessing a Web Application
 
-This scenario uses https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow[The OAuth 2.0 authorization code grant] flow to log in a user with your Azure AD B2C user.
+This scenario uses https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow[The OAuth 2.0 authorization code grant] flow to log in a user with your Azure AD B2c user.
 
-* Step 1: Select *Azure AD B2C* from the portal menu, click *Applications*, and then click *Add*.
+* Step 1: Select *Azure AD B2c* from the portal menu, click *Applications*, and then click *Add*.
 
 * Step 2: Specify your application *Name*, we call it `webapp`, add `http://localhost:8080/login/oauth2/code/` for the *Reply URL*, record the
  *Application ID* as your `WEB_APP_AZURE_CLIENT_ID` and then click *Save*.
@@ -853,9 +853,9 @@ Security configuration code can refer to the following:
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final AADB2COidcLoginConfigurer configurer;
+    private final AadB2cOidcLoginConfigurer configurer;
 
-    public WebSecurityConfiguration(AADB2COidcLoginConfigurer configurer) {
+    public WebSecurityConfiguration(AadB2cOidcLoginConfigurer configurer) {
         this.configurer == configurer;
     }
 
@@ -879,7 +879,7 @@ Let `Webapp` run on port _8080_.
 
 1. After your application is built and started by Maven, open `http://localhost:8080/` in a web browser; you should be redirected to login page.
 
-2. Click link with the login user flow, you should be redirected Azure AD B2C to start the authentication process.
+2. Click link with the login user flow, you should be redirected Azure AD B2c to start the authentication process.
 
 3. After you have logged in successfully, you should see the sample `home page` from the browser.
 
@@ -887,7 +887,7 @@ Let `Webapp` run on port _8080_.
 
 This scenario is based on *Accessing a web application* scenario to allow application to access other resources, that is [The OAuth 2.0 client credentials grant] flow.
 
-* Step 1: Select *Azure AD B2C* from the portal menu, click *Applications*, and then click *Add*.
+* Step 1: Select *Azure AD B2c* from the portal menu, click *Applications*, and then click *Add*.
 
 * Step 2: Specify your application *Name*, we call it `webApiA`, record the *Application ID* as your `WEB_API_A_AZURE_CLIENT_ID` and then click *Save*.
 
@@ -1072,7 +1072,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests((requests) -> requests.anyRequest().authenticated())
             .oauth2ResourceServer()
             .jwt()
-            .jwtAuthenticationConverter(new AADJwtBearerTokenAuthenticationConverter());
+            .jwtAuthenticationConverter(new AadJwtBearerTokenAuthenticationConverter());
     }
 }
 ----
