@@ -1,7 +1,0 @@
-
-=== Spring Cloud
-
-include::configure-spring-cloud-stream-binder-java-app-azure-event-hub.adoc[]
-include::configure-spring-cloud-stream-binder-java-app-kafka-azure-event-hub.adoc[]
-include::getting-started-with-spring-cloud-function-in-azure.adoc[]
-include::configure-spring-cloud-stream-binder-java-app-with-service-bus.adoc[]
