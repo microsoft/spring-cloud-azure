@@ -297,7 +297,7 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory-
 | *azure.activedirectory.b2c*.login-flow                 | *spring.cloud.azure.active-directory.b2c*.login-flow
 | *azure.activedirectory.b2c*.tenant-id                  | *spring.cloud.azure.active-directory.b2c*.profile.tenant-id
 | *azure.activedirectory.b2c*.user-flows                 | *spring.cloud.azure.active-directory.b2c*.user-flows
-| *azure.activedirectory.b2c*.user-name-attribute-nam    | *spring.cloud.azure.active-directory.b2c*.user-name-attribute-nam
+| *azure.activedirectory.b2c*.user-name-attribute-name    | *spring.cloud.azure.active-directory.b2c*.user-name-attribute-name
 |===
 
 NOTE: For properties like `credential.client-id`, `credential.client-secret`, `profile.tenant-id`, if `spring.cloud.azure.active-directory.b2c.PROPERTY` is not configured, `spring.cloud.azure.PROPERTY` will be used.
@@ -413,7 +413,7 @@ For all configuration options supported in spring-cloud-azure-starter-integratio
 the prefix remains to be as `spring.cloud.azure.servicebus`.
 
 .Property mapping from azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus
-[cols="<30,<~", options="header"]
+[cols="<,<,<", options="header"]
 |===
 |Legacy properties suffix value |Current properties suffix value |Current type
 |transport-type |client.transport-type |AmqpTransportType
@@ -769,7 +769,7 @@ public class Demo {
 |com.azure.spring.integration.core.api.reactor.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
 |com.azure.spring.integration.core.api.CheckpointConfig |com.azure.spring.messaging.checkpoint.CheckpointConfig
 |com.azure.spring.integration.core.api.CheckpointMode |com.azure.spring.messaging.checkpoint.CheckpointMode
-|com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.handler.DefaultMessageHandler
+|com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.implementation.DefaultMessageHandler
 |com.azure.spring.integration.eventhub.inbound.EventHubInboundChannelAdapter |com.azure.spring.integration.eventhubs.inbound.EventHubsInboundChannelAdapter
 |com.azure.spring.integration.eventhub.api.EventHubOperation |com.azure.spring.eventhubs.core.EventHubsTemplate
 |NONE |com.azure.spring.eventhubs.core.EventHubsProcessorContainer
@@ -882,12 +882,12 @@ public class Demo {
 |Legacy class |Modern class
 |com.azure.spring.integration.core.api.CheckpointMode |com.azure.spring.messaging.checkpoint.CheckpointMode
 |com.azure.spring.integration.core.api.reactor.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
-|com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.handler.DefaultMessageHandler
+|com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.implementation.DefaultMessageHandler
 |com.azure.spring.integration.storage.queue.inbound.StorageQueueMessageSource |com.azure.spring.integration.storage.queue.inbound.StorageQueueMessageSource
 |com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
 |com.azure.spring.integration.storage.queue.StorageQueueOperation |com.azure.spring.storage.queue.core.StorageQueueOperation
 |com.azure.spring.integration.storage.queue.StorageQueueTemplate |com.azure.spring.storage.queue.core.StorageQueueTemplate
-|com.azure.spring.integration.core.DefaultMessageHandler |com.azure.spring.integration.handler.DefaultMessageHandler
+|com.azure.spring.integration.core.DefaultMessageHandler |com.azure.spring.integration.implementation.DefaultMessageHandler
 |com.azure.spring.integration.servicebus.ServiceBusTemplate |com.azure.spring.servicebus.core.ServiceBusTemplate
 |com.azure.spring.integration.servicebus.inbound.ServiceBusQueueInboundChannelAdapter |com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter
 |com.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter |com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter
