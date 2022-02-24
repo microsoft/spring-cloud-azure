@@ -41,15 +41,15 @@ public class MyConfigurations {
 
 === Key Vault References
 
-Azure App Configuration and its client libraries support referencing secrets stored in Key Vault. In App Configuration keys can be created the have values that are URIs that map to secrets in a Key Vault. This enables using secrets as configuration without storing them as configurations.
+Azure App Configuration and its client libraries support referencing secrets stored in Key Vault. In App Configuration, keys can be created which have values that map to a  secret stored in a Key Vault. The secrets are securely stored in Key Vault, but can be accessed the same as any other configuration once loaded.
 
-Your application uses the client provider to retrieve Key Vault references, just as it does for any other keys stored in App Configuration. Because the client recognizes the keys as Key Vault references, they have a unique content-type, the client will connect to Key Vault to retrieve their values.
+Your application uses the client provider to retrieve Key Vault references, just as it does for any other keys stored in App Configuration. Because the client recognizes the keys as Key Vault references, they have a unique content-type, and the client will connect to Key Vault to retrieve their values for you.
 
-NOTE: Key Vault only allows for secrets to be retrieved one at a time, so each key vault reference stored in App Configuration will result in a pull against Key Vault.
+NOTE: Key Vault only allows for secrets to be retrieved one at a time, so each Key Vault reference stored in App Configuration will result in a pull against Key Vault.
 
 ==== Creating Key Vault References
 
-You can easily create a Key Vault reference in the Azure Portal in the Configuration explorer using the Create -> Key Vault reference option. You will be able to select a secret to make a reference to from any Key Vault you have access to. You can also create arbitrary Key Vault references using the Input option.
+You can easily create a Key Vault reference in the Azure Portal in the Configuration explorer using the Create -> Key Vault reference option. You will be able to select a secret to reference, this can be from any of the Key Vaults you have access to. You can also create arbitrary Key Vault references using the Input option.
 
 You can also create a Key Vault reference through the cli using:
 
@@ -60,7 +60,7 @@ az appconfig kv set-keyvault --name <name-of-your-store> --key <key-name> --secr
 
 ==== Using Key Vault References
 
-If you are using User Assigned or System Assigned Identity all you need to do is make sure that identity also has access to the Key Vault and reading secrets.
+If you are using a User Assigned or System Assigned Identity all you need to do is make sure that identity also has access to the Key Vault and reading secrets.
 
 Otherwise, you need to provide a Token Credential for the client library to use to connect to your Key Vault with.
 
@@ -84,9 +84,9 @@ Using the KeyVaultCredentialProvider you can provide any TokenCredential type su
 
 ==== Resolve Non Key Vault Secrets
 
-The App Configuration client provides a method of locally resolving secrets that don't have a Key Vault associated with them. This is done through the `KeyVaultSecretProvider`.
+The App Configuration client provides a method of locally resolving secrets that don't have a Key Vault associated with them. This is done through the `KeyVaultSecretProvider`. The `KeyVaultSecretProvider` is called when a `TokenCredential` isn't provided for a Key Vault reference, the uri of the Key Vault reference is provided and return value becomes the value of the secret.
 
-WARNING: Creating a `KeyVaultSecretProvider` overrides the automatic use of System Assigned Identity. In order to use both `KeyVaultCredentialProvider` needs to be used and return `null` for URI's that need to resolve using `KeyVaultSecretProvider`.
+WARNING: Creating a `KeyVaultSecretProvider` overrides the automatic use of System Assigned Identity. In order to use both, `KeyVaultCredentialProvider` needs to be used and return `null` for URI's that need to resolve using `KeyVaultSecretProvider`.
 
 [source,java,indent=0]
 ----
