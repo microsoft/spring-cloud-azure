@@ -45,7 +45,7 @@ The `spring-cloud-azure-starter-active-directory` (`aad-starter` for short) prov
 |*spring.cloud.azure.active-directory*.redirect-uri-template | `{baseUrl}/login/oauth2/code/` | Redirection Endpoint: Used by the authorization server to return responses containing authorization credentials to the client via the resource owner user-agent.
 |*spring.cloud.azure.active-directory*.resource-server.claim-to-authority-prefix-map |  | Configure which claim will be used to build GrantedAuthority, and prefix of the GrantedAuthority's string value. Default value is: "scp" -> "SCOPE_", "roles" -> "APPROLE_".
 |*spring.cloud.azure.active-directory*.resource-server.principal-claim-name |  | Configure which claim in access token be returned in AuthenticatedPrincipal#getName. Default value is "sub".
-|*spring.cloud.azure.active-directory*.session-stateless | `false` | If true activates the stateless auth filter AADAppRoleStatelessAuthenticationFilter. The default is false which activates AADAuthenticationFilter.
+|*spring.cloud.azure.active-directory*.session-stateless | `false` | If true activates the stateless auth filter AadAppRoleStatelessAuthenticationFilter. The default is false which activates AadAuthenticationFilter.
 |*spring.cloud.azure.active-directory*.user-group.allowed-group-ids |  | The group ids can be used to construct GrantedAuthority.
 |*spring.cloud.azure.active-directory*.user-group.allowed-group-names |  | The group names can be used to construct GrantedAuthority.
 |*spring.cloud.azure.active-directory*.user-group.use-transitive-members | `false` | If "true", use "v1.0/me/transitiveMemberOf" to get members. Otherwise, use "v1.0/me/memberOf".
@@ -105,7 +105,7 @@ spring:
 ----
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled == true)
-public class AADOAuth2LoginSecurityConfig extends AADWebSecurityConfigurerAdapter {
+public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
 
     /**
      * Add configuration logic as needed.
@@ -254,17 +254,17 @@ spring:
 
 * Step 4: Write your Java code:
 
-The `AADWebSecurityConfigurerAdapter` contains necessary web security configuration for *aad-starter*.
+The `AadWebSecurityConfigurerAdapter` contains necessary web security configuration for *aad-starter*.
 
-(A). `DefaultAADWebSecurityConfigurerAdapter` is configured automatically if you not provide one.
+(A). `DefaultAadWebSecurityConfigurerAdapter` is configured automatically if you not provide one.
 
-(B). You can provide one by extending `AADWebSecurityConfigurerAdapter` and call `super.configure(http)` explicitly in the `configure(HttpSecurity http)` function. Here is an example:
+(B). You can provide one by extending `AadWebSecurityConfigurerAdapter` and call `super.configure(http)` explicitly in the `configure(HttpSecurity http)` function. Here is an example:
 
 [source,java]
 ----
     @EnableWebSecurity
     @EnableGlobalMethodSecurity(prePostEnabled = true)
-    public class AADOAuth2LoginSecurityConfig extends AADWebSecurityConfigurerAdapter {
+    public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
 
         /**
          * Add configuration logic as needed.
@@ -383,17 +383,17 @@ image:https://user-images.githubusercontent.com/13167207/142618069-074289df-11aa
 
 * Step 3: Write Java code:
 
-The `AADResourceServerWebSecurityConfigurerAdapter` contains necessary web security configuration for resource server.
+The `AadResourceServerWebSecurityConfigurerAdapter` contains necessary web security configuration for resource server.
 
-(A). `DefaultAADResourceServerWebSecurityConfigurerAdapter` is configured automatically if you not provide one.
+(A). `DefaultAadResourceServerWebSecurityConfigurerAdapter` is configured automatically if you not provide one.
 
-(B). You can provide one by extending `AADResourceServerWebSecurityConfigurerAdapter` and call `super.configure(http)` explicitly in the `configure(HttpSecurity http)` function. Here is an example:
+(B). You can provide one by extending `AadResourceServerWebSecurityConfigurerAdapter` and call `super.configure(http)` explicitly in the `configure(HttpSecurity http)` function. Here is an example:
 
 [source,java]
 ----
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class AADOAuth2ResourceServerSecurityConfig extends AADResourceServerWebSecurityConfigurerAdapter {
+public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebSecurityConfigurerAdapter {
     /**
      * Add configuration logic as needed.
      */
@@ -521,17 +521,17 @@ spring:
 
 * Step 3: Write Java code:
 
-Configure multiple HttpSecurity instances, `AADOAuth2SecurityMultiConfig` contain two security configurations for resource server and web application.
+Configure multiple HttpSecurity instances, `AadOAuth2SecurityMultiConfig` contain two security configurations for resource server and web application.
 
 [source,java]
 ----
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled == true)
-public class AADWebApplicationAndResourceServerConfig {
+public class AadWebApplicationAndResourceServerConfig {
 
     @Order(1)
     @Configuration
-    public static class ApiWebSecurityConfigurationAdapter extends AADResourceServerWebSecurityConfigurerAdapter {
+    public static class ApiWebSecurityConfigurationAdapter extends AadResourceServerWebSecurityConfigurerAdapter {
         protected void configure(HttpSecurity http) throws Exception {
             super.configure(http);
             // All the paths that match `/api/**`(configurable) work as `Resource Server`, other paths work as `Web application`.
@@ -541,7 +541,7 @@ public class AADWebApplicationAndResourceServerConfig {
     }
 
     @Configuration
-    public static class HtmlWebSecurityConfigurerAdapter extends AADWebSecurityConfigurerAdapter {
+    public static class HtmlWebSecurityConfigurerAdapter extends AadWebSecurityConfigurerAdapter {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -673,7 +673,7 @@ After we set redirect-uri-template, we need to update `SecurityConfigurerAdapter
 ----
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class AADOAuth2LoginSecurityConfig extends AADWebSecurityConfigurerAdapter {
+public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
     /**
      * Add configuration logic as needed.
      */
@@ -853,9 +853,9 @@ Security configuration code can refer to the following:
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final AADB2COidcLoginConfigurer configurer;
+    private final AadB2cOidcLoginConfigurer configurer;
 
-    public WebSecurityConfiguration(AADB2COidcLoginConfigurer configurer) {
+    public WebSecurityConfiguration(AadB2cOidcLoginConfigurer configurer) {
         this.configurer == configurer;
     }
 
@@ -1072,7 +1072,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests((requests) -> requests.anyRequest().authenticated())
             .oauth2ResourceServer()
             .jwt()
-            .jwtAuthenticationConverter(new AADJwtBearerTokenAuthenticationConverter());
+            .jwtAuthenticationConverter(new AadJwtBearerTokenAuthenticationConverter());
     }
 }
 ----
