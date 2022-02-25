@@ -6632,8 +6632,8 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-active-directory-
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.user-flows</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.activedirectory.b2c</strong>.user-name-attribute-nam</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.user-name-attribute-nam</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.activedirectory.b2c</strong>.user-name-attribute-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.user-name-attribute-name</p></td>
 </tr>
 </tbody>
 </table>
@@ -6926,51 +6926,47 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus</code>.</p>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 13. Property mapping from azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus</caption>
 <colgroup>
-<col style="width: 30%;">
-<col>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Legacy properties suffix value</th>
 <th class="tableblock halign-left valign-top">Current properties suffix value</th>
+<th class="tableblock halign-left valign-top">Current type</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Current type</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">transport-type</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">client.transport-type</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AmqpTransportType</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">retry-options.max-retries</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">retry.max-attempts</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">retry-options.delay</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">retry-options.delay</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">retry.delay</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">retry-options.max-delay</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">retry.max-delay</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">retry-options.try-timeout</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">retry-options.try-timeout</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">retry.timeout</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">retry-options.retry-mode</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Dropped, will be configured according to retry.backoff.multiplier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
 </tr>
 </tbody>
 </table>
