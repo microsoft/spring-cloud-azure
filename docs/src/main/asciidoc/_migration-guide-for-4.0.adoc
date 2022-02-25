@@ -648,11 +648,11 @@ spring:
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-|com.azure.spring.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter | com.azure.spring.cloud.autoconfigure.aad.AADResourceServerWebSecurityConfigurerAdapter
-|com.azure.spring.aad.webapp.AADWebSecurityConfigurerAdapter | com.azure.spring.cloud.autoconfigure.aad.AADWebSecurityConfigurerAdapter
-|com.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter | com.azure.spring.cloud.autoconfigure.aad.filter.AADAppRoleStatelessAuthenticationFilter
-|com.azure.spring.autoconfigure.aad.AADAuthenticationFilter | com.azure.spring.cloud.autoconfigure.aad.filter.filter.AADAuthenticationFilter
-|com.azure.spring.autoconfigure.aad.AADAuthenticationProperties | com.azure.spring.cloud.autoconfigure.aad.properties.AADAuthenticationProperties
+|com.azure.spring.aad.webapi.AadResourceServerWebSecurityConfigurerAdapter | com.azure.spring.cloud.autoconfigure.aad.AadResourceServerWebSecurityConfigurerAdapter
+|com.azure.spring.aad.webapp.AadWebSecurityConfigurerAdapter | com.azure.spring.cloud.autoconfigure.aad.AadWebSecurityConfigurerAdapter
+|com.azure.spring.autoconfigure.aad.AadAppRoleStatelessAuthenticationFilter | com.azure.spring.cloud.autoconfigure.aad.filter.AadAppRoleStatelessAuthenticationFilter
+|com.azure.spring.autoconfigure.aad.AadAuthenticationFilter | com.azure.spring.cloud.autoconfigure.aad.filter.filter.AadAuthenticationFilter
+|com.azure.spring.autoconfigure.aad.AadAuthenticationProperties | com.azure.spring.cloud.autoconfigure.aad.properties.AadAuthenticationProperties
 |com.azure.spring.autoconfigure.aad.UserPrincipal | com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipal
 |===
 
@@ -662,8 +662,8 @@ spring:
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-|com.azure.spring.autoconfigure.b2c.AADB2CJwtBearerTokenAuthenticationConverter | com.azure.spring.cloud.autoconfigure.aadb2c.AADB2CJwtBearerTokenAuthenticationConverter
-|com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer | com.azure.spring.cloud.autoconfigure.aadb2c.AADB2COidcLoginConfigurer
+|com.azure.spring.autoconfigure.b2c.AadB2cJwtBearerTokenAuthenticationConverter | com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cJwtBearerTokenAuthenticationConverter
+|com.azure.spring.autoconfigure.b2c.AadB2cOidcLoginConfigurer | com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cOidcLoginConfigurer
 |===
 
 
