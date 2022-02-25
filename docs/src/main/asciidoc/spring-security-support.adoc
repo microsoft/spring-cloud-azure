@@ -8,7 +8,7 @@ Azure offers a great platform to democratize your application development journe
 
 Spring Security has made it easy to secure your Spring based applications with powerful abstractions and extensible interfaces. However, as powerful as the Spring framework can be, it is not tailored to a specific identity provider.
 
-The `spring-cloud-azure-starter-active-directory` (`aad-starter` for short) provides the most optimal way to connect your `web application` to an Azure Active Directory(Aad for short) tenant and protect `resource server` with Aad. It uses the Oauth 2.0 protocol to protect `web applications` and `resource servers`.
+The `spring-cloud-azure-starter-active-directory` (`aad-starter` for short) provides the most optimal way to connect your `web application` to an Azure Active Directory(AAD for short) tenant and protect `resource server` with AAD. It uses the Oauth 2.0 protocol to protect `web applications` and `resource servers`.
 
 ==== Dependency Setup
 
@@ -28,7 +28,7 @@ The `spring-cloud-azure-starter-active-directory` (`aad-starter` for short) prov
 |===
 |Name |Default |Description
 |*spring.cloud.azure.active-directory*.app-id-uri |  | App ID URI which might be used in the "aud" claim of an id_token.
-|*spring.cloud.azure.active-directory*.application-type |  | Type of the Aad application.
+|*spring.cloud.azure.active-directory*.application-type |  | Type of the AAD application.
 |*spring.cloud.azure.active-directory*.authenticate-additional-parameters |  | Add additional parameters to the Authorization URL.
 |*spring.cloud.azure.active-directory*.authorization-clients |  | The OAuth2 authorization clients.
 |*spring.cloud.azure.active-directory*.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
@@ -180,7 +180,7 @@ After these steps. `arm`'s scopes (https://management.core.windows.net/user_impe
 need to be consented at login time. When user request `/arm` endpoint, user need to consent the
 scope. That's `incremental consent` means.
 
-After the scopes have been consented, Aad server will remember that this user has already granted
+After the scopes have been consented, AAD server will remember that this user has already granted
 the permission to the web application. So incremental consent will not happen anymore after user
 consented.
 
@@ -616,7 +616,7 @@ class Demo {
 
 This starter supports https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/[Conditional Access] policy. By using Conditional Access policies, you can apply the right **access controls** when needed to keep your organization secure. **Access controls** has many concepts, https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/howto-conditional-access-policy-block-access[Block Access] and https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/concept-conditional-access-grant[Grant Access] are important. In some scenarios, this stater will help you complete Grant Access controls.
 
-In `Resource server visiting other resource server` scenario(For better description, we think that resource server with Obo function as **webapiA** and the other resource servers as **webapiB**), When we configure the webapiB application with Conditional Access(such as https://docs.microsoft.com/en-us/azure/active-directory/authentication/concept-mfa-howitworks[multi-factor authentication]), this stater will help us send the Conditional Access information of the webapiA to the web application and the web application will help us complete the Conditional Access Policy. As shown below:
+In `Resource server visiting other resource server` scenario(For better description, we think that resource server with OBO function as **webapiA** and the other resource servers as **webapiB**), When we configure the webapiB application with Conditional Access(such as https://docs.microsoft.com/en-us/azure/active-directory/authentication/concept-mfa-howitworks[multi-factor authentication]), this stater will help us send the Conditional Access information of the webapiA to the web application and the web application will help us complete the Conditional Access Policy. As shown below:
 
 image:https://user-images.githubusercontent.com/13167207/149291667-930e8559-b8ce-4955-b9ae-11a0a8013ea9.png[aad-conditional-access-flow.png]
 
@@ -695,9 +695,9 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}[azure-spring-boot-samples] for more details.
 
 
-=== Spring Security With Azure AD B2c
+=== Spring Security With Azure AD B2C
 
-Azure Active Directory (Azure AD) B2c is an identity management service that enables you to customize and control how customers sign up, sign in, and manage their profiles when using your applications. Azure AD B2c enables these actions while protecting the identities of your customers at the same time.
+Azure Active Directory (Azure AD) B2C is an identity management service that enables you to customize and control how customers sign up, sign in, and manage their profiles when using your applications. Azure AD B2C enables these actions while protecting the identities of your customers at the same time.
 
 ==== Dependency Setup
 
@@ -720,14 +720,14 @@ Azure Active Directory (Azure AD) B2c is an identity management service that ena
 |*spring.cloud.azure.active-directory.b2c*.app-id-uri |  | App ID URI which might be used in the "aud" claim of a token.
 |*spring.cloud.azure.active-directory.b2c*.authenticate-additional-parameters |  | Additional parameters for authentication.
 |*spring.cloud.azure.active-directory.b2c*.authorization-clients |  | Specify client configuration.
-|*spring.cloud.azure.active-directory.b2c*.base-uri |  | Aad B2c endpoint base uri.
-|*spring.cloud.azure.active-directory.b2c*.credential |  | Aad B2c credential information.
+|*spring.cloud.azure.active-directory.b2c*.base-uri |  | AAD B2C endpoint base uri.
+|*spring.cloud.azure.active-directory.b2c*.credential |  | AAD B2C credential information.
 |*spring.cloud.azure.active-directory.b2c*.jwt-connect-timeout |  | Connection Timeout for the JWKSet Remote URL call.
 |*spring.cloud.azure.active-directory.b2c*.jwt-read-timeout |  | Read Timeout for the JWKSet Remote URL call.
 |*spring.cloud.azure.active-directory.b2c*.jwt-size-limit |  | Size limit in Bytes of the JWKSet Remote URL call.
 |*spring.cloud.azure.active-directory.b2c*.login-flow | `sign-up-or-sign-in` | Specify the primary sign-in flow key.
 |*spring.cloud.azure.active-directory.b2c*.logout-success-url | `http://localhost:8080/login` | Redirect url after logout.
-|*spring.cloud.azure.active-directory.b2c*.profile |  | Aad B2c profile information.
+|*spring.cloud.azure.active-directory.b2c*.profile |  | AAD B2C profile information.
 |*spring.cloud.azure.active-directory.b2c*.reply-url | `{baseUrl}/login/oauth2/code/` | Reply url after get authorization code.
 |*spring.cloud.azure.active-directory.b2c*.user-flows |  | User flows.
 |*spring.cloud.azure.active-directory.b2c*.user-name-attribute-name |  | User name attribute name.
@@ -744,13 +744,13 @@ A `web application` is any web based application that allows user to login Azure
 . Accessing a resource server.
 . Resource server accessing other resource servers.
 
-image:https://user-images.githubusercontent.com/13167207/142620440-f970b572-2646-4f50-9f77-db62d6e965f1.png[B2c Web application &amp; Web Api Overall]
+image:https://user-images.githubusercontent.com/13167207/142620440-f970b572-2646-4f50-9f77-db62d6e965f1.png[B2C Web application &amp; Web Api Overall]
 
 ===== Usage 1: Accessing a Web Application
 
-This scenario uses https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow[The OAuth 2.0 authorization code grant] flow to log in a user with your Azure AD B2c user.
+This scenario uses https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow[The OAuth 2.0 authorization code grant] flow to log in a user with your Azure AD B2C user.
 
-* Step 1: Select *Azure AD B2c* from the portal menu, click *Applications*, and then click *Add*.
+* Step 1: Select *Azure AD B2C* from the portal menu, click *Applications*, and then click *Add*.
 
 * Step 2: Specify your application *Name*, we call it `webapp`, add `http://localhost:8080/login/oauth2/code/` for the *Reply URL*, record the
  *Application ID* as your `WEB_APP_AZURE_CLIENT_ID` and then click *Save*.
@@ -879,7 +879,7 @@ Let `Webapp` run on port _8080_.
 
 1. After your application is built and started by Maven, open `http://localhost:8080/` in a web browser; you should be redirected to login page.
 
-2. Click link with the login user flow, you should be redirected Azure AD B2c to start the authentication process.
+2. Click link with the login user flow, you should be redirected Azure AD B2C to start the authentication process.
 
 3. After you have logged in successfully, you should see the sample `home page` from the browser.
 
@@ -887,7 +887,7 @@ Let `Webapp` run on port _8080_.
 
 This scenario is based on *Accessing a web application* scenario to allow application to access other resources, that is [The OAuth 2.0 client credentials grant] flow.
 
-* Step 1: Select *Azure AD B2c* from the portal menu, click *Applications*, and then click *Add*.
+* Step 1: Select *Azure AD B2C* from the portal menu, click *Applications*, and then click *Add*.
 
 * Step 2: Specify your application *Name*, we call it `webApiA`, record the *Application ID* as your `WEB_API_A_AZURE_CLIENT_ID` and then click *Save*.
 
