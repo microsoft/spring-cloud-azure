@@ -312,7 +312,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.session-stateless</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If true activates the stateless auth filter AADAppRoleStatelessAuthenticationFilter. The default is false which activates AADAuthenticationFilter.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true activates the stateless auth filter AadAppRoleStatelessAuthenticationFilter. The default is false which activates AadAuthenticationFilter.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.user-group.allowed-group-ids</p></td>
@@ -436,7 +436,7 @@ window.onload = function() {
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled == true)
-public class AADOAuth2LoginSecurityConfig extends AADWebSecurityConfigurerAdapter {
+public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
 
     /**
      * Add configuration logic as needed.
@@ -647,19 +647,19 @@ The tailing <code>/</code> cannot be omitted.
 </ul>
 </div>
 <div class="paragraph">
-<p>The <code>AADWebSecurityConfigurerAdapter</code> contains necessary web security configuration for <strong>aad-starter</strong>.</p>
+<p>The <code>AadWebSecurityConfigurerAdapter</code> contains necessary web security configuration for <strong>aad-starter</strong>.</p>
 </div>
 <div class="paragraph">
-<p>(A). <code>DefaultAADWebSecurityConfigurerAdapter</code> is configured automatically if you not provide one.</p>
+<p>(A). <code>DefaultAadWebSecurityConfigurerAdapter</code> is configured automatically if you not provide one.</p>
 </div>
 <div class="paragraph">
-<p>(B). You can provide one by extending <code>AADWebSecurityConfigurerAdapter</code> and call <code>super.configure(http)</code> explicitly in the <code>configure(HttpSecurity http)</code> function. Here is an example:</p>
+<p>(B). You can provide one by extending <code>AadWebSecurityConfigurerAdapter</code> and call <code>super.configure(http)</code> explicitly in the <code>configure(HttpSecurity http)</code> function. Here is an example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">    @EnableWebSecurity
     @EnableGlobalMethodSecurity(prePostEnabled = true)
-    public class AADOAuth2LoginSecurityConfig extends AADWebSecurityConfigurerAdapter {
+    public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
 
         /**
          * Add configuration logic as needed.
@@ -825,19 +825,19 @@ The tailing <code>/</code> cannot be omitted.
 </ul>
 </div>
 <div class="paragraph">
-<p>The <code>AADResourceServerWebSecurityConfigurerAdapter</code> contains necessary web security configuration for resource server.</p>
+<p>The <code>AadResourceServerWebSecurityConfigurerAdapter</code> contains necessary web security configuration for resource server.</p>
 </div>
 <div class="paragraph">
-<p>(A). <code>DefaultAADResourceServerWebSecurityConfigurerAdapter</code> is configured automatically if you not provide one.</p>
+<p>(A). <code>DefaultAadResourceServerWebSecurityConfigurerAdapter</code> is configured automatically if you not provide one.</p>
 </div>
 <div class="paragraph">
-<p>(B). You can provide one by extending <code>AADResourceServerWebSecurityConfigurerAdapter</code> and call <code>super.configure(http)</code> explicitly in the <code>configure(HttpSecurity http)</code> function. Here is an example:</p>
+<p>(B). You can provide one by extending <code>AadResourceServerWebSecurityConfigurerAdapter</code> and call <code>super.configure(http)</code> explicitly in the <code>configure(HttpSecurity http)</code> function. Here is an example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class AADOAuth2ResourceServerSecurityConfig extends AADResourceServerWebSecurityConfigurerAdapter {
+public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebSecurityConfigurerAdapter {
     /**
      * Add configuration logic as needed.
      */
@@ -1008,17 +1008,17 @@ public class AADOAuth2ResourceServerSecurityConfig extends AADResourceServerWebS
 </ul>
 </div>
 <div class="paragraph">
-<p>Configure multiple HttpSecurity instances, <code>AADOAuth2SecurityMultiConfig</code> contain two security configurations for resource server and web application.</p>
+<p>Configure multiple HttpSecurity instances, <code>AadOAuth2SecurityMultiConfig</code> contain two security configurations for resource server and web application.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled == true)
-public class AADWebApplicationAndResourceServerConfig {
+public class AadWebApplicationAndResourceServerConfig {
 
     @Order(1)
     @Configuration
-    public static class ApiWebSecurityConfigurationAdapter extends AADResourceServerWebSecurityConfigurerAdapter {
+    public static class ApiWebSecurityConfigurationAdapter extends AadResourceServerWebSecurityConfigurerAdapter {
         protected void configure(HttpSecurity http) throws Exception {
             super.configure(http);
             // All the paths that match `/api/**`(configurable) work as `Resource Server`, other paths work as `Web application`.
@@ -1028,7 +1028,7 @@ public class AADWebApplicationAndResourceServerConfig {
     }
 
     @Configuration
-    public static class HtmlWebSecurityConfigurerAdapter extends AADWebSecurityConfigurerAdapter {
+    public static class HtmlWebSecurityConfigurerAdapter extends AadWebSecurityConfigurerAdapter {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -1242,7 +1242,7 @@ The <code>roles</code> claim generated from <code>appRoles</code> is decorated w
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class AADOAuth2LoginSecurityConfig extends AADWebSecurityConfigurerAdapter {
+public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
     /**
      * Add configuration logic as needed.
      */
@@ -1534,9 +1534,9 @@ public class WebController {
 <pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final AADB2COidcLoginConfigurer configurer;
+    private final AadB2cOidcLoginConfigurer configurer;
 
-    public WebSecurityConfiguration(AADB2COidcLoginConfigurer configurer) {
+    public WebSecurityConfiguration(AadB2cOidcLoginConfigurer configurer) {
         this.configurer == configurer;
     }
 
@@ -1828,7 +1828,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests((requests) -&gt; requests.anyRequest().authenticated())
             .oauth2ResourceServer()
             .jwt()
-            .jwtAuthenticationConverter(new AADJwtBearerTokenAuthenticationConverter());
+            .jwtAuthenticationConverter(new AadJwtBearerTokenAuthenticationConverter());
     }
 }</code></pre>
 </div>
