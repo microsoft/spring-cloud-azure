@@ -1,6 +1,6 @@
 == Configuration Refresh
 
-You are able to dynamically update configurations to there latest values from your Azure App Configuration store(s), without restarting the application.
+Enabling config refresh for your configurations lets you pull their latest values from your App Configuration store(s) without having to restart the application.
 
 To enable refresh, monitoring needs to be enabled and a watch key with an optional label needs to be set.
 
@@ -11,14 +11,16 @@ spring.cloud.azure.appconfiguration.stores[0].monitoring.triggers[0].key=[my-wat
 spring.cloud.azure.appconfiguration.stores[0].monitoring.triggers[0].label=[my-watched-label]
 ----
 
-Changing a property key in your configuration store, e.g. `/application/config.message`, will create a log similar to the one below in the logs.
+To trigger a configuration refresh, change the value of a key in your configuration store. Then updating your one of the watch keys to a new value. This will trigger the creation of a log. For example, changing the value of `/application/config.message` triggers the log message below:
 
 [,console,indent=0]
 ----
 INFO 17496 --- [TaskScheduler-1] o.s.c.e.event.RefreshEventListener       : Refresh keys changed: [config.message]
 ----
 
-The application will refresh all `@Bean`++'++s in the refresh scope. By default, `@ConfiugrationProperties` annotated beans will be included in this scope.
+After generating the log, the application will refresh all `@Bean`++'++s in the refresh scope.
+
+NOTE: By default, `@ConfiugrationProperties` annotated beans will be included in this scope.
 
 === Pull Based Refresh
 
