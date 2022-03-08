@@ -88,7 +88,8 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 
 |*spring.cloud.azure.eventhubs*.namespace
 | String
-| Event Hubs Namespace value.
+| Event Hubs Namespace value, which is the prefix of the FQDN. A FQDN should be composed of <NamespaceName>.<DomainName>
+
 
 |*spring.cloud.azure.eventhubs*.domain-name
 | String
@@ -719,7 +720,7 @@ Alternatively, you can also use the Azure Spring Cloud Stream Service Bus Starte
 ----
 
 ==== Configuration
-The binder provides the following 3 parts of configuration options:
+The binder provides the following 2 parts of configuration options:
 
 [#servicebus-connection-configration]
 ===== Connection Configuration Properties
@@ -727,7 +728,7 @@ These properties are exposed via `com.azure.spring.cloud.autoconfigure.servicebu
 
 NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
-.Common configurable properties of spring-cloud-azure-stream-binder-servicebus
+.Connection configurable properties of spring-cloud-azure-stream-binder-servicebus
 [cols="<,<,<", options="header"]
 |===
 |Property | Type |Description
@@ -742,7 +743,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 
 |*spring.cloud.azure.servicebus*.namespace
 | String
-| Service Bus Namespace value.
+| Service Bus Namespace value, which is the prefix of the FQDN. A FQDN should be composed of <NamespaceName>.<DomainName>
 
 |*spring.cloud.azure.servicebus*.domain-name
 | String
