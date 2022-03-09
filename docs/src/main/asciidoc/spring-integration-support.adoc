@@ -27,19 +27,19 @@ being processed manually. Event Hubs SDK provides the function to store such off
 Event Hubs provides a similar concept of physical partition as Kafka. But unlike Kafka's auto re-balancing between consumers and partitions, Event Hubs provides a kind of preemptive mode. The storage account acts as a lease to determine which partition is owned by which consumer. When a new consumer starts, it will try to steal some partitions
 from most heavy-loaded consumers to achieve the workload balancing.
 
-To specify the load balancing strategy, developers can use `com.azure.spring.messaging.eventhubs.core.properties.EventHubsContainerProperties` for the configuration. See <<receive-from-eh, the below section>> for an example of how to configure `EventHubsContainerProperties`.
+To specify the load balancing strategy, developers can use `EventHubsContainerProperties` for the configuration. See <<receive-from-eh, the below section>> for an example of how to configure `EventHubsContainerProperties`.
 
 ===== Batch Consumer Support
-The `EventHubsInboundChannelAdapter` supports the batch-consuming mode. To enable it, users can specify the listener mode as `com.azure.spring.messaging.ListenerMode.BATCH` when constructing an `EventHubsInboundChannelAdapter` instance.
-When enabled, an **org.springframework.messaging.Message** of which the payload is a list of batched events will be received and passed to the downstream channel. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of partition id, checkpointer and last enqueued properties, they are presented as a single value for the entire batch of events shares the same one. See <<si-eh-headers, Event Hubs Message Headers>> for more details.
+The `EventHubsInboundChannelAdapter` supports the batch-consuming mode. To enable it, users can specify the listener mode as `ListenerMode.BATCH` when constructing an `EventHubsInboundChannelAdapter` instance.
+When enabled, an **Message** of which the payload is a list of batched events will be received and passed to the downstream channel. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of partition id, checkpointer and last enqueued properties, they are presented as a single value for the entire batch of events shares the same one. See <<si-eh-headers, Event Hubs Message Headers>> for more details.
 
 NOTE: The checkpoint header only exists when **MANUAL** checkpoint mode is used.
 
 Checkpointing of batch consumer supports two modes: `BATCH` and `MANUAL`. `BATCH` mode is an auto checkpointing mode to checkpoint the entire batch of events together once they are received. `MANUAL` mode is to checkpoint the events by users. When used, the
-**com.azure.spring.messaging.checkpoint.Checkpointer** will be passed into the message header, and users could use it to do checkpointing.
+**Checkpointer** will be passed into the message header, and users could use it to do checkpointing.
 
 The batch consuming policy can be specified by properties of `max-size` and `max-wait-time`, where `max-size` is a necessary property while `max-wait-time` is optional.
-To specify the batch consuming strategy, developers can use `com.azure.spring.messaging.eventhubs.core.properties.EventHubsContainerProperties` for the configuration. See <<receive-from-eh, the below section>> for an example of how to configure `EventHubsContainerProperties`.
+To specify the batch consuming strategy, developers can use `EventHubsContainerProperties` for the configuration. See <<receive-from-eh, the below section>> for an example of how to configure `EventHubsContainerProperties`.
 
 ==== Dependency Setup
 
@@ -57,7 +57,7 @@ This starter provides the following 3 parts of configuration options:
 
 [#eventhubs-connection-configration]
 ===== Connection Configuration Properties
-These properties are exposed via `com.azure.spring.cloud.autoconfigure.implementation.eventhubs.properties.AzureEventHubsProperties`.
+This section contains the configuration options used for connecting to Azure Event Hubs.
 
 NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
@@ -94,7 +94,7 @@ default, a new connection is constructed and used created for each Event Hub cli
 |===
 
 ===== Checkpoint Configuration Properties
-This section contains the configuration options used by the Storage Blobs service, which is used for persisting partition ownership and checkpoint information.
+This section contains the configuration options for the Storage Blobs service, which is used for persisting partition ownership and checkpoint information.
 
 NOTE: From version 4.0.0, when the property of **spring.cloud.azure.eventhubs.processor.checkpoint-store.create-container-if-not-exists** is not enabled manually, no Storage container will be created automatically.
 
@@ -125,7 +125,7 @@ Common Azure Service SDK configuration options are configurable for Storage Blob
 ===== Event Hub Processor Configuration Properties
 
 The `EventHubsInboundChannelAdapter` uses the `EventProcessorClient` to consume messages from an event hub, to configure the overall properties of an `EventProcessorClient`,
-developers can use `com.azure.spring.messaging.eventhubs.core.properties.EventHubsContainerProperties` for the configuration. See <<receive-from-eh, the below section>> about how to work with `EventHubsInboundChannelAdapter`.
+developers can use `EventHubsContainerProperties` for the configuration. See <<receive-from-eh, the below section>> about how to work with `EventHubsInboundChannelAdapter`.
 
 ==== Basic Usage
 ===== Send messages to Azure Event Hubs
@@ -341,38 +341,38 @@ The following table illustrates how Event Hubs message properties are mapped to 
 |Event Hubs Event Properties | Spring Message Header Constants | Type | Description
 
 |Enqueued time
-|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#ENQUEUED_TIME
+EventHubsHeaders#ENQUEUED_TIME
 |Instant
 |The instant, in UTC, of when the event was enqueued in the Event Hub partition.
 
 |Offset
-|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#OFFSET
+|EventHubsHeaders#OFFSET
 |Long
 |The offset of the event when it was received from the associated Event Hub partition.
 
 |Partition key
-|com.azure.spring.messaging.AzureHeaders#PARTITION_KEY
+|AzureHeaders#PARTITION_KEY
 |String
 |The partition hashing key if it was set when originally publishing the event.
 
 |Partition id
-|com.azure.spring.messaging.AzureHeaders#RAW_PARTITION_ID
+|AzureHeaders#RAW_PARTITION_ID
 |String
 |The partition id of the Event Hub.
 
 |Sequence number
-|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#SEQUENCE_NUMBER
+|EventHubsHeaders#SEQUENCE_NUMBER
 |Long
 |The sequence number assigned to the event when it was enqueued in the associated Event Hub partition.
 
 |Last enqueued event properties
-|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#LAST_ENQUEUED_EVENT_PROPERTIES
-|com.azure.messaging.eventhubs.models.LastEnqueuedEventProperties
+|EventHubsHeaders#LAST_ENQUEUED_EVENT_PROPERTIES
+|LastEnqueuedEventProperties
 |The properties of the last enqueued event in this partition.
 
 |NA
-|com.azure.spring.messaging.AzureHeaders#CHECKPOINTER
-|com.azure.spring.messaging.checkpoint.Checkpointer
+|AzureHeaders#CHECKPOINTER
+|Checkpointer
 |The header for checkpoint the specific message.
 |===
 
@@ -388,32 +388,32 @@ When the batch-consumer mode is enabled, the specific headers of batched message
 |Event Hubs Event Properties | Spring Batch Message Header Constants | Type | Description
 
 |Enqueued time
-|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#ENQUEUED_TIME
+|EventHubsHeaders#ENQUEUED_TIME
 |List of Instant
 |List of the instant, in UTC, of when each event was enqueued in the Event Hub partition.
 
 |Offset
-|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#OFFSET
+|EventHubsHeaders#OFFSET
 |List of Long
 |List of the offset of each event when it was received from the associated Event Hub partition.
 
 |Partition key
-|ccom.azure.spring.messaging.AzureHeaders#PARTITION_KEY
+|cAzureHeaders#PARTITION_KEY
 |List of String
 |List of the partition hashing key if it was set when originally publishing each event.
 
 |Sequence number
-|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#SEQUENCE_NUMBER
+|EventHubsHeaders#SEQUENCE_NUMBER
 |List of Long
 |List of the sequence number assigned to each event when it was enqueued in the associated Event Hub partition.
 
 |System properties
-|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#BATCH_CONVERTED_SYSTEM_PROPERTIES
+|EventHubsHeaders#BATCH_CONVERTED_SYSTEM_PROPERTIES
 |List of Map
 |List of the system properties of each event.
 
 |Application properties
-|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#BATCH_CONVERTED_APPLICATION_PROPERTIES
+|EventHubsHeaders#BATCH_CONVERTED_APPLICATION_PROPERTIES
 |List of Map
 |List of the applocation properties of each event, where all customized message headers or event properties are placed.
 |===
@@ -451,7 +451,7 @@ This starter provides the following 2 parts of configuration options:
 [#servicebus-connection-configration]
 ===== Connection Configuration Properties
 
-These properties are exposed via `com.azure.spring.cloud.autoconfigure.implementation.servicebus.properties.AzureServiceBusProperties`.
+This section contains the configuration options used for connecting to Azure Service Bus.
 
 NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
@@ -481,7 +481,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 ===== Service Bus Processor Configuration Properties
 
 The `ServiceBusInboundChannelAdapter` uses the `ServiceBusProcessorClient` to consume messages, to configure the overall properties of an `ServiceBusProcessorClient`,
-developers can use `com.azure.spring.messaging.servicebus.core.properties.ServiceBusContainerProperties` for the configuration. See <<receive-from-sb, the below section>> about how to work with `ServiceBusInboundChannelAdapter`.
+developers can use `ServiceBusContainerProperties` for the configuration. See <<receive-from-sb, the below section>> about how to work with `ServiceBusInboundChannelAdapter`.
 
 ==== Basic Usage
 ===== Send messages to Azure Service Bus
@@ -652,67 +652,67 @@ For some Service Bus headers that can be mapped to multiple Spring header consta
 |Service Bus Message Headers and Properties | Spring Message Header Constants | Type | Priority Number (Descending priority)
 
 |ContentType
-| org.springframework.messaging.MessageHeaders.CONTENT_TYPE
+| MessageHeaders#CONTENT_TYPE
 | String
 | N/A
 
 |CorrelationId
-| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.CORRELATION_ID
+| ServiceBusMessageHeaders#CORRELATION_ID
 |String
 | N/A
 
 |**MessageId**
-| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.MESSAGE_ID
+| ServiceBusMessageHeaders#MESSAGE_ID
 | String
 | 1
 
 |**MessageId**
-| com.azure.spring.messaging.AzureHeaders.RAW_ID
+| AzureHeaders#RAW_ID
 | String
 | 2
 
 |**MessageId**
-| org.springframework.messaging.MessageHeaders.ID
+| MessageHeaders#ID
 | UUID
 | 3
 
 |PartitionKey
-| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.PARTITION_KEY
+| ServiceBusMessageHeaders#PARTITION_KEY
 |String
 | N/A
 
 |ReplyTo
-| org.springframework.messaging.MessageHeaders.REPLY_CHANNEL
+| MessageHeaders#REPLY_CHANNEL
 | String
 | N/A
 
 |ReplyToSessionId
-| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.REPLY_TO_SESSION_ID
+| ServiceBusMessageHeaders#REPLY_TO_SESSION_ID
 | String
 | N/A
 
 |**ScheduledEnqueueTimeUtc**
-| com.azure.spring.messaging.AzureHeaders.SCHEDULED_ENQUEUE_MESSAGE
+| AzureHeaders#SCHEDULED_ENQUEUE_MESSAGE
 | Integer
 | 1
 
 |**ScheduledEnqueueTimeUtc**
-| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.SCHEDULED_ENQUEUE_TIME
+| ServiceBusMessageHeaders#SCHEDULED_ENQUEUE_TIME
 | Instant
 | 2
 
 |SessionID
-| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.SESSION_ID
+| ServiceBusMessageHeaders#SESSION_ID
 | String
 | N/A
 
 |TimeToLive
-| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.TIME_TO_LIVE
+| ServiceBusMessageHeaders#TIME_TO_LIVE
 |Duration
 | N/A
 
 |To
-| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.TO
+| ServiceBusMessageHeaders#TO
 | String
 | N/A
 |===
@@ -801,7 +801,7 @@ This starter provides the following configuration options:
 
 [#storage-queue-connection-configration]
 ===== Connection Configuration Properties
-These properties are exposed via `com.azure.spring.cloud.autoconfigure.implementation.storage.queue.properties.AzureStorageQueueProperties`.
+This section contains the configuration options used for connecting to Azure Storage Queue.
 
 NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
