@@ -31,7 +31,7 @@ To specify the load balancing strategy, developers can use `com.azure.spring.mes
 
 ===== Batch Consumer Support
 The `EventHubsInboundChannelAdapter` supports the batch-consuming mode. To enable it, users can specify the listener mode as `com.azure.spring.messaging.ListenerMode.BATCH` when constructing an `EventHubsInboundChannelAdapter` instance.
-When enabled, an **org.springframework.messaging.Message** of which the payload is a list of batched events will be received and passed to the `Consumer` function. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of partition id, checkpointer and last enqueued properties, they are presented as a single value for the entire batch of events shares the same one. See <<si-eh-headers, Event Hubs Message Headers>> for more details.
+When enabled, an **org.springframework.messaging.Message** of which the payload is a list of batched events will be received and passed to the downstream channel. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of partition id, checkpointer and last enqueued properties, they are presented as a single value for the entire batch of events shares the same one. See <<si-eh-headers, Event Hubs Message Headers>> for more details.
 
 NOTE: The checkpoint header only exists when **MANUAL** checkpoint mode is used.
 
@@ -94,7 +94,7 @@ default, a new connection is constructed and used created for each Event Hub cli
 |===
 
 ===== Checkpoint Configuration Properties
-These properties are exposed via `com.azure.spring.cloud.autoconfigure.implementation.eventhubs.properties.AzureEventHubsProperties.Processor.BlobCheckpointStore`, which is the default implementation of `com.azure.messaging.eventhubs.CheckpointStore` to use Storage Blobs for persisting partition ownership and checkpoint information.
+This section contains the configuration options used by the Storage Blobs service, which is used for persisting partition ownership and checkpoint information.
 
 NOTE: From version 4.0.0, when the property of **spring.cloud.azure.eventhubs.processor.checkpoint-store.create-container-if-not-exists** is not enabled manually, no Storage container will be created automatically.
 
