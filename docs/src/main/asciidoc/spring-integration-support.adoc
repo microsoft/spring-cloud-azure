@@ -1,12 +1,10 @@
 == Spring Integration Support
 
-Spring Integration Extension for Azure provides Spring Integration adapters for the various services provided by the https://github.com/Azure/azure-sdk-for-java/[Azure SDK for Java]. Below is a list of supported adapters:
+Spring Integration Extension for Azure provides Spring Integration adapters for the various services provided by the https://github.com/Azure/azure-sdk-for-java/[Azure SDK for Java]. We provide Spring Integration support for these Azure services: Event Hubs, Service Bus, Storage Queue. Below is a list of supported adapters:
 
-* spring-cloud-azure-starter-integration-eventhbus
+* spring-cloud-azure-starter-integration-eventhubs
 * spring-cloud-azure-starter-integration-servicebus
 * spring-cloud-azure-starter-integration-storage-queue
-
-Provide Spring Integration support for these Azure services: Event Hubs, Service Bus, Storage Queue.
 
 === Spring Integration with Azure Event Hubs
 
@@ -22,27 +20,26 @@ Please refer to Javadoc for details.
 
 Event Hubs provides similar support of consumer group as Apache Kafka, but with slight different logic. While Kafka
 stores all committed offsets in the broker, you have to store offsets of Event Hubs messages
-being processed manually. Event Hubs SDK provide the function to store such offsets inside Azure Storage Account. So
-that's why you have to fill `spring.cloud.eventhubs.processor.checkpoint-store.*`.
+being processed manually. Event Hubs SDK provides the function to store such offsets inside Azure Storage.
 
 ===== Partitioning Support
 
 Event Hubs provides a similar concept of physical partition as Kafka. But unlike Kafka's auto re-balancing between consumers and partitions, Event Hubs provides a kind of preemptive mode. The storage account acts as a lease to determine which partition is owned by which consumer. When a new consumer starts, it will try to steal some partitions
 from most heavy-loaded consumers to achieve the workload balancing.
 
-To specify the load balancing strategy, a bean of `com.azure.spring.messaging.PropertiesSupplier` should be provided with the key as the event hub name, and the value as `com.azure.spring.eventhubs.core.properties.ProcessorProperties` where the load balancing policy can be configured.
+To specify the load balancing strategy, developers can use `com.azure.spring.messaging.eventhubs.core.properties.EventHubsContainerProperties` for the configuration. See <<receive-from-eh, the below section>> for an example of how to configure `EventHubsContainerProperties`.
 
 ===== Batch Consumer Support
-The `EventHubsInboundChannelAdapter` supports the batch-consuming mode. To enable it, users can specify the listener mode as `com.azure.spring.messaging.ListenerMode.BATCH` when construct an `EventHubsInboundChannelAdapter` instance.
-When enabled, an **org.springframework.messaging.Message** of which the payload is a list of batched events will be received and passed to the consumer function. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of partition id, checkpointer and last enqueued properties, they are presented as a single value for the entire batch of events shares the same one. See <<si-eh-headers, Event Hubs Message Headers>> for more details.
+The `EventHubsInboundChannelAdapter` supports the batch-consuming mode. To enable it, users can specify the listener mode as `com.azure.spring.messaging.ListenerMode.BATCH` when constructing an `EventHubsInboundChannelAdapter` instance.
+When enabled, an **org.springframework.messaging.Message** of which the payload is a list of batched events will be received and passed to the `Consumer` function. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of partition id, checkpointer and last enqueued properties, they are presented as a single value for the entire batch of events shares the same one. See <<si-eh-headers, Event Hubs Message Headers>> for more details.
 
 NOTE: The checkpoint header only exists when **MANUAL** checkpoint mode is used.
 
 Checkpointing of batch consumer supports two modes: `BATCH` and `MANUAL`. `BATCH` mode is an auto checkpointing mode to checkpoint the entire batch of events together once they are received. `MANUAL` mode is to checkpoint the events by users. When used, the
-**com.azure.spring.messaging.checkpoint.Checkpointer** will be passes into the message header, and users could use it to do checkpointing.
+**com.azure.spring.messaging.checkpoint.Checkpointer** will be passed into the message header, and users could use it to do checkpointing.
 
 The batch consuming policy can be specified by properties of `max-size` and `max-wait-time`, where `max-size` is a necessary property while `max-wait-time` is optional.
-To specify the batch consuming strategy, a bean of `com.azure.spring.messaging.PropertiesSupplier` should be provided with the key as the event hub name, and the value as `com.azure.spring.eventhubs.core.properties.ProcessorProperties` where the batch consuming policy can be configured.
+To specify the batch consuming strategy, developers can use `com.azure.spring.messaging.eventhubs.core.properties.EventHubsContainerProperties` for the configuration. See <<receive-from-eh, the below section>> for an example of how to configure `EventHubsContainerProperties`.
 
 ==== Dependency Setup
 
@@ -60,7 +57,7 @@ This starter provides the following 3 parts of configuration options:
 
 [#eventhubs-connection-configration]
 ===== Connection Configuration Properties
-These properties are exposed via `com.azure.spring.cloud.autoconfigure.eventhubs.properties.AzureEventHubsProperties`.
+These properties are exposed via `com.azure.spring.cloud.autoconfigure.implementation.eventhubs.properties.AzureEventHubsProperties`.
 
 NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
@@ -97,8 +94,7 @@ default, a new connection is constructed and used created for each Event Hub cli
 |===
 
 ===== Checkpoint Configuration Properties
-These properties are exposed via `com.azure.spring.cloud.autoconfigure.eventhubs.properties.AzureEventHubsProperties.Processor.BlobCheckpointStore`
-for the configuration of `BlobCheckpointStore`, which is the default implementation of `CheckpointStore` to use Storage Blobs for persisting partition ownership and checkpoint information.
+These properties are exposed via `com.azure.spring.cloud.autoconfigure.implementation.eventhubs.properties.AzureEventHubsProperties.Processor.BlobCheckpointStore`, which is the default implementation of `com.azure.messaging.eventhubs.CheckpointStore` to use Storage Blobs for persisting partition ownership and checkpoint information.
 
 NOTE: From version 4.0.0, when the property of **spring.cloud.azure.eventhubs.processor.checkpoint-store.create-container-if-not-exists** is not enabled manually, no Storage container will be created automatically.
 
@@ -109,7 +105,7 @@ NOTE: From version 4.0.0, when the property of **spring.cloud.azure.eventhubs.pr
 
 |*spring.cloud.azure.eventhubs.processor.checkpoint-store*.create-container-if-not-exists
 |Boolean
-|If allowed creating containers if not exists.
+|Whether to allow creating containers if not exists.
 
 |*spring.cloud.azure.eventhubs.processor.checkpoint-store*.account-name
 | String
@@ -126,13 +122,10 @@ NOTE: From version 4.0.0, when the property of **spring.cloud.azure.eventhubs.pr
 
 Common Azure Service SDK configuration options are configurable for Storage Blob checkpoint store as well. The supported configuration options are introduced in link:configuration.html[the Configuration page], and could be configured with either the unified prefix `spring.cloud.azure.` or the prefix of `spring.cloud.azure.eventhubs.processor.checkpoint-store`.
 
-NOTE: The default maximum connection pool size of the Storage Blob client is changed from `500` in version 3.x to `16` now, and the pending acquire queue size which is double of pool size is then `32` now. To override them, please set the property `spring.cloud.azure.eventhubs.processor.checkpoint-store.client.maximum-connection-pool-size`.
-
 ===== Event Hub Processor Configuration Properties
 
-The `EventHubsInboundChannelAdapter` uses the `EventProcessorClient` to consume messages from an Event Hub, to configure the overall properties of an `EventProcessorClient`,
-developers can use `com.azure.spring.messaging.eventhubs.core.properties.EventHubsContainerProperties` for the configuration for the user-defined bean of
-`com.azure.spring.messaging.eventhubs.core.listener.EventHubsMessageListenerContainer`. See <<receive-from-eh, the below section>> about how to work with `EventHubsInboundChannelAdapter`.
+The `EventHubsInboundChannelAdapter` uses the `EventProcessorClient` to consume messages from an event hub, to configure the overall properties of an `EventProcessorClient`,
+developers can use `com.azure.spring.messaging.eventhubs.core.properties.EventHubsContainerProperties` for the configuration. See <<receive-from-eh, the below section>> about how to work with `EventHubsInboundChannelAdapter`.
 
 ==== Basic Usage
 ===== Send messages to Azure Event Hubs
@@ -191,7 +184,7 @@ spring:
 Step 2. Create `DefaultMessageHandler` with the bean of `EventHubsTemplate` to send messages to Event Hubs.
 [source,java]
 ----
-class Demo{
+class Demo {
     private static final String OUTPUT_CHANNEL = "output";
     private static final String EVENTHUB_NAME = "eh1";
 
@@ -214,10 +207,10 @@ class Demo{
 }
 ----
 
-Step 3. Create a Message gateway binding with the message handler created in the last step via a message channel
+Step 3. Create a message gateway binding with the above message handler via a message channel.
 [source,java]
 ----
-class Demo{
+class Demo {
     @Autowired
     EventHubOutboundGateway messagingGateway;
 
@@ -227,10 +220,10 @@ class Demo{
     }
 }
 ----
-Step 4. Send messages using the gateway
+Step 4. Send messages using the gateway.
 [source,java]
 ----
-class Demo{
+class Demo {
     public void demo() {
         this.messagingGateway.send(message);
     }
@@ -244,7 +237,8 @@ Step 1. Fill the credential configuration options.
 Step 2. Create a bean of message channel as the input channel.
 [source,java]
 ----
-class Demo{
+@Configuration
+class Demo {
     @Bean
     public MessageChannel input() {
         return new DirectChannel();
@@ -252,12 +246,12 @@ class Demo{
 }
 ----
 
-Step 3. Create `EventHubsInboundChannelAdapter` with the bean of `EventHubsMessageListenerContainer` to receive messages to Event Hubs.
+Step 3. Create `EventHubsInboundChannelAdapter` with the bean of `EventHubsMessageListenerContainer` to receive messages from Event Hubs.
 
 [source,java]
 ----
 @Configuration
-class Demo{
+class Demo {
     private static final String INPUT_CHANNEL = "input";
     private static final String EVENTHUB_NAME = "eh1";
     private static final String CONSUMER_GROUP = "$Default";
@@ -276,17 +270,16 @@ class Demo{
         EventHubsContainerProperties containerProperties = new EventHubsContainerProperties();
         containerProperties.setEventHubName(EVENTHUB_NAME);
         containerProperties.setConsumerGroup(CONSUMER_GROUP);
-        CheckpointConfig config = new CheckpointConfig(CheckpointMode.MANUAL);
-        containerProperties.setCheckpointConfig(config);
+        containerProperties.setCheckpointConfig(new CheckpointConfig(CheckpointMode.MANUAL));
         return new EventHubsMessageListenerContainer(processorFactory, containerProperties);
     }
 }
 ----
 
-Step 4. Create a message receiver binding with EventHubsInboundChannelAdapter created in the last step via the message channel we created before.
+Step 4. Create a message receiver binding with EventHubsInboundChannelAdapter via the message channel created before.
 [source,java]
 ----
-class Demo{
+class Demo {
     @ServiceActivator(inputChannel = INPUT_CHANNEL)
     public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
         String message = new String(payload);
@@ -306,51 +299,54 @@ class Demo{
 ===== Batch Consumer Support
 To consume messages from Event Hubs in batches is similar with the above sample, besides users should set the batch-consuming related configuration options for `EventHubsInboundChannelAdapter`.
 
-When create `EventHubsInboundChannelAdapter`, the listener mode should be set as `BATCH`. And set the checkpoint mode as either `MANUAL`
-or `BATCH` as needed.
+When create `EventHubsInboundChannelAdapter`, the listener mode should be set as `BATCH`. When create bean of `EventHubsMessageListenerContainer`, set the checkpoint mode as either `MANUAL` or `BATCH`, and the batch options can be configured as needed.
 
 [source,java]
 ----
-@Bean
-class Demo{
+@Configuration
+class Demo {
     private static final String INPUT_CHANNEL = "input";
     private static final String EVENTHUB_NAME = "eh1";
     private static final String CONSUMER_GROUP = "$Default";
 
+    @Bean
     public EventHubsInboundChannelAdapter messageChannelAdapter(
             @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel,
-            EventHubsProcessorContainer processorContainer) {
-        //Supported checkpoint modes are MANUAL AND BATCH only.
-        CheckpointConfig config = new CheckpointConfig(CheckpointMode.MANUAL);
-
-        EventHubsInboundChannelAdapter adapter =
-                new EventHubsInboundChannelAdapter(processorContainer, EVENTHUB_NAME,
-                        CONSUMER_GROUP, ListenerMode.BATCH, config);
+            EventHubsMessageListenerContainer listenerContainer) {
+        EventHubsInboundChannelAdapter adapter = new EventHubsInboundChannelAdapter(processorContainer, ListenerMode.BATCH);
         adapter.setOutputChannel(inputChannel);
         return adapter;
     }
+
+    @Bean
+    public EventHubsMessageListenerContainer messageListenerContainer(EventHubsProcessorFactory processorFactory) {
+        EventHubsContainerProperties containerProperties = new EventHubsContainerProperties();
+        containerProperties.setEventHubName(EVENTHUB_NAME);
+        containerProperties.setConsumerGroup(CONSUMER_GROUP);
+        containerProperties.getBatch().setMaxSize(100);
+        containerProperties.setCheckpointConfig(new CheckpointConfig(CheckpointMode.MANUAL));
+        return new EventHubsMessageListenerContainer(processorFactory, containerProperties);
+    }
 }
 ----
-
-Then a bean of `com.azure.spring.messaging.PropertiesSupplier` should be provided with the key as the event hub name, and the value as `com.azure.spring.eventhubs.core.properties.ProcessorProperties` where the batch consuming policy can be configured.
 
 [#si-eh-headers]
 ===== Event Hubs message headers
 
 The following table illustrates how Event Hubs message properties are mapped to Spring message headers. For Azure Event Hubs, message is called as `event`.
 
-.Mapping between Record Event Hubs Properties and Spring Headers
+.Mapping between Event Hubs Message / Event Properties and Spring Message Headers in Record Listener Mode
 [cols="<,<,<,<", options="header"]
 |===
 |Event Hubs Event Properties | Spring Message Header Constants | Type | Description
 
 |Enqueued time
-|com.azure.spring.eventhubs.support.EventHubsHeaders#ENQUEUED_TIME
+|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#ENQUEUED_TIME
 |Instant
 |The instant, in UTC, of when the event was enqueued in the Event Hub partition.
 
 |Offset
-|com.azure.spring.eventhubs.support.EventHubsHeaders#OFFSET
+|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#OFFSET
 |Long
 |The offset of the event when it was received from the associated Event Hub partition.
 
@@ -365,13 +361,13 @@ The following table illustrates how Event Hubs message properties are mapped to 
 |The partition id of the Event Hub.
 
 |Sequence number
-|com.azure.spring.eventhubs.support.EventHubsHeaders#SEQUENCE_NUMBER
+|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#SEQUENCE_NUMBER
 |Long
 |The sequence number assigned to the event when it was enqueued in the associated Event Hub partition.
 
 |Last enqueued event properties
-|com.azure.spring.eventhubs.support.EventHubsHeaders#LAST_ENQUEUED_EVENT_PROPERTIES
-|LastEnqueuedEventProperties
+|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#LAST_ENQUEUED_EVENT_PROPERTIES
+|com.azure.messaging.eventhubs.models.LastEnqueuedEventProperties
 |The properties of the last enqueued event in this partition.
 
 |NA
@@ -386,18 +382,18 @@ NOTE: Message headers of partition key, enqueued time, offset and sequence numbe
 
 When the batch-consumer mode is enabled, the specific headers of batched messages are listed as below, which contains a list of values from each single Event Hubs event.
 
-.Mapping between Batch Event Hubs Properties and Spring Headers
+.Mapping between Event Hubs Message / Event Properties and Spring Message Headers in Batch Listener Mode
 [cols="<,<,<,<", options="header"]
 |===
 |Event Hubs Event Properties | Spring Batch Message Header Constants | Type | Description
 
 |Enqueued time
-|com.azure.spring.eventhubs.support.EventHubsHeaders#ENQUEUED_TIME
+|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#ENQUEUED_TIME
 |List of Instant
 |List of the instant, in UTC, of when each event was enqueued in the Event Hub partition.
 
 |Offset
-|com.azure.spring.eventhubs.support.EventHubsHeaders#OFFSET
+|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#OFFSET
 |List of Long
 |List of the offset of each event when it was received from the associated Event Hub partition.
 
@@ -407,20 +403,22 @@ When the batch-consumer mode is enabled, the specific headers of batched message
 |List of the partition hashing key if it was set when originally publishing each event.
 
 |Sequence number
-|com.azure.spring.eventhubs.support.EventHubsHeaders#SEQUENCE_NUMBER
+|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#SEQUENCE_NUMBER
 |List of Long
 |List of the sequence number assigned to each event when it was enqueued in the associated Event Hub partition.
 
 |System properties
-|com.azure.spring.eventhubs.support.EventHubsHeaders#BATCH_CONVERTED_SYSTEM_PROPERTIES
+|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#BATCH_CONVERTED_SYSTEM_PROPERTIES
 |List of Map
 |List of the system properties of each event.
 
 |Application properties
-|com.azure.spring.eventhubs.support.EventHubsHeaders#BATCH_CONVERTED_APPLICATION_PROPERTIES
+|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#BATCH_CONVERTED_APPLICATION_PROPERTIES
 |List of Map
 |List of the applocation properties of each event, where all customized message headers or event properties are placed.
 |===
+
+NOTE: When publish messages, all the above batch headers will be removed from the messages if exist.
 
 ==== Samples
 
@@ -450,7 +448,7 @@ Please refer to Javadoc for details.
 
 This starter provides the following 2 parts of configuration options:
 
-[#eventhubs-connection-configration]
+[#servicebus-connection-configration]
 ===== Connection Configuration Properties
 
 These properties are exposed via `com.azure.spring.cloud.autoconfigure.implementation.servicebus.properties.AzureServiceBusProperties`.
@@ -483,8 +481,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 ===== Service Bus Processor Configuration Properties
 
 The `ServiceBusInboundChannelAdapter` uses the `ServiceBusProcessorClient` to consume messages, to configure the overall properties of an `ServiceBusProcessorClient`,
-developers can use `com.azure.spring.messaging.servicebus.core.properties.ServiceBusContainerProperties` for the configuration for the user-defined bean of
-`com.azure.spring.messaging.servicebus.core.listener.ServiceBusMessageListenerContainer`. See <<receive-from-sb, the below section>> about how to work with `ServiceBusInboundChannelAdapter`.
+developers can use `com.azure.spring.messaging.servicebus.core.properties.ServiceBusContainerProperties` for the configuration. See <<receive-from-sb, the below section>> about how to work with `ServiceBusInboundChannelAdapter`.
 
 ==== Basic Usage
 ===== Send messages to Azure Service Bus
@@ -533,7 +530,7 @@ Step 2. Create `DefaultMessageHandler` with the bean of `ServiceBusTemplate` to 
 set the entity type for the ServiceBusTemplate. This sample takes Service Bus Queue as example.
 [source,java]
 ----
-class Demo{
+class Demo {
     private static final String OUTPUT_CHANNEL = "queue.output";
 
     @Bean
@@ -558,10 +555,10 @@ class Demo{
 }
 ----
 
-Step 3. Create a Message gateway binding with the message handler created in the last stop via a message channel
+Step 3. Create a message gateway binding with the above message handler via a message channel.
 [source,java]
 ----
-class Demo{
+class Demo {
     @Autowired
     QueueOutboundGateway messagingGateway;
 
@@ -572,10 +569,10 @@ class Demo{
 }
 ----
 
-Step 4. Send messages using the gateway
+Step 4. Send messages using the gateway.
 [source,java]
 ----
-class Demo{
+class Demo {
     public void demo() {
         this.messagingGateway.send(message);
     }
@@ -589,7 +586,8 @@ Step 1. Fill the credential configuration options.
 Step 2. Create a bean of message channel as the input channel.
 [source,java]
 ----
-class Demo{
+@Configuration
+class Demo {
     private static final String INPUT_CHANNEL = "input";
 
     @Bean
@@ -603,15 +601,14 @@ Step 3. Create `ServiceBusInboundChannelAdapter` with the bean of `ServiceBusMes
 [source,java]
 ----
 @Configuration
-class Demo{
+class Demo {
     private static final String QUEUE_NAME = "queue1";
 
     @Bean
     public ServiceBusMessageListenerContainer messageListenerContainer(ServiceBusProcessorFactory processorFactory) {
         ServiceBusContainerProperties containerProperties = new ServiceBusContainerProperties();
         containerProperties.setEntityName(QUEUE_NAME);
-        CheckpointConfig checkpointConfig = new CheckpointConfig(CheckpointMode.MANUAL);
-        containerProperties.setCheckpointConfig(checkpointConfig);
+        containerProperties.setCheckpointConfig(new CheckpointConfig(CheckpointMode.MANUAL));
         return new ServiceBusMessageListenerContainer(processorFactory, containerProperties);
     }
 
@@ -626,10 +623,10 @@ class Demo{
 }
 ----
 
-Step 4. Create a message receiver binding with ServiceBusInboundChannelAdapter created in the last step via the message channel we created before.
+Step 4. Create a message receiver binding with ServiceBusInboundChannelAdapter via the message channel we created before.
 [source,java]
 ----
-class Demo{
+class Demo {
     @ServiceActivator(inputChannel = INPUT_CHANNEL)
     public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
         String message = new String(payload);
@@ -660,12 +657,12 @@ For some Service Bus headers that can be mapped to multiple Spring header consta
 | N/A
 
 |CorrelationId
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.CORRELATION_ID
+| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.CORRELATION_ID
 |String
 | N/A
 
 |**MessageId**
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.MESSAGE_ID
+| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.MESSAGE_ID
 | String
 | 1
 
@@ -680,7 +677,7 @@ For some Service Bus headers that can be mapped to multiple Spring header consta
 | 3
 
 |PartitionKey
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.PARTITION_KEY
+| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.PARTITION_KEY
 |String
 | N/A
 
@@ -690,7 +687,7 @@ For some Service Bus headers that can be mapped to multiple Spring header consta
 | N/A
 
 |ReplyToSessionId
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.REPLY_TO_SESSION_ID
+| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.REPLY_TO_SESSION_ID
 | String
 | N/A
 
@@ -700,22 +697,22 @@ For some Service Bus headers that can be mapped to multiple Spring header consta
 | 1
 
 |**ScheduledEnqueueTimeUtc**
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.SCHEDULED_ENQUEUE_TIME
+| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.SCHEDULED_ENQUEUE_TIME
 | Instant
 | 2
 
 |SessionID
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.SESSION_ID
+| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.SESSION_ID
 | String
 | N/A
 
 |TimeToLive
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.TIME_TO_LIVE
+| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.TIME_TO_LIVE
 |Duration
 | N/A
 
 |To
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.TO
+| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.TO
 | String
 | N/A
 |===
@@ -800,9 +797,13 @@ Azure Queue Storage is a service for storing large numbers of messages. You acce
 
 ==== Configuration
 
+This starter provides the following configuration options:
+
 [#storage-queue-connection-configration]
 ===== Connection Configuration Properties
 These properties are exposed via `com.azure.spring.cloud.autoconfigure.implementation.storage.queue.properties.AzureStorageQueueProperties`.
+
+NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
 .Connection configurable properties of spring-cloud-azure-starter-integration-storage-queue
 [cols="<,<,<", options="header"]
@@ -819,8 +820,6 @@ These properties are exposed via `com.azure.spring.cloud.autoconfigure.implement
 |*spring.cloud.azure.storage.queue*.messageEncoding | String | Queue message encoding.
 
 |===
-
-NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
 ==== Basic Usage
 ===== Send messages to Azure Storage Queue
@@ -872,7 +871,7 @@ spring:
 Step 2. Create `DefaultMessageHandler` with the bean of `StorageQueueTemplate` to send messages to Storage Queue.
 [source,java]
 ----
-class Demo{
+class Demo {
     private static final String STORAGE_QUEUE_NAME = "example";
     private static final String OUTPUT_CHANNEL = "output";
 
@@ -896,10 +895,10 @@ class Demo{
 }
 ----
 
-Step 3. Create a Message gateway binding with the message handler created in the last stop via a message channel
+Step 3. Create a Message gateway binding with the above message handler via a message channel.
 [source,java]
 ----
-class Demo{
+class Demo {
     @Autowired
     StorageQueueOutboundGateway storageQueueOutboundGateway;
 
@@ -910,10 +909,10 @@ class Demo{
 }
 ----
 
-Step 4. Send messages using the gateway
+Step 4. Send messages using the gateway.
 [source,java]
 ----
-class Demo{
+class Demo {
     public void demo() {
         this.storageQueueOutboundGateway.send(message);
     }
@@ -926,7 +925,7 @@ Step 1. Fill the credential configuration options.
 Step 2. Create a bean of message channel as the input channel.
 [source,java]
 ----
-class Demo{
+class Demo {
     private static final String INPUT_CHANNEL = "input";
 
     @Bean
@@ -939,7 +938,7 @@ class Demo{
 Step 3. Create `StorageQueueMessageSource` with the bean of `StorageQueueTemplate` to receive messages to Storage Queue.
 [source,java]
 ----
-class Demo{
+class Demo {
     private static final String STORAGE_QUEUE_NAME = "example";
 
     @Bean
@@ -953,7 +952,7 @@ class Demo{
 Step 4. Create a message receiver binding with StorageQueueMessageSource created in the last step via the message channel we created before.
 [source,java]
 ----
-class Demo{
+class Demo {
     @ServiceActivator(inputChannel = INPUT_CHANNEL)
     public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
         String message = new String(payload);

@@ -468,7 +468,7 @@ Changes for the child entries for following prefix, please refer the following t
 |*spring.cloud.stream.eventhub.bindings.<binding-name>.consumer*.start-position |*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.initial-partition-event-position
 |===
 
-NOTE: The value type of the start position configuration is also changed. It is changed from an enum of `com.azure.spring.integration.core.api.StartPosition` to a `map` of `StartPositionProperties` for each partition. Thus, the key is the partition id, and the value is of `com.azure.spring.service.eventhubs.properties.StartPositionProperties` which includes properties of offset, sequence number, enqueued date time and whether inclusive.
+NOTE: The value type of the start position configuration is also changed. It is changed from an enum of `com.azure.spring.integration.core.api.StartPosition` to a `map` of `StartPositionProperties` for each partition. Thus, the key is the partition id, and the value is of `com.azure.spring.cloud.service.eventhubs.properties.StartPositionProperties` which includes properties of offset, sequence number, enqueued date time and whether inclusive.
 
 For example, you should change from:
 
