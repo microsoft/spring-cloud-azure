@@ -1127,10 +1127,10 @@ The <code>roles</code> claim generated from <code>appRoles</code> is decorated w
 <div class="sect4">
 <h5 id="_support_conditional_access_in_web_application"><a class="link" href="#_support_conditional_access_in_web_application">Support Conditional Access in Web Application</a></h5>
 <div class="paragraph">
-<p>This starter supports <a href="https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/">Conditional Access</a> policy. By using Conditional Access policies, you can apply the right <strong>access controls</strong> when needed to keep your organization secure. <strong>Access controls</strong> has many concepts, <a href="https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/howto-conditional-access-policy-block-access">Block Access</a> and <a href="https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/concept-conditional-access-grant">Grant Access</a> are important. In some scenarios, this stater will help you complete Grant Access controls.</p>
+<p>This starter supports <a href="https://docs.microsoft.com/azure/active-directory/conditional-access/">Conditional Access</a> policy. By using Conditional Access policies, you can apply the right <strong>access controls</strong> when needed to keep your organization secure. <strong>Access controls</strong> has many concepts, <a href="https://docs.microsoft.com/azure/active-directory/conditional-access/howto-conditional-access-policy-block-access">Block Access</a> and <a href="https://docs.microsoft.com/azure/active-directory/conditional-access/concept-conditional-access-grant">Grant Access</a> are important. In some scenarios, this stater will help you complete Grant Access controls.</p>
 </div>
 <div class="paragraph">
-<p>In <code>Resource server visiting other resource server</code> scenario(For better description, we think that resource server with OBO function as <strong>webapiA</strong> and the other resource servers as <strong>webapiB</strong>), When we configure the webapiB application with Conditional Access(such as <a href="https://docs.microsoft.com/en-us/azure/active-directory/authentication/concept-mfa-howitworks">multi-factor authentication</a>), this stater will help us send the Conditional Access information of the webapiA to the web application and the web application will help us complete the Conditional Access Policy. As shown below:</p>
+<p>In <code>Resource server visiting other resource server</code> scenario(For better description, we think that resource server with OBO function as <strong>webapiA</strong> and the other resource servers as <strong>webapiB</strong>), When we configure the webapiB application with Conditional Access(such as <a href="https://docs.microsoft.com/azure/active-directory/authentication/concept-mfa-howitworks">multi-factor authentication</a>), this stater will help us send the Conditional Access information of the webapiA to the web application and the web application will help us complete the Conditional Access Policy. As shown below:</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/149291667-930e8559-b8ce-4955-b9ae-11a0a8013ea9.png" alt="aad-conditional-access-flow.png"></span></p>
@@ -1163,7 +1163,7 @@ The <code>roles</code> claim generated from <code>appRoles</code> is decorated w
 <div class="ulist">
 <ul>
 <li>
-<p>Step 2: <a href="https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/howto-conditional-access-policy-all-users-mfa">Require MFA for all users</a> or specify the user account in your policy.</p>
+<p>Step 2: <a href="https://docs.microsoft.com/azure/active-directory/conditional-access/howto-conditional-access-policy-all-users-mfa">Require MFA for all users</a> or specify the user account in your policy.</p>
 </li>
 </ul>
 </div>

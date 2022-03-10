@@ -228,7 +228,7 @@ from most heavy-loaded consumers to achieve the workload balancing.</p>
 <div class="sect4">
 <h5 id="_batch_consumer_support"><a class="link" href="#_batch_consumer_support">Batch Consumer Support</a></h5>
 <div class="paragraph">
-<p>Azure Spring Cloud Stream Event Hubs binder supports <a href="https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_batch_consumers">Spring Cloud Stream Batch Consumer feature</a>.</p>
+<p>Spring Cloud Azure Stream Event Hubs binder supports <a href="https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_batch_consumers">Spring Cloud Stream Batch Consumer feature</a>.</p>
 </div>
 <div class="paragraph">
 <p>To work with the batch-consumer mode, the property of <code>spring.cloud.stream.bindings.&lt;binding-name&gt;.consumer.batch-mode</code> should be set as <code>true</code>. When enabled, an <strong>org.springframework.messaging.Message</strong> of which the payload is a list of batched events will be received and passed to the consumer function. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of partition id, checkpointer and last enqueued properties, they are presented as a single value for the entire batch of events shares the same one. See <a href="#scs-eh-headers">Event Hubs Message Headers</a> for more details.</p>
@@ -265,7 +265,7 @@ The checkpoint header only exists when <strong>MANUAL</strong> checkpoint mode i
 </div>
 </div>
 <div class="paragraph">
-<p>Alternatively, you can also use the Azure Spring Cloud Stream Event Hubs Starter, as shown in the following example for Maven:</p>
+<p>Alternatively, you can also use the Spring Cloud Azure Stream Event Hubs Starter, as shown in the following example for Maven:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -347,7 +347,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-Common Azure Service SDK configuration options are configurable for the Azure Spring Cloud Stream Event Hubs binder as well. The supported configuration options are introduced in <a href="configuration.html">the Configuration page</a>, and could be configured with either the unified prefix <code>spring.cloud.azure.</code> or the prefix of <code>spring.cloud.azure.eventhubs.</code>.
+Common Azure Service SDK configuration options are configurable for the Spring Cloud Azure Stream Event Hubs binder as well. The supported configuration options are introduced in <a href="configuration.html">the Configuration page</a>, and could be configured with either the unified prefix <code>spring.cloud.azure.</code> or the prefix of <code>spring.cloud.azure.eventhubs.</code>.
 </td>
 </tr>
 </table>
@@ -1187,7 +1187,7 @@ This binder relies on <code>Subscription</code> of a topic to act as a consumer 
 </div>
 </div>
 <div class="paragraph">
-<p>Alternatively, you can also use the Azure Spring Cloud Stream Service Bus Starter, as shown in the following example for Maven:</p>
+<p>Alternatively, you can also use the Spring Cloud Azure Stream Service Bus Starter, as shown in the following example for Maven:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1264,7 +1264,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-Common Azure Service SDK configuration options are configurable for the Azure Spring Cloud Stream Service Bus binder as well. The supported configuration options are introduced in <a href="configuration.html">the Configuration page</a>, and could be configured with either the unified prefix <code>spring.cloud.azure.</code> or the prefix of <code>spring.cloud.azure.servicebus.</code>.
+Common Azure Service SDK configuration options are configurable for the Spring Cloud Azure Stream Service Bus binder as well. The supported configuration options are introduced in <a href="configuration.html">the Configuration page</a>, and could be configured with either the unified prefix <code>spring.cloud.azure.</code> or the prefix of <code>spring.cloud.azure.servicebus.</code>.
 </td>
 </tr>
 </table>
