@@ -33,7 +33,7 @@ from most heavy-loaded consumers to achieve the workload balancing.
 To specify the load balancing strategy, properties of `spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer.load-balancing.*` are provided. See <<eventhubs-consumer-properties, the consumer properties>> for more details.
 
 ===== Batch Consumer Support
-Azure Spring Cloud Stream Event Hubs binder supports link:https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_batch_consumers[Spring Cloud Stream Batch Consumer feature].
+Spring Cloud Azure Stream Event Hubs binder supports link:https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_batch_consumers[Spring Cloud Stream Batch Consumer feature].
 
 To work with the batch-consumer mode, the property of `spring.cloud.stream.bindings.<binding-name>.consumer.batch-mode` should be set as `true`. When enabled, an **org.springframework.messaging.Message** of which the payload is a list of batched events will be received and passed to the consumer function. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of partition id, checkpointer and last enqueued properties, they are presented as a single value for the entire batch of events shares the same one. See <<scs-eh-headers, Event Hubs Message Headers>> for more details.
 
@@ -53,7 +53,7 @@ The batch size can be specified by properties of `max-size` and `max-wait-time` 
 	<artifactId>spring-cloud-azure-stream-binder-eventhubs</artifactId>
 </dependency>
 ----
-Alternatively, you can also use the Azure Spring Cloud Stream Event Hubs Starter, as shown in the following example for Maven:
+Alternatively, you can also use the Spring Cloud Azure Stream Event Hubs Starter, as shown in the following example for Maven:
 
 [source,xml]
 ----
@@ -100,7 +100,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 
 |===
 
-TIP: Common Azure Service SDK configuration options are configurable for the Azure Spring Cloud Stream Event Hubs binder as well. The supported configuration options are introduced in link:configuration.html[the Configuration page], and could be configured with either the unified prefix `spring.cloud.azure.` or the prefix of `spring.cloud.azure.eventhubs.`.
+TIP: Common Azure Service SDK configuration options are configurable for the Spring Cloud Azure Stream Event Hubs binder as well. The supported configuration options are introduced in link:configuration.html[the Configuration page], and could be configured with either the unified prefix `spring.cloud.azure.` or the prefix of `spring.cloud.azure.eventhubs.`.
 
 ===== Checkpoint Configuration Properties
 These properties are exposed via `com.azure.spring.cloud.autoconfigure.implementation.eventhubs.properties.AzureEventHubsProperties.Processor#checkpointStore`
@@ -708,7 +708,7 @@ This binder relies on `Subscription` of a topic to act as a consumer group.
 	<artifactId>spring-cloud-azure-stream-binder-servicebus</artifactId>
 </dependency>
 ----
-Alternatively, you can also use the Azure Spring Cloud Stream Service Bus Starter, as shown in the following example for Maven:
+Alternatively, you can also use the Spring Cloud Azure Stream Service Bus Starter, as shown in the following example for Maven:
 
 [source,xml]
 ----
@@ -750,7 +750,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 
 |===
 
-TIP: Common Azure Service SDK configuration options are configurable for the Azure Spring Cloud Stream Service Bus binder as well. The supported configuration options are introduced in link:configuration.html[the Configuration page], and could be configured with either the unified prefix `spring.cloud.azure.` or the prefix of `spring.cloud.azure.servicebus.`.
+TIP: Common Azure Service SDK configuration options are configurable for the Spring Cloud Azure Stream Service Bus binder as well. The supported configuration options are introduced in link:configuration.html[the Configuration page], and could be configured with either the unified prefix `spring.cloud.azure.` or the prefix of `spring.cloud.azure.servicebus.`.
 
 ===== Azure Service Bus Binding Configuration Properties
 Below options are divided into four sections: Consumer Properties, Advanced Consumer

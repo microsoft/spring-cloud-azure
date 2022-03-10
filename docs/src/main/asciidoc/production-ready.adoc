@@ -39,6 +39,6 @@ Add the Spring Cloud Azure Trace Sleuth dependency when you want to trace Azure 
 </dependency>
 ----
 
-NOTE: Only HTTP-based Azure SDK clients are supported now, for example, Eventhub and ServiceBus with AMQP transport are currently not supported, we recommend to use https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview[Azure Application Insight] for such requirement.
+NOTE: Only HTTP-based Azure SDK clients are supported now, for example, Eventhub and ServiceBus with AMQP transport are currently not supported, we recommend to use https://docs.microsoft.com/azure/azure-monitor/app/app-insights-overview[Azure Application Insight] for such requirement.
 
 
