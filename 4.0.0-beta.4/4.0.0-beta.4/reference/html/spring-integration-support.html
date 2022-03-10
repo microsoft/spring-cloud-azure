@@ -776,13 +776,13 @@ class Demo{
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Enqueued time</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.eventhubs.support.EventHubsHeaders#ENQUEUED_TIME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#ENQUEUED_TIME</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Instant</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The instant, in UTC, of when the event was enqueued in the Event Hub partition.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Offset</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.eventhubs.support.EventHubsHeaders#OFFSET</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#OFFSET</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Long</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The offset of the event when it was received from the associated Event Hub partition.</p></td>
 </tr>
@@ -800,13 +800,13 @@ class Demo{
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Sequence number</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.eventhubs.support.EventHubsHeaders#SEQUENCE_NUMBER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#SEQUENCE_NUMBER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Long</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The sequence number assigned to the event when it was enqueued in the associated Event Hub partition.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Last enqueued event properties</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.eventhubs.support.EventHubsHeaders#LAST_ENQUEUED_EVENT_PROPERTIES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#LAST_ENQUEUED_EVENT_PROPERTIES</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">LastEnqueuedEventProperties</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The properties of the last enqueued event in this partition.</p></td>
 </tr>
@@ -1378,13 +1378,13 @@ set the entity type for the ServiceBusTemplate.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">CorrelationId</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.CORRELATION_ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.CORRELATION_ID</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>MessageId</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.MESSAGE_ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.MESSAGE_ID</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 </tr>
@@ -1402,7 +1402,7 @@ set the entity type for the ServiceBusTemplate.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PartitionKey</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.PARTITION_KEY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.PARTITION_KEY</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
 </tr>
@@ -1414,7 +1414,7 @@ set the entity type for the ServiceBusTemplate.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ReplyToSessionId</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.REPLY_TO_SESSION_ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.REPLY_TO_SESSION_ID</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
 </tr>
@@ -1426,25 +1426,25 @@ set the entity type for the ServiceBusTemplate.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>ScheduledEnqueueTimeUtc</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.SCHEDULED_ENQUEUE_TIME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.SCHEDULED_ENQUEUE_TIME</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Instant</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SessionID</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.SESSION_ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.SESSION_ID</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">TimeToLive</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.TIME_TO_LIVE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.TIME_TO_LIVE</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">To</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.servicebus.support.ServiceBusMessageHeaders.TO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.TO</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
 </tr>
