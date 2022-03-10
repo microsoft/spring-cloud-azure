@@ -546,7 +546,7 @@ IMPORTANT: The binder type is renamed from: servicebus-queue/servicebus-topic to
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-|spring.cloud.stream.servicebus.bindings.<binding-name>.consumer.concurrency | spring.cloud.stream.servicebus.bindings.<binding-name>.consumer.maxConcurrentSessions/maxConcurrentCalls
+|spring.cloud.stream.servicebus.bindings.<binding-name>.consumer.concurrency | spring.cloud.stream.servicebus.bindings.<binding-name>.consumer.max-concurrent-sessions/max-concurrent-calls
 |===
 
 IMPORTANT: replaced with maxConcurrentSessions when sessionsEnabled is `true` and maxConcurrentCalls when sessionsEnabled is `false`
@@ -702,14 +702,9 @@ Modern code:
 ----
 public class Demo {
     @Bean
-    public EventHubsInboundChannelAdapter messageChannelAdapter(
-        @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel,
-        EventHubsProcessorContainer processorContainer) {
-        CheckpointConfig config = new CheckpointConfig(CheckpointMode.MANUAL);
-
-        EventHubsInboundChannelAdapter adapter =
-                new EventHubsInboundChannelAdapter(processorContainer, EVENTHUB_NAME,
-              CONSUMER_GROUP, config);
+    public EventHubsInboundChannelAdapter messageChannelAdapter(@Qualifier(INPUT_CHANNEL) MessageChannel inputChannel,
+                                                                EventHubsMessageListenerContainer listenerContainer) {
+        EventHubsInboundChannelAdapter adapter = new EventHubsInboundChannelAdapter(listenerContainer);
         adapter.setOutputChannel(inputChannel);
         return adapter;
     }
@@ -773,15 +768,15 @@ public class Demo {
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-|com.azure.spring.integration.core.EventHubsHeaders |com.azure.spring.eventhubs.support.EventHubsHeaders
+|com.azure.spring.integration.core.EventHubsHeaders |com.azure.spring.messaging.eventhubs.support.EventHubsHeaders
 |com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
 |com.azure.spring.integration.core.api.reactor.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
 |com.azure.spring.integration.core.api.CheckpointConfig |com.azure.spring.messaging.checkpoint.CheckpointConfig
 |com.azure.spring.integration.core.api.CheckpointMode |com.azure.spring.messaging.checkpoint.CheckpointMode
-|com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.handler.DefaultMessageHandler
+|com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.core.handler.DefaultMessageHandler
 |com.azure.spring.integration.eventhub.inbound.EventHubInboundChannelAdapter |com.azure.spring.integration.eventhubs.inbound.EventHubsInboundChannelAdapter
-|com.azure.spring.integration.eventhub.api.EventHubOperation |com.azure.spring.eventhubs.core.EventHubsTemplate
-|NONE |com.azure.spring.eventhubs.core.EventHubsProcessorContainer
+|com.azure.spring.integration.eventhub.api.EventHubOperation |com.azure.spring.messaging.eventhubs.core.EventHubsTemplate
+|NONE |com.azure.spring.messaging.eventhubs.core.listener.EventHubsMessageListenerContainer
 |===
 
 ==== From azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus
@@ -891,15 +886,20 @@ public class Demo {
 |Legacy class |Modern class
 |com.azure.spring.integration.core.api.CheckpointMode |com.azure.spring.messaging.checkpoint.CheckpointMode
 |com.azure.spring.integration.core.api.reactor.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
-|com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.handler.DefaultMessageHandler
+|com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.core.handler.DefaultMessageHandler
 |com.azure.spring.integration.storage.queue.inbound.StorageQueueMessageSource |com.azure.spring.integration.storage.queue.inbound.StorageQueueMessageSource
 |com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
-|com.azure.spring.integration.storage.queue.StorageQueueOperation |com.azure.spring.storage.queue.core.StorageQueueOperation
-|com.azure.spring.integration.storage.queue.StorageQueueTemplate |com.azure.spring.storage.queue.core.StorageQueueTemplate
-|com.azure.spring.integration.core.DefaultMessageHandler |com.azure.spring.integration.handler.DefaultMessageHandler
-|com.azure.spring.integration.servicebus.ServiceBusTemplate |com.azure.spring.servicebus.core.ServiceBusTemplate
-|com.azure.spring.integration.servicebus.inbound.ServiceBusQueueInboundChannelAdapter |com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter
-|com.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter |com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter
+|com.azure.spring.integration.storage.queue.StorageQueueTemplate |com.azure.spring.messaging.storage.queue.core.StorageQueueTemplate
+|com.azure.spring.integration.storage.queue.factory.StorageQueueClientFactory |com.azure.spring.messaging.storage.queue.core.factory.StorageQueueClientFactory
+|com.azure.spring.integration.storage.queue.factory.DefaultStorageQueueClientFactory |com.azure.spring.messaging.storage.queue.implementation.factory.DefaultStorageQueueClientFactory
+|com.azure.spring.integration.storage.queue.converter.StorageQueueMessageConverter |com.azure.spring.messaging.storage.queue.support.converter.StorageQueueMessageConverter
+|===
+
+.Removed class from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue
+[options="header"]
+|===
+| Removed legacy class
+|com.azure.spring.integration.storage.queue.StorageQueueOperation
 |===
 
 ==== From azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs
@@ -908,21 +908,32 @@ public class Demo {
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
+|com.azure.spring.integration.core.api.reactor.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
 |com.azure.spring.integration.core.api.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
 |com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
-|com.azure.spring.integration.core.EventHubHeaders |com.azure.spring.eventhubs.support.EventHubsHeaders
+|com.azure.spring.integration.core.EventHubHeaders |com.azure.spring.messaging.eventhubs.support.EventHubsHeaders
+|com.azure.spring.integration.core.api.reactor.SendOperation |com.azure.spring.messaging.core.SendOperation
+|com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.core.handler.DefaultMessageHandler
+|com.azure.spring.integration.eventhub.impl.EventHubTemplate |com.azure.spring.messaging.eventhubs.core.EventHubsTemplate
+|com.azure.spring.integration.eventhub.inbound.EventHubInboundChannelAdapter |com.azure.spring.integration.eventhubs.inbound.EventHubsInboundChannelAdapter
 |===
 
-
-==== From azure-spring-cloud-stream-binder-servicebus to spring-cloud-azure-stream-binder-servicebus
+==== From azure-spring-cloud-stream-binder-servicebus-queue and azure-spring-cloud-stream-binder-servicebus-topic to spring-cloud-azure-stream-binder-servicebus
 
 .Class mapping from azure-spring-cloud-stream-binder-servicebus to spring-cloud-azure-stream-binder-servicebus
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-|com.azure.spring.integration.core.api.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
-|com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
-|com.azure.spring.integration.servicebus.converter.ServiceBusMessageHeaders |com.azure.spring.servicebus.support.ServiceBusMessageHeaders
+|com.azure.spring.servicebus.stream.binder.properties.ServiceBusQueueExtendedBindingProperties | com.azure.spring.cloud.stream.binder.servicebus.core.properties.ServiceBusExtendedBindingProperties
+|com.azure.spring.servicebus.stream.binder.properties.ServiceBusTopicExtendedBindingProperties | com.azure.spring.cloud.stream.binder.servicebus.core.properties.ServiceBusExtendedBindingProperties
+|com.azure.spring.servicebus.stream.binder.properties.ServiceBusConsumerProperties | com.azure.spring.cloud.stream.binder.servicebus.core.properties.ServiceBusConsumerProperties
+|com.azure.spring.servicebus.stream.binder.properties.ServiceBusProducerProperties | com.azure.spring.cloud.stream.binder.servicebus.core.properties.ServiceBusProducerProperties
+|com.azure.spring.servicebus.stream.binder.properties.ServiceBusBindingProperties | com.azure.spring.cloud.stream.binder.servicebus.core.properties.ServiceBusBindingProperties
+|com.azure.spring.servicebus.stream.binder.ServiceBusMessageChannelBinder |com.azure.spring.cloud.stream.binder.servicebus.ServiceBusMessageChannelBinder
+|com.azure.spring.servicebus.stream.binder.ServiceBusQueueHealthIndicator | com.azure.spring.cloud.stream.binder.servicebus.ServiceBusHealthIndicator
+|com.azure.spring.servicebus.stream.binder.ServiceBusTopicHealthIndicator | com.azure.spring.cloud.stream.binder.servicebus.ServiceBusHealthIndicator
+|com.azure.spring.servicebus.stream.binder.provisioning.ServiceBusQueueChannelResourceManagerProvisioner |com.azure.spring.cloud.stream.binder.servicebus.core.provisioning.ServiceBusChannelResourceManagerProvisioner
+| com.azure.spring.servicebus.stream.binder.provisioning.ServiceBusTopicChannelResourceManagerProvisioner |com.azure.spring.cloud.stream.binder.servicebus.core.provisioning.ServiceBusChannelResourceManagerProvisioner
 |===
 
 ==== From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob
@@ -931,9 +942,9 @@ public class Demo {
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-|com.azure.spring.autoconfigure.storage.resource.AzureStorageProtocolResolver |com.azure.spring.core.resource.AzureStorageBlobProtocolResolver
-|com.azure.spring.autoconfigure.storage.resource.BlobStorageResource|com.azure.spring.core.resource.StorageBlobResource
-|com.azure.spring.autoconfigure.storage.resource.AzureStorageResourcePatternResolver|com.azure.spring.core.resource.AzureStorageBlobProtocolResolver
+|com.azure.spring.autoconfigure.storage.resource.AzureStorageProtocolResolver |com.azure.spring.cloud.core.resource.AzureStorageBlobProtocolResolver
+|com.azure.spring.autoconfigure.storage.resource.AzureStorageResourcePatternResolver|com.azure.spring.cloud.core.resource.AzureStorageBlobProtocolResolver
+|com.azure.spring.autoconfigure.storage.resource.BlobStorageResource|com.azure.spring.cloud.core.resource.StorageBlobResource
 |===
 
 ==== From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share
@@ -942,9 +953,9 @@ public class Demo {
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-|com.azure.spring.autoconfigure.storage.resource.AzureStorageProtocolResolver |com.azure.spring.core.resource.AzureStorageFileProtocolResolver
-|com.azure.spring.autoconfigure.storage.resource.FileStorageResource|com.azure.spring.core.resource.StorageFileResource
-|com.azure.spring.autoconfigure.storage.resource.AzureStorageResourcePatternResolver|com.azure.spring.core.resource.AzureStorageFileProtocolResolver
+|com.azure.spring.autoconfigure.storage.resource.AzureStorageProtocolResolver |com.azure.spring.cloud.core.resource.AzureStorageFileProtocolResolver
+|com.azure.spring.autoconfigure.storage.resource.AzureStorageResourcePatternResolver|com.azure.spring.cloud.core.resource.AzureStorageFileProtocolResolver
+|com.azure.spring.autoconfigure.storage.resource.FileStorageResource|com.azure.spring.cloud.core.resource.StorageFileResource
 |===
 
 ==== From azure-spring-boot-starter-servicebus-jms to spring-cloud-azure-starter-servicebus-jms
