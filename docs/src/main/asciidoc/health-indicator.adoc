@@ -3,7 +3,7 @@
 The client library comes with a Health Indicator that checks whether the connection to the Azure App Configuration store(s) is healthy or not. If enabled for each store, it gives a status of:
 
  * UP - The last connection was successful
- * DOWN- The last connection resulted in a non 200 error code
- * NOT LOADED - The config store is listed in the local configuration file, but wasn't loaded from at startup. This can either be because it is disabled, or failed to load at startup and the `fail-fast` configuration for the store was set to false.
+ * DOWN- The last connection resulted in a non 200 error code, this could be due to a number of issues, such as a network or service issue. The client library will automatically retry to connect to the store at the next refresh-interval.
+ * NOT LOADED - The config store is listed in the local configuration file, but wasn't loaded from the config file at startup. This can be because of two reasons. Either loading is disabled. Otherwise, config failed to load at startup while `fail-fast` configuration for the store was set to false.
 
 You can enable the Health Indicator by setting `management.health.azure-app-configuration.enabled=true`.

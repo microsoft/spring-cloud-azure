@@ -1,6 +1,6 @@
 == Key Values
 
-Azure App Configuration Supports multiple types of key values, some of which have special features built into them.
+Azure App Configuration Supports multiple types of key values, some of which have special features built into them. Azure App Configuration has built in support for JSON content type, Spring placeholders, an Key Value references.
 
 === Placeholders
 
@@ -49,7 +49,7 @@ NOTE: Key Vault only allows for secrets to be retrieved one at a time, so each k
 
 ==== Creating Key Vault References
 
-You can easily create a Key Vault reference in the Azure Portal in the Configuration explorer using the Create -> Key Vault reference option. You will be able to select a secret to make a reference to from any Key Vault you have access to. You can also create arbitrary Key Vault references using the Input option.
+You can easily create a Key Vault reference in the Azure Portal in the Configuration explorer using the Create -> Key Vault reference option. You will be able to select a secret to make a reference to from any Key Vault you have access to. You can also create arbitrary Key Vault references using the Input option. Through the portal a valid URI Key Vault is required and using a Key Vault reference format.
 
 You can also create a Key Vault reference through the cli using:
 
@@ -57,6 +57,8 @@ You can also create a Key Vault reference through the cli using:
 ----
 az appconfig kv set-keyvault --name <name-of-your-store> --key <key-name> --secret-identifier <uri-to-your-secret>
 ----
+
+Though the CLI any secret-identifier with the format of `{vault}/{collection}/{name}/{version?}` where the version section is optional.
 
 ==== Using Key Vault References
 
@@ -84,7 +86,7 @@ Using the KeyVaultCredentialProvider you can provide any TokenCredential type su
 
 ==== Resolve Non Key Vault Secrets
 
-The App Configuration client provides a method of locally resolving secrets that don't have a Key Vault associated with them. This is done through the `KeyVaultSecretProvider`.
+The App Configuration client provides a method of locally resolving secrets that don't have a Key Vault associated with them. This is done through the `KeyVaultSecretProvider`. The `KeyVaultSecretProvider` provides a method `getSecret` that passes in the Key Vault reference URI and allows returning of any String to be the config value used.
 
 WARNING: Creating a `KeyVaultSecretProvider` overrides the automatic use of System Assigned Identity. In order to use both `KeyVaultCredentialProvider` needs to be used and return `null` for URI's that need to resolve using `KeyVaultSecretProvider`.
 
