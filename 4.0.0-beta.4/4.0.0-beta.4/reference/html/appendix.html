@@ -7077,7 +7077,7 @@ to<br>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The value type of the start position configuration is also changed. It is changed from an enum of <code>com.azure.spring.integration.core.api.StartPosition</code> to a <code>map</code> of <code>StartPositionProperties</code> for each partition. Thus, the key is the partition id, and the value is of <code>com.azure.spring.service.eventhubs.properties.StartPositionProperties</code> which includes properties of offset, sequence number, enqueued date time and whether inclusive.
+The value type of the start position configuration is also changed. It is changed from an enum of <code>com.azure.spring.integration.core.api.StartPosition</code> to a <code>map</code> of <code>StartPositionProperties</code> for each partition. Thus, the key is the partition id, and the value is of <code>com.azure.spring.cloud.service.eventhubs.properties.StartPositionProperties</code> which includes properties of offset, sequence number, enqueued date time and whether inclusive.
 </td>
 </tr>
 </table>
@@ -7209,32 +7209,28 @@ The binder type is renamed from: servicebus-queue/servicebus-topic to <code>serv
 <colgroup>
 <col>
 <col>
+<col>
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Legacy class</th>
 <th class="tableblock halign-left valign-top">Modern class</th>
+<th class="tableblock halign-left valign-top">Comment</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer.concurrency</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer.max-concurrent-sessions/max-concurrent-calls</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The concurrency property will replace maxConcurrentSessions when sessionsEnabled is <code>true</code> and maxConcurrentCalls when sessionsEnabled is <code>false</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer.checkpoint-mode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer.auto-complete</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enabling auto-complete is equivalent to <code>RECORD</code> checkpoint mode, and oppositely the <code>MANUAL</code> mode.</p></td>
 </tr>
 </tbody>
 </table>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-replaced with maxConcurrentSessions when sessionsEnabled is <code>true</code> and maxConcurrentCalls when sessionsEnabled is <code>false</code>
-</td>
-</tr>
-</table>
-</div>
 <div class="ulist">
 <ul>
 <li>
