@@ -173,7 +173,7 @@ window.onload = function() {
 <h2 id="_health_indicator"><a class="link" href="#_health_indicator">Health Indicator</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The client library comes with a Health Indicator that check whether the connection to the Azure App Configuration store(s) is healthy or not. If enabled, for each store it gives a status of:</p>
+<p>The client library comes with a Health Indicator that checks whether the connection to the Azure App Configuration store(s) is healthy or not. If enabled for each store, it gives a status of:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -181,10 +181,10 @@ window.onload = function() {
 <p>UP - The last connection was successful</p>
 </li>
 <li>
-<p>DOWN- The last connection resulted in a non 200 error code</p>
+<p>DOWN- The last connection resulted in a non 200 error code. This could be due to a number of issues ranging from credentials expiring to a service issue. The client library will automatically retry to connect to the store at the next refresh-interval.</p>
 </li>
 <li>
-<p>NOT LOADED - The config store is listed in the local configuration file, but wasn&#8217;t loaded from at startup. This can either be because it is disabled, or failed to load at startup and the <code>fail-fast</code> configuration for the store was set to false.</p>
+<p>NOT LOADED - The config store is listed in the local configuration file, but the config store wasn&#8217;t loaded from from the file at startup. Either the config store was disabled by configuration. Otherwise, the configuration(s) loading failed to load at startup while the <code>fail-fast</code> configuration for the store was set to false.</p>
 </li>
 </ul>
 </div>
