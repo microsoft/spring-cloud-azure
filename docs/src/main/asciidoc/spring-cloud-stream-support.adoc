@@ -733,11 +733,6 @@ These properties are exposed via `ServiceBusConsumerProperties`.
 |false
 |If the failed messages are routed to the DLQ.
 
-|*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.checkpoint-mode
-| CheckpointMode
-| RECORD
-| The checkpoint mode of checkpointing message. The supported modes are `MANUAL` and `RECORD`.
-
 |*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.max-concurrent-calls
 | Integer
 | 1
@@ -772,6 +767,12 @@ These properties are exposed via `ServiceBusConsumerProperties`.
 | ServiceBusReceiveMode
 | peek_lock
 | The receive mode of the Service Bus processor client.
+
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.auto-complete
+| Boolean
+| true
+| Whether to settle messages automatically. If set as false, a message header of `Checkpointer` will be added
+to enable developers to settle messages manually.
 
 |===
 

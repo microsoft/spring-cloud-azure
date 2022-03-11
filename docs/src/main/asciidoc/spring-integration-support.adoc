@@ -608,7 +608,7 @@ class Demo {
     public ServiceBusMessageListenerContainer messageListenerContainer(ServiceBusProcessorFactory processorFactory) {
         ServiceBusContainerProperties containerProperties = new ServiceBusContainerProperties();
         containerProperties.setEntityName(QUEUE_NAME);
-        containerProperties.setCheckpointConfig(new CheckpointConfig(CheckpointMode.MANUAL));
+        containerProperties.setAutoComplete(false);
         return new ServiceBusMessageListenerContainer(processorFactory, containerProperties);
     }
 
