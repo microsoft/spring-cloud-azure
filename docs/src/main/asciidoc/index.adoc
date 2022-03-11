@@ -22,4 +22,6 @@ include::key-values.adoc[]
 
 include::health-indicator.adoc[]
 
+include::refresh.adoc[]
+
 include::forMoreInfo.adoc[]

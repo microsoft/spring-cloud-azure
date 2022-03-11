@@ -1,0 +1,79 @@
+== Configuration Refresh
+
+Enabling config refresh for your configurations lets you pull their latest values from your App Configuration store(s) without having to restart the application.
+
+To enable refresh, monitoring needs to be enabled along with monitoring triggers. A monitoring trigger is a key with an optional label that are checked for value change for triggering updates. The value of the monitoring trigger can be any value, as long as it changes when it a refresh is needed.
+
+NOTE: Any operation that changes the etag of a monitoring trigger will cause a refresh, such as a content-type change.
+
+[,properties,indent=0]
+----
+spring.cloud.azure.appconfiguration.stores[0].monitoring.enabled=true
+spring.cloud.azure.appconfiguration.stores[0].monitoring.triggers[0].key=[my-watched-key]
+spring.cloud.azure.appconfiguration.stores[0].monitoring.triggers[0].label=[my-watched-label]
+----
+
+To trigger a configuration refresh, change the value of a key in your configuration store. Then update one of watch keys to a new value. This will trigger the creation of a log. For example, changing the value of `/application/config.message` triggers the log message below:
+
+[,console,indent=0]
+----
+INFO 17496 --- [TaskScheduler-1] o.s.c.e.event.RefreshEventListener       : Refresh keys changed: [config.message]
+----
+
+After generating the log, the application will refresh all `@Bean`++'++s in the refresh scope.
+
+NOTE: By default, `@ConfiugrationProperties` annotated beans will be included in this scope.
+
+=== Pull Based Refresh
+
+The App Configuration Spring libraries support the ability to periodically check on a refresh interval for changes made to the monitoring triggers. By default the refresh-interval is set to 30 seconds. Once the refresh interval has passed, all triggers will be checked in the given store for changes. Any change to the key will cause a refresh to trigger. Because the libraries integrate with the Spring refresh system, any refresh will reload all configurations from all stores. The refresh-interval can be set to any interval longer than 1 second. The supported units for the refresh-interval are s, m, h, d for seconds, minutes, hours, and days respectively.
+
+[,properties,indent=0]
+----
+spring.cloud.azure.appconfiguration.stores[0].monitoring.refresh-interval= 1d
+----
+
+==== Automated
+
+When using the `azure-spring-cloud-appconfiguration-config-web` library, the application will automatically check for refresh whenever a servlet request occurs, specifically `ServletRequestHandledEvent`. The most common way this event is sent is by connections to endpoints in a `@RestController`.
+
+==== Manual
+
+In applications that only use `azure-spring-cloud-appconfiguration-config`, such as console applications, refresh can be manually triggered. This can be done by calling `AppConfigurationRefresh`'s refreshConfiguration method. `AppConfigurationRefresh` is a `@Bean` that can be injected into any `@Component`.
+
+Also, because the library uses Spring's configuration system, triggering a refresh will also cause a refresh of all of your configurations, not just reloading the ones from your Azure App Configuration store.
+
+=== Push Based Refresh
+
+The `azure-spring-cloud-appconfiguration-config-web` library can be setup to receive push notifications from your Azure App Configuration store to refresh your configuration values. This is done via an Azure Event Grid Web Hook, which can be configured to send notifications of changes to specified keys. By adding the Spring Actuator library as a dependency you can expose App Configuration's refresh endpoint(s). There are two different endpoints, `appconfiguration-refresh` and `appconfiguration-refresh-bus` these endpoints work sort of similarly to their counterparts `refresh` and `refresh-bus`, where the app configuration endpoints expire the refresh interval instead of forcing a refresh upon receiving. The `refresh` and `refresh-bus` can still be used, but can't be directly connected to Azure Event Grid with a Web Hook as they require a response in setup.
+
+`appconfiguration-refresh` expires the refresh interval, so the remaining refresh interval isn't waited on before the next refresh check. `appconfiguration-refresh-bus` will send a notification to a connected messaging service, such as Azure Service Bus to notify all instances of an application to refresh. In both cases it doesn't completely expire the refresh interval, but almost does by a small jitter amount. This makes sure not every instance of your application doesn't try to refresh at the same time.
+
+[,properties,indent=0]
+----
+management.endpoints.web.exposure.include= appconfiguration-refresh, appconfiguration-refresh-bus
+----
+
+In addition to exposing the refresh endpoints a required query parameter has been added for security. No token name or value is set by default, but setting one is required in order to use the endpoints.
+
+[,properties,indent=0]
+----
+spring.cloud.appconfiguration.stores[0].monitoring.push-notification.primary-token.name=[primary-token-name]
+spring.cloud.appconfiguration.stores[0].monitoring.push-notification.primary-token.secret=[primary-token-secret]
+spring.cloud.appconfiguration.stores[0].monitoring.push-notification.secondary-token.name=[secondary-token-name]
+spring.cloud.appconfiguration.stores[0].monitoring.push-notification.secondary-token.secret=[secondary-token-secret]
+----
+
+==== Setting Up Web Hooks
+
+To setup a Web Hook open your Azure App Configuration store and select the events tab. Select "+ Event Subscription". Set the name of your Event and select the Endpoint type to be Web Hook. Selecting Web Hook will cause an Endpoint option to appear, select "Select an endpoint". Your endpoint will look like the following:
+
+----
+https://www.myaplication.com/actuator/appconfiguration-refresh?myTokenName=mySecret
+----
+
+In order to "Confirm Selection" will send a setup notification to the given URI and it expects a response. If no response is returned it will fail. The `azure-spring-cloud-appconfiguration-web` library if setup for endpoints will return the correct response if the Azure App Configuration store is configured for the application. This confirmation can be sent in other ways see https://docs.microsoft.com/azure/event-grid/webhook-event-delivery[Event Grid Web Hook Delivery] for more information on Web Hook validation.
+
+NOTE: This validation only happens on the creation/modification of the endpoint.
+
+It is highly recommended that filters are set up as otherwise a refresh will be triggered after every key creation and modification.
