@@ -614,9 +614,9 @@ class Demo {
 
 ===== Support Conditional Access in Web Application
 
-This starter supports https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/[Conditional Access] policy. By using Conditional Access policies, you can apply the right **access controls** when needed to keep your organization secure. **Access controls** has many concepts, https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/howto-conditional-access-policy-block-access[Block Access] and https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/concept-conditional-access-grant[Grant Access] are important. In some scenarios, this stater will help you complete Grant Access controls.
+This starter supports https://docs.microsoft.com/azure/active-directory/conditional-access/[Conditional Access] policy. By using Conditional Access policies, you can apply the right **access controls** when needed to keep your organization secure. **Access controls** has many concepts, https://docs.microsoft.com/azure/active-directory/conditional-access/howto-conditional-access-policy-block-access[Block Access] and https://docs.microsoft.com/azure/active-directory/conditional-access/concept-conditional-access-grant[Grant Access] are important. In some scenarios, this stater will help you complete Grant Access controls.
 
-In `Resource server visiting other resource server` scenario(For better description, we think that resource server with OBO function as **webapiA** and the other resource servers as **webapiB**), When we configure the webapiB application with Conditional Access(such as https://docs.microsoft.com/en-us/azure/active-directory/authentication/concept-mfa-howitworks[multi-factor authentication]), this stater will help us send the Conditional Access information of the webapiA to the web application and the web application will help us complete the Conditional Access Policy. As shown below:
+In `Resource server visiting other resource server` scenario(For better description, we think that resource server with OBO function as **webapiA** and the other resource servers as **webapiB**), When we configure the webapiB application with Conditional Access(such as https://docs.microsoft.com/azure/active-directory/authentication/concept-mfa-howitworks[multi-factor authentication]), this stater will help us send the Conditional Access information of the webapiA to the web application and the web application will help us complete the Conditional Access Policy. As shown below:
 
 image:https://user-images.githubusercontent.com/13167207/149291667-930e8559-b8ce-4955-b9ae-11a0a8013ea9.png[aad-conditional-access-flow.png]
 
@@ -634,7 +634,7 @@ image:https://user-images.githubusercontent.com/13167207/149294175-af143a10-a242
 
 image:https://user-images.githubusercontent.com/13167207/149294294-75af3386-89b6-43fa-84e6-7a21c3da0352.png[aad-conditional-access-add-application]
 
-* Step 2: https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/howto-conditional-access-policy-all-users-mfa[Require MFA for all users] or specify the user account in your policy.
+* Step 2: https://docs.microsoft.com/azure/active-directory/conditional-access/howto-conditional-access-policy-all-users-mfa[Require MFA for all users] or specify the user account in your policy.
 
 image:https://user-images.githubusercontent.com/13167207/149294469-f2785eee-ddfc-49f0-b16e-efc29aca626e.png[aad-create-conditional-access]
 

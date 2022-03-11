@@ -345,12 +345,12 @@ The following table illustrates how Event Hubs message properties are mapped to 
 |Event Hubs Event Properties | Spring Message Header Constants | Type | Description
 
 |Enqueued time
-|com.azure.spring.eventhubs.support.EventHubsHeaders#ENQUEUED_TIME
+|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#ENQUEUED_TIME
 |Instant
 |The instant, in UTC, of when the event was enqueued in the Event Hub partition.
 
 |Offset
-|com.azure.spring.eventhubs.support.EventHubsHeaders#OFFSET
+|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#OFFSET
 |Long
 |The offset of the event when it was received from the associated Event Hub partition.
 
@@ -365,12 +365,12 @@ The following table illustrates how Event Hubs message properties are mapped to 
 |The partition id of the Event Hub.
 
 |Sequence number
-|com.azure.spring.eventhubs.support.EventHubsHeaders#SEQUENCE_NUMBER
+|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#SEQUENCE_NUMBER
 |Long
 |The sequence number assigned to the event when it was enqueued in the associated Event Hub partition.
 
 |Last enqueued event properties
-|com.azure.spring.eventhubs.support.EventHubsHeaders#LAST_ENQUEUED_EVENT_PROPERTIES
+|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#LAST_ENQUEUED_EVENT_PROPERTIES
 |LastEnqueuedEventProperties
 |The properties of the last enqueued event in this partition.
 
@@ -660,12 +660,12 @@ For some Service Bus headers that can be mapped to multiple Spring header consta
 | N/A
 
 |CorrelationId
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.CORRELATION_ID
+| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.CORRELATION_ID
 |String
 | N/A
 
 |**MessageId**
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.MESSAGE_ID
+| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.MESSAGE_ID
 | String
 | 1
 
@@ -680,7 +680,7 @@ For some Service Bus headers that can be mapped to multiple Spring header consta
 | 3
 
 |PartitionKey
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.PARTITION_KEY
+| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.PARTITION_KEY
 |String
 | N/A
 
@@ -690,7 +690,7 @@ For some Service Bus headers that can be mapped to multiple Spring header consta
 | N/A
 
 |ReplyToSessionId
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.REPLY_TO_SESSION_ID
+| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.REPLY_TO_SESSION_ID
 | String
 | N/A
 
@@ -700,22 +700,22 @@ For some Service Bus headers that can be mapped to multiple Spring header consta
 | 1
 
 |**ScheduledEnqueueTimeUtc**
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.SCHEDULED_ENQUEUE_TIME
+| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.SCHEDULED_ENQUEUE_TIME
 | Instant
 | 2
 
 |SessionID
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.SESSION_ID
+| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.SESSION_ID
 | String
 | N/A
 
 |TimeToLive
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.TIME_TO_LIVE
+| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.TIME_TO_LIVE
 |Duration
 | N/A
 
 |To
-| com.azure.spring.servicebus.support.ServiceBusMessageHeaders.TO
+| com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders.TO
 | String
 | N/A
 |===
