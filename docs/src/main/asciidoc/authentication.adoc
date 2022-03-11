@@ -25,8 +25,8 @@ az identity create -g myResourceGroup -n myUserAssignedIdentity
 Connecting to Azure app configuration with any authentication method other connection string requires three steps to setup.
 
 1. Adding the Identity to the resource connecting to your App Configuration store
-1. Adding the required information to your client application.
-1. Authorizing the Identity to use App Configuration.
+2. Adding the required information to your client application.
+3. Authorizing the Identity to use App Configuration.
 
 For user assigned, the identity needs to be added to the azure resource. How the user assigned identity is added varies between resources so you will need to check the specific docs of that resource.
 
