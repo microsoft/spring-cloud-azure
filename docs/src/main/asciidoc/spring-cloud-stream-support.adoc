@@ -22,8 +22,7 @@ on Kafka API, you can try link:https://github.com/Azure-Samples/azure-spring-boo
 
 Event Hubs provides similar support of consumer group as Apache Kafka, but with slight different logic. While Kafka
 stores all committed offsets in the broker, you have to store offsets of Event Hubs messages
-being processed manually. Event Hubs SDK provide the function to store such offsets inside Azure Storage Account. So
-that's why you have to fill `spring.cloud.eventhubs.processor.checkpoint-store.*`.
+being processed manually. Event Hubs SDK provides the function to store such offsets inside Azure Storage.
 
 ===== Partitioning Support
 
@@ -35,12 +34,12 @@ To specify the load balancing strategy, properties of `spring.cloud.stream.event
 ===== Batch Consumer Support
 Spring Cloud Azure Stream Event Hubs binder supports link:https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_batch_consumers[Spring Cloud Stream Batch Consumer feature].
 
-To work with the batch-consumer mode, the property of `spring.cloud.stream.bindings.<binding-name>.consumer.batch-mode` should be set as `true`. When enabled, an **org.springframework.messaging.Message** of which the payload is a list of batched events will be received and passed to the consumer function. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of partition id, checkpointer and last enqueued properties, they are presented as a single value for the entire batch of events shares the same one. See <<scs-eh-headers, Event Hubs Message Headers>> for more details.
+To work with the batch-consumer mode, the property of `spring.cloud.stream.bindings.<binding-name>.consumer.batch-mode` should be set as `true`. When enabled, an **Message** of which the payload is a list of batched events will be received and passed to the `Consumer` function. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of partition id, checkpointer and last enqueued properties, they are presented as a single value for the entire batch of events shares the same one. See <<scs-eh-headers, Event Hubs Message Headers>> for more details.
 
 NOTE: The checkpoint header only exists when **MANUAL** checkpoint mode is used.
 
 Checkpointing of batch consumer supports two modes: `BATCH` and `MANUAL`. `BATCH` mode is an auto checkpointing mode to checkpoint the entire batch of events together once they are received by the binder. `MANUAL` mode is to checkpoint the events by users. When used, the
-**com.azure.spring.messaging.checkpoint.Checkpointer** will be passes into the message header, and users could use it to do checkpointing.
+**Checkpointer** will be passed into the message header, and users could use it to do checkpointing.
 
 The batch size can be specified by properties of `max-size` and `max-wait-time` with prefix as `spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer.batch.`, where `max-size` is a necessary property while `max-wait-time` is optional. See <<eventhubs-consumer-properties, the consumer properties>> for more details.
 
@@ -69,7 +68,8 @@ The binder provides the following 3 parts of configuration options:
 
 [#eventhubs-connection-configration]
 ===== Connection Configuration Properties
-These properties are exposed via `com.azure.spring.cloud.autoconfigure.implementation.eventhubs.properties.AzureEventHubsProperties`.
+
+This section contains the configuration options used for connecting to Azure Event Hubs.
 
 NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
@@ -88,7 +88,8 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 
 |*spring.cloud.azure.eventhubs*.namespace
 | String
-| Event Hubs Namespace value.
+| Event Hubs Namespace value, which is the prefix of the FQDN. A FQDN should be composed of <NamespaceName>.<DomainName>
+
 
 |*spring.cloud.azure.eventhubs*.domain-name
 | String
@@ -103,8 +104,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 TIP: Common Azure Service SDK configuration options are configurable for the Spring Cloud Azure Stream Event Hubs binder as well. The supported configuration options are introduced in link:configuration.html[the Configuration page], and could be configured with either the unified prefix `spring.cloud.azure.` or the prefix of `spring.cloud.azure.eventhubs.`.
 
 ===== Checkpoint Configuration Properties
-These properties are exposed via `com.azure.spring.cloud.autoconfigure.implementation.eventhubs.properties.AzureEventHubsProperties.Processor#checkpointStore`
-for the configuration of `BlobCheckpointStore`, which is the default implementation of `CheckpointStore` to use Storage Blobs for persisting partition ownership and checkpoint information.
+This section contains the configuration options for the Storage Blobs service, which is used for persisting partition ownership and checkpoint information.
 
 NOTE: From version 4.0.0, when the property of **spring.cloud.azure.eventhubs.processor.checkpoint-store.create-container-if-not-exists** is not enabled manually, no Storage container will be created automatically with the name from **spring.cloud.stream.bindings.<binding-name>.destination**.
 
@@ -115,7 +115,7 @@ NOTE: From version 4.0.0, when the property of **spring.cloud.azure.eventhubs.pr
 
 |*spring.cloud.azure.eventhubs.processor.checkpoint-store*.create-container-if-not-exists
 |Boolean
-|If allowed creating containers if not exists.
+|Whether to allow creating containers if not exists.
 
 |*spring.cloud.azure.eventhubs.processor.checkpoint-store*.account-name
 | String
@@ -132,14 +132,14 @@ NOTE: From version 4.0.0, when the property of **spring.cloud.azure.eventhubs.pr
 
 TIP: Common Azure Service SDK configuration options are configurable for Storage Blob checkpoint store as well. The supported configuration options are introduced in link:configuration.html[the Configuration page], and could be configured with either the unified prefix `spring.cloud.azure.` or the prefix of `spring.cloud.azure.eventhubs.processor.checkpoint-store`.
 
-NOTE: The default maximum connection pool size of the Storage Blob client is changed from `500` in version 3.x to `16` now, and the pending acquire queue size which is double of pool size is then `32` now. To override them, please set the property `spring.cloud.azure.eventhubs.processor.checkpoint-store.client.maximum-connection-pool-size`.
-
 ===== Azure Event Hubs Binding Configuration Properties
 Below options are divided into four sections: Consumer Properties, Advanced Consumer
 Configurations, Producer Properties and Advanced Producer Configurations.
 
 [#eventhubs-consumer-properties]
 ====== Consumer Properties
+
+These properties are exposed via `EventHubsConsumerProperties`.
 
 .Consumer configurable properties of spring-cloud-azure-stream-binder-eventhubs
 [cols="<,<,<", options="header"]
@@ -191,7 +191,7 @@ Configurations, Producer Properties and Advanced Producer Configurations.
 |The map containing the event position to use for each partition if a checkpoint for the partition does not exist in checkpoint store. This map is keyed off of the partition id.
 |===
 
-NOTE: The `initial-partition-event-position` configuration accepts a `map` to specify the initial position for each event hub. Thus, its key is the partition id, and the value is of `com.azure.spring.cloud.service.eventhubs.properties.StartPositionProperties` which includes properties of offset, sequence number, enqueued date time and whether inclusive. For example, you can set it as
+NOTE: The `initial-partition-event-position` configuration accepts a `map` to specify the initial position for each event hub. Thus, its key is the partition id, and the value is of `StartPositionProperties` which includes properties of offset, sequence number, enqueued date time and whether inclusive. For example, you can set it as
 
 [source,yaml]
 ----
@@ -217,6 +217,8 @@ spring:
 The above <<eventhubs-connection-configration, connection>>, <<Checkpoint Configuration Properties, checkpoint>> and <<Configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder consumer, which can be configured with the prefix `spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer.`.
 
 ====== Producer Properties
+
+These properties are exposed via `EventHubsProducerProperties`.
 
 .Producer configurable properties of spring-cloud-azure-stream-binder-eventhubs
 [cols="<,<,<", options="header"]
@@ -513,46 +515,6 @@ public void producerError(Message<?> message) {
 ===== Event Hubs message headers
 See the <<si-eh-headers, Event Hubs message headers>> for the basic message headers supported.
 
-When the batch-consumer mode is enabled, the specific headers of batched messages are listed as below, which contains a list of values from each single Event Hubs event.
-
-.Mapping between Batch Event Hubs Properties and Spring Headers
-[cols="<,<,<,<", options="header"]
-|===
-|Event Hubs Event Properties | Spring Batch Message Header Constants | Type | Description
-
-|Enqueued time
-|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#BATCH_CONVERTED_ENQUEUED_TIME
-|List of Instant
-|List of the instant, in UTC, of when each event was enqueued in the Event Hub partition.
-
-|Offset
-|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#BATCH_CONVERTED_OFFSET
-|List of Long
-|List of the offset of each event when it was received from the associated Event Hub partition.
-
-|Partition key
-|com.azure.spring.messaging.AzureHeaders#BATCH_CONVERTED_PARTITION_KEY
-|List of String
-|List of the partition hashing key if it was set when originally publishing each event.
-
-|Sequence number
-|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#BATCH_CONVERTED_SEQUENCE_NUMBER
-|List of Long
-|List of the sequence number assigned to each event when it was enqueued in the associated Event Hub partition.
-
-|System properties
-|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#BATCH_CONVERTED_SYSTEM_PROPERTIES
-|List of Map
-|List of the system properties of each event.
-
-|Application properties
-|com.azure.spring.messaging.eventhubs.support.EventHubsHeaders#BATCH_CONVERTED_APPLICATION_PROPERTIES
-|List of Map
-|List of the applocation properties of each event, where all customized message headers or event properties are placed.
-|===
-
-NOTE: When publish messages, all the above batch headers if exist will be removed from the messages to send.
-
 ===== Multi Binder Support
 Connection to mutiple Event Hubs namespaces is also supported by using multi binders.This sample takes connection string as example. Credentials of service priciple and MSI are also supported, users can set related properties in each binder's environment settings.
 
@@ -719,15 +681,16 @@ Alternatively, you can also use the Spring Cloud Azure Stream Service Bus Starte
 ----
 
 ==== Configuration
-The binder provides the following 3 parts of configuration options:
+The binder provides the following 2 parts of configuration options:
 
 [#servicebus-connection-configration]
 ===== Connection Configuration Properties
-These properties are exposed via `com.azure.spring.cloud.autoconfigure.implementation.servicebus.properties.AzureServiceBusProperties`.
+
+This section contains the configuration options used for connecting to Azure Service Bus.
 
 NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
-.Common configurable properties of spring-cloud-azure-stream-binder-servicebus
+.Connection configurable properties of spring-cloud-azure-stream-binder-servicebus
 [cols="<,<,<", options="header"]
 |===
 |Property | Type |Description
@@ -742,7 +705,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 
 |*spring.cloud.azure.servicebus*.namespace
 | String
-| Service Bus Namespace value.
+| Service Bus Namespace value, which is the prefix of the FQDN. A FQDN should be composed of <NamespaceName>.<DomainName>
 
 |*spring.cloud.azure.servicebus*.domain-name
 | String
@@ -758,6 +721,8 @@ Configurations, Producer Properties and Advanced Producer Configurations.
 
 ====== Consumer Properties
 
+These properties are exposed via `ServiceBusConsumerProperties`.
+
 .Consumer configurable properties of spring-cloud-azure-stream-binder-servicebus
 [cols="<,<,<,<", options="header"]
 |===
@@ -767,11 +732,6 @@ Configurations, Producer Properties and Advanced Producer Configurations.
 |boolean
 |false
 |If the failed messages are routed to the DLQ.
-
-|*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.checkpoint-mode
-| CheckpointMode
-| RECORD
-| The checkpoint mode of checkpointing message. The supported modes are `MANUAL` and `RECORD`.
 
 |*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.max-concurrent-calls
 | Integer
@@ -808,12 +768,21 @@ Configurations, Producer Properties and Advanced Producer Configurations.
 | peek_lock
 | The receive mode of the Service Bus processor client.
 
+|*spring.cloud.stream.servicebus.bindings.<binding-name>.consumer*.auto-complete
+| Boolean
+| true
+| Whether to settle messages automatically. If set as false, a message header of `Checkpointer` will be added
+to enable developers to settle messages manually.
+
 |===
 
 ====== Advanced Consumer Configuration
 The above <<servicebus-connection-configration, connection>> and <<Configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder consumer, which can be configured with the prefix `spring.cloud.stream.servicebus.bindings.<binding-name>.consumer.`.
 
 ====== Producer Properties
+
+These properties are exposed via `ServiceBusProducerProperties`.
+
 .Producer configurable properties of spring-cloud-azure-stream-binder-servicebus
 [cols="<,<,<,<", options="header"]
 |===
