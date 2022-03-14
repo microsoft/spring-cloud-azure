@@ -1,6 +1,6 @@
 == Production Ready
 
-We’ve added health indicators for App Configuration, Event Hubs, Cosmos, Key Vault, Storage Blob, Storage Queue, Storage File, as well as Spring Cloud Sleuth support for all HTTP-based Azure SDKs. As an example, you now can prob if storage blob is up or down via Spring Boot actuator endpoint, as well as track dependencies and latencies going from your application to Key Vault.
+Spring Cloud Azure 4.0 supports health indicators for App Configuration, Event Hubs, Cosmos, Key Vault, Storage Blob, Storage Queue, and Storage File Share. It also provides integrations with Spring Cloud Sleuth for all HTTP-based Azure SDKs. As an example, you now can prob if storage blob is up or down via Spring Boot actuator endpoint, as well as track dependencies and latencies going from your application to Key Vault.
 
 === Enable Health Indicator
 
@@ -14,18 +14,18 @@ Add the Spring Cloud Azure Actuator Starter dependency. This dependency will als
 </dependency>
 ----
 
-.Configurable properties to enable or disable health indicators for each Azure services
+.Configurable properties to enable or disable health indicators for each Azure service
 [cols="<30,<70", options="header"]
 |===
 |Azure Service  |Property
-|App Configuration |*management.health.azure*-appconfiguration.enabled
-|Cosmos DB |*management.health.azure*-cosmos.enabled
-|Event Hubs |*management.health.azure*-eventhubs.enabled
-|Key Vault |*management.health.azure*-keyvault.enabled
-|Storage|*management.health.azure*-storage.enabled
+|App Configuration |management.health.*azure-appconfiguration*.enabled
+|Cosmos DB |management.health.*azure-cosmos*.enabled
+|Event Hubs |management.health.*azure-eventhubs*.enabled
+|Key Vault |management.health.*azure-keyvault*.enabled
+|Storage|management.health.*azure-storage*.enabled
 |===
 
-NOTE: Calling the health endpoint of Azure services may cause extra charge. For example, calling `http://HOST_NAME:{port}/actuator/health/cosmos` to get the Cosmos DB health info, it will calculate https://docs.microsoft.com/azure/cosmos-db/request-units[RUs].
+IMPORTANT: Calling the health endpoint of Azure services may cause extra charge. For example, calling `http://HOST_NAME:{port}/actuator/health/cosmos` to get the Cosmos DB health info, it will calculate https://docs.microsoft.com/azure/cosmos-db/request-units[RUs].
 
 === Enable Sleuth
 
@@ -39,6 +39,6 @@ Add the Spring Cloud Azure Trace Sleuth dependency when you want to trace Azure 
 </dependency>
 ----
 
-NOTE: Only HTTP-based Azure SDK clients are supported now, for example, Eventhub and ServiceBus with AMQP transport are currently not supported, we recommend to use https://docs.microsoft.com/azure/azure-monitor/app/app-insights-overview[Azure Application Insight] for such requirement.
+NOTE: Only HTTP-based Azure SDK clients are supported now, for example, Eventhub and ServiceBus with AMQP transport are currently not supported, we recommend to use https://docs.microsoft.com/azure/azure-monitor/app/app-insights-overview[Azure Application Insights] for such requirement.
 
 

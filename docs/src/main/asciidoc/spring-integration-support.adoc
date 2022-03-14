@@ -146,14 +146,15 @@ spring:
             account-key: ${CHECKPOINT-ACCESS-KEY}
 ----
 
-* For credentials as MSI, configure below properties in `application.yml`:
+* For credentials as managed identities, configure below properties in `application.yml`:
 [source,yaml]
 ----
 spring:
   cloud:
     azure:
       credential:
-        managed-identity-client-id: ${AZURE_CLIENT_ID}
+        managed-identity-enabled: true
+        client-id: ${AZURE_CLIENT_ID}
       eventhubs:
         namespace: ${AZURE_SERVICE_BUS_NAMESPACE}
         processor:
@@ -497,14 +498,15 @@ spring:
         connection-string: ${AZURE_SERVICE_BUS_CONNECTION_STRING}
 ----
 
-* For credentials as MSI, configure below properties in application.yml:
+* For credentials as managed identities, configure below properties in application.yml:
 [source,yaml]
 ----
 spring:
   cloud:
     azure:
       credential:
-        managed-identity-client-id: ${AZURE_CLIENT_ID}
+        managed-identity-enabled: true
+        client-id: ${AZURE_CLIENT_ID}
       profile:
         tenant-id: ${AZURE_TENANT_ID}
       servicebus:
@@ -836,14 +838,15 @@ spring:
           connection-string: ${AZURE_SERVICE_BUS_CONNECTION_STRING}
 ----
 
-** For credentials as MSI, configure below properties in application.yml:
+** For credentials as managed identities, configure below properties in application.yml:
 [source,yaml]
 ----
 spring:
   cloud:
     azure:
       credential:
-        managed-identity-client-id: ${AZURE_CLIENT_ID}
+        managed-identity-enabled: true
+        client-id: ${AZURE_CLIENT_ID}
       profile:
         tenant-id: ${AZURE_TENANT_ID}
       storage:

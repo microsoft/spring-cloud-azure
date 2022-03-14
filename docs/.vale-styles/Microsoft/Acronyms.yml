@@ -63,3 +63,11 @@ exceptions:
   - YAML
   - ZIP
   - BOM
+  - AMQP
+  - AAD
+  - POSIX
+  - AKS
+  - PEM
+  - CRUD
+  - SAS
+  - JMS
