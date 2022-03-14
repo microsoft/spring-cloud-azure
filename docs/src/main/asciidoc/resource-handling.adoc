@@ -140,7 +140,7 @@ Resource storageFileResource = resourceLoader.getResource("azure-file://[your-fi
 ----
 
 ===== Get resources by searching pattern
-You can use implementation class of `ResourcePatternResolver` to search resources. Using `AzureStorageBlobProtocolResolver` to search `blob` resources, and `AzureStorageFileProtocolResolver` to search `file` resources.
+You can use implementation class of `ResourcePatternResolver` to search resources. Use `AzureStorageBlobProtocolResolver` to search `blob` resources, and `AzureStorageFileProtocolResolver` to search `file` resources.
 
 - Pattern search, the **searchPattern** should start with `azure-blob://` or `azure-file://`. Such as `azure-blob://+++**+++/+++**+++`, it means list all blobs in all containers; `azure-blob://demo-container/**`, it means list all blobs in the demo-container container, including any sub-folders.
 - Location search, the **searchLocation** should start with `azure-blob://` or `azure-file://`, the remaining file path should exist, otherwise an exception will be thrown.

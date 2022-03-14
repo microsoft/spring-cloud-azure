@@ -33,7 +33,7 @@ There are two ways to use Spring Cloud Azure starters. One is using Azure SDKs w
 </dependency>
 ----
 
-Or including the Spring Cloud Azure Starter directly without adding Azure SDK dependencies. For example with Cosmos DB:
+Or including the Spring Cloud Azure starter directly without adding Azure SDK dependencies. For example with Cosmos DB:
 
 [source,xml]
 ----
