@@ -1,6 +1,6 @@
 
 [#migration-guide-for-4-0]
-== Migration Guide for 4.0
+== Migration guide for 4.0
 
 This guide assists in the migration to *Spring Cloud Azure 4.0* from legacy Azure Spring libraries.
 
@@ -94,7 +94,7 @@ new artifacts to better serve some scenarios.
 [cols="<,<,<", options="header"]
 |===
 |Legacy Artifact ID |Modern Artifact ID |Description
-|azure-spring-boot-starter |spring-cloud-azure-starter |This artifact has been deleted with all functionality be merged into the new `spring-cloud-azure-starter` artifact.
+|azure-spring-boot-starter |spring-cloud-azure-starter |Deleted this artifact with merging all functionalities into the new `spring-cloud-azure-starter` artifact.
 |azure-spring-boot-starter-active-directory |spring-cloud-azure-starter-active-directory | Renamed the artifact.
 |azure-spring-boot-starter-active-directory-b2c |spring-cloud-azure-starter-active-directory-b2c | Renamed the artifact.
 |azure-spring-boot-starter-cosmos |spring-cloud-azure-starter-data-cosmos | Renamed the artifact to add `data`, indicating using Spring Data Cosmos DB.
@@ -103,24 +103,24 @@ new artifacts to better serve some scenarios.
 |azure-spring-boot-starter-servicebus-jms |spring-cloud-azure-starter-servicebus-jms | Renamed the artifact.
 |azure-spring-boot-starter-storage |spring-cloud-azure-starter-storage-blob +
 spring-cloud-azure-starter-storage-file-share |The legacy artifact contains the functionality of both Storage Blob and File Share, it's been split into two separate artifacts in 4.0, spring-cloud-azure-starter-storage-blob and spring-cloud-azure-starter-storage-file-share.
-|azure-spring-boot |N/A |This artifact has been deleted with all functionality be merged into the new `spring-cloud-azure-autoconfigure` artifact. 
-|azure-spring-cloud-autoconfigure |N/A |This artifact has been deleted with all functionality be merged into the new `spring-cloud-azure-autoconfigure` artifact. 
-|azure-spring-cloud-context |N/A |This artifact has been deleted with all functionality be merged into the new `spring-cloud-azure-autoconfigure` and `spring-cloud-azure-resourcemanager` artifacts. 
-|azure-spring-cloud-messaging |spring-messaging-azure | The messaging listener annotation has been dropped.
-|azure-spring-cloud-starter-cache |N/A |This artifact has been deleted, for using redis, just add spring-boot-starter-data-redis, spring-boot-starter-cache, spring-cloud-azure-resourcemanager and spring-cloud-azure-starter. Please see <<redis-support.adoc#redis-support, Redis Support>> for more information about usage.
-|azure-spring-cloud-starter-eventhubs-kafka |N/A |This artifact has been deleted, for using kafka, just add spring kafka, spring-cloud-azure-resourcemanager and spring-cloud-azure-starter. Please see <<kafka-support.adoc#kafka-support, Kafka Support>> for more information about usage.
+|azure-spring-boot |N/A |Deleted this artifact with merging all functionalities into the new `spring-cloud-azure-autoconfigure` artifact. 
+|azure-spring-cloud-autoconfigure |N/A |Deleted this artifact with merging all functionalities into the new `spring-cloud-azure-autoconfigure` artifact. 
+|azure-spring-cloud-context |N/A |Deleted this artifact with merging all functionalities into the new `spring-cloud-azure-autoconfigure` and `spring-cloud-azure-resourcemanager` artifacts. 
+|azure-spring-cloud-messaging |spring-messaging-azure | Deleted this artifact. The messaging listener annotation has been dropped.
+|azure-spring-cloud-starter-cache |N/A |Deleted this artifact. For using redis, just add spring-boot-starter-data-redis, spring-boot-starter-cache, spring-cloud-azure-resourcemanager and spring-cloud-azure-starter. Please see <<redis-support.adoc#redis-support, Redis Support>> for more information about usage.
+|azure-spring-cloud-starter-eventhubs-kafka |N/A |Deleted this artifact. For using kafka, just add spring kafka, spring-cloud-azure-resourcemanager and spring-cloud-azure-starter. Please see <<kafka-support.adoc#kafka-support, Kafka Support>> for more information about usage.
 |azure-spring-cloud-starter-eventhubs |spring-cloud-azure-starter-integration-eventhubs |Renamed the artifact to add `integration`, indicating using Spring Integration with Event Hubs.
 |azure-spring-cloud-starter-servicebus |spring-cloud-azure-starter-integration-servicebus |Renamed the artifact to add `integration`, indicating using Spring Integration with Service Bus.
 |azure-spring-cloud-starter-storage-queue |spring-cloud-azure-starter-integration-storage-queue |Renamed the artifact to add `integration`, indicating using Spring Integration with Storage Queue.
-|azure-spring-cloud-storage |N/A |This artifact has been deleted with all functionalities merged into the new `spring-cloud-azure-autoconfigure` artifact. 
+|azure-spring-cloud-storage |N/A |Deleted this artifact with merging all functionalities into the new `spring-cloud-azure-autoconfigure` artifact. 
 |azure-spring-cloud-stream-binder-eventhubs |spring-cloud-azure-stream-binder-eventhubs |This artifact has been refactored using new redesign, mainly `spring-cloud-azure-stream-binder-eventhubs` and `spring-cloud-azure-stream-binder-eventhubs-core`.
 |azure-spring-cloud-stream-binder-service-core |spring-cloud-azure-stream-binder-servicebus-core | Renamed the artifact.
-|azure-spring-cloud-stream-binder-servicebus-queue |spring-cloud-azure-stream-binder-servicebus |This artifact has been deleted with all functionality be merged into the `spring-cloud-azure-stream-binder` artifact.
-|azure-spring-cloud-stream-binder-servicebus-topic |spring-cloud-azure-stream-binder-servicebus |This artifact has been deleted with all functionality be merged into the `spring-cloud-azure-stream-binder` artifact.
+|azure-spring-cloud-stream-binder-servicebus-queue |spring-cloud-azure-stream-binder-servicebus |Deleted this artifact with merging all functionalities into the `spring-cloud-azure-stream-binder` artifact.
+|azure-spring-cloud-stream-binder-servicebus-topic |spring-cloud-azure-stream-binder-servicebus |Deleted this artifact with merging all functionalities into the `spring-cloud-azure-stream-binder` artifact.
 |azure-spring-integration-core |spring-integration-azure-core | Renamed the artifact.
-|azure-spring-integration-eventhubs |spring-integration-azure-eventhubs |  Rename the artifact.
-|azure-spring-integration-servicebus |spring-integration-azure-servicebus |  Rename the artifact.
-|azure-spring-integration-storage-queue |spring-integration-azure-storage-queue |  Rename the artifact.
+|azure-spring-integration-eventhubs |spring-integration-azure-eventhubs |  Renamed the artifact.
+|azure-spring-integration-servicebus |spring-integration-azure-servicebus |  Renamed the artifact.
+|azure-spring-integration-storage-queue |spring-integration-azure-storage-queue |  Renamed the artifact.
 |N/A |spring-cloud-azure-actuator |The newly added Spring Cloud Azure Actuator artifact. 
 |N/A |spring-cloud-azure-actuator-autoconfigure |The newly added Spring Cloud Azure Actuator AutoConfigure artifact, including autoconfiguration for actuator. 
 |N/A |spring-cloud-azure-autoconfigure |Newly added Spring Cloud Azure AutoConfigure artifact, including all autoconfiguration for SDK clients, Spring Security support, Spring Data support and Spring Integration support.
