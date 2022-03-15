@@ -23,7 +23,7 @@
 [#starter-dependencies]
 ==== Starter Dependencies
 
-Spring Cloud Azure Starters are a set of convenient dependency descriptors to include in your application. Each starter includes all the dependencies and transitive dependencies needed to begin using their corresponding Spring Cloud Azure modules. They boost your Spring Boot application development with Azure services.
+Spring Cloud Azure Starters are a set of convenient dependency descriptors to include in your application. Each starter includes all the dependencies and transitive dependencies needed to begin using its corresponding Spring Cloud Azure module. They boost your Spring Boot application development with Azure services.
 
 For example, if you want to get started using Azure Cosmos DB for data persistence, include the `spring-cloud-azure-starter-cosmos` dependency in your project.
 
