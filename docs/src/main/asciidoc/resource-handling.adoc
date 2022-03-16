@@ -185,7 +185,7 @@ InputStream inputfileStream = storageFileResource.getInputStream();
 
 ===== Upload data to specific resource
 
-You can upload to a resource to Azure Blob or file storage by casting the Spring `Resource` to `WritableResource`.
+You can upload to a resource to Azure Storage Blob or File Share by casting the Spring `Resource` to `WritableResource`.
 
 [source,java]
 ----
