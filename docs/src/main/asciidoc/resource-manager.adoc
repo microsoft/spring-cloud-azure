@@ -1,7 +1,6 @@
 == Resource Manager
 
-Connect to Azure Resources for All Azure SDKs service, which Spring Cloud used.
-Construct `TokenCredential` by using various credential information, and then construct `AzureResourceManager` to help Azure SDKs Client to authenticate and authorize.
+Azure Resource Manager (ARM) is the deployment and management service for Azure. It provides a management layer that enables you to create, update, and delete resources in your Azure account. Spring Cloud Azure Resourcemanger can help provision resources or retrieve resource metadata. 
 
 === Dependency Setup
 
@@ -22,14 +21,14 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 |===
 |Property |Description
 |*spring.cloud.azure.resource-manager*.enabled |Whether the Resource Manager is enabled. Default is true.
-|*spring.cloud.azure.credential*.client-certificate-password |Password of the certificate file.
-|*spring.cloud.azure.credential*.client-certificate-path |Path of a PEM certificate file to use when performing service principal authentication with Azure.
 |*spring.cloud.azure.credential*.client-id |Client id to use when performing service principal authentication with Azure.
 |*spring.cloud.azure.credential*.client-secret |Client secret to use when performing service principal authentication with Azure.
-|*spring.cloud.azure.credential*.managed-identity-client-id |Client id to use when using managed identity to authenticate with Azure.
+|*spring.cloud.azure.credential*.client-certificate-path |Path of a PEM certificate file to use when performing service principal authentication with Azure.
+|*spring.cloud.azure.credential*.client-certificate-password |Password of the certificate file.
 |*spring.cloud.azure.credential*.username |Username to use when performing username/password authentication with Azure.
 |*spring.cloud.azure.credential*.password |Password to use when performing username/password authentication.
-|*spring.cloud.azure.profile*.cloud |Name of the Azure cloud to connect to.
+|*spring.cloud.azure.credential*.managed-identity-enabled |Whether to enable managed identity.
+|*spring.cloud.azure.profile*.cloud-type |Name of the Azure cloud to connect to.
 |*spring.cloud.azure.profile*.environment.active-directory-endpoint |The Azure Active Directory endpoint to connect to for authentication.
 |*spring.cloud.azure.profile*.subscription-id |Subscription id to use when connecting to Azure resources.
 |*spring.cloud.azure.profile*.tenant-id |Tenant id for Azure resources.
@@ -37,7 +36,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 
 === Basic Usage
 
-Azure Resource Manger helps the Azure SDK client to complete authentication and authorization. It can be integrated into a specific Spring Cloud Azure Starter and work together, or it can be used with Spring Cloud Azure auto-configuration modules and third-party libraries to complete authentication, such as: <<Kafka Support>>, <<Redis Support>>.
+Spring Cloud Azure Resourcemanger can work together with specific Spring Cloud Azure starters to retrieve connection information, such as connection strings, to connect to Azure services. It can also together with `spring-cloud-azure-starter` and third-party libraries to retrieve metadata like username/password, to complete authentication, such as: <<Kafka Support>>, <<Redis Support>>.
 
 === Samples
 

@@ -1,56 +1,57 @@
 [#configuration]
 == Configuration
 
-Most of Azure Service SDKs could be divided into two categories by transport type, HTTP-based and AMQP-based. There are properties that are common to all SDKs such as authentication principals and Azure environment settings. Or common to HTTP-based clients, such as logging level to log http requests and responses. In Spring Cloud Azure 4.0 we added five common categories of configuration properties, which could be specified to each Azure service.
+Most of Azure SDKs could be divided into two categories by transport type, HTTP-based and AMQP-based. There are properties that are common to all SDKs such as authentication principals and Azure environment settings. Or common to HTTP-based clients, such as logging level to log http requests and responses. Spring Cloud Azure 4.0 provides five common categories of configuration properties, which could be specified to each Azure service.
 
 .Service common properties
-[cols="1,3", options="header"]
+[cols="2,3", options="header"]
 |===
 |Property |Description
 
-|*spring.cloud.azure.<azure-service>*.client
+|spring.cloud.azure.*_<azure-service>_.client*
 |To configure the transport clients underneath one Azure service SDK. 
 
-|*spring.cloud.azure.<azure-service>*.credential
+|spring.cloud.azure.*_<azure-service>_.credential*
 |To configure how to authenticate with Azure Active Directory for one Azure service SDK.
 
-|*spring.cloud.azure.<azure-service>*.profile
+|spring.cloud.azure.*_<azure-service>_.profile*
 |To configure the Azure cloud environment for one Azure service SDK. 
 
-|*spring.cloud.azure.<azure-service>*.proxy
+|spring.cloud.azure.*_<azure-service>_.proxy*
 |To configure the proxy options for one Azure service SDK. 
 
-|*spring.cloud.azure.<azure-service>*.retry
-|To configure the retry options apply to one Azure service SDK. 
-|===
+|spring.cloud.azure.*_<azure-service>_.retry*
+|To configure the retry options apply to one Azure service SDK. The retry options has supported part of the SDKs, there's no `spring.cloud.azure.cosmos.retry`.
+|=== 
 
-There are some properties that could be shared among different Azure services, for example using the same service principal to access Azure Cosmos DB and Azure Event Hubs. Spring Cloud Azure 4.0 allows developers to define properties that apply to all Azure SDKs in the namespace `spring.cloud.azure`.
+
+There are some properties that could be shared among different Azure services, for example using the same service principal to access Azure Cosmos DB and Azure Event Hubs. Spring Cloud Azure 4.0 allows application developers to specify properties that apply to all Azure SDKs with the prefix `spring.cloud.azure`.
 
 .Global properties
 [cols="1,3", options="header"]
 |===
 |Property  |Description
 
-|*spring.cloud.azure*.client
+|spring.cloud.azure.*client*
 |To configure the transport clients apply to all Azure SDKs by default. 
 
-|*spring.cloud.azure*.credential
+|spring.cloud.azure.*credential*
 |To configure how to authenticate with Azure Active Directory for all Azure SDKs by default. 
 
-|*spring.cloud.azure*.profile
+|spring.cloud.azure.*profile*
 |To configure the Azure cloud environment for all Azure SDKs by default. 
 
-|*spring.cloud.azure*.proxy
+|spring.cloud.azure.*proxy*
 |To configure the proxy options apply to all Azure SDK clients by default. 
 
-|*spring.cloud.azure*.retry
+|spring.cloud.azure.*retry*
 |To configure the retry options apply to all Azure SDK clients by default. 
 |===
 
 
 NOTE: Properties configured under each Azure service will override the global configurations.
 
-The configuration properties' prefixes have been unified to `spring.cloud.azure` namespace since Spring Cloud Azure 4.0, it will make configuration properties more consistent and more intuitive. Here's a quick review of the prefixes of supported Azure services.
+Spring Cloud Azure unifies configuration properties' prefixes to `spring.cloud.azure` since 4.0, which will make configuration properties more consistent and more intuitive. Here's a quick review of the prefixes of supported Azure services.
 
 .Service specific properties
 [cols="<50,<50", options="header"]
@@ -58,29 +59,29 @@ The configuration properties' prefixes have been unified to `spring.cloud.azure`
 |Azure Service |Configuration Property Prefix 
 
 |Azure App Configuration 
-|*spring.cloud.azure*.appconfiguration
+|spring.cloud.azure.*appconfiguration*
 
 |Azure Cosmos DB 
-|*spring.cloud.azure*.cosmos
+|spring.cloud.azure.*cosmos*
 
 |Azure Event Hubs 
-|*spring.cloud.azure*.eventhubs
+|spring.cloud.azure.*eventhubs*
 
 |Azure Key Vault Certificate 
-|*spring.cloud.azure*.keyvault.certificate
+|spring.cloud.azure.*keyvault.certificate*
 
 |Azure Key Vault Secret 
-|*spring.cloud.azure*.keyvault.secret
+|spring.cloud.azure.*keyvault.secret*
 
 |Azure Service Bus 
-|*spring.cloud.azure*.servicebus
+|spring.cloud.azure.*servicebus*
 
-|Azure Storage Blob 
-|*spring.cloud.azure*.storage.blob
+|Azure Storage Blob
+|spring.cloud.azure.*storage.blob*
 
 |Azure Storage File Share 
-|*spring.cloud.azure*.storage.fileshare
+|spring.cloud.azure.*storage.fileshare*
 
-|Azure Storage Queue 
-|*spring.cloud.azure*.storage.queue
+|Azure Storage Queue
+|spring.cloud.azure.*storage.queue*
 |===
