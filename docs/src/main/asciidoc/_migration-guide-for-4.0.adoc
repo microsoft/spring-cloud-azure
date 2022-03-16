@@ -172,8 +172,6 @@ NOTE: When assign roles to the security principals to interact with Azure messag
 
 A chained credential, the https://docs.microsoft.com/java/api/overview/azure/identity-readme?view=azure-java-stable#defaultazurecredential[DefaultAzureCredential] bean is autoconfigured by default and will be used by all components if no more authentication information is specified.
 
-IMPORTANT: There could be some `ERROR` logs be printed out while the `DefaultAzureCredential` running the chain and trying to find the first available credential. It doesn't mean the `DefaultAzureCredential` is broken or unavailable. Meanwhile, we'll keep improving this logging experience.
-
 === Configuration properties
 
 [#migration-guide-properties-migration]
@@ -216,7 +214,7 @@ configurations can be divided into five categories:
 |*spring.cloud.azure*.credential |To configure how to authenticate with Azure Active Directory.
 |*spring.cloud.azure*.profile |To configure the Azure cloud environment.
 |*spring.cloud.azure*.proxy |To configure the proxy options apply to all Azure SDK clients.
-|*spring.cloud.azure*.retry |To configure the retry options apply to all Azure SDK clients.
+|*spring.cloud.azure*.retry |To configure the retry options apply to all Azure SDK clients. The retry options have supported part of the SDKs, there's no `spring.cloud.azure.cosmos.retry`.
 |===
 
 Check link:appendix.html[here] for a full list of configurations.
@@ -228,6 +226,8 @@ For the configuration options in SDK level, please refer to below links for deta
 - <<configuration-spring-cloud-azure-starter-active-directory, From azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory>>
 - <<configuration-spring-cloud-azure-starter-active-directory-b2c, From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c>>
 - <<configuration-spring-cloud-azure-starter-keyvault-secrets, From azure-spring-boot-starter-keyvault-secrets to spring-cloud-azure-starter-keyvault-secrets>>
+- <<configuration-spring-cloud-azure-starter-servicebus-jms, From azure-spring-boot-starter-servicebus-jms to spring-cloud-azure-starter-servicebus-jms>>
+- <<configuration-spring-cloud-azure-starter-data-cosmos, From azure-spring-boot-starter-cosmos to spring-cloud-azure-starter-data-cosmos>>
 - <<configuration-spring-cloud-azure-starter-storage-blob, From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob>>
 - <<configuration-spring-cloud-azure-starter-storage-file-share, From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share>>
 - <<configuration-spring-cloud-azure-starter-integration-eventhubs, From azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs>>
@@ -533,6 +533,81 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-keyvault-secrets`
 . For Azure common properties(like `client`, `proxy`, `retry`, `credential`, `profile`) and Key Vault properties(like `endpoint`, `service-version`). If `spring.cloud.azure.keyvault.secret.property-source[n].PROPERTY_NAME` isn't configured, `spring.cloud.azure.keyvault.secret.PROPERTY_NAME` will be used.
 . `spring.cloud.azure.keyvault.secret.property-source[n].resource` is specific to a unique Azure resource, so if it's not configured, it won't get value from other places.
 
+==== From azure-spring-boot-starter-servicebus-jms to spring-cloud-azure-starter-servicebus-jms
+This guide is intended to assist in the migration to
+link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-servicebus-jms[spring-cloud-azure-starter-servicebus-jms] from
+version 2 of link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-servicebus-jms[spring-cloud-azure-starter-servicebus-jms].
+
+===== Introduction
+Please refer to the <<migration-guide-introduction, introduction>> section for details.
+
+===== Migration benefits
+Please refer to the <<migration-guide-benefits, migration benefits>> section for details.
+
+===== Naming changes
+Please refer to the <<migration-guide-naming, naming changes>> section for details.
+
+===== Bom
+Please refer to the <<migration-guide-bom, bom>> section for details.
+
+===== Configuration properties
+
+====== Properties migration
+Please refer to the <<migration-guide-properties-migration, properties migration>> section for how to leverage `spring-boot-properties-migrator` during migration.
+
+====== Global configurations
+Please refer to the <<migration-guide-global-configurations, global configurations>> section for the global and common configuration changes.
+
+[#configuration-spring-cloud-azure-starter-servicebus-jms]
+===== SDK Configuration changes
+
+Configuration type for `spring.jms.servicebus.idle-timeout` changed from `long`(milliseconds) to `Duration` pattern for readability.
+
+==== From azure-spring-boot-starter-cosmos to spring-cloud-azure-starter-data-cosmos
+This guide is intended to assist in the migration to
+link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-data-cosmos[spring-cloud-azure-starter-data-cosmos] from
+version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-cosmos[azure-spring-boot-starter-cosmos].
+
+===== Introduction
+Please refer to the <<migration-guide-introduction, introduction>> section for details.
+
+===== Migration benefits
+Please refer to the <<migration-guide-benefits, migration benefits>> section for details.
+
+===== Naming changes
+Please refer to the <<migration-guide-naming, naming changes>> section for details.
+
+===== Bom
+Please refer to the <<migration-guide-bom, bom>> section for details.
+
+===== Authentication
+Please refer to the <<migration-guide-authentication, authentication>> section for details.
+
+===== Configuration properties
+
+====== Properties migration
+Please refer to the <<migration-guide-properties-migration, properties migration>> section for how to leverage `spring-boot-properties-migrator` during migration.
+
+====== Global configurations
+Please refer to the <<migration-guide-global-configurations, global configurations>> section for the global and common configuration changes.
+
+[#configuration-spring-cloud-azure-starter-data-cosmos]
+====== SDK Configuration changes
+
+All configuration property names changed the prefix from `azure.cosmos` to `spring.cloud.azure.cosmos`.
+
+.Property mapping from azure-spring-boot-starter-cosmos to spring-cloud-azure-starter-data-cosmos
+[cols="<30,<~", options="header"]
+|===
+|Legacy properties |Morden properties
+|*azure.cosmos*.connection-mode |*spring.cloud.azure.cosmos*.connection-mode
+|*azure.cosmos*.consistency-level |*spring.cloud.azure.cosmos*.consistency-level
+|*azure.cosmos*.database |*spring.cloud.azure.cosmos*.database
+|*azure.cosmos*.key |*spring.cloud.azure.cosmos*.key
+|*azure.cosmos*.populate-query-metrics|*spring.cloud.azure.cosmos*.populate-query-metrics
+|*azure.cosmos*.uri |*spring.cloud.azure.cosmos*.endpoint
+|===
+
 ==== From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob
 This guide is intended to assist in the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-storage-blob[spring-cloud-azure-starter-storage-blob] from
@@ -564,7 +639,7 @@ Please refer to the <<migration-guide-global-configurations, global configuratio
 [#configuration-spring-cloud-azure-starter-storage-blob]
 ====== SDK Configuration changes
 
-. All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.blob`.
+All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.blob`.
 
 .Property mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob
 [cols="<30,<~", options="header"]
@@ -1242,6 +1317,8 @@ IMPORTANT: The binder type is renamed from: servicebus-queue/servicebus-topic to
 |===
 
 * If you use the Spring Cloud Stream binder for Azure Service Bus queue/topic, now your property configuration should be changed to:
+
+
 [source,yaml]
 ----
 spring:
@@ -1272,6 +1349,7 @@ spring:
 ----
 
 * If you use the Spring Cloud Stream Binder for multiple Azure Service Bus namespaces,now your property configuration should be changed to:
+
 [source,yaml]
 ----
 spring:
@@ -1341,33 +1419,3 @@ spring:
 |com.azure.spring.integration.servicebus.converter.ServiceBusMessageHeaders |com.azure.spring.servicebus.support.ServiceBusMessageHeaders
 |com.azure.spring.servicebus.stream.binder.ServiceBusMessageChannelBinder |com.azure.spring.cloud.stream.binder.servicebus.ServiceBusMessageChannelBinder
 |===
-
-==== From azure-spring-boot-starter-servicebus-jms to spring-cloud-azure-starter-servicebus-jms
-This guide is intended to assist in the migration to
-link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-servicebus-jms[spring-cloud-azure-starter-servicebus-jms] from
-version 2 of link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-servicebus-jms[spring-cloud-azure-starter-servicebus-jms].
-
-===== Introduction
-Please refer to the <<migration-guide-introduction, introduction>> section for details.
-
-===== Migration benefits
-Please refer to the <<migration-guide-benefits, migration benefits>> section for details.
-
-===== Naming changes
-Please refer to the <<migration-guide-naming, naming changes>> section for details.
-
-===== Bom
-Please refer to the <<migration-guide-bom, bom>> section for details.
-
-===== Configuration properties
-
-====== Properties migration
-Please refer to the <<migration-guide-properties-migration, properties migration>> section for how to leverage `spring-boot-properties-migrator` during migration.
-
-====== Global configurations
-Please refer to the <<migration-guide-global-configurations, global configurations>> section for the global and common configuration changes.
-
-[#configuration-spring-cloud-azure-starter-servicebus-jms]
-===== SDK Configuration changes
-
-Configuration type for `spring.jms.servicebus.idle-timeout` changed from `long`(milliseconds) to `Duration` pattern for readability.
