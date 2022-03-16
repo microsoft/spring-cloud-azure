@@ -176,7 +176,7 @@ crash.
 === Authentication
 
 Spring Cloud Azure 4.0 supports all the authentication methods each Azure Service SDK supports. It allows configuring a
-global token credential as well as providing the token credential at each service level. But credential isn't required
+global token credential and providing the token credential at each service level. But credential isn't required
 to configure in Spring Cloud Azure 4.0, it can leverage the credential stored in a local developing environment, or
 managed identity in Azure Services, just make sure the principal has been granted sufficient permission to access the
 target Azure resources.
@@ -550,7 +550,7 @@ IMPORTANT: The binder type is renamed from: servicebus-queue/servicebus-topic to
 |spring.cloud.stream.servicebus.bindings.<binding-name>.consumer.checkpoint-mode | spring.cloud.stream.servicebus.bindings.<binding-name>.consumer.auto-complete | Enabling auto-complete is equal to `RECORD` checkpoint mode, and oppositely the `MANUAL` mode.
 |===
 
-* If you use the Spring Cloud Stream binder for Azure Service Bus queue/topic，now your property configuration should be changed to:
+* If you use the Spring Cloud Stream binder for Azure Service Bus queue/topic, now your property configuration should be changed to:
 [source,yaml]
 ----
 spring:
