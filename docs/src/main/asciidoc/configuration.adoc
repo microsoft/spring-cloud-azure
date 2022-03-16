@@ -76,12 +76,12 @@ Spring Cloud Azure unifies configuration properties' prefixes to `spring.cloud.a
 |Azure Service Bus 
 |spring.cloud.azure.*servicebus*
 
-|Azure Blob Storage
+|Azure Storage Blob
 |spring.cloud.azure.*storage.blob*
 
 |Azure Storage File Share 
 |spring.cloud.azure.*storage.fileshare*
 
-|Azure Queue Storage
+|Azure Storage Queue
 |spring.cloud.azure.*storage.queue*
 |===

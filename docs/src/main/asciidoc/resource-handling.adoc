@@ -11,11 +11,11 @@ Spring project provides link:https://docs.spring.io/spring-framework/docs/curren
 |Description
 
 |spring-cloud-azure-starter-storage-blob
-|Azure Blob Storage
+|Azure Storage Blob
 |Allows unstructured data to be stored and accessed at a massive scale in block blobs.
 
 |spring-cloud-azure-starter-storage-file-share
-|Azure Files
+|Azure Storage File Share
 |Offers fully managed cloud file shares that you can access from anywhere via the industry standard Server Message Block (SMB) protocol.
 |===
 
@@ -48,19 +48,19 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 
 |*spring.cloud.azure.storage.blob*.enabled
 |true
-|Whether to enable Azure Blob Storage.
+|Whether to enable Azure Storage Blob.
 
 |*spring.cloud.azure.storage.blob*.endpoint
 |  
-|Endpoint for Azure Storage service.
+|Endpoint for Azure Storage Blob service.
 
 |*spring.cloud.azure.storage.blob*.account-key
 |  
-|Private key to connect Azure Blob Storage.
+|Private key to connect Azure Storage Blob.
 
 |*spring.cloud.azure.storage.blob*.account-name
 |  
-|Azure Storage Account Name.
+|Azure Storage Blob account name.
 |===
 
 .Configurable properties of spring-cloud-azure-starter-storage-file-share
@@ -74,7 +74,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 
 |*spring.cloud.azure.storage.fileshare*.endpoint
 |  
-|Endpoint for Azure Storage service.
+|Endpoint for Azure Storage File Share service.
 
 |*spring.cloud.azure.storage.fileshare*.account-key
 |  
@@ -82,7 +82,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 
 |*spring.cloud.azure.storage.fileshare*.account-name
 |  
-|Azure Storage Account Name.
+|Azure Storage File Share account name.
 |===
 
 
