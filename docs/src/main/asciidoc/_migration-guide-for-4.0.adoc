@@ -226,7 +226,7 @@ configurations can be divided into five categories:
 |*spring.cloud.azure*.credential |To configure how to authenticate with Azure Active Directory.
 |*spring.cloud.azure*.profile |To configure the Azure cloud environment.
 |*spring.cloud.azure*.proxy |To configure the proxy options apply to all Azure SDK clients.
-|*spring.cloud.azure*.retry |To configure the retry options apply to all Azure SDK clients. The retry options has supported part of the SDKs, there's no `spring.cloud.azure.cosmos.retry`.
+|*spring.cloud.azure*.retry |To configure the retry options apply to all Azure SDK clients. The retry options have supported part of the SDKs, there's no `spring.cloud.azure.cosmos.retry`.
 |===
 
 Check link:appendix.html[here] for a full list of configurations.
