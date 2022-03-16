@@ -399,7 +399,7 @@ spring:
   cloud:
     azure:
       eventhubs:
-        namespace: ${AZURE_EVENTHUBS_NAMESPACE}
+        connection-string: ${AZURE_EVENTHUBS_CONNECTION_STRING}
         processor:
           checkpoint-store:
             container-name: ${AZURE_STORAGE_CONTAINER_NAME}
