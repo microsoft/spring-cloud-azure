@@ -239,31 +239,54 @@ Check link:appendix.html[here] for a full list of configurations.
 ===== From azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory
 
 . All configuration property names changed the prefix from `azure.activedirectory` to `spring.cloud.azure.active-directory`.
-. New property `spring.cloud.azure.active-directory.enabled=true` is necessary to enable related features.
+. New property `spring.cloud.azure.active-directory.enabled=true` is required to enable related features.
 
 IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory`, you have to specify the `spring.cloud.azure.active-directory.enabled` to true, even if the starter is included in classpath.
 
 .Property mapping from azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory
 [cols="<30,<~", options="header"]
 |===
-| Legacy properties                                                                        | Morden properties
-| azure.activedirectory.app-id-uri                                                         | spring.cloud.azure.active-directory.app-id-uri
-| azure.activedirectory.application-type                                                   | spring.cloud.azure.active-directory.application-type
-| azure.activedirectory.authorization-clients                                              | spring.cloud.azure.active-directory.authorization-clients
-| azure.activedirectory.authorization-clients.<AZURE_CLIENT_NAME>.authorization-grant-type   | spring.cloud.azure.active-directory.authorization-clients.<AZURE_CLIENT_NAME>.authorization-grant-type
-| azure.activedirectory.authorization-clients.<AZURE_CLIENT_NAME>.on-demand                  | spring.cloud.azure.active-directory.authorization-clients.<AZURE_CLIENT_NAME>.on-demand
-| azure.activedirectory.authorization-clients.<AZURE_CLIENT_NAME>.scopes                     | spring.cloud.azure.active-directory.authorization-clients.<AZURE_CLIENT_NAME>.scopes
-| azure.activedirectory.base-uri                                                           | spring.cloud.azure.active-directory.profile.environment.active-directory-endpoint
-| azure.activedirectory.client-id                                                          | spring.cloud.azure.active-directory.credential.client-id
-| azure.activedirectory.client-secret                                                      | spring.cloud.azure.active-directory.credential.client-secret
-| azure.activedirectory.graph-membership-uri                                               | Please check the following table for more information.
-| azure.activedirectory.post-logout-redirect-uri                                           | spring.cloud.azure.active-directory.post-logout-redirect-uri
-| azure.activedirectory.resource-server.claim-to-authority-prefix-map                      | spring.cloud.azure.active-directory.resource-server.claim-to-authority-prefix-map
-| azure.activedirectory.resource-server.principal-claim-name                               | spring.cloud.azure.active-directory.resource-server.principal-claim-name
-| azure.activedirectory.tenant-id                                                          | spring.cloud.azure.active-directory.profile.tenant-id
-| azure.activedirectory.user-group.allowed-group-ids                                       | spring.cloud.azure.active-directory.user-group.allowed-group-ids
-| azure.activedirectory.user-group.allowed-group-names                                     | spring.cloud.azure.active-directory.user-group.allowed-group-names
-| azure.activedirectory.user-name-attribute                                                | spring.cloud.azure.active-directory.user-name-attribute
+| Legacy properties                                                                          | Modern properties
+| *azure.activedirectory*.app-id-uri                                                         | *spring.cloud.azure.active-directory*.app-id-uri
+| *azure.activedirectory*.application-type                                                   | *spring.cloud.azure.active-directory*.application-type
+| *azure.activedirectory*.authorization-clients                                              | *spring.cloud.azure.active-directory*.authorization-clients
+| *azure.activedirectory*.authorization-clients.<AZURE_CLIENT_NAME>.authorization-grant-type | *spring.cloud.azure.active-directory*.authorization-clients.<AZURE_CLIENT_NAME>.authorization-grant-type
+| *azure.activedirectory*.authorization-clients.<AZURE_CLIENT_NAME>.on-demand                | *spring.cloud.azure.active-directory*.authorization-clients.<AZURE_CLIENT_NAME>.on-demand
+| *azure.activedirectory*.authorization-clients.<AZURE_CLIENT_NAME>.scopes                   | *spring.cloud.azure.active-directory*.authorization-clients.<AZURE_CLIENT_NAME>.scopes
+| *azure.activedirectory*.authenticate-additional-parameters                                 | *spring.cloud.azure.active-directory*.authenticate-additional-parameters
+| *azure.activedirectory*.base-uri                                                           | *spring.cloud.azure.active-directory*.profile.environment.active-directory-endpoint
+| *azure.activedirectory*.client-id                                                          | *spring.cloud.azure.active-directory*.credential.client-id
+| *azure.activedirectory*.client-secret                                                      | *spring.cloud.azure.active-directory*.credential.client-secret
+| *azure.activedirectory*.graph-membership-uri                                               | *spring.cloud.azure.active-directory*.graph-membership-uri
+| *azure.activedirectory*.jwt-connect-timeout                                                | *spring.cloud.azure.active-directory*.jwt-connect-timeout
+| *azure.activedirectory*.jwt-read-timeout                                                   | *spring.cloud.azure.active-directory*.jwt-read-timeout
+| *azure.activedirectory*.jwt-size-limit                                                     | *spring.cloud.azure.active-directory*.jwt-size-limit
+| *azure.activedirectory*.jwk-set-cache-lifespan                                             | *spring.cloud.azure.active-directory*.jwk-set-cache-lifespan
+| *azure.activedirectory*.jwk-set-cache-refresh-time                                         | *spring.cloud.azure.active-directory*.jwk-set-cache-refresh-time
+| *azure.activedirectory*.post-logout-redirect-uri                                           | *spring.cloud.azure.active-directory*.post-logout-redirect-uri
+| *azure.activedirectory*.session-stateless                                                  | *spring.cloud.azure.active-directory*.session-stateless
+| *azure.activedirectory*.redirect-uri-template                                              | *spring.cloud.azure.active-directory*.redirect-uri-template
+| *azure.activedirectory*.resource-server.claim-to-authority-prefix-map                      | *spring.cloud.azure.active-directory*.resource-server.claim-to-authority-prefix-map
+| *azure.activedirectory*.resource-server.principal-claim-name                               | *spring.cloud.azure.active-directory*.resource-server.principal-claim-name
+| *azure.activedirectory*.tenant-id                                                          | *spring.cloud.azure.active-directory*.profile.tenant-id
+| *azure.activedirectory*.user-group.allowed-group-ids                                       | *spring.cloud.azure.active-directory*.user-group.allowed-group-ids
+| *azure.activedirectory*.user-group.allowed-group-names                                     | *spring.cloud.azure.active-directory*.user-group.allowed-group-names
+| *azure.activedirectory*.user-name-attribute                                                | *spring.cloud.azure.active-directory*.user-name-attribute
+|===
+
+[NOTE]
+====
+The value type of the following properties is changed from `long` to `java.time.Duration`, they are `jwt-connect-timeout`, `jwt-read-timeout`, `jwk-set-cache-lifespan`, `jwk-set-cache-refresh-time`.
+====
+
+.Removed property from azure-spring-boot-starter-active-directory
+[options="header"]
+|===
+| Removed properties
+| azure.activedirectory.allow-telemetry
+| azure.activedirectory.base-uri
+| azure.activedirectory.user-group.enable-full-list
+| azure.activedirectory.graph-base-uri
 |===
 
 NOTE: `azure.activedirectory.graph-membership-uri` has been replaced by 2 properties: `spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint` and `spring.cloud.azure.active-directory.user-group.use-transitive-members`. The first property used to specify the host name, and the second property used to specify the url path: `v1.0/me/memberOf` or `v1.0/me/transitiveMemberOf`. Here are some examples:
@@ -271,7 +294,7 @@ NOTE: `azure.activedirectory.graph-membership-uri` has been replaced by 2 proper
 .Examples of replacing `azure.activedirectory.graph-membership-uri`
 [cols="<30,<~", options="header"]
 |===
-| Example value of azure.activedirectory.graph-membership-uri | Morden configuration
+| Example value of azure.activedirectory.graph-membership-uri | Modern configuration
 | https://graph.microsoft.com/v1.0/me/memberOf              | spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=`https://graph.microsoft.com/`, spring.cloud.azure.active-directory.user-group.use-transitive-members=`false`
 | https://graph.microsoft.com/v1.0/me/transitiveMemberOf    | spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=`https://graph.microsoft.com/`, spring.cloud.azure.active-directory.user-group.use-transitive-members=`true`
 | https://microsoftgraph.chinacloudapi.cn/v1.0/me/memberOf  | spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=`https://microsoftgraph.chinacloudapi.cn/`,  spring.cloud.azure.active-directory.user-group.use-transitive-members=`false`
@@ -282,25 +305,45 @@ NOTE: `azure.activedirectory.graph-membership-uri` has been replaced by 2 proper
 ===== From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c
 
 . All configuration property names changed the prefix from `azure.activedirectory.b2c` to `spring.cloud.azure.active-directory.b2c`.
-. New property `spring.cloud.azure.active-directory.b2c.enabled=true` is necessary to enable related features.
+. New property `spring.cloud.azure.active-directory.b2c.enabled=true` is required to enable related features.
 
 IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory-b2c`, you have to specify the `spring.cloud.azure.active-directory.b2c.enabled` to true, even if the starter is included in classpath.
 
 .Property mapping from azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c
 [cols="<30,<~", options="header"]
 |===
-| Legacy properties                                      | Morden properties
-| *azure.activedirectory.b2c*.base-uri                   | *spring.cloud.azure.active-directory.b2c*.base-uri
-| *azure.activedirectory.b2c*.client-id                  | *spring.cloud.azure.active-directory.b2c*.credential.client-id
-| *azure.activedirectory.b2c*.client-secret              | *spring.cloud.azure.active-directory.b2c*.credential.client-secret
-| *azure.activedirectory.b2c*.authorization-clients      | *spring.cloud.azure.active-directory.b2c*.authorization-clients
-| *azure.activedirectory.b2c*.login-flow                 | *spring.cloud.azure.active-directory.b2c*.login-flow
-| *azure.activedirectory.b2c*.tenant-id                  | *spring.cloud.azure.active-directory.b2c*.profile.tenant-id
-| *azure.activedirectory.b2c*.user-flows                 | *spring.cloud.azure.active-directory.b2c*.user-flows
-| *azure.activedirectory.b2c*.user-name-attribute-name    | *spring.cloud.azure.active-directory.b2c*.user-name-attribute-name
+| Legacy properties                                                                              | Modern properties
+| *azure.activedirectory.b2c*.authenticate-additional-parameters                                 | *spring.cloud.azure.active-directory.b2c*.authenticate-additional-parameters
+| *azure.activedirectory.b2c*.authorization-clients                                              | *spring.cloud.azure.active-directory.b2c*.authorization-clients
+| *azure.activedirectory.b2c*.authorization-clients.<AZURE_CLIENT_NAME>.authorization-grant-type | *spring.cloud.azure.active-directory.b2c*.authorization-clients.<AZURE_CLIENT_NAME>.authorization-grant-type
+| *azure.activedirectory.b2c*.authorization-clients.<AZURE_CLIENT_NAME>.scopes                   | *spring.cloud.azure.active-directory.b2c*.authorization-clients.<AZURE_CLIENT_NAME>.scopes
+| *azure.activedirectory.b2c*.app-id-uri                                                         | *spring.cloud.azure.active-directory.b2c*.app-id-uri
+| *azure.activedirectory.b2c*.base-uri                                                           | *spring.cloud.azure.active-directory.b2c*.base-uri
+| *azure.activedirectory.b2c*.client-id                                                          | *spring.cloud.azure.active-directory.b2c*.credential.client-id
+| *azure.activedirectory.b2c*.client-secret                                                      | *spring.cloud.azure.active-directory.b2c*.credential.client-secret
+| *azure.activedirectory.b2c*.jwt-connect-timeout                                                | *spring.cloud.azure.active-directory.b2c*.jwt-connect-timeout
+| *azure.activedirectory.b2c*.jwt-read-timeout                                                   | *spring.cloud.azure.active-directory.b2c*.jwt-read-timeout
+| *azure.activedirectory.b2c*.jwt-size-limit                                                     | *spring.cloud.azure.active-directory.b2c*.jwt-size-limit
+| *azure.activedirectory.b2c*.login-flow                                                         | *spring.cloud.azure.active-directory.b2c*.login-flow
+| *azure.activedirectory.b2c*.logout-success-url                                                 | *spring.cloud.azure.active-directory.b2c*.logout-success-url
+| *azure.activedirectory.b2c*.reply-url                                                          | *spring.cloud.azure.active-directory.b2c*.reply-url
+| *azure.activedirectory.b2c*.tenant-id                                                          | *spring.cloud.azure.active-directory.b2c*.profile.tenant-id
+| *azure.activedirectory.b2c*.user-flows                                                         | *spring.cloud.azure.active-directory.b2c*.user-flows
+| *azure.activedirectory.b2c*.user-name-attribute-name                                           | *spring.cloud.azure.active-directory.b2c*.user-name-attribute-name
 |===
 
-NOTE: For properties like `credential.client-id`, `credential.client-secret`, `profile.tenant-id`, if `spring.cloud.azure.active-directory.b2c.PROPERTY` isn't configured, `spring.cloud.azure.PROPERTY` will be used.
+.Removed property from azure-spring-boot-starter-active-directory-b2c
+[options="header"]
+|===
+| Removed properties
+| azure.activedirectory.b2c.allow-telemetry
+| azure.activedirectory.b2c.tenant
+|===
+
+[NOTE]
+====
+The value type of the following properties is changed from `long` to `java.time.Duration`, they are `jwt-connect-timeout`, `jwt-read-timeout`.
+====
 
 ===== From azure-spring-boot-starter-keyvault-secrets to spring-cloud-azure-starter-keyvault-secrets
 
@@ -309,7 +352,7 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-keyvault-secrets`
 .Property mapping from azure-spring-boot-starter-keyvault-secrets to spring-cloud-azure-starter-keyvault-secrets
 [cols="<30,<~", options="header"]
 |===
-| Legacy properties                      | Morden properties
+| Legacy properties                      | Modern properties
 | *azure.keyvault*.allow-telemetry         | Not supported anymore.
 | *azure.keyvault*.case-sensitive-keys     | *spring.cloud.azure.keyvault.secret*.property-source[n].case-sensitive
 | *azure.keyvault*.certificate-password    | *spring.cloud.azure.keyvault.secret*.property-source[n].credential.client-certificate-password
@@ -322,11 +365,11 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-keyvault-secrets`
 | *azure.keyvault*.secret-keys             | *spring.cloud.azure.keyvault.secret*.property-source[n].secret-keys
 | *azure.keyvault*.tenant-id               | *spring.cloud.azure.keyvault.secret*.property-source[n].profile.tenant-id
 | *azure.keyvault*.uri                     | *spring.cloud.azure.keyvault.secret*.property-source[n].endpoint
-| -                                      | *spring.cloud.azure.keyvault.secret*.property-source[n].service-version
-| -                                      | *spring.cloud.azure.keyvault.secret*.property-source[n].client
-| -                                      | *spring.cloud.azure.keyvault.secret*.property-source[n].proxy
-| -                                      | *spring.cloud.azure.keyvault.secret*.property-source[n].retry
-| -                                      | *spring.cloud.azure.keyvault.secret*.property-source[n].resource
+| -                                        | *spring.cloud.azure.keyvault.secret*.property-source[n].service-version
+| -                                        | *spring.cloud.azure.keyvault.secret*.property-source[n].client
+| -                                        | *spring.cloud.azure.keyvault.secret*.property-source[n].proxy
+| -                                        | *spring.cloud.azure.keyvault.secret*.property-source[n].retry
+| -                                        | *spring.cloud.azure.keyvault.secret*.property-source[n].resource
 |===
 
 . All configuration property names changed the prefix from `azure.keyvault` to `spring.cloud.azure.keyvault.secret`.
@@ -343,7 +386,7 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-keyvault-secrets`
 .Property mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob
 [cols="<30,<~", options="header"]
 |===
-|Legacy properties |Morden properties
+|Legacy properties |Modern properties
 |*azure.storage*.account-name |*spring.cloud.azure.storage.blob*.account-name
 |*azure.storage*.account-key |*spring.cloud.azure.storage.blob*.account-key
 |*azure.storage*.blob-endpoint |*spring.cloud.azure.storage.blob*.endpoint
@@ -356,7 +399,7 @@ All configuration property names changed the prefix from `azure.storage` to `spr
 .Property mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share
 [cols="<30,<~", options="header"]
 |===
-|Legacy properties |Morden properties
+|Legacy properties |Modern properties
 |*azure.storage*.account-name |*spring.cloud.azure.storage.fileshare*.account-name
 |*azure.storage*.account-key |*spring.cloud.azure.storage.fileshare*.account-key
 |*azure.storage*.file-endpoint |*spring.cloud.azure.storage.fileshare*.endpoint
@@ -371,7 +414,7 @@ Changes for the child entries for this prefix, please refer the following tables
 .Property mapping from azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs
 [cols="<30,<~", options="header"]
 |===
-|Legacy properties | Morden properties
+|Legacy properties | Modern properties
 |*spring.cloud.azure.eventhub*.checkpoint-storage-account|*spring.cloud.azure.eventhubs.processor*.checkpoint-store.account-name
 |*spring.cloud.azure.eventhub*.checkpoint-access-key|*spring.cloud.azure.eventhubs.processor*.checkpoint-store.account-key
 |*spring.cloud.azure.eventhub*.checkpoint-container|*spring.cloud.azure.eventhubs.processor*.checkpoint-store.container-name
@@ -431,7 +474,7 @@ All configuration property names changed the prefix from `spring.cloud.azure.sto
 .Property mapping from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue
 [cols="<30,<~", options="header"]
 |===
-|Legacy properties |Morden properties
+|Legacy properties |Modern properties
 |*spring.cloud.azure.storage*.account |*spring.cloud.azure.storage.queue*.account-name
 |*spring.cloud.azure.storage*.access-key |*spring.cloud.azure.storage.queue*.account-key
 |*spring.cloud.azure.storage*.resource-group |*spring.cloud.azure.storage.queue*.resource.resource-group
@@ -647,12 +690,66 @@ spring:
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-|com.azure.spring.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter | com.azure.spring.cloud.autoconfigure.aad.AadResourceServerWebSecurityConfigurerAdapter
-|com.azure.spring.aad.webapp.AADWebSecurityConfigurerAdapter | com.azure.spring.cloud.autoconfigure.aad.AadWebSecurityConfigurerAdapter
-|com.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter | com.azure.spring.cloud.autoconfigure.aad.filter.AadAppRoleStatelessAuthenticationFilter
-|com.azure.spring.autoconfigure.aad.AADAuthenticationFilter | com.azure.spring.cloud.autoconfigure.aad.filter.filter.AadAuthenticationFilter
-|com.azure.spring.autoconfigure.aad.AADAuthenticationProperties | com.azure.spring.cloud.autoconfigure.aad.properties.AadAuthenticationProperties
-|com.azure.spring.autoconfigure.aad.UserPrincipal | com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipal
+|com.azure.spring.aad.implementation.constants.AADTokenClaim |com.azure.spring.cloud.autoconfigure.aad.implementation.constants.AadJwtClaimNames
+|com.azure.spring.aad.implementation.constants.AuthorityPrefix |com.azure.spring.cloud.autoconfigure.aad.implementation.constants.AuthorityPrefix
+|com.azure.spring.aad.implementation.jackson.AADClientRegistrationDeserializer |com.azure.spring.cloud.autoconfigure.aad.implementation.jackson.AadClientRegistrationDeserializer
+|com.azure.spring.aad.implementation.jackson.AADClientRegistrationMixin |com.azure.spring.cloud.autoconfigure.aad.implementation.jackson.AadClientRegistrationMixin
+|com.azure.spring.aad.implementation.jackson.AADOAuth2ClientJackson2Module |com.azure.spring.cloud.autoconfigure.aad.implementation.jackson.AadOAuth2ClientJackson2Module
+|com.azure.spring.aad.implementation.jackson.JsonNodeUtils |com.azure.spring.cloud.autoconfigure.aad.implementation.jackson.JsonNodeUtils
+|com.azure.spring.aad.implementation.jackson.SerializerUtils |com.azure.spring.cloud.autoconfigure.aad.implementation.jackson.SerializerUtils
+|com.azure.spring.aad.implementation.jackson.StdConverters |com.azure.spring.cloud.autoconfigure.aad.implementation.jackson.StdConverters
+|com.azure.spring.aad.webapi.validator.AADJwtIssuerValidator |com.azure.spring.cloud.autoconfigure.aad.implementation.webapi.validator.AadJwtIssuerValidator
+|com.azure.spring.aad.webapi.AADJwtBearerTokenAuthenticationConverter |com.azure.spring.cloud.autoconfigure.aad.implementation.webapi.AadJwtBearerTokenAuthenticationConverter
+|com.azure.spring.aad.webapi.AADOBOOAuth2AuthorizedClientProvider |com.azure.spring.cloud.autoconfigure.aad.implementation.webapi.AadOboOAuth2AuthorizedClientProvider
+|com.azure.spring.aad.webapi.AADResourceServerConfiguration |com.azure.spring.cloud.autoconfigure.aad.configuration.AadResourceServerConfiguration
+|com.azure.spring.aad.webapi.AADResourceServerProperties |com.azure.spring.cloud.autoconfigure.aad.properties.AadResourceServerProperties
+|com.azure.spring.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter |com.azure.spring.cloud.autoconfigure.aad.AadResourceServerWebSecurityConfigurerAdapter
+|com.azure.spring.aad.webapp.AADAzureDelegatedOAuth2AuthorizedClientProvider |com.azure.spring.cloud.autoconfigure.aad.implementation.webapp.AadAzureDelegatedOAuth2AuthorizedClientProvider
+|com.azure.spring.aad.webapp.AADHandleConditionalAccessFilter |com.azure.spring.cloud.autoconfigure.aad.implementation.webapp.AadHandleConditionalAccessFilter
+|com.azure.spring.aad.webapp.AADOAuth2AuthorizationCodeGrantRequestEntityConverter |com.azure.spring.cloud.autoconfigure.aad.implementation.webapp.AadOAuth2AuthorizationCodeGrantRequestEntityConverter
+|com.azure.spring.aad.webapp.AADOAuth2AuthorizationRequestResolver |com.azure.spring.cloud.autoconfigure.aad.implementation.webapp.AadOAuth2AuthorizationRequestResolver
+|com.azure.spring.aad.webapp.AADOAuth2UserService |com.azure.spring.cloud.autoconfigure.aad.implementation.webapp.AadOAuth2UserService
+|com.azure.spring.aad.webapp.AADWebApplicationConfiguration |com.azure.spring.cloud.autoconfigure.aad.configuration.AadWebApplicationConfiguration
+|com.azure.spring.aad.webapp.AADWebSecurityConfigurerAdapter |com.azure.spring.cloud.autoconfigure.aad.AadWebSecurityConfigurerAdapter
+|com.azure.spring.aad.webapp.AuthorizationClientProperties |com.azure.spring.cloud.autoconfigure.aad.properties.AuthorizationClientProperties
+|com.azure.spring.aad.webapp.AzureClientRegistration |com.azure.spring.cloud.autoconfigure.aad.implementation.webapp.AzureClientRegistration
+|com.azure.spring.aad.webapp.GraphClient |com.azure.spring.cloud.autoconfigure.aad.implementation.graph.GraphClient
+|com.azure.spring.aad.webapp.GroupInformation |com.azure.spring.cloud.autoconfigure.aad.implementation.graph.GroupInformation
+|com.azure.spring.aad.AADApplicationType |com.azure.spring.cloud.autoconfigure.aad.properties.AadApplicationType
+|com.azure.spring.aad.AADAuthorizationGrantType |com.azure.spring.cloud.autoconfigure.aad.properties.AadAuthorizationGrantType
+|com.azure.spring.aad.AADAuthorizationServerEndpoints |com.azure.spring.cloud.autoconfigure.aad.properties.AadAuthorizationServerEndpoints
+|com.azure.spring.aad.AADClientRegistrationRepository |com.azure.spring.cloud.autoconfigure.aad.implementation.oauth2.AadClientRegistrationRepository
+|com.azure.spring.aad.AADIssuerJWSKeySelector |com.azure.spring.cloud.autoconfigure.aad.implementation.jwt.AadIssuerJwsKeySelector
+|com.azure.spring.aad.AADJwtDecoderProviderConfiguration |com.azure.spring.cloud.autoconfigure.aad.implementation.jwt.AadJwtDecoderProviderConfiguration
+|com.azure.spring.aad.AADJwtGrantedAuthoritiesConverter |com.azure.spring.cloud.autoconfigure.aad.implementation.jwt.AadJwtGrantedAuthoritiesConverter
+|com.azure.spring.aad.AADOAuth2AuthenticatedPrincipal |com.azure.spring.cloud.autoconfigure.aad.implementation.oauth2.AadOAuth2AuthenticatedPrincipal
+|com.azure.spring.aad.AADOAuth2ClientConfiguration |com.azure.spring.cloud.autoconfigure.aad.configuration.AadOAuth2ClientConfiguration
+|com.azure.spring.aad.AADTrustedIssuerRepository |com.azure.spring.cloud.autoconfigure.aad.AadTrustedIssuerRepository
+|com.azure.spring.aad.AbstractOAuth2AuthorizationCodeGrantRequestEntityConverter |com.azure.spring.cloud.autoconfigure.aad.implementation.oauth2.AbstractOAuth2AuthorizationCodeGrantRequestEntityConverter
+|com.azure.spring.aad.JacksonHttpSessionOAuth2AuthorizedClientRepository |com.azure.spring.cloud.autoconfigure.aad.implementation.oauth2.JacksonHttpSessionOAuth2AuthorizedClientRepository
+|com.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter |com.azure.spring.cloud.autoconfigure.aad.filter.AadAppRoleStatelessAuthenticationFilter
+|com.azure.spring.autoconfigure.aad.AADAuthenticationFilter |com.azure.spring.cloud.autoconfigure.aad.filter.AadAuthenticationFilter
+|com.azure.spring.autoconfigure.aad.AADAuthenticationFilterAutoConfiguration |com.azure.spring.cloud.autoconfigure.aad.AadAuthenticationFilterAutoConfiguration
+|com.azure.spring.autoconfigure.aad.AADAuthenticationProperties |com.azure.spring.cloud.autoconfigure.aad.properties.AadAuthenticationProperties
+|com.azure.spring.autoconfigure.aad.AADAutoConfiguration |com.azure.spring.cloud.autoconfigure.aad.AadAutoConfiguration
+|com.azure.spring.autoconfigure.aad.AzureADGraphClient |com.azure.spring.cloud.autoconfigure.aad.implementation.graph.AzureADGraphClient
+|com.azure.spring.autoconfigure.aad.Constants |com.azure.spring.cloud.autoconfigure.aad.implementation.constants.Constants
+|com.azure.spring.autoconfigure.aad.JacksonObjectMapperFactory |com.azure.spring.cloud.autoconfigure.aad.implementation.util.JacksonObjectMapperFactory
+|com.azure.spring.autoconfigure.aad.Membership |com.azure.spring.cloud.autoconfigure.aad.implementation.graph.Membership
+|com.azure.spring.autoconfigure.aad.Memberships |com.azure.spring.cloud.autoconfigure.aad.implementation.graph.Memberships
+|com.azure.spring.autoconfigure.aad.UserPrincipal |com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipal
+|com.azure.spring.autoconfigure.aad.UserPrincipalManager |com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipalManager
+|com.azure.spring.autoconfigure.condition.aad.ClientRegistrationCondition |com.azure.spring.cloud.autoconfigure.aad.implementation.conditions.ClientRegistrationCondition
+|com.azure.spring.autoconfigure.condition.aad.ResourceServerCondition |com.azure.spring.cloud.autoconfigure.aad.implementation.conditions.ResourceServerCondition
+|com.azure.spring.autoconfigure.condition.aad.WebApplicationCondition |com.azure.spring.cloud.autoconfigure.aad.implementation.conditions.WebApplicationCondition
+|===
+
+.Removed class from azure-spring-boot-starter-active-directory
+[options="header"]
+|===
+| Removed legacy class
+|com.azure.spring.aad.webapi.validator.AADJwtAudienceValidator
+|com.azure.spring.aad.webapi.validator.AADJwtClaimValidator
 |===
 
 ==== From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c
@@ -661,8 +758,22 @@ spring:
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-|com.azure.spring.autoconfigure.b2c.AADB2CJwtBearerTokenAuthenticationConverter | com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cJwtBearerTokenAuthenticationConverter
-|com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer | com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cOidcLoginConfigurer
+|com.azure.spring.autoconfigure.b2c.AADB2CAuthorizationRequestResolver |com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cAuthorizationRequestResolver
+|com.azure.spring.autoconfigure.b2c.AADB2CAutoConfiguration |com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cAutoConfiguration
+|com.azure.spring.autoconfigure.b2c.AADB2CClientRegistrationRepository |com.azure.spring.cloud.autoconfigure.aadb2c.implementation.AadB2cClientRegistrationRepository
+|com.azure.spring.autoconfigure.b2c.AADB2CConditions |com.azure.spring.cloud.autoconfigure.aadb2c.implementation.AadB2cConditions
+|com.azure.spring.autoconfigure.b2c.AADB2CConfigurationException |com.azure.spring.cloud.autoconfigure.aadb2c.implementation.AadB2cConfigurationException
+|com.azure.spring.autoconfigure.b2c.AADB2CJwtBearerTokenAuthenticationConverter |com.azure.spring.cloud.autoconfigure.aad.implementation.webapi.AadJwtBearerTokenAuthenticationConverter
+|com.azure.spring.autoconfigure.b2c.AADB2CLogoutSuccessHandler |com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cLogoutSuccessHandler
+|com.azure.spring.autoconfigure.b2c.AADB2COAuth2AuthorizationCodeGrantRequestEntityConverter |com.azure.spring.cloud.autoconfigure.aadb2c.implementation.AadB2cOAuth2AuthorizationCodeGrantRequestEntityConverter
+|com.azure.spring.autoconfigure.b2c.AADB2COAuth2ClientConfiguration |com.azure.spring.cloud.autoconfigure.aadb2c.configuration.AadB2cOAuth2ClientConfiguration
+|com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer |com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cOidcLoginConfigurer
+|com.azure.spring.autoconfigure.b2c.AADB2CProperties |com.azure.spring.cloud.autoconfigure.aadb2c.properties.AadB2cProperties
+|com.azure.spring.autoconfigure.b2c.AADB2CResourceServerAutoConfiguration |com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cResourceServerAutoConfiguration
+|com.azure.spring.autoconfigure.b2c.AADB2CTrustedIssuerRepository |com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cTrustedIssuerRepository
+|com.azure.spring.autoconfigure.b2c.AADB2CURL |com.azure.spring.cloud.autoconfigure.aadb2c.implementation.AadB2cUrl
+|com.azure.spring.autoconfigure.b2c.AuthorizationClientProperties |com.azure.spring.cloud.autoconfigure.aad.properties.AuthorizationClientProperties
+|com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer |com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cOidcLoginConfigurer
 |===
 
 
@@ -923,14 +1034,14 @@ public class Demo {
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-|com.azure.spring.servicebus.stream.binder.properties.ServiceBusQueueExtendedBindingProperties | com.azure.spring.cloud.stream.binder.servicebus.core.properties.ServiceBusExtendedBindingProperties
-|com.azure.spring.servicebus.stream.binder.properties.ServiceBusTopicExtendedBindingProperties | com.azure.spring.cloud.stream.binder.servicebus.core.properties.ServiceBusExtendedBindingProperties
-|com.azure.spring.servicebus.stream.binder.properties.ServiceBusConsumerProperties | com.azure.spring.cloud.stream.binder.servicebus.core.properties.ServiceBusConsumerProperties
-|com.azure.spring.servicebus.stream.binder.properties.ServiceBusProducerProperties | com.azure.spring.cloud.stream.binder.servicebus.core.properties.ServiceBusProducerProperties
-|com.azure.spring.servicebus.stream.binder.properties.ServiceBusBindingProperties | com.azure.spring.cloud.stream.binder.servicebus.core.properties.ServiceBusBindingProperties
+|com.azure.spring.servicebus.stream.binder.properties.ServiceBusQueueExtendedBindingProperties |com.azure.spring.cloud.stream.binder.servicebus.core.properties.ServiceBusExtendedBindingProperties
+|com.azure.spring.servicebus.stream.binder.properties.ServiceBusTopicExtendedBindingProperties |com.azure.spring.cloud.stream.binder.servicebus.core.properties.ServiceBusExtendedBindingProperties
+|com.azure.spring.servicebus.stream.binder.properties.ServiceBusConsumerProperties |com.azure.spring.cloud.stream.binder.servicebus.core.properties.ServiceBusConsumerProperties
+|com.azure.spring.servicebus.stream.binder.properties.ServiceBusProducerProperties |com.azure.spring.cloud.stream.binder.servicebus.core.properties.ServiceBusProducerProperties
+|com.azure.spring.servicebus.stream.binder.properties.ServiceBusBindingProperties |com.azure.spring.cloud.stream.binder.servicebus.core.properties.ServiceBusBindingProperties
 |com.azure.spring.servicebus.stream.binder.ServiceBusMessageChannelBinder |com.azure.spring.cloud.stream.binder.servicebus.ServiceBusMessageChannelBinder
-|com.azure.spring.servicebus.stream.binder.ServiceBusQueueHealthIndicator | com.azure.spring.cloud.stream.binder.servicebus.ServiceBusHealthIndicator
-|com.azure.spring.servicebus.stream.binder.ServiceBusTopicHealthIndicator | com.azure.spring.cloud.stream.binder.servicebus.ServiceBusHealthIndicator
+|com.azure.spring.servicebus.stream.binder.ServiceBusQueueHealthIndicator |com.azure.spring.cloud.stream.binder.servicebus.ServiceBusHealthIndicator
+|com.azure.spring.servicebus.stream.binder.ServiceBusTopicHealthIndicator |com.azure.spring.cloud.stream.binder.servicebus.ServiceBusHealthIndicator
 |com.azure.spring.servicebus.stream.binder.provisioning.ServiceBusQueueChannelResourceManagerProvisioner |com.azure.spring.cloud.stream.binder.servicebus.core.provisioning.ServiceBusChannelResourceManagerProvisioner
 | com.azure.spring.servicebus.stream.binder.provisioning.ServiceBusTopicChannelResourceManagerProvisioner |com.azure.spring.cloud.stream.binder.servicebus.core.provisioning.ServiceBusChannelResourceManagerProvisioner
 |===
