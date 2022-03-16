@@ -185,8 +185,6 @@ NOTE: When assign roles to the security principals to interact with Azure messag
 
 A chained credential, the https://docs.microsoft.com/java/api/overview/azure/identity-readme?view=azure-java-stable#defaultazurecredential[DefaultAzureCredential] bean is autoconfigured by default and will be used by all components if no more authentication information is specified.
 
-IMPORTANT: There could be some `ERROR` logs be printed out while the `DefaultAzureCredential` running the chain and trying to find the first available credential. It doesn't mean the `DefaultAzureCredential` is broken or unavailable. Meanwhile, we'll keep improving this logging experience.
-
 === Configuration properties
 
 ==== Properties Migration 
@@ -228,7 +226,7 @@ configurations can be divided into five categories:
 |*spring.cloud.azure*.credential |To configure how to authenticate with Azure Active Directory.
 |*spring.cloud.azure*.profile |To configure the Azure cloud environment.
 |*spring.cloud.azure*.proxy |To configure the proxy options apply to all Azure SDK clients.
-|*spring.cloud.azure*.retry |To configure the retry options apply to all Azure SDK clients.
+|*spring.cloud.azure*.retry |To configure the retry options apply to all Azure SDK clients. The retry options have supported part of the SDKs, there's no `spring.cloud.azure.cosmos.retry`.
 |===
 
 Check link:appendix.html[here] for a full list of configurations.
@@ -338,7 +336,7 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-keyvault-secrets`
 
 ===== From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob
 
-. All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.blob`.
+All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.blob`.
 
 .Property mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob
 [cols="<30,<~", options="header"]
@@ -360,6 +358,22 @@ All configuration property names changed the prefix from `azure.storage` to `spr
 |*azure.storage*.account-name |*spring.cloud.azure.storage.fileshare*.account-name
 |*azure.storage*.account-key |*spring.cloud.azure.storage.fileshare*.account-key
 |*azure.storage*.file-endpoint |*spring.cloud.azure.storage.fileshare*.endpoint
+|===
+
+===== From azure-spring-boot-starter-cosmos to spring-cloud-azure-starter-data-cosmos
+
+All configuration property names changed the prefix from `azure.cosmos` to `spring.cloud.azure.cosmos`.
+
+.Property mapping from azure-spring-boot-starter-cosmos to spring-cloud-azure-starter-data-cosmos
+[cols="<30,<~", options="header"]
+|===
+|Legacy properties |Morden properties
+|*azure.cosmos*.connection-mode |*spring.cloud.azure.cosmos*.connection-mode
+|*azure.cosmos*.consistency-level |*spring.cloud.azure.cosmos*.consistency-level
+|*azure.cosmos*.database |*spring.cloud.azure.cosmos*.database
+|*azure.cosmos*.key |*spring.cloud.azure.cosmos*.key
+|*azure.cosmos*.populate-query-metrics|*spring.cloud.azure.cosmos*.populate-query-metrics
+|*azure.cosmos*.uri |*spring.cloud.azure.cosmos*.endpoint
 |===
 
 ===== From azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs
@@ -551,6 +565,8 @@ IMPORTANT: The binder type is renamed from: servicebus-queue/servicebus-topic to
 |===
 
 * If you use the Spring Cloud Stream binder for Azure Service Bus queue/topic, now your property configuration should be changed to:
+
+
 [source,yaml]
 ----
 spring:
@@ -581,6 +597,7 @@ spring:
 ----
 
 * If you use the Spring Cloud Stream Binder for multiple Azure Service Bus namespaces,now your property configuration should be changed to:
+
 [source,yaml]
 ----
 spring:
