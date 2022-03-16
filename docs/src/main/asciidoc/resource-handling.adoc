@@ -165,7 +165,7 @@ Resource[] fileTextResources = azureStorageFileProtocolResolver.getResources("az
 
 ===== Download data from specific resource
 
-You can download a resource from Azure Blob or file storage with the `getInputStream()` method of Resource.
+You can download a resource from Azure Stroage Blob or File Share with the `getInputStream()` method of `Resource`.
 
 [source,java]
 ----
