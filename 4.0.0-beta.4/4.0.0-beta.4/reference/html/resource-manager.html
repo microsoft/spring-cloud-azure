@@ -180,8 +180,7 @@ window.onload = function() {
 <h2 id="_resource_manager"><a class="link" href="#_resource_manager">Resource Manager</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Connect to Azure Resources for All Azure SDKs service, which Spring Cloud used.
-Construct <code>TokenCredential</code> by using various credential information, and then construct <code>AzureResourceManager</code> to help Azure SDKs Client to authenticate and authorize.</p>
+<p>Azure Resource Manager (ARM) is the deployment and management service for Azure. It provides a management layer that enables you to create, update, and delete resources in your Azure account. Spring Cloud Azure Resourcemanger can help provision resources or retrieve resource metadata.</p>
 </div>
 <div class="sect2">
 <h3 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h3>
@@ -226,14 +225,6 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <td class="tableblock halign-left valign-top"><p class="tableblock">Whether the Resource Manager is enabled. Default is true.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-certificate-password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-certificate-path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path of a PEM certificate file to use when performing service principal authentication with Azure.</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when performing service principal authentication with Azure.</p></td>
 </tr>
@@ -242,8 +233,12 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.managed-identity-client-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when using managed identity to authenticate with Azure.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-certificate-path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path of a PEM certificate file to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.client-certificate-password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.username</p></td>
@@ -254,7 +249,11 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <td class="tableblock halign-left valign-top"><p class="tableblock">Password to use when performing username/password authentication.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.profile</strong>.cloud</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.credential</strong>.managed-identity-enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable managed identity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.profile</strong>.cloud-type</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the Azure cloud to connect to.</p></td>
 </tr>
 <tr>
@@ -275,7 +274,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <div class="sect2">
 <h3 id="_basic_usage"><a class="link" href="#_basic_usage">Basic Usage</a></h3>
 <div class="paragraph">
-<p>Azure Resource Manger helps the Azure SDK client to complete authentication and authorization. It can be integrated into a specific Spring Cloud Azure Starter and work together, or it can be used with Spring Cloud Azure auto-configuration modules and third-party libraries to complete authentication, such as: <a href="#Kafka Support">[Kafka Support]</a>, <a href="#Redis Support">[Redis Support]</a>.</p>
+<p>Spring Cloud Azure Resourcemanger can work together with specific Spring Cloud Azure starters to retrieve connection information, such as connection strings, to connect to Azure services. It can also together with <code>spring-cloud-azure-starter</code> and third-party libraries to retrieve metadata like username/password, to complete authentication, such as: <a href="#Kafka Support">[Kafka Support]</a>, <a href="#Redis Support">[Redis Support]</a>.</p>
 </div>
 </div>
 <div class="sect2">

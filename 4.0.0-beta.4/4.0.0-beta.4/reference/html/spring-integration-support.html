@@ -442,7 +442,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as MSI, configure below properties in <code>application.yml</code>:</p>
+<p>For credentials as managed identities, configure below properties in <code>application.yml</code>:</p>
 </li>
 </ul>
 </div>
@@ -452,7 +452,8 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
   cloud:
     azure:
       credential:
-        managed-identity-client-id: ${AZURE_CLIENT_ID}
+        managed-identity-enabled: true
+        client-id: ${AZURE_CLIENT_ID}
       eventhubs:
         namespace: ${AZURE_SERVICE_BUS_NAMESPACE}
         processor:
@@ -945,7 +946,7 @@ developers can use <code>ServiceBusContainerProperties</code> for the configurat
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as MSI, configure below properties in application.yml:</p>
+<p>For credentials as managed identities, configure below properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -955,7 +956,8 @@ developers can use <code>ServiceBusContainerProperties</code> for the configurat
   cloud:
     azure:
       credential:
-        managed-identity-client-id: ${AZURE_CLIENT_ID}
+        managed-identity-enabled: true
+        client-id: ${AZURE_CLIENT_ID}
       profile:
         tenant-id: ${AZURE_TENANT_ID}
       servicebus:
@@ -1441,7 +1443,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as MSI, configure below properties in application.yml:</p>
+<p>For credentials as managed identities, configure below properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -1451,7 +1453,8 @@ If you choose to use a security principal to authenticate and authorize with Azu
   cloud:
     azure:
       credential:
-        managed-identity-client-id: ${AZURE_CLIENT_ID}
+        managed-identity-enabled: true
+        client-id: ${AZURE_CLIENT_ID}
       profile:
         tenant-id: ${AZURE_TENANT_ID}
       storage:

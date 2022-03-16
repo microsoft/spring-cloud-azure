@@ -167,8 +167,8 @@ window.onload = function() {
 <li><a href="#authentication">Authentication</a>
 <ul class="sectlevel2">
 <li><a href="#_defaultazurecredential">DefaultAzureCredential</a></li>
-<li><a href="#_managed_identity">Managed Identity</a></li>
-<li><a href="#_other_credential_types">Other Credential Types</a></li>
+<li><a href="#_managed_identities">Managed identities</a></li>
+<li><a href="#_other_credential_types">Other credential types</a></li>
 </ul>
 </li>
 </ul>
@@ -181,7 +181,7 @@ window.onload = function() {
 <div class="sect2">
 <h3 id="_defaultazurecredential"><a class="link" href="#_defaultazurecredential">DefaultAzureCredential</a></h3>
 <div class="paragraph">
-<p>The <code>DefaultAzureCredential</code> is appropriate for most scenarios where the application is intended to ultimately be run in the Azure Cloud. This is because the DefaultAzureCredential combines credentials commonly used to authenticate when deployed, with credentials used to authenticate in a development environment.</p>
+<p>The <code>DefaultAzureCredential</code> is appropriate for most scenarios where the application is intended to be run in the Azure Cloud. This is because the DefaultAzureCredential combines credentials commonly used to authenticate when deployed, with credentials used to authenticate in a development environment.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -222,18 +222,6 @@ DefaultAzureCredential is intended to simplify getting started with the SDK by h
 </li>
 </ul>
 </div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-There could be some <code>ERROR</code> logs be printed out while the <code>DefaultAzureCredential</code> running the chain and trying to find the first available credential.It doesn&#8217;t mean the <code>DefaultAzureCredential</code> is broken or unavailable.Meanwhile, we&#8217;ll keep improving this logging experience.
-</td>
-</tr>
-</table>
-</div>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -248,7 +236,7 @@ Please refer to <a href="index.html#authorize-access-with-azure-active-directory
 </div>
 </div>
 <div class="sect2">
-<h3 id="_managed_identity"><a class="link" href="#_managed_identity">Managed Identity</a></h3>
+<h3 id="_managed_identities"><a class="link" href="#_managed_identities">Managed identities</a></h3>
 <div class="paragraph">
 <p>A common challenge for developers is the management of secrets and credentials used to secure communication between different components making up a solution. Managed identities eliminate the need for developers to manage credentials. Managed identities provide an identity for applications to use when connecting to resources that support Azure Active Directory (Azure AD) authentication. Applications may use the managed identity to obtain Azure AD tokens. For example, an application may use a managed identity to access resources like Azure Key Vault where developers can store credentials in a secure manner or to access storage accounts.</p>
 </div>
@@ -256,14 +244,14 @@ Please refer to <a href="index.html#authorize-access-with-azure-active-directory
 <p>We encourage using manged identity instead of using connection string or key in your application for it&#8217;s more secure and will save the trouble of managing secrets and credentials. In this case, <code>DefaultAzureCredential</code> could better serve the scenario of developing locally using account information stored locally and deploying the application to Azure Cloud and using Manged Identity.</p>
 </div>
 <div class="sect3">
-<h4 id="_managed_identity_types"><a class="link" href="#_managed_identity_types">Managed Identity Types</a></h4>
+<h4 id="_managed_identity_types"><a class="link" href="#_managed_identity_types">Managed identity types</a></h4>
 <div class="paragraph">
 <p>There are two types of managed identities:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>System-assigned</strong> Some Azure services allow you to enable a managed identity directly on a service instance. When you enable a system-assigned managed identity an identity is created in Azure AD that is tied to the lifecycle of that service instance. So when the resource is deleted, Azure automatically deletes the identity for you. By design, only that Azure resource can use this identity to request tokens from Azure AD.</p>
+<p><strong>System-assigned</strong> Some Azure services allow you to enable a managed identity directly on a service instance. When you enable a system-assigned managed identity an identity is created in Azure AD that&#8217;s tied to the lifecycle of that service instance. So when the resource is deleted, Azure automatically deletes the identity for you. By design, only that Azure resource can use this identity to request tokens from Azure AD.</p>
 </li>
 <li>
 <p><strong>User-assigned</strong> You may also create a managed identity as a standalone Azure resource. You can create a user-assigned managed identity and assign it to one or more instances of an Azure service. In the case of user-assigned managed identities, the identity is managed separately from the resources that use it.</p>
@@ -277,7 +265,7 @@ Please refer to <a href="index.html#authorize-access-with-azure-active-directory
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-When a user-assigned managed identity is used, you can specify it by <code>spring.cloud.azure.credential.managed-identity-client-id</code> or <code>spring.cloud.azure.&lt;azure-service&gt;.credential.managed-identity-client-id</code>. No credential configuration is needed if a system-assigned managed identity is used.
+When using a user-assigned managed identity, you can specify the client ID by <code>spring.cloud.azure.credential.client-id</code> or <code>spring.cloud.azure.&lt;azure-service&gt;.credential.client-id</code>.
 </td>
 </tr>
 </table>
@@ -309,12 +297,12 @@ Please refer to <a href="https://docs.microsoft.com/azure/active-directory/manag
 </div>
 </div>
 <div class="sect2">
-<h3 id="_other_credential_types"><a class="link" href="#_other_credential_types">Other Credential Types</a></h3>
+<h3 id="_other_credential_types"><a class="link" href="#_other_credential_types">Other credential types</a></h3>
 <div class="paragraph">
 <p>Developers who want more control or whose scenario isn&#8217;t served by the <code>DefaultAzureCredential</code> or whose scenario isn&#8217;t served by the default settings should use other credential types.</p>
 </div>
 <div class="sect3">
-<h4 id="_authentication_and_authorization_with_azure_active_directory"><a class="link" href="#_authentication_and_authorization_with_azure_active_directory">Authentication and authorization with Azure Active Directory</a></h4>
+<h4 id="_authentication_and_authorization_with_azure_ad"><a class="link" href="#_authentication_and_authorization_with_azure_ad">Authentication and authorization with Azure AD</a></h4>
 <div class="paragraph">
 <p>With Azure AD, you can use Azure role-based access control (Azure RBAC) to grant permissions to a security principal, which may be a user, or an application service principal. When a security principal (a user, or an application) attempts to access an Azure resource, for example an Event Hubs resource, the request must be authorized. With Azure AD, access to a resource is a two-step process.</p>
 </div>
@@ -329,15 +317,15 @@ Please refer to <a href="https://docs.microsoft.com/azure/active-directory/manag
 </ol>
 </div>
 <div class="sect4">
-<h5 id="_authenticate_with_azure_active_directory"><a class="link" href="#_authenticate_with_azure_active_directory">Authenticate with Azure Active Directory</a></h5>
+<h5 id="_authenticate_with_azure_ad"><a class="link" href="#_authenticate_with_azure_ad">Authenticate with Azure AD</a></h5>
 <div class="paragraph">
-<p>For applications want to connect to resources that support Azure Active Directory (Azure AD) authentication, below configurations could be set with prefix <code>spring.cloud.azure.credential</code> or <code>spring.cloud.azure.&lt;azure-service&gt;.credential</code></p>
+<p>For applications want to connect to resources that support Azure AD authentication, below configurations could be set with prefix <code>spring.cloud.azure.credential</code> or <code>spring.cloud.azure.&lt;azure-service&gt;.credential</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. Authentication properties</caption>
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 25%;">
+<col style="width: 75%;">
 </colgroup>
 <thead>
 <tr>
@@ -356,7 +344,7 @@ Please refer to <a href="https://docs.microsoft.com/azure/active-directory/manag
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">client-certificate-path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path of a PEM certificate file to use when performing service principal authentication with Azure.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">client-certificate-password</p></td>
@@ -371,8 +359,8 @@ Please refer to <a href="https://docs.microsoft.com/azure/active-directory/manag
 <td class="tableblock halign-left valign-top"><p class="tableblock">Password to use when performing username/password authentication with Azure.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">managed-identity-client-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when using user-assigned managed identity or app registration (when working with AKS pod-identity) to authenticate with Azure.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">managed-identity-enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable managed identity.</p></td>
 </tr>
 </tbody>
 </table>
@@ -390,9 +378,9 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 </div>
 <div class="sect4">
-<h5 id="authorize-access-with-azure-active-directory"><a class="link" href="#authorize-access-with-azure-active-directory">Authorize access with Azure Active Directory</a></h5>
+<h5 id="authorize-access-with-azure-active-directory"><a class="link" href="#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a></h5>
 <div class="paragraph">
-<p>The authorization step requires that one or more Azure roles be assigned to the security principal. The roles that are assigned to a security principal determine the permissions that the principal will have.</p>
+<p>The authorization step requires that one or more Azure roles be assigned to the security principal. The roles that are assigned to a security principal decide the permissions that the principal will have.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -503,7 +491,7 @@ A Key Vault access policy determines whether a given security principal, namely 
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-Azure Cosmos DB exposes 2 built-in role definitions: <code>Cosmos DB Built-in Data Reader</code> and <code>Cosmos DB Built-in Data Contributor</code>. However, Azure portal support for role management is not available yet. Check <a href="https://docs.microsoft.com/azure/cosmos-db/how-to-setup-rbac">here</a> for more details about the permission model, role definitions, and role assignment.
+Azure Cosmos DB exposes 2 built-in role definitions: <code>Cosmos DB Built-in Data Reader</code> and <code>Cosmos DB Built-in Data Contributor</code>. However, Azure portal support for role management isn&#8217;t available yet. Check <a href="https://docs.microsoft.com/azure/cosmos-db/how-to-setup-rbac">here</a> for more details about the permission model, role definitions, and role assignment.
 </td>
 </tr>
 </table>
@@ -511,15 +499,15 @@ Azure Cosmos DB exposes 2 built-in role definitions: <code>Cosmos DB Built-in Da
 </div>
 </div>
 <div class="sect3">
-<h4 id="_sas_token"><a class="link" href="#_sas_token">SAS Token</a></h4>
+<h4 id="_sas_tokens"><a class="link" href="#_sas_tokens">SAS tokens</a></h4>
 <div class="paragraph">
 <p>It&#8217;s also configurable for services support authenticating with Shared Access Signature (SAS). <code>spring.cloud.azure.&lt;azure-service&gt;.sas-token</code> is the property to configure. For example, using <code>spring.cloud.azure.storage.blob.sas-token</code> to authenticate to Storage Blob service.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_connection_string"><a class="link" href="#_connection_string">Connection String</a></h4>
+<h4 id="_connection_strings"><a class="link" href="#_connection_strings">Connection strings</a></h4>
 <div class="paragraph">
-<p>Connection string are supported by some Azure services to provide connection information as well as credentials. To connect to those Azure services using connection string, just configure <code>spring.cloud.azure.&lt;azure-service&gt;.connection-string</code> will do. For example, <code>spring.cloud.azure.eventhubs.connection-string</code> to connect to Event Hubs service.</p>
+<p>Connection strings are supported by some Azure services to provide connection information as well as credentials. To connect to those Azure services using a connection string, just configure <code>spring.cloud.azure.&lt;azure-service&gt;.connection-string</code> will do. For example, <code>spring.cloud.azure.eventhubs.connection-string</code> to connect to Event Hubs service.</p>
 </div>
 </div>
 </div>

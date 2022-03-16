@@ -668,7 +668,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as MSI, configure below properties in application.yml:</p>
+<p>For credentials as managed identites, configure below properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -678,7 +678,8 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
   cloud:
     azure:
       credential:
-        managed-identity-client-id: ${AZURE_MANAGED_IDENTITY_CLIENT_ID}
+        managed-identity-enabled: true
+        client-id: ${AZURE_MANAGED_IDENTITY_CLIENT_ID} # Only needed when using a user-assigned managed identity
       eventhubs:
         namespace: ${EVENTHUB_NAMESPACE}
         processor:
@@ -931,7 +932,7 @@ public void producerError(Message&lt;?&gt; message) {
 <div class="sect4">
 <h5 id="_multi_binder_support"><a class="link" href="#_multi_binder_support">Multi Binder Support</a></h5>
 <div class="paragraph">
-<p>Connection to mutiple Event Hubs namespaces is also supported by using multi binders.This sample takes connection string as example. Credentials of service priciple and MSI are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
+<p>Connection to mutiple Event Hubs namespaces is also supported by using multi binders.This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
 </div>
 <div class="paragraph">
 <p>Step 1. To use multiple binders of EventHubs, we need to configure below properties in application.yml</p>
@@ -1432,7 +1433,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as MSI, configure below properties in application.yml:</p>
+<p>For credentials as managed identities, configure below properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -1442,7 +1443,8 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
   cloud:
     azure:
       credential:
-        managed-identity-client-id: ${MANAGED_IDENTITY_CLIENT_ID}
+        managed-identity-enabled: true
+        client-id: ${MANAGED_IDENTITY_CLIENT_ID} # Only needed when using a user-assigned managed identity
       servicebus:
         namespace: ${SERVICEBUS_NAMESPACE}
     stream:
@@ -1645,7 +1647,7 @@ When setting the partiton key, the priority of message header is higher than Spr
 <div class="sect4">
 <h5 id="_multi_binder_support_2"><a class="link" href="#_multi_binder_support_2">Multi Binder Support</a></h5>
 <div class="paragraph">
-<p>Connection to mutiple Service Bus namespaces is also supported by using multi binders.This sample takes connection string as example. Credentials of service priciple and MSI are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
+<p>Connection to mutiple Service Bus namespaces is also supported by using multi binders. This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
 </div>
 <div class="paragraph">
 <p>Step 1. To use multiple binders of ServiceBus, we need to configure below properties in application.yml</p>
