@@ -259,17 +259,12 @@ This guide is intended to assist in the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter[spring-cloud-azure-starter] from
 version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter[azure-spring-boot-starter].
 
-===== Introduction
-Please refer to the <<migration-guide-introduction, introduction>> section for details.
-
-===== Migration benefits
-Please refer to the <<migration-guide-benefits, migration benefits>> section for details.
-
-===== Naming changes
-Please refer to the <<migration-guide-naming, naming changes>> section for details.
-
-===== Bom
-Please refer to the <<migration-guide-bom, bom>> section for details.
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
 
 [#dependency-spring-cloud-azure-starter]
 ===== Dependency changes
@@ -284,33 +279,17 @@ crash.
 |org.springframework.boot:spring-boot-starter-validation | Please include the validation starter if you want to use Hibernate Validator.
 |===
 
-===== Authentication
-Please refer to the <<migration-guide-authentication, authentication>> section for details.
-
-===== Configuration properties
-
-====== Properties migration
-Please refer to the <<migration-guide-properties-migration, properties migration>> section for how to leverage `spring-boot-properties-migrator` during migration.
-
-====== Global configurations
-Please refer to the <<migration-guide-global-configurations, global configurations>> section for the global and common configuration changes.
-
 ==== From azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory
 This guide is intended to assist in the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-active-directory[spring-cloud-azure-starter-active-directory] from
 version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-active-directory[azure-spring-boot-starter-active-directory].
 
-===== Introduction
-Please refer to the <<migration-guide-introduction, introduction>> section for details.
-
-===== Migration benefits
-Please refer to the <<migration-guide-benefits, migration benefits>> section for details.
-
-===== Naming changes
-Please refer to the <<migration-guide-naming, naming changes>> section for details.
-
-===== Bom
-Please refer to the <<migration-guide-bom, bom>> section for details.
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
 
 [#dependency-spring-cloud-azure-starter-active-directory]
 ===== Dependency changes
@@ -325,19 +304,8 @@ crash.
 |org.springframework.boot:spring-boot-starter-validation |Please include the validation starter if you want to use Hibernate Validator.
 |===
 
-===== Authentication
-Please refer to the <<migration-guide-authentication, authentication>> section for details.
-
-===== Configuration properties
-
-====== Properties migration
-Please refer to the <<migration-guide-properties-migration, properties migration>> section for how to leverage `spring-boot-properties-migrator` during migration.
-
-====== Global configurations
-Please refer to the <<migration-guide-global-configurations, global configurations>> section for the global and common configuration changes.
-
 [#configuration-spring-cloud-azure-starter-active-directory]
-====== SDK Configuration changes
+===== SDK Configuration changes
 
 . All configuration property names changed the prefix from `azure.activedirectory` to `spring.cloud.azure.active-directory`.
 . New property `spring.cloud.azure.active-directory.enabled=true` is necessary to enable related features.
@@ -399,17 +367,12 @@ This guide is intended to assist in the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-active-directory-b2c[spring-cloud-azure-starter-active-directory-b2c] from
 version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-active-directory-b2c[azure-spring-boot-starter-active-directory-b2c].
 
-===== Introduction
-Please refer to the <<migration-guide-introduction, introduction>> section for details.
-
-===== Migration benefits
-Please refer to the <<migration-guide-benefits, migration benefits>> section for details.
-
-===== Naming changes
-Please refer to the <<migration-guide-naming, naming changes>> section for details.
-
-===== Bom
-Please refer to the <<migration-guide-bom, bom>> section for details.
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
 
 [#dependency-spring-cloud-azure-starter-active-directory-b2c]
 ===== Dependency changes
@@ -424,19 +387,8 @@ crash.
 |org.springframework.boot:spring-boot-starter-validation |Please include the validation starter if you want to use Hibernate Validator.
 |===
 
-===== Authentication
-Please refer to the <<migration-guide-authentication, authentication>> section for details.
-
-===== Configuration properties
-
-====== Properties migration
-Please refer to the <<migration-guide-properties-migration, properties migration>> section for how to leverage `spring-boot-properties-migrator` during migration.
-
-====== Global configurations
-Please refer to the <<migration-guide-global-configurations, global configurations>> section for the global and common configuration changes.
-
 [#configuration-spring-cloud-azure-starter-active-directory-b2c]
-====== SDK Configuration changes
+===== SDK Configuration changes
 
 . All configuration property names changed the prefix from `azure.activedirectory.b2c` to `spring.cloud.azure.active-directory.b2c`.
 . New property `spring.cloud.azure.active-directory.b2c.enabled=true` is necessary to enable related features.
@@ -475,31 +427,15 @@ This guide is intended to assist in the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-keyvault-secrets[spring-cloud-azure-starter-keyvault-secrets] from
 version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-keyvault-secrets[azure-spring-boot-starter-keyvault-secrets].
 
-===== Introduction
-Please refer to the <<migration-guide-introduction, introduction>> section for details.
-
-===== Migration benefits
-Please refer to the <<migration-guide-benefits, migration benefits>> section for details.
-
-===== Naming changes
-Please refer to the <<migration-guide-naming, naming changes>> section for details.
-
-===== Bom
-Please refer to the <<migration-guide-bom, bom>> section for details.
-
-===== Authentication
-Please refer to the <<migration-guide-authentication, authentication>> section for details.
-
-===== Configuration properties
-
-====== Properties migration
-Please refer to the <<migration-guide-properties-migration, properties migration>> section for how to leverage `spring-boot-properties-migrator` during migration.
-
-====== Global configurations
-Please refer to the <<migration-guide-global-configurations, global configurations>> section for the global and common configuration changes.
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
 
 [#configuration-spring-cloud-azure-starter-keyvault-secrets]
-====== SDK Configuration changes
+===== SDK Configuration changes
 
 IMPORTANT: If you're using the new `spring-cloud-azure-starter-keyvault-secrets`, you have to set `spring.cloud.azure.keyvault.secret.property-source-enabled=true` to enable property source.
 
@@ -538,25 +474,12 @@ This guide is intended to assist in the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-servicebus-jms[spring-cloud-azure-starter-servicebus-jms] from
 version 2 of link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-servicebus-jms[spring-cloud-azure-starter-servicebus-jms].
 
-===== Introduction
-Please refer to the <<migration-guide-introduction, introduction>> section for details.
-
-===== Migration benefits
-Please refer to the <<migration-guide-benefits, migration benefits>> section for details.
-
-===== Naming changes
-Please refer to the <<migration-guide-naming, naming changes>> section for details.
-
-===== Bom
-Please refer to the <<migration-guide-bom, bom>> section for details.
-
-===== Configuration properties
-
-====== Properties migration
-Please refer to the <<migration-guide-properties-migration, properties migration>> section for how to leverage `spring-boot-properties-migrator` during migration.
-
-====== Global configurations
-Please refer to the <<migration-guide-global-configurations, global configurations>> section for the global and common configuration changes.
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
 
 [#configuration-spring-cloud-azure-starter-servicebus-jms]
 ===== SDK Configuration changes
@@ -568,31 +491,15 @@ This guide is intended to assist in the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-data-cosmos[spring-cloud-azure-starter-data-cosmos] from
 version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-cosmos[azure-spring-boot-starter-cosmos].
 
-===== Introduction
-Please refer to the <<migration-guide-introduction, introduction>> section for details.
-
-===== Migration benefits
-Please refer to the <<migration-guide-benefits, migration benefits>> section for details.
-
-===== Naming changes
-Please refer to the <<migration-guide-naming, naming changes>> section for details.
-
-===== Bom
-Please refer to the <<migration-guide-bom, bom>> section for details.
-
-===== Authentication
-Please refer to the <<migration-guide-authentication, authentication>> section for details.
-
-===== Configuration properties
-
-====== Properties migration
-Please refer to the <<migration-guide-properties-migration, properties migration>> section for how to leverage `spring-boot-properties-migrator` during migration.
-
-====== Global configurations
-Please refer to the <<migration-guide-global-configurations, global configurations>> section for the global and common configuration changes.
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.Please refer to the <<migration-guide-global-configurations, global configurations>> section for the global and common configuration changes.
 
 [#configuration-spring-cloud-azure-starter-data-cosmos]
-====== SDK Configuration changes
+===== SDK Configuration changes
 
 All configuration property names changed the prefix from `azure.cosmos` to `spring.cloud.azure.cosmos`.
 
@@ -613,31 +520,15 @@ This guide is intended to assist in the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-storage-blob[spring-cloud-azure-starter-storage-blob] from
 version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-storage[azure-spring-boot-starter-storage].
 
-===== Introduction
-Please refer to the <<migration-guide-introduction, introduction>> section for details.
-
-===== Migration benefits
-Please refer to the <<migration-guide-benefits, migration benefits>> section for details.
-
-===== Naming changes
-Please refer to the <<migration-guide-naming, naming changes>> section for details.
-
-===== Bom
-Please refer to the <<migration-guide-bom, bom>> section for details.
-
-===== Authentication
-Please refer to the <<migration-guide-authentication, authentication>> section for details.
-
-===== Configuration properties
-
-====== Properties migration
-Please refer to the <<migration-guide-properties-migration, properties migration>> section for how to leverage `spring-boot-properties-migrator` during migration.
-
-====== Global configurations
-Please refer to the <<migration-guide-global-configurations, global configurations>> section for the global and common configuration changes.
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
 
 [#configuration-spring-cloud-azure-starter-storage-blob]
-====== SDK Configuration changes
+===== SDK Configuration changes
 
 All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.blob`.
 
@@ -667,31 +558,15 @@ This guide is intended to assist in the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-storage-file-share[spring-cloud-azure-starter-storage-file-share] from
 version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-storage[azure-spring-boot-starter-storage].
 
-===== Introduction
-Please refer to the <<migration-guide-introduction, introduction>> section for details.
-
-===== Migration benefits
-Please refer to the <<migration-guide-benefits, migration benefits>> section for details.
-
-===== Naming changes
-Please refer to the <<migration-guide-naming, naming changes>> section for details.
-
-===== Bom
-Please refer to the <<migration-guide-bom, bom>> section for details.
-
-===== Authentication
-Please refer to the <<migration-guide-authentication, authentication>> section for details.
-
-===== Configuration properties
-
-====== Properties migration
-Please refer to the <<migration-guide-properties-migration, properties migration>> section for how to leverage `spring-boot-properties-migrator` during migration.
-
-====== Global configurations
-Please refer to the <<migration-guide-global-configurations, global configurations>> section for the global and common configuration changes.
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
 
 [#configuration-spring-cloud-azure-starter-storage-file-share]
-====== SDK Configuration changes
+===== SDK Configuration changes
 
 All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.fileshare`.
 
@@ -720,28 +595,12 @@ This guide is intended to assist in the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-integration-eventhubs[spring-cloud-azure-starter-integration-eventhubs] from
 version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-cloud-starter-eventhubs[azure-spring-cloud-starter-eventhubs].
 
-===== Introduction
-Please refer to the <<migration-guide-introduction, introduction>> section for details.
-
-===== Migration benefits
-Please refer to the <<migration-guide-benefits, migration benefits>> section for details.
-
-===== Naming changes
-Please refer to the <<migration-guide-naming, naming changes>> section for details.
-
-===== Bom
-Please refer to the <<migration-guide-bom, bom>> section for details.
-
-===== Authentication
-Please refer to the <<migration-guide-authentication, authentication>> section for details.
-
-===== Configuration properties
-
-====== Properties migration
-Please refer to the <<migration-guide-properties-migration, properties migration>> section for how to leverage `spring-boot-properties-migrator` during migration.
-
-====== Global configurations
-Please refer to the <<migration-guide-global-configurations, global configurations>> section for the global and common configuration changes.
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
 
 [#configuration-spring-cloud-azure-starter-integration-eventhubs]
 ===== SDK Configuration changes
@@ -908,28 +767,12 @@ This guide is intended to assist in the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-integration-servicebus[spring-cloud-azure-starter-integration-servicebus] from
 version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-cloud-starter-servicebus[azure-spring-cloud-starter-servicebus].
 
-===== Introduction
-Please refer to the <<migration-guide-introduction, introduction>> section for details.
-
-===== Migration benefits
-Please refer to the <<migration-guide-benefits, migration benefits>> section for details.
-
-===== Naming changes
-Please refer to the <<migration-guide-naming, naming changes>> section for details.
-
-===== Bom
-Please refer to the <<migration-guide-bom, bom>> section for details.
-
-===== Authentication
-Please refer to the <<migration-guide-authentication, authentication>> section for details.
-
-===== Configuration properties
-
-====== Properties migration
-Please refer to the <<migration-guide-properties-migration, properties migration>> section for how to leverage `spring-boot-properties-migrator` during migration.
-
-====== Global configurations
-Please refer to the <<migration-guide-global-configurations, global configurations>> section for the global and common configuration changes.
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
 
 [#configuration-spring-cloud-azure-starter-integration-servicebus]
 ===== SDK Configuration changes
@@ -1066,28 +909,12 @@ This guide is intended to assist in the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-integration-storage-queue[spring-cloud-azure-starter-integration-storage-queue] from
 version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-cloud-starter-storage-queue[azure-spring-cloud-starter-storage-queue].
 
-===== Introduction
-Please refer to the <<migration-guide-introduction, introduction>> section for details.
-
-===== Migration benefits
-Please refer to the <<migration-guide-benefits, migration benefits>> section for details.
-
-===== Naming changes
-Please refer to the <<migration-guide-naming, naming changes>> section for details.
-
-===== Bom
-Please refer to the <<migration-guide-bom, bom>> section for details.
-
-===== Authentication
-Please refer to the <<migration-guide-authentication, authentication>> section for details.
-
-===== Configuration properties
-
-====== Properties migration
-Please refer to the <<migration-guide-properties-migration, properties migration>> section for how to leverage `spring-boot-properties-migrator` during migration.
-
-====== Global configurations
-Please refer to the <<migration-guide-global-configurations, global configurations>> section for the global and common configuration changes.
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
 
 [#configuration-spring-cloud-azure-starter-integration-storage-queue]
 ===== SDK Configuration changes
@@ -1133,28 +960,12 @@ This guide is intended to assist in the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-stream-binder-eventhubs[spring-cloud-azure-stream-binder-eventhubs] from
 version 2 of link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-stream-binder-eventhubs[spring-cloud-azure-stream-binder-eventhubs].
 
-===== Introduction
-Please refer to the <<migration-guide-introduction, introduction>> section for details.
-
-===== Migration benefits
-Please refer to the <<migration-guide-benefits, migration benefits>> section for details.
-
-===== Naming changes
-Please refer to the <<migration-guide-naming, naming changes>> section for details.
-
-===== Bom
-Please refer to the <<migration-guide-bom, bom>> section for details.
-
-===== Authentication
-Please refer to the <<migration-guide-authentication, authentication>> section for details.
-
-===== Configuration properties
-
-====== Properties migration
-Please refer to the <<migration-guide-properties-migration, properties migration>> section for how to leverage `spring-boot-properties-migrator` during migration.
-
-====== Global configurations
-Please refer to the <<migration-guide-global-configurations, global configurations>> section for the global and common configuration changes.
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
 
 [#configuration-spring-cloud-azure-stream-binder-eventhubs]
 ===== SDK Configuration changes
@@ -1262,28 +1073,12 @@ link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-strea
 version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-cloud-stream-binder-servicebus-queue[azure-spring-cloud-stream-binder-servicebus-queue]
 or link:https://search.maven.org/artifact/com.azure.spring/azure-spring-cloud-stream-binder-servicebus-topic[azure-spring-cloud-stream-binder-servicebus-topic].
 
-===== Introduction
-Please refer to the <<migration-guide-introduction, introduction>> section for details.
-
-===== Migration benefits
-Please refer to the <<migration-guide-benefits, migration benefits>> section for details.
-
-===== Naming changes
-Please refer to the <<migration-guide-naming, naming changes>> section for details.
-
-===== Bom
-Please refer to the <<migration-guide-bom, bom>> section for details.
-
-===== Authentication
-Please refer to the <<migration-guide-authentication, authentication>> section for details.
-
-===== Configuration properties
-
-====== Properties migration
-Please refer to the <<migration-guide-properties-migration, properties migration>> section for how to leverage `spring-boot-properties-migrator` during migration.
-
-====== Global configurations
-Please refer to the <<migration-guide-global-configurations, global configurations>> section for the global and common configuration changes.
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
 
 [#configuration-spring-cloud-azure-stream-binder-servicebus]
 ===== SDK Configuration changes
