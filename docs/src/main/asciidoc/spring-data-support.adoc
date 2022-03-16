@@ -58,9 +58,9 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 |  
 |Client secret to use when performing service principal authentication with Azure. 
 
-|*spring.cloud.azure.cosmos*.credential.managed-identity-client-id
+|*spring.cloud.azure.cosmos*.credential.managed-identity-enabled
 |  
-|Client id to use when using managed identity to authenticate with Azure. 
+|Whether to enable managed identity.
 
 |*spring.cloud.azure.cosmos*.credential.password
 |  
