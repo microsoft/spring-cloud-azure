@@ -1,4 +1,4 @@
-== Autoconfigure Azure SDK clients
+== Autoconfigure Azure SDK Clients
 
 Spring Boot simplifies the Spring Cloud Azure development experience. Spring Cloud Azure starters are a set of convenient dependency descriptors to include in your application. They handle the object instantiation and configuration logic, so you don’t have to. Every starter depends on the `spring-cloud-azure-starter` to provide critical bits of configuration, like the Azure cloud environment and authentication information. You can configure these as properties in, for example, a yaml file:
 

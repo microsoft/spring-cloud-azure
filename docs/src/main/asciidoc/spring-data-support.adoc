@@ -80,7 +80,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 |===
 
 
-=== Key concepts
+=== Key Concepts
 * Spring Data CrudRepository and ReactiveCrudRepository basic CRUD functionality
   ** save
   ** findAll
@@ -103,7 +103,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 
 === Basic Usage
 
-==== Use private key to access CosmosDB
+==== Use Private Key to Access CosmosDB
 The simplest way to connect CosmosDB with `spring-cloud-azure-starter-data-cosmos` is primary key, add below properties, and you are good to go.
 
 [source,yaml]
@@ -117,7 +117,7 @@ spring:
         database: ${AZURE_COSMOS_DATABASE}
 ----
 
-==== Define an entity
+==== Define an Entity
 Define a simple entity as Document in Cosmos DB.
 ----
 @Container(containerName = "mycollection")
@@ -182,7 +182,7 @@ public class User {
 
 Annotation `@Container(containerName = "mycollection")` is used to specify the collection name of your document in Azure Cosmos DB.
 
-==== Create repositories
+==== Create Repositories
 Extends ReactiveCosmosRepository interface, which provides Spring Data repository support.
 
 ----
@@ -195,7 +195,7 @@ public interface UserRepository extends ReactiveCosmosRepository<User, String> {
 
 So far ReactiveCosmosRepository provides basic save, delete and find operations. More operations will be supported later.
 
-==== Create an Application class
+==== Create an Application Class
 Here create an application class with all the components
 
 ----

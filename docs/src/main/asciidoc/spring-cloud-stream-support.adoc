@@ -12,7 +12,7 @@ Current binder implementations include:
 
 === Spring Cloud Stream Binder for Azure Event Hubs
 
-==== Key concepts
+==== Key Concepts
 The Spring Cloud Stream Binder for Azure Event Hubs provides the binding implementation for the Spring Cloud Stream framework.
 This implementation uses Spring Integration Event Hubs Channel Adapters at its foundation. From design's perspective,
 Event Hubs is similar as Kafka. Also, Event Hubs could be accessed via Kafka API. If your project has tight dependency
@@ -238,7 +238,7 @@ These properties are exposed via `EventHubsProducerProperties`.
 The above <<eventhubs-connection-configration, connection>> and <<Configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder producer, which can be configured with the prefix `spring.cloud.stream.eventhubs.bindings.<binding-name>.producer.`.
 
 ==== Basic Usage
-===== Sending and receiving messages from/to Event Hubs
+===== Sending and Receiving Messages from/to Event Hubs
 Step 1. Fill the configuration options with credential information.
 
 - For credentials as connection string, configure below properties in application.yml:
@@ -374,7 +374,7 @@ public Supplier<Message<String>> supply() {
 }
 ----
 
-===== Partitioning support
+===== Partitioning Support
 A `PartitionSupplier` with user-provided partition information will be created to configure the partition information about the message to be sent, the following is the process of obtaining different priorities of the partition ID and key:
 
 image:https://user-images.githubusercontent.com/63028776/145347877-fa8afa90-ec28-4c0a-8277-63b9fdaa5d0f.png[]
@@ -469,7 +469,7 @@ public Supplier<Message<String>> supply() {
 
 NOTE: In the batch-consuming mode, the default content type of Spring Cloud Stream binder is `application/json`, so make sure the message payload is aligned with the content type. For example, when using the default content type of `application/json` to receive messages with `String` payload, the payload should be JSON String, surrounded with double quotes for the original String text. While for `text/plain` content type, it can be a `String` object directly. For more details, please refer to the official doc of {content-type-negotiation}[Spring Cloud Stream Content Type Negotiation].
 
-===== Error channels
+===== Error Channels
 - Consumer error channel
 
 This channel is open by default, you can handle the error message in this way:
@@ -513,7 +513,7 @@ public void producerError(Message<?> message) {
 ----
 
 [#scs-eh-headers]
-===== Event Hubs message headers
+===== Event Hubs Message Headers
 See the <<si-eh-headers, Event Hubs message headers>> for the basic message headers supported.
 
 ===== Multi Binder Support
@@ -649,7 +649,7 @@ Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/
 
 === Spring Cloud Stream Binder for Azure Service Bus
 
-==== Key concepts
+==== Key Concepts
 The Spring Cloud Stream Binder for Azure Service Bus provides the binding implementation for the Spring Cloud Stream Framework.
 This implementation uses Spring Integration Service Bus Channel Adapters at its foundation.
 
@@ -802,7 +802,7 @@ IMPORTANT: When using the binding producer, property of `spring.cloud.stream.ser
 The above <<servicebus-connection-configration, connection>> and <<Configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder producer, which can be configured with the prefix `spring.cloud.stream.servicebus.bindings.<binding-name>.producer.`.
 
 ==== Basic Usage
-===== Sending and receiving messages from/to Service Bus
+===== Sending and Receiving Messages from/to Service Bus
 Step 1. Fill the configuration options with credential information.
 
 - For credentials as connection string, configure below properties in application.yml:
@@ -929,7 +929,7 @@ public Supplier<Message<String>> supply() {
 }
 ----
 
-===== Partition key support
+===== Partition Key Support
 
 The binder supports link:https://docs.microsoft.com/azure/service-bus-messaging/service-bus-partitioning[Service Bus partitioning] by allowing setting partition key and session id in the message header. This section introduces how to set partition key for messages.
 
@@ -948,7 +948,7 @@ public Supplier<Message<String>> generate() {
 }
 ----
 
-===== Session support
+===== Session Support
 
 The binder supports link:https://docs.microsoft.com/azure/service-bus-messaging/message-sessions[message sessions] of Service Bus. Session id of a message could be set via the message header.
 
@@ -968,7 +968,7 @@ public Supplier<Message<String>> generate() {
 NOTE: According to link:https://docs.microsoft.com/azure/service-bus-messaging/service-bus-partitioning[Service Bus partitioning], session id has higher priority than partition key. So when both of `ServiceBusMessageHeaders#SESSION_ID` and `ServiceBusMessageHeaders#PARTITION_KEY` (or `AzureHeaders#PARTITION_KEY`) headers are set,
 the value of the session id will eventually be used to overwrite the value of the partition key.
 
-===== Error channels
+===== Error Channels
 - Consumer error channel
 
 This channel is open by default, and a default consumer error channel handler is used to send failed messages to the dead-letter queue when `spring.cloud.stream.servicebus.bindings.<binding-name>.consumer.requeue-rejected` is enabled, otherwise the failed messages will be abandoned.
@@ -1015,7 +1015,7 @@ public void producerError(Message<?> message) {
 ----
 
 [#scs-sb-headers]
-===== Service Bus message headers
+===== Service Bus Message Headers
 
 See the <<si-sb-headers, Service Bus message headers>> for the basic message headers supported.
 
