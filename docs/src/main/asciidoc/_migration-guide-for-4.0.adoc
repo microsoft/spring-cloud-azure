@@ -421,7 +421,7 @@ the prefix remains to be as `spring.cloud.azure.servicebus`.
 |retry-options.delay |retry.delay |Duration
 |retry-options.max-delay |retry.max-delay |Duration
 |retry-options.try-timeout |retry.timeout |Duration
-|retry-options.retry-mode |Dropped, will be configured according to retry.backoff.multiplier |NA
+|retry-options.retry-mode |Dropped, will be configured according to retry.backoff.multiplier |N/A
 |===
 
 ===== From azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue

@@ -372,8 +372,8 @@ spring:
   cloud:
     azure:
       active-directory:
-        client-id: <client-id>
-        app-id-uri: <app-id-uri>
+        client-id: ${AZURE_CLIENT_ID}
+        app-id-uri: ${AZURE_APP_ID_URI}
 ----
 
 Both `client-id` and `app-id-uri` can be used to verify access token. `app-id-uri` can be got in Azure Portal:
