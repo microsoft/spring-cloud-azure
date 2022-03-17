@@ -197,7 +197,7 @@ window.onload = function() {
 <div class="sect2">
 <h3 id="_spring_integration_with_azure_event_hubs"><a class="link" href="#_spring_integration_with_azure_event_hubs">Spring Integration with Azure Event Hubs</a></h3>
 <div class="sect3">
-<h4 id="_key_concepts"><a class="link" href="#_key_concepts">Key concepts</a></h4>
+<h4 id="_key_concepts"><a class="link" href="#_key_concepts">Key Concepts</a></h4>
 <div class="paragraph">
 <p>Azure Event Hubs is a big data streaming platform and event ingestion service. It can receive and process millions of events per second. Data sent to an event hub can be transformed and stored by using any real-time analytics provider or batching/storage adapters.</p>
 </div>
@@ -545,7 +545,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 </div>
 </div>
 <div class="sect4">
-<h5 id="receive-from-eh"><a class="link" href="#receive-from-eh">Receive messages from Azure Event Hubs</a></h5>
+<h5 id="receive-from-eh"><a class="link" href="#receive-from-eh">Receive Messages from Azure Event Hubs</a></h5>
 <div class="paragraph">
 <p>Step 1. Fill the credential configuration options.</p>
 </div>
@@ -614,7 +614,7 @@ class Demo {
 </div>
 </div>
 <div class="sect4">
-<h5 id="_configure_eventhubsmessageconverter_to_customize_objectmapper"><a class="link" href="#_configure_eventhubsmessageconverter_to_customize_objectmapper">Configure EventHubsMessageConverter to customize ObjectMapper</a></h5>
+<h5 id="_configure_eventhubsmessageconverter_to_customize_objectmapper"><a class="link" href="#_configure_eventhubsmessageconverter_to_customize_objectmapper">Configure EventHubsMessageConverter to Customize ObjectMapper</a></h5>
 <div class="paragraph">
 <p><code>EventHubsMessageConverter</code> is made as a configurable bean to allow users to customize ObjectMapper.</p>
 </div>
@@ -658,7 +658,7 @@ class Demo {
 </div>
 </div>
 <div class="sect4">
-<h5 id="si-eh-headers"><a class="link" href="#si-eh-headers">Event Hubs message headers</a></h5>
+<h5 id="si-eh-headers"><a class="link" href="#si-eh-headers">Event Hubs Message Headers</a></h5>
 <div class="paragraph">
 <p>The following table illustrates how Event Hubs message properties are mapped to Spring message headers. For Azure Event Hubs, message is called as <code>event</code>.</p>
 </div>
@@ -820,7 +820,7 @@ When publish messages, all the above batch headers will be removed from the mess
 <div class="sect2">
 <h3 id="_spring_integration_with_azure_service_bus"><a class="link" href="#_spring_integration_with_azure_service_bus">Spring Integration with Azure Service Bus</a></h3>
 <div class="sect3">
-<h4 id="_key_concepts_2"><a class="link" href="#_key_concepts_2">Key concepts</a></h4>
+<h4 id="_key_concepts_2"><a class="link" href="#_key_concepts_2">Key Concepts</a></h4>
 <div class="paragraph">
 <p>Spring Integration enables lightweight messaging within Spring-based applications and supports integration with external systems via declarative adapters.</p>
 </div>
@@ -923,7 +923,7 @@ developers can use <code>ServiceBusContainerProperties</code> for the configurat
 <div class="sect3">
 <h4 id="_basic_usage_2"><a class="link" href="#_basic_usage_2">Basic Usage</a></h4>
 <div class="sect4">
-<h5 id="_send_messages_to_azure_service_bus"><a class="link" href="#_send_messages_to_azure_service_bus">Send messages to Azure Service Bus</a></h5>
+<h5 id="_send_messages_to_azure_service_bus"><a class="link" href="#_send_messages_to_azure_service_bus">Send Messages to Azure Service Bus</a></h5>
 <div class="paragraph">
 <p>Step 1. Fill the credential configuration options.</p>
 </div>
@@ -1046,7 +1046,7 @@ set the entity type for the ServiceBusTemplate. This sample takes Service Bus Qu
 </div>
 </div>
 <div class="sect4">
-<h5 id="receive-from-sb"><a class="link" href="#receive-from-sb">Receive messages from Azure Service Bus</a></h5>
+<h5 id="receive-from-sb"><a class="link" href="#receive-from-sb">Receive Messages from Azure Service Bus</a></h5>
 <div class="paragraph">
 <p>Step 1. Fill the credential configuration options.</p>
 </div>
@@ -1114,13 +1114,13 @@ class Demo {
 </div>
 </div>
 <div class="sect4">
-<h5 id="_configure_servicebusmessageconverter_to_customize_objectmapper"><a class="link" href="#_configure_servicebusmessageconverter_to_customize_objectmapper">Configure ServiceBusMessageConverter to customize ObjectMapper</a></h5>
+<h5 id="_configure_servicebusmessageconverter_to_customize_objectmapper"><a class="link" href="#_configure_servicebusmessageconverter_to_customize_objectmapper">Configure ServiceBusMessageConverter to Customize ObjectMapper</a></h5>
 <div class="paragraph">
 <p><code>ServiceBusMessageConverter</code> is made as a configurable bean to allow users to customize ObjectMapper.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="si-sb-headers"><a class="link" href="#si-sb-headers">Service Bus message headers</a></h5>
+<h5 id="si-sb-headers"><a class="link" href="#si-sb-headers">Service Bus Message Headers</a></h5>
 <div class="paragraph">
 <p>For some Service Bus headers that can be mapped to multiple Spring header constants, the priority of different Spring headers is listed.</p>
 </div>
@@ -1223,7 +1223,7 @@ class Demo {
 </table>
 </div>
 <div class="sect4">
-<h5 id="_partition_key_support"><a class="link" href="#_partition_key_support">Partition key support</a></h5>
+<h5 id="_partition_key_support"><a class="link" href="#_partition_key_support">Partition Key Support</a></h5>
 <div class="paragraph">
 <p>This starter supports <a href="https://docs.microsoft.com/azure/service-bus-messaging/service-bus-partitioning">Service Bus partitioning</a> by allowing setting partition key and session id in the message header. This section introduces how to set partition key for messages.</p>
 </div>
@@ -1276,7 +1276,7 @@ When both <code>ServiceBusMessageHeaders.PARTITION_KEY</code> and <code>AzureHea
 </div>
 </div>
 <div class="sect4">
-<h5 id="_session_support"><a class="link" href="#_session_support">Session support</a></h5>
+<h5 id="_session_support"><a class="link" href="#_session_support">Session Support</a></h5>
 <div class="paragraph">
 <p>This example demonstrates how to manually set the session id of a message in the application.</p>
 </div>
@@ -1319,7 +1319,7 @@ the value of the session id will eventually be used to overwrite the value of th
 <div class="sect2">
 <h3 id="_spring_integration_with_azure_storage_queue"><a class="link" href="#_spring_integration_with_azure_storage_queue">Spring Integration with Azure Storage Queue</a></h3>
 <div class="sect3">
-<h4 id="_key_concepts_3"><a class="link" href="#_key_concepts_3">Key concepts</a></h4>
+<h4 id="_key_concepts_3"><a class="link" href="#_key_concepts_3">Key Concepts</a></h4>
 <div class="paragraph">
 <p>Azure Queue Storage is a service for storing large numbers of messages. You access messages from anywhere in the world via authenticated calls using HTTP or HTTPS. A queue message can be up to 64 KB in size. A queue may contain millions of messages, up to the total capacity limit of a storage account. Queues are commonly used to create a backlog of work to process asynchronously.</p>
 </div>
@@ -1543,7 +1543,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 </div>
 <div class="sect4">
-<h5 id="_receive_messages_from_azure_storage_queue"><a class="link" href="#_receive_messages_from_azure_storage_queue">Receive messages from Azure Storage Queue</a></h5>
+<h5 id="_receive_messages_from_azure_storage_queue"><a class="link" href="#_receive_messages_from_azure_storage_queue">Receive Messages from Azure Storage Queue</a></h5>
 <div class="paragraph">
 <p>Step 1. Fill the credential configuration options.</p>
 </div>

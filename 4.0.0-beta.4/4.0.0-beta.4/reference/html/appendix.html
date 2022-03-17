@@ -165,24 +165,24 @@ window.onload = function() {
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#_configuration_properties">Appendix A: Configuration Properties</a></li>
-<li><a href="#migration-guide-for-4-0">Appendix B: Migration guide for 4.0</a>
+<li><a href="#migration-guide-for-4-0">Appendix B: Migration Guide for 4.0</a>
 <ul class="sectlevel2">
 <li><a href="#migration-guide-introduction">Introduction</a></li>
-<li><a href="#migration-guide-benefits">Migration benefits</a></li>
+<li><a href="#migration-guide-benefits">Migration Benefits</a></li>
 <li><a href="#_overview">Overview</a></li>
-<li><a href="#migration-guide-naming">Naming changes</a></li>
+<li><a href="#migration-guide-naming">Naming Changes</a></li>
 <li><a href="#migration-guide-bom">BOM</a></li>
-<li><a href="#_artifact_changes_renamed_added_deleted">Artifact changes: renamed / added / deleted</a></li>
-<li><a href="#_dependency_changes">Dependency changes</a></li>
+<li><a href="#_artifact_changes_renamed_added_deleted">Artifact Changes: Renamed / Added / Deleted</a></li>
+<li><a href="#_dependency_changes">Dependency Changes</a></li>
 <li><a href="#migration-guide-authentication">Authentication</a></li>
-<li><a href="#_configuration_properties_2">Configuration properties</a></li>
-<li><a href="#_api_breaking_changes">API breaking changes</a></li>
-<li><a href="#_library_changes">Library changes</a></li>
+<li><a href="#_configuration_properties_2">Configuration Properties</a></li>
+<li><a href="#_api_breaking_changes">API Breaking Changes</a></li>
+<li><a href="#_library_changes">Library Changes</a></li>
 </ul>
 </li>
 <li><a href="#_known_issues">Appendix C: Known Issues</a>
 <ul class="sectlevel2">
-<li><a href="#_error_logs_when_using_defaultazurecredential">Error logs when using DefaultAzureCredential</a></li>
+<li><a href="#_error_logs_when_using_defaultazurecredential">Error Logs When Using Defaultazurecredential</a></li>
 </ul>
 </li>
 </ul>
@@ -5846,7 +5846,7 @@ window.onload = function() {
 </div>
 </div>
 <div class="sect1">
-<h2 id="migration-guide-for-4-0"><a class="link" href="#migration-guide-for-4-0">Appendix B: Migration guide for 4.0</a></h2>
+<h2 id="migration-guide-for-4-0"><a class="link" href="#migration-guide-for-4-0">Appendix B: Migration Guide for 4.0</a></h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="migration-guide-introduction"><a class="link" href="#migration-guide-introduction">Introduction</a></h3>
@@ -5870,7 +5870,7 @@ or <code>com.azure.spring:azure-spring-integration-*</code> package is assumed.<
 </div>
 </div>
 <div class="sect2">
-<h3 id="migration-guide-benefits"><a class="link" href="#migration-guide-benefits">Migration benefits</a></h3>
+<h3 id="migration-guide-benefits"><a class="link" href="#migration-guide-benefits">Migration Benefits</a></h3>
 <div class="paragraph">
 <p>A natural question to ask when considering whether to adopt a new version or library is its benefits. As Azure has
 matured and been embraced by a more diverse group of developers, we&#8217;ve been focused on learning the patterns and
@@ -5939,7 +5939,7 @@ projects, for example Spring Boot, Spring Integration, Spring Cloud Stream, etc.
 </div>
 </div>
 <div class="sect2">
-<h3 id="migration-guide-naming"><a class="link" href="#migration-guide-naming">Naming changes</a></h3>
+<h3 id="migration-guide-naming"><a class="link" href="#migration-guide-naming">Naming Changes</a></h3>
 <div class="paragraph">
 <p>There has never been a consistent or official name to call all the Spring Cloud Azure libraries, some of them were
 called <code>Azure Spring Boot</code> and some of them <code>Spring on Azure</code>, and all these names will make developer confused. Since
@@ -5973,7 +5973,7 @@ dependencyManagement of your project to benefit from the dependency management.<
 </div>
 </div>
 <div class="sect2">
-<h3 id="_artifact_changes_renamed_added_deleted"><a class="link" href="#_artifact_changes_renamed_added_deleted">Artifact changes: renamed / added / deleted</a></h3>
+<h3 id="_artifact_changes_renamed_added_deleted"><a class="link" href="#_artifact_changes_renamed_added_deleted">Artifact Changes: Renamed / Added / Deleted</a></h3>
 <div class="paragraph">
 <p>Group Ids are the same for modern and legacy Spring Cloud Azure libraries, they&#8217;re all <code>com.azure.spring</code>. Artifact Ids
 for the modern Spring Cloud Azure libraries have changed. And according to which Spring project it belongs, Spring Boot,
@@ -6222,7 +6222,7 @@ spring-cloud-azure-starter-storage-file-share</p></td>
 </table>
 </div>
 <div class="sect2">
-<h3 id="_dependency_changes"><a class="link" href="#_dependency_changes">Dependency changes</a></h3>
+<h3 id="_dependency_changes"><a class="link" href="#_dependency_changes">Dependency Changes</a></h3>
 <div class="paragraph">
 <p>Some unnecessary dependencies were included in the legacy artifacts, which we&#8217;ve removed in the modern Spring Cloud
 Azure 4.0 libraries. Please make sure add the removed dependencies manually to your project to prevent unintentionally
@@ -6271,7 +6271,7 @@ When assign roles to the security principals to interact with Azure messaging se
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configuration_properties_2"><a class="link" href="#_configuration_properties_2">Configuration properties</a></h3>
+<h3 id="_configuration_properties_2"><a class="link" href="#_configuration_properties_2">Configuration Properties</a></h3>
 <div class="sect3">
 <h4 id="migration-guide-properties-migration"><a class="link" href="#migration-guide-properties-migration">Properties migration</a></h4>
 <div class="paragraph">
@@ -6314,7 +6314,7 @@ We&#8217;ve changed many configuration properties in this change, with using the
 </div>
 </div>
 <div class="sect3">
-<h4 id="migration-guide-global-configurations"><a class="link" href="#migration-guide-global-configurations">Global configurations</a></h4>
+<h4 id="migration-guide-global-configurations"><a class="link" href="#migration-guide-global-configurations">Global Configurations</a></h4>
 <div class="paragraph">
 <p>The modern <code>spring-cloud-azure-starter</code> allows developers to define properties that apply to all Azure SDKs in the
 namespace <code>spring.cloud.azure</code>. It wasn&#8217;t supported in the legacy <code>azure-spring-boot-starter</code>. The global
@@ -6360,7 +6360,7 @@ configurations can be divided into five categories:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_each_sdk_configurations"><a class="link" href="#_each_sdk_configurations">Each SDK configurations</a></h4>
+<h4 id="_each_sdk_configurations"><a class="link" href="#_each_sdk_configurations">Each SDK Configurations</a></h4>
 <div class="paragraph">
 <p>For the configuration options in SDK level, please refer to below links for details.</p>
 </div>
@@ -6410,7 +6410,7 @@ configurations can be divided into five categories:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_api_breaking_changes"><a class="link" href="#_api_breaking_changes">API breaking changes</a></h3>
+<h3 id="_api_breaking_changes"><a class="link" href="#_api_breaking_changes">API Breaking Changes</a></h3>
 <div class="paragraph">
 <p>For API breaking changes in each libraries, please refer to below links for details.</p>
 </div>
@@ -6447,7 +6447,7 @@ configurations can be divided into five categories:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_library_changes"><a class="link" href="#_library_changes">Library changes</a></h3>
+<h3 id="_library_changes"><a class="link" href="#_library_changes">Library Changes</a></h3>
 <div class="paragraph">
 <p>Breaking changes in each library are introduced as follows.</p>
 </div>
@@ -6481,7 +6481,7 @@ version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 </ul>
 </div>
 <div class="sect4">
-<h5 id="dependency-spring-cloud-azure-starter"><a class="link" href="#dependency-spring-cloud-azure-starter">Dependency changes</a></h5>
+<h5 id="dependency-spring-cloud-azure-starter"><a class="link" href="#dependency-spring-cloud-azure-starter">Dependency Changes</a></h5>
 <div class="paragraph">
 <p>Some unnecessary dependencies were included in the legacy artifacts, which we have removed in the modern Spring Cloud
 Azure 4.0 libraries. Please make sure add the removed dependencies manually to your project to prevent unintentionally
@@ -6538,7 +6538,7 @@ version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 </ul>
 </div>
 <div class="sect4">
-<h5 id="dependency-spring-cloud-azure-starter-active-directory"><a class="link" href="#dependency-spring-cloud-azure-starter-active-directory">Dependency changes</a></h5>
+<h5 id="dependency-spring-cloud-azure-starter-active-directory"><a class="link" href="#dependency-spring-cloud-azure-starter-active-directory">Dependency Changes</a></h5>
 <div class="paragraph">
 <p>Some unnecessary dependencies were included in the legacy artifacts, which we have removed in the modern Spring Cloud
 Azure 4.0 libraries. Please make sure add the removed dependencies manually to your project to prevent unintentionally
@@ -6565,7 +6565,7 @@ crash.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="configuration-spring-cloud-azure-starter-active-directory"><a class="link" href="#configuration-spring-cloud-azure-starter-active-directory">SDK Configuration changes</a></h5>
+<h5 id="configuration-spring-cloud-azure-starter-active-directory"><a class="link" href="#configuration-spring-cloud-azure-starter-active-directory">SDK Configuration Changes</a></h5>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -6716,7 +6716,7 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-active-directory<
 </table>
 </div>
 <div class="sect4">
-<h5 id="api-spring-cloud-azure-starter-active-directory"><a class="link" href="#api-spring-cloud-azure-starter-active-directory">API changes</a></h5>
+<h5 id="api-spring-cloud-azure-starter-active-directory"><a class="link" href="#api-spring-cloud-azure-starter-active-directory">API Changes</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 7. Class mapping from azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory</caption>
 <colgroup>
@@ -6788,7 +6788,7 @@ version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 </ul>
 </div>
 <div class="sect4">
-<h5 id="dependency-spring-cloud-azure-starter-active-directory-b2c"><a class="link" href="#dependency-spring-cloud-azure-starter-active-directory-b2c">Dependency changes</a></h5>
+<h5 id="dependency-spring-cloud-azure-starter-active-directory-b2c"><a class="link" href="#dependency-spring-cloud-azure-starter-active-directory-b2c">Dependency Changes</a></h5>
 <div class="paragraph">
 <p>Some unnecessary dependencies were included in the legacy artifacts, which we have removed in the modern Spring Cloud
 Azure 4.0 libraries. Please make sure add the removed dependencies manually to your project to prevent unintentionally
@@ -6815,7 +6815,7 @@ crash.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="configuration-spring-cloud-azure-starter-active-directory-b2c"><a class="link" href="#configuration-spring-cloud-azure-starter-active-directory-b2c">SDK Configuration changes</a></h5>
+<h5 id="configuration-spring-cloud-azure-starter-active-directory-b2c"><a class="link" href="#configuration-spring-cloud-azure-starter-active-directory-b2c">SDK Configuration Changes</a></h5>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -6899,7 +6899,7 @@ For properties like <code>credential.client-id</code>, <code>credential.client-s
 </div>
 </div>
 <div class="sect4">
-<h5 id="api-spring-cloud-azure-starter-active-directory-b2c"><a class="link" href="#api-spring-cloud-azure-starter-active-directory-b2c">API changes</a></h5>
+<h5 id="api-spring-cloud-azure-starter-active-directory-b2c"><a class="link" href="#api-spring-cloud-azure-starter-active-directory-b2c">API Changes</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 10. Class mapping from azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c</caption>
 <colgroup>
@@ -6955,7 +6955,7 @@ version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 </ul>
 </div>
 <div class="sect4">
-<h5 id="configuration-spring-cloud-azure-starter-keyvault-secrets"><a class="link" href="#configuration-spring-cloud-azure-starter-keyvault-secrets">SDK Configuration changes</a></h5>
+<h5 id="configuration-spring-cloud-azure-starter-keyvault-secrets"><a class="link" href="#configuration-spring-cloud-azure-starter-keyvault-secrets">SDK Configuration Changes</a></h5>
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -7105,7 +7105,7 @@ version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/spring-
 </ul>
 </div>
 <div class="sect4">
-<h5 id="configuration-spring-cloud-azure-starter-servicebus-jms"><a class="link" href="#configuration-spring-cloud-azure-starter-servicebus-jms">SDK Configuration changes</a></h5>
+<h5 id="configuration-spring-cloud-azure-starter-servicebus-jms"><a class="link" href="#configuration-spring-cloud-azure-starter-servicebus-jms">SDK Configuration Changes</a></h5>
 <div class="paragraph">
 <p>Configuration type for <code>spring.jms.servicebus.idle-timeout</code> changed from <code>long</code>(milliseconds) to <code>Duration</code> pattern for readability.</p>
 </div>
@@ -7141,7 +7141,7 @@ version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 </ul>
 </div>
 <div class="sect4">
-<h5 id="configuration-spring-cloud-azure-starter-data-cosmos"><a class="link" href="#configuration-spring-cloud-azure-starter-data-cosmos">SDK Configuration changes</a></h5>
+<h5 id="configuration-spring-cloud-azure-starter-data-cosmos"><a class="link" href="#configuration-spring-cloud-azure-starter-data-cosmos">SDK Configuration Changes</a></h5>
 <div class="paragraph">
 <p>All configuration property names changed the prefix from <code>azure.cosmos</code> to <code>spring.cloud.azure.cosmos</code>.</p>
 </div>
@@ -7216,7 +7216,7 @@ version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 </ul>
 </div>
 <div class="sect4">
-<h5 id="configuration-spring-cloud-azure-starter-storage-blob"><a class="link" href="#configuration-spring-cloud-azure-starter-storage-blob">SDK Configuration changes</a></h5>
+<h5 id="configuration-spring-cloud-azure-starter-storage-blob"><a class="link" href="#configuration-spring-cloud-azure-starter-storage-blob">SDK Configuration Changes</a></h5>
 <div class="paragraph">
 <p>All configuration property names changed the prefix from <code>azure.storage</code> to <code>spring.cloud.azure.storage.blob</code>.</p>
 </div>
@@ -7249,7 +7249,7 @@ version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 </table>
 </div>
 <div class="sect4">
-<h5 id="api-spring-cloud-azure-starter-storage-blob"><a class="link" href="#api-spring-cloud-azure-starter-storage-blob">API changes</a></h5>
+<h5 id="api-spring-cloud-azure-starter-storage-blob"><a class="link" href="#api-spring-cloud-azure-starter-storage-blob">API Changes</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 14. Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</caption>
 <colgroup>
@@ -7309,7 +7309,7 @@ version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 </ul>
 </div>
 <div class="sect4">
-<h5 id="configuration-spring-cloud-azure-starter-storage-file-share"><a class="link" href="#configuration-spring-cloud-azure-starter-storage-file-share">SDK Configuration changes</a></h5>
+<h5 id="configuration-spring-cloud-azure-starter-storage-file-share"><a class="link" href="#configuration-spring-cloud-azure-starter-storage-file-share">SDK Configuration Changes</a></h5>
 <div class="paragraph">
 <p>All configuration property names changed the prefix from <code>azure.storage</code> to <code>spring.cloud.azure.storage.fileshare</code>.</p>
 </div>
@@ -7342,7 +7342,7 @@ version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 </table>
 </div>
 <div class="sect4">
-<h5 id="api-spring-cloud-azure-starter-storage-file-share"><a class="link" href="#api-spring-cloud-azure-starter-storage-file-share">API changes</a></h5>
+<h5 id="api-spring-cloud-azure-starter-storage-file-share"><a class="link" href="#api-spring-cloud-azure-starter-storage-file-share">API Changes</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 16. Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</caption>
 <colgroup>
@@ -7402,7 +7402,7 @@ version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 </ul>
 </div>
 <div class="sect4">
-<h5 id="configuration-spring-cloud-azure-starter-integration-eventhubs"><a class="link" href="#configuration-spring-cloud-azure-starter-integration-eventhubs">SDK Configuration changes</a></h5>
+<h5 id="configuration-spring-cloud-azure-starter-integration-eventhubs"><a class="link" href="#configuration-spring-cloud-azure-starter-integration-eventhubs">SDK Configuration Changes</a></h5>
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -7479,7 +7479,7 @@ Configuration prefix has been changed from <code>spring.cloud.azure.eventhub</co
 </div>
 </div>
 <div class="sect4">
-<h5 id="api-spring-cloud-azure-starter-integration-eventhubs"><a class="link" href="#api-spring-cloud-azure-starter-integration-eventhubs">API changes</a></h5>
+<h5 id="api-spring-cloud-azure-starter-integration-eventhubs"><a class="link" href="#api-spring-cloud-azure-starter-integration-eventhubs">API Changes</a></h5>
 <div class="ulist">
 <ul>
 <li>
@@ -7549,7 +7549,7 @@ Event Hubs, and change constructor signature as well.</p>
 </tbody>
 </table>
 <div class="sect5">
-<h6 id="_sample_code_snippet"><a class="link" href="#_sample_code_snippet">Sample code snippet</a></h6>
+<h6 id="_sample_code_snippet"><a class="link" href="#_sample_code_snippet">Sample Code Snippet</a></h6>
 <div class="paragraph">
 <p>1.EventHubsInboundChannelAdapter sample code:</p>
 </div>
@@ -7676,7 +7676,7 @@ version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 </ul>
 </div>
 <div class="sect4">
-<h5 id="configuration-spring-cloud-azure-starter-integration-servicebus"><a class="link" href="#configuration-spring-cloud-azure-starter-integration-servicebus">SDK Configuration changes</a></h5>
+<h5 id="configuration-spring-cloud-azure-starter-integration-servicebus"><a class="link" href="#configuration-spring-cloud-azure-starter-integration-servicebus">SDK Configuration Changes</a></h5>
 <div class="paragraph">
 <p>For all configuration options supported in spring-cloud-azure-starter-integration-servicebus and spring-integration-azure-servicebus libraries,
 the prefix remains to be as <code>spring.cloud.azure.servicebus</code>.</p>
@@ -7730,7 +7730,7 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus</code>.</p>
 </table>
 </div>
 <div class="sect4">
-<h5 id="api-spring-cloud-azure-starter-integration-servicebus"><a class="link" href="#api-spring-cloud-azure-starter-integration-servicebus">API changes</a></h5>
+<h5 id="api-spring-cloud-azure-starter-integration-servicebus"><a class="link" href="#api-spring-cloud-azure-starter-integration-servicebus">API Changes</a></h5>
 <div class="ulist">
 <ul>
 <li>
@@ -7807,7 +7807,7 @@ for the <code>ProducerProperties#entityType</code>.</p>
 </tbody>
 </table>
 <div class="sect5">
-<h6 id="_sample_code_snippet_2"><a class="link" href="#_sample_code_snippet_2">Sample code snippet</a></h6>
+<h6 id="_sample_code_snippet_2"><a class="link" href="#_sample_code_snippet_2">Sample Code Snippet</a></h6>
 <div class="ulist">
 <ul>
 <li>
@@ -7933,7 +7933,7 @@ version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 </ul>
 </div>
 <div class="sect4">
-<h5 id="configuration-spring-cloud-azure-starter-integration-storage-queue"><a class="link" href="#configuration-spring-cloud-azure-starter-integration-storage-queue">SDK Configuration changes</a></h5>
+<h5 id="configuration-spring-cloud-azure-starter-integration-storage-queue"><a class="link" href="#configuration-spring-cloud-azure-starter-integration-storage-queue">SDK Configuration Changes</a></h5>
 <div class="paragraph">
 <p>All configuration property names changed the prefix from <code>spring.cloud.azure.storage</code> to <code>spring.cloud.azure.storage.queue</code>.</p>
 </div>
@@ -7966,7 +7966,7 @@ version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 </table>
 </div>
 <div class="sect4">
-<h5 id="api-spring-cloud-azure-starter-integration-storage-queue"><a class="link" href="#api-spring-cloud-azure-starter-integration-storage-queue">API changes</a></h5>
+<h5 id="api-spring-cloud-azure-starter-integration-storage-queue"><a class="link" href="#api-spring-cloud-azure-starter-integration-storage-queue">API Changes</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 22. Class mapping from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue</caption>
 <colgroup>
@@ -8066,7 +8066,7 @@ version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/spring-
 </ul>
 </div>
 <div class="sect4">
-<h5 id="configuration-spring-cloud-azure-stream-binder-eventhubs"><a class="link" href="#configuration-spring-cloud-azure-stream-binder-eventhubs">SDK Configuration changes</a></h5>
+<h5 id="configuration-spring-cloud-azure-stream-binder-eventhubs"><a class="link" href="#configuration-spring-cloud-azure-stream-binder-eventhubs">SDK Configuration Changes</a></h5>
 <div class="ulist">
 <ul>
 <li>
@@ -8195,7 +8195,7 @@ The value type of the start position configuration is also changed. It&#8217;s c
 </div>
 </div>
 <div class="sect4">
-<h5 id="api-spring-cloud-azure-stream-binder-eventhubs"><a class="link" href="#api-spring-cloud-azure-stream-binder-eventhubs">API changes</a></h5>
+<h5 id="api-spring-cloud-azure-stream-binder-eventhubs"><a class="link" href="#api-spring-cloud-azure-stream-binder-eventhubs">API Changes</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 25. Class mapping from azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs</caption>
 <colgroup>
@@ -8474,7 +8474,7 @@ The binder type is renamed from: servicebus-queue/servicebus-topic to <code>serv
 </div>
 </div>
 <div class="sect4">
-<h5 id="api-spring-cloud-azure-stream-binder-servicebus"><a class="link" href="#api-spring-cloud-azure-stream-binder-servicebus">API changes</a></h5>
+<h5 id="api-spring-cloud-azure-stream-binder-servicebus"><a class="link" href="#api-spring-cloud-azure-stream-binder-servicebus">API Changes</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 29. Class mapping from azure-spring-cloud-stream-binder-servicebus to spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
@@ -8515,7 +8515,7 @@ The binder type is renamed from: servicebus-queue/servicebus-topic to <code>serv
 <h2 id="_known_issues"><a class="link" href="#_known_issues">Appendix C: Known Issues</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_error_logs_when_using_defaultazurecredential"><a class="link" href="#_error_logs_when_using_defaultazurecredential">Error logs when using DefaultAzureCredential</a></h3>
+<h3 id="_error_logs_when_using_defaultazurecredential"><a class="link" href="#_error_logs_when_using_defaultazurecredential">Error Logs When Using Defaultazurecredential</a></h3>
 <div class="paragraph">
 <p>There could be some <code>ERROR</code> logs be printed out while the <code>DefaultAzureCredential</code> running the chain and trying to find the first available credential. It doesn&#8217;t mean the <code>DefaultAzureCredential</code> is broken or unavailable. Meanwhile, we&#8217;ll keep improving this logging experience.</p>
 </div>

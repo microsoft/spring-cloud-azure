@@ -349,9 +349,9 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 </div>
 <div class="sect3">
-<h4 id="_get_a_resource"><a class="link" href="#_get_a_resource">Get a resource</a></h4>
+<h4 id="_get_a_resource"><a class="link" href="#_get_a_resource">Get a Resource</a></h4>
 <div class="sect4">
-<h5 id="_get_a_resource_with_value"><a class="link" href="#_get_a_resource_with_value">Get a resource with @Value</a></h5>
+<h5 id="_get_a_resource_with_value"><a class="link" href="#_get_a_resource_with_value">Get a Resource with @Value</a></h5>
 <div class="paragraph">
 <p>You can use the annotation of <code>@Value("azure-blob://[your-container-name]/[your-blob-name]")</code> to autowire a blob resource.</p>
 </div>
@@ -372,7 +372,7 @@ private Resource storageFileResource;</code></pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_get_a_resource_with_resourceloader"><a class="link" href="#_get_a_resource_with_resourceloader">Get a resource with ResourceLoader</a></h5>
+<h5 id="_get_a_resource_with_resourceloader"><a class="link" href="#_get_a_resource_with_resourceloader">Get a Resource with ResourceLoader</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Autowired
@@ -386,7 +386,7 @@ Resource storageFileResource = resourceLoader.getResource("azure-file://[your-fi
 </div>
 </div>
 <div class="sect4">
-<h5 id="_get_resources_by_searching_pattern"><a class="link" href="#_get_resources_by_searching_pattern">Get resources by searching pattern</a></h5>
+<h5 id="_get_resources_by_searching_pattern"><a class="link" href="#_get_resources_by_searching_pattern">Get Resources by Searching Pattern</a></h5>
 <div class="paragraph">
 <p>You can use implementation class of <code>ResourcePatternResolver</code> to search resources. Use <code>AzureStorageBlobProtocolResolver</code> to search <code>blob</code> resources, and <code>AzureStorageFileProtocolResolver</code> to search <code>file</code> resources.</p>
 </div>
@@ -417,9 +417,9 @@ Resource[] fileTextResources = azureStorageFileProtocolResolver.getResources("az
 </div>
 </div>
 <div class="sect3">
-<h4 id="_handling_with_resource"><a class="link" href="#_handling_with_resource">Handling with resource</a></h4>
+<h4 id="_handling_with_resource"><a class="link" href="#_handling_with_resource">Handling with Resource</a></h4>
 <div class="sect4">
-<h5 id="_download_data_from_specific_resource"><a class="link" href="#_download_data_from_specific_resource">Download data from specific resource</a></h5>
+<h5 id="_download_data_from_specific_resource"><a class="link" href="#_download_data_from_specific_resource">Download Data from Specific Resource</a></h5>
 <div class="paragraph">
 <p>You can download a resource from Azure Stroage Blob or File Share with the <code>getInputStream()</code> method of <code>Resource</code>.</p>
 </div>
@@ -441,7 +441,7 @@ InputStream inputfileStream = storageFileResource.getInputStream();</code></pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_upload_data_to_specific_resource"><a class="link" href="#_upload_data_to_specific_resource">Upload data to specific resource</a></h5>
+<h5 id="_upload_data_to_specific_resource"><a class="link" href="#_upload_data_to_specific_resource">Upload Data to Specific Resource</a></h5>
 <div class="paragraph">
 <p>You can upload to a resource to Azure Storage Blob or File Share by casting the Spring <code>Resource</code> to <code>WritableResource</code>.</p>
 </div>
@@ -468,7 +468,7 @@ try (OutputStream fileos = ((WritableResource) this.storageFileResource).getOutp
 </div>
 </div>
 <div class="sect3">
-<h4 id="_multipart_upload"><a class="link" href="#_multipart_upload">Multipart upload</a></h4>
+<h4 id="_multipart_upload"><a class="link" href="#_multipart_upload">Multipart Upload</a></h4>
 <div class="paragraph">
 <p>Files larger than 4 MiB will be uploaded to Azure Storage in parallel.</p>
 </div>
