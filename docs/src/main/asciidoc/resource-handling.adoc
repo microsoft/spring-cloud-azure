@@ -107,9 +107,9 @@ spring:
           endpoint:  ${STORAGE_FILESHARE_ENDPOINT}
 ----
 
-==== Get a resource 
+==== Get a Resource
 
-===== Get a resource with @Value
+===== Get a Resource with @Value
 You can use the annotation of `@Value("azure-blob://[your-container-name]/[your-blob-name]")` to autowire a blob resource.
 
 [source,java]
@@ -126,7 +126,7 @@ You can use the annotation of @Value("azure-file://[your-fileshare-name]/[your-f
 private Resource storageFileResource;
 ----
 
-===== Get a resource with ResourceLoader
+===== Get a Resource with ResourceLoader
 
 [source,java]
 ----
@@ -139,7 +139,7 @@ Resource storageBlobResource = resourceLoader.getResource("azure-blob://[your-co
 Resource storageFileResource = resourceLoader.getResource("azure-file://[your-fileshare-name]/[your-file-name]");
 ----
 
-===== Get resources by searching pattern
+===== Get Resources by Searching Pattern
 You can use implementation class of `ResourcePatternResolver` to search resources. Use `AzureStorageBlobProtocolResolver` to search `blob` resources, and `AzureStorageFileProtocolResolver` to search `file` resources.
 
 - Pattern search, the **searchPattern** should start with `azure-blob://` or `azure-file://`. Such as `azure-blob://+++**+++/+++**+++`, it means list all blobs in all containers; `azure-blob://demo-container/**`, it means list all blobs in the demo-container container, including any sub-folders.
@@ -161,9 +161,9 @@ Resource[] fileTextResources = azureStorageFileProtocolResolver.getResources("az
 ----
 
 
-==== Handling with resource 
+==== Handling with Resource
 
-===== Download data from specific resource
+===== Download Data from Specific Resource
 
 You can download a resource from Azure Stroage Blob or File Share with the `getInputStream()` method of `Resource`.
 
@@ -183,7 +183,7 @@ InputStream inputblobStream = storageBlobResource.getInputStream();
 InputStream inputfileStream = storageFileResource.getInputStream();
 ----
 
-===== Upload data to specific resource
+===== Upload Data to Specific Resource
 
 You can upload to a resource to Azure Storage Blob or File Share by casting the Spring `Resource` to `WritableResource`.
 
@@ -207,7 +207,7 @@ try (OutputStream fileos = ((WritableResource) this.storageFileResource).getOutp
 }
 ----
 
-==== Multipart upload
+==== Multipart Upload
 
 Files larger than 4 MiB will be uploaded to Azure Storage in parallel.
 

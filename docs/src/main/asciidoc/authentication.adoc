@@ -37,13 +37,13 @@ image::https://user-images.githubusercontent.com/13167207/143148654-f3a37180-85e
 TIP: Please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
 
-=== Managed identities
+=== Managed Identities
 
 A common challenge for developers is the management of secrets and credentials used to secure communication between different components making up a solution. Managed identities eliminate the need for developers to manage credentials. Managed identities provide an identity for applications to use when connecting to resources that support Azure Active Directory (Azure AD) authentication. Applications may use the managed identity to obtain Azure AD tokens. For example, an application may use a managed identity to access resources like Azure Key Vault where developers can store credentials in a secure manner or to access storage accounts.
 
 We encourage using manged identity instead of using connection string or key in your application for it's more secure and will save the trouble of managing secrets and credentials. In this case, `DefaultAzureCredential` could better serve the scenario of developing locally using account information stored locally and deploying the application to Azure Cloud and using Manged Identity.
 
-==== Managed identity types
+==== Managed Identity Types
 There are two types of managed identities:
 
 - *System-assigned* Some Azure services allow you to enable a managed identity directly on a service instance. When you enable a system-assigned managed identity an identity is created in Azure AD that's tied to the lifecycle of that service instance. So when the resource is deleted, Azure automatically deletes the identity for you. By design, only that Azure resource can use this identity to request tokens from Azure AD.
@@ -55,11 +55,11 @@ TIP: Please refer to link:index.html#authorize-access-with-azure-active-director
 
 TIP: Please refer to link:{managed-identity}[What are managed identities for Azure resources?] for more details about manged identity.
 
-=== Other credential types
+=== Other Credential Types
 
 Developers who want more control or whose scenario isn't served by the `DefaultAzureCredential` or whose scenario isn't served by the default settings should use other credential types.
 
-==== Authentication and authorization with Azure AD
+==== Authentication and Authorization with Azure AD
 With Azure AD, you can use Azure role-based access control (Azure RBAC) to grant permissions to a security principal, which may be a user, or an application service principal. When a security principal (a user, or an application) attempts to access an Azure resource, for example an Event Hubs resource, the request must be authorized. With Azure AD, access to a resource is a two-step process.
 
 1. First, the security principal's identity is authenticated, and an OAuth 2.0 token is returned.
@@ -98,7 +98,7 @@ For applications want to connect to resources that support Azure AD authenticati
 TIP: To see the list of all Spring Cloud Azure related configuration properties please check link:appendix.html[the Appendix page].
 
 [#authorize-access-with-azure-active-directory]
-===== Authorize access with Azure AD
+===== Authorize Access with Azure AD
 
 The authorization step requires that one or more Azure roles be assigned to the security principal. The roles that are assigned to a security principal decide the permissions that the principal will have.
 
@@ -159,7 +159,7 @@ IMPORTANT: Azure Cosmos DB exposes 2 built-in role definitions: `Cosmos DB Built
 It's also configurable for services support authenticating with Shared Access Signature (SAS). `spring.cloud.azure.<azure-service>.sas-token` is the property to configure. For example, using `spring.cloud.azure.storage.blob.sas-token` to authenticate to Storage Blob service.
 
 
-==== Connection strings
+==== Connection Strings
 
 Connection strings are supported by some Azure services to provide connection information as well as credentials. To connect to those Azure services using a connection string, just configure `spring.cloud.azure.<azure-service>.connection-string` will do. For example, `spring.cloud.azure.eventhubs.connection-string` to connect to Event Hubs service.
 

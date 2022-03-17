@@ -81,7 +81,7 @@ spring:
         graph-base-uri: https://microsoftgraph.chinacloudapi.cn
 ----
 
-===== Property Example 3: Use `Group Name` Or `Group ID` To Protect Some Method in Web Application
+===== Property Example 3: Use `Group Name` Or `Group ID` to Protect Some Method in Web Application
 
 * Step 1: Add property in application.yml
 

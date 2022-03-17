@@ -1,6 +1,6 @@
 == Known Issues
 
-=== Error logs when using DefaultAzureCredential
+=== Error Logs When Using Defaultazurecredential
 
 There could be some `ERROR` logs be printed out while the `DefaultAzureCredential` running the chain and trying to find the first available credential. It doesn't mean the `DefaultAzureCredential` is broken or unavailable. Meanwhile, we'll keep improving this logging experience.
 
