@@ -665,17 +665,17 @@ Event Hubs.
 * Drop API `EventHubOperation#setCheckpointConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `EventHubsContainerProperties#setCheckpointConfig`.
 * Drop API `EventHubOperation#setBatchConsumerConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `EventHubsContainerProperties#getBatch#setMaxSize` and `EventHubsContainerProperties#getBatch#setMaxWaitTime`.
 * For the batch consuming mode, change the message header names converted from batched messages.
-    - Change message header from `azure_eventhub_enqueued_time` to `azure_eventhub_batch_converted_enqueued_time`.
-    - Change message header from `azure_eventhub_offset` to `azure_eventhub_batch_converted_offset`.
-    - Change message header from `azure_eventhub_sequence_number` to `azure_eventhub_batch_converted_sequence_number`.
+    - Change message header from `azure_eventhub_enqueued_time` to `azure_eventhubs_batch_converted_enqueued_time`.
+    - Change message header from `azure_eventhub_offset` to `azure_eventhubs_batch_converted_offset`.
+    - Change message header from `azure_eventhub_sequence_number` to `azure_eventhubs_batch_converted_sequence_number`.
     - Change message header from `azure_partition_key` to `azure_batch_converted_partition_key`.
 * When publishing messages to Event Hubs, ignore all message headers converted from batched messages. Headers include:
-    - azure_eventhub_batch_converted_enqueued_time
-    - azure_eventhub_batch_converted_offset
-    - azure_eventhub_batch_converted_sequence_number
     - azure_batch_converted_partition_key
-    - azure_eventhub_batch_converted_system_properties
-    - azure_eventhub_batch_converted_application_properties
+    - azure_eventhubs_batch_converted_enqueued_time
+    - azure_eventhubs_batch_converted_offset
+    - azure_eventhubs_batch_converted_sequence_number
+    - azure_eventhubs_batch_converted_system_properties
+    - azure_eventhubs_batch_converted_application_properties
 * The `BATCH` checkpoint mode only works in the batch-consuming mode now, which can be enabled by passing `ListenerMode.BATCH` to EventHubsInboundChannelAdapter constructor.
 
 .Class mapping from azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs
@@ -810,17 +810,17 @@ Event Hubs.
 * Drop API `EventHubOperation#setCheckpointConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `EventHubsContainerProperties#setCheckpointConfig`.
 * Drop API `EventHubOperation#setBatchConsumerConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `EventHubsContainerProperties#getBatch#setMaxSize` and `EventHubsContainerProperties#getBatch#setMaxWaitTime`.
 * For the batch consuming mode, change the message header names converted from batched messages.
-    - Change message header from `azure_eventhub_enqueued_time` to `azure_eventhub_batch_converted_enqueued_time`.
-    - Change message header from `azure_eventhub_offset` to `azure_eventhub_batch_converted_offset`.
-    - Change message header from `azure_eventhub_sequence_number` to `azure_eventhub_batch_converted_sequence_number`.
+    - Change message header from `azure_eventhub_enqueued_time` to `azure_eventhubs_batch_converted_enqueued_time`.
+    - Change message header from `azure_eventhub_offset` to `azure_eventhubs_batch_converted_offset`.
+    - Change message header from `azure_eventhub_sequence_number` to `azure_eventhubs_batch_converted_sequence_number`.
     - Change message header from `azure_partition_key` to `azure_batch_converted_partition_key`.
 * When publishing messages to Event Hubs, ignore all message headers converted from batched messages. Headers include:
-    - azure_eventhub_batch_converted_enqueued_time
-    - azure_eventhub_batch_converted_offset
-    - azure_eventhub_batch_converted_sequence_number
     - azure_batch_converted_partition_key
-    - azure_eventhub_batch_converted_system_properties
-    - azure_eventhub_batch_converted_application_properties
+    - azure_eventhubs_batch_converted_enqueued_time
+    - azure_eventhubs_batch_converted_offset
+    - azure_eventhubs_batch_converted_sequence_number
+    - azure_eventhubs_batch_converted_system_properties
+    - azure_eventhubs_batch_converted_application_properties
 * The `BATCH` checkpoint mode only works in the batch-consuming mode now, which can be enabled by passing `ListenerMode.BATCH` to EventHubsInboundChannelAdapter constructor.
 
 .Class mapping from azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs
@@ -879,7 +879,7 @@ the prefix remains to be as `spring.cloud.azure.servicebus`.
 * Drop message header of `AzureHeaders.RAW_ID`. Please use `ServiceBusMessageHeaders.MESSAGE_ID` instead.
 
 .Class mapping from azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus
-[cols="<,<,<", options="header"]
+[cols="<,<", options="header"]
 |===
 |Legacy class |Modern class
 |com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
@@ -1038,8 +1038,8 @@ version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 * Add new API of `setDefaultEntityType` for `ServiceBusTemplate` to specify the entity type, which is required when no bean of `PropertiesSupplier&lt;String, ProducerProperties&gt;` is provided for the `ProducerProperties#entityType`.
 * Drop message header of `AzureHeaders.RAW_ID`. Please use `ServiceBusMessageHeaders.MESSAGE_ID` instead.
 
-.Class mapping from azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus
-[cols="<,<,<", options="header"]
+.Class mapping from azure-spring-integration-servicebus to spring-integration-azure-servicebus
+[cols="<,<", options="header"]
 |===
 |Legacy class |Modern class
 |com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
@@ -1109,7 +1109,7 @@ version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 * Drop `StorageQueueOperation` and provide `StorageQueueTemplate` instead.
 * Do not support configuration of checkpoint mode in `StorageQueueTemplate`, only the `MANUAL` mode is supported.
 
-.Class mapping from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue
+.Class mapping from azure-spring-integration-storage-queue to spring-integration-azure-storage-queue
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
@@ -1254,7 +1254,7 @@ or link:https://search.maven.org/artifact/com.azure.spring/azure-spring-cloud-st
 IMPORTANT: Legacy binder libraries are `azure-spring-cloud-stream-binder-servicebus-queue` and `azure-spring-cloud-stream-binder-servicebus-topic`, and now they're merged into one `spring-cloud-azure-stream-binder-servicebus`
 to support both Service Bus Queue and Topic.
 
-IMPORTANT: tnd the binder type is combined from `servicebus-queue` and `servicebus-topic` as `servicebus`.
+IMPORTANT: The binder type is combined from `servicebus-queue` and `servicebus-topic` as `servicebus`.
 
 .New configuration properties of spring-cloud-azure-stream-binder-servicebus
 [cols="<30,<~", options="header"]
