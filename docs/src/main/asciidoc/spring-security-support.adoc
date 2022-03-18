@@ -99,12 +99,12 @@ spring:
           allowed-group-ids: group_id_1, group_id_2
 ----
 
-* Step 2: Add `@EnableGlobalMethodSecurity(prePostEnabled == true)` in web application:
+* Step 2: Add `@EnableGlobalMethodSecurity(prePostEnabled = true)` in web application:
 
 [source,java]
 ----
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled == true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
 
     /**
@@ -526,7 +526,7 @@ Configure multiple HttpSecurity instances, `AadOAuth2SecurityMultiConfig` contai
 [source,java]
 ----
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled == true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AadWebApplicationAndResourceServerConfig {
 
     @Order(1)
@@ -1064,7 +1064,7 @@ Security configuration code can refer to the following:
 [source,java]
 ----
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled == true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
