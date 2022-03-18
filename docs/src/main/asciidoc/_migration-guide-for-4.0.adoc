@@ -413,7 +413,7 @@ NOTE: `azure.activedirectory.graph-membership-uri` has been replaced by 2 proper
 |com.azure.spring.autoconfigure.aad.AADAuthenticationFilterAutoConfiguration |com.azure.spring.cloud.autoconfigure.aad.AadAuthenticationFilterAutoConfiguration
 |com.azure.spring.autoconfigure.aad.AADAuthenticationProperties |com.azure.spring.cloud.autoconfigure.aad.properties.AadAuthenticationProperties
 |com.azure.spring.autoconfigure.aad.AADAutoConfiguration |com.azure.spring.cloud.autoconfigure.aad.AadAutoConfiguration
-|com.azure.spring.autoconfigure.aad.AzureADGraphClient |com.azure.spring.cloud.autoconfigure.aad.implementation.graph.AzureAdGraphClient
+|com.azure.spring.autoconfigure.aad.AzureADGraphClient |com.azure.spring.cloud.autoconfigure.aad.implementation.graph.AadGraphClient
 |com.azure.spring.autoconfigure.aad.Constants |com.azure.spring.cloud.autoconfigure.aad.implementation.constants.Constants
 |com.azure.spring.autoconfigure.aad.JacksonObjectMapperFactory |com.azure.spring.cloud.autoconfigure.aad.implementation.util.JacksonObjectMapperFactory
 |com.azure.spring.autoconfigure.aad.Membership |com.azure.spring.cloud.autoconfigure.aad.implementation.graph.Membership
