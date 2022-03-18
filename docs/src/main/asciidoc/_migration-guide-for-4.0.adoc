@@ -823,7 +823,7 @@ Event Hubs.
     - azure_eventhubs_batch_converted_application_properties
 * The `BATCH` checkpoint mode only works in the batch-consuming mode now, which can be enabled by passing `ListenerMode.BATCH` to EventHubsInboundChannelAdapter constructor.
 
-.Class mapping from azure-spring-integration-eventhubs to spring-cloud-azure-starter-integration-eventhubs
+.Class mapping from azure-spring-integration-eventhubs to spring-integration-azure-eventhubs
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
