@@ -304,14 +304,14 @@ crash.
 |com.fasterxml.jackson.core:jackson-databind |Please include the jackson databind dependency if you want to use Jackson Databind.
 |io.projectreactor.netty:reactor-netty |Please include the reactor netty dependency if you want to use Reactor Netty.
 |org.springframework.boot:spring-boot-starter-validation |Please include the validation starter if you want to use Hibernate Validator.
-|org.springframework.boot:spring-boot-starter-webflux |Please include the webflux starter if you want to use AAD condition access.
+|org.springframework.boot:spring-boot-starter-webflux |Please include the webflux starter if you want to use Web Flux.
 |===
 
 [#configuration-spring-cloud-azure-starter-active-directory]
 ===== SDK Configuration Changes
 
 . All configuration property names changed the prefix from `azure.activedirectory` to `spring.cloud.azure.active-directory`.
-. New property `spring.cloud.azure.active-directory.enabled=true` is required to enable related features.
+. New property `spring.cloud.azure.active-directory.enabled=true` is added to allow enable / disable AAD related features. The default value is false.
 
 IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory`, you have to specify the `spring.cloud.azure.active-directory.enabled` to true, even if the starter is included in classpath.
 
@@ -351,7 +351,7 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory`
 The value type of the following properties is changed from `long` to `java.time.Duration`, they are `jwt-connect-timeout`, `jwt-read-timeout`, `jwk-set-cache-lifespan`, `jwk-set-cache-refresh-time`.
 ====
 
-.Removed property from azure-spring-boot-starter-active-directory
+.Removed properties from azure-spring-boot-starter-active-directory
 [options="header"]
 |===
 | Removed properties
@@ -425,7 +425,7 @@ NOTE: `azure.activedirectory.graph-membership-uri` has been replaced by 2 proper
 |com.azure.spring.autoconfigure.condition.aad.WebApplicationCondition |com.azure.spring.cloud.autoconfigure.aad.implementation.conditions.WebApplicationCondition
 |===
 
-.Removed class from azure-spring-boot-starter-active-directory
+.Removed classes from azure-spring-boot-starter-active-directory
 [options="header"]
 |===
 |Removed legacy class
@@ -463,7 +463,7 @@ crash.
 ===== SDK Configuration Changes
 
 . All configuration property names changed the prefix from `azure.activedirectory.b2c` to `spring.cloud.azure.active-directory.b2c`.
-. New property `spring.cloud.azure.active-directory.b2c.enabled=true` is required to enable related features.
+. New property `spring.cloud.azure.active-directory.b2c.enabled=false` is added to allow enable / disable AAD B2C related features. The default value is false.
 
 IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory-b2c`, you have to specify the `spring.cloud.azure.active-directory.b2c.enabled` to true, even if the starter is included in classpath.
 
@@ -490,10 +490,10 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory-
 | *azure.activedirectory.b2c*.user-name-attribute-name                                           | *spring.cloud.azure.active-directory.b2c*.user-name-attribute-name
 |===
 
-.Removed property from azure-spring-boot-starter-active-directory-b2c
+.Removed properties from azure-spring-boot-starter-active-directory-b2c
 [options="header"]
 |===
-| Removed properties
+| Removed property
 | azure.activedirectory.b2c.allow-telemetry
 | azure.activedirectory.b2c.tenant
 |===
@@ -1054,7 +1054,7 @@ All configuration property names changed the prefix from `spring.cloud.azure.sto
 |com.azure.spring.integration.storage.queue.converter.StorageQueueMessageConverter |com.azure.spring.messaging.storage.queue.support.converter.StorageQueueMessageConverter
 |===
 
-.Removed class from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue
+.Removed classes from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue
 [options="header"]
 |===
 |Removed legacy class
