@@ -5760,6 +5760,11 @@ Configurations, Producer Properties and Advanced Producer Configurations.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The load balancing strategy.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.partition-ownership-expiration-interval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The time duration after which the ownership of partition expires.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.track-last-enqueued-event-properties</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Whether the event processor should request information on the last enqueued event on its associated partition, and track that information as events are received.</p></td>
