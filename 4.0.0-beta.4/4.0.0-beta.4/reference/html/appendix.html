@@ -224,7 +224,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.authorization-clients</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The OAuth2 authorization clients.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify client configuration.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.b2c.app-id-uri</p></td>
@@ -274,7 +274,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.b2c.logout-success-url</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="http://localhost:8080/login" class="bare">http://localhost:8080/login</a></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Redirect url after logout.</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.b2c.profile</p></td>
@@ -284,7 +284,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.b2c.reply-url</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{baseUrl}/login/oauth2/code/</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Reply url after get authorization code.</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.b2c.user-flows</p></td>
@@ -294,7 +294,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.b2c.user-name-attribute-name</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">User name attribute name.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User name attribute name</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.credential.client-id</p></td>
@@ -359,7 +359,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.resource-server.claim-to-authority-prefix-map</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Configure which claim will be used to build GrantedAuthority, and prefix of the GrantedAuthority&#8217;s string value. Default value is: "scp" &#8594; "SCOPE_", "roles" &#8594; "APPROLE_".</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configure which claim will be used to build GrantedAuthority, and prefix of the GrantedAuthority&#8217;s string value. Default value is: "scp" &#8594; "SCOPE_", "roles" &#8594; "APPROLE_". @see org.springframework.security.core.GrantedAuthority</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.resource-server.principal-claim-name</p></td>
@@ -379,7 +379,12 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.user-group.allowed-group-names</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The group names can be used to construct GrantedAuthority.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Expected UserGroups that an authority will be granted to if found in the response from the MemberOf Graph API Call.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.user-group.allowed-groups</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default UserGroup configuration.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.user-group.use-transitive-members</p></td>
@@ -5719,7 +5724,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.connection-string</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Connection string to connect to service bus.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Connection string to connect to a Service Bus namespace.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.idle-timeout</p></td>
@@ -5729,7 +5734,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.listener.phase</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The phase in which this container should be started and stopped.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the phase in which this container should be started and stopped.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.listener.reply-pub-sub-domain</p></td>
@@ -5739,7 +5744,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.listener.reply-qos-settings</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The QosSettings to use when sending a reply.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configure the {@link QosSettings} to use when sending a reply.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.listener.subscription-durable</p></td>
@@ -5758,43 +5763,43 @@ window.onload = function() {
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.pool.block-if-full</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to block when a connection is requested and the pool is full. Set it to false to throw a 'JMSException' instead.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to block when a connection is requested and the pool is full. Set it to false to throw a "JMSException" instead.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.pool.block-if-full-timeout</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-1s</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Blocking period before throwing an exception if the pool is still full.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.pool.enabled</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Whether a JmsPoolConnectionFactory should be created, instead of a regular ConnectionFactory.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.pool.idle-timeout</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>30s</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Connection idle timeout.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.pool.max-connections</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Maximum number of pooled connections.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.pool.max-sessions-per-connection</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>500</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Maximum number of pooled sessions per connection in the pool.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.pool.time-between-expiration-check</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Time to sleep between runs of the idle connection eviction thread. When negative, no idle connection eviction thread runs.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.pool.use-anonymous-producers</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to use only one anonymous 'MessageProducer' instance. Set it to false to create one 'MessageProducer' every time one is required.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to use only one anonymous "MessageProducer" instance. Set it to false to create one "MessageProducer" every time one is required.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.prefetch-policy.all</p></td>
@@ -5824,7 +5829,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.pricing-tier</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Pricing tier for service bus namespace.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pricing tier for a Service Bus namespace.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.remote-url</p></td>
@@ -5834,7 +5839,7 @@ window.onload = function() {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.topic-client-id</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Service bus topic client ID. Only works for the bean of topicJmsListenerContainerFactory.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service Bus topic client ID. Only works for the bean of topicJmsListenerContainerFactory.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.jms.servicebus.username</p></td>
@@ -6820,20 +6825,8 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-active-directory<
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapi.validator.AADJwtIssuerValidator</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.webapi.validator.AadJwtIssuerValidator</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapi.AADJwtBearerTokenAuthenticationConverter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.webapi.AadJwtBearerTokenAuthenticationConverter</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapi.AADOBOOAuth2AuthorizedClientProvider</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.webapi.AadOboOAuth2AuthorizedClientProvider</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapi.AADResourceServerConfiguration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.configuration.AadResourceServerConfiguration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.AadJwtBearerTokenAuthenticationConverter</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapi.AADResourceServerProperties</p></td>
@@ -6844,44 +6837,12 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-active-directory<
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.AadResourceServerWebSecurityConfigurerAdapter</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapp.AADAzureDelegatedOAuth2AuthorizedClientProvider</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.webapp.AadAzureDelegatedOAuth2AuthorizedClientProvider</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapp.AADOAuth2AuthorizationCodeGrantRequestEntityConverter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.webapp.AadOAuth2AuthorizationCodeGrantRequestEntityConverter</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapp.AADOAuth2AuthorizationRequestResolver</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.webapp.AadOAuth2AuthorizationRequestResolver</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapp.AADOAuth2UserService</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.webapp.AadOAuth2UserService</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapp.AADWebApplicationConfiguration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.configuration.AadWebApplicationConfiguration</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapp.AADWebSecurityConfigurerAdapter</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.AadWebSecurityConfigurerAdapter</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapp.AuthorizationClientProperties</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.properties.AuthorizationClientProperties</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapp.AzureClientRegistration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.webapp.AzureClientRegistration</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapp.GraphClient</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.graph.GraphClient</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapp.GroupInformation</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.graph.GroupInformation</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.AADApplicationType</p></td>
@@ -6897,39 +6858,11 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-active-directory<
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.AADClientRegistrationRepository</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.oauth2.AadClientRegistrationRepository</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.AADIssuerJWSKeySelector</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.jwt.AadIssuerJwsKeySelector</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.AADJwtDecoderProviderConfiguration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.jwt.AadJwtDecoderProviderConfiguration</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.AADJwtGrantedAuthoritiesConverter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.jwt.AadJwtGrantedAuthoritiesConverter</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.AADOAuth2AuthenticatedPrincipal</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.oauth2.AadOAuth2AuthenticatedPrincipal</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.AADOAuth2ClientConfiguration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.configuration.AadOAuth2ClientConfiguration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.AadClientRegistrationRepository</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.AADTrustedIssuerRepository</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.AadTrustedIssuerRepository</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.AbstractOAuth2AuthorizationCodeGrantRequestEntityConverter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.oauth2.AbstractOAuth2AuthorizationCodeGrantRequestEntityConverter</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.JacksonHttpSessionOAuth2AuthorizedClientRepository</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.oauth2.JacksonHttpSessionOAuth2AuthorizedClientRepository</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter</p></td>
@@ -6940,36 +6873,8 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-active-directory<
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.filter.AadAuthenticationFilter</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.AADAuthenticationFilterAutoConfiguration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.AadAuthenticationFilterAutoConfiguration</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.AADAuthenticationProperties</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.properties.AadAuthenticationProperties</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.AADAutoConfiguration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.AadAutoConfiguration</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.AzureADGraphClient</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.graph.AadGraphClient</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.Constants</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.constants.Constants</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.JacksonObjectMapperFactory</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.util.JacksonObjectMapperFactory</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.Membership</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.graph.Membership</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.Memberships</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.graph.Memberships</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.UserPrincipal</p></td>
@@ -6978,18 +6883,6 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-active-directory<
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.aad.UserPrincipalManager</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipalManager</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.condition.aad.ClientRegistrationCondition</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.conditions.ClientRegistrationCondition</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.condition.aad.ResourceServerCondition</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.conditions.ResourceServerCondition</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.condition.aad.WebApplicationCondition</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.conditions.WebApplicationCondition</p></td>
 </tr>
 </tbody>
 </table>
@@ -7234,36 +7127,12 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-active-directory-
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cAuthorizationRequestResolver</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.b2c.AADB2CAutoConfiguration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cAutoConfiguration</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.b2c.AADB2CClientRegistrationRepository</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aadb2c.implementation.AadB2cClientRegistrationRepository</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.b2c.AADB2CConditions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aadb2c.implementation.AadB2cConditions</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.b2c.AADB2CConfigurationException</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aadb2c.implementation.AadB2cConfigurationException</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.b2c.AADB2CJwtBearerTokenAuthenticationConverter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.implementation.webapi.AadJwtBearerTokenAuthenticationConverter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.AadJwtBearerTokenAuthenticationConverter</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.b2c.AADB2CLogoutSuccessHandler</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cLogoutSuccessHandler</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.b2c.AADB2COAuth2AuthorizationCodeGrantRequestEntityConverter</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aadb2c.implementation.AadB2cOAuth2AuthorizationCodeGrantRequestEntityConverter</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.b2c.AADB2COAuth2ClientConfiguration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aadb2c.configuration.AadB2cOAuth2ClientConfiguration</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer</p></td>
@@ -7274,24 +7143,12 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-active-directory-
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aadb2c.properties.AadB2cProperties</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.b2c.AADB2CResourceServerAutoConfiguration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cResourceServerAutoConfiguration</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.b2c.AADB2CTrustedIssuerRepository</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cTrustedIssuerRepository</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.b2c.AADB2CURL</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aadb2c.implementation.AadB2cUrl</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.b2c.AuthorizationClientProperties</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aad.properties.AuthorizationClientProperties</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cOidcLoginConfigurer</p></td>
 </tr>
 </tbody>
 </table>
@@ -7429,72 +7286,67 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-keyvault-secrets<
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.allow-telemetry</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Not supported anymore.</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.case-sensitive-keys</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].case-sensitive</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[n].case-sensitive</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.certificate-password</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].credential.client-certificate-password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[n].credential.client-certificate-password</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.certificate-path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].credential.client-certificate-path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[n].credential.client-certificate-path</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.client-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].credential.client-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[n].credential.client-id</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.client-key</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].credential.client-secret</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[n].credential.client-secret</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.enabled and <strong>spring.cloud.azure.keyvault.secret</strong>.property-source-enabled and <strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.enabled and <strong>spring.cloud.azure.keyvault.secret</strong>.property-source-enabled</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.order</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Not supported anymore. Use the order in property-source[n] instead.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not supported anymore. Use the order in property-sources[n] instead.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.refresh-interval</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].refresh-interval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[n].refresh-interval</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.secret-keys</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].secret-keys</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[n].secret-keys</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.tenant-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].profile.tenant-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[n].profile.tenant-id</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>azure.keyvault</strong>.uri</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[n].endpoint</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 16. Removed properties from spring-cloud-azure-starter-keyvault-secrets</caption>
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Removed property</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">azure.keyvault.allow-telemetry</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].service-version</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].client</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].proxy</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].retry</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source[n].resource</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">azure.keyvault.order</p></td>
 </tr>
 </tbody>
 </table>
@@ -7510,13 +7362,10 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-keyvault-secrets<
 <p><code>spring.cloud.azure.keyvault.secret.property-source-enabled</code> is used to enable all <code>KeyVaultPropertySource</code>. It will take effect only when <code>spring.cloud.azure.keyvault.secret.enabled=true</code>.</p>
 </li>
 <li>
-<p><code>spring.cloud.azure.keyvault.secret.property-source[n].enabled</code> is used to enable specific <code>KeyVaultPropertySource</code>. It will take effect only when <code>spring.cloud.azure.keyvault.secret.enabled=true</code> and <code>spring.cloud.azure.keyvault.secret.property-source-enabled=true</code></p>
+<p>For Azure common properties(like <code>client</code>, <code>proxy</code>, <code>retry</code>, <code>credential</code>, <code>profile</code>) and Key Vault properties(like <code>endpoint</code>, <code>service-version</code>). If <code>spring.cloud.azure.keyvault.secret.property-sources[n].PROPERTY_NAME</code> isn&#8217;t configured, <code>spring.cloud.azure.keyvault.secret.PROPERTY_NAME</code> will be used.</p>
 </li>
 <li>
-<p>For Azure common properties(like <code>client</code>, <code>proxy</code>, <code>retry</code>, <code>credential</code>, <code>profile</code>) and Key Vault properties(like <code>endpoint</code>, <code>service-version</code>). If <code>spring.cloud.azure.keyvault.secret.property-source[n].PROPERTY_NAME</code> isn&#8217;t configured, <code>spring.cloud.azure.keyvault.secret.PROPERTY_NAME</code> will be used.</p>
-</li>
-<li>
-<p><code>spring.cloud.azure.keyvault.secret.property-source[n].resource</code> is specific to a unique Azure resource, so if it&#8217;s not configured, it won&#8217;t get value from other places.</p>
+<p><code>spring.cloud.azure.keyvault.secret.property-sources[n].resource</code> is specific to a unique Azure resource, so if it&#8217;s not configured, it won&#8217;t get value from other places.</p>
 </li>
 </ol>
 </div>
@@ -7593,7 +7442,7 @@ version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 <p>All configuration property names changed the prefix from <code>azure.storage</code> to <code>spring.cloud.azure.storage.blob</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Property mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</caption>
+<caption class="title">Table 17. Property mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
@@ -7623,7 +7472,7 @@ version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 <div class="sect4">
 <h5 id="api-spring-cloud-azure-starter-storage-blob"><a class="link" href="#api-spring-cloud-azure-starter-storage-blob">API Changes</a></h5>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</caption>
+<caption class="title">Table 18. Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</caption>
 <colgroup>
 <col>
 <col>
@@ -7686,7 +7535,7 @@ version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 <p>All configuration property names changed the prefix from <code>azure.storage</code> to <code>spring.cloud.azure.storage.fileshare</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. Property mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</caption>
+<caption class="title">Table 19. Property mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
@@ -7716,7 +7565,7 @@ version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 <div class="sect4">
 <h5 id="api-spring-cloud-azure-starter-storage-file-share"><a class="link" href="#api-spring-cloud-azure-starter-storage-file-share">API Changes</a></h5>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</caption>
+<caption class="title">Table 20. Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</caption>
 <colgroup>
 <col>
 <col>
@@ -7791,7 +7640,7 @@ Configuration prefix has been changed from <code>spring.cloud.azure.eventhub</co
 <p>Changes for the child entries for this prefix, please refer the following tables:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. Property mapping from azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs</caption>
+<caption class="title">Table 21. Property mapping from azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
@@ -7938,7 +7787,7 @@ Event Hubs.</p>
 </ul>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. Class mapping from azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs</caption>
+<caption class="title">Table 22. Class mapping from azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs</caption>
 <colgroup>
 <col>
 <col>
@@ -8181,7 +8030,7 @@ Event Hubs.</p>
 </ul>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. Class mapping from azure-spring-integration-eventhubs to spring-integration-azure-eventhubs</caption>
+<caption class="title">Table 23. Class mapping from azure-spring-integration-eventhubs to spring-integration-azure-eventhubs</caption>
 <colgroup>
 <col>
 <col>
@@ -8261,7 +8110,7 @@ version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 the prefix remains to be as <code>spring.cloud.azure.servicebus</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. Property mapping from azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus</caption>
+<caption class="title">Table 24. Property mapping from azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
@@ -8335,7 +8184,7 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus</code>.</p>
 </ul>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. Class mapping from azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus</caption>
+<caption class="title">Table 25. Class mapping from azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8569,7 +8418,7 @@ version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 </ul>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. Class mapping from azure-spring-integration-servicebus to spring-integration-azure-servicebus</caption>
+<caption class="title">Table 26. Class mapping from azure-spring-integration-servicebus to spring-integration-azure-servicebus</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8644,7 +8493,7 @@ version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 <p>All configuration property names changed the prefix from <code>spring.cloud.azure.storage</code> to <code>spring.cloud.azure.storage.queue</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 26. Property mapping from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue</caption>
+<caption class="title">Table 27. Property mapping from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
@@ -8684,7 +8533,7 @@ version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 </ul>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 27. Class mapping from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue</caption>
+<caption class="title">Table 28. Class mapping from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue</caption>
 <colgroup>
 <col>
 <col>
@@ -8757,7 +8606,7 @@ version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 </ul>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 28. Class mapping from azure-spring-integration-storage-queue to spring-integration-azure-storage-queue</caption>
+<caption class="title">Table 29. Class mapping from azure-spring-integration-storage-queue to spring-integration-azure-storage-queue</caption>
 <colgroup>
 <col>
 <col>
@@ -8856,7 +8705,7 @@ The binder type is renamed from: <code>eventhub</code> to <code>eventhubs</code>
 <p>Changes for the child entries for following prefix, please refer the following table:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 29. Property mapping from azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs</caption>
+<caption class="title">Table 30. Property mapping from azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
@@ -8998,7 +8847,7 @@ The value type of the start position configuration is also changed. It&#8217;s c
 <div class="sect4">
 <h5 id="api-spring-cloud-azure-stream-binder-eventhubs"><a class="link" href="#api-spring-cloud-azure-stream-binder-eventhubs">API Changes</a></h5>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. Class mapping from azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs</caption>
+<caption class="title">Table 31. Class mapping from azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs</caption>
 <colgroup>
 <col>
 <col>
@@ -9084,7 +8933,7 @@ The binder type is combined from <code>servicebus-queue</code> and <code>service
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 31. New configuration properties of spring-cloud-azure-stream-binder-servicebus</caption>
+<caption class="title">Table 32. New configuration properties of spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
@@ -9103,7 +8952,7 @@ The binder type is combined from <code>servicebus-queue</code> and <code>service
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 32. Property mapping from azure-spring-cloud-stream-binder-servicebus-* to spring-cloud-azure-stream-binder-servicebus</caption>
+<caption class="title">Table 33. Property mapping from azure-spring-cloud-stream-binder-servicebus-* to spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
@@ -9243,7 +9092,7 @@ The concurrency property will replace maxConcurrentSessions when sessionsEnabled
 </ul>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 33. Class mapping from azure-spring-cloud-stream-binder-servicebus to spring-cloud-azure-stream-binder-servicebus</caption>
+<caption class="title">Table 34. Class mapping from azure-spring-cloud-stream-binder-servicebus to spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
 <col>
 <col>
