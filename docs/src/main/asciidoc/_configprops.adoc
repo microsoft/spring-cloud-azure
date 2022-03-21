@@ -1,10 +1,10 @@
 |===
-|Name |Default | Description
+|Name | Default | Description
 
 |spring.cloud.azure.active-directory.app-id-uri |  | App ID URI which might be used in the "aud" claim of an id_token.
 |spring.cloud.azure.active-directory.application-type |  | Type of the AAD application.
 |spring.cloud.azure.active-directory.authenticate-additional-parameters |  | Add additional parameters to the Authorization URL.
-|spring.cloud.azure.active-directory.authorization-clients |  | The OAuth2 authorization clients.
+|spring.cloud.azure.active-directory.authorization-clients |  | Specify client configuration.
 |spring.cloud.azure.active-directory.b2c.app-id-uri |  | App ID URI which might be used in the "aud" claim of a token.
 |spring.cloud.azure.active-directory.b2c.authenticate-additional-parameters |  | Additional parameters for authentication.
 |spring.cloud.azure.active-directory.b2c.authorization-clients |  | Specify client configuration.
@@ -14,11 +14,11 @@
 |spring.cloud.azure.active-directory.b2c.jwt-read-timeout |  | Read Timeout for the JWKSet Remote URL call.
 |spring.cloud.azure.active-directory.b2c.jwt-size-limit |  | Size limit in Bytes of the JWKSet Remote URL call.
 |spring.cloud.azure.active-directory.b2c.login-flow | `sign-up-or-sign-in` | Specify the primary sign-in flow key.
-|spring.cloud.azure.active-directory.b2c.logout-success-url | `http://localhost:8080/login` | Redirect url after logout.
+|spring.cloud.azure.active-directory.b2c.logout-success-url | `http://localhost:8080/login` | 
 |spring.cloud.azure.active-directory.b2c.profile |  | AAD B2C profile information.
-|spring.cloud.azure.active-directory.b2c.reply-url | `{baseUrl}/login/oauth2/code/` | Reply url after get authorization code.
+|spring.cloud.azure.active-directory.b2c.reply-url | `{baseUrl}/login/oauth2/code/` | 
 |spring.cloud.azure.active-directory.b2c.user-flows |  | User flows.
-|spring.cloud.azure.active-directory.b2c.user-name-attribute-name |  | User name attribute name.
+|spring.cloud.azure.active-directory.b2c.user-name-attribute-name |  | User name attribute name
 |spring.cloud.azure.active-directory.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
 |spring.cloud.azure.active-directory.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
 |spring.cloud.azure.active-directory.jwk-set-cache-lifespan | `5` | The lifespan of the cached JWK set before it expires, default is 5 minutes.
@@ -31,11 +31,12 @@
 |spring.cloud.azure.active-directory.profile.environment |  | Properties to Azure Active Directory endpoints.
 |spring.cloud.azure.active-directory.profile.tenant-id |  | Azure Tenant ID.
 |spring.cloud.azure.active-directory.redirect-uri-template | `{baseUrl}/login/oauth2/code/` | Redirection Endpoint: Used by the authorization server to return responses containing authorization credentials to the client via the resource owner user-agent.
-|spring.cloud.azure.active-directory.resource-server.claim-to-authority-prefix-map |  | Configure which claim will be used to build GrantedAuthority, and prefix of the GrantedAuthority's string value. Default value is: "scp" -> "SCOPE_", "roles" -> "APPROLE_".
+|spring.cloud.azure.active-directory.resource-server.claim-to-authority-prefix-map |  | Configure which claim will be used to build GrantedAuthority, and prefix of the GrantedAuthority's string value. Default value is: "scp" -> "SCOPE_", "roles" -> "APPROLE_". @see org.springframework.security.core.GrantedAuthority
 |spring.cloud.azure.active-directory.resource-server.principal-claim-name |  | Configure which claim in access token be returned in AuthenticatedPrincipal#getName. Default value is "sub".
 |spring.cloud.azure.active-directory.session-stateless | `false` | If true activates the stateless auth filter AADAppRoleStatelessAuthenticationFilter. The default is false which activates AADAuthenticationFilter.
 |spring.cloud.azure.active-directory.user-group.allowed-group-ids |  | The group ids can be used to construct GrantedAuthority.
-|spring.cloud.azure.active-directory.user-group.allowed-group-names |  | The group names can be used to construct GrantedAuthority.
+|spring.cloud.azure.active-directory.user-group.allowed-group-names |  | Expected UserGroups that an authority will be granted to if found in the response from the MemberOf Graph API Call.
+|spring.cloud.azure.active-directory.user-group.allowed-groups |  | Default UserGroup configuration.
 |spring.cloud.azure.active-directory.user-group.use-transitive-members | `false` | If "true", use "v1.0/me/transitiveMemberOf" to get members. Otherwise, use "v1.0/me/memberOf".
 |spring.cloud.azure.active-directory.user-name-attribute |  | Decide which claim to be principal's name.
 |spring.cloud.azure.appconfiguration.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
@@ -1103,30 +1104,30 @@
 |spring.cloud.azure.storage.resource-group |  | Resource group the storage account belongs to. This is a legacy property.
 |spring.cloud.azure.subscription-id |  | Subscription id to use when connecting to Azure resources. This is a legacy property.
 |spring.cloud.azure.tenant-id |  | Tenant id for Azure resources. This is a legacy property.
-|spring.jms.servicebus.connection-string |  | Connection string to connect to service bus.
+|spring.jms.servicebus.connection-string |  | Connection string to connect to a Service Bus namespace.
 |spring.jms.servicebus.idle-timeout | `30m` | Connection idle timeout duration.
-|spring.jms.servicebus.listener.phase |  | The phase in which this container should be started and stopped.
+|spring.jms.servicebus.listener.phase |  | Specify the phase in which this container should be started and stopped.
 |spring.jms.servicebus.listener.reply-pub-sub-domain |  | Whether the reply destination type is topic. Only works for the bean of topicJmsListenerContainerFactory.
-|spring.jms.servicebus.listener.reply-qos-settings |  | The QosSettings to use when sending a reply.
+|spring.jms.servicebus.listener.reply-qos-settings |  | Configure the {@link QosSettings} to use when sending a reply.
 |spring.jms.servicebus.listener.subscription-durable | `true` | Whether to make the subscription durable. Only works for the bean of topicJmsListenerContainerFactory.
 |spring.jms.servicebus.listener.subscription-shared |  | Whether to make the subscription shared. Only works for the bean of topicJmsListenerContainerFactory.
 |spring.jms.servicebus.password |  | Login password of the AMQP broker.
-|spring.jms.servicebus.pool.block-if-full |  | Whether to block when a connection is requested and the pool is full. Set it to false to throw a 'JMSException' instead.
-|spring.jms.servicebus.pool.block-if-full-timeout |  | Blocking period before throwing an exception if the pool is still full.
-|spring.jms.servicebus.pool.enabled |  | Whether a JmsPoolConnectionFactory should be created, instead of a regular ConnectionFactory.
-|spring.jms.servicebus.pool.idle-timeout |  | Connection idle timeout.
-|spring.jms.servicebus.pool.max-connections |  | Maximum number of pooled connections.
-|spring.jms.servicebus.pool.max-sessions-per-connection |  | Maximum number of pooled sessions per connection in the pool.
-|spring.jms.servicebus.pool.time-between-expiration-check |  | Time to sleep between runs of the idle connection eviction thread. When negative, no idle connection eviction thread runs.
-|spring.jms.servicebus.pool.use-anonymous-producers |  | Whether to use only one anonymous 'MessageProducer' instance. Set it to false to create one 'MessageProducer' every time one is required.
+|spring.jms.servicebus.pool.block-if-full | `true` | Whether to block when a connection is requested and the pool is full. Set it to false to throw a "JMSException" instead.
+|spring.jms.servicebus.pool.block-if-full-timeout | `-1s` | Blocking period before throwing an exception if the pool is still full.
+|spring.jms.servicebus.pool.enabled | `false` | Whether a JmsPoolConnectionFactory should be created, instead of a regular ConnectionFactory.
+|spring.jms.servicebus.pool.idle-timeout | `30s` | Connection idle timeout.
+|spring.jms.servicebus.pool.max-connections | `1` | Maximum number of pooled connections.
+|spring.jms.servicebus.pool.max-sessions-per-connection | `500` | Maximum number of pooled sessions per connection in the pool.
+|spring.jms.servicebus.pool.time-between-expiration-check | `1` | Time to sleep between runs of the idle connection eviction thread. When negative, no idle connection eviction thread runs.
+|spring.jms.servicebus.pool.use-anonymous-producers | `true` | Whether to use only one anonymous "MessageProducer" instance. Set it to false to create one "MessageProducer" every time one is required.
 |spring.jms.servicebus.prefetch-policy.all | `0` | Fallback value for prefetch option in this Service Bus namespace.
 |spring.jms.servicebus.prefetch-policy.durable-topic-prefetch | `0` | The number of prefetch for durable topic.
 |spring.jms.servicebus.prefetch-policy.queue-browser-prefetch | `0` | The number of prefetch for queue browser.
 |spring.jms.servicebus.prefetch-policy.queue-prefetch | `0` | The number of prefetch for queue.
 |spring.jms.servicebus.prefetch-policy.topic-prefetch | `0` | The number of prefetch for topic.
-|spring.jms.servicebus.pricing-tier |  | Pricing tier for service bus namespace.
+|spring.jms.servicebus.pricing-tier |  | Pricing tier for a Service Bus namespace.
 |spring.jms.servicebus.remote-url | `amqp://localhost:5672` | URL of the AMQP broker. Auto-generated by default.
-|spring.jms.servicebus.topic-client-id |  | Service bus topic client ID. Only works for the bean of topicJmsListenerContainerFactory.
+|spring.jms.servicebus.topic-client-id |  | JMS clientID. Only works for the bean of topicJmsListenerContainerFactory.
 |spring.jms.servicebus.username |  | Login user of the AMQP broker.
 
 |===
