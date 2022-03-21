@@ -1161,7 +1161,10 @@ Changes for the child entries for following prefix, please refer the following t
 
 NOTE: The value type of the start position configuration is also changed. It's changed from an enum of `com.azure.spring.integration.core.api.StartPosition` to a `map` of `StartPositionProperties` for each partition. Thus, the key is the partition id, and the value is of `com.azure.spring.cloud.service.eventhubs.properties.StartPositionProperties` which includes properties of offset, sequence number, enqueued date time and whether inclusive.
 
-For example, you should change from:
+====== Configuration migration examples
+To use the connection string for authentication and migrate the above mentioned properties, configuration changes are listed as below:
+
+Legacy configuration:
 
 [source,yaml]
 ----
@@ -1187,7 +1190,7 @@ spring:
 
 ----
 
-to:
+Modern configuration:
 
 [source,yaml]
 ----
@@ -1222,6 +1225,59 @@ spring:
                   enqueued-date-time: 2022-01-12T13:32:47.650005Z
                 4:
                   inclusive: false
+----
+
+To use the security principal to retrieve a connection string for authentication, taking service principal as example, configuration changes are listed as below:
+
+Legacy configuration:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      client-id: ${CLIENT_ID}
+        client-secret: ${CLIENT_SECRET}
+      tenant-id: ${TENANT_ID}
+      resource-group: ${EVENTHUB_RESOURCE_GROUP}
+      eventhub:
+        namespace: ${EVENTHUB_NAMESPACE}
+----
+
+Modern configuration:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${CLIENT_ID}
+        client-secret: ${CLIENT_SECRET}
+      profile:
+        tenant-id: ${TENANT_ID}
+        subscription-id: ${SUBSCRIPTION_ID}
+      eventhubs:
+        namespace: ${EVENTHUB_NAMESPACE}
+        resource:
+          resource-group: ${RESOURCE_GROUP}
+----
+
+To use the security principal for authentication directly, taking service principals as example, users could use below configurations, where the principal should
+be granted with necessary `Data` related roles for messaging operations.
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${CLIENT_ID}
+        client-secret: ${CLIENT_SECRET}
+      profile:
+        tenant-id: ${TENANT_ID}
+      eventhubs:
+        namespace: ${EVENTHUB_NAMESPACE}
 ----
 
 [#api-spring-cloud-azure-stream-binder-eventhubs]
@@ -1284,7 +1340,10 @@ IMPORTANT: The binder type is combined from `servicebus-queue` and `servicebus-t
 
 NOTE: The concurrency property will replace maxConcurrentSessions when sessionsEnabled is `true` and maxConcurrentCalls when sessionsEnabled is `false`. Enabling auto-complete is equal to `RECORD` checkpoint mode, and oppositely the `MANUAL` mode.
 
-Taking queue as example, you should change from:
+====== Configuration migration examples
+To use the connection string for authentication and migrate the above mentioned properties, configuration changes are listed as below:
+
+Legacy configuration, taking queue as example:
 
 [source,yaml]
 ----
@@ -1309,6 +1368,8 @@ spring:
                 checkpoint-mode: MANUAL
 ----
 
+Modern configuration:
+
 [source,yaml]
 ----
 spring:
@@ -1331,7 +1392,60 @@ spring:
               auto-complete: false
           supply-out-0:
             producer:
-              entity-type: queue #set topic if needed
+              entity-type: queue #set as topic if needed
+----
+
+To use the security principal to retrieve a connection string for authentication, taking service principal as example, configuration changes are listed as below:
+
+Legacy configuration:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      client-id: ${CLIENT_ID}
+      client-secret: ${CLIENT_SECRET}
+      tenant-id: ${TENANT_ID}
+      resource-group: ${SERVICEBUS_RESOURCE_GROUP}
+      servicebus:
+        namespace: ${SERVICEBUS_NAMESPACE}
+----
+
+Modern configuration:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${CLIENT_ID}
+        client-secret: ${CLIENT_SECRET}
+      profile:
+        tenant-id: ${TENANT_ID}
+        subscription-id: ${SUBSCRIPTION_ID}
+      servicebus:
+        namespace: ${SERVICEBUS_NAMESPACE}
+        resource:
+          resource-group: ${SERVICEBUS_RESOURCE_GROUP}
+----
+
+To use the security principal for authentication directly, taking service principals as example, users could use below configurations, where the principal should
+be granted with necessary `Data` related roles for messaging operations.
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${CLIENT_ID}
+        client-secret: ${CLIENT_SECRET}
+      profile:
+        tenant-id: ${TENANT_ID}
+      servicebus:
+        namespace: ${SERVICEBUS_NAMESPACE}
 ----
 
 [#api-spring-cloud-azure-stream-binder-servicebus]
