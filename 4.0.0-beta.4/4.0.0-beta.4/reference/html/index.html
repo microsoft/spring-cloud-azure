@@ -2422,7 +2422,7 @@ public class CosmosSampleApplication implements CommandLineRunner {
 <td class="tableblock halign-left valign-top"><p class="tableblock">The redirect uri after logout.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.profile.cloud</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.profile.cloud-type</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the Azure cloud to connect to. Supported types are: AZURE, AZURE_CHINA, AZURE_GERMANY, AZURE_US_GOVERNMENT, OTHER.</p></td>
 </tr>
@@ -2570,14 +2570,14 @@ public class CosmosSampleApplication implements CommandLineRunner {
 <div class="ulist">
 <ul>
 <li>
-<p>Step 2: Add <code>@EnableGlobalMethodSecurity(prePostEnabled == true)</code> in web application:</p>
+<p>Step 2: Add <code>@EnableGlobalMethodSecurity(prePostEnabled = true)</code> in web application:</p>
 </li>
 </ul>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled == true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
 
     /**
@@ -3155,7 +3155,7 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled == true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AadWebApplicationAndResourceServerConfig {
 
     @Order(1)
@@ -3962,7 +3962,7 @@ record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_UR
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled == true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
