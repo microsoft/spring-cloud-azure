@@ -382,49 +382,21 @@ NOTE: `azure.activedirectory.graph-membership-uri` has been replaced by 2 proper
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-|com.azure.spring.aad.webapi.validator.AADJwtIssuerValidator |com.azure.spring.cloud.autoconfigure.aad.implementation.webapi.validator.AadJwtIssuerValidator
-|com.azure.spring.aad.webapi.AADJwtBearerTokenAuthenticationConverter |com.azure.spring.cloud.autoconfigure.aad.implementation.webapi.AadJwtBearerTokenAuthenticationConverter
-|com.azure.spring.aad.webapi.AADOBOOAuth2AuthorizedClientProvider |com.azure.spring.cloud.autoconfigure.aad.implementation.webapi.AadOboOAuth2AuthorizedClientProvider
-|com.azure.spring.aad.webapi.AADResourceServerConfiguration |com.azure.spring.cloud.autoconfigure.aad.configuration.AadResourceServerConfiguration
+|com.azure.spring.aad.webapi.AADJwtBearerTokenAuthenticationConverter |com.azure.spring.cloud.autoconfigure.aad.AadJwtBearerTokenAuthenticationConverter
 |com.azure.spring.aad.webapi.AADResourceServerProperties |com.azure.spring.cloud.autoconfigure.aad.properties.AadResourceServerProperties
 |com.azure.spring.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter |com.azure.spring.cloud.autoconfigure.aad.AadResourceServerWebSecurityConfigurerAdapter
-|com.azure.spring.aad.webapp.AADAzureDelegatedOAuth2AuthorizedClientProvider |com.azure.spring.cloud.autoconfigure.aad.implementation.webapp.AadAzureDelegatedOAuth2AuthorizedClientProvider
-|com.azure.spring.aad.webapp.AADOAuth2AuthorizationCodeGrantRequestEntityConverter |com.azure.spring.cloud.autoconfigure.aad.implementation.webapp.AadOAuth2AuthorizationCodeGrantRequestEntityConverter
-|com.azure.spring.aad.webapp.AADOAuth2AuthorizationRequestResolver |com.azure.spring.cloud.autoconfigure.aad.implementation.webapp.AadOAuth2AuthorizationRequestResolver
-|com.azure.spring.aad.webapp.AADOAuth2UserService |com.azure.spring.cloud.autoconfigure.aad.implementation.webapp.AadOAuth2UserService
-|com.azure.spring.aad.webapp.AADWebApplicationConfiguration |com.azure.spring.cloud.autoconfigure.aad.configuration.AadWebApplicationConfiguration
 |com.azure.spring.aad.webapp.AADWebSecurityConfigurerAdapter |com.azure.spring.cloud.autoconfigure.aad.AadWebSecurityConfigurerAdapter
 |com.azure.spring.aad.webapp.AuthorizationClientProperties |com.azure.spring.cloud.autoconfigure.aad.properties.AuthorizationClientProperties
-|com.azure.spring.aad.webapp.AzureClientRegistration |com.azure.spring.cloud.autoconfigure.aad.implementation.webapp.AzureClientRegistration
-|com.azure.spring.aad.webapp.GraphClient |com.azure.spring.cloud.autoconfigure.aad.implementation.graph.GraphClient
-|com.azure.spring.aad.webapp.GroupInformation |com.azure.spring.cloud.autoconfigure.aad.implementation.graph.GroupInformation
 |com.azure.spring.aad.AADApplicationType |com.azure.spring.cloud.autoconfigure.aad.properties.AadApplicationType
 |com.azure.spring.aad.AADAuthorizationGrantType |com.azure.spring.cloud.autoconfigure.aad.properties.AadAuthorizationGrantType
 |com.azure.spring.aad.AADAuthorizationServerEndpoints |com.azure.spring.cloud.autoconfigure.aad.properties.AadAuthorizationServerEndpoints
-|com.azure.spring.aad.AADClientRegistrationRepository |com.azure.spring.cloud.autoconfigure.aad.implementation.oauth2.AadClientRegistrationRepository
-|com.azure.spring.aad.AADIssuerJWSKeySelector |com.azure.spring.cloud.autoconfigure.aad.implementation.jwt.AadIssuerJwsKeySelector
-|com.azure.spring.aad.AADJwtDecoderProviderConfiguration |com.azure.spring.cloud.autoconfigure.aad.implementation.jwt.AadJwtDecoderProviderConfiguration
-|com.azure.spring.aad.AADJwtGrantedAuthoritiesConverter |com.azure.spring.cloud.autoconfigure.aad.implementation.jwt.AadJwtGrantedAuthoritiesConverter
-|com.azure.spring.aad.AADOAuth2AuthenticatedPrincipal |com.azure.spring.cloud.autoconfigure.aad.implementation.oauth2.AadOAuth2AuthenticatedPrincipal
-|com.azure.spring.aad.AADOAuth2ClientConfiguration |com.azure.spring.cloud.autoconfigure.aad.configuration.AadOAuth2ClientConfiguration
+|com.azure.spring.aad.AADClientRegistrationRepository |com.azure.spring.cloud.autoconfigure.aad.AadClientRegistrationRepository
 |com.azure.spring.aad.AADTrustedIssuerRepository |com.azure.spring.cloud.autoconfigure.aad.AadTrustedIssuerRepository
-|com.azure.spring.aad.AbstractOAuth2AuthorizationCodeGrantRequestEntityConverter |com.azure.spring.cloud.autoconfigure.aad.implementation.oauth2.AbstractOAuth2AuthorizationCodeGrantRequestEntityConverter
-|com.azure.spring.aad.JacksonHttpSessionOAuth2AuthorizedClientRepository |com.azure.spring.cloud.autoconfigure.aad.implementation.oauth2.JacksonHttpSessionOAuth2AuthorizedClientRepository
 |com.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter |com.azure.spring.cloud.autoconfigure.aad.filter.AadAppRoleStatelessAuthenticationFilter
 |com.azure.spring.autoconfigure.aad.AADAuthenticationFilter |com.azure.spring.cloud.autoconfigure.aad.filter.AadAuthenticationFilter
-|com.azure.spring.autoconfigure.aad.AADAuthenticationFilterAutoConfiguration |com.azure.spring.cloud.autoconfigure.aad.AadAuthenticationFilterAutoConfiguration
 |com.azure.spring.autoconfigure.aad.AADAuthenticationProperties |com.azure.spring.cloud.autoconfigure.aad.properties.AadAuthenticationProperties
-|com.azure.spring.autoconfigure.aad.AADAutoConfiguration |com.azure.spring.cloud.autoconfigure.aad.AadAutoConfiguration
-|com.azure.spring.autoconfigure.aad.AzureADGraphClient |com.azure.spring.cloud.autoconfigure.aad.implementation.graph.AadGraphClient
-|com.azure.spring.autoconfigure.aad.Constants |com.azure.spring.cloud.autoconfigure.aad.implementation.constants.Constants
-|com.azure.spring.autoconfigure.aad.JacksonObjectMapperFactory |com.azure.spring.cloud.autoconfigure.aad.implementation.util.JacksonObjectMapperFactory
-|com.azure.spring.autoconfigure.aad.Membership |com.azure.spring.cloud.autoconfigure.aad.implementation.graph.Membership
-|com.azure.spring.autoconfigure.aad.Memberships |com.azure.spring.cloud.autoconfigure.aad.implementation.graph.Memberships
 |com.azure.spring.autoconfigure.aad.UserPrincipal |com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipal
 |com.azure.spring.autoconfigure.aad.UserPrincipalManager |com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipalManager
-|com.azure.spring.autoconfigure.condition.aad.ClientRegistrationCondition |com.azure.spring.cloud.autoconfigure.aad.implementation.conditions.ClientRegistrationCondition
-|com.azure.spring.autoconfigure.condition.aad.ResourceServerCondition |com.azure.spring.cloud.autoconfigure.aad.implementation.conditions.ResourceServerCondition
-|com.azure.spring.autoconfigure.condition.aad.WebApplicationCondition |com.azure.spring.cloud.autoconfigure.aad.implementation.conditions.WebApplicationCondition
 |===
 
 .Removed classes from azure-spring-boot-starter-active-directory
@@ -513,21 +485,12 @@ The value type of the following properties is changed from `long` to `java.time.
 |===
 |Legacy class |Modern class
 |com.azure.spring.autoconfigure.b2c.AADB2CAuthorizationRequestResolver |com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cAuthorizationRequestResolver
-|com.azure.spring.autoconfigure.b2c.AADB2CAutoConfiguration |com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cAutoConfiguration
-|com.azure.spring.autoconfigure.b2c.AADB2CClientRegistrationRepository |com.azure.spring.cloud.autoconfigure.aadb2c.implementation.AadB2cClientRegistrationRepository
-|com.azure.spring.autoconfigure.b2c.AADB2CConditions |com.azure.spring.cloud.autoconfigure.aadb2c.implementation.AadB2cConditions
-|com.azure.spring.autoconfigure.b2c.AADB2CConfigurationException |com.azure.spring.cloud.autoconfigure.aadb2c.implementation.AadB2cConfigurationException
-|com.azure.spring.autoconfigure.b2c.AADB2CJwtBearerTokenAuthenticationConverter |com.azure.spring.cloud.autoconfigure.aad.implementation.webapi.AadJwtBearerTokenAuthenticationConverter
+|com.azure.spring.autoconfigure.b2c.AADB2CJwtBearerTokenAuthenticationConverter |com.azure.spring.cloud.autoconfigure.aad.AadJwtBearerTokenAuthenticationConverter
 |com.azure.spring.autoconfigure.b2c.AADB2CLogoutSuccessHandler |com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cLogoutSuccessHandler
-|com.azure.spring.autoconfigure.b2c.AADB2COAuth2AuthorizationCodeGrantRequestEntityConverter |com.azure.spring.cloud.autoconfigure.aadb2c.implementation.AadB2cOAuth2AuthorizationCodeGrantRequestEntityConverter
-|com.azure.spring.autoconfigure.b2c.AADB2COAuth2ClientConfiguration |com.azure.spring.cloud.autoconfigure.aadb2c.configuration.AadB2cOAuth2ClientConfiguration
 |com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer |com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cOidcLoginConfigurer
 |com.azure.spring.autoconfigure.b2c.AADB2CProperties |com.azure.spring.cloud.autoconfigure.aadb2c.properties.AadB2cProperties
-|com.azure.spring.autoconfigure.b2c.AADB2CResourceServerAutoConfiguration |com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cResourceServerAutoConfiguration
 |com.azure.spring.autoconfigure.b2c.AADB2CTrustedIssuerRepository |com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cTrustedIssuerRepository
-|com.azure.spring.autoconfigure.b2c.AADB2CURL |com.azure.spring.cloud.autoconfigure.aadb2c.implementation.AadB2cUrl
 |com.azure.spring.autoconfigure.b2c.AuthorizationClientProperties |com.azure.spring.cloud.autoconfigure.aad.properties.AuthorizationClientProperties
-|com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer |com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cOidcLoginConfigurer
 |===
 
 ==== From azure-spring-boot-starter-cosmos to spring-cloud-azure-starter-data-cosmos
@@ -580,31 +543,32 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-keyvault-secrets`
 [cols="<30,<~", options="header"]
 |===
 | Legacy properties                        | Modern properties
-| *azure.keyvault*.allow-telemetry         | Not supported anymore.
-| *azure.keyvault*.case-sensitive-keys     | *spring.cloud.azure.keyvault.secret*.property-source[n].case-sensitive
-| *azure.keyvault*.certificate-password    | *spring.cloud.azure.keyvault.secret*.property-source[n].credential.client-certificate-password
-| *azure.keyvault*.certificate-path        | *spring.cloud.azure.keyvault.secret*.property-source[n].credential.client-certificate-path
-| *azure.keyvault*.client-id               | *spring.cloud.azure.keyvault.secret*.property-source[n].credential.client-id
-| *azure.keyvault*.client-key              | *spring.cloud.azure.keyvault.secret*.property-source[n].credential.client-secret
-| *azure.keyvault*.enabled                 | *spring.cloud.azure.keyvault.secret*.enabled and *spring.cloud.azure.keyvault.secret*.property-source-enabled and *spring.cloud.azure.keyvault.secret*.property-source[n].enabled
-| *azure.keyvault*.order                   | Not supported anymore. Use the order in property-source[n] instead.
-| *azure.keyvault*.refresh-interval        | *spring.cloud.azure.keyvault.secret*.property-source[n].refresh-interval
-| *azure.keyvault*.secret-keys             | *spring.cloud.azure.keyvault.secret*.property-source[n].secret-keys
-| *azure.keyvault*.tenant-id               | *spring.cloud.azure.keyvault.secret*.property-source[n].profile.tenant-id
-| *azure.keyvault*.uri                     | *spring.cloud.azure.keyvault.secret*.property-source[n].endpoint
-| -                                        | *spring.cloud.azure.keyvault.secret*.property-source[n].service-version
-| -                                        | *spring.cloud.azure.keyvault.secret*.property-source[n].client
-| -                                        | *spring.cloud.azure.keyvault.secret*.property-source[n].proxy
-| -                                        | *spring.cloud.azure.keyvault.secret*.property-source[n].retry
-| -                                        | *spring.cloud.azure.keyvault.secret*.property-source[n].resource
+| *azure.keyvault*.case-sensitive-keys     | *spring.cloud.azure.keyvault.secret*.property-sources[n].case-sensitive
+| *azure.keyvault*.certificate-password    | *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-certificate-password
+| *azure.keyvault*.certificate-path        | *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-certificate-path
+| *azure.keyvault*.client-id               | *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-id
+| *azure.keyvault*.client-key              | *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-secret
+| *azure.keyvault*.enabled                 | *spring.cloud.azure.keyvault.secret*.enabled and *spring.cloud.azure.keyvault.secret*.property-source-enabled
+| *azure.keyvault*.order                   | Not supported anymore. Use the order in property-sources[n] instead.
+| *azure.keyvault*.refresh-interval        | *spring.cloud.azure.keyvault.secret*.property-sources[n].refresh-interval
+| *azure.keyvault*.secret-keys             | *spring.cloud.azure.keyvault.secret*.property-sources[n].secret-keys
+| *azure.keyvault*.tenant-id               | *spring.cloud.azure.keyvault.secret*.property-sources[n].profile.tenant-id
+| *azure.keyvault*.uri                     | *spring.cloud.azure.keyvault.secret*.property-sources[n].endpoint
+|===
+
+.Removed properties from spring-cloud-azure-starter-keyvault-secrets
+[options="header"]
+|===
+| Removed property
+| azure.keyvault.allow-telemetry
+| azure.keyvault.order
 |===
 
 . All configuration property names changed the prefix from `azure.keyvault` to `spring.cloud.azure.keyvault.secret`.
 . `spring.cloud.azure.keyvault.secret.enabled` is used to enable all Key Vault Secret features, include configure Key Vault secret client beans(like `SecretClient` and `SecretAsyncClient`) and add `KeyVaultPropertySource` in `ConfigurableEnvironment`.
 . `spring.cloud.azure.keyvault.secret.property-source-enabled` is used to enable all `KeyVaultPropertySource`. It will take effect only when `spring.cloud.azure.keyvault.secret.enabled=true`.
-. `spring.cloud.azure.keyvault.secret.property-source[n].enabled` is used to enable specific `KeyVaultPropertySource`. It will take effect only when `spring.cloud.azure.keyvault.secret.enabled=true` and `spring.cloud.azure.keyvault.secret.property-source-enabled=true`
-. For Azure common properties(like `client`, `proxy`, `retry`, `credential`, `profile`) and Key Vault properties(like `endpoint`, `service-version`). If `spring.cloud.azure.keyvault.secret.property-source[n].PROPERTY_NAME` isn't configured, `spring.cloud.azure.keyvault.secret.PROPERTY_NAME` will be used.
-. `spring.cloud.azure.keyvault.secret.property-source[n].resource` is specific to a unique Azure resource, so if it's not configured, it won't get value from other places.
+. For Azure common properties(like `client`, `proxy`, `retry`, `credential`, `profile`) and Key Vault properties(like `endpoint`, `service-version`). If `spring.cloud.azure.keyvault.secret.property-sources[n].PROPERTY_NAME` isn't configured, `spring.cloud.azure.keyvault.secret.PROPERTY_NAME` will be used.
+. `spring.cloud.azure.keyvault.secret.property-sources[n].resource` is specific to a unique Azure resource, so if it's not configured, it won't get value from other places.
 
 ==== From azure-spring-boot-starter-servicebus-jms to spring-cloud-azure-starter-servicebus-jms
 This guide is intended to assist in the migration to
