@@ -39,7 +39,7 @@ The `spring-cloud-azure-starter-active-directory` (`aad-starter` for short) prov
 |*spring.cloud.azure.active-directory*.jwt-read-timeout |  | Read Timeout for the JWKSet Remote URL call.
 |*spring.cloud.azure.active-directory*.jwt-size-limit |  | Size limit in Bytes of the JWKSet Remote URL call.
 |*spring.cloud.azure.active-directory*.post-logout-redirect-uri |  | The redirect uri after logout.
-|*spring.cloud.azure.active-directory*.profile.cloud |  | Name of the Azure cloud to connect to. Supported types are: AZURE, AZURE_CHINA, AZURE_GERMANY, AZURE_US_GOVERNMENT, OTHER.
+|*spring.cloud.azure.active-directory*.profile.cloud-type |  | Name of the Azure cloud to connect to. Supported types are: AZURE, AZURE_CHINA, AZURE_GERMANY, AZURE_US_GOVERNMENT, OTHER.
 |*spring.cloud.azure.active-directory*.profile.environment |  | Properties to Azure Active Directory endpoints.
 |*spring.cloud.azure.active-directory*.profile.tenant-id |  | Azure Tenant ID.
 |*spring.cloud.azure.active-directory*.redirect-uri-template | `{baseUrl}/login/oauth2/code/` | Redirection Endpoint: Used by the authorization server to return responses containing authorization credentials to the client via the resource owner user-agent.
