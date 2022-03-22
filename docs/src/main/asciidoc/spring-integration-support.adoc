@@ -55,7 +55,6 @@ To specify the batch consuming strategy, developers can use `EventHubsContainerP
 
 This starter provides the following 3 parts of configuration options:
 
-[#eventhubs-connection-configration]
 ===== Connection Configuration Properties
 This section contains the configuration options used for connecting to Azure Event Hubs.
 
@@ -449,7 +448,6 @@ Please refer to Javadoc for details.
 
 This starter provides the following 2 parts of configuration options:
 
-[#servicebus-connection-configration]
 ===== Connection Configuration Properties
 
 This section contains the configuration options used for connecting to Azure Service Bus.
@@ -801,7 +799,6 @@ Azure Queue Storage is a service for storing large numbers of messages. You acce
 
 This starter provides the following configuration options:
 
-[#storage-queue-connection-configration]
 ===== Connection Configuration Properties
 This section contains the configuration options used for connecting to Azure Storage Queue.
 
