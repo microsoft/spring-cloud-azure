@@ -573,7 +573,7 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-keyvault-secrets`
 ==== From azure-spring-boot-starter-servicebus-jms to spring-cloud-azure-starter-servicebus-jms
 This guide is intended to assist in the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-servicebus-jms[spring-cloud-azure-starter-servicebus-jms] from
-version 2 of link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-servicebus-jms[spring-cloud-azure-starter-servicebus-jms].
+version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-servicebus-jms[azure-spring-boot-starter-servicebus-jms].
 
 * Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
 * Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
