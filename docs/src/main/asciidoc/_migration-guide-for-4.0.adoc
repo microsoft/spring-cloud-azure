@@ -1227,13 +1227,12 @@ spring:
                   inclusive: false
 ----
 
-If you use other security principals instead of connection strings, in the legacy versions the application will firstly connect to Azure Resource Manager (ARM) with the provided security principal, and then
-retrieve the connection string of the specified namespace with ARM. In the end the application uses the retrieved connection string to authenticate to an Azure Service. In this way
-the provided security principal should be granted with the link:https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#contributor[Contributor] role to retrieve of the associated Azure Service namespace.
+If you use security principals instead of connection strings, in versions before 4.0 the application will firstly connect to Azure Resource Manager (ARM) with the provided security principal, and then
+retrieve the connection string of the specified namespace with ARM. In the end the application uses the retrieved connection string to connect to Azure Event Hubs. In this way
+the provided security principal should be granted with the link:https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#contributor[Contributor] role to retrieve of the associated Azure Event Hubs namespace.
 
-For Azure Spring Cloud 4.0, we provide two ways of leveraging security principals for authentication. One is the legacy usage, the principals are used to
-connect to ARM and then retrieve connection string as credentials, where the `Contributor` role is required.
-The other way leverages security principals to authenticate to Azure Active Directory and then connect to the Azure Service directly, in this case the `Contributor` role is not necessary anymore
+For Azure Spring Cloud 4.0, we provide two ways of leveraging security principals for authentication. One is still using the principals to connect to ARM and retrieve the connection strings where the `Contributor` role is required for the principals.
+The other leverages security principals to authenticate to Azure Active Directory (Azure AD) and then connect to Azure Event Hubs directly, in this case the `Contributor` role is not necessary anymore
 while other `Data` related roles are required for messaging operations, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
 For authentication based on ARM, taking service principal as example, configuration migration is listed as below, where the assigned role should not change:
@@ -1270,10 +1269,10 @@ spring:
           resource-group: ${RESOURCE_GROUP}
 ----
 
-For authentication based on Azure Active Directory, security principals of the service principal and the manged identity are both supported, where the principal should
+You can also migrate to authenticate and authorize with Azure AD directly without making a detour to ARM. Security principals of the service principal and the manged identity are both supported, where the principal should
 be granted with necessary `Data` related roles for messaging operations. The configuration examples of the service principal and the manged identity are listed as below:
 
-* Service principals
+* With a service principal
 
 [source,yaml]
 ----
@@ -1289,7 +1288,7 @@ spring:
         namespace: ${EVENTHUB_NAMESPACE}
 ----
 
-* Managed identities
+* With a managed identity
 
 [source,yaml]
 ----
@@ -1417,13 +1416,12 @@ spring:
               entity-type: queue #set as topic if needed
 ----
 
-If you use other security principals instead of connection strings, in the legacy versions the application will firstly connect to Azure Resource Manager (ARM) with the provided security principal, and then
-retrieve the connection string of the specified namespace with ARM. In the end the application uses the retrieved connection string to authenticate to an Azure Service. In this way
-the provided security principal should be granted with the link:https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#contributor[Contributor] role to retrieve of the associated Azure Service namespace.
+If you use security principals instead of connection strings, in versions before 4.0 the application will firstly connect to Azure Resource Manager (ARM) with the provided security principal, and then
+retrieve the connection string of the specified namespace with ARM. In the end the application uses the retrieved connection string to connect to Azure Service Bus. In this way
+the provided security principal should be granted with the link:https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#contributor[Contributor] role to retrieve of the associated Azure Service Bus namespace.
 
-For Azure Spring Cloud 4.0, we provide two ways of leveraging security principals for authentication. One is the legacy usage, the principals are used to
-connect to ARM and then retrieve connection string as credentials, where the `Contributor` role is required.
-The other way leverages security principals to authenticate to Azure Active Directory and then connect to the Azure Service directly, in this case the `Contributor` role is not necessary anymore
+For Azure Spring Cloud 4.0, we provide two ways of leveraging security principals for authentication. One is still using the principals to connect to ARM and retrieve the connection strings where the `Contributor` role is required for the principals.
+The other leverages security principals to authenticate to Azure Active Directory (Azure AD) and then connect to the Azure Service Bus directly, in this case the `Contributor` role is not necessary anymore
 while other `Data` related roles are required for messaging operations, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
 For authentication based on ARM, taking service principal as example, configuration migration is listed as below, where the assigned role should not change:
@@ -1462,10 +1460,10 @@ spring:
           resource-group: ${SERVICEBUS_RESOURCE_GROUP}
 ----
 
-For authentication based on Azure Active Directory, security principals of the service principal and the manged identity are both supported, where the principal should
+You can also migrate to authenticate and authorize with Azure AD directly without making a detour to ARM. Security principals of the service principal and the manged identity are both supported, where the principal should
 be granted with necessary `Data` related roles for messaging operations. The configuration examples of the service principal and the manged identity are listed as below:
 
-* Service principals
+* With a service principal
 
 [source,yaml]
 ----
@@ -1481,7 +1479,7 @@ spring:
         namespace: ${SERVICEBUS_NAMESPACE}
 ----
 
-* Managed identities
+* With a managed identity
 
 [source,yaml]
 ----
