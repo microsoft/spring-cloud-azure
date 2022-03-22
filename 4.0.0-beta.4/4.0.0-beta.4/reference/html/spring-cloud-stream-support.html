@@ -281,7 +281,7 @@ The checkpoint header only exists when <strong>MANUAL</strong> checkpoint mode i
 <p>The binder provides the following 3 parts of configuration options:</p>
 </div>
 <div class="sect4">
-<h5 id="eventhubs-connection-configration"><a class="link" href="#eventhubs-connection-configration">Connection Configuration Properties</a></h5>
+<h5 id="eventhubs-connection-configuration"><a class="link" href="#eventhubs-connection-configuration">Connection Configuration Properties</a></h5>
 <div class="paragraph">
 <p>This section contains the configuration options used for connecting to Azure Event Hubs.</p>
 </div>
@@ -350,6 +350,9 @@ Common Azure Service SDK configuration options are configurable for the Spring C
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>The binder also supports <a href="index.html#spring-cloud-azure-resourcemanager">Spring Could Azure Resource Manager</a> by default. To learn about how to retrieve the connection string with security principals that are not granted with <code>Data</code> related roles, please refer to the <a href="index.html#resource-manager-basic-usage">resource manager example</a> for details.</p>
 </div>
 </div>
 <div class="sect4">
@@ -538,7 +541,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 <div class="sect5">
 <h6 id="_advanced_consumer_configuration"><a class="link" href="#_advanced_consumer_configuration">Advanced Consumer Configuration</a></h6>
 <div class="paragraph">
-<p>The above <a href="#eventhubs-connection-configration">connection</a>, <a href="#_checkpoint_configuration_properties">checkpoint</a> and <a href="Configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder consumer, which can be configured with the prefix <code>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer.</code>.</p>
+<p>The above <a href="#eventhubs-connection-configuration">connection</a>, <a href="#_checkpoint_configuration_properties">checkpoint</a> and <a href="Configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder consumer, which can be configured with the prefix <code>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer.</code>.</p>
 </div>
 </div>
 <div class="sect5">
@@ -577,7 +580,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 <div class="sect5">
 <h6 id="_advanced_producer_configuration"><a class="link" href="#_advanced_producer_configuration">Advanced Producer Configuration</a></h6>
 <div class="paragraph">
-<p>The above <a href="#eventhubs-connection-configration">connection</a> and <a href="Configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder producer, which can be configured with the prefix <code>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.producer.</code>.</p>
+<p>The above <a href="#eventhubs-connection-configuration">connection</a> and <a href="Configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder producer, which can be configured with the prefix <code>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.producer.</code>.</p>
 </div>
 </div>
 </div>
@@ -1127,7 +1130,7 @@ This binder relies on <code>Subscription</code> of a topic to act as a consumer 
 <p>The binder provides the following 2 parts of configuration options:</p>
 </div>
 <div class="sect4">
-<h5 id="servicebus-connection-configration"><a class="link" href="#servicebus-connection-configration">Connection Configuration Properties</a></h5>
+<h5 id="servicebus-connection-configuration"><a class="link" href="#servicebus-connection-configuration">Connection Configuration Properties</a></h5>
 <div class="paragraph">
 <p>This section contains the configuration options used for connecting to Azure Service Bus.</p>
 </div>
@@ -1191,6 +1194,9 @@ Common Azure Service SDK configuration options are configurable for the Spring C
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>The binder also supports <a href="index.html#spring-cloud-azure-resourcemanager">Spring Could Azure Resource Manager</a> by default. To learn about how to retrieve the connection string with security principals that are not granted with <code>Data</code> related roles, please refer to the <a href="index.html#resource-manager-basic-usage">resource manager example</a> for details.</p>
 </div>
 </div>
 <div class="sect4">
@@ -1282,7 +1288,7 @@ to enable developers to settle messages manually.</p></td>
 <div class="sect5">
 <h6 id="_advanced_consumer_configuration_2"><a class="link" href="#_advanced_consumer_configuration_2">Advanced Consumer Configuration</a></h6>
 <div class="paragraph">
-<p>The above <a href="#servicebus-connection-configration">connection</a> and <a href="Configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder consumer, which can be configured with the prefix <code>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer.</code>.</p>
+<p>The above <a href="#servicebus-connection-configuration">connection</a> and <a href="Configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder consumer, which can be configured with the prefix <code>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer.</code>.</p>
 </div>
 </div>
 <div class="sect5">
@@ -1345,7 +1351,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
 <div class="sect5">
 <h6 id="_advanced_producer_configuration_2"><a class="link" href="#_advanced_producer_configuration_2">Advanced Producer Configuration</a></h6>
 <div class="paragraph">
-<p>The above <a href="#servicebus-connection-configration">connection</a> and <a href="Configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder producer, which can be configured with the prefix <code>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.producer.</code>.</p>
+<p>The above <a href="#servicebus-connection-configuration">connection</a> and <a href="Configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder producer, which can be configured with the prefix <code>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.producer.</code>.</p>
 </div>
 </div>
 </div>
@@ -1385,7 +1391,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
         bindings:
           consume-in-0:
             consumer:
-              checkpoint-mode: MANUAL
+              auto-complete: false
           supply-out-0:
             producer:
               entity-type: queue # set as "topic" if you use Service Bus Topic</pre>
@@ -1424,7 +1430,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
         bindings:
           consume-in-0:
             consumer:
-              checkpoint-mode: MANUAL
+              auto-complete: false
           supply-out-0:
             producer:
               entity-type: queue # set as "topic" if you use Service Bus Topic</pre>
@@ -1461,7 +1467,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
         bindings:
           consume-in-0:
             consumer:
-              checkpoint-mode: MANUAL
+              auto-complete: false
           supply-out-0:
             producer:
               entity-type: queue # set as "topic" if you use Service Bus Topic</pre>
@@ -1694,13 +1700,13 @@ When setting the partiton key, the priority of message header is higher than Spr
         bindings:
           consume1-in-0:
             consumer:
-              checkpoint-mode: MANUAL
+              auto-complete: false
           supply1-out-0:
             producer:
               entity-type: topic
           consume2-in-0:
             consumer:
-              checkpoint-mode: MANUAL
+              auto-complete: false
           supply2-out-0:
             producer:
               entity-type: queue

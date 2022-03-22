@@ -276,11 +276,11 @@ window.onload = function() {
 <li><a href="#samples-14">17.4. Samples</a></li>
 </ul>
 </li>
-<li><a href="#resource-manager">18. Resource Manager</a>
+<li><a href="#spring-cloud-azure-resourcemanager">18. Resource Manager</a>
 <ul class="sectlevel2">
 <li><a href="#dependency-setup-15">18.1. Dependency Setup</a></li>
 <li><a href="#configuration-16">18.2. Configuration</a></li>
-<li><a href="#basic-usage-15">18.3. Basic Usage</a></li>
+<li><a href="#resource-manager-basic-usage">18.3. Basic Usage</a></li>
 <li><a href="#samples-15">18.4. Samples</a></li>
 </ul>
 </li>
@@ -4260,7 +4260,7 @@ To specify the batch consuming strategy, developers can use <code>EventHubsConta
 <p>This starter provides the following 3 parts of configuration options:</p>
 </div>
 <div class="sect4">
-<h5 id="eventhubs-connection-configration"><a class="anchor" href="#eventhubs-connection-configration"></a><a class="link" href="#eventhubs-connection-configration">Connection Configuration Properties</a></h5>
+<h5 id="connection-configuration-properties"><a class="anchor" href="#connection-configuration-properties"></a><a class="link" href="#connection-configuration-properties">Connection Configuration Properties</a></h5>
 <div class="paragraph">
 <p>This section contains the configuration options used for connecting to Azure Event Hubs.</p>
 </div>
@@ -4838,7 +4838,7 @@ Please refer to Javadoc for details.
 <p>This starter provides the following 2 parts of configuration options:</p>
 </div>
 <div class="sect4">
-<h5 id="servicebus-connection-configration"><a class="anchor" href="#servicebus-connection-configration"></a><a class="link" href="#servicebus-connection-configration">Connection Configuration Properties</a></h5>
+<h5 id="connection-configuration-properties-2"><a class="anchor" href="#connection-configuration-properties-2"></a><a class="link" href="#connection-configuration-properties-2">Connection Configuration Properties</a></h5>
 <div class="paragraph">
 <p>This section contains the configuration options used for connecting to Azure Service Bus.</p>
 </div>
@@ -5321,7 +5321,7 @@ the value of the session id will eventually be used to overwrite the value of th
 <p>This starter provides the following configuration options:</p>
 </div>
 <div class="sect4">
-<h5 id="storage-queue-connection-configration"><a class="anchor" href="#storage-queue-connection-configration"></a><a class="link" href="#storage-queue-connection-configration">Connection Configuration Properties</a></h5>
+<h5 id="connection-configuration-properties-3"><a class="anchor" href="#connection-configuration-properties-3"></a><a class="link" href="#connection-configuration-properties-3">Connection Configuration Properties</a></h5>
 <div class="paragraph">
 <p>This section contains the configuration options used for connecting to Azure Storage Queue.</p>
 </div>
@@ -5694,7 +5694,7 @@ The checkpoint header only exists when <strong>MANUAL</strong> checkpoint mode i
 <p>The binder provides the following 3 parts of configuration options:</p>
 </div>
 <div class="sect4">
-<h5 id="eventhubs-connection-configration"><a class="anchor" href="#eventhubs-connection-configration"></a><a class="link" href="#eventhubs-connection-configration">Connection Configuration Properties</a></h5>
+<h5 id="eventhubs-connection-configuration"><a class="anchor" href="#eventhubs-connection-configuration"></a><a class="link" href="#eventhubs-connection-configuration">Connection Configuration Properties</a></h5>
 <div class="paragraph">
 <p>This section contains the configuration options used for connecting to Azure Event Hubs.</p>
 </div>
@@ -5763,6 +5763,9 @@ Common Azure Service SDK configuration options are configurable for the Spring C
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>The binder also supports <a href="index.html#spring-cloud-azure-resourcemanager">Spring Could Azure Resource Manager</a> by default. To learn about how to retrieve the connection string with security principals that are not granted with <code>Data</code> related roles, please refer to the <a href="index.html#resource-manager-basic-usage">resource manager example</a> for details.</p>
 </div>
 </div>
 <div class="sect4">
@@ -5951,7 +5954,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 <div class="sect5">
 <h6 id="advanced-consumer-configuration"><a class="anchor" href="#advanced-consumer-configuration"></a><a class="link" href="#advanced-consumer-configuration">Advanced Consumer Configuration</a></h6>
 <div class="paragraph">
-<p>The above <a href="#eventhubs-connection-configration">connection</a>, <a href="#checkpoint-configuration-properties">checkpoint</a> and <a href="Configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder consumer, which can be configured with the prefix <code>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer.</code>.</p>
+<p>The above <a href="#eventhubs-connection-configuration">connection</a>, <a href="#checkpoint-configuration-properties">checkpoint</a> and <a href="Configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder consumer, which can be configured with the prefix <code>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer.</code>.</p>
 </div>
 </div>
 <div class="sect5">
@@ -5990,7 +5993,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 <div class="sect5">
 <h6 id="advanced-producer-configuration"><a class="anchor" href="#advanced-producer-configuration"></a><a class="link" href="#advanced-producer-configuration">Advanced Producer Configuration</a></h6>
 <div class="paragraph">
-<p>The above <a href="#eventhubs-connection-configration">connection</a> and <a href="Configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder producer, which can be configured with the prefix <code>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.producer.</code>.</p>
+<p>The above <a href="#eventhubs-connection-configuration">connection</a> and <a href="Configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder producer, which can be configured with the prefix <code>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.producer.</code>.</p>
 </div>
 </div>
 </div>
@@ -6540,7 +6543,7 @@ This binder relies on <code>Subscription</code> of a topic to act as a consumer 
 <p>The binder provides the following 2 parts of configuration options:</p>
 </div>
 <div class="sect4">
-<h5 id="servicebus-connection-configration"><a class="anchor" href="#servicebus-connection-configration"></a><a class="link" href="#servicebus-connection-configration">Connection Configuration Properties</a></h5>
+<h5 id="servicebus-connection-configuration"><a class="anchor" href="#servicebus-connection-configuration"></a><a class="link" href="#servicebus-connection-configuration">Connection Configuration Properties</a></h5>
 <div class="paragraph">
 <p>This section contains the configuration options used for connecting to Azure Service Bus.</p>
 </div>
@@ -6604,6 +6607,9 @@ Common Azure Service SDK configuration options are configurable for the Spring C
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>The binder also supports <a href="index.html#spring-cloud-azure-resourcemanager">Spring Could Azure Resource Manager</a> by default. To learn about how to retrieve the connection string with security principals that are not granted with <code>Data</code> related roles, please refer to the <a href="index.html#resource-manager-basic-usage">resource manager example</a> for details.</p>
 </div>
 </div>
 <div class="sect4">
@@ -6695,7 +6701,7 @@ to enable developers to settle messages manually.</p></td>
 <div class="sect5">
 <h6 id="advanced-consumer-configuration-2"><a class="anchor" href="#advanced-consumer-configuration-2"></a><a class="link" href="#advanced-consumer-configuration-2">Advanced Consumer Configuration</a></h6>
 <div class="paragraph">
-<p>The above <a href="#servicebus-connection-configration">connection</a> and <a href="Configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder consumer, which can be configured with the prefix <code>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer.</code>.</p>
+<p>The above <a href="#servicebus-connection-configuration">connection</a> and <a href="Configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder consumer, which can be configured with the prefix <code>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer.</code>.</p>
 </div>
 </div>
 <div class="sect5">
@@ -6758,7 +6764,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
 <div class="sect5">
 <h6 id="advanced-producer-configuration-2"><a class="anchor" href="#advanced-producer-configuration-2"></a><a class="link" href="#advanced-producer-configuration-2">Advanced Producer Configuration</a></h6>
 <div class="paragraph">
-<p>The above <a href="#servicebus-connection-configration">connection</a> and <a href="Configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder producer, which can be configured with the prefix <code>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.producer.</code>.</p>
+<p>The above <a href="#servicebus-connection-configuration">connection</a> and <a href="Configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder producer, which can be configured with the prefix <code>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.producer.</code>.</p>
 </div>
 </div>
 </div>
@@ -6798,7 +6804,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
         bindings:
           consume-in-0:
             consumer:
-              checkpoint-mode: MANUAL
+              auto-complete: false
           supply-out-0:
             producer:
               entity-type: queue # set as "topic" if you use Service Bus Topic</pre>
@@ -6837,7 +6843,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
         bindings:
           consume-in-0:
             consumer:
-              checkpoint-mode: MANUAL
+              auto-complete: false
           supply-out-0:
             producer:
               entity-type: queue # set as "topic" if you use Service Bus Topic</pre>
@@ -6874,7 +6880,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
         bindings:
           consume-in-0:
             consumer:
-              checkpoint-mode: MANUAL
+              auto-complete: false
           supply-out-0:
             producer:
               entity-type: queue # set as "topic" if you use Service Bus Topic</pre>
@@ -7107,13 +7113,13 @@ When setting the partiton key, the priority of message header is higher than Spr
         bindings:
           consume1-in-0:
             consumer:
-              checkpoint-mode: MANUAL
+              auto-complete: false
           supply1-out-0:
             producer:
               entity-type: topic
           consume2-in-0:
             consumer:
-              checkpoint-mode: MANUAL
+              auto-complete: false
           supply2-out-0:
             producer:
               entity-type: queue
@@ -7661,7 +7667,7 @@ spring.cloud.azure.redis.resource.resource-group=${AZURE_CACHE_REDIS_RESOURCE_GR
 </div>
 </div>
 <div class="sect1">
-<h2 id="resource-manager"><a class="anchor" href="#resource-manager"></a><a class="link" href="#resource-manager">18. Resource Manager</a></h2>
+<h2 id="spring-cloud-azure-resourcemanager"><a class="anchor" href="#spring-cloud-azure-resourcemanager"></a><a class="link" href="#spring-cloud-azure-resourcemanager">18. Resource Manager</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Azure Resource Manager (ARM) is the deployment and management service for Azure. It provides a management layer that enables you to create, update, and delete resources in your Azure account. Spring Cloud Azure Resourcemanger can help provision resources or retrieve resource metadata.</p>
@@ -7752,13 +7758,42 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.profile</strong>.tenant-id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Tenant id for Azure resources.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.&lt;azure-service&gt;</strong>.namespace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The namespace of the Azure service to provision resources with.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.&lt;azure-service&gt;</strong>.resource.resource-group</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The resource group holding an Azure service resource.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
 <div class="sect2">
-<h3 id="basic-usage-15"><a class="anchor" href="#basic-usage-15"></a><a class="link" href="#basic-usage-15">18.3. Basic Usage</a></h3>
+<h3 id="resource-manager-basic-usage"><a class="anchor" href="#resource-manager-basic-usage"></a><a class="link" href="#resource-manager-basic-usage">18.3. Basic Usage</a></h3>
 <div class="paragraph">
-<p>Spring Cloud Azure Resourcemanger can work together with specific Spring Cloud Azure starters to retrieve connection information, such as connection strings, to connect to Azure services. It can also together with <code>spring-cloud-azure-starter</code> and third-party libraries to retrieve metadata like username/password, to complete authentication, such as: <a href="#kafka-support">Kafka Support</a>, <a href="#redis-support">Redis Support</a>.</p>
+<p>Spring Cloud Azure Resource Manager can work together with specific Spring Cloud Azure starters to retrieve connection information, such as connection strings, to connect to Azure services. It can also together with <code>spring-cloud-azure-starter</code> and third-party libraries to retrieve metadata like username/password, to complete authentication, such as: <a href="#kafka-support">Kafka Support</a>, <a href="#redis-support">Redis Support</a>.</p>
+</div>
+<div class="paragraph">
+<p>For example, to retrieve the connection string of an Azure Service, developers can use a service principal as the credential to authenticate and retrieve the connection string. The configuration is listed as below. The provided service principal should
+be assigned a role of <code>Contributor</code> of the associated namespace at least. Please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the principal has been granted the sufficient permission to access the Azure resource.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${CLIENT_ID}
+        client-secret: ${CLIENT_SECRET}
+      profile:
+        tenant-id: ${TENANT_ID}
+        subscription-id: ${SUBSCRIPTION_ID}
+      &lt;azure-service&gt;:
+        namespace: ${SERVICEBUS_NAMESPACE}
+        resource:
+          resource-group: ${RESOURCE_GROUP}</code></pre>
+</div>
 </div>
 </div>
 <div class="sect2">
