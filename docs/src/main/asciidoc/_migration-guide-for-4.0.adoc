@@ -1269,8 +1269,7 @@ spring:
           resource-group: ${RESOURCE_GROUP}
 ----
 
-You can also migrate to authenticate and authorize with Azure AD directly without making a detour to ARM. Security principals of the service principal and the manged identity are both supported, where the principal should
-be granted with necessary `Data` related roles for messaging operations. The configuration examples of the service principal and the manged identity are listed as below:
+You can also migrate to authenticate and authorize with Azure AD directly without making a detour to ARM. Make sure to grant the security principal necessary `Data` roles for messaging operations. The configuration examples of the service principal and the manged identity are listed as below:
 
 * With a service principal
 
@@ -1460,8 +1459,7 @@ spring:
           resource-group: ${SERVICEBUS_RESOURCE_GROUP}
 ----
 
-You can also migrate to authenticate and authorize with Azure AD directly without making a detour to ARM. Security principals of the service principal and the manged identity are both supported, where the principal should
-be granted with necessary `Data` related roles for messaging operations. The configuration examples of the service principal and the manged identity are listed as below:
+You can also migrate to authenticate and authorize with Azure AD directly without making a detour to ARM. Make sure to grant the security principal necessary `Data` roles for messaging operations. The configuration examples of the service principal and the manged identity are listed as below:
 
 * With a service principal
 
