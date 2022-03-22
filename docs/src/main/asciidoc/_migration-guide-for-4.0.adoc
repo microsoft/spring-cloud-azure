@@ -1231,7 +1231,10 @@ Changes for the child entries for following prefix, please refer the following t
 
 NOTE: The value type of the start position configuration is also changed. It's changed from an enum of `com.azure.spring.integration.core.api.StartPosition` to a `map` of `StartPositionProperties` for each partition. Thus, the key is the partition id, and the value is of `com.azure.spring.cloud.service.eventhubs.properties.StartPositionProperties` which includes properties of offset, sequence number, enqueued date time and whether inclusive.
 
-For example, you should change from:
+====== Configuration migration examples
+To use the connection string for authentication and migrate the above mentioned properties, configuration changes are listed as below:
+
+Legacy configuration:
 
 [source,yaml]
 ----
@@ -1257,7 +1260,7 @@ spring:
 
 ----
 
-to:
+Modern configuration:
 
 [source,yaml]
 ----
@@ -1292,6 +1295,80 @@ spring:
                   enqueued-date-time: 2022-01-12T13:32:47.650005Z
                 4:
                   inclusive: false
+----
+
+If you use security principals instead of connection strings, in versions before 4.0 the application will firstly connect to Azure Resource Manager (ARM) with the provided security principal, and then
+retrieve the connection string of the specified namespace with ARM. In the end the application uses the retrieved connection string to connect to Azure Event Hubs. In this way
+the provided security principal should be granted with the link:https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#contributor[Contributor] role to retrieve of the associated Azure Event Hubs namespace.
+
+For Azure Spring Cloud 4.0, we provide two ways of leveraging security principals for authentication. One is still using the principals to connect to ARM and retrieve the connection strings where the `Contributor` role is required for the principals.
+The other leverages security principals to authenticate to Azure Active Directory (Azure AD) and then connect to Azure Event Hubs directly, in this case the `Contributor` role is not necessary anymore
+while other `Data` related roles are required for messaging operations, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+
+For authentication based on ARM, taking service principal as example, configuration migration is listed as below, where the assigned role should not change:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      client-id: ${CLIENT_ID}
+      client-secret: ${CLIENT_SECRET}
+      tenant-id: ${TENANT_ID}
+      resource-group: ${EVENTHUB_RESOURCE_GROUP}
+      eventhub:
+        namespace: ${EVENTHUB_NAMESPACE}
+----
+
+Modern configuration, properties for Azure subscription id and resource group are required:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${CLIENT_ID}
+        client-secret: ${CLIENT_SECRET}
+      profile:
+        tenant-id: ${TENANT_ID}
+        subscription-id: ${SUBSCRIPTION_ID}
+      eventhubs:
+        namespace: ${EVENTHUB_NAMESPACE}
+        resource:
+          resource-group: ${RESOURCE_GROUP}
+----
+
+You can also migrate to authenticate and authorize with Azure AD directly without making a detour to ARM. Make sure to grant the security principal necessary `Data` roles for messaging operations. The configuration examples of the service principal and the manged identity are listed as below:
+
+* With a service principal
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${CLIENT_ID}
+        client-secret: ${CLIENT_SECRET}
+      profile:
+        tenant-id: ${TENANT_ID}
+      eventhubs:
+        namespace: ${EVENTHUB_NAMESPACE}
+----
+
+* With a managed identity
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        managed-identity-enabled: true
+        client-id: ${AZURE_MANAGED_IDENTITY_CLIENT_ID} # Only needed when using a user-assigned managed identity
+      eventhubs:
+        namespace: ${EVENTHUB_NAMESPACE}
 ----
 
 [#api-spring-cloud-azure-stream-binder-eventhubs]
@@ -1354,7 +1431,9 @@ IMPORTANT: The binder type is combined from `servicebus-queue` and `servicebus-t
 
 NOTE: The concurrency property will replace maxConcurrentSessions when sessionsEnabled is `true` and maxConcurrentCalls when sessionsEnabled is `false`. Enabling auto-complete is equal to `RECORD` checkpoint mode, and oppositely the `MANUAL` mode.
 
-Taking queue as example, you should change from:
+====== Configuration migration examples
+
+Legacy configuration, taking queue as example:
 
 [source,yaml]
 ----
@@ -1379,6 +1458,8 @@ spring:
                 checkpoint-mode: MANUAL
 ----
 
+Modern configuration:
+
 [source,yaml]
 ----
 spring:
@@ -1401,7 +1482,83 @@ spring:
               auto-complete: false
           supply-out-0:
             producer:
-              entity-type: queue #set topic if needed
+              entity-type: queue #set as topic if needed
+----
+
+If you use security principals instead of connection strings, in versions before 4.0 the application will firstly connect to Azure Resource Manager (ARM) with the provided security principal, and then
+retrieve the connection string of the specified namespace with ARM. In the end the application uses the retrieved connection string to connect to Azure Service Bus. In this way
+the provided security principal should be granted with the link:https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#contributor[Contributor] role to retrieve of the associated Azure Service Bus namespace.
+
+For Azure Spring Cloud 4.0, we provide two ways of leveraging security principals for authentication. One is still using the principals to connect to ARM and retrieve the connection strings where the `Contributor` role is required for the principals.
+The other leverages security principals to authenticate to Azure Active Directory (Azure AD) and then connect to the Azure Service Bus directly, in this case the `Contributor` role is not necessary anymore
+while other `Data` related roles are required for messaging operations, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+
+For authentication based on ARM, taking service principal as example, configuration migration is listed as below, where the assigned role should not change:
+
+Legacy configuration:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      client-id: ${CLIENT_ID}
+      client-secret: ${CLIENT_SECRET}
+      tenant-id: ${TENANT_ID}
+      resource-group: ${SERVICEBUS_RESOURCE_GROUP}
+      servicebus:
+        namespace: ${SERVICEBUS_NAMESPACE}
+----
+
+Modern configuration, properties for Azure subscription id and resource group are required:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${CLIENT_ID}
+        client-secret: ${CLIENT_SECRET}
+      profile:
+        tenant-id: ${TENANT_ID}
+        subscription-id: ${SUBSCRIPTION_ID}
+      servicebus:
+        namespace: ${SERVICEBUS_NAMESPACE}
+        resource:
+          resource-group: ${SERVICEBUS_RESOURCE_GROUP}
+----
+
+You can also migrate to authenticate and authorize with Azure AD directly without making a detour to ARM. Make sure to grant the security principal necessary `Data` roles for messaging operations. The configuration examples of the service principal and the manged identity are listed as below:
+
+* With a service principal
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${CLIENT_ID}
+        client-secret: ${CLIENT_SECRET}
+      profile:
+        tenant-id: ${TENANT_ID}
+      servicebus:
+        namespace: ${SERVICEBUS_NAMESPACE}
+----
+
+* With a managed identity
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        managed-identity-enabled: true
+        client-id: ${AZURE_MANAGED_IDENTITY_CLIENT_ID} # Only needed when using a user-assigned managed identity
+      servicebus:
+        namespace: ${SERVICEBUS_NAMESPACE}
 ----
 
 [#api-spring-cloud-azure-stream-binder-servicebus]

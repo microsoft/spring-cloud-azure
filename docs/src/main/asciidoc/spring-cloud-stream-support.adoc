@@ -66,7 +66,7 @@ Alternatively, you can also use the Spring Cloud Azure Stream Event Hubs Starter
 
 The binder provides the following 3 parts of configuration options:
 
-[#eventhubs-connection-configration]
+[#eventhubs-connection-configuration]
 ===== Connection Configuration Properties
 
 This section contains the configuration options used for connecting to Azure Event Hubs.
@@ -102,6 +102,8 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 |===
 
 TIP: Common Azure Service SDK configuration options are configurable for the Spring Cloud Azure Stream Event Hubs binder as well. The supported configuration options are introduced in link:configuration.html[the Configuration page], and could be configured with either the unified prefix `spring.cloud.azure.` or the prefix of `spring.cloud.azure.eventhubs.`.
+
+The binder also supports link:index.html#spring-cloud-azure-resourcemanager[Spring Could Azure Resource Manager] by default. To learn about how to retrieve the connection string with security principals that are not granted with `Data` related roles, please refer to the link:index.html#resource-manager-basic-usage[resource manager example] for details.
 
 ===== Checkpoint Configuration Properties
 This section contains the configuration options for the Storage Blobs service, which is used for persisting partition ownership and checkpoint information.
@@ -214,7 +216,7 @@ spring:
 ----
 
 ====== Advanced Consumer Configuration
-The above <<eventhubs-connection-configration, connection>>, <<Checkpoint Configuration Properties, checkpoint>> and <<Configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder consumer, which can be configured with the prefix `spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer.`.
+The above <<eventhubs-connection-configuration, connection>>, <<Checkpoint Configuration Properties, checkpoint>> and <<Configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder consumer, which can be configured with the prefix `spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer.`.
 
 ====== Producer Properties
 
@@ -235,7 +237,7 @@ These properties are exposed via `EventHubsProducerProperties`.
 |===
 
 ====== Advanced Producer Configuration
-The above <<eventhubs-connection-configration, connection>> and <<Configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder producer, which can be configured with the prefix `spring.cloud.stream.eventhubs.bindings.<binding-name>.producer.`.
+The above <<eventhubs-connection-configuration, connection>> and <<Configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder producer, which can be configured with the prefix `spring.cloud.stream.eventhubs.bindings.<binding-name>.producer.`.
 
 ==== Basic Usage
 ===== Sending and Receiving Messages from/to Event Hubs
@@ -684,7 +686,7 @@ Alternatively, you can also use the Spring Cloud Azure Stream Service Bus Starte
 ==== Configuration
 The binder provides the following 2 parts of configuration options:
 
-[#servicebus-connection-configration]
+[#servicebus-connection-configuration]
 ===== Connection Configuration Properties
 
 This section contains the configuration options used for connecting to Azure Service Bus.
@@ -715,6 +717,8 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 |===
 
 TIP: Common Azure Service SDK configuration options are configurable for the Spring Cloud Azure Stream Service Bus binder as well. The supported configuration options are introduced in link:configuration.html[the Configuration page], and could be configured with either the unified prefix `spring.cloud.azure.` or the prefix of `spring.cloud.azure.servicebus.`.
+
+The binder also supports link:index.html#spring-cloud-azure-resourcemanager[Spring Could Azure Resource Manager] by default. To learn about how to retrieve the connection string with security principals that are not granted with `Data` related roles, please refer to the link:index.html#resource-manager-basic-usage[resource manager example] for details.
 
 ===== Azure Service Bus Binding Configuration Properties
 Below options are divided into four sections: Consumer Properties, Advanced Consumer
@@ -778,7 +782,7 @@ to enable developers to settle messages manually.
 |===
 
 ====== Advanced Consumer Configuration
-The above <<servicebus-connection-configration, connection>> and <<Configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder consumer, which can be configured with the prefix `spring.cloud.stream.servicebus.bindings.<binding-name>.consumer.`.
+The above <<servicebus-connection-configuration, connection>> and <<Configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder consumer, which can be configured with the prefix `spring.cloud.stream.servicebus.bindings.<binding-name>.consumer.`.
 
 ====== Producer Properties
 
@@ -799,7 +803,7 @@ value for sending of producer.
 IMPORTANT: When using the binding producer, property of `spring.cloud.stream.servicebus.bindings.<binding-name>.producer.entity-type` is required to be configured.
 
 ====== Advanced Producer Configuration
-The above <<servicebus-connection-configration, connection>> and <<Configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder producer, which can be configured with the prefix `spring.cloud.stream.servicebus.bindings.<binding-name>.producer.`.
+The above <<servicebus-connection-configuration, connection>> and <<Configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder producer, which can be configured with the prefix `spring.cloud.stream.servicebus.bindings.<binding-name>.producer.`.
 
 ==== Basic Usage
 ===== Sending and Receiving Messages from/to Service Bus
@@ -827,7 +831,7 @@ spring:
         bindings:
           consume-in-0:
             consumer:
-              checkpoint-mode: MANUAL
+              auto-complete: false
           supply-out-0:
             producer:
               entity-type: queue # set as "topic" if you use Service Bus Topic
@@ -860,7 +864,7 @@ spring:
         bindings:
           consume-in-0:
             consumer:
-              checkpoint-mode: MANUAL
+              auto-complete: false
           supply-out-0:
             producer:
               entity-type: queue # set as "topic" if you use Service Bus Topic
@@ -891,7 +895,7 @@ spring:
         bindings:
           consume-in-0:
             consumer:
-              checkpoint-mode: MANUAL
+              auto-complete: false
           supply-out-0:
             producer:
               entity-type: queue # set as "topic" if you use Service Bus Topic
@@ -1067,13 +1071,13 @@ spring:
         bindings:
           consume1-in-0:
             consumer:
-              checkpoint-mode: MANUAL
+              auto-complete: false
           supply1-out-0:
             producer:
               entity-type: topic
           consume2-in-0:
             consumer:
-              checkpoint-mode: MANUAL
+              auto-complete: false
           supply2-out-0:
             producer:
               entity-type: queue
