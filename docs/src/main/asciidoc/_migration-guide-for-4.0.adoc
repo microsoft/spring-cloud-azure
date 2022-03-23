@@ -1100,13 +1100,13 @@ version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 [#api-spring-integration-azure-servicebus]
 ===== API Changes
 * Drop `ServiceBusQueueOperation` and `ServiceBusTopicOperation` with the subscribing function moved to class `ServiceBusMessageListenerContainer` and the sending function moved to `ServiceBusTemplate`.
-* Drop `ServiceBusQueueInboundChannelAdapter` and `ServiceBusTopicInboundChannelAdapter`, and combine the function of listening to a Service Bus queue or topic entity to `ServiceBusInboundChannelAdapter`.
-* Change the constructor from `ServiceBusXXXInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)` and `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)`.
-* Drop API `setCheckpointConfig` of ServiceBusTopicOperation or ServiceBusQueueOperation. To set the checkpoint configuration for the inbound channel adapter, users can call the method `ServiceBusContainerProperties#setAutoComplete` instead. To disable the auto-complete mode is equivalent to `MANUAL` checkpoint mode and to enable it will trigger the `RECORD` mode.
-* Drop API `setClientConfig` of `ServiceBusQueueOperation` and `ServiceBusTopicOperation`. To configure the underlying `ServiceBusProcessorClient` used by the inbound channel adapter, users can use `ServiceBusContainerProperties` instead.
-* Drop `CompletableFuture` support of `ServiceBusTemplate` and `DefaultMessageHandler` and support Reactor instead.
-* Add new API of `setDefaultEntityType` for `ServiceBusTemplate` to specify the entity type, which is required when no bean of `PropertiesSupplier&lt;String, ProducerProperties&gt;` is provided for the `ProducerProperties#entityType`.
-* Drop message header of `AzureHeaders.RAW_ID`. Please use `ServiceBusMessageHeaders.MESSAGE_ID` instead.
+* Drop `ServiceBusQueueInboundChannelAdapter` and `ServiceBusTopicInboundChannelAdapter` with the listening to a Service Bus queue/topic entity function moved to `ServiceBusInboundChannelAdapter`.
+* Divide the constructor from `ServiceBusXXXInboundChannelAdapter(String, SubscribeByGroupOperation, String)` into `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)` and `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)`.
+* Drop API `ServiceBusQueueOperation/ServiceBusTopicOperation#setCheckpointConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `ServiceBusContainerProperties#setAutoComplete` instead. To disable the auto-complete mode is equivalent to `MANUAL` checkpoint mode and to enable it will trigger the `RECORD` mode.
+* Drop API `ServiceBusQueueOperation/ServiceBusTopicOperation#setClientConfig` . To configure the underlying `ServiceBusProcessorClient` used by the inbound channel adapter, users can use `ServiceBusContainerProperties` instead.
+* Drop `CompletableFuture` support in `ServiceBusTemplate` and `DefaultMessageHandler`, support `Reactor` instead.
+* Add new API of `ServiceBusTemplate#setDefaultEntityType` to specify the entity type, which is required when no bean of `PropertiesSupplier&lt;String, ProducerProperties&gt;` is provided for the `ProducerProperties#entityType`.
+* Drop message header `AzureHeaders.RAW_ID`. Please use `ServiceBusMessageHeaders.MESSAGE_ID` instead.
 
 .Class mapping from azure-spring-integration-servicebus to spring-integration-azure-servicebus
 [cols="<,<", options="header"]
