@@ -127,4 +127,4 @@ NOTE: The default enabled `ConnectionFactory` is the `CachingConnectionFactory` 
 
 === Samples
 
-Please refer to link:https://githu.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}[azure-spring-boot-samples] for more details.
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}[azure-spring-boot-samples] for more details.
