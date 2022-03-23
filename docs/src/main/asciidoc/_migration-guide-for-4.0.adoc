@@ -1150,7 +1150,7 @@ All configuration property names changed the prefix from `spring.cloud.azure.sto
 ===== API Changes
 
 * Drop `StorageQueueOperation` and provide `StorageQueueTemplate` instead.
-* Do not support configuration of checkpoint mode in `StorageQueueTemplate`, only the `MANUAL` mode is supported.
+* Drop `checkpoint-mode` configuration in `StorageQueueTemplate`, only support the `MANUAL` mode.
 
 .Class mapping from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue
 [cols="<~,<~", options="header"]
