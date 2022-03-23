@@ -52,10 +52,10 @@ feature-management:
         name: AlwaysOnFilter
 ----
 
-* `feature-t` is set to false, Feature Flags defined this way just return their value. 
-* `feature-u` uses Feature Filters which are defined under `enabled-for` `feature-u` has one Feature Filter, `Random`, which does not require any configuration, so it only has the name property. 
-* `feature-v` it specifies a Feature Filter named `TimeWindow`. Feature Filters can be passed parameters to configure the filter. In this case, the start and end times for the feature to be active are configured.
-* `feature-w` is used for the `AlwaysOnFilter`, which will always evaluat to `true`. The `evaluate` field is used to stop the evaluation of the Feature Filters, and results in the Feature Filter always return `false`.
+* `feature-t` is set to false, this setting will always return the Feature Flag's value. 
+* `feature-u` is used in conjunction with Feature Filters. These Filters will be defined under the `enabled-for` property.  In this case, `feature-u` has one Feature Filter called `Random`, which does not require any configuration, so only the name property is required. 
+* `feature-v` specifies a Feature Filter named `TimeWindowFilter`. This Feature Filter can be passed parameters to use as configuration. In this case, for a `TimeWindowFilter`, pass in the start and end times for which the feature will be active.
+* `feature-w` is used for the `AlwaysOnFilter`, which will always evaluate to `true`. The `evaluate` field is used to stop the evaluation of the Feature Filters, and results in the Feature Filter always return `false`.
 
 === Evaluating Feature Flags
 
@@ -77,7 +77,7 @@ if(featureManager.isEnabledAsync("feature-t").block()) {
 }
 ----
 
-If Feature Management has not been configured `isEnabledAsync` or the Feature Flag doesn't exist, it will always return false. If an existing Feature Flag is configured with an unknown Feature Filter, then a `FilterNotFoundException` is thrown. This can be changed to return false by configuring `fail-fast` to false.
+If Feature Management has not been configured or the Feature Flag doesn't exist, `isEnabledAsync` will always return false. If an existing Feature Flag is configured with an unknown Feature Filter, then a `FilterNotFoundException` is thrown. This can be changed to return false by configuring `fail-fast` to false.
 
 [%autowidth.stretch]
 [options="header"]
@@ -152,7 +152,7 @@ This filter always returns true. Usage can be see in <<Feature Flag Declaration>
 
 ==== PercentageFilter
 
-This filter provides the capability to enable a feature based on a set percentage. Each evaluation of PercetageFilter can return a different result, not sticky. `FeatureManagementSnapshot` will not cause this filter to be re-evaluated in a given request.
+Each evaluation of `PercentageFilter` can return a different result, which are not consistent among one user's requests. This can be circumvented using the `FeatureManagementSnapshot`, which will cache the result of the Feature Flag per user. This ensures a User will have a consistent experience even if they have to resend the request.
 
 [source,yaml,indent=0]
 ----
@@ -167,7 +167,7 @@ feature-management:
 
 ==== TimeWindowFilter
 
-This filter provides the capability to enable a feature based on a time window. If only `time-window-filter-setting-end` is specified, the feature will be considered on until that time. If only start is specified, the feature will be considered on at all points after that time. If both are specified the feature will be considered valid between the two times.
+This filter provides the capability to enable a feature based on a time window. If only `End` is specified, the feature will be considered on until that time. If only start is specified, the feature will be considered on at all points after that time. If both are specified the feature will be considered valid between the two times.
 
 [source,yaml,indent=0]
 ----
@@ -177,13 +177,13 @@ feature-management:
       -
        name: TimeWindowFilter
         parameters:
-          time-window-filter-setting-start: "Wed, 01 May 2019 13:59:59 GMT",
-          time-window-filter-setting-end: "Mon, 01 July 2019 00:00:00 GMT"
+          Start: "Wed, 01 May 2019 13:59:59 GMT",
+          End: "Mon, 01 July 2019 00:00:00 GMT"
 ----
 
 ==== TargetingFilter
 
-This filter provides the capability to enable a feature for a target audience. An in-depth explanation of targeting is explained in the <<Targeting, targeting section below>>. The filter parameters include an audience object that describes users, groups, and a default percentage of the user base that should have access to the feature. Each group object that is listed in the target audience, a percentage is required which defines the percentage of that group's members which has access to the feature. If a user is specified in the users section directly, or if the user is in the included percentage of any of the group rollouts, or if the user falls into the default rollout percentage, then that user will have the feature enabled.
+This filter provides the capability to enable a feature for a target audience. An in-depth explanation of targeting is explained in the <<Targeting, targeting section below>>. The filter parameters include an audience object that describes users, groups, and a default percentage of the user base that should have access to the feature. For each group object that is listed in the target audience, a percentage is required which defines the percentage of that group's members which have access to the feature. If a user is specified in the users section directly, or if the user is in the included percentage of any of the group rollouts, or if the user falls into the default rollout percentage, then that user will have the feature enabled.
 
 [source,yaml,indent=0]
 ----
