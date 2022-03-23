@@ -730,10 +730,10 @@ spring:
 * Drop `EventHubOperation` with the subscribing function moved to class `EventHubsMessageListenerContainer` and the sending function moved to `EventHubsTemplate`.
 * Rename `EventHubInboundChannelAdapter` as `EventHubsInboundChannelAdapter` to keep consistent with the service of Azure
 Event Hubs.
-* Change the constructor from `EventHubInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer)` and `EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer, ListenerMode)`.
-* Change `CheckpointConfig` instantiation style to simple constructor instead of build style.
+* Divide the constructor from `EventHubInboundChannelAdapter(String, SubscribeByGroupOperation, String)` into `EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer)` and `EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer, ListenerMode)`.
+* Change `CheckpointConfig` instantiation style to the simple constructor instead of build style.
 * Drop API `EventHubOperation#setCheckpointConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `EventHubsContainerProperties#setCheckpointConfig`.
-* Drop API `EventHubOperation#setBatchConsumerConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `EventHubsContainerProperties#getBatch#setMaxSize` and `EventHubsContainerProperties#getBatch#setMaxWaitTime`.
+* Drop API `EventHubOperation#setBatchConsumerConfig`. To set the batch-consuming configuration for the inbound channel adapter, users can call the two methods `EventHubsContainerProperties#getBatch#setMaxSize` and `EventHubsContainerProperties#getBatch#setMaxWaitTime` meanwhile.
 * For the batch consuming mode, change the message header names converted from batched messages.
     - Change message header from `azure_eventhub_enqueued_time` to `azure_eventhubs_batch_converted_enqueued_time`.
     - Change message header from `azure_eventhub_offset` to `azure_eventhubs_batch_converted_offset`.
