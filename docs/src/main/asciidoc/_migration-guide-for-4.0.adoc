@@ -1177,7 +1177,7 @@ version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 ===== API Changes
 
 * Drop `StorageQueueOperation` and provide `StorageQueueTemplate` instead.
-* Do not support configuration of checkpoint mode in `StorageQueueTemplate`, only the `MANUAL` mode is supported.
+* Drop `checkpoint-mode` configuration in `StorageQueueTemplate`, only support the `MANUAL` mode.
 
 .Class mapping from azure-spring-integration-storage-queue to spring-integration-azure-storage-queue
 [cols="<~,<~", options="header"]
