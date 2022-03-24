@@ -1,6 +1,7 @@
 
 [#migration-guide-for-4-0]
 == Migration Guide for 4.0
+:icons: font
 
 [#migration-guide-introduction]
 === Introduction
@@ -282,7 +283,8 @@ crash.
 |===
 
 ==== From azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory
-This guide is intended to assist in the migration to
+
+This guide is intended to assist the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-active-directory[spring-cloud-azure-starter-active-directory] from
 version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-active-directory[azure-spring-boot-starter-active-directory].
 
@@ -295,85 +297,154 @@ version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 
 [#dependency-spring-cloud-azure-starter-active-directory]
 ===== Dependency Changes
-Some unnecessary dependencies were included in the legacy artifacts, which we have removed in the modern Spring Cloud
-Azure 4.0 libraries. Please make sure add the removed dependencies manually to your project to prevent unintentionally
-crash.
 
-.Removed dependencies of spring-cloud-azure-starter-active-directory
+Some unnecessary dependencies in the legacy artifact has been removed since the modern Spring Cloud
+Azure 4.0 library. Please add these removed dependencies to your project to prevent unintentional crash.
+
+.Removed Dependencies
 [cols="<30,<~", options="header"]
 |===
-|Removed dependencies |Description
-|com.fasterxml.jackson.core:jackson-databind |Please include the jackson databind dependency if you want to use Jackson Databind.
-|io.projectreactor.netty:reactor-netty |Please include the reactor netty dependency if you want to use Reactor Netty.
-|org.springframework.boot:spring-boot-starter-validation |Please include the validation starter if you want to use Hibernate Validator.
-|org.springframework.boot:spring-boot-starter-webflux |Please include the webflux starter if you want to use Web Flux.
+|Removed Dependency |Description
+
+|com.fasterxml.jackson.core:jackson-databind
+|Please add this dependency to your project if needed.
+
+|io.projectreactor.netty:reactor-netty
+|Please add this dependency to your project if needed.
+
+|org.springframework.boot:spring-boot-starter-validation
+|Please add this dependency to your project if needed.
+
+|org.springframework.boot:spring-boot-starter-webflux
+|Please add this dependency to your project if needed.
 |===
 
 [#configuration-spring-cloud-azure-starter-active-directory]
 ===== SDK Configuration Changes
 
-. All configuration property names changed the prefix from `azure.activedirectory` to `spring.cloud.azure.active-directory`.
-. New property `spring.cloud.azure.active-directory.enabled=true` is added to allow enable / disable AAD related features. The default value is false.
-
-IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory`, you have to specify the `spring.cloud.azure.active-directory.enabled` to true, even if the starter is included in classpath.
+. All configuration property names' prefix changed from `azure.activedirectory` to `spring.cloud.azure.active-directory`.
+. New property `spring.cloud.azure.active-directory.enabled=true` is added to enable/disable AAD related features. The default value is `false`.
 
 .Property mapping from azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory
 [cols="<30,<~", options="header"]
 |===
-| Legacy properties                                                                          | Modern properties
-| *azure.activedirectory*.app-id-uri                                                         | *spring.cloud.azure.active-directory*.app-id-uri
-| *azure.activedirectory*.application-type                                                   | *spring.cloud.azure.active-directory*.application-type
-| *azure.activedirectory*.authorization-clients                                              | *spring.cloud.azure.active-directory*.authorization-clients
-| *azure.activedirectory*.authorization-clients.<AZURE_CLIENT_NAME>.authorization-grant-type | *spring.cloud.azure.active-directory*.authorization-clients.<AZURE_CLIENT_NAME>.authorization-grant-type
-| *azure.activedirectory*.authorization-clients.<AZURE_CLIENT_NAME>.on-demand                | *spring.cloud.azure.active-directory*.authorization-clients.<AZURE_CLIENT_NAME>.on-demand
-| *azure.activedirectory*.authorization-clients.<AZURE_CLIENT_NAME>.scopes                   | *spring.cloud.azure.active-directory*.authorization-clients.<AZURE_CLIENT_NAME>.scopes
-| *azure.activedirectory*.authenticate-additional-parameters                                 | *spring.cloud.azure.active-directory*.authenticate-additional-parameters
-| *azure.activedirectory*.base-uri                                                           | *spring.cloud.azure.active-directory*.profile.environment.active-directory-endpoint
-| *azure.activedirectory*.client-id                                                          | *spring.cloud.azure.active-directory*.credential.client-id
-| *azure.activedirectory*.client-secret                                                      | *spring.cloud.azure.active-directory*.credential.client-secret
-| *azure.activedirectory*.graph-membership-uri                                               | *spring.cloud.azure.active-directory*.graph-membership-uri
-| *azure.activedirectory*.jwt-connect-timeout                                                | *spring.cloud.azure.active-directory*.jwt-connect-timeout
-| *azure.activedirectory*.jwt-read-timeout                                                   | *spring.cloud.azure.active-directory*.jwt-read-timeout
-| *azure.activedirectory*.jwt-size-limit                                                     | *spring.cloud.azure.active-directory*.jwt-size-limit
-| *azure.activedirectory*.jwk-set-cache-lifespan                                             | *spring.cloud.azure.active-directory*.jwk-set-cache-lifespan
-| *azure.activedirectory*.jwk-set-cache-refresh-time                                         | *spring.cloud.azure.active-directory*.jwk-set-cache-refresh-time
-| *azure.activedirectory*.post-logout-redirect-uri                                           | *spring.cloud.azure.active-directory*.post-logout-redirect-uri
-| *azure.activedirectory*.session-stateless                                                  | *spring.cloud.azure.active-directory*.session-stateless
-| *azure.activedirectory*.redirect-uri-template                                              | *spring.cloud.azure.active-directory*.redirect-uri-template
-| *azure.activedirectory*.resource-server.claim-to-authority-prefix-map                      | *spring.cloud.azure.active-directory*.resource-server.claim-to-authority-prefix-map
-| *azure.activedirectory*.resource-server.principal-claim-name                               | *spring.cloud.azure.active-directory*.resource-server.principal-claim-name
-| *azure.activedirectory*.tenant-id                                                          | *spring.cloud.azure.active-directory*.profile.tenant-id
-| *azure.activedirectory*.user-group.allowed-group-ids                                       | *spring.cloud.azure.active-directory*.user-group.allowed-group-ids
-| *azure.activedirectory*.user-group.allowed-group-names                                     | *spring.cloud.azure.active-directory*.user-group.allowed-group-names
-| *azure.activedirectory*.user-name-attribute                                                | *spring.cloud.azure.active-directory*.user-name-attribute
+| Legacy properties     | Modern properties
+
+| *azure.activedirectory*.app-id-uri
+| *spring.cloud.azure.active-directory*.app-id-uri
+
+| *azure.activedirectory*.application-type
+| *spring.cloud.azure.active-directory*.application-type
+
+| *azure.activedirectory*.authorization-clients
+| *spring.cloud.azure.active-directory*.authorization-clients
+
+| *azure.activedirectory*.authorization-clients.<AZURE_CLIENT_NAME>.authorization-grant-type
+| *spring.cloud.azure.active-directory*.authorization-clients.<AZURE_CLIENT_NAME>.authorization-grant-type
+
+| *azure.activedirectory*.authorization-clients.<AZURE_CLIENT_NAME>.on-demand
+| *spring.cloud.azure.active-directory*.authorization-clients.<AZURE_CLIENT_NAME>.on-demand
+
+| *azure.activedirectory*.authorization-clients.<AZURE_CLIENT_NAME>.scopes
+| *spring.cloud.azure.active-directory*.authorization-clients.<AZURE_CLIENT_NAME>.scopes
+
+| *azure.activedirectory*.authenticate-additional-parameters
+| *spring.cloud.azure.active-directory*.authenticate-additional-parameters
+
+| *azure.activedirectory*.base-uri
+| *spring.cloud.azure.active-directory*.profile.environment.active-directory-endpoint
+
+| *azure.activedirectory*.client-id
+| *spring.cloud.azure.active-directory*.credential.client-id
+
+| *azure.activedirectory*.client-secret
+| *spring.cloud.azure.active-directory*.credential.client-secret
+
+| *azure.activedirectory*.graph-membership-uri
+| *spring.cloud.azure.active-directory*.graph-membership-uri
+
+| *azure.activedirectory*.jwt-connect-timeout
+| *spring.cloud.azure.active-directory*.jwt-connect-timeout
+
+| *azure.activedirectory*.jwt-read-timeout
+| *spring.cloud.azure.active-directory*.jwt-read-timeout
+
+| *azure.activedirectory*.jwt-size-limit
+| *spring.cloud.azure.active-directory*.jwt-size-limit
+
+| *azure.activedirectory*.jwk-set-cache-lifespan
+| *spring.cloud.azure.active-directory*.jwk-set-cache-lifespan
+
+| *azure.activedirectory*.jwk-set-cache-refresh-time
+| *spring.cloud.azure.active-directory*.jwk-set-cache-refresh-time
+
+| *azure.activedirectory*.post-logout-redirect-uri
+| *spring.cloud.azure.active-directory*.post-logout-redirect-uri
+
+| *azure.activedirectory*.session-stateless
+| *spring.cloud.azure.active-directory*.session-stateless
+
+| *azure.activedirectory*.redirect-uri-template
+| *spring.cloud.azure.active-directory*.redirect-uri-template
+
+| *azure.activedirectory*.resource-server.claim-to-authority-prefix-map
+| *spring.cloud.azure.active-directory*.resource-server.claim-to-authority-prefix-map
+
+| *azure.activedirectory*.resource-server.principal-claim-name
+| *spring.cloud.azure.active-directory*.resource-server.principal-claim-name
+
+| *azure.activedirectory*.tenant-id
+| *spring.cloud.azure.active-directory*.profile.tenant-id
+
+| *azure.activedirectory*.user-group.allowed-group-ids
+| *spring.cloud.azure.active-directory*.user-group.allowed-group-ids
+
+| *azure.activedirectory*.user-group.allowed-group-names
+| *spring.cloud.azure.active-directory*.user-group.allowed-group-names
+
+| *azure.activedirectory*.user-name-attribute
+| *spring.cloud.azure.active-directory*.user-name-attribute
 |===
 
-[NOTE]
+.The value type of the following properties is changed from `long` to `Duration`:
+* `jwt-connect-timeout`
+* `jwt-read-timeout`
+* `jwk-set-cache-lifespan`
+* `jwk-set-cache-refresh-time`.
+
+.The following properties are removed:
+* azure.activedirectory.allow-telemetry
+* azure.activedirectory.user-group.enable-full-list
+* azure.activedirectory.graph-base-uri
+* azure.activedirectory.graph-membership-uri
+
+.The following properties are added:
+* spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint
+* spring.cloud.azure.active-directory.user-group.use-transitive-members
+
+NOTE: `azure.activedirectory.graph-membership-uri`'s function has been replaced by 2 properties: `spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint` and `spring.cloud.azure.active-directory.user-group.use-transitive-members`. The first property is used to specify the host name, and the second a flag for using the url path: `v1.0/me/memberOf` or `v1.0/me/transitiveMemberOf`.
+
+Here are some examples of migration:
+
+.Case 1
 ====
-The value type of the following properties is changed from `long` to `java.time.Duration`, they are `jwt-connect-timeout`, `jwt-read-timeout`, `jwk-set-cache-lifespan`, `jwk-set-cache-refresh-time`.
+.For legancy:
+azure.activedirectory.graph-membership-uri=https://graph.microsoft.com/v1.0/me/memberOf
+
+.For modern:
+spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=`https://graph.microsoft.com/`
+spring.cloud.azure.active-directory.user-group.use-transitive-members=`false`
 ====
 
-.Removed properties from azure-spring-boot-starter-active-directory
-[options="header"]
-|===
-| Removed properties
-| azure.activedirectory.allow-telemetry
-| azure.activedirectory.base-uri
-| azure.activedirectory.user-group.enable-full-list
-| azure.activedirectory.graph-base-uri
-|===
+.Case 2
+====
+.For legancy:
+azure.activedirectory.graph-membership-uri=https://graph.microsoft.com/v1.0/me/transitiveMemberOf
 
-NOTE: `azure.activedirectory.graph-membership-uri` has been replaced by 2 properties: `spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint` and `spring.cloud.azure.active-directory.user-group.use-transitive-members`. The first property used to specify the host name, and the second property used to specify the url path: `v1.0/me/memberOf` or `v1.0/me/transitiveMemberOf`. Here are some examples:
-
-.Examples of replacing `azure.activedirectory.graph-membership-uri`
-[cols="<30,<~", options="header"]
-|===
-| Example value of azure.activedirectory.graph-membership-uri        | Modern configuration
-| https://graph.microsoft.com/v1.0/me/memberOf                       | spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=`https://graph.microsoft.com/`, spring.cloud.azure.active-directory.user-group.use-transitive-members=`false`
-| https://graph.microsoft.com/v1.0/me/transitiveMemberOf             | spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=`https://graph.microsoft.com/`, spring.cloud.azure.active-directory.user-group.use-transitive-members=`true`
-| https://microsoftgraph.chinacloudapi.cn/v1.0/me/memberOf           | spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=`https://microsoftgraph.chinacloudapi.cn/`,  spring.cloud.azure.active-directory.user-group.use-transitive-members=`false`
-| https://microsoftgraph.chinacloudapi.cn/v1.0/me/transitiveMemberOf | spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=`https://microsoftgraph.chinacloudapi.cn/`, spring.cloud.azure.active-directory.user-group.use-transitive-members=`true`
-|===
+.For modern:
+spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=`https://graph.microsoft.com/`
+spring.cloud.azure.active-directory.user-group.use-transitive-members=`true`
+====
 
 [#api-spring-cloud-azure-starter-active-directory]
 ===== API Changes
