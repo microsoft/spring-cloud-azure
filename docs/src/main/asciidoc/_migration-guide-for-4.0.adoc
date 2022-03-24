@@ -1194,7 +1194,7 @@ version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 ==== From azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs
 This guide is intended to assist in the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-stream-binder-eventhubs[spring-cloud-azure-stream-binder-eventhubs] from
-version 2 of link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-stream-binder-eventhubs[spring-cloud-azure-stream-binder-eventhubs].
+version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-cloud-stream-binder-eventhubs[azure-spring-cloud-stream-binder-eventhubs].
 
 * Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
 * Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
@@ -1229,7 +1229,7 @@ Changes for the child entries for following prefix, please refer the following t
 |*spring.cloud.stream.eventhub.bindings.<binding-name>.consumer*.start-position |*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.initial-partition-event-position
 |===
 
-NOTE: The value type of the start position configuration is also changed. It's changed from an enum of `com.azure.spring.integration.core.api.StartPosition` to a `map` of `StartPositionProperties` for each partition. Thus, the key is the partition id, and the value is of `com.azure.spring.cloud.service.eventhubs.properties.StartPositionProperties` which includes properties of offset, sequence number, enqueued date time and whether inclusive.
+NOTE: The value type of the `start-position` configuration is also changed from an enum of `com.azure.spring.integration.core.api.StartPosition` to a `map` of `StartPositionProperties` for each partition. Thus, the key is the partition id, and the value is of `com.azure.spring.cloud.service.eventhubs.properties.StartPositionProperties` which includes properties of offset, sequence number, enqueued date time and whether inclusive.
 
 ====== Configuration migration examples
 To use the connection string for authentication and migrate the above mentioned properties, configuration changes are listed as below:
@@ -1307,6 +1307,8 @@ while other `Data` related roles are required for messaging operations, please r
 
 For authentication based on ARM, taking service principal as example, configuration migration is listed as below, where the assigned role should not change:
 
+Legacy configuration:
+
 [source,yaml]
 ----
 spring:
@@ -1339,7 +1341,7 @@ spring:
           resource-group: ${RESOURCE_GROUP}
 ----
 
-You can also migrate to authenticate and authorize with Azure AD directly without making a detour to ARM. Make sure to grant the security principal necessary `Data` roles for messaging operations. The configuration examples of the service principal and the manged identity are listed as below:
+You can also migrate to authenticate and authorize with Azure AD directly without making a detour to ARM. Make sure to grant the security principal necessary `Data` roles for messaging operations. The configuration examples of the service principal and the managed identity are listed as below:
 
 * With a service principal
 
