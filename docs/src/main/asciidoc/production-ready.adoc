@@ -28,7 +28,7 @@ Add the Spring Cloud Azure Actuator Starter dependency. This dependency will als
 |Storage Queue |management.health.*azure-storage-queue*.enabled
 |===
 
-IMPORTANT: Calling the health endpoint of Azure services may cause extra charge. For example, calling `http://HOST_NAME:{port}/actuator/health/cosmos` to get the Cosmos DB health info, it will calculate https://docs.microsoft.com/azure/cosmos-db/request-units[RUs].
+IMPORTANT: Calling the health endpoint of Azure services may cause extra charges. For example, calling `http://HOST_NAME:{port}/actuator/health/cosmos` to get the Cosmos DB health info, it will calculate https://docs.microsoft.com/azure/cosmos-db/request-units[RUs].
 
 === Enable Sleuth
 
@@ -42,6 +42,6 @@ Add the Spring Cloud Azure Trace Sleuth dependency when you want to trace Azure 
 </dependency>
 ----
 
-NOTE: Only HTTP-based Azure SDK clients are supported now, for example, Eventhub and ServiceBus with AMQP transport are currently not supported, we recommend to use https://docs.microsoft.com/azure/azure-monitor/app/app-insights-overview[Azure Application Insights] for such requirement.
+NOTE: Only HTTP-based Azure SDK clients are supported now, for example, Eventhub and ServiceBus with AMQP transport are currently not supported, we recommend using https://docs.microsoft.com/azure/azure-monitor/app/app-insights-overview[Azure Application Insights] for such requirements.
 
 

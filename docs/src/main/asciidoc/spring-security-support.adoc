@@ -1,6 +1,6 @@
 == Spring Security Support
 
-=== Spring Security With Azure AD
+=== Spring Security With Azure Active Directory
 
 When you are building a web application, identity and access management will always be foundational pieces.
 
@@ -695,7 +695,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}[azure-spring-boot-samples] for more details.
 
 
-=== Spring Security With Azure AD B2C
+=== Spring Security With Azure Active Directory B2C
 
 Azure Active Directory (Azure AD) B2C is an identity management service that enables you to customize and control how customers sign up, sign in, and manage their profiles when using your applications. Azure AD B2C enables these actions while protecting the identities of your customers at the same time.
 

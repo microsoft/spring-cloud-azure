@@ -2,7 +2,7 @@
 == Spring JMS Support
 
 To use Azure Service Bus by the JMS API integrated into the Spring JMS framework.
-Azure Service Bus connection string have to be provided which is to be parsed into the login username, password and remote URI for the AMQP broker.
+Azure Service Bus connection string has to be provided which is to be parsed into the login username, password and remote URI for the AMQP broker.
 
 === Dependency Setup
 
@@ -103,7 +103,7 @@ Adding below dependencies if you want to migrate your Spring JMS application to 
 |===
 
 NOTE: Spring JMS general configuration is omited for short.
-Please refer to link:https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/jms.html[Spring JMS Doc] for more details.
+Please refer to link:https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/jms.html[Spring JMS Document] for more details.
 
 === Basic Usage
 
