@@ -162,7 +162,7 @@ feature-management:
       -
         name: PercentageFilter
         parameters:
-          percentage-filter-setting: 50
+          Value: 50
 ----
 
 ==== TimeWindowFilter
