@@ -730,7 +730,7 @@ spring:
 * Drop `EventHubOperation` with the subscribing function moved to class `EventHubsMessageListenerContainer` and the sending function moved to `EventHubsTemplate`.
 * Rename `EventHubInboundChannelAdapter` as `EventHubsInboundChannelAdapter` to keep consistent with the service of Azure
 Event Hubs.
-* Divide the constructor from `EventHubInboundChannelAdapter(String, SubscribeByGroupOperation, String)` into `EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer)` and `EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer, ListenerMode)`.
+* Change the constructor from `EventHubInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer)` and `EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer, ListenerMode)`.
 * Change `CheckpointConfig` instantiation style to the simple constructor instead of build style.
 * Drop API `EventHubOperation#setCheckpointConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `EventHubsContainerProperties#setCheckpointConfig`.
 * Drop API `EventHubOperation#setBatchConsumerConfig`. To set the batch-consuming configuration for the inbound channel adapter, users can call the two methods `EventHubsContainerProperties#getBatch#setMaxSize` and `EventHubsContainerProperties#getBatch#setMaxWaitTime` meanwhile.
@@ -875,7 +875,7 @@ version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 * Drop `EventHubOperation` with the subscribing function moved to class `EventHubsMessageListenerContainer` and the sending function moved to `EventHubsTemplate`.
 * Rename `EventHubInboundChannelAdapter` as `EventHubsInboundChannelAdapter` to keep consistent with the service of Azure
 Event Hubs.
-* Divide the constructor from `EventHubInboundChannelAdapter(String, SubscribeByGroupOperation, String)` into `EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer)` and `EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer, ListenerMode)`.
+* Change the constructor from `EventHubInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer)` and `EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer, ListenerMode)`.
 * Change `CheckpointConfig` instantiation style to the simple constructor instead of build style.
 * Drop API `EventHubOperation#setCheckpointConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `EventHubsContainerProperties#setCheckpointConfig`.
 * Drop API `EventHubOperation#setBatchConsumerConfig`. To set the batch-consuming configuration for the inbound channel adapter, users can call the two methods `EventHubsContainerProperties#getBatch#setMaxSize` and `EventHubsContainerProperties#getBatch#setMaxWaitTime` meanwhile.
@@ -931,8 +931,8 @@ the prefix remains to be as `spring.cloud.azure.servicebus`.
 |*spring.cloud.azure*.resource-group|*spring.cloud.azure.servicebus*.resource.resource-group
 |*spring.cloud.azure.servicebus*.transport-type |*spring.cloud.azure.servicebus*.client.transport-type
 |*spring.cloud.azure.servicebus*.retry-options.retry-mode |*spring.cloud.azure.servicebus*.retry.mode
-|*spring.cloud.azure.servicebus*.retry-options.max-retries |*spring.cloud.azure.servicebus*.retry.exponential.max-retries or *spring.cloud.azure.servicebus*.retry.fixed.max-retries, should be configured depends on *spring.cloud.azure.servicebus*.retry.mode=*fixed* or *exponential*
-|*spring.cloud.azure.servicebus*.retry-options.delay |*spring.cloud.azure.servicebus*.retry.exponential.base-delay or *spring.cloud.azure.servicebus*.retry.fixed.delay, should be configured depends on *spring.cloud.azure.servicebus*.retry.mode=*fixed* or *exponential*
+|*spring.cloud.azure.servicebus*.retry-options.max-retries |*spring.cloud.azure.servicebus*.retry.exponential.max-retries or *spring.cloud.azure.servicebus*.retry.fixed.max-retries, should be configured depending on *spring.cloud.azure.servicebus*.retry.mode=*fixed* or *exponential*
+|*spring.cloud.azure.servicebus*.retry-options.delay |*spring.cloud.azure.servicebus*.retry.exponential.base-delay or *spring.cloud.azure.servicebus*.retry.fixed.delay, should be configured depending on *spring.cloud.azure.servicebus*.retry.mode=*fixed* or *exponential*
 |*spring.cloud.azure.servicebus*.retry-options.max-delay |*spring.cloud.azure.servicebus*.retry.exponential.max-delay
 |*spring.cloud.azure.servicebus*.retry-options.try-timeout |*spring.cloud.azure.servicebus*.retry.try-timeout
 |===
@@ -940,10 +940,11 @@ the prefix remains to be as `spring.cloud.azure.servicebus`.
 [#api-spring-cloud-azure-starter-integration-servicebus]
 ===== API Changes
 * Drop `ServiceBusQueueOperation` and `ServiceBusTopicOperation` with the subscribing function moved to class `ServiceBusMessageListenerContainer` and the sending function moved to `ServiceBusTemplate`.
-* Drop `ServiceBusQueueInboundChannelAdapter` and `ServiceBusTopicInboundChannelAdapter` with the listening to a Service Bus queue/topic entity function moved to `ServiceBusInboundChannelAdapter`.
-* Divide the constructor from `ServiceBusXXXInboundChannelAdapter(String, SubscribeByGroupOperation, String)` into `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)` and `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)`.
-* Drop API `ServiceBusQueueOperation/ServiceBusTopicOperation#setCheckpointConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `ServiceBusContainerProperties#setAutoComplete` instead. To disable the auto-complete mode is equivalent to `MANUAL` checkpoint mode and to enable it will trigger the `RECORD` mode.
-* Drop API `ServiceBusQueueOperation/ServiceBusTopicOperation#setClientConfig` . To configure the underlying `ServiceBusProcessorClient` used by the inbound channel adapter, users can use `ServiceBusContainerProperties` instead.
+* Drop `ServiceBusQueueInboundChannelAdapter` and `ServiceBusTopicInboundChannelAdapter`, and move the functionality to listen to a Service Bus queue/topic entity to ServiceBusInboundChannelAdapter.
+* Change the constructor from `ServiceBusQueueInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)` and `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)`.
+* Change the constructor from `ServiceBusTopicInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)` and `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)`.
+* Drop APIs `ServiceBusQueueOperation#setCheckpointConfig` and `ServiceBusTopicOperation#setCheckpointConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `ServiceBusContainerProperties#setAutoComplete` instead. To disable the auto-complete mode is equivalent to `MANUAL` checkpoint mode and to enable it will trigger the `RECORD` mode.
+* Drop APIs `ServiceBusQueueOperatio#setClientConfig` and `ServiceBusTopicOperation#setClientConfig`. To configure the underlying `ServiceBusProcessorClient` used by the inbound channel adapter, users can use `ServiceBusContainerProperties` instead.
 * Drop `CompletableFuture` support in `ServiceBusTemplate` and `DefaultMessageHandler`, support `Reactor` instead.
 * Add new API of `ServiceBusTemplate#setDefaultEntityType` to specify the entity type, which is required when no bean of `PropertiesSupplier&lt;String, ProducerProperties&gt;` is provided for the `ProducerProperties#entityType`.
 * Drop message header `AzureHeaders.RAW_ID`. Please use `ServiceBusMessageHeaders.MESSAGE_ID` instead.
@@ -1100,10 +1101,11 @@ version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 [#api-spring-integration-azure-servicebus]
 ===== API Changes
 * Drop `ServiceBusQueueOperation` and `ServiceBusTopicOperation` with the subscribing function moved to class `ServiceBusMessageListenerContainer` and the sending function moved to `ServiceBusTemplate`.
-* Drop `ServiceBusQueueInboundChannelAdapter` and `ServiceBusTopicInboundChannelAdapter` with the listening to a Service Bus queue/topic entity function moved to `ServiceBusInboundChannelAdapter`.
-* Divide the constructor from `ServiceBusXXXInboundChannelAdapter(String, SubscribeByGroupOperation, String)` into `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)` and `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)`.
-* Drop API `ServiceBusQueueOperation/ServiceBusTopicOperation#setCheckpointConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `ServiceBusContainerProperties#setAutoComplete` instead. To disable the auto-complete mode is equivalent to `MANUAL` checkpoint mode and to enable it will trigger the `RECORD` mode.
-* Drop API `ServiceBusQueueOperation/ServiceBusTopicOperation#setClientConfig` . To configure the underlying `ServiceBusProcessorClient` used by the inbound channel adapter, users can use `ServiceBusContainerProperties` instead.
+* Drop `ServiceBusQueueInboundChannelAdapter` and `ServiceBusTopicInboundChannelAdapter`, and move the functionality to listen to a Service Bus queue/topic entity to ServiceBusInboundChannelAdapter.
+* Change the constructor from `ServiceBusQueueInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)` and `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)`.
+* Change the constructor from `ServiceBusTopicInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)` and `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)`.
+* Drop APIs `ServiceBusQueueOperation#setCheckpointConfig` and `ServiceBusTopicOperation#setCheckpointConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `ServiceBusContainerProperties#setAutoComplete` instead. To disable the auto-complete mode is equivalent to `MANUAL` checkpoint mode and to enable it will trigger the `RECORD` mode.
+* Drop APIs `ServiceBusQueueOperation#setClientConfig` and `ServiceBusTopicOperation#setClientConfig`. To configure the underlying `ServiceBusProcessorClient` used by the inbound channel adapter, users can use `ServiceBusContainerProperties` instead.
 * Drop `CompletableFuture` support in `ServiceBusTemplate` and `DefaultMessageHandler`, support `Reactor` instead.
 * Add new API of `ServiceBusTemplate#setDefaultEntityType` to specify the entity type, which is required when no bean of `PropertiesSupplier&lt;String, ProducerProperties&gt;` is provided for the `ProducerProperties#entityType`.
 * Drop message header `AzureHeaders.RAW_ID`. Please use `ServiceBusMessageHeaders.MESSAGE_ID` instead.
@@ -1419,8 +1421,8 @@ IMPORTANT: The binder type is combined from `servicebus-queue` and `servicebus-t
 |*spring.cloud.azure*.resource-group|*spring.cloud.azure.servicebus*.resource.resource-group
 |*spring.cloud.azure.servicebus*.transport-type |*spring.cloud.azure.servicebus*.client.transport-type
 |*spring.cloud.azure.servicebus*.retry-options.retry-mode |*spring.cloud.azure.servicebus*.retry.mode
-|*spring.cloud.azure.servicebus*.retry-options.max-retries |*spring.cloud.azure.servicebus*.retry.exponential.max-retries or *spring.cloud.azure.servicebus*.retry.fixed.max-retries, should be configured depends on *spring.cloud.azure.servicebus*.retry.mode=*fixed* or *exponential*
-|*spring.cloud.azure.servicebus*.retry-options.delay |*spring.cloud.azure.servicebus*.retry.exponential.base-delay or *spring.cloud.azure.servicebus*.retry.fixed.delay, should be configured depends on *spring.cloud.azure.servicebus*.retry.mode=*fixed* or *exponential*
+|*spring.cloud.azure.servicebus*.retry-options.max-retries |*spring.cloud.azure.servicebus*.retry.exponential.max-retries or *spring.cloud.azure.servicebus*.retry.fixed.max-retries, should be configured depending on *spring.cloud.azure.servicebus*.retry.mode=*fixed* or *exponential*
+|*spring.cloud.azure.servicebus*.retry-options.delay |*spring.cloud.azure.servicebus*.retry.exponential.base-delay or *spring.cloud.azure.servicebus*.retry.fixed.delay, should be configured depending on *spring.cloud.azure.servicebus*.retry.mode=*fixed* or *exponential*
 |*spring.cloud.azure.servicebus*.retry-options.max-delay |*spring.cloud.azure.servicebus*.retry.exponential.max-delay
 |*spring.cloud.azure.servicebus*.retry-options.try-timeout |*spring.cloud.azure.servicebus*.retry.try-timeout
 |*spring.cloud.stream.servicebus.queue*.bindings.* |*spring.cloud.stream.servicebus*.bindings.*
@@ -1432,6 +1434,7 @@ IMPORTANT: The binder type is combined from `servicebus-queue` and `servicebus-t
 |===
 
 NOTE: The concurrency property will be replaced by the maxConcurrentSessions when sessionsEnabled is `true` and the maxConcurrentCalls when sessionsEnabled is `false`.
+
 NOTE: Enabling auto-complete is equal to `RECORD` checkpoint mode, and oppositely the `MANUAL` mode.
 
 ====== Configuration migration examples
