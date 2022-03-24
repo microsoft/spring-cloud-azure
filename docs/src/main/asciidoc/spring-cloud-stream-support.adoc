@@ -977,7 +977,7 @@ the value of the session id will eventually be used to overwrite the value of th
 
 This channel is open by default, and a default consumer error channel handler is used to send failed messages to the dead-letter queue when `spring.cloud.stream.servicebus.bindings.<binding-name>.consumer.requeue-rejected` is enabled, otherwise the failed messages will be abandoned.
 
-To customize the consumer error channel handler, you can register your own error handler to the related consumer error channel in this way:
+To customize the consumer error channel handler, you can register you own error handler to the related consumer error channel in this way:
 [source,java]
 ----
 // Replace destination with spring.cloud.stream.bindings.input.destination

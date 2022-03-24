@@ -56,7 +56,7 @@ This migration guide will consist following sections:
 [#migration-guide-naming]
 === Naming Changes
 
-There has never been a consistent or official name to call all the Spring Cloud Azure libraries, some of the were
+There has never been a consistent or official name to call all the Spring Cloud Azure libraries, some of them were
 called `Azure Spring Boot` and some of them `Spring on Azure`, and all these names will make developers confused. Since
 4.0, we began to use the project name `Spring Cloud Azure` to represent all the Azure Spring libraries.
 
