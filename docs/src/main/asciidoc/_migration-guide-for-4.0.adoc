@@ -435,7 +435,7 @@ Here are some examples of migration:
 azure.activedirectory.graph-membership-uri=https://graph.microsoft.com/v1.0/me/memberOf
 
 .For modern:
-spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=`https://graph.microsoft.com/`
+spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=`https://graph.microsoft.com/` +
 spring.cloud.azure.active-directory.user-group.use-transitive-members=`false`
 ====
 
@@ -445,7 +445,7 @@ spring.cloud.azure.active-directory.user-group.use-transitive-members=`false`
 azure.activedirectory.graph-membership-uri=https://graph.microsoft.com/v1.0/me/transitiveMemberOf
 
 .For modern:
-spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=`https://graph.microsoft.com/`
+spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=`https://graph.microsoft.com/` +
 spring.cloud.azure.active-directory.user-group.use-transitive-members=`true`
 ====
 
