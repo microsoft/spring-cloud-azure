@@ -363,7 +363,7 @@ public Consumer<Message<String>> consume() {
         checkpointer.success()
                 .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                 .doOnError(error -> LOGGER.error("Exception found", error))
-                .subscribe();
+                .block();
     };
 }
 
@@ -456,7 +456,7 @@ public Consumer<Message<List<String>>> consume() {
         checkpointer.success()
                     .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                     .doOnError(error -> LOGGER.error("Exception found", error))
-                    .subscribe();
+                    .block();
     };
 }
 
@@ -612,7 +612,7 @@ public Consumer<Message<String>> consume1() {
         checkpointer.success()
                 .doOnSuccess(success -> LOGGER.info("Message1 '{}' successfully checkpointed", message))
                 .doOnError(error -> LOGGER.error("Exception found", error))
-                .subscribe();
+                .block();
     };
 }
 
@@ -624,7 +624,7 @@ public Consumer<Message<String>> consume2() {
         checkpointer.success()
                 .doOnSuccess(success -> LOGGER.info("Message2 '{}' successfully checkpointed", message))
                 .doOnError(error -> LOGGER.error("Exception found", error))
-                .subscribe();
+                .block();
     };
 }
 ----
@@ -920,7 +920,7 @@ public Consumer<Message<String>> consume() {
         checkpointer.success()
                 .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                 .doOnError(error -> LOGGER.error("Exception found", error))
-                .subscribe();
+                .block();
     };
 }
 
@@ -1112,7 +1112,7 @@ public Consumer<Message<String>> consume1() {
         checkpointer.success()
                 .doOnSuccess(s -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                 .doOnError(e -> LOGGER.error("Error found", e))
-                .subscribe();
+                .block();
     };
 }
 
@@ -1124,7 +1124,7 @@ public Consumer<Message<String>> consume2() {
         checkpointer.success()
                 .doOnSuccess(s -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                 .doOnError(e -> LOGGER.error("Error found", e))
-                .subscribe();
+                .block();
     };
 
 }
