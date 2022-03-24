@@ -24,4 +24,6 @@ include::health-indicator.adoc[]
 
 include::refresh.adoc[]
 
+include::feature-management.adoc[]
+
 include::forMoreInfo.adoc[]

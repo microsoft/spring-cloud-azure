@@ -1,0 +1,281 @@
+== Feature Management
+
+Feature Management provides a way for Spring Boot applications to dynamically access content. Feature Management has a variety of functions, such as Feature Flags that can enable or disable content, Feature Filters for targeting when content is shown, Customized Feature Filters, and Feature Gates for dynamically enabling endpoints.
+
+To use feature flags, they can be enabled through configuration:
+
+[source,properties,indent=0]
+----
+spring.cloud.azure.appconfiguration.stores[0].feature-flags.enabled= true
+----
+
+With Feature Flags enabled, they will be loaded into the Spring Configuration system with the prefix `feature-management`. Feature Flags can also be registered in the local configuration file, see <<Feature Flag Declaration>>. The easiest way to use Feature Management is by using the `azure-spring-cloud-feature-management` and `azure-spring-cloud-feature-management-web` libraries. The difference between the two libraries is that `azure-spring-cloud-feature-management-web` takes a dependency on the `spring-web` and `spring-webmvc` libraries to add additional features, such as <<Routing, Feature Gates>>.
+
+=== Feature Management Basics
+
+==== Feature Flags
+
+Feature flags are composed of two parts, a name and a list of feature-filters that are used to turn the feature on. Feature Flags can either have a boolean state of on/off, or they can have a list of Feature Filters. Feature Flags evaluate Feature Filters until one returns true. If no Feature Filter returns true, then the Feature Flag returns false.
+
+==== Feature Filters
+
+Feature Filters define a scenario for when a feature should be enabled. Feature Filters are evaluated synchronously.
+
+The Feature Management library comes with 4 pre-defined filters: <<AlwaysOnFilter>>, <<PercentageFilter>>, <<TimeWindowFilter>>, <<TargetingFilter>>.
+
+Custom Feature Filters be made. For example, a Feature Filter could be used to provide a custom experience for only the customers who are using a Microsoft Edge browser. The features in this Feature Filter can be customized, for example to show a specific header for the Edge browser audience.
+
+
+==== Feature Flag Declaration
+
+The Feature Management library supports Azure App Configuration along with application.yml or bootstrap.yml as sources for Feature Flags. Below is an example of the format used to set up Feature Flags in a application.yml file.
+
+[source,yaml,indent=0]
+----
+feature-management:
+  feature-t: false
+  feature-u:
+    enabled-for:
+      -
+        name: Random
+  feature-v:
+    enabled-for:
+      -
+        name: TimeWindowFilter
+        parameters:
+          Start: "Wed, 01 May 2019 13:59:59 GMT"
+          End: "Mon, 01 July 2019 00:00:00 GMT"
+  feature-w:
+    evaluate: false
+    enabled-for:
+      -
+        name: AlwaysOnFilter
+----
+
+* `feature-t` is set to false, this setting will always return the Feature Flag's value. 
+* `feature-u` is used in conjunction with Feature Filters. These Filters will be defined under the `enabled-for` property.  In this case, `feature-u` has one Feature Filter called `Random`, which does not require any configuration, so only the name property is required. 
+* `feature-v` specifies a Feature Filter named `TimeWindowFilter`. This Feature Filter can be passed parameters to use as configuration. In this case, for a `TimeWindowFilter`, pass in the start and end times for which the feature will be active.
+* `feature-w` is used for the `AlwaysOnFilter`, which will always evaluate to `true`. The `evaluate` field is used to stop the evaluation of the Feature Filters, and results in the Feature Filter always return `false`.
+
+=== Evaluating Feature Flags
+
+`azure-spring-cloud-feature-management` library provides `FeatureManager` to check if a Feature Flag is enabled. It provides an asynchronous way to check the state of the flag.
+
+`azure-spring-cloud-feature-management-web` along with providing `FeatureManager` has `FeatureManagerSnapshot` which caches the state of previously evaluated Feature Flags in the `@RequestScope` to guarantee all requests return the same value. In addition, the web library provides `@FeatureGate` which can either block or redirect web requests to different endpoints.
+
+==== Feature Flag Check
+
+`FeatureManager` is a `@Bean` that can be `@Autowired` or injected into `@Component` type objects. `FeatureManager` has a method `isEnabledAsync` that, when passed the name of a Feature Flag, returns its state.
+
+[source,java,indent=0]
+----
+@Autowired
+FeatureManager featureManager;
+
+if(featureManager.isEnabledAsync("feature-t").block()) {
+    // Do Something
+}
+----
+
+If Feature Management has not been configured or the Feature Flag doesn't exist, `isEnabledAsync` will always return false. If an existing Feature Flag is configured with an unknown Feature Filter, then a `FilterNotFoundException` is thrown. This can be changed to return false by configuring `fail-fast` to false.
+
+[%autowidth.stretch]
+[options="header"]
+|=== 
+|Name | Description | Required | Default
+|spring.cloud.azure.feature.management.fail-fast | If an exception occurs, a RuntimeException is thrown, if set to false then returns false instead. | No |  true
+|===
+
+`FeatureManagerSnapshot` works the same as `FeatureManager`, besides its caching of results in the `@RequestScope`.
+
+==== Feature Gate
+
+With the Feature Management Web library, you can require that a given feature is enabled in order to execute an endpoint. This can be done by using the `@FeatureGate` annotation.
+
+[source,java,indent=0]
+----
+@GetMapping("/featureT")
+@FeatureGate(feature = "feature-t")
+@ResponseBody
+public String featureT() {
+    ...
+}
+----
+
+The `featureT` endpoint can only be accessed if "feature-t" is enabled.
+
+===== Disabled Action Handling
+
+When an endpoint is blocked because the feature it specifies is disabled, `IDisabledFeaturesHandler` will be invoked. By default, an HTTP 404 is returned. This can be overridden by implementing `IDisabledFeaturesHandler`.
+
+[source,java,indent=0]
+----
+@Component
+public class DisabledFeaturesHandler implements IDisabledFeaturesHandler{
+
+    @Override
+    public HttpServletResponse handleDisabledFeatures(HttpServletRequest request, HttpServletResponse response) {
+        ...
+        return response;
+    }
+
+}
+----
+
+===== Routing
+
+Certain routes may expose application capabilities that are gated by features. These routes can be redirected to another endpoint if a feature has been disabled.
+
+[source,java,indent=0]
+----
+@GetMapping("/featureT")
+@FeatureGate(feature = "feature-t" fallback= "/oldEndpoint")
+@ResponseBody
+public String featureT() {
+    ...
+}
+
+@GetMapping("/oldEndpoint")
+@ResponseBody
+public String oldEndpoint() {
+    ...
+}
+----
+
+=== Built-In Feature Filters
+
+There are a few Feature Filters that come with the `azure-spring-cloud-feature-management` package. These Feature Filters are not added automatically, but can be setup in an `@Configuration` for use.
+
+==== AlwaysOnFilter
+
+This filter always returns true. Usage can be see in <<Feature Flag Declaration>>.
+
+==== PercentageFilter
+
+Each evaluation of `PercentageFilter` can return a different result, which are not consistent among one user's requests. This can be circumvented using the `FeatureManagementSnapshot`, which will cache the result of the Feature Flag per user. This ensures a User will have a consistent experience even if they have to resend the request.
+
+[source,yaml,indent=0]
+----
+feature-management:
+  feature-v:
+    enabled-for:
+      -
+        name: PercentageFilter
+        parameters:
+          Value: 50
+----
+
+==== TimeWindowFilter
+
+This filter provides the capability to enable a feature based on a time window. If only `End` is specified, the feature will be considered on until that time. If only start is specified, the feature will be considered on at all points after that time. If both are specified the feature will be considered valid between the two times.
+
+[source,yaml,indent=0]
+----
+feature-management:
+  feature-v:
+    enabled-for:
+      -
+       name: TimeWindowFilter
+        parameters:
+          Start: "Wed, 01 May 2019 13:59:59 GMT",
+          End: "Mon, 01 July 2019 00:00:00 GMT"
+----
+
+==== TargetingFilter
+
+This filter provides the capability to enable a feature for a target audience. An in-depth explanation of targeting is explained in the <<Targeting, targeting section below>>. The filter parameters include an audience object that describes users, groups, and a default percentage of the user base that should have access to the feature. For each group object that is listed in the target audience, a percentage is required which defines the percentage of that group's members which have access to the feature. If a user is specified in the users section directly, or if the user is in the included percentage of any of the group rollouts, or if the user falls into the default rollout percentage, then that user will have the feature enabled.
+
+[source,yaml,indent=0]
+----
+feature-management: 
+  target:
+    enabled-for:
+      -
+        name: targetingFilter
+        parameters:
+          users:
+            - Jeff
+            - Alicia
+          groups:
+            -
+              name: Ring0
+              rolloutPercentage: 100
+            -
+              name: Ring1
+              rolloutPercentage: 100
+          defaultRolloutPercentage: 50
+----
+
+=== Custom Feature Filters
+
+Creating a custom Feature Filter provides a way to enable features based on criteria that you define. To create a custom Feature Filter, the `FeatureFilter` interface must be implemented. `FeatureFilter` has a single method `evaluate`. When a feature specifies that it can be enabled with a Feature Filter, the `evaluate` method is called. If `evaluate` returns `true` it means the feature should be enabled. If `false` it will continue evaluating the Feature's filters until one returns true. If all return `false` then the feature is off.
+
+Feature Filters are found by being defined as being Spring Beans, so they are either defined as `@Component` or defined in an `@Configuration`.
+
+[source,java,indent=0]
+----
+@Component("Random")
+public class Random implements FeatureFilter {
+
+    @Override
+    public boolean evaluate(FeatureFilterEvaluationContext context) {
+        double chance = Double.valueOf((String) context.getParameters().get("chance"));
+        return Math.random() > chance / 100;
+    }
+
+}
+----
+
+==== Parameterized Feature Filters
+
+Some Feature Filters require parameters to decide whether a feature should be turned on or not. For example, a browser Feature Filter may turn on a feature for a certain set of browsers. It may be desired that Edge and Chrome browsers enable a feature, while Firefox does not. To do this, a Feature Filter can be designed to expect parameters. These parameters would be specified in the feature configuration and in code, and would be accessible via the `FeatureFilterEvaluationContext` parameter of `evaluate`. `FeatureFilterEvaluationContext` has a property `parameters` which is a `HashMap<String, Object>`.
+
+=== Targeting
+
+Targeting is a feature management strategy that enables developers to progressively roll out new features to their user base. The strategy is built on the concept of targeting a set of users known as the target audience. An audience is made up of specific users, groups, and a designated percentage of the entire user base. The groups that are included in the audience can be broken down further into percentages of their total members.
+
+The following steps demonstrate an example of a progressive rollout for a new 'Beta' feature:
+
+1. Individual users Jeff and Alicia are granted access to the Beta
+2. Another user, Mark, asks to opt-in and is included.
+3. Twenty percent of a group known as "Ring1" users are included in the Beta.
+4. The number of "Ring1" users included in the beta is bumped up to 100 percent.
+5. Five percent of the user base is included in the beta.
+6. The rollout percentage is bumped up to 100 percent and the feature is completely rolled out.
+
+This strategy for rolling out a feature is built into the library through the included `TargetingFilter` Feature Filter.
+
+==== Targeting in an Application
+
+An example web application that uses the targeting Feature Filter is available in the https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/appconfiguration/feature-management-web-sample[Example Project].
+
+To begin using the `TargetingFilter` in an application, it must be added as a `@Bean` like any other Feature Filter. `TargetingFilter` relies on another `@Bean` to be added to the application, `ITargetingContextAccessor`. The `ITargetingContextAccessor` allows for defining the current `TargetingContext` to be used for defining the current user id and groups. An example of this is:
+
+[source,java,indent=0]
+----
+public class TargetingContextAccessor implements ITargetingContextAccessor {
+
+    @Override
+    public Mono<TargetingContext> getContextAsync() {
+        TargetingContext context = new TargetingContext();
+        context.setUserId("Jeff");
+        ArrayList<String> groups = new ArrayList<String>();
+        groups.add("Ring0");
+        context.setGroups(groups);
+        return Mono.just(context);
+    }
+
+}
+----
+
+==== Targeting Evaluation Options
+
+Options are available to customize how targeting evaluation is performed across a given `TargetingFilter`. An optional parameter, `TargetingEvaluationOptions` can be set during `TargetingFilter` creation.
+
+[source,java,indent=0]
+----
+    @Bean
+    public TargetingFilter targetingFilter(ITargetingContextAccessor contextAccessor) {
+        return new TargetingFilter(contextAccessor, new TargetingEvaluationOptions().setIgnoreCase(true));
+    }
+----

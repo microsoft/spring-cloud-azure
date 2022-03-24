@@ -65,7 +65,7 @@ az role assignment  create --role "App Configuration Data Reader" --assignee <yo
 
 === Token Credential
 
-To authenticate with any other method supported by the [Azure Identity Library](https://github.com/Azure/azure-sdk-for-java/tree/azure-identity_1.3.6/sdk/identity/azure-identity), you can use `AppConfigurationCredentialProvider`. `AppConfigurationCredentialProvider` allows you to dynamically return any `TokenCredential` for any given URI to connect to your Configuration stores.
+To authenticate with any other method supported by the https://github.com/Azure/azure-sdk-for-java/tree/azure-identity_1.3.6/sdk/identity/azure-identity[Azure Identity Library], you can use `AppConfigurationCredentialProvider`. `AppConfigurationCredentialProvider` allows you to dynamically return any `TokenCredential` for any given URI to connect to your Configuration stores.
 
 [source,java,indent=0]
 ----
