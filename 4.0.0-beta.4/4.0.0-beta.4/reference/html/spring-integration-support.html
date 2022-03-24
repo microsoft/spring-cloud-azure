@@ -607,7 +607,7 @@ class Demo {
         checkpointer.success()
                 .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
                 .doOnError(e -&gt; LOGGER.error("Error found", e))
-                .subscribe();
+                .block();
     }
 }</code></pre>
 </div>
@@ -1107,7 +1107,7 @@ class Demo {
         checkpointer.success()
                 .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
                 .doOnError(e -&gt; LOGGER.error("Error found", e))
-                .subscribe();
+                .block();
     }
 }</code></pre>
 </div>
@@ -1591,7 +1591,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
         checkpointer.success()
             .doOnError(Throwable::printStackTrace)
             .doOnSuccess(t -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
-            .subscribe();
+            .block();
     }
 }</code></pre>
 </div>

@@ -4539,7 +4539,7 @@ class Demo {
         checkpointer.success()
                 .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
                 .doOnError(e -&gt; LOGGER.error("Error found", e))
-                .subscribe();
+                .block();
     }
 }</code></pre>
 </div>
@@ -5039,7 +5039,7 @@ class Demo {
         checkpointer.success()
                 .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
                 .doOnError(e -&gt; LOGGER.error("Error found", e))
-                .subscribe();
+                .block();
     }
 }</code></pre>
 </div>
@@ -5523,7 +5523,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
         checkpointer.success()
             .doOnError(Throwable::printStackTrace)
             .doOnSuccess(t -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
-            .subscribe();
+            .block();
     }
 }</code></pre>
 </div>
@@ -6092,7 +6092,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume() {
         checkpointer.success()
                 .doOnSuccess(success -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                 .doOnError(error -&gt; LOGGER.error("Exception found", error))
-                .subscribe();
+                .block();
     };
 }
 
@@ -6197,7 +6197,7 @@ public Consumer&lt;Message&lt;List&lt;String&gt;&gt;&gt; consume() {
         checkpointer.success()
                     .doOnSuccess(success -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                     .doOnError(error -&gt; LOGGER.error("Exception found", error))
-                    .subscribe();
+                    .block();
     };
 }
 
@@ -6398,7 +6398,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume1() {
         checkpointer.success()
                 .doOnSuccess(success -&gt; LOGGER.info("Message1 '{}' successfully checkpointed", message))
                 .doOnError(error -&gt; LOGGER.error("Exception found", error))
-                .subscribe();
+                .block();
     };
 }
 
@@ -6410,7 +6410,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
         checkpointer.success()
                 .doOnSuccess(success -&gt; LOGGER.info("Message2 '{}' successfully checkpointed", message))
                 .doOnError(error -&gt; LOGGER.error("Exception found", error))
-                .subscribe();
+                .block();
     };
 }</code></pre>
 </div>
@@ -6858,7 +6858,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume() {
         checkpointer.success()
                 .doOnSuccess(success -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                 .doOnError(error -&gt; LOGGER.error("Exception found", error))
-                .subscribe();
+                .block();
     };
 }
 
@@ -7109,7 +7109,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume1() {
         checkpointer.success()
                 .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                 .doOnError(e -&gt; LOGGER.error("Error found", e))
-                .subscribe();
+                .block();
     };
 }
 
@@ -7121,7 +7121,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
         checkpointer.success()
                 .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                 .doOnError(e -&gt; LOGGER.error("Error found", e))
-                .subscribe();
+                .block();
     };
 
 }</code></pre>
