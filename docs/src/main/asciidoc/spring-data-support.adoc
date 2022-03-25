@@ -4,7 +4,6 @@
 
 link:https://azure.microsoft.com/services/cosmos-db/[Azure Cosmos DB] is a globally-distributed database service that allows developers to work with data using a variety of standard APIs, such as SQL, MongoDB, Graph, and Azure Table storage.
 
-Connect to Cosmos DB using Spring Data and CosmosDB libraries.
 
 === Dependency Setup
 
@@ -32,15 +31,15 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 
 |*spring.cloud.azure.cosmos*.database
 |  
-|The CosmosDB database id 
+|The Cosmos DB database id.
 
 |*spring.cloud.azure.cosmos*.endpoint
 |  
-|Uri to connect CosmosDB 
+|Uri to connect Cosmos DB.
 
 |*spring.cloud.azure.cosmos*.key
 |  
-|PrivateKey to connect CosmosDB 
+|Private key to connect Cosmos DB.
 
 |*spring.cloud.azure.cosmos*.credential.client-certificate-password
 |
@@ -76,7 +75,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 
 |*spring.cloud.azure.cosmos*.consistency-level
 |
-| link:https://docs.microsoft.com/azure/cosmos-db/consistency-levels[Consistency levels] in Azure Cosmos DB
+| link:https://docs.microsoft.com/azure/cosmos-db/consistency-levels[Consistency levels] in Azure Cosmos DB.
 |===
 
 
@@ -264,5 +263,5 @@ Autowired UserRepository interface, then can do save, delete and find operations
 Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/cosmos[azure-spring-boot-samples] for more details.
 
 
-Besides, using this Azure Cosmos DB Spring Boot Starter, you can directly use Spring Data for Azure Cosmos DB package for more complex scenarios. Please refer to link:https://github.com/Azure/azure-sdk-for-java/tree/spring-cloud-azure-dependencies_{project-version}/sdk/cosmos/azure-spring-data-cosmos[Spring Data for Azure Cosmos DB] for more details.
+Apart from using the `spring-cloud-azure-starter-data-cosmos` library you can directly use `azure-spring-data-cosmos` library for more complex scenarios. Please refer to link:https://github.com/Azure/azure-sdk-for-java/tree/spring-cloud-azure-dependencies_{project-version}/sdk/cosmos/azure-spring-data-cosmos[Spring Data for Azure Cosmos DB] for more details.
 

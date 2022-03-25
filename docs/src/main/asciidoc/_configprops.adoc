@@ -119,7 +119,7 @@
 |spring.cloud.azure.client.http.response-timeout |  | Amount of time used when waiting for a server to reply.
 |spring.cloud.azure.client.http.write-timeout |  | Amount of time each request being sent over the wire.
 |spring.cloud.azure.compatibility-verifier.compatible-boot-versions |  | Comma-delimited list of Spring Boot versions that are compatible with current Spring Cloud Azure's version.
-|spring.cloud.azure.compatibility-verifier.enabled | `false` | Whether to enable the Spring Cloud Azure compatibility verifier.
+|spring.cloud.azure.compatibility-verifier.enabled | `true` | Whether to enable the Spring Cloud Azure compatibility verifier.
 |spring.cloud.azure.cosmos.client-telemetry-enabled |  | Whether to enable client telemetry which will periodically collect database operations aggregation statistics, system information like cpu/memory and send it to cosmos monitoring service, which will be helpful during debugging.
 |spring.cloud.azure.cosmos.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
 |spring.cloud.azure.cosmos.connection-mode |  | Connection mode to be used by the client in the Azure Cosmos DB database service.
