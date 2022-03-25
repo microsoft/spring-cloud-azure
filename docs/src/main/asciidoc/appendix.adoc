@@ -19,6 +19,8 @@ include::_configprops_kv_secret.adoc[]
 include::_configprops_kv_certificate.adoc[]
 === Azure Service Bus Proeprties
 include::_configprops_servicebus.adoc[]
+=== Azure Service Bus JMS Proeprties
+include::_configprops_servicebus_jms.adoc[]
 === Azure Storage Blob Proeprties
 include::_configprops_storage_blob.adoc[]
 === Azure Storage File Share Proeprties
