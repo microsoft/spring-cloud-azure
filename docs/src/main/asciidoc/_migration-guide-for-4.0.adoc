@@ -31,7 +31,7 @@ inconsistency of project naming, artifact Ids, versions, configurations made the
 
 To improve the development experience across Spring Cloud Azure libraries, a set of design guidelines was introduced to
 ensure that Spring Cloud Azure libraries have a natural and idiomatic feel with respect to the Spring ecosystem. Further
-details are available in the https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Cloud-Azure-4.0-design[design doc] for those interested.
+details are available in the https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Cloud-Azure-4.0-design[design document] for those interested.
 
 The *Spring Cloud Azure 4.0* provides the shared experience across libraries integrating with different Spring
 projects, for example Spring Boot, Spring Integration, Spring Cloud Stream, etc. The shared experience includes:
@@ -57,7 +57,7 @@ This migration guide will consist following sections:
 === Naming Changes
 
 There has never been a consistent or official name to call all the Spring Cloud Azure libraries, some of them were
-called `Azure Spring Boot` and some of them `Spring on Azure`, and all these names will make developer confused. Since
+called `Azure Spring Boot` and some of them `Spring on Azure`, and all these names will make developers confused. Since
 4.0, we began to use the project name `Spring Cloud Azure` to represent all the Azure Spring libraries.
 
 [#migration-guide-bom]

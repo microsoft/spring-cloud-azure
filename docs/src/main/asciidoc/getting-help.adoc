@@ -1,7 +1,7 @@
 
 == Getting Help
 
-If you have any questions about this doc, please ask by creating GitHub issue. And Pull Request is welcome.
+If you have any questions about this document, please ask by creating GitHub issues. And Pull Request is welcome.
 
 .GitHub repositories
 [%autowidth.stretch]
