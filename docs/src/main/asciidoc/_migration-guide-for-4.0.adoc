@@ -1,7 +1,6 @@
 
 [#migration-guide-for-4-0]
 == Migration Guide for 4.0
-:icons: font
 
 [#migration-guide-introduction]
 === Introduction
@@ -320,7 +319,7 @@ Azure 4.0 library. Please add these removed dependencies to your project to prev
 |===
 
 [#configuration-spring-cloud-azure-starter-active-directory]
-===== SDK Configuration Changes(Added/Removed/Changed)
+===== SDK Configuration Changes
 This section includes the changes about the properties added, removed and changed.
 
 .The following two points are the main to pay your attention to:
@@ -425,13 +424,13 @@ This section includes the changes about the properties added, removed and change
 * spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint
 * spring.cloud.azure.active-directory.user-group.use-transitive-members
 
-NOTE: `azure.activedirectory.graph-membership-uri`'s function has been replaced by 2 properties: `spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint` and `spring.cloud.azure.active-directory.user-group.use-transitive-members`. The first property is used to specify the host name, and the second a flag for using the url path: `v1.0/me/memberOf` or `v1.0/me/transitiveMemberOf`.
+NOTE: The function of `azure.activedirectory.graph-membership-uri` has been replaced by 2 properties: `spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint` and `spring.cloud.azure.active-directory.user-group.use-transitive-members`. The first property is used to specify the host name, and the second a flag for using the url path: `v1.0/me/memberOf` or `v1.0/me/transitiveMemberOf`.
 
 Here are some examples of migration:
 
 .Case 1
 ====
-.For legancy:
+.For legacy:
 azure.activedirectory.graph-membership-uri=https://graph.microsoft.com/v1.0/me/memberOf
 
 .For modern:
@@ -441,7 +440,7 @@ spring.cloud.azure.active-directory.user-group.use-transitive-members=`false`
 
 .Case 2
 ====
-.For legancy:
+.For legacy:
 azure.activedirectory.graph-membership-uri=https://graph.microsoft.com/v1.0/me/transitiveMemberOf
 
 .For modern:
@@ -456,33 +455,63 @@ spring.cloud.azure.active-directory.user-group.use-transitive-members=`true`
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-|com.azure.spring.aad.webapi.AADJwtBearerTokenAuthenticationConverter |com.azure.spring.cloud.autoconfigure.aad.AadJwtBearerTokenAuthenticationConverter
-|com.azure.spring.aad.webapi.AADResourceServerProperties |com.azure.spring.cloud.autoconfigure.aad.properties.AadResourceServerProperties
-|com.azure.spring.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter |com.azure.spring.cloud.autoconfigure.aad.AadResourceServerWebSecurityConfigurerAdapter
-|com.azure.spring.aad.webapp.AADWebSecurityConfigurerAdapter |com.azure.spring.cloud.autoconfigure.aad.AadWebSecurityConfigurerAdapter
-|com.azure.spring.aad.webapp.AuthorizationClientProperties |com.azure.spring.cloud.autoconfigure.aad.properties.AuthorizationClientProperties
-|com.azure.spring.aad.AADApplicationType |com.azure.spring.cloud.autoconfigure.aad.properties.AadApplicationType
-|com.azure.spring.aad.AADAuthorizationGrantType |com.azure.spring.cloud.autoconfigure.aad.properties.AadAuthorizationGrantType
-|com.azure.spring.aad.AADAuthorizationServerEndpoints |com.azure.spring.cloud.autoconfigure.aad.properties.AadAuthorizationServerEndpoints
-|com.azure.spring.aad.AADClientRegistrationRepository |com.azure.spring.cloud.autoconfigure.aad.AadClientRegistrationRepository
-|com.azure.spring.aad.AADTrustedIssuerRepository |com.azure.spring.cloud.autoconfigure.aad.AadTrustedIssuerRepository
-|com.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter |com.azure.spring.cloud.autoconfigure.aad.filter.AadAppRoleStatelessAuthenticationFilter
-|com.azure.spring.autoconfigure.aad.AADAuthenticationFilter |com.azure.spring.cloud.autoconfigure.aad.filter.AadAuthenticationFilter
-|com.azure.spring.autoconfigure.aad.AADAuthenticationProperties |com.azure.spring.cloud.autoconfigure.aad.properties.AadAuthenticationProperties
-|com.azure.spring.autoconfigure.aad.UserPrincipal |com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipal
-|com.azure.spring.autoconfigure.aad.UserPrincipalManager |com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipalManager
+
+|com.azure.spring.aad.webapi.AADJwtBearerTokenAuthenticationConverter
+|com.azure.spring.cloud.autoconfigure.aad.AadJwtBearerTokenAuthenticationConverter
+
+|com.azure.spring.aad.webapi.AADResourceServerProperties
+|com.azure.spring.cloud.autoconfigure.aad.properties.AadResourceServerProperties
+
+|com.azure.spring.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter
+|com.azure.spring.cloud.autoconfigure.aad.AadResourceServerWebSecurityConfigurerAdapter
+
+|com.azure.spring.aad.webapp.AADWebSecurityConfigurerAdapter
+|com.azure.spring.cloud.autoconfigure.aad.AadWebSecurityConfigurerAdapter
+
+|com.azure.spring.aad.webapp.AuthorizationClientProperties
+|com.azure.spring.cloud.autoconfigure.aad.properties.AuthorizationClientProperties
+
+|com.azure.spring.aad.AADApplicationType
+|com.azure.spring.cloud.autoconfigure.aad.properties.AadApplicationType
+
+|com.azure.spring.aad.AADAuthorizationGrantType
+|com.azure.spring.cloud.autoconfigure.aad.properties.AadAuthorizationGrantType
+
+|com.azure.spring.aad.AADAuthorizationServerEndpoints
+|com.azure.spring.cloud.autoconfigure.aad.properties.AadAuthorizationServerEndpoints
+
+|com.azure.spring.aad.AADClientRegistrationRepository
+|com.azure.spring.cloud.autoconfigure.aad.AadClientRegistrationRepository
+
+|com.azure.spring.aad.AADTrustedIssuerRepository
+|com.azure.spring.cloud.autoconfigure.aad.AadTrustedIssuerRepository
+
+|com.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter
+|com.azure.spring.cloud.autoconfigure.aad.filter.AadAppRoleStatelessAuthenticationFilter
+
+|com.azure.spring.autoconfigure.aad.AADAuthenticationFilter
+|com.azure.spring.cloud.autoconfigure.aad.filter.AadAuthenticationFilter
+
+|com.azure.spring.autoconfigure.aad.AADAuthenticationProperties
+|com.azure.spring.cloud.autoconfigure.aad.properties.AadAuthenticationProperties
+
+|com.azure.spring.autoconfigure.aad.UserPrincipal
+|com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipal
+
+|com.azure.spring.autoconfigure.aad.UserPrincipalManager
+|com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipalManager
 |===
 
-.Removed classes from azure-spring-boot-starter-active-directory
-[options="header"]
-|===
-|Removed legacy class
-|com.azure.spring.aad.webapp.AADHandleConditionalAccessFilter
-|com.azure.spring.aad.webapi.validator.AADJwtAudienceValidator
-|com.azure.spring.aad.webapi.validator.AADJwtClaimValidator
-|===
+
+This section lists the removed classes from azure-spring-boot-starter-active-directory +
+
+.Removed legacy class
+* com.azure.spring.aad.webapp.AADHandleConditionalAccessFilter
+* com.azure.spring.aad.webapi.validator.AADJwtAudienceValidator
+* com.azure.spring.aad.webapi.validator.AADJwtClaimValidator
 
 ==== From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c
+
 This guide is intended to assist in the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-active-directory-b2c[spring-cloud-azure-starter-active-directory-b2c] from
 version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-active-directory-b2c[azure-spring-boot-starter-active-directory-b2c].
@@ -496,6 +525,7 @@ version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 
 [#dependency-spring-cloud-azure-starter-active-directory-b2c]
 ===== Dependency Changes
+
 Some unnecessary dependencies were included in the legacy artifacts, which we have removed in the modern Spring Cloud
 Azure 4.0 libraries. Please make sure add the removed dependencies manually to your project to prevent unintentionally
 crash.
