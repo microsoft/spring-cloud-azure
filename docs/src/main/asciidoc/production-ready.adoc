@@ -1,6 +1,6 @@
 == Production Ready
 
-Spring Cloud Azure 4.0 supports health indicators for App Configuration, Event Hubs, Cosmos, Key Vault, Storage Blob, Storage Queue, and Storage File Share. It also provides integrations with Spring Cloud Sleuth for all HTTP-based Azure SDKs. As an example, you now can prob if storage blob is up or down via Spring Boot actuator endpoint, as well as track dependencies and latencies going from your application to Key Vault.
+Spring Cloud Azure 4.0 supports health indicators for App Configuration, Event Hubs, Cosmos, Key Vault Certificate, Key Vault Secret, Storage Blob, Storage Queue, and Storage File Share. It also provides integrations with Spring Cloud Sleuth for all HTTP-based Azure SDKs. As an example, you now can prob if storage blob is up or down via Spring Boot actuator endpoint, as well as track dependencies and latencies going from your application to Key Vault.
 
 === Enable Health Indicator
 
