@@ -573,7 +573,7 @@ IMPORTANT: If you're using the new `spring-cloud-azure-starter-keyvault-secrets`
 ==== From azure-spring-boot-starter-servicebus-jms to spring-cloud-azure-starter-servicebus-jms
 This guide is intended to assist in the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-servicebus-jms[spring-cloud-azure-starter-servicebus-jms] from
-version 2 of link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-servicebus-jms[spring-cloud-azure-starter-servicebus-jms].
+version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-servicebus-jms[azure-spring-boot-starter-servicebus-jms].
 
 * Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
 * Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
@@ -731,9 +731,9 @@ spring:
 * Rename `EventHubInboundChannelAdapter` as `EventHubsInboundChannelAdapter` to keep consistent with the service of Azure
 Event Hubs.
 * Change the constructor from `EventHubInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer)` and `EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer, ListenerMode)`.
-* Change `CheckpointConfig` instantiation style to simple constructor instead of build style.
+* Change `CheckpointConfig` instantiation style to the simple constructor instead of build style.
 * Drop API `EventHubOperation#setCheckpointConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `EventHubsContainerProperties#setCheckpointConfig`.
-* Drop API `EventHubOperation#setBatchConsumerConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `EventHubsContainerProperties#getBatch#setMaxSize` and `EventHubsContainerProperties#getBatch#setMaxWaitTime`.
+* Drop API `EventHubOperation#setBatchConsumerConfig`. To set the batch-consuming configuration for the inbound channel adapter, users can call the two methods `EventHubsContainerProperties#getBatch#setMaxSize` and `EventHubsContainerProperties#getBatch#setMaxWaitTime` meanwhile.
 * For the batch consuming mode, change the message header names converted from batched messages.
     - Change message header from `azure_eventhub_enqueued_time` to `azure_eventhubs_batch_converted_enqueued_time`.
     - Change message header from `azure_eventhub_offset` to `azure_eventhubs_batch_converted_offset`.
@@ -876,9 +876,9 @@ version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 * Rename `EventHubInboundChannelAdapter` as `EventHubsInboundChannelAdapter` to keep consistent with the service of Azure
 Event Hubs.
 * Change the constructor from `EventHubInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer)` and `EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer, ListenerMode)`.
-* Change `CheckpointConfig` instantiation style to simple constructor instead of build style.
+* Change `CheckpointConfig` instantiation style to the simple constructor instead of build style.
 * Drop API `EventHubOperation#setCheckpointConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `EventHubsContainerProperties#setCheckpointConfig`.
-* Drop API `EventHubOperation#setBatchConsumerConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `EventHubsContainerProperties#getBatch#setMaxSize` and `EventHubsContainerProperties#getBatch#setMaxWaitTime`.
+* Drop API `EventHubOperation#setBatchConsumerConfig`. To set the batch-consuming configuration for the inbound channel adapter, users can call the two methods `EventHubsContainerProperties#getBatch#setMaxSize` and `EventHubsContainerProperties#getBatch#setMaxWaitTime` meanwhile.
 * For the batch consuming mode, change the message header names converted from batched messages.
     - Change message header from `azure_eventhub_enqueued_time` to `azure_eventhubs_batch_converted_enqueued_time`.
     - Change message header from `azure_eventhub_offset` to `azure_eventhubs_batch_converted_offset`.
@@ -931,8 +931,8 @@ the prefix remains to be as `spring.cloud.azure.servicebus`.
 |*spring.cloud.azure*.resource-group|*spring.cloud.azure.servicebus*.resource.resource-group
 |*spring.cloud.azure.servicebus*.transport-type |*spring.cloud.azure.servicebus*.client.transport-type
 |*spring.cloud.azure.servicebus*.retry-options.retry-mode |*spring.cloud.azure.servicebus*.retry.mode
-|*spring.cloud.azure.servicebus*.retry-options.max-retries |*spring.cloud.azure.servicebus*.retry.exponential.max-retries or *spring.cloud.azure.servicebus*.retry.fixed.max-retries, should be configured according to *spring.cloud.azure.servicebus*.retry.mode
-|*spring.cloud.azure.servicebus*.retry-options.delay |*spring.cloud.azure.servicebus*.retry.exponential.base-delay or *spring.cloud.azure.servicebus*.retry.fixed.delay, should be configured according to *spring.cloud.azure.servicebus*.retry.mode
+|*spring.cloud.azure.servicebus*.retry-options.max-retries |*spring.cloud.azure.servicebus*.retry.exponential.max-retries or *spring.cloud.azure.servicebus*.retry.fixed.max-retries, should be configured depending on *spring.cloud.azure.servicebus*.retry.mode=*fixed* or *exponential*
+|*spring.cloud.azure.servicebus*.retry-options.delay |*spring.cloud.azure.servicebus*.retry.exponential.base-delay or *spring.cloud.azure.servicebus*.retry.fixed.delay, should be configured depending on *spring.cloud.azure.servicebus*.retry.mode=*fixed* or *exponential*
 |*spring.cloud.azure.servicebus*.retry-options.max-delay |*spring.cloud.azure.servicebus*.retry.exponential.max-delay
 |*spring.cloud.azure.servicebus*.retry-options.try-timeout |*spring.cloud.azure.servicebus*.retry.try-timeout
 |===
@@ -940,13 +940,14 @@ the prefix remains to be as `spring.cloud.azure.servicebus`.
 [#api-spring-cloud-azure-starter-integration-servicebus]
 ===== API Changes
 * Drop `ServiceBusQueueOperation` and `ServiceBusTopicOperation` with the subscribing function moved to class `ServiceBusMessageListenerContainer` and the sending function moved to `ServiceBusTemplate`.
-* Drop `ServiceBusQueueInboundChannelAdapter` and `ServiceBusTopicInboundChannelAdapter`, and combine the function of listening to a Service Bus queue or topic entity to `ServiceBusInboundChannelAdapter`.
-* Change the constructor from `ServiceBusXXXInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)` and `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)`.
-* Drop API `setCheckpointConfig` of ServiceBusTopicOperation or ServiceBusQueueOperation. To set the checkpoint configuration for the inbound channel adapter, users can call the method `ServiceBusContainerProperties#setAutoComplete` instead. To disable the auto-complete mode is equivalent to `MANUAL` checkpoint mode and to enable it will trigger the `RECORD` mode.
-* Drop API `setClientConfig` of `ServiceBusQueueOperation` and `ServiceBusTopicOperation`. To configure the underlying `ServiceBusProcessorClient` used by the inbound channel adapter, users can use `ServiceBusContainerProperties` instead.
-* Drop `CompletableFuture` support of `ServiceBusTemplate` and `DefaultMessageHandler` and support Reactor instead.
-* Add new API of `setDefaultEntityType` for `ServiceBusTemplate` to specify the entity type, which is required when no bean of `PropertiesSupplier&lt;String, ProducerProperties&gt;` is provided for the `ProducerProperties#entityType`.
-* Drop message header of `AzureHeaders.RAW_ID`. Please use `ServiceBusMessageHeaders.MESSAGE_ID` instead.
+* Drop `ServiceBusQueueInboundChannelAdapter` and `ServiceBusTopicInboundChannelAdapter`, and move the functionality to listen to a Service Bus queue/topic entity to ServiceBusInboundChannelAdapter.
+* Change the constructor from `ServiceBusQueueInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)` and `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)`.
+* Change the constructor from `ServiceBusTopicInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)` and `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)`.
+* Drop APIs `ServiceBusQueueOperation#setCheckpointConfig` and `ServiceBusTopicOperation#setCheckpointConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `ServiceBusContainerProperties#setAutoComplete` instead. To disable the auto-complete mode is equivalent to `MANUAL` checkpoint mode and to enable it will trigger the `RECORD` mode.
+* Drop APIs `ServiceBusQueueOperatio#setClientConfig` and `ServiceBusTopicOperation#setClientConfig`. To configure the underlying `ServiceBusProcessorClient` used by the inbound channel adapter, users can use `ServiceBusContainerProperties` instead.
+* Drop `CompletableFuture` support in `ServiceBusTemplate` and `DefaultMessageHandler`, support `Reactor` instead.
+* Add new API of `ServiceBusTemplate#setDefaultEntityType` to specify the entity type, which is required when no bean of `PropertiesSupplier&lt;String, ProducerProperties&gt;` is provided for the `ProducerProperties#entityType`.
+* Drop message header `AzureHeaders.RAW_ID`. Please use `ServiceBusMessageHeaders.MESSAGE_ID` instead.
 
 .Class mapping from azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus
 [cols="<,<", options="header"]
@@ -962,7 +963,7 @@ the prefix remains to be as `spring.cloud.azure.servicebus`.
 
 ====== Sample Code Snippet
 
-1. ServiceBusInboundChannelAdapter sample code:
+1.ServiceBusInboundChannelAdapter sample code:
 
 Legacy code of using `ServiceBusQueueInboundChannelAdapter` or `ServiceBusTopicInboundChannelAdapter`:
 
@@ -1034,7 +1035,7 @@ public class Demo {
 }
 ----
 
-2. DefaultMessageHandler sample code:
+2.DefaultMessageHandler sample code:
 
 Legacy code, taking queue as example:
 
@@ -1100,13 +1101,14 @@ version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 [#api-spring-integration-azure-servicebus]
 ===== API Changes
 * Drop `ServiceBusQueueOperation` and `ServiceBusTopicOperation` with the subscribing function moved to class `ServiceBusMessageListenerContainer` and the sending function moved to `ServiceBusTemplate`.
-* Drop `ServiceBusQueueInboundChannelAdapter` and `ServiceBusTopicInboundChannelAdapter`, and combine the function of listening to a Service Bus queue or topic entity to `ServiceBusInboundChannelAdapter`.
-* Change the constructor from `ServiceBusXXXInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)` and `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)`.
-* Drop API `setCheckpointConfig` of ServiceBusTopicOperation or ServiceBusQueueOperation. To set the checkpoint configuration for the inbound channel adapter, users can call the method `ServiceBusContainerProperties#setAutoComplete` instead. To disable the auto-complete mode is equivalent to `MANUAL` checkpoint mode and to enable it will trigger the `RECORD` mode.
-* Drop API `setClientConfig` of `ServiceBusQueueOperation` and `ServiceBusTopicOperation`. To configure the underlying `ServiceBusProcessorClient` used by the inbound channel adapter, users can use `ServiceBusContainerProperties` instead.
-* Drop `CompletableFuture` support of `ServiceBusTemplate` and `DefaultMessageHandler` and support Reactor instead.
-* Add new API of `setDefaultEntityType` for `ServiceBusTemplate` to specify the entity type, which is required when no bean of `PropertiesSupplier&lt;String, ProducerProperties&gt;` is provided for the `ProducerProperties#entityType`.
-* Drop message header of `AzureHeaders.RAW_ID`. Please use `ServiceBusMessageHeaders.MESSAGE_ID` instead.
+* Drop `ServiceBusQueueInboundChannelAdapter` and `ServiceBusTopicInboundChannelAdapter`, and move the functionality to listen to a Service Bus queue/topic entity to ServiceBusInboundChannelAdapter.
+* Change the constructor from `ServiceBusQueueInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)` and `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)`.
+* Change the constructor from `ServiceBusTopicInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)` and `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)`.
+* Drop APIs `ServiceBusQueueOperation#setCheckpointConfig` and `ServiceBusTopicOperation#setCheckpointConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `ServiceBusContainerProperties#setAutoComplete` instead. To disable the auto-complete mode is equivalent to `MANUAL` checkpoint mode and to enable it will trigger the `RECORD` mode.
+* Drop APIs `ServiceBusQueueOperation#setClientConfig` and `ServiceBusTopicOperation#setClientConfig`. To configure the underlying `ServiceBusProcessorClient` used by the inbound channel adapter, users can use `ServiceBusContainerProperties` instead.
+* Drop `CompletableFuture` support in `ServiceBusTemplate` and `DefaultMessageHandler`, support `Reactor` instead.
+* Add new API of `ServiceBusTemplate#setDefaultEntityType` to specify the entity type, which is required when no bean of `PropertiesSupplier&lt;String, ProducerProperties&gt;` is provided for the `ProducerProperties#entityType`.
+* Drop message header `AzureHeaders.RAW_ID`. Please use `ServiceBusMessageHeaders.MESSAGE_ID` instead.
 
 .Class mapping from azure-spring-integration-servicebus to spring-integration-azure-servicebus
 [cols="<,<", options="header"]
@@ -1150,7 +1152,7 @@ All configuration property names changed the prefix from `spring.cloud.azure.sto
 ===== API Changes
 
 * Drop `StorageQueueOperation` and provide `StorageQueueTemplate` instead.
-* Do not support configuration of checkpoint mode in `StorageQueueTemplate`, only the `MANUAL` mode is supported.
+* Drop `checkpoint-mode` configuration in `StorageQueueTemplate`, only support the `MANUAL` mode.
 
 .Class mapping from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue
 [cols="<~,<~", options="header"]
@@ -1177,7 +1179,7 @@ version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 ===== API Changes
 
 * Drop `StorageQueueOperation` and provide `StorageQueueTemplate` instead.
-* Do not support configuration of checkpoint mode in `StorageQueueTemplate`, only the `MANUAL` mode is supported.
+* Drop `checkpoint-mode` configuration in `StorageQueueTemplate`, only support the `MANUAL` mode.
 
 .Class mapping from azure-spring-integration-storage-queue to spring-integration-azure-storage-queue
 [cols="<~,<~", options="header"]
@@ -1194,7 +1196,7 @@ version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 ==== From azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs
 This guide is intended to assist in the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-stream-binder-eventhubs[spring-cloud-azure-stream-binder-eventhubs] from
-version 2 of link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-stream-binder-eventhubs[spring-cloud-azure-stream-binder-eventhubs].
+version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-cloud-stream-binder-eventhubs[azure-spring-cloud-stream-binder-eventhubs].
 
 * Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
 * Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
@@ -1229,7 +1231,7 @@ Changes for the child entries for following prefix, please refer the following t
 |*spring.cloud.stream.eventhub.bindings.<binding-name>.consumer*.start-position |*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.initial-partition-event-position
 |===
 
-NOTE: The value type of the start position configuration is also changed. It's changed from an enum of `com.azure.spring.integration.core.api.StartPosition` to a `map` of `StartPositionProperties` for each partition. Thus, the key is the partition id, and the value is of `com.azure.spring.cloud.service.eventhubs.properties.StartPositionProperties` which includes properties of offset, sequence number, enqueued date time and whether inclusive.
+NOTE: The value type of the `start-position` configuration is also changed from an enum of `com.azure.spring.integration.core.api.StartPosition` to a `map` of `StartPositionProperties` for each partition. Thus, the key is the partition id, and the value is of `com.azure.spring.cloud.service.eventhubs.properties.StartPositionProperties` which includes properties of offset, sequence number, enqueued date time and whether inclusive.
 
 ====== Configuration migration examples
 To use the connection string for authentication and migrate the above mentioned properties, configuration changes are listed as below:
@@ -1307,6 +1309,8 @@ while other `Data` related roles are required for messaging operations, please r
 
 For authentication based on ARM, taking service principal as example, configuration migration is listed as below, where the assigned role should not change:
 
+Legacy configuration:
+
 [source,yaml]
 ----
 spring:
@@ -1339,7 +1343,7 @@ spring:
           resource-group: ${RESOURCE_GROUP}
 ----
 
-You can also migrate to authenticate and authorize with Azure AD directly without making a detour to ARM. Make sure to grant the security principal necessary `Data` roles for messaging operations. The configuration examples of the service principal and the manged identity are listed as below:
+You can also migrate to authenticate and authorize with Azure AD directly without making a detour to ARM. Make sure to grant the security principal necessary `Data` roles for messaging operations. The configuration examples of the service principal and the managed identity are listed as below:
 
 * With a service principal
 
@@ -1417,8 +1421,8 @@ IMPORTANT: The binder type is combined from `servicebus-queue` and `servicebus-t
 |*spring.cloud.azure*.resource-group|*spring.cloud.azure.servicebus*.resource.resource-group
 |*spring.cloud.azure.servicebus*.transport-type |*spring.cloud.azure.servicebus*.client.transport-type
 |*spring.cloud.azure.servicebus*.retry-options.retry-mode |*spring.cloud.azure.servicebus*.retry.mode
-|*spring.cloud.azure.servicebus*.retry-options.max-retries |*spring.cloud.azure.servicebus*.retry.exponential.max-retries or *spring.cloud.azure.servicebus*.retry.fixed.max-retries, should be configured according to *spring.cloud.azure.servicebus*.retry.mode
-|*spring.cloud.azure.servicebus*.retry-options.delay |*spring.cloud.azure.servicebus*.retry.exponential.base-delay or *spring.cloud.azure.servicebus*.retry.fixed.delay, should be configured according to *spring.cloud.azure.servicebus*.retry.mode
+|*spring.cloud.azure.servicebus*.retry-options.max-retries |*spring.cloud.azure.servicebus*.retry.exponential.max-retries or *spring.cloud.azure.servicebus*.retry.fixed.max-retries, should be configured depending on *spring.cloud.azure.servicebus*.retry.mode=*fixed* or *exponential*
+|*spring.cloud.azure.servicebus*.retry-options.delay |*spring.cloud.azure.servicebus*.retry.exponential.base-delay or *spring.cloud.azure.servicebus*.retry.fixed.delay, should be configured depending on *spring.cloud.azure.servicebus*.retry.mode=*fixed* or *exponential*
 |*spring.cloud.azure.servicebus*.retry-options.max-delay |*spring.cloud.azure.servicebus*.retry.exponential.max-delay
 |*spring.cloud.azure.servicebus*.retry-options.try-timeout |*spring.cloud.azure.servicebus*.retry.try-timeout
 |*spring.cloud.stream.servicebus.queue*.bindings.* |*spring.cloud.stream.servicebus*.bindings.*
@@ -1429,7 +1433,9 @@ IMPORTANT: The binder type is combined from `servicebus-queue` and `servicebus-t
 |*spring.cloud.stream.servicebus.topic*.bindings.<binding-name>.consumer.*checkpoint-mode* |*spring.cloud.stream.servicebus*.bindings.<binding-name>.consumer.*auto-complete*
 |===
 
-NOTE: The concurrency property will replace maxConcurrentSessions when sessionsEnabled is `true` and maxConcurrentCalls when sessionsEnabled is `false`. Enabling auto-complete is equal to `RECORD` checkpoint mode, and oppositely the `MANUAL` mode.
+NOTE: The concurrency property will be replaced by the maxConcurrentSessions when sessionsEnabled is `true` and the maxConcurrentCalls when sessionsEnabled is `false`.
+
+NOTE: Enabling auto-complete is equal to `RECORD` checkpoint mode, and oppositely the `MANUAL` mode.
 
 ====== Configuration migration examples
 
@@ -1529,7 +1535,7 @@ spring:
           resource-group: ${SERVICEBUS_RESOURCE_GROUP}
 ----
 
-You can also migrate to authenticate and authorize with Azure AD directly without making a detour to ARM. Make sure to grant the security principal necessary `Data` roles for messaging operations. The configuration examples of the service principal and the manged identity are listed as below:
+You can also migrate to authenticate and authorize with Azure AD directly without making a detour to ARM. Make sure to grant the security principal necessary `Data` roles for messaging operations. The configuration examples of the service principal and the managed identity are listed as below:
 
 * With a service principal
 
@@ -1564,7 +1570,7 @@ spring:
 [#api-spring-cloud-azure-stream-binder-servicebus]
 ===== API Changes
 
-* Drop message header of `AzureHeaders.RAW_ID`. Please use `ServiceBusMessageHeaders.MESSAGE_ID` instead.
+* Drop message header `AzureHeaders.RAW_ID`. Please use `ServiceBusMessageHeaders.MESSAGE_ID` instead.
 
 .Class mapping from azure-spring-cloud-stream-binder-servicebus to spring-cloud-azure-stream-binder-servicebus
 [cols="<~,<~", options="header"]
