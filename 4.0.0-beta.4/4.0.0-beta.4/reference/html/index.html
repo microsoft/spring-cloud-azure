@@ -230,8 +230,8 @@ window.onload = function() {
 </li>
 <li><a href="#spring-security-support">11. Spring Security Support</a>
 <ul class="sectlevel2">
-<li><a href="#spring-security-with-azure-ad">11.1. Spring Security With Azure AD</a></li>
-<li><a href="#spring-security-with-azure-ad-b2c">11.2. Spring Security With Azure AD B2C</a></li>
+<li><a href="#spring-security-with-azure-active-directory">11.1. Spring Security With Azure Active Directory</a></li>
+<li><a href="#spring-security-with-azure-active-directory-b2c">11.2. Spring Security With Azure Active Directory B2C</a></li>
 </ul>
 </li>
 <li><a href="#spring-integration-support">12. Spring Integration Support</a>
@@ -294,7 +294,7 @@ window.onload = function() {
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>This doc is only for Spring Cloud Azure: <strong>4.0.0-beta.4</strong>. Please refer to <a href="https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Versions-Mapping">Spring Versions Mapping</a> to get more information about supported versions.</p>
+<p>This document is only for Spring Cloud Azure: <strong>4.0.0-beta.4</strong>. Please refer to <a href="https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Versions-Mapping">Spring Versions Mapping</a> to get more information about supported versions.</p>
 </div>
 <div class="paragraph">
 <p>&#169; 2016-2022 the original authors.</p>
@@ -320,7 +320,7 @@ window.onload = function() {
 <h2 id="getting-help"><a class="anchor" href="#getting-help"></a><a class="link" href="#getting-help">1. Getting Help</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>If you have any questions about this doc, please ask by creating GitHub issue. And Pull Request is welcome.</p>
+<p>If you have any questions about this document, please ask by creating GitHub issues. And Pull Request is welcome.</p>
 </div>
 <table class="tableblock frame-all grid-all fit-content stretch">
 <caption class="title">Table 1. GitHub repositories</caption>
@@ -360,7 +360,7 @@ window.onload = function() {
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-To learn how to migration to 4.0, please check <a href="appendix.html#migration-guide-for-4-0">the Appendix page</a>.
+To learn how to migrate to 4.0, please check <a href="appendix.html#migration-guide-for-4-0">the Appendix page</a>.
 </td>
 </tr>
 </table>
@@ -368,7 +368,7 @@ To learn how to migration to 4.0, please check <a href="appendix.html#migration-
 <div class="sect2">
 <h3 id="unified-development-experience"><a class="anchor" href="#unified-development-experience"></a><a class="link" href="#unified-development-experience">2.1. Unified Development Experience</a></h3>
 <div class="paragraph">
-<p>We constantly challenge ourselves on how we can make things more consistent and easier to understand, so our customers are not confronted with haphazard development choices. This is a long and self-evolving journey as consistency is relative and there will be things that are outside our control. We now humbly take another step in this direction to improve to our developer experience by unifying project name, artifact ID and properties.</p>
+<p>We constantly challenge ourselves on how we can make things more consistent and easier to understand, so our customers are not confronted with haphazard development choices. This is a long and self-evolving journey as consistency is relative and there will be things that are outside our control. We now humbly take another step in this direction to improve our developer experience by unifying project name, artifact ID and properties.</p>
 </div>
 </div>
 <div class="sect2">
@@ -435,7 +435,7 @@ To learn how to migration to 4.0, please check <a href="appendix.html#migration-
 <h2 id="migration-guide-for-4-0"><a class="anchor" href="#migration-guide-for-4-0"></a><a class="link" href="#migration-guide-for-4-0">3. Migration Guide for 4.0</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>To learn how to migration to 4.0, please check <a href="appendix.html#migration-guide-for-4-0">the Appendix page</a>.</p>
+<p>To learn how to migrate to 4.0, please check <a href="appendix.html#migration-guide-for-4-0">the Appendix page</a>.</p>
 </div>
 </div>
 </div>
@@ -640,7 +640,7 @@ To learn how to migration to 4.0, please check <a href="appendix.html#migration-
 <h2 id="configuration"><a class="anchor" href="#configuration"></a><a class="link" href="#configuration">5. Configuration</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Most of Azure SDKs could be divided into two categories by transport type, HTTP-based and AMQP-based. There are properties that are common to all SDKs such as authentication principals and Azure environment settings. Or common to HTTP-based clients, such as logging level to log http requests and responses. Spring Cloud Azure 4.0 provides five common categories of configuration properties, which could be specified to each Azure service.</p>
+<p>Most of Azure SDKs could be divided into two categories by transport type, HTTP-based and AMQP-based. There are properties that are common to all SDKs such as authentication principals and Azure environment settings. Or common to HTTP-based clients, such as logging level to log HTTP requests and responses. Spring Cloud Azure 4.0 provides five common categories of configuration properties, which could be specified to each Azure service.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 6. Service common properties</caption>
@@ -849,7 +849,7 @@ Please refer to <a href="index.html#authorize-access-with-azure-active-directory
 <p>A common challenge for developers is the management of secrets and credentials used to secure communication between different components making up a solution. Managed identities eliminate the need for developers to manage credentials. Managed identities provide an identity for applications to use when connecting to resources that support Azure Active Directory (Azure AD) authentication. Applications may use the managed identity to obtain Azure AD tokens. For example, an application may use a managed identity to access resources like Azure Key Vault where developers can store credentials in a secure manner or to access storage accounts.</p>
 </div>
 <div class="paragraph">
-<p>We encourage using manged identity instead of using connection string or key in your application for it&#8217;s more secure and will save the trouble of managing secrets and credentials. In this case, <code>DefaultAzureCredential</code> could better serve the scenario of developing locally using account information stored locally and deploying the application to Azure Cloud and using Manged Identity.</p>
+<p>We encourage using managed identity instead of using connection string or key in your application for it&#8217;s more secure and will save the trouble of managing secrets and credentials. In this case, <code>DefaultAzureCredential</code> could better serve the scenario of developing locally using account information stored locally and deploying the application to Azure Cloud and using Managed Identity.</p>
 </div>
 <div class="sect3">
 <h4 id="managed-identity-types"><a class="anchor" href="#managed-identity-types"></a><a class="link" href="#managed-identity-types">6.2.1. Managed Identity Types</a></h4>
@@ -897,7 +897,7 @@ Please refer to <a href="index.html#authorize-access-with-azure-active-directory
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-Please refer to <a href="https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview">What are managed identities for Azure resources?</a> for more details about manged identity.
+Please refer to <a href="https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview">What are managed identities for Azure resources?</a> for more details about managed identity.
 </td>
 </tr>
 </table>
@@ -910,9 +910,9 @@ Please refer to <a href="https://docs.microsoft.com/azure/active-directory/manag
 <p>Developers who want more control or whose scenario isn&#8217;t served by the <code>DefaultAzureCredential</code> or whose scenario isn&#8217;t served by the default settings should use other credential types.</p>
 </div>
 <div class="sect3">
-<h4 id="authentication-and-authorization-with-azure-ad"><a class="anchor" href="#authentication-and-authorization-with-azure-ad"></a><a class="link" href="#authentication-and-authorization-with-azure-ad">6.3.1. Authentication and Authorization with Azure AD</a></h4>
+<h4 id="authentication-and-authorization-with-azure-active-directory"><a class="anchor" href="#authentication-and-authorization-with-azure-active-directory"></a><a class="link" href="#authentication-and-authorization-with-azure-active-directory">6.3.1. Authentication and Authorization with Azure Active Directory</a></h4>
 <div class="paragraph">
-<p>With Azure AD, you can use Azure role-based access control (Azure RBAC) to grant permissions to a security principal, which may be a user, or an application service principal. When a security principal (a user, or an application) attempts to access an Azure resource, for example an Event Hubs resource, the request must be authorized. With Azure AD, access to a resource is a two-step process.</p>
+<p>With Azure AD, you can use Azure role-based access control (Azure RBAC) to grant permissions to a security principal, which may be a user or an application service principal. When a security principal (a user, or an application) attempts to access an Azure resource, for example, an Event Hubs resource, the request must be authorized. With Azure AD, access to a resource is a two-step process.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -925,7 +925,7 @@ Please refer to <a href="https://docs.microsoft.com/azure/active-directory/manag
 </ol>
 </div>
 <div class="sect4">
-<h5 id="authenticate-with-azure-ad"><a class="anchor" href="#authenticate-with-azure-ad"></a><a class="link" href="#authenticate-with-azure-ad">Authenticate with Azure AD</a></h5>
+<h5 id="authenticate-with-azure-active-directory"><a class="anchor" href="#authenticate-with-azure-active-directory"></a><a class="link" href="#authenticate-with-azure-active-directory">Authenticate with Azure Active Directory</a></h5>
 <div class="paragraph">
 <p>For applications want to connect to resources that support Azure AD authentication, below configurations could be set with prefix <code>spring.cloud.azure.credential</code> or <code>spring.cloud.azure.&lt;azure-service&gt;.credential</code>.</p>
 </div>
@@ -986,7 +986,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 </div>
 <div class="sect4">
-<h5 id="authorize-access-with-azure-active-directory"><a class="anchor" href="#authorize-access-with-azure-active-directory"></a><a class="link" href="#authorize-access-with-azure-active-directory">Authorize Access with Azure AD</a></h5>
+<h5 id="authorize-access-with-azure-active-directory"><a class="anchor" href="#authorize-access-with-azure-active-directory"></a><a class="link" href="#authorize-access-with-azure-active-directory">Authorize Access with Azure Active Directory</a></h5>
 <div class="paragraph">
 <p>The authorization step requires that one or more Azure roles be assigned to the security principal. The roles that are assigned to a security principal decide the permissions that the principal will have.</p>
 </div>
@@ -1753,8 +1753,15 @@ public class SampleApplication implements CommandLineRunner {
 <div class="ulist">
 <ul>
 <li>
-<p>Use <code>-</code> instead of <code>.</code> in secret name. <code>.</code> is not supported in secret name. If your application have property name which contain <code>.</code>, like <code>spring.datasource.url</code>, just replace <code>.</code> to <code>-</code> when save secret in Azure Key Vault. For example: Save <code>spring-datasource-url</code> in Azure Key Vault. In your application, you can still use <code>spring.datasource.url</code> to retrieve property value. <strong>NOTE</strong>: This method can not satisfy requirement like <code>spring.datasource-url</code>. When you save <code>spring-datasource-url</code> in Key Vault, only <code>spring.datasource.url</code> and <code>spring-datasource-url</code> is supported to retrieve property value, <code>spring.datasource-url</code> is not supported. To handle this case, please refer to the following option: Use property placeholders.</p>
+<p>Use <code>-</code> instead of <code>.</code> in secret name. <code>.</code> is not supported in secret name. If your application have property name which contains <code>.</code>, like <code>spring.datasource.url</code>, just replace <code>.</code> to <code>-</code> when save secret in Azure Key Vault. For example: Save <code>spring-datasource-url</code> in Azure Key Vault. In your application, you can still use <code>spring.datasource.url</code> to retrieve property value.</p>
 </li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>NOTE</strong>: This method can not satisfy requirement like <code>spring.datasource-url</code>. When you save <code>spring-datasource-url</code> in Key Vault, only <code>spring.datasource.url</code> and <code>spring-datasource-url</code> is supported to retrieve property value, <code>spring.datasource-url</code> is not supported. To handle this case, please refer to the following option: Use property placeholders.</p>
+</div>
+<div class="ulist">
+<ul>
 <li>
 <p>Use property placeholders. For example: setting this property in your application.properties: <code>property.with.special.character_=${propertyWithoutSpecialCharacter}</code>. The application will get  <code>propertyWithoutSpecialCharacter</code> key name and assign its value to <code>property.with.special.character_</code>.</p>
 </li>
@@ -2272,7 +2279,7 @@ public class CosmosSampleApplication implements CommandLineRunner {
 <h2 id="spring-security-support"><a class="anchor" href="#spring-security-support"></a><a class="link" href="#spring-security-support">11. Spring Security Support</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="spring-security-with-azure-ad"><a class="anchor" href="#spring-security-with-azure-ad"></a><a class="link" href="#spring-security-with-azure-ad">11.1. Spring Security With Azure AD</a></h3>
+<h3 id="spring-security-with-azure-active-directory"><a class="anchor" href="#spring-security-with-azure-active-directory"></a><a class="link" href="#spring-security-with-azure-active-directory">11.1. Spring Security With Azure Active Directory</a></h3>
 <div class="paragraph">
 <p>When you are building a web application, identity and access management will always be foundational pieces.</p>
 </div>
@@ -3362,7 +3369,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 </div>
 </div>
 <div class="sect2">
-<h3 id="spring-security-with-azure-ad-b2c"><a class="anchor" href="#spring-security-with-azure-ad-b2c"></a><a class="link" href="#spring-security-with-azure-ad-b2c">11.2. Spring Security With Azure AD B2C</a></h3>
+<h3 id="spring-security-with-azure-active-directory-b2c"><a class="anchor" href="#spring-security-with-azure-active-directory-b2c"></a><a class="link" href="#spring-security-with-azure-active-directory-b2c">11.2. Spring Security With Azure Active Directory B2C</a></h3>
 <div class="paragraph">
 <p>Azure Active Directory (Azure AD) B2C is an identity management service that enables you to customize and control how customers sign up, sign in, and manage their profiles when using your applications. Azure AD B2C enables these actions while protecting the identities of your customers at the same time.</p>
 </div>
@@ -6298,9 +6305,9 @@ public void producerError(Message&lt;?&gt; message) {
 </div>
 </div>
 <div class="sect4">
-<h5 id="multi-binder-support"><a class="anchor" href="#multi-binder-support"></a><a class="link" href="#multi-binder-support">Multi Binder Support</a></h5>
+<h5 id="multiple-binder-support"><a class="anchor" href="#multiple-binder-support"></a><a class="link" href="#multiple-binder-support">Multiple Binder Support</a></h5>
 <div class="paragraph">
-<p>Connection to mutiple Event Hubs namespaces is also supported by using multi binders.This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
+<p>Connection to multiple Event Hubs namespaces is also supported by using multiple binders.This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
 </div>
 <div class="paragraph">
 <p>Step 1. To use multiple binders of EventHubs, we need to configure below properties in application.yml</p>
@@ -6878,7 +6885,7 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 <p>The binder supports <a href="https://docs.microsoft.com/azure/service-bus-messaging/service-bus-partitioning">Service Bus partitioning</a> by allowing setting partition key and session id in the message header. This section introduces how to set partition key for messages.</p>
 </div>
 <div class="paragraph">
-<p>Spring Cloud Stream provides a partition key SpEL expression property <code>spring.cloud.stream.bindings.&lt;binding-name&gt;.producer.partition-key-expression</code>. For example, setting this properts as <code>&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;</code> and add a header called &lt;message-header-key&gt;. Spring Cloud Stream will use the value for this header when evaluating the above expression to assign a partition key. Here is an example producer code:</p>
+<p>Spring Cloud Stream provides a partition key SpEL expression property <code>spring.cloud.stream.bindings.&lt;binding-name&gt;.producer.partition-key-expression</code>. For example, setting this property as <code>&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;</code> and add a header called &lt;message-header-key&gt;. Spring Cloud Stream will use the value for this header when evaluating the above expression to assign a partition key. Here is an example producer code:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7016,9 +7023,9 @@ When setting the partiton key, the priority of message header is higher than Spr
 </div>
 </div>
 <div class="sect4">
-<h5 id="multi-binder-support-2"><a class="anchor" href="#multi-binder-support-2"></a><a class="link" href="#multi-binder-support-2">Multi Binder Support</a></h5>
+<h5 id="multiple-binder-support-2"><a class="anchor" href="#multiple-binder-support-2"></a><a class="link" href="#multiple-binder-support-2">Multiple Binder Support</a></h5>
 <div class="paragraph">
-<p>Connection to mutiple Service Bus namespaces is also supported by using multi binders. This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
+<p>Connection to multiple Service Bus namespaces is also supported by using multiple binders. This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
 </div>
 <div class="paragraph">
 <p>Step 1. To use multiple binders of ServiceBus, we need to configure below properties in application.yml</p>
@@ -7310,7 +7317,7 @@ Azure Service Bus connection string have to be provided which is to be parsed in
 </td>
 <td class="content">
 Spring JMS general configuration is omited for short.
-Please refer to <a href="https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/jms.html">Spring JMS Doc</a> for more details.
+Please refer to <a href="https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/jms.html">Spring JMS Document</a> for more details.
 </td>
 </tr>
 </table>
