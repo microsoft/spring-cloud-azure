@@ -7376,7 +7376,7 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-keyvault-secrets<
 <div class="paragraph">
 <p>This guide is intended to assist in the migration to
 <a href="https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-servicebus-jms">spring-cloud-azure-starter-servicebus-jms</a> from
-version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-servicebus-jms">spring-cloud-azure-starter-servicebus-jms</a>.</p>
+version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-servicebus-jms">azure-spring-boot-starter-servicebus-jms</a>.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -7729,13 +7729,13 @@ Event Hubs.</p>
 <p>Change the constructor from <code>EventHubInboundChannelAdapter(String, SubscribeByGroupOperation, String)</code> to <code>EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer)</code> and <code>EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer, ListenerMode)</code>.</p>
 </li>
 <li>
-<p>Change <code>CheckpointConfig</code> instantiation style to simple constructor instead of build style.</p>
+<p>Change <code>CheckpointConfig</code> instantiation style to the simple constructor instead of build style.</p>
 </li>
 <li>
 <p>Drop API <code>EventHubOperation#setCheckpointConfig</code>. To set the checkpoint configuration for the inbound channel adapter, users can call the method <code>EventHubsContainerProperties#setCheckpointConfig</code>.</p>
 </li>
 <li>
-<p>Drop API <code>EventHubOperation#setBatchConsumerConfig</code>. To set the checkpoint configuration for the inbound channel adapter, users can call the method <code>EventHubsContainerProperties#getBatch#setMaxSize</code> and <code>EventHubsContainerProperties#getBatch#setMaxWaitTime</code>.</p>
+<p>Drop API <code>EventHubOperation#setBatchConsumerConfig</code>. To set the batch-consuming configuration for the inbound channel adapter, users can call the two methods <code>EventHubsContainerProperties#getBatch#setMaxSize</code> and <code>EventHubsContainerProperties#getBatch#setMaxWaitTime</code> meanwhile.</p>
 </li>
 <li>
 <p>For the batch consuming mode, change the message header names converted from batched messages.</p>
@@ -7972,13 +7972,13 @@ Event Hubs.</p>
 <p>Change the constructor from <code>EventHubInboundChannelAdapter(String, SubscribeByGroupOperation, String)</code> to <code>EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer)</code> and <code>EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer, ListenerMode)</code>.</p>
 </li>
 <li>
-<p>Change <code>CheckpointConfig</code> instantiation style to simple constructor instead of build style.</p>
+<p>Change <code>CheckpointConfig</code> instantiation style to the simple constructor instead of build style.</p>
 </li>
 <li>
 <p>Drop API <code>EventHubOperation#setCheckpointConfig</code>. To set the checkpoint configuration for the inbound channel adapter, users can call the method <code>EventHubsContainerProperties#setCheckpointConfig</code>.</p>
 </li>
 <li>
-<p>Drop API <code>EventHubOperation#setBatchConsumerConfig</code>. To set the checkpoint configuration for the inbound channel adapter, users can call the method <code>EventHubsContainerProperties#getBatch#setMaxSize</code> and <code>EventHubsContainerProperties#getBatch#setMaxWaitTime</code>.</p>
+<p>Drop API <code>EventHubOperation#setBatchConsumerConfig</code>. To set the batch-consuming configuration for the inbound channel adapter, users can call the two methods <code>EventHubsContainerProperties#getBatch#setMaxSize</code> and <code>EventHubsContainerProperties#getBatch#setMaxWaitTime</code> meanwhile.</p>
 </li>
 <li>
 <p>For the batch consuming mode, change the message header names converted from batched messages.</p>
@@ -8136,11 +8136,11 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus</code>.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry-options.max-retries</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry.exponential.max-retries or <strong>spring.cloud.azure.servicebus</strong>.retry.fixed.max-retries, should be configured according to <strong>spring.cloud.azure.servicebus</strong>.retry.mode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry.exponential.max-retries or <strong>spring.cloud.azure.servicebus</strong>.retry.fixed.max-retries, should be configured depending on <strong>spring.cloud.azure.servicebus</strong>.retry.mode=<strong>fixed</strong> or <strong>exponential</strong></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry-options.delay</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry.exponential.base-delay or <strong>spring.cloud.azure.servicebus</strong>.retry.fixed.delay, should be configured according to <strong>spring.cloud.azure.servicebus</strong>.retry.mode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry.exponential.base-delay or <strong>spring.cloud.azure.servicebus</strong>.retry.fixed.delay, should be configured depending on <strong>spring.cloud.azure.servicebus</strong>.retry.mode=<strong>fixed</strong> or <strong>exponential</strong></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry-options.max-delay</p></td>
@@ -8161,25 +8161,28 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus</code>.</p>
 <p>Drop <code>ServiceBusQueueOperation</code> and <code>ServiceBusTopicOperation</code> with the subscribing function moved to class <code>ServiceBusMessageListenerContainer</code> and the sending function moved to <code>ServiceBusTemplate</code>.</p>
 </li>
 <li>
-<p>Drop <code>ServiceBusQueueInboundChannelAdapter</code> and <code>ServiceBusTopicInboundChannelAdapter</code>, and combine the function of listening to a Service Bus queue or topic entity to <code>ServiceBusInboundChannelAdapter</code>.</p>
+<p>Drop <code>ServiceBusQueueInboundChannelAdapter</code> and <code>ServiceBusTopicInboundChannelAdapter</code>, and move the functionality to listen to a Service Bus queue/topic entity to ServiceBusInboundChannelAdapter.</p>
 </li>
 <li>
-<p>Change the constructor from <code>ServiceBusXXXInboundChannelAdapter(String, SubscribeByGroupOperation, String)</code> to <code>ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)</code> and <code>ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)</code>.</p>
+<p>Change the constructor from <code>ServiceBusQueueInboundChannelAdapter(String, SubscribeByGroupOperation, String)</code> to <code>ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)</code> and <code>ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)</code>.</p>
 </li>
 <li>
-<p>Drop API <code>setCheckpointConfig</code> of ServiceBusTopicOperation or ServiceBusQueueOperation. To set the checkpoint configuration for the inbound channel adapter, users can call the method <code>ServiceBusContainerProperties#setAutoComplete</code> instead. To disable the auto-complete mode is equivalent to <code>MANUAL</code> checkpoint mode and to enable it will trigger the <code>RECORD</code> mode.</p>
+<p>Change the constructor from <code>ServiceBusTopicInboundChannelAdapter(String, SubscribeByGroupOperation, String)</code> to <code>ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)</code> and <code>ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)</code>.</p>
 </li>
 <li>
-<p>Drop API <code>setClientConfig</code> of <code>ServiceBusQueueOperation</code> and <code>ServiceBusTopicOperation</code>. To configure the underlying <code>ServiceBusProcessorClient</code> used by the inbound channel adapter, users can use <code>ServiceBusContainerProperties</code> instead.</p>
+<p>Drop APIs <code>ServiceBusQueueOperation#setCheckpointConfig</code> and <code>ServiceBusTopicOperation#setCheckpointConfig</code>. To set the checkpoint configuration for the inbound channel adapter, users can call the method <code>ServiceBusContainerProperties#setAutoComplete</code> instead. To disable the auto-complete mode is equivalent to <code>MANUAL</code> checkpoint mode and to enable it will trigger the <code>RECORD</code> mode.</p>
 </li>
 <li>
-<p>Drop <code>CompletableFuture</code> support of <code>ServiceBusTemplate</code> and <code>DefaultMessageHandler</code> and support Reactor instead.</p>
+<p>Drop APIs <code>ServiceBusQueueOperatio#setClientConfig</code> and <code>ServiceBusTopicOperation#setClientConfig</code>. To configure the underlying <code>ServiceBusProcessorClient</code> used by the inbound channel adapter, users can use <code>ServiceBusContainerProperties</code> instead.</p>
 </li>
 <li>
-<p>Add new API of <code>setDefaultEntityType</code> for <code>ServiceBusTemplate</code> to specify the entity type, which is required when no bean of <code>PropertiesSupplier&lt;String, ProducerProperties&gt;</code> is provided for the <code>ProducerProperties#entityType</code>.</p>
+<p>Drop <code>CompletableFuture</code> support in <code>ServiceBusTemplate</code> and <code>DefaultMessageHandler</code>, support <code>Reactor</code> instead.</p>
 </li>
 <li>
-<p>Drop message header of <code>AzureHeaders.RAW_ID</code>. Please use <code>ServiceBusMessageHeaders.MESSAGE_ID</code> instead.</p>
+<p>Add new API of <code>ServiceBusTemplate#setDefaultEntityType</code> to specify the entity type, which is required when no bean of <code>PropertiesSupplier&lt;String, ProducerProperties&gt;</code> is provided for the <code>ProducerProperties#entityType</code>.</p>
+</li>
+<li>
+<p>Drop message header <code>AzureHeaders.RAW_ID</code>. Please use <code>ServiceBusMessageHeaders.MESSAGE_ID</code> instead.</p>
 </li>
 </ul>
 </div>
@@ -8224,12 +8227,8 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus</code>.</p>
 </table>
 <div class="sect5">
 <h6 id="_sample_code_snippet_2"><a class="link" href="#_sample_code_snippet_2">Sample Code Snippet</a></h6>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>ServiceBusInboundChannelAdapter sample code:</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>1.ServiceBusInboundChannelAdapter sample code:</p>
 </div>
 <div class="paragraph">
 <p>Legacy code of using <code>ServiceBusQueueInboundChannelAdapter</code> or <code>ServiceBusTopicInboundChannelAdapter</code>:</p>
@@ -8303,12 +8302,8 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus</code>.</p>
 }</code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>DefaultMessageHandler sample code:</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>2.DefaultMessageHandler sample code:</p>
 </div>
 <div class="paragraph">
 <p>Legacy code, taking queue as example:</p>
@@ -8395,25 +8390,28 @@ version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 <p>Drop <code>ServiceBusQueueOperation</code> and <code>ServiceBusTopicOperation</code> with the subscribing function moved to class <code>ServiceBusMessageListenerContainer</code> and the sending function moved to <code>ServiceBusTemplate</code>.</p>
 </li>
 <li>
-<p>Drop <code>ServiceBusQueueInboundChannelAdapter</code> and <code>ServiceBusTopicInboundChannelAdapter</code>, and combine the function of listening to a Service Bus queue or topic entity to <code>ServiceBusInboundChannelAdapter</code>.</p>
+<p>Drop <code>ServiceBusQueueInboundChannelAdapter</code> and <code>ServiceBusTopicInboundChannelAdapter</code>, and move the functionality to listen to a Service Bus queue/topic entity to ServiceBusInboundChannelAdapter.</p>
 </li>
 <li>
-<p>Change the constructor from <code>ServiceBusXXXInboundChannelAdapter(String, SubscribeByGroupOperation, String)</code> to <code>ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)</code> and <code>ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)</code>.</p>
+<p>Change the constructor from <code>ServiceBusQueueInboundChannelAdapter(String, SubscribeByGroupOperation, String)</code> to <code>ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)</code> and <code>ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)</code>.</p>
 </li>
 <li>
-<p>Drop API <code>setCheckpointConfig</code> of ServiceBusTopicOperation or ServiceBusQueueOperation. To set the checkpoint configuration for the inbound channel adapter, users can call the method <code>ServiceBusContainerProperties#setAutoComplete</code> instead. To disable the auto-complete mode is equivalent to <code>MANUAL</code> checkpoint mode and to enable it will trigger the <code>RECORD</code> mode.</p>
+<p>Change the constructor from <code>ServiceBusTopicInboundChannelAdapter(String, SubscribeByGroupOperation, String)</code> to <code>ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)</code> and <code>ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)</code>.</p>
 </li>
 <li>
-<p>Drop API <code>setClientConfig</code> of <code>ServiceBusQueueOperation</code> and <code>ServiceBusTopicOperation</code>. To configure the underlying <code>ServiceBusProcessorClient</code> used by the inbound channel adapter, users can use <code>ServiceBusContainerProperties</code> instead.</p>
+<p>Drop APIs <code>ServiceBusQueueOperation#setCheckpointConfig</code> and <code>ServiceBusTopicOperation#setCheckpointConfig</code>. To set the checkpoint configuration for the inbound channel adapter, users can call the method <code>ServiceBusContainerProperties#setAutoComplete</code> instead. To disable the auto-complete mode is equivalent to <code>MANUAL</code> checkpoint mode and to enable it will trigger the <code>RECORD</code> mode.</p>
 </li>
 <li>
-<p>Drop <code>CompletableFuture</code> support of <code>ServiceBusTemplate</code> and <code>DefaultMessageHandler</code> and support Reactor instead.</p>
+<p>Drop APIs <code>ServiceBusQueueOperation#setClientConfig</code> and <code>ServiceBusTopicOperation#setClientConfig</code>. To configure the underlying <code>ServiceBusProcessorClient</code> used by the inbound channel adapter, users can use <code>ServiceBusContainerProperties</code> instead.</p>
 </li>
 <li>
-<p>Add new API of <code>setDefaultEntityType</code> for <code>ServiceBusTemplate</code> to specify the entity type, which is required when no bean of <code>PropertiesSupplier&lt;String, ProducerProperties&gt;</code> is provided for the <code>ProducerProperties#entityType</code>.</p>
+<p>Drop <code>CompletableFuture</code> support in <code>ServiceBusTemplate</code> and <code>DefaultMessageHandler</code>, support <code>Reactor</code> instead.</p>
 </li>
 <li>
-<p>Drop message header of <code>AzureHeaders.RAW_ID</code>. Please use <code>ServiceBusMessageHeaders.MESSAGE_ID</code> instead.</p>
+<p>Add new API of <code>ServiceBusTemplate#setDefaultEntityType</code> to specify the entity type, which is required when no bean of <code>PropertiesSupplier&lt;String, ProducerProperties&gt;</code> is provided for the <code>ProducerProperties#entityType</code>.</p>
+</li>
+<li>
+<p>Drop message header <code>AzureHeaders.RAW_ID</code>. Please use <code>ServiceBusMessageHeaders.MESSAGE_ID</code> instead.</p>
 </li>
 </ul>
 </div>
@@ -8528,7 +8526,7 @@ version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 <p>Drop <code>StorageQueueOperation</code> and provide <code>StorageQueueTemplate</code> instead.</p>
 </li>
 <li>
-<p>Do not support configuration of checkpoint mode in <code>StorageQueueTemplate</code>, only the <code>MANUAL</code> mode is supported.</p>
+<p>Drop <code>checkpoint-mode</code> configuration in <code>StorageQueueTemplate</code>, only support the <code>MANUAL</code> mode.</p>
 </li>
 </ul>
 </div>
@@ -8601,7 +8599,7 @@ version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 <p>Drop <code>StorageQueueOperation</code> and provide <code>StorageQueueTemplate</code> instead.</p>
 </li>
 <li>
-<p>Do not support configuration of checkpoint mode in <code>StorageQueueTemplate</code>, only the <code>MANUAL</code> mode is supported.</p>
+<p>Drop <code>checkpoint-mode</code> configuration in <code>StorageQueueTemplate</code>, only support the <code>MANUAL</code> mode.</p>
 </li>
 </ul>
 </div>
@@ -8651,7 +8649,7 @@ version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 <div class="paragraph">
 <p>This guide is intended to assist in the migration to
 <a href="https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-stream-binder-eventhubs">spring-cloud-azure-stream-binder-eventhubs</a> from
-version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-stream-binder-eventhubs">spring-cloud-azure-stream-binder-eventhubs</a>.</p>
+version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-spring-cloud-stream-binder-eventhubs">azure-spring-cloud-stream-binder-eventhubs</a>.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -8774,7 +8772,7 @@ The binder type is renamed from: <code>eventhub</code> to <code>eventhubs</code>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The value type of the start position configuration is also changed. It&#8217;s changed from an enum of <code>com.azure.spring.integration.core.api.StartPosition</code> to a <code>map</code> of <code>StartPositionProperties</code> for each partition. Thus, the key is the partition id, and the value is of <code>com.azure.spring.cloud.service.eventhubs.properties.StartPositionProperties</code> which includes properties of offset, sequence number, enqueued date time and whether inclusive.
+The value type of the <code>start-position</code> configuration is also changed from an enum of <code>com.azure.spring.integration.core.api.StartPosition</code> to a <code>map</code> of <code>StartPositionProperties</code> for each partition. Thus, the key is the partition id, and the value is of <code>com.azure.spring.cloud.service.eventhubs.properties.StartPositionProperties</code> which includes properties of offset, sequence number, enqueued date time and whether inclusive.
 </td>
 </tr>
 </table>
@@ -8861,6 +8859,9 @@ while other <code>Data</code> related roles are required for messaging operation
 <div class="paragraph">
 <p>For authentication based on ARM, taking service principal as example, configuration migration is listed as below, where the assigned role should not change:</p>
 </div>
+<div class="paragraph">
+<p>Legacy configuration:</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
@@ -8895,7 +8896,7 @@ while other <code>Data</code> related roles are required for messaging operation
 </div>
 </div>
 <div class="paragraph">
-<p>You can also migrate to authenticate and authorize with Azure AD directly without making a detour to ARM. Make sure to grant the security principal necessary <code>Data</code> roles for messaging operations. The configuration examples of the service principal and the manged identity are listed as below:</p>
+<p>You can also migrate to authenticate and authorize with Azure AD directly without making a detour to ARM. Make sure to grant the security principal necessary <code>Data</code> roles for messaging operations. The configuration examples of the service principal and the managed identity are listed as below:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -9073,11 +9074,11 @@ The binder type is combined from <code>servicebus-queue</code> and <code>service
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry-options.max-retries</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry.exponential.max-retries or <strong>spring.cloud.azure.servicebus</strong>.retry.fixed.max-retries, should be configured according to <strong>spring.cloud.azure.servicebus</strong>.retry.mode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry.exponential.max-retries or <strong>spring.cloud.azure.servicebus</strong>.retry.fixed.max-retries, should be configured depending on <strong>spring.cloud.azure.servicebus</strong>.retry.mode=<strong>fixed</strong> or <strong>exponential</strong></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry-options.delay</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry.exponential.base-delay or <strong>spring.cloud.azure.servicebus</strong>.retry.fixed.delay, should be configured according to <strong>spring.cloud.azure.servicebus</strong>.retry.mode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry.exponential.base-delay or <strong>spring.cloud.azure.servicebus</strong>.retry.fixed.delay, should be configured depending on <strong>spring.cloud.azure.servicebus</strong>.retry.mode=<strong>fixed</strong> or <strong>exponential</strong></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.retry-options.max-delay</p></td>
@@ -9120,7 +9121,19 @@ The binder type is combined from <code>servicebus-queue</code> and <code>service
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The concurrency property will replace maxConcurrentSessions when sessionsEnabled is <code>true</code> and maxConcurrentCalls when sessionsEnabled is <code>false</code>. Enabling auto-complete is equal to <code>RECORD</code> checkpoint mode, and oppositely the <code>MANUAL</code> mode.
+The concurrency property will be replaced by the maxConcurrentSessions when sessionsEnabled is <code>true</code> and the maxConcurrentCalls when sessionsEnabled is <code>false</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Enabling auto-complete is equal to <code>RECORD</code> checkpoint mode, and oppositely the <code>MANUAL</code> mode.
 </td>
 </tr>
 </table>
@@ -9231,7 +9244,7 @@ while other <code>Data</code> related roles are required for messaging operation
 </div>
 </div>
 <div class="paragraph">
-<p>You can also migrate to authenticate and authorize with Azure AD directly without making a detour to ARM. Make sure to grant the security principal necessary <code>Data</code> roles for messaging operations. The configuration examples of the service principal and the manged identity are listed as below:</p>
+<p>You can also migrate to authenticate and authorize with Azure AD directly without making a detour to ARM. Make sure to grant the security principal necessary <code>Data</code> roles for messaging operations. The configuration examples of the service principal and the managed identity are listed as below:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -9280,7 +9293,7 @@ while other <code>Data</code> related roles are required for messaging operation
 <div class="ulist">
 <ul>
 <li>
-<p>Drop message header of <code>AzureHeaders.RAW_ID</code>. Please use <code>ServiceBusMessageHeaders.MESSAGE_ID</code> instead.</p>
+<p>Drop message header <code>AzureHeaders.RAW_ID</code>. Please use <code>ServiceBusMessageHeaders.MESSAGE_ID</code> instead.</p>
 </li>
 </ul>
 </div>
