@@ -12394,7 +12394,7 @@ crash.</p>
 <div class="sect3">
 <h4 id="_from_azure_spring_boot_starter_active_directory_to_spring_cloud_azure_starter_active_directory"><a class="link" href="#_from_azure_spring_boot_starter_active_directory_to_spring_cloud_azure_starter_active_directory">From azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory</a></h4>
 <div class="paragraph">
-<p>This guide is intended to assist in the migration to
+<p>This guide is intended to assist the migration to
 <a href="https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-active-directory">spring-cloud-azure-starter-active-directory</a> from
 version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-active-directory">azure-spring-boot-starter-active-directory</a>.</p>
 </div>
@@ -12423,65 +12423,56 @@ version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 <div class="sect4">
 <h5 id="dependency-spring-cloud-azure-starter-active-directory"><a class="link" href="#dependency-spring-cloud-azure-starter-active-directory">Dependency Changes</a></h5>
 <div class="paragraph">
-<p>Some unnecessary dependencies were included in the legacy artifacts, which we have removed in the modern Spring Cloud
-Azure 4.0 libraries. Please make sure add the removed dependencies manually to your project to prevent unintentionally
-crash.</p>
+<p>Some unnecessary dependencies in the legacy artifact have been removed since the modern Spring Cloud
+Azure 4.0 library. Please add these removed dependencies to your project to prevent unintentional crash.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. Removed dependencies of spring-cloud-azure-starter-active-directory</caption>
+<caption class="title">Table 4. Removed Dependencies</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Removed dependencies</th>
+<th class="tableblock halign-left valign-top">Removed Dependency</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.fasterxml.jackson.core:jackson-databind</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Please include the jackson databind dependency if you want to use Jackson Databind.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Please add this dependency to your project if needed.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">io.projectreactor.netty:reactor-netty</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Please include the reactor netty dependency if you want to use Reactor Netty.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Please add this dependency to your project if needed.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.boot:spring-boot-starter-validation</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Please include the validation starter if you want to use Hibernate Validator.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Please add this dependency to your project if needed.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">org.springframework.boot:spring-boot-starter-webflux</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Please include the webflux starter if you want to use Web Flux.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Please add this dependency to your project if needed.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="sect4">
 <h5 id="configuration-spring-cloud-azure-starter-active-directory"><a class="link" href="#configuration-spring-cloud-azure-starter-active-directory">SDK Configuration Changes</a></h5>
+<div class="paragraph">
+<p>This section includes the changes about the properties added, removed and changed.</p>
+</div>
 <div class="olist arabic">
+<div class="title">The following two points are the main to pay your attention to:</div>
 <ol class="arabic">
 <li>
-<p>All configuration property names changed the prefix from <code>azure.activedirectory</code> to <code>spring.cloud.azure.active-directory</code>.</p>
+<p>All configuration property names' prefix changed from <code>azure.activedirectory</code> to <code>spring.cloud.azure.active-directory</code>.</p>
 </li>
 <li>
-<p>New property <code>spring.cloud.azure.active-directory.enabled=true</code> is added to allow enable / disable AAD related features. The default value is false.</p>
+<p>New property <code>spring.cloud.azure.active-directory.enabled=true</code> is added to enable/disable AAD related features. The default value is <code>false</code>.</p>
 </li>
 </ol>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-If you&#8217;re using the new <code>spring-cloud-azure-starter-active-directory</code>, you have to specify the <code>spring.cloud.azure.active-directory.enabled</code> to true, even if the starter is included in classpath.
-</td>
-</tr>
-</table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 5. Property mapping from azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory</caption>
@@ -12598,6 +12589,54 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-active-directory<
 </tr>
 </tbody>
 </table>
+<div class="ulist">
+<div class="title">The value type of the following properties is changed from <code>long</code> to <code>Duration</code>:</div>
+<ul>
+<li>
+<p><code>jwt-connect-timeout</code></p>
+</li>
+<li>
+<p><code>jwt-read-timeout</code></p>
+</li>
+<li>
+<p><code>jwk-set-cache-lifespan</code></p>
+</li>
+<li>
+<p><code>jwk-set-cache-refresh-time</code>.</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">The following properties are removed:</div>
+<ul>
+<li>
+<p>azure.activedirectory.allow-telemetry</p>
+</li>
+<li>
+<p>azure.activedirectory.user-group.enable-full-list</p>
+</li>
+<li>
+<p>azure.activedirectory.graph-base-uri</p>
+</li>
+<li>
+<p>azure.activedirectory.graph-membership-uri</p>
+</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">The following properties are added:</div>
+<ul>
+<li>
+<p>spring.cloud.azure.active-directory.enabled</p>
+</li>
+<li>
+<p>spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint</p>
+</li>
+<li>
+<p>spring.cloud.azure.active-directory.user-group.use-transitive-members</p>
+</li>
+</ul>
+</div>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -12605,86 +12644,47 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-active-directory<
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
+The function of <code>azure.activedirectory.graph-membership-uri</code> has been replaced by 2 properties: <code>spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint</code> and <code>spring.cloud.azure.active-directory.user-group.use-transitive-members</code>. The first property is used to specify the host name, and the second a flag for using the url path: <code>v1.0/me/memberOf</code> or <code>v1.0/me/transitiveMemberOf</code>.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
-<p>The value type of the following properties is changed from <code>long</code> to <code>java.time.Duration</code>, they are <code>jwt-connect-timeout</code>, <code>jwt-read-timeout</code>, <code>jwk-set-cache-lifespan</code>, <code>jwk-set-cache-refresh-time</code>.</p>
+<p>Here are some examples of migration:</p>
 </div>
-</td>
-</tr>
-</table>
+<div class="exampleblock">
+<div class="title">Example 1. Case 1</div>
+<div class="content">
+<div class="paragraph">
+<div class="title">For legacy:</div>
+<p>azure.activedirectory.graph-membership-uri=https://graph.microsoft.com/v1.0/me/memberOf</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Removed properties from azure-spring-boot-starter-active-directory</caption>
-<colgroup>
-<col style="width: 100%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Removed properties</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.activedirectory.allow-telemetry</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.activedirectory.base-uri</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.activedirectory.user-group.enable-full-list</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">azure.activedirectory.graph-base-uri</p></td>
-</tr>
-</tbody>
-</table>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<code>azure.activedirectory.graph-membership-uri</code> has been replaced by 2 properties: <code>spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint</code> and <code>spring.cloud.azure.active-directory.user-group.use-transitive-members</code>. The first property used to specify the host name, and the second property used to specify the url path: <code>v1.0/me/memberOf</code> or <code>v1.0/me/transitiveMemberOf</code>. Here are some examples:
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<div class="title">For modern:</div>
+<p>spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=<code><a href="https://graph.microsoft.com/" class="bare">https://graph.microsoft.com/</a></code><br>
+spring.cloud.azure.active-directory.user-group.use-transitive-members=<code>false</code></p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. Examples of replacing <code>azure.activedirectory.graph-membership-uri</code></caption>
-<colgroup>
-<col style="width: 30%;">
-<col>
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Example value of azure.activedirectory.graph-membership-uri</th>
-<th class="tableblock halign-left valign-top">Modern configuration</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://graph.microsoft.com/v1.0/me/memberOf" class="bare">https://graph.microsoft.com/v1.0/me/memberOf</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=<code><a href="https://graph.microsoft.com/" class="bare">https://graph.microsoft.com/</a></code>, spring.cloud.azure.active-directory.user-group.use-transitive-members=<code>false</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://graph.microsoft.com/v1.0/me/transitiveMemberOf" class="bare">https://graph.microsoft.com/v1.0/me/transitiveMemberOf</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=<code><a href="https://graph.microsoft.com/" class="bare">https://graph.microsoft.com/</a></code>, spring.cloud.azure.active-directory.user-group.use-transitive-members=<code>true</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://microsoftgraph.chinacloudapi.cn/v1.0/me/memberOf" class="bare">https://microsoftgraph.chinacloudapi.cn/v1.0/me/memberOf</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=<code><a href="https://microsoftgraph.chinacloudapi.cn/" class="bare">https://microsoftgraph.chinacloudapi.cn/</a></code>,  spring.cloud.azure.active-directory.user-group.use-transitive-members=<code>false</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://microsoftgraph.chinacloudapi.cn/v1.0/me/transitiveMemberOf" class="bare">https://microsoftgraph.chinacloudapi.cn/v1.0/me/transitiveMemberOf</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=<code><a href="https://microsoftgraph.chinacloudapi.cn/" class="bare">https://microsoftgraph.chinacloudapi.cn/</a></code>, spring.cloud.azure.active-directory.user-group.use-transitive-members=<code>true</code></p></td>
-</tr>
-</tbody>
-</table>
+</div>
+</div>
+<div class="exampleblock">
+<div class="title">Example 2. Case 2</div>
+<div class="content">
+<div class="paragraph">
+<div class="title">For legacy:</div>
+<p>azure.activedirectory.graph-membership-uri=https://graph.microsoft.com/v1.0/me/transitiveMemberOf</p>
+</div>
+<div class="paragraph">
+<div class="title">For modern:</div>
+<p>spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=<code><a href="https://graph.microsoft.com/" class="bare">https://graph.microsoft.com/</a></code><br>
+spring.cloud.azure.active-directory.user-group.use-transitive-members=<code>true</code></p>
+</div>
+</div>
+</div>
 </div>
 <div class="sect4">
 <h5 id="api-spring-cloud-azure-starter-active-directory"><a class="link" href="#api-spring-cloud-azure-starter-active-directory">API Changes</a></h5>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. Class mapping from azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory</caption>
+<caption class="title">Table 6. Class mapping from azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory</caption>
 <colgroup>
 <col>
 <col>
@@ -12758,28 +12758,23 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-active-directory<
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Removed classes from azure-spring-boot-starter-active-directory</caption>
-<colgroup>
-<col style="width: 100%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Removed legacy class</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapp.AADHandleConditionalAccessFilter</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapi.validator.AADJwtAudienceValidator</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.azure.spring.aad.webapi.validator.AADJwtClaimValidator</p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>This section lists the removed classes from azure-spring-boot-starter-active-directory<br></p>
+</div>
+<div class="ulist">
+<div class="title">Removed legacy class</div>
+<ul>
+<li>
+<p>com.azure.spring.aad.webapp.AADHandleConditionalAccessFilter</p>
+</li>
+<li>
+<p>com.azure.spring.aad.webapi.validator.AADJwtAudienceValidator</p>
+</li>
+<li>
+<p>com.azure.spring.aad.webapi.validator.AADJwtClaimValidator</p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -12819,7 +12814,7 @@ Azure 4.0 libraries. Please make sure add the removed dependencies manually to y
 crash.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Removed dependencies of spring-cloud-azure-starter-active-directory-b2c</caption>
+<caption class="title">Table 7. Removed dependencies of spring-cloud-azure-starter-active-directory-b2c</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
@@ -12863,7 +12858,7 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-active-directory-
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. Property mapping from azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c</caption>
+<caption class="title">Table 8. Property mapping from azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
@@ -12946,7 +12941,7 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-active-directory-
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Removed properties from azure-spring-boot-starter-active-directory-b2c</caption>
+<caption class="title">Table 9. Removed properties from azure-spring-boot-starter-active-directory-b2c</caption>
 <colgroup>
 <col style="width: 100%;">
 </colgroup>
@@ -12982,7 +12977,7 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-active-directory-
 <div class="sect4">
 <h5 id="api-spring-cloud-azure-starter-active-directory-b2c"><a class="link" href="#api-spring-cloud-azure-starter-active-directory-b2c">API Changes</a></h5>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Class mapping from azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c</caption>
+<caption class="title">Table 10. Class mapping from azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c</caption>
 <colgroup>
 <col>
 <col>
@@ -13061,7 +13056,7 @@ version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 <p>All configuration property names changed the prefix from <code>azure.cosmos</code> to <code>spring.cloud.azure.cosmos</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Property mapping from azure-spring-boot-starter-cosmos to spring-cloud-azure-starter-data-cosmos</caption>
+<caption class="title">Table 11. Property mapping from azure-spring-boot-starter-cosmos to spring-cloud-azure-starter-data-cosmos</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
@@ -13145,7 +13140,7 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-keyvault-secrets<
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Property mapping from azure-spring-boot-starter-keyvault-secrets to spring-cloud-azure-starter-keyvault-secrets</caption>
+<caption class="title">Table 12. Property mapping from azure-spring-boot-starter-keyvault-secrets to spring-cloud-azure-starter-keyvault-secrets</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
@@ -13204,7 +13199,7 @@ If you&#8217;re using the new <code>spring-cloud-azure-starter-keyvault-secrets<
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Removed properties from spring-cloud-azure-starter-keyvault-secrets</caption>
+<caption class="title">Table 13. Removed properties from spring-cloud-azure-starter-keyvault-secrets</caption>
 <colgroup>
 <col style="width: 100%;">
 </colgroup>
@@ -13314,7 +13309,7 @@ version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 <p>All configuration property names changed the prefix from <code>azure.storage</code> to <code>spring.cloud.azure.storage.blob</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. Property mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</caption>
+<caption class="title">Table 14. Property mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
@@ -13344,7 +13339,7 @@ version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 <div class="sect4">
 <h5 id="api-spring-cloud-azure-starter-storage-blob"><a class="link" href="#api-spring-cloud-azure-starter-storage-blob">API Changes</a></h5>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</caption>
+<caption class="title">Table 15. Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob</caption>
 <colgroup>
 <col>
 <col>
@@ -13407,7 +13402,7 @@ version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 <p>All configuration property names changed the prefix from <code>azure.storage</code> to <code>spring.cloud.azure.storage.fileshare</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. Property mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</caption>
+<caption class="title">Table 16. Property mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
@@ -13437,7 +13432,7 @@ version 3 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 <div class="sect4">
 <h5 id="api-spring-cloud-azure-starter-storage-file-share"><a class="link" href="#api-spring-cloud-azure-starter-storage-file-share">API Changes</a></h5>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</caption>
+<caption class="title">Table 17. Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share</caption>
 <colgroup>
 <col>
 <col>
@@ -13512,7 +13507,7 @@ Configuration prefix has been changed from <code>spring.cloud.azure.eventhub</co
 <p>Changes for the child entries for this prefix, please refer the following tables:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. Property mapping from azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs</caption>
+<caption class="title">Table 18. Property mapping from azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
@@ -13659,7 +13654,7 @@ Event Hubs.</p>
 </ul>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. Class mapping from azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs</caption>
+<caption class="title">Table 19. Class mapping from azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs</caption>
 <colgroup>
 <col>
 <col>
@@ -13902,7 +13897,7 @@ Event Hubs.</p>
 </ul>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. Class mapping from azure-spring-integration-eventhubs to spring-integration-azure-eventhubs</caption>
+<caption class="title">Table 20. Class mapping from azure-spring-integration-eventhubs to spring-integration-azure-eventhubs</caption>
 <colgroup>
 <col>
 <col>
@@ -13982,7 +13977,7 @@ version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 the prefix remains to be as <code>spring.cloud.azure.servicebus</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. Property mapping from azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus</caption>
+<caption class="title">Table 21. Property mapping from azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
@@ -14059,7 +14054,7 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus</code>.</p>
 </ul>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. Class mapping from azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus</caption>
+<caption class="title">Table 22. Class mapping from azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14288,7 +14283,7 @@ version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 </ul>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 26. Class mapping from azure-spring-integration-servicebus to spring-integration-azure-servicebus</caption>
+<caption class="title">Table 23. Class mapping from azure-spring-integration-servicebus to spring-integration-azure-servicebus</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -14363,7 +14358,7 @@ version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 <p>All configuration property names changed the prefix from <code>spring.cloud.azure.storage</code> to <code>spring.cloud.azure.storage.queue</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 27. Property mapping from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue</caption>
+<caption class="title">Table 24. Property mapping from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
@@ -14403,7 +14398,7 @@ version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 </ul>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 28. Class mapping from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue</caption>
+<caption class="title">Table 25. Class mapping from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue</caption>
 <colgroup>
 <col>
 <col>
@@ -14476,7 +14471,7 @@ version 2 of <a href="https://search.maven.org/artifact/com.azure.spring/azure-s
 </ul>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 29. Class mapping from azure-spring-integration-storage-queue to spring-integration-azure-storage-queue</caption>
+<caption class="title">Table 26. Class mapping from azure-spring-integration-storage-queue to spring-integration-azure-storage-queue</caption>
 <colgroup>
 <col>
 <col>
@@ -14575,7 +14570,7 @@ The binder type is renamed from: <code>eventhub</code> to <code>eventhubs</code>
 <p>Changes for the child entries for following prefix, please refer the following table:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. Property mapping from azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs</caption>
+<caption class="title">Table 27. Property mapping from azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
@@ -14815,7 +14810,7 @@ while other <code>Data</code> related roles are required for messaging operation
 <div class="sect4">
 <h5 id="api-spring-cloud-azure-stream-binder-eventhubs"><a class="link" href="#api-spring-cloud-azure-stream-binder-eventhubs">API Changes</a></h5>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 31. Class mapping from azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs</caption>
+<caption class="title">Table 28. Class mapping from azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs</caption>
 <colgroup>
 <col>
 <col>
@@ -14901,7 +14896,7 @@ The binder type is combined from <code>servicebus-queue</code> and <code>service
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 32. New configuration properties of spring-cloud-azure-stream-binder-servicebus</caption>
+<caption class="title">Table 29. New configuration properties of spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
@@ -14920,7 +14915,7 @@ The binder type is combined from <code>servicebus-queue</code> and <code>service
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 33. Property mapping from azure-spring-cloud-stream-binder-servicebus-* to spring-cloud-azure-stream-binder-servicebus</caption>
+<caption class="title">Table 30. Property mapping from azure-spring-cloud-stream-binder-servicebus-* to spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
 <col style="width: 30%;">
 <col>
@@ -15170,7 +15165,7 @@ while other <code>Data</code> related roles are required for messaging operation
 </ul>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 34. Class mapping from azure-spring-cloud-stream-binder-servicebus to spring-cloud-azure-stream-binder-servicebus</caption>
+<caption class="title">Table 31. Class mapping from azure-spring-cloud-stream-binder-servicebus to spring-cloud-azure-stream-binder-servicebus</caption>
 <colgroup>
 <col>
 <col>
