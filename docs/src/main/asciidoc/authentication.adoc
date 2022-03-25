@@ -25,8 +25,8 @@ az identity create -g myResourceGroup -n myUserAssignedIdentity
 Connecting to Azure app configuration with any authentication method other connection string requires three steps to setup.
 
 1. Adding the Identity to the resource connecting to your App Configuration store
-1. Adding the required information to your client application.
-1. Authorizing the Identity to use App Configuration.
+2. Adding the required information to your client application.
+3. Authorizing the Identity to use App Configuration.
 
 For user assigned, the identity needs to be added to the azure resource. How the user assigned identity is added varies between resources so you will need to check the specific docs of that resource.
 
@@ -65,7 +65,7 @@ az role assignment  create --role "App Configuration Data Reader" --assignee <yo
 
 === Token Credential
 
-To authenticate with any other method supported by the [Azure Identity Library](https://github.com/Azure/azure-sdk-for-java/tree/azure-identity_1.3.6/sdk/identity/azure-identity), you can use `AppConfigurationCredentialProvider`. `AppConfigurationCredentialProvider` allows you to dynamically return any `TokenCredential` for any given URI to connect to your Configuration stores.
+To authenticate with any other method supported by the https://github.com/Azure/azure-sdk-for-java/tree/azure-identity_1.3.6/sdk/identity/azure-identity[Azure Identity Library], you can use `AppConfigurationCredentialProvider`. `AppConfigurationCredentialProvider` allows you to dynamically return any `TokenCredential` for any given URI to connect to your Configuration stores.
 
 [source,java,indent=0]
 ----
