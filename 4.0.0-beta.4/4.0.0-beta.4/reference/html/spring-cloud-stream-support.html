@@ -641,10 +641,10 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
   cloud:
     azure:
       credential:
-        client-id: ${SERVICE_PRINCIPAL_ID}
-        client-secret: ${SERVICE_PRINCIPAL_SECRET}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
       profile:
-        tenant-id: ${TENANT_ID}
+        tenant-id: ${AZURE_TENANT_ID}
       eventhubs:
         namespace: ${EVENTHUB_NAMESPACE}
         processor:
@@ -1410,10 +1410,10 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
   cloud:
     azure:
       credential:
-        client-id: ${CLIENT_ID}
-        client-secret: ${CLIENT_SECRET}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
       profile:
-        tenant-id: ${TENANT_ID}
+        tenant-id: ${AZURE_TENANT_ID}
       servicebus:
         namespace: ${SERVICEBUS_NAMESPACE}
     stream:

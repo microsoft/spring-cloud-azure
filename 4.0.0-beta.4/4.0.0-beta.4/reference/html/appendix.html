@@ -197,11 +197,7 @@ window.onload = function() {
 <li><a href="#_library_changes">Library Changes</a></li>
 </ul>
 </li>
-<li><a href="#_known_issues">Appendix C: Known Issues</a>
-<ul class="sectlevel2">
-<li><a href="#_error_logs_when_using_defaultazurecredential">Error Logs When Using Defaultazurecredential</a></li>
-</ul>
-</li>
+<li><a href="#_known_issues">Appendix C: Known Issues</a></li>
 </ul>
 </div>
 </div>
@@ -6674,7 +6670,7 @@ window.onload = function() {
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.compatibility-verifier.enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable the Spring Cloud Azure compatibility verifier.</p></td>
 </tr>
 <tr>
@@ -12233,7 +12229,7 @@ configurations can be divided into five categories:</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Check <a href="appendix.html">here</a> for a full list of configurations.</p>
+<p>Check <a href="appendix.html#_global_properties">Global Properties</a> for a full list of global configurations.</p>
 </div>
 </div>
 <div class="sect3">
@@ -14734,9 +14730,9 @@ while other <code>Data</code> related roles are required for messaging operation
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
     azure:
-      client-id: ${CLIENT_ID}
-      client-secret: ${CLIENT_SECRET}
-      tenant-id: ${TENANT_ID}
+      client-id: ${AZURE_CLIENT_ID}
+      client-secret: ${AZURE_CLIENT_SECRET}
+      tenant-id: ${AZURE_TENANT_ID}
       resource-group: ${EVENTHUB_RESOURCE_GROUP}
       eventhub:
         namespace: ${EVENTHUB_NAMESPACE}</code></pre>
@@ -14751,11 +14747,11 @@ while other <code>Data</code> related roles are required for messaging operation
   cloud:
     azure:
       credential:
-        client-id: ${CLIENT_ID}
-        client-secret: ${CLIENT_SECRET}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
       profile:
-        tenant-id: ${TENANT_ID}
-        subscription-id: ${SUBSCRIPTION_ID}
+        tenant-id: ${AZURE_TENANT_ID}
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
       eventhubs:
         namespace: ${EVENTHUB_NAMESPACE}
         resource:
@@ -14778,10 +14774,10 @@ while other <code>Data</code> related roles are required for messaging operation
   cloud:
     azure:
       credential:
-        client-id: ${CLIENT_ID}
-        client-secret: ${CLIENT_SECRET}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
       profile:
-        tenant-id: ${TENANT_ID}
+        tenant-id: ${AZURE_TENANT_ID}
       eventhubs:
         namespace: ${EVENTHUB_NAMESPACE}</code></pre>
 </div>
@@ -15082,9 +15078,9 @@ while other <code>Data</code> related roles are required for messaging operation
 <pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
   cloud:
     azure:
-      client-id: ${CLIENT_ID}
-      client-secret: ${CLIENT_SECRET}
-      tenant-id: ${TENANT_ID}
+      client-id: ${AZURE_CLIENT_ID}
+      client-secret: ${AZURE_CLIENT_SECRET}
+      tenant-id: ${AZURE_TENANT_ID}
       resource-group: ${SERVICEBUS_RESOURCE_GROUP}
       servicebus:
         namespace: ${SERVICEBUS_NAMESPACE}</code></pre>
@@ -15099,11 +15095,11 @@ while other <code>Data</code> related roles are required for messaging operation
   cloud:
     azure:
       credential:
-        client-id: ${CLIENT_ID}
-        client-secret: ${CLIENT_SECRET}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
       profile:
-        tenant-id: ${TENANT_ID}
-        subscription-id: ${SUBSCRIPTION_ID}
+        tenant-id: ${AZURE_TENANT_ID}
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
       servicebus:
         namespace: ${SERVICEBUS_NAMESPACE}
         resource:
@@ -15126,10 +15122,10 @@ while other <code>Data</code> related roles are required for messaging operation
   cloud:
     azure:
       credential:
-        client-id: ${CLIENT_ID}
-        client-secret: ${CLIENT_SECRET}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
       profile:
-        tenant-id: ${TENANT_ID}
+        tenant-id: ${AZURE_TENANT_ID}
       servicebus:
         namespace: ${SERVICEBUS_NAMESPACE}</code></pre>
 </div>
@@ -15206,12 +15202,7 @@ so annotations of <code>@AzureMessageListener</code>, <code>@AzureMessageListene
 <div class="sect1">
 <h2 id="_known_issues"><a class="link" href="#_known_issues">Appendix C: Known Issues</a></h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_error_logs_when_using_defaultazurecredential"><a class="link" href="#_error_logs_when_using_defaultazurecredential">Error Logs When Using Defaultazurecredential</a></h3>
-<div class="paragraph">
-<p>There could be some <code>ERROR</code> logs be printed out while the <code>DefaultAzureCredential</code> running the chain and trying to find the first available credential. It doesn&#8217;t mean the <code>DefaultAzureCredential</code> is broken or unavailable. Meanwhile, we&#8217;ll keep improving this logging experience.</p>
-</div>
-</div>
+
 </div>
 </div>
 </div>
