@@ -8,7 +8,7 @@ Azure offers a great platform to democratize your application development journe
 
 Spring Security has made it easy to secure your Spring based applications with powerful abstractions and extensible interfaces. However, as powerful as the Spring framework can be, it is not tailored to a specific identity provider.
 
-The `spring-cloud-azure-starter-active-directory` (`aad-starter` for short) provides the most optimal way to connect your `web application` to an Azure Active Directory(AAD for short) tenant and protect `resource server` with AAD. It uses the Oauth 2.0 protocol to protect `web applications` and `resource servers`.
+The `spring-cloud-azure-starter-active-directory` (`aad-starter` for short) provides the most optimal way to connect your `web application` to an Azure Active Directory (AAD for short) tenant and protect `resource server` with AAD. It uses the Oauth 2.0 protocol to protect `web applications` and `resource servers`.
 
 ==== Accessing a Web Application
 
@@ -79,7 +79,7 @@ Now start you application and access your application by browser, then you will 
     }
 ----
 
-====== Access Control by App Roles
+====== Authorize Access by App Roles
 
 * Step 1: Create Required Resources in Azure
 
@@ -105,7 +105,7 @@ class Demo {
 }
 ----
 
-====== Access Control by Group Name Or Group ID
+====== Authorize Access by Group Name Or Group ID
 
 * Step 1: Add related configuration properties.
 [source,yaml]
@@ -157,7 +157,16 @@ public class RoleController {
 }
 ----
 
-====== Use Azure China Instead of Azure Global
+====== Use National Azure Instead of Global Azure
+
+Now except global Azure cloud, Azure Active Directory is deployed in the following national clouds:
+
+ - Azure Government
+ - Azure China 21Vianet
+ - Azure Germany
+
+Here is a sample of you want to use Azure China 21Vianet.
+
 [source,yaml]
 ----
 spring:
@@ -168,7 +177,9 @@ spring:
         graph-base-uri: https://microsoftgraph.chinacloudapi.cn
 ----
 
-====== Support Setting Redirect-URI-Template
+You can refer to these MS doc to get more information from link:https://docs.microsoft.com/en-us/graph/deployments[MS docs about National cloud deployments].
+
+====== Configure Redirect URI Template
 
 Developers can customize the redirect-uri.
 
@@ -184,13 +195,13 @@ spring:
         redirect-uri-template: ${REDIRECT-URI-TEMPLATE}
 ----
 
-* Step 2: Update the configuration of the azure cloud platform in the portal.
+* Step 2: Update redirect-uri in Azure portal.
 
 image:https://user-images.githubusercontent.com/13167207/149296913-a4259df9-e0c3-4e38-8d4e-77ee845de4ad.png[web-application-config-redirect-uri]
 
 * Step 3: Update WebSecurityConfigurerAdapter
 
-After we set redirect-uri-template, we need to update `SecurityConfigurerAdapter`:
+After we set redirect-uri-template, we need to update `WebSecurityConfigurerAdapter`:
 
 [source,java]
 ----
@@ -283,7 +294,7 @@ Now start you application and access your application by browser, then you will 
 
 ===== Advanced Usages
 
-====== Client Credential type
+====== Client Credential Flow
 
 The default flow is link:https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow[authorization code flow], if you want to use link:https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow[client credentials flow], you can configure like this:
 
@@ -376,7 +387,7 @@ Sample project: link:https://github.com/Azure-Samples/azure-spring-boot-samples/
 
 ==== Accessing a Resource Server
 
-This scenario doesn't support login, just protect the server by validating the access_token. If the access token is valid, the server serves the request.
+This scenario doesn't support login, just protect the server by validating the access token. If the access token is valid, the server serves the request.
 
 ===== System Diagram
 
@@ -623,7 +634,7 @@ spring:
 
 ===== Define SecurityConfigurationAdapter
 
-Configure multiple HttpSecurity instances, `AadOAuth2SecurityMultiConfig` contain two security configurations for resource server and web application.
+Configure multiple HttpSecurity instances, `AadWebApplicationAndResourceServerConfig` contain two security configurations for resource server and web application.
 
 [source,java]
 ----
@@ -694,17 +705,17 @@ Here are some examples about how to use these properties:
 
 ===== Application Type
 
-This property(`spring.cloud.azure.active-directory.application-type`) is optional, its value can be inferred by dependencies, only `web_application_and_resource_server` must be configured manually: `spring.cloud.azure.active-directory.application-type=web_application_and_resource_server`.
+THe application type can be inferred from the dependencies: spring-security-oauth2-client or spring-security-oauth2-resource-server. If the inferred value is not the value you want, you can specify the application type. Here is the table about valid values and inferred value:
 
 .Application type of spring-cloud-azure-starter-active-directory
 [cols="4*", options="header"]
 |===
-|Has dependency: spring-security-oauth2-client |Has dependency: spring-security-oauth2-resource-server |Valid values of application type |Default value
+|Has dependency: spring-security-oauth2-client |Has dependency: spring-security-oauth2-resource-server |Valid values of application type |Inferred value
 |Yes |No |`web_application` |`web_application`
 |No |Yes |`resource_server` |`resource_server`
-|Yes |Yes |`web_application`,`resource_server`,`resource_server_with_obo`, `web_application_and_resource_server` |`resource_server_with_obo`
+|Yes |Yes |`web_application`, `resource_server`, `resource_server_with_obo`, `web_application_and_resource_server` |`resource_server_with_obo`
 |===
-`
+
 
 === Spring Security With Azure AD B2C
 
