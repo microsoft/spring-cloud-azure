@@ -263,5 +263,5 @@ Autowired UserRepository interface, then can do save, delete and find operations
 Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/cosmos[azure-spring-boot-samples] for more details.
 
 
-Apart from using the `spring-cloud-azure-starter-data-cosmos` library you can directly use `azure-spring-data-cosmos` library for more complex scenarios. Please refer to link:https://github.com/Azure/azure-sdk-for-java/tree/spring-cloud-azure-dependencies_{project-version}/sdk/cosmos/azure-spring-data-cosmos[Spring Data for Azure Cosmos DB] for more details.
+Apart from using the `spring-cloud-azure-starter-data-cosmos` library, you can directly use `azure-spring-data-cosmos` library for more complex scenarios. Please refer to link:https://github.com/Azure/azure-sdk-for-java/tree/spring-cloud-azure-dependencies_{project-version}/sdk/cosmos/azure-spring-data-cosmos[Spring Data for Azure Cosmos DB] for more details.
 
