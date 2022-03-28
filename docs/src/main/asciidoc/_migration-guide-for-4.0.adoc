@@ -512,7 +512,7 @@ This section lists the removed classes from azure-spring-boot-starter-active-dir
 
 ==== From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c
 
-This guide is intended to assist in the migration to
+This guide is intended to assist the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-active-directory-b2c[spring-cloud-azure-starter-active-directory-b2c] from
 version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-active-directory-b2c[azure-spring-boot-starter-active-directory-b2c].
 
@@ -532,7 +532,7 @@ Azure 4.0 library. Please add these removed dependencies to your project to prev
 .Removed Dependencies
 [cols="<30,<~", options="header"]
 |===
-|Removed dependency |Description
+|Removed Dependency |Description
 |org.springframework.boot:spring-boot-starter-validation |Please include the validation starter if you want to use Hibernate Validator.
 |===
 
@@ -641,6 +641,7 @@ This section includes the changes about the properties added, removed and change
 |===
 
 ==== From azure-spring-boot-starter-cosmos to spring-cloud-azure-starter-data-cosmos
+
 This guide is intended to assist the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-data-cosmos[spring-cloud-azure-starter-data-cosmos] from
 version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-cosmos[azure-spring-boot-starter-cosmos].
@@ -655,22 +656,35 @@ version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 [#configuration-spring-cloud-azure-starter-data-cosmos]
 ===== SDK Configuration Changes
 
-All configuration property names changed the prefix from `azure.cosmos` to `spring.cloud.azure.cosmos`.
+All configuration property names' prefix changed from `azure.cosmos` to `spring.cloud.azure.cosmos`.
 
 .Property mapping from azure-spring-boot-starter-cosmos to spring-cloud-azure-starter-data-cosmos
 [cols="<30,<~", options="header"]
 |===
 |Legacy properties |Morden properties
-|*azure.cosmos*.connection-mode |*spring.cloud.azure.cosmos*.connection-mode
-|*azure.cosmos*.consistency-level |*spring.cloud.azure.cosmos*.consistency-level
-|*azure.cosmos*.database |*spring.cloud.azure.cosmos*.database
-|*azure.cosmos*.key |*spring.cloud.azure.cosmos*.key
-|*azure.cosmos*.populate-query-metrics|*spring.cloud.azure.cosmos*.populate-query-metrics
-|*azure.cosmos*.uri |*spring.cloud.azure.cosmos*.endpoint
+
+|*azure.cosmos*.connection-mode
+|*spring.cloud.azure.cosmos*.connection-mode
+
+|*azure.cosmos*.consistency-level
+|*spring.cloud.azure.cosmos*.consistency-level
+
+|*azure.cosmos*.database
+|*spring.cloud.azure.cosmos*.database
+
+|*azure.cosmos*.key
+|*spring.cloud.azure.cosmos*.key
+
+|*azure.cosmos*.populate-query-metrics
+|*spring.cloud.azure.cosmos*.populate-query-metrics
+
+|*azure.cosmos*.uri
+|*spring.cloud.azure.cosmos*.endpoint
 |===
 
 ==== From azure-spring-boot-starter-keyvault-secrets to spring-cloud-azure-starter-keyvault-secrets
-This guide is intended to assist in the migration to
+
+This guide is intended to assist the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-keyvault-secrets[spring-cloud-azure-starter-keyvault-secrets] from
 version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-keyvault-secrets[azure-spring-boot-starter-keyvault-secrets].
 
@@ -684,33 +698,50 @@ version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 [#configuration-spring-cloud-azure-starter-keyvault-secrets]
 ===== SDK Configuration Changes
 
-IMPORTANT: If you're using the new `spring-cloud-azure-starter-keyvault-secrets`, you have to set `spring.cloud.azure.keyvault.secret.property-source-enabled=true` to enable property source.
+This section includes the changes about the properties added, removed and changed.
 
 .Property mapping from azure-spring-boot-starter-keyvault-secrets to spring-cloud-azure-starter-keyvault-secrets
 [cols="<30,<~", options="header"]
 |===
 | Legacy properties                        | Modern properties
-| *azure.keyvault*.case-sensitive-keys     | *spring.cloud.azure.keyvault.secret*.property-sources[n].case-sensitive
-| *azure.keyvault*.certificate-password    | *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-certificate-password
-| *azure.keyvault*.certificate-path        | *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-certificate-path
-| *azure.keyvault*.client-id               | *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-id
-| *azure.keyvault*.client-key              | *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-secret
-| *azure.keyvault*.enabled                 | *spring.cloud.azure.keyvault.secret*.enabled and *spring.cloud.azure.keyvault.secret*.property-source-enabled
-| *azure.keyvault*.order                   | Not supported anymore. Use the order in property-sources[n] instead.
-| *azure.keyvault*.refresh-interval        | *spring.cloud.azure.keyvault.secret*.property-sources[n].refresh-interval
-| *azure.keyvault*.secret-keys             | *spring.cloud.azure.keyvault.secret*.property-sources[n].secret-keys
-| *azure.keyvault*.tenant-id               | *spring.cloud.azure.keyvault.secret*.property-sources[n].profile.tenant-id
-| *azure.keyvault*.uri                     | *spring.cloud.azure.keyvault.secret*.property-sources[n].endpoint
+
+| *azure.keyvault*.case-sensitive-keys
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].case-sensitive
+
+| *azure.keyvault*.certificate-password
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-certificate-password
+
+| *azure.keyvault*.certificate-path
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-certificate-path
+
+| *azure.keyvault*.client-id
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-id
+
+| *azure.keyvault*.client-key
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-secret
+
+| *azure.keyvault*.enabled
+| *spring.cloud.azure.keyvault.secret*.enabled and *spring.cloud.azure.keyvault.secret*.property-source-enabled
+
+| *azure.keyvault*.refresh-interval
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].refresh-interval
+
+| *azure.keyvault*.secret-keys
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].secret-keys
+
+| *azure.keyvault*.tenant-id
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].profile.tenant-id
+
+| *azure.keyvault*.uri
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].endpoint
 |===
 
 .Removed properties from spring-cloud-azure-starter-keyvault-secrets
-[options="header"]
-|===
-| Removed property
-| azure.keyvault.allow-telemetry
-| azure.keyvault.order
-|===
+* azure.keyvault.allow-telemetry
+* azure.keyvault.order
 
+
+.The following points you should pay your attention to:
 . All configuration property names changed the prefix from `azure.keyvault` to `spring.cloud.azure.keyvault.secret`.
 . `spring.cloud.azure.keyvault.secret.enabled` is used to enable all Key Vault Secret features, include configure Key Vault secret client beans(like `SecretClient` and `SecretAsyncClient`) and add `KeyVaultPropertySource` in `ConfigurableEnvironment`.
 . `spring.cloud.azure.keyvault.secret.property-source-enabled` is used to enable all `KeyVaultPropertySource`. It will take effect only when `spring.cloud.azure.keyvault.secret.enabled=true`.
