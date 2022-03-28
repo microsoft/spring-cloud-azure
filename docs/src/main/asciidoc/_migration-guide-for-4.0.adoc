@@ -113,10 +113,10 @@ spring-cloud-azure-starter-storage-file-share |Split into two separate artifacts
 |azure-spring-boot |N/A |Deleted this artifact with merging all functionalities into the new `spring-cloud-azure-autoconfigure` artifact. 
 |azure-spring-cloud-autoconfigure |N/A |Deleted this artifact with merging all functionalities into the new `spring-cloud-azure-autoconfigure` artifact. 
 |azure-spring-cloud-context |N/A |Deleted this artifact with merging all functionalities into the new `spring-cloud-azure-autoconfigure` and `spring-cloud-azure-resourcemanager` artifacts. 
-|azure-spring-cloud-messaging |spring-messaging-azure | Deleted this artifact. The messaging listener annotation has been dropped.
+|azure-spring-cloud-messaging |spring-messaging-azure | Deleted this artifact. The functionalities of messaging listener annotations are under refactoring and not ready in 4.0 yet.
 |azure-spring-cloud-starter-cache |N/A |Deleted this artifact. For using redis, just add spring-boot-starter-data-redis, spring-boot-starter-cache, spring-cloud-azure-resourcemanager and spring-cloud-azure-starter. Please see <<redis-support.adoc#redis-support, Redis Support>> for more information about usage.
 |azure-spring-cloud-starter-eventhubs-kafka |N/A |Deleted this artifact. For using kafka, import the dependencies of spring-kafka, spring-cloud-azure-resourcemanager and spring-cloud-azure-starter. Please see <<kafka-support.adoc#kafka-support, Kafka Support>> for more information about usage.
-|azure-spring-cloud-starter-eventhubs |spring-cloud-azure-starter-integration-eventhubs |Renamed the artifact to add `integration`, indicating using Spring Integration with Event Hubs.
+|azure-spring-cloud-starter-eventhubs |spring-cloud-azure-starter-integration-eventhubs |Renamed the artifact to add `integration`, indicating using Spring Integration with Event Hubs. Remove the functionalities of messaging listener annotations.
 |azure-spring-cloud-starter-servicebus |spring-cloud-azure-starter-integration-servicebus |Renamed the artifact to add `integration`, indicating using Spring Integration with Service Bus.
 |azure-spring-cloud-starter-storage-queue |spring-cloud-azure-starter-integration-storage-queue |Renamed the artifact to add `integration`, indicating using Spring Integration with Storage Queue.
 |azure-spring-cloud-storage |N/A |Deleted this artifact with merging all functionalities into the new `spring-cloud-azure-autoconfigure` artifact. 
