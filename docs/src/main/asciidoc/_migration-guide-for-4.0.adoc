@@ -217,7 +217,7 @@ configurations can be divided into five categories:
 |*spring.cloud.azure*.retry |To configure the retry options apply to all Azure SDK clients. The retry options have supported part of the SDKs, there's no `spring.cloud.azure.cosmos.retry`.
 |===
 
-Check link:appendix.html[here] for a full list of configurations.
+Check link:appendix.html#_global_properties[Global Properties] for a full list of global configurations.
 
 ==== Each SDK Configurations
 
@@ -1420,9 +1420,9 @@ Legacy configuration:
 spring:
   cloud:
     azure:
-      client-id: ${CLIENT_ID}
-      client-secret: ${CLIENT_SECRET}
-      tenant-id: ${TENANT_ID}
+      client-id: ${AZURE_CLIENT_ID}
+      client-secret: ${AZURE_CLIENT_SECRET}
+      tenant-id: ${AZURE_TENANT_ID}
       resource-group: ${EVENTHUB_RESOURCE_GROUP}
       eventhub:
         namespace: ${EVENTHUB_NAMESPACE}
@@ -1436,11 +1436,11 @@ spring:
   cloud:
     azure:
       credential:
-        client-id: ${CLIENT_ID}
-        client-secret: ${CLIENT_SECRET}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
       profile:
-        tenant-id: ${TENANT_ID}
-        subscription-id: ${SUBSCRIPTION_ID}
+        tenant-id: ${AZURE_TENANT_ID}
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
       eventhubs:
         namespace: ${EVENTHUB_NAMESPACE}
         resource:
@@ -1457,10 +1457,10 @@ spring:
   cloud:
     azure:
       credential:
-        client-id: ${CLIENT_ID}
-        client-secret: ${CLIENT_SECRET}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
       profile:
-        tenant-id: ${TENANT_ID}
+        tenant-id: ${AZURE_TENANT_ID}
       eventhubs:
         namespace: ${EVENTHUB_NAMESPACE}
 ----
@@ -1612,9 +1612,9 @@ Legacy configuration:
 spring:
   cloud:
     azure:
-      client-id: ${CLIENT_ID}
-      client-secret: ${CLIENT_SECRET}
-      tenant-id: ${TENANT_ID}
+      client-id: ${AZURE_CLIENT_ID}
+      client-secret: ${AZURE_CLIENT_SECRET}
+      tenant-id: ${AZURE_TENANT_ID}
       resource-group: ${SERVICEBUS_RESOURCE_GROUP}
       servicebus:
         namespace: ${SERVICEBUS_NAMESPACE}
@@ -1628,11 +1628,11 @@ spring:
   cloud:
     azure:
       credential:
-        client-id: ${CLIENT_ID}
-        client-secret: ${CLIENT_SECRET}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
       profile:
-        tenant-id: ${TENANT_ID}
-        subscription-id: ${SUBSCRIPTION_ID}
+        tenant-id: ${AZURE_TENANT_ID}
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
       servicebus:
         namespace: ${SERVICEBUS_NAMESPACE}
         resource:
@@ -1649,10 +1649,10 @@ spring:
   cloud:
     azure:
       credential:
-        client-id: ${CLIENT_ID}
-        client-secret: ${CLIENT_SECRET}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
       profile:
-        tenant-id: ${TENANT_ID}
+        tenant-id: ${AZURE_TENANT_ID}
       servicebus:
         namespace: ${SERVICEBUS_NAMESPACE}
 ----
