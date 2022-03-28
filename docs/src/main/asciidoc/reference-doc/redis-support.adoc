@@ -1,0 +1,54 @@
+[#redis-support]
+== Redis Support
+
+Connect to Azure Cache for Redis using Spring Redis libraries. With adding `spring-cloud-azure-starter` and `spring-cloud-azure-resourcemanager` to your application, it's possible to read the Azure Cache for Redis connection information through Azure Resource Manager and auto-configure the Redis properties.
+
+=== Dependency Setup
+
+Adding below dependencies if you want to use the Spring Cloud Azure Redis support to your Spring Boot application using Redis.
+
+[source,xml]
+----
+<dependencies>
+    <dependency>
+      <groupId>com.azure.spring</groupId>
+      <artifactId>spring-cloud-azure-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.azure.spring</groupId>
+      <artifactId>spring-cloud-azure-resourcemanager</artifactId>
+    </dependency>
+</dependencies>
+----
+
+=== Configuration
+
+NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:reference-doc#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+
+.Configurable properties when using Redis support
+[cols="4*", options="header"]
+|===
+|Property |Description |Default Value | Required
+|*spring.cloud.azure.redis*.enabled |Azure Cache for Redis instance name.|true | No
+|*spring.cloud.azure.redis*.name |Azure Cache for Redis instance name.| |Yes
+|*spring.cloud.azure.redis*.resource.resource-group |The resource group of Azure Cache for Redis.||Yes
+|*spring.cloud.azure*.profile.subscription-id| The subscription id. ||Yes
+|===
+
+NOTE: Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix `spring.cloud.azure`. Please refer to link:reference-doc#authentication[Authentication] for more details.
+
+=== Basic Usage
+
+Add below properties and you are good to go.
+
+[source,properties]
+----
+spring.cloud.azure.redis.name=${AZURE_CACHE_REDIS_NAME}
+spring.cloud.azure.redis.resource.resource-group=${AZURE_CACHE_REDIS_RESOURCE_GROUP}
+----
+
+=== Samples
+
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}[azure-spring-boot-samples] for more details.
+
+

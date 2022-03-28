@@ -1,0 +1,91 @@
+[#kafka-support]
+== Kafka Support
+
+Connect to Azure Event Hubs (link:https://azure.microsoft.com/pricing/details/event-hubs/#explore-pricing-options[Basic pricing tier is not supported]) using Spring Kafka libraries. There are two approaches to connect to Azure Event Hubs for Kafka, the first one is to provide the Azure Event Hubs connection string directly, the other is to use Azure Resource Manager to retrieve the connection string.
+
+=== Dependency Setup
+
+Adding below dependencies if you want to migrate your Apache Kafka application to use Azure Event Hubs for Kafka.
+
+[source,xml]
+----
+<dependency>
+  <groupId>com.azure.spring</groupId>
+  <artifactId>spring-cloud-azure-starter</artifactId>
+</dependency>
+----
+
+If you want to retrieve the connection string using Azure Resource Manager, please also add below dependency
+
+[source,xml]
+----
+<dependency>
+  <groupId>com.azure.spring</groupId>
+  <artifactId>spring-cloud-azure-resourcemanager</artifactId>
+</dependency>
+----
+
+=== Configuration
+
+NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:reference-doc#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+
+.Configurable properties when using Kafka support
+[cols="2*", options="header"]
+|===
+|Property
+|Description
+|*spring.cloud.azure.eventhubs*.kafka.enabled 
+|Whether to enable the Azure Event Hubs Kafka support, default to true.
+|*spring.cloud.azure.eventhubs*.connection-string 
+|Azure Event Hubs connection string. Should be provided when want to provide the connection string directly.
+|*spring.cloud.azure.eventhubs*.namespace 
+|Azure Event Hubs namespace. Should be provided when want to retrieve the connection information through Azure Resource Manager.
+|*spring.cloud.azure.eventhubs*.resource.resource-group 
+|The resource group of Azure Event Hubs namespace. Should be provided when want to retrieve the connection information through Azure Resource Manager.
+|*spring.cloud.azure*.profile.subscription-id
+| The subscription id. Should be provided when want to retrieve the connection information through Azure Resource Manager.
+|===
+
+NOTE: Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix `spring.cloud.azure`. Please refer to link:reference-doc#authentication[Authentication] for more details.
+
+=== Basic Usage
+
+
+==== Use Event Hubs Connection String
+
+The simplest way to connect to Event Hubs for Kafka is with the connection string. 
+
+Add below properties and you are good to go.
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      eventhubs:
+        connection-string: ${AZURE_EVENTHUBS_CONNECTION_STRING}
+----
+
+==== Use Azure Resource Manager to Retrieve Connection String
+
+If you don't want to configure connection string in your application, it's also possible to use Azure Resource Manager to retrieve the connection string. And you could use credentials stored in Azure CLI or other local development tool, like Visual Studio Code or Intellij IDEA to authenticate with Azure Resource Manager. Or Managed Identity if your application is deployed to Azure Cloud. Just make sure the principal have sufficient permission to read resource metadata.
+
+Add below properties and you are good to go.
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      profile:
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
+      eventhubs:
+        namespace: ${AZURE_EVENTHUBS_NAMESPACE}
+        resource:
+          resource-group: ${AZURE_EVENTHUBS_RESOURCE_GROUP}
+----
+
+=== Samples
+
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}[azure-spring-boot-samples] for more details.
+

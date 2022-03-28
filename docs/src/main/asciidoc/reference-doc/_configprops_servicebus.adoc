@@ -1,0 +1,242 @@
+
+|===
+|Name | Default | Description
+
+|spring.cloud.azure.servicebus.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
+|spring.cloud.azure.servicebus.client.transport-type |  | Transport type for AMQP-based client.
+|spring.cloud.azure.servicebus.connection-string |  | Connection string to connect to a service bus.
+|spring.cloud.azure.servicebus.consumer.auto-complete | `true` | Whether to enable auto-complete.
+|spring.cloud.azure.servicebus.consumer.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
+|spring.cloud.azure.servicebus.consumer.client.transport-type |  | Transport type for AMQP-based client.
+|spring.cloud.azure.servicebus.consumer.connection-string |  | Connection string to connect to a service bus.
+|spring.cloud.azure.servicebus.consumer.credential.client-certificate-password |  | Password of the certificate file.
+|spring.cloud.azure.servicebus.consumer.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
+|spring.cloud.azure.servicebus.consumer.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
+|spring.cloud.azure.servicebus.consumer.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
+|spring.cloud.azure.servicebus.consumer.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client id as user assigned managed identity client id.
+|spring.cloud.azure.servicebus.consumer.credential.password |  | Password to use when performing username/password authentication with Azure.
+|spring.cloud.azure.servicebus.consumer.credential.username |  | Username to use when performing username/password authentication with Azure.
+|spring.cloud.azure.servicebus.consumer.domain-name | `servicebus.windows.net` | The domain name of a Service Bus namespace.
+|spring.cloud.azure.servicebus.consumer.enabled | `true` | Whether an Azure Service is enabled.
+|spring.cloud.azure.servicebus.consumer.entity-name |  | The name of a Service Bus Queue or Topic.
+|spring.cloud.azure.servicebus.consumer.entity-type |  | The type of Service Bus entity, which is a Queue or a Topic.
+|spring.cloud.azure.servicebus.consumer.max-auto-lock-renew-duration |  | Amount of time to continue auto-renewing the lock.
+|spring.cloud.azure.servicebus.consumer.namespace |  | The namespace of a service bus, which is the prefix of the FQDN. A FQDN should be composed of &lt;NamespaceName&gt;.&lt;DomainName&gt;
+|spring.cloud.azure.servicebus.consumer.prefetch-count |  | Prefetch count of the consumer.
+|spring.cloud.azure.servicebus.consumer.profile.cloud-type |  | Name of the Azure cloud to connect to.
+|spring.cloud.azure.servicebus.consumer.profile.environment.active-directory-endpoint |  | The Azure Active Directory endpoint to connect to.
+|spring.cloud.azure.servicebus.consumer.profile.environment.active-directory-graph-api-version |  | The Azure Active Directory Graph API version.
+|spring.cloud.azure.servicebus.consumer.profile.environment.active-directory-graph-endpoint |  | The Azure Active Directory Graph endpoint.
+|spring.cloud.azure.servicebus.consumer.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource id.
+|spring.cloud.azure.servicebus.consumer.profile.environment.azure-application-insights-endpoint |  | The Azure Application Insights endpoint.
+|spring.cloud.azure.servicebus.consumer.profile.environment.azure-data-lake-analytics-catalog-and-job-endpoint-suffix |  | The Data Lake analytics catalog and job endpoint suffix.
+|spring.cloud.azure.servicebus.consumer.profile.environment.azure-data-lake-store-file-system-endpoint-suffix |  | The Data Lake storage file system endpoint suffix.
+|spring.cloud.azure.servicebus.consumer.profile.environment.azure-log-analytics-endpoint |  | The Azure Log Analytics endpoint.
+|spring.cloud.azure.servicebus.consumer.profile.environment.data-lake-endpoint-resource-id |  | The Data Lake endpoint.
+|spring.cloud.azure.servicebus.consumer.profile.environment.gallery-endpoint |  | The gallery endpoint.
+|spring.cloud.azure.servicebus.consumer.profile.environment.key-vault-dns-suffix |  | The Key Vault DNS suffix.
+|spring.cloud.azure.servicebus.consumer.profile.environment.management-endpoint |  | The management service endpoint.
+|spring.cloud.azure.servicebus.consumer.profile.environment.microsoft-graph-endpoint |  | The Microsoft Graph endpoint.
+|spring.cloud.azure.servicebus.consumer.profile.environment.portal |  | The management portal URL.
+|spring.cloud.azure.servicebus.consumer.profile.environment.publishing-profile |  | The publishing settings file URL.
+|spring.cloud.azure.servicebus.consumer.profile.environment.resource-manager-endpoint |  | The resource management endpoint.
+|spring.cloud.azure.servicebus.consumer.profile.environment.sql-management-endpoint |  | The SQL management endpoint.
+|spring.cloud.azure.servicebus.consumer.profile.environment.sql-server-hostname-suffix |  | The SQL Server hostname suffix.
+|spring.cloud.azure.servicebus.consumer.profile.environment.storage-endpoint-suffix |  | The Storage endpoint suffix.
+|spring.cloud.azure.servicebus.consumer.profile.subscription-id |  | Subscription id to use when connecting to Azure resources.
+|spring.cloud.azure.servicebus.consumer.profile.tenant-id |  | Tenant id for Azure resources.
+|spring.cloud.azure.servicebus.consumer.proxy.authentication-type |  | Authentication type used against the proxy.
+|spring.cloud.azure.servicebus.consumer.proxy.hostname |  | The host of the proxy.
+|spring.cloud.azure.servicebus.consumer.proxy.password |  | Password used to authenticate with the proxy.
+|spring.cloud.azure.servicebus.consumer.proxy.port |  | The port of the proxy.
+|spring.cloud.azure.servicebus.consumer.proxy.type |  | Type of the proxy.
+|spring.cloud.azure.servicebus.consumer.proxy.username |  | Username used to authenticate with the proxy.
+|spring.cloud.azure.servicebus.consumer.receive-mode |  | Mode for receiving messages.
+|spring.cloud.azure.servicebus.consumer.resource.region |  | The region of an Azure resource.
+|spring.cloud.azure.servicebus.consumer.resource.resource-group |  | The resource group holds an Azure resource.
+|spring.cloud.azure.servicebus.consumer.resource.resource-id |  | ID of an Azure resource.
+|spring.cloud.azure.servicebus.consumer.retry.exponential.base-delay |  | Amount of time to wait between retry attempts.
+|spring.cloud.azure.servicebus.consumer.retry.exponential.max-delay |  | Maximum permissible amount of time between retry attempts.
+|spring.cloud.azure.servicebus.consumer.retry.exponential.max-retries |  | The maximum number of attempts.
+|spring.cloud.azure.servicebus.consumer.retry.fixed.delay |  | Amount of time to wait between retry attempts.
+|spring.cloud.azure.servicebus.consumer.retry.fixed.max-retries |  | The maximum number of attempts.
+|spring.cloud.azure.servicebus.consumer.retry.mode |  | Retry backoff mode.
+|spring.cloud.azure.servicebus.consumer.retry.try-timeout |  | Amount of time to wait until a timeout.
+|spring.cloud.azure.servicebus.consumer.session-enabled |  | Whether to enable session for the consumer.
+|spring.cloud.azure.servicebus.consumer.sub-queue |  | Type of the SubQueue to connect to.
+|spring.cloud.azure.servicebus.consumer.subscription-name |  | Name for a topic subscription.
+|spring.cloud.azure.servicebus.credential.client-certificate-password |  | Password of the certificate file.
+|spring.cloud.azure.servicebus.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
+|spring.cloud.azure.servicebus.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
+|spring.cloud.azure.servicebus.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
+|spring.cloud.azure.servicebus.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client id as user assigned managed identity client id.
+|spring.cloud.azure.servicebus.credential.password |  | Password to use when performing username/password authentication with Azure.
+|spring.cloud.azure.servicebus.credential.username |  | Username to use when performing username/password authentication with Azure.
+|spring.cloud.azure.servicebus.cross-entity-transactions |  | Whether to enable cross entity transaction on the connection to Service bus.
+|spring.cloud.azure.servicebus.domain-name | `servicebus.windows.net` | The domain name of a Service Bus namespace.
+|spring.cloud.azure.servicebus.enabled | `true` | Whether an Azure Service is enabled.
+|spring.cloud.azure.servicebus.entity-name |  | The name of a Service Bus Queue or Topic.
+|spring.cloud.azure.servicebus.entity-type |  | The type of Service Bus entity, which is a Queue or a Topic.
+|spring.cloud.azure.servicebus.namespace |  | The namespace of a service bus, which is the prefix of the FQDN. A FQDN should be composed of &lt;NamespaceName&gt;.&lt;DomainName&gt;
+|spring.cloud.azure.servicebus.processor.auto-complete | `true` | Whether to enable auto-complete.
+|spring.cloud.azure.servicebus.processor.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
+|spring.cloud.azure.servicebus.processor.client.transport-type |  | Transport type for AMQP-based client.
+|spring.cloud.azure.servicebus.processor.connection-string |  | Connection string to connect to a service bus.
+|spring.cloud.azure.servicebus.processor.credential.client-certificate-password |  | Password of the certificate file.
+|spring.cloud.azure.servicebus.processor.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
+|spring.cloud.azure.servicebus.processor.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
+|spring.cloud.azure.servicebus.processor.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
+|spring.cloud.azure.servicebus.processor.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client id as user assigned managed identity client id.
+|spring.cloud.azure.servicebus.processor.credential.password |  | Password to use when performing username/password authentication with Azure.
+|spring.cloud.azure.servicebus.processor.credential.username |  | Username to use when performing username/password authentication with Azure.
+|spring.cloud.azure.servicebus.processor.domain-name | `servicebus.windows.net` | The domain name of a Service Bus namespace.
+|spring.cloud.azure.servicebus.processor.enabled | `true` | Whether an Azure Service is enabled.
+|spring.cloud.azure.servicebus.processor.entity-name |  | The name of a Service Bus Queue or Topic.
+|spring.cloud.azure.servicebus.processor.entity-type |  | The type of Service Bus entity, which is a Queue or a Topic.
+|spring.cloud.azure.servicebus.processor.max-auto-lock-renew-duration |  | Amount of time to continue auto-renewing the lock.
+|spring.cloud.azure.servicebus.processor.max-concurrent-calls |  | Max concurrent messages to process.
+|spring.cloud.azure.servicebus.processor.max-concurrent-sessions |  | Maximum number of concurrent sessions to process at any given time.
+|spring.cloud.azure.servicebus.processor.namespace |  | The namespace of a service bus, which is the prefix of the FQDN. A FQDN should be composed of &lt;NamespaceName&gt;.&lt;DomainName&gt;
+|spring.cloud.azure.servicebus.processor.prefetch-count |  | Prefetch count of the consumer.
+|spring.cloud.azure.servicebus.processor.profile.cloud-type |  | Name of the Azure cloud to connect to.
+|spring.cloud.azure.servicebus.processor.profile.environment.active-directory-endpoint |  | The Azure Active Directory endpoint to connect to.
+|spring.cloud.azure.servicebus.processor.profile.environment.active-directory-graph-api-version |  | The Azure Active Directory Graph API version.
+|spring.cloud.azure.servicebus.processor.profile.environment.active-directory-graph-endpoint |  | The Azure Active Directory Graph endpoint.
+|spring.cloud.azure.servicebus.processor.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource id.
+|spring.cloud.azure.servicebus.processor.profile.environment.azure-application-insights-endpoint |  | The Azure Application Insights endpoint.
+|spring.cloud.azure.servicebus.processor.profile.environment.azure-data-lake-analytics-catalog-and-job-endpoint-suffix |  | The Data Lake analytics catalog and job endpoint suffix.
+|spring.cloud.azure.servicebus.processor.profile.environment.azure-data-lake-store-file-system-endpoint-suffix |  | The Data Lake storage file system endpoint suffix.
+|spring.cloud.azure.servicebus.processor.profile.environment.azure-log-analytics-endpoint |  | The Azure Log Analytics endpoint.
+|spring.cloud.azure.servicebus.processor.profile.environment.data-lake-endpoint-resource-id |  | The Data Lake endpoint.
+|spring.cloud.azure.servicebus.processor.profile.environment.gallery-endpoint |  | The gallery endpoint.
+|spring.cloud.azure.servicebus.processor.profile.environment.key-vault-dns-suffix |  | The Key Vault DNS suffix.
+|spring.cloud.azure.servicebus.processor.profile.environment.management-endpoint |  | The management service endpoint.
+|spring.cloud.azure.servicebus.processor.profile.environment.microsoft-graph-endpoint |  | The Microsoft Graph endpoint.
+|spring.cloud.azure.servicebus.processor.profile.environment.portal |  | The management portal URL.
+|spring.cloud.azure.servicebus.processor.profile.environment.publishing-profile |  | The publishing settings file URL.
+|spring.cloud.azure.servicebus.processor.profile.environment.resource-manager-endpoint |  | The resource management endpoint.
+|spring.cloud.azure.servicebus.processor.profile.environment.sql-management-endpoint |  | The SQL management endpoint.
+|spring.cloud.azure.servicebus.processor.profile.environment.sql-server-hostname-suffix |  | The SQL Server hostname suffix.
+|spring.cloud.azure.servicebus.processor.profile.environment.storage-endpoint-suffix |  | The Storage endpoint suffix.
+|spring.cloud.azure.servicebus.processor.profile.subscription-id |  | Subscription id to use when connecting to Azure resources.
+|spring.cloud.azure.servicebus.processor.profile.tenant-id |  | Tenant id for Azure resources.
+|spring.cloud.azure.servicebus.processor.proxy.authentication-type |  | Authentication type used against the proxy.
+|spring.cloud.azure.servicebus.processor.proxy.hostname |  | The host of the proxy.
+|spring.cloud.azure.servicebus.processor.proxy.password |  | Password used to authenticate with the proxy.
+|spring.cloud.azure.servicebus.processor.proxy.port |  | The port of the proxy.
+|spring.cloud.azure.servicebus.processor.proxy.type |  | Type of the proxy.
+|spring.cloud.azure.servicebus.processor.proxy.username |  | Username used to authenticate with the proxy.
+|spring.cloud.azure.servicebus.processor.receive-mode |  | Mode for receiving messages.
+|spring.cloud.azure.servicebus.processor.resource.region |  | The region of an Azure resource.
+|spring.cloud.azure.servicebus.processor.resource.resource-group |  | The resource group holds an Azure resource.
+|spring.cloud.azure.servicebus.processor.resource.resource-id |  | ID of an Azure resource.
+|spring.cloud.azure.servicebus.processor.retry.exponential.base-delay |  | Amount of time to wait between retry attempts.
+|spring.cloud.azure.servicebus.processor.retry.exponential.max-delay |  | Maximum permissible amount of time between retry attempts.
+|spring.cloud.azure.servicebus.processor.retry.exponential.max-retries |  | The maximum number of attempts.
+|spring.cloud.azure.servicebus.processor.retry.fixed.delay |  | Amount of time to wait between retry attempts.
+|spring.cloud.azure.servicebus.processor.retry.fixed.max-retries |  | The maximum number of attempts.
+|spring.cloud.azure.servicebus.processor.retry.mode |  | Retry backoff mode.
+|spring.cloud.azure.servicebus.processor.retry.try-timeout |  | Amount of time to wait until a timeout.
+|spring.cloud.azure.servicebus.processor.session-enabled |  | Whether to enable session for the consumer.
+|spring.cloud.azure.servicebus.processor.sub-queue |  | Type of the SubQueue to connect to.
+|spring.cloud.azure.servicebus.processor.subscription-name |  | Name for a topic subscription.
+|spring.cloud.azure.servicebus.producer.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
+|spring.cloud.azure.servicebus.producer.client.transport-type |  | Transport type for AMQP-based client.
+|spring.cloud.azure.servicebus.producer.connection-string |  | Connection string to connect to a service bus.
+|spring.cloud.azure.servicebus.producer.credential.client-certificate-password |  | Password of the certificate file.
+|spring.cloud.azure.servicebus.producer.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
+|spring.cloud.azure.servicebus.producer.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
+|spring.cloud.azure.servicebus.producer.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
+|spring.cloud.azure.servicebus.producer.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client id as user assigned managed identity client id.
+|spring.cloud.azure.servicebus.producer.credential.password |  | Password to use when performing username/password authentication with Azure.
+|spring.cloud.azure.servicebus.producer.credential.username |  | Username to use when performing username/password authentication with Azure.
+|spring.cloud.azure.servicebus.producer.domain-name | `servicebus.windows.net` | The domain name of a Service Bus namespace.
+|spring.cloud.azure.servicebus.producer.enabled | `true` | Whether an Azure Service is enabled.
+|spring.cloud.azure.servicebus.producer.entity-name |  | The name of a Service Bus Queue or Topic.
+|spring.cloud.azure.servicebus.producer.entity-type |  | The type of Service Bus entity, which is a Queue or a Topic.
+|spring.cloud.azure.servicebus.producer.namespace |  | The namespace of a service bus, which is the prefix of the FQDN. A FQDN should be composed of &lt;NamespaceName&gt;.&lt;DomainName&gt;
+|spring.cloud.azure.servicebus.producer.profile.cloud-type |  | Name of the Azure cloud to connect to.
+|spring.cloud.azure.servicebus.producer.profile.environment.active-directory-endpoint |  | The Azure Active Directory endpoint to connect to.
+|spring.cloud.azure.servicebus.producer.profile.environment.active-directory-graph-api-version |  | The Azure Active Directory Graph API version.
+|spring.cloud.azure.servicebus.producer.profile.environment.active-directory-graph-endpoint |  | The Azure Active Directory Graph endpoint.
+|spring.cloud.azure.servicebus.producer.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource id.
+|spring.cloud.azure.servicebus.producer.profile.environment.azure-application-insights-endpoint |  | The Azure Application Insights endpoint.
+|spring.cloud.azure.servicebus.producer.profile.environment.azure-data-lake-analytics-catalog-and-job-endpoint-suffix |  | The Data Lake analytics catalog and job endpoint suffix.
+|spring.cloud.azure.servicebus.producer.profile.environment.azure-data-lake-store-file-system-endpoint-suffix |  | The Data Lake storage file system endpoint suffix.
+|spring.cloud.azure.servicebus.producer.profile.environment.azure-log-analytics-endpoint |  | The Azure Log Analytics endpoint.
+|spring.cloud.azure.servicebus.producer.profile.environment.data-lake-endpoint-resource-id |  | The Data Lake endpoint.
+|spring.cloud.azure.servicebus.producer.profile.environment.gallery-endpoint |  | The gallery endpoint.
+|spring.cloud.azure.servicebus.producer.profile.environment.key-vault-dns-suffix |  | The Key Vault DNS suffix.
+|spring.cloud.azure.servicebus.producer.profile.environment.management-endpoint |  | The management service endpoint.
+|spring.cloud.azure.servicebus.producer.profile.environment.microsoft-graph-endpoint |  | The Microsoft Graph endpoint.
+|spring.cloud.azure.servicebus.producer.profile.environment.portal |  | The management portal URL.
+|spring.cloud.azure.servicebus.producer.profile.environment.publishing-profile |  | The publishing settings file URL.
+|spring.cloud.azure.servicebus.producer.profile.environment.resource-manager-endpoint |  | The resource management endpoint.
+|spring.cloud.azure.servicebus.producer.profile.environment.sql-management-endpoint |  | The SQL management endpoint.
+|spring.cloud.azure.servicebus.producer.profile.environment.sql-server-hostname-suffix |  | The SQL Server hostname suffix.
+|spring.cloud.azure.servicebus.producer.profile.environment.storage-endpoint-suffix |  | The Storage endpoint suffix.
+|spring.cloud.azure.servicebus.producer.profile.subscription-id |  | Subscription id to use when connecting to Azure resources.
+|spring.cloud.azure.servicebus.producer.profile.tenant-id |  | Tenant id for Azure resources.
+|spring.cloud.azure.servicebus.producer.proxy.authentication-type |  | Authentication type used against the proxy.
+|spring.cloud.azure.servicebus.producer.proxy.hostname |  | The host of the proxy.
+|spring.cloud.azure.servicebus.producer.proxy.password |  | Password used to authenticate with the proxy.
+|spring.cloud.azure.servicebus.producer.proxy.port |  | The port of the proxy.
+|spring.cloud.azure.servicebus.producer.proxy.type |  | Type of the proxy.
+|spring.cloud.azure.servicebus.producer.proxy.username |  | Username used to authenticate with the proxy.
+|spring.cloud.azure.servicebus.producer.resource.region |  | The region of an Azure resource.
+|spring.cloud.azure.servicebus.producer.resource.resource-group |  | The resource group holds an Azure resource.
+|spring.cloud.azure.servicebus.producer.resource.resource-id |  | ID of an Azure resource.
+|spring.cloud.azure.servicebus.producer.retry.exponential.base-delay |  | Amount of time to wait between retry attempts.
+|spring.cloud.azure.servicebus.producer.retry.exponential.max-delay |  | Maximum permissible amount of time between retry attempts.
+|spring.cloud.azure.servicebus.producer.retry.exponential.max-retries |  | The maximum number of attempts.
+|spring.cloud.azure.servicebus.producer.retry.fixed.delay |  | Amount of time to wait between retry attempts.
+|spring.cloud.azure.servicebus.producer.retry.fixed.max-retries |  | The maximum number of attempts.
+|spring.cloud.azure.servicebus.producer.retry.mode |  | Retry backoff mode.
+|spring.cloud.azure.servicebus.producer.retry.try-timeout |  | Amount of time to wait until a timeout.
+|spring.cloud.azure.servicebus.profile.cloud-type |  | Name of the Azure cloud to connect to.
+|spring.cloud.azure.servicebus.profile.environment.active-directory-endpoint |  | The Azure Active Directory endpoint to connect to.
+|spring.cloud.azure.servicebus.profile.environment.active-directory-graph-api-version |  | The Azure Active Directory Graph API version.
+|spring.cloud.azure.servicebus.profile.environment.active-directory-graph-endpoint |  | The Azure Active Directory Graph endpoint.
+|spring.cloud.azure.servicebus.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource id.
+|spring.cloud.azure.servicebus.profile.environment.azure-application-insights-endpoint |  | The Azure Application Insights endpoint.
+|spring.cloud.azure.servicebus.profile.environment.azure-data-lake-analytics-catalog-and-job-endpoint-suffix |  | The Data Lake analytics catalog and job endpoint suffix.
+|spring.cloud.azure.servicebus.profile.environment.azure-data-lake-store-file-system-endpoint-suffix |  | The Data Lake storage file system endpoint suffix.
+|spring.cloud.azure.servicebus.profile.environment.azure-log-analytics-endpoint |  | The Azure Log Analytics endpoint.
+|spring.cloud.azure.servicebus.profile.environment.data-lake-endpoint-resource-id |  | The Data Lake endpoint.
+|spring.cloud.azure.servicebus.profile.environment.gallery-endpoint |  | The gallery endpoint.
+|spring.cloud.azure.servicebus.profile.environment.key-vault-dns-suffix |  | The Key Vault DNS suffix.
+|spring.cloud.azure.servicebus.profile.environment.management-endpoint |  | The management service endpoint.
+|spring.cloud.azure.servicebus.profile.environment.microsoft-graph-endpoint |  | The Microsoft Graph endpoint.
+|spring.cloud.azure.servicebus.profile.environment.portal |  | The management portal URL.
+|spring.cloud.azure.servicebus.profile.environment.publishing-profile |  | The publishing settings file URL.
+|spring.cloud.azure.servicebus.profile.environment.resource-manager-endpoint |  | The resource management endpoint.
+|spring.cloud.azure.servicebus.profile.environment.sql-management-endpoint |  | The SQL management endpoint.
+|spring.cloud.azure.servicebus.profile.environment.sql-server-hostname-suffix |  | The SQL Server hostname suffix.
+|spring.cloud.azure.servicebus.profile.environment.storage-endpoint-suffix |  | The Storage endpoint suffix.
+|spring.cloud.azure.servicebus.profile.subscription-id |  | Subscription id to use when connecting to Azure resources.
+|spring.cloud.azure.servicebus.profile.tenant-id |  | Tenant id for Azure resources.
+|spring.cloud.azure.servicebus.proxy.authentication-type |  | Authentication type used against the proxy.
+|spring.cloud.azure.servicebus.proxy.hostname |  | The host of the proxy.
+|spring.cloud.azure.servicebus.proxy.password |  | Password used to authenticate with the proxy.
+|spring.cloud.azure.servicebus.proxy.port |  | The port of the proxy.
+|spring.cloud.azure.servicebus.proxy.type |  | Type of the proxy.
+|spring.cloud.azure.servicebus.proxy.username |  | Username used to authenticate with the proxy.
+|spring.cloud.azure.servicebus.resource.name |  | Namespace of the service bus.
+|spring.cloud.azure.servicebus.resource.region |  | The region of an Azure resource.
+|spring.cloud.azure.servicebus.resource.resource-group |  | The resource group holds an Azure resource.
+|spring.cloud.azure.servicebus.resource.resource-id |  | ID of an Azure resource.
+|spring.cloud.azure.servicebus.retry-options.delay |  | Amount of time to wait between retry attempts. This is a legacy property.
+|spring.cloud.azure.servicebus.retry-options.maxDelay |  | Maximum permissible amount of time between retry attempts. This is a legacy property.
+|spring.cloud.azure.servicebus.retry-options.maxRetries |  | The maximum number of attempts. This is a legacy property.
+|spring.cloud.azure.servicebus.retry-options.retryMode |  | The type of approach to apply when calculating the delay between retry attempts. This is a legacy property.
+|spring.cloud.azure.servicebus.retry-options.tryTimeout |  | Amount of time to wait until a timeout. This is a legacy property.
+|spring.cloud.azure.servicebus.retry.exponential.base-delay |  | Amount of time to wait between retry attempts.
+|spring.cloud.azure.servicebus.retry.exponential.max-delay |  | Maximum permissible amount of time between retry attempts.
+|spring.cloud.azure.servicebus.retry.exponential.max-retries |  | The maximum number of attempts.
+|spring.cloud.azure.servicebus.retry.fixed.delay |  | Amount of time to wait between retry attempts.
+|spring.cloud.azure.servicebus.retry.fixed.max-retries |  | The maximum number of attempts.
+|spring.cloud.azure.servicebus.retry.mode |  | Retry backoff mode.
+|spring.cloud.azure.servicebus.retry.try-timeout |  | Amount of time to wait until a timeout.
+|spring.cloud.azure.servicebus.transport-type |  | Transport type for AMQP-based client. This is a legacy property.
+
+|===
