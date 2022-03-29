@@ -13,7 +13,7 @@ The following prerequisites are required in order to follow the steps in this ar
 * http://maven.apache.org/[Apache Maven], version 3.0 or later.
 
 
-NOTE: Spring Boot version 2.5 or 2.6 is required to complete the steps in this article.
+IMPORTANT: Spring Boot version 2.5 or 2.6 is required to complete the steps in this article.
 
 
 ==== Create an Azure Storage Account and blob container for your application
@@ -21,44 +21,67 @@ NOTE: Spring Boot version 2.5 or 2.6 is required to complete the steps in this a
 The following procedure creates an Azure storage account and container in the portal.
 
 . Browse to the Azure portal at https://portal.azure.com/ and sign in.
+
 . Select *Create a resource*, then *Get started*, and then select *Storage Account*.
+
++
 image:https://user-images.githubusercontent.com/13167207/160536881-a9e3cb9d-bee6-40bd-80ce-634b4d198373.png["Azure portal, create a resource, search for storage accounts."]
++
+
 . On the *Create storage account* page, enter the following information:
-. Select *Subscription*.
-. Select *Resource group*, or create a new resource group.
-. Enter a unique *Storage account name*, which will become part of the URI for your storage account. For example: if you entered *wingtiptoysstorage* for the *Name*, the URI would be _wingtiptoysstorage.core.windows.net_.
-. Specify the *Location* for your storage account.
+.. Select *Subscription*.
+.. Select *Resource group*, or create a new resource group.
+.. Enter a unique *Storage account name*, which will become part of the URI for your storage account. For example: if you entered *wingtiptoysstorage* for the *Name*, the URI would be _wingtiptoysstorage.core.windows.net_.
+.. Specify the *Location* for your storage account.
+
 . When you have specified the options listed above, select *Review + create*.
+
++
 image:https://user-images.githubusercontent.com/13167207/160536965-b233f379-dfd3-4de0-be5c-28ff4420bb42.png["Azure portal, create a storage account."]
++
+
 . Review the specification, then select *Create* to create your storage account.
+
 . When the deployment is complete, select *Go to resource*.
+
 . Select *Containers*.
 . Select *Container*.
-. Name the container.
-. Select _Blob_ from the drop-down list.
+.. Name the container.
+.. Select _Blob_ from the drop-down list.
+
++
 image:https://user-images.githubusercontent.com/13167207/160537009-7dfb622f-8d38-4ef1-ba08-a60f38dd2af1.png["Azure portal, storage account, containers, new container pane."]
++
+
 . The Azure portal will list your blob container after is has been created.
 
 You can also use Azure CLI to create an Azure storage account and container using the following steps. Remember to replace the placeholder values (in angle brackets) with your own values.
 
-Open a command prompt. Sign in to your Azure account:
+. Open a command prompt.
 
+. Sign in to your Azure account:
+
++
 [source,bash]
 ----
    az login
 ----
++
 
-If you don't have a resource group, create one using the following command:
+. If you don't have a resource group, create one using the following command:
 
++
 [source,bash]
 ----
    az group create \
       --name <resource-group> \
       --location <location>
 ----
++
 
-Create a storage account by using the following command:
+. Create a storage account by using the following command:
 
++
 [source,bash]
 ----
     az storage account create \
@@ -66,9 +89,11 @@ Create a storage account by using the following command:
       --resource-group <resource-group> \
       --location <location>
 ----
++
 
-To create a container, use the following command:
+. To create a container, use the following command:
 
++
 [source,bash]
 ----
     az storage container create \
@@ -81,23 +106,25 @@ To create a container, use the following command:
 
 The following procedure creates the Spring boot application.
 
-1. Browse to <https://start.spring.io/>.
+. Browse to <https://start.spring.io/>.
 
-2. Specify the following options:
+. Specify the following options:
+.. Generate a **Maven** project.
+.. Specify **Java 11**.
+.. Specify a **Spring Boot** version that is equal to **2.5.10**.
+.. Specify the **Group** and **Artifact** names for your application.
+.. Add the **Spring Web** dependency.
 
-   * Generate a **Maven** project.
-   * Specify **Java 11**.
-   * Specify a **Spring Boot** version that is equal to **2.5.10**.
-   * Specify the **Group** and **Artifact** names for your application.
-   * Add the **Spring Web** dependency.
++
 image:https://user-images.githubusercontent.com/13167207/160537746-5ccdfcb8-9dbc-4d35-a78e-61875958bb8a.png["Basic Spring Initializr options"]
 NOTE: The Spring Initializr uses the **Group** and **Artifact** names to create the package name; for example: *com.wingtiptoys.storage*.
++
 
-3. When you have specified the options listed above, select **GENERATE**.
+. When you have specified the options listed above, select **GENERATE**.
 
-4. When prompted, download the project to a path on your local computer.
+. When prompted, download the project to a path on your local computer.
 
-5. After you have extracted the files on your local system, your simple Spring Boot application will be ready to edit.
+. After you have extracted the files on your local system, your simple Spring Boot application will be ready to edit.
 
 ==== Configure your Spring Boot app to use the Azure Storage Blob starter
 
@@ -105,16 +132,13 @@ NOTE: The Spring Initializr uses the **Group** and **Artifact** names to create 
 
 The following procedure configures the Spring boot application to use Azure storage.
 
-Locate the *pom.xml* file in the root directory of your app; for example:
+. Locate the *pom.xml* file in the root directory of your app; for example:
+.. `C:\SpringBoot\storage\pom.xml`
+.. `/users/example/home/storage/pom.xml`
 
-   `C:\SpringBoot\storage\pom.xml`
+. Open the *pom.xml* file in a text editor, and add the Spring Cloud Azure Storage starter to the list of `<dependencies>`:
 
-   -or-
-
-   `/users/example/home/storage/pom.xml`
-
-Open the *pom.xml* file in a text editor, and add the Spring Cloud Azure Storage starter to the list of `<dependencies>`:
-
++
 [source,xml]
 ----
     <dependency>
@@ -123,23 +147,21 @@ Open the *pom.xml* file in a text editor, and add the Spring Cloud Azure Storage
       <version>4.0.0</version>
     </dependency>
 ----
++
 
-Save and close the *pom.xml* file.
+. Save and close the *pom.xml* file.
 
 ===== Configure property in application.yml
 
 The following procedure configures the Spring boot application to use your Azure storage account.
 
-Locate the *application.yml* in the *resources* directory of your app; for example:
+. Locate the *application.yml* in the *resources* directory of your app; for example:
+.. `C:\SpringBoot\storage\src\main\resources\application.yml`
+.. `/users/example/home/storage/src/main/resources/application.yml`
 
-   `C:\SpringBoot\storage\src\main\resources\application.yml`
+. Open the *application.yml* file in a text editor, add the following lines, and then replace the sample values with the appropriate properties for your storage account:
 
-   -or-
-
-   `/users/example/home/storage/src/main/resources/application.yml`
-
-Open the *application.yml* file in a text editor, add the following lines, and then replace the sample values with the appropriate properties for your storage account:
-
++
 [source,yaml]
 ----
 spring:
@@ -151,9 +173,11 @@ spring:
           account-key: [storage-account-access-key]
           endpoint: [storage-blob-service-endpoint]
 ----
++
 
 Where:
 
++
 .Spring Cloud Azure Storage Blob Properties
 [cols="<40,<40,<10", options="header"]
 |===
@@ -162,8 +186,9 @@ Where:
 | spring.cloud.azure.storage.blob.account-key  | The access key of the Azure Storage account.        | Yes
 | spring.cloud.azure.storage.blob.endpoint     | The blob endpoint URL of the Azure Storage account. | Yes
 |===
++
 
-Save and close the _application.yml_ file.
+. Save and close the _application.yml_ file.
 
 ==== Add sample code to implement basic Azure storage functionality
 
@@ -171,16 +196,13 @@ In this section, you will create the necessary Java classes for storing a blob i
 
 ===== Add a blob controller class
 
-Create a new Java file named _BlobController.java_ in the package directory of your app; for example:
+. Create a new Java file named _BlobController.java_ in the package directory of your app; for example:
+.. `C:\SpringBoot\storage\src\main\java\com\wingtiptoys\storage\BlobController.java`
+.. `/users/example/home/storage/src/main/java/com/wingtiptoys/storage/BlobController.java`
 
-`C:\SpringBoot\storage\src\main\java\com\wingtiptoys\storage\BlobController.java`
+. Open `BlobController.java` in a text editor, and add the following lines to the file. Replace the `your-resource-group`, `your-artifact-name`, `your-container-name`, and `your-blob-name` placeholders with your values.
 
--or-
-
-`/users/example/home/storage/src/main/java/com/wingtiptoys/storage/BlobController.java`
-
-Open `BlobController.java` in a text editor, and add the following lines to the file. Replace the `your-resource-group`, `your-artifact-name`, `your-container-name`, and `your-blob-name` placeholders with your values.
-
++
 [source,java]
 ----
 package com.<your-resource-group>.<your-artifact-name>;
@@ -217,50 +239,57 @@ public class BlobController {
 
 }
 ----
++
 
-Save and close the blob controller Java file.
+. Save and close the blob controller Java file.
 
-Open a command prompt and change directory to the folder where your _pom.xml_ file is located; for example:
+. Open a command prompt and change directory to the folder where your _pom.xml_ file is located; for example:
 
++
 [source,bash]
 ----
  cd C:\SpringBoot\storage
 ----
++
 
--or-
+or
 
++
 [source,bash]
 ----
    cd /users/example/home/storage
 ----
++
 
-Build your Spring Boot application with Maven and run it; for example:
+. Build your Spring Boot application with Maven and run it; for example:
 
++
 [source,bash]
 ----
    mvn clean package
    mvn spring-boot:run
 ----
++
 
-Once your application is running, you can use _curl_ to test your application; for example:
+. Once your application is running, you can use _curl_ to test your application; for example:
 
-Send a POST request to update a file's contents:
-
+.. Send a POST request to update a file's contents:
++
 [source,bash]
 ----
-  curl http://localhost:8080/blob/writeBlobFile -d "new message" -H "Content-Type: text/plain"
+curl http://localhost:8080/blob/writeBlobFile -d "new message" -H "Content-Type: text/plain"
 ----
++
+You should see a response that  `file was updated`.
 
-  You should see a response that  `file was updated`.
-
-Send a GET request to verify the file's contents:
-
+.. Send a GET request to verify the file's contents:
++
 [source,bash]
 ----
-  curl -X GET http://localhost:8080/blob/readBlobFile
+curl -X GET http://localhost:8080/blob/readBlobFile
 ----
-
- You should see the "new message" text that you posted.
++
+You should see the "new message" text that you posted.
 
 ==== Summary
 
