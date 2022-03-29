@@ -1,6 +1,11 @@
 
 = Getting Started Guides
 
-== Placeholder
+== Spring Boot
 
-placeholder
+include::getting-started-guides/spring-boot/spring-boot-starters-for-azure.adoc[]
+include::getting-started-guides/spring-boot/configure-spring-boot-starter-java-app-with-azure-storage.adoc[]
+include::getting-started-guides/spring-boot/configure-spring-boot-starter-java-app-with-azure-key-vault.adoc[]
+include::getting-started-guides/spring-boot/configure-spring-boot-starter-java-app-with-azure-key-vault-certificates.adoc[]
+include::getting-started-guides/spring-boot/configure-spring-boot-starter-java-app-with-azure-service-bus.adoc[]
+
