@@ -26,7 +26,7 @@
 
     <groupId>com.azure.spring</groupId>
     <artifactId>spring-cloud-azure-aggregator</artifactId>
-    <version>4.0.0-beta.4</version>
+    <version>4.0.0</version>
     <packaging>pom</packaging>
     <name>Spring Cloud Azure</name>
     <description>Spring Cloud Azure</description>
@@ -42,7 +42,7 @@
          "version.spring.cloud.azure" is used to update "_configprops.adoc".
          Because "4.0.0-beta.4" is not released, GitHub workflow will failed if we use "4.0.0-beta.4".
          As workaround, we use "4.0.0-beta.3" instead. It should change to "4.0.0-beta.4" after "4.0.0-beta.4" released.-->
-        <version.spring.cloud.azure>4.0.0-beta.3</version.spring.cloud.azure>
+        <version.spring.cloud.azure>4.0.0</version.spring.cloud.azure>
         <spring-javaformat.version>0.0.29</spring-javaformat.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
