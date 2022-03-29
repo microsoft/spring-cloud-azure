@@ -323,8 +323,8 @@ Azure 4.0 library. Please add these removed dependencies to your project to prev
 This section includes the changes about the properties added, removed and changed.
 
 .The following two points are the main to pay your attention to:
-. All configuration property names' prefix changed from `azure.activedirectory` to `spring.cloud.azure.active-directory`.
-. New property `spring.cloud.azure.active-directory.enabled=true` is added to enable/disable AAD related features. The default value is `false`.
+. All configuration property names' prefix is changed from `azure.activedirectory` to `spring.cloud.azure.active-directory`.
+. New property `spring.cloud.azure.active-directory.enabled` is added to enable/disable AAD related features. The default value is `false`.
 
 .Property mapping from azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory
 [cols="<30,<~", options="header"]
@@ -542,8 +542,8 @@ Azure 4.0 library. Please add these removed dependencies to your project to prev
 This section includes the changes about the properties added, removed and changed.
 
 .The following two points are the main to pay your attention to:
-. All configuration property names' prefix changed from `azure.activedirectory.b2c` to `spring.cloud.azure.active-directory.b2c`.
-. New property `spring.cloud.azure.active-directory.b2c.enabled=false` is added to enable/disable AAD B2C related features. The default value is false.
+. All configuration property names' prefix is changed from `azure.activedirectory.b2c` to `spring.cloud.azure.active-directory.b2c`.
+. New property `spring.cloud.azure.active-directory.b2c.enabled` is added to enable/disable AAD B2C related features. The default value is false.
 
 .Property mapping from azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c
 [cols="<30,<~", options="header"]
@@ -656,7 +656,7 @@ version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 [#configuration-spring-cloud-azure-starter-data-cosmos]
 ===== SDK Configuration Changes
 
-All configuration property names' prefix changed from `azure.cosmos` to `spring.cloud.azure.cosmos`.
+All configuration property names' prefix is changed from `azure.cosmos` to `spring.cloud.azure.cosmos`.
 
 .Property mapping from azure-spring-boot-starter-cosmos to spring-cloud-azure-starter-data-cosmos
 [cols="<30,<~", options="header"]
