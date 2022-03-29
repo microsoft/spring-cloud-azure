@@ -749,7 +749,8 @@ This section includes the changes about the properties added, removed and change
 . `spring.cloud.azure.keyvault.secret.property-sources[n].resource` is specific to a unique Azure resource, so if it's not configured, it won't get value from other places.
 
 ==== From azure-spring-boot-starter-servicebus-jms to spring-cloud-azure-starter-servicebus-jms
-This guide is intended to assist in the migration to
+
+This guide is intended to assist the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-servicebus-jms[spring-cloud-azure-starter-servicebus-jms] from
 version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-servicebus-jms[azure-spring-boot-starter-servicebus-jms].
 
@@ -763,7 +764,7 @@ version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 [#configuration-spring-cloud-azure-starter-servicebus-jms]
 ===== SDK Configuration Changes
 
-Configuration type for `spring.jms.servicebus.idle-timeout` changed from `long`(milliseconds) to `Duration` pattern for readability.
+The value type for `spring.jms.servicebus.idle-timeout` is changed from `long`(milliseconds) to `Duration` for ease of readability.
 
 ==== From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob
 This guide is intended to assist in the migration to
