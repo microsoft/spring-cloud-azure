@@ -323,8 +323,8 @@ Azure 4.0 library. Please add these removed dependencies to your project to prev
 This section includes the changes about the properties added, removed and changed.
 
 .The following two points are the main to pay your attention to:
-. All configuration property names' prefix changed from `azure.activedirectory` to `spring.cloud.azure.active-directory`.
-. New property `spring.cloud.azure.active-directory.enabled=true` is added to enable/disable AAD related features. The default value is `false`.
+. All configuration property names' prefix is changed from `azure.activedirectory` to `spring.cloud.azure.active-directory`.
+. New property `spring.cloud.azure.active-directory.enabled` is added to enable/disable AAD related features. The default value is `false`.
 
 .Property mapping from azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory
 [cols="<30,<~", options="header"]
@@ -512,7 +512,7 @@ This section lists the removed classes from azure-spring-boot-starter-active-dir
 
 ==== From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c
 
-This guide is intended to assist in the migration to
+This guide is intended to assist the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-active-directory-b2c[spring-cloud-azure-starter-active-directory-b2c] from
 version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-active-directory-b2c[azure-spring-boot-starter-active-directory-b2c].
 
@@ -526,60 +526,89 @@ version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 [#dependency-spring-cloud-azure-starter-active-directory-b2c]
 ===== Dependency Changes
 
-Some unnecessary dependencies were included in the legacy artifacts, which we have removed in the modern Spring Cloud
-Azure 4.0 libraries. Please make sure add the removed dependencies manually to your project to prevent unintentionally
-crash.
+Some unnecessary dependencies in the legacy artifact have been removed since the modern Spring Cloud
+Azure 4.0 library. Please add these removed dependencies to your project to prevent unintentional crash.
 
-.Removed dependencies of spring-cloud-azure-starter-active-directory-b2c
+.Removed Dependencies
 [cols="<30,<~", options="header"]
 |===
-|Removed dependencies |Description
+|Removed Dependency |Description
 |org.springframework.boot:spring-boot-starter-validation |Please include the validation starter if you want to use Hibernate Validator.
 |===
 
 [#configuration-spring-cloud-azure-starter-active-directory-b2c]
 ===== SDK Configuration Changes
 
-. All configuration property names changed the prefix from `azure.activedirectory.b2c` to `spring.cloud.azure.active-directory.b2c`.
-. New property `spring.cloud.azure.active-directory.b2c.enabled=false` is added to allow enable / disable AAD B2C related features. The default value is false.
+This section includes the changes about the properties added, removed and changed.
 
-IMPORTANT: If you're using the new `spring-cloud-azure-starter-active-directory-b2c`, you have to specify the `spring.cloud.azure.active-directory.b2c.enabled` to true, even if the starter is included in classpath.
+.The following two points are the main to pay your attention to:
+. All configuration property names' prefix is changed from `azure.activedirectory.b2c` to `spring.cloud.azure.active-directory.b2c`.
+. New property `spring.cloud.azure.active-directory.b2c.enabled` is added to enable/disable AAD B2C related features. The default value is false.
 
 .Property mapping from azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c
 [cols="<30,<~", options="header"]
 |===
-| Legacy properties                                                                              | Modern properties
-| *azure.activedirectory.b2c*.authenticate-additional-parameters                                 | *spring.cloud.azure.active-directory.b2c*.authenticate-additional-parameters
-| *azure.activedirectory.b2c*.authorization-clients                                              | *spring.cloud.azure.active-directory.b2c*.authorization-clients
-| *azure.activedirectory.b2c*.authorization-clients.<AZURE_CLIENT_NAME>.authorization-grant-type | *spring.cloud.azure.active-directory.b2c*.authorization-clients.<AZURE_CLIENT_NAME>.authorization-grant-type
-| *azure.activedirectory.b2c*.authorization-clients.<AZURE_CLIENT_NAME>.scopes                   | *spring.cloud.azure.active-directory.b2c*.authorization-clients.<AZURE_CLIENT_NAME>.scopes
-| *azure.activedirectory.b2c*.app-id-uri                                                         | *spring.cloud.azure.active-directory.b2c*.app-id-uri
-| *azure.activedirectory.b2c*.base-uri                                                           | *spring.cloud.azure.active-directory.b2c*.base-uri
-| *azure.activedirectory.b2c*.client-id                                                          | *spring.cloud.azure.active-directory.b2c*.credential.client-id
-| *azure.activedirectory.b2c*.client-secret                                                      | *spring.cloud.azure.active-directory.b2c*.credential.client-secret
-| *azure.activedirectory.b2c*.jwt-connect-timeout                                                | *spring.cloud.azure.active-directory.b2c*.jwt-connect-timeout
-| *azure.activedirectory.b2c*.jwt-read-timeout                                                   | *spring.cloud.azure.active-directory.b2c*.jwt-read-timeout
-| *azure.activedirectory.b2c*.jwt-size-limit                                                     | *spring.cloud.azure.active-directory.b2c*.jwt-size-limit
-| *azure.activedirectory.b2c*.login-flow                                                         | *spring.cloud.azure.active-directory.b2c*.login-flow
-| *azure.activedirectory.b2c*.logout-success-url                                                 | *spring.cloud.azure.active-directory.b2c*.logout-success-url
-| *azure.activedirectory.b2c*.reply-url                                                          | *spring.cloud.azure.active-directory.b2c*.reply-url
-| *azure.activedirectory.b2c*.tenant-id                                                          | *spring.cloud.azure.active-directory.b2c*.profile.tenant-id
-| *azure.activedirectory.b2c*.user-flows                                                         | *spring.cloud.azure.active-directory.b2c*.user-flows
-| *azure.activedirectory.b2c*.user-name-attribute-name                                           | *spring.cloud.azure.active-directory.b2c*.user-name-attribute-name
+| Legacy properties  | Modern properties
+
+| *azure.activedirectory.b2c*.authenticate-additional-parameters
+| *spring.cloud.azure.active-directory.b2c*.authenticate-additional-parameters
+
+| *azure.activedirectory.b2c*.authorization-clients
+| *spring.cloud.azure.active-directory.b2c*.authorization-clients
+
+| *azure.activedirectory.b2c*.authorization-clients.<AZURE_CLIENT_NAME>.authorization-grant-type
+| *spring.cloud.azure.active-directory.b2c*.authorization-clients.<AZURE_CLIENT_NAME>.authorization-grant-type
+
+| *azure.activedirectory.b2c*.authorization-clients.<AZURE_CLIENT_NAME>.scopes
+| *spring.cloud.azure.active-directory.b2c*.authorization-clients.<AZURE_CLIENT_NAME>.scopes
+
+| *azure.activedirectory.b2c*.app-id-uri
+| *spring.cloud.azure.active-directory.b2c*.app-id-uri
+
+| *azure.activedirectory.b2c*.base-uri
+| *spring.cloud.azure.active-directory.b2c*.base-uri
+
+| *azure.activedirectory.b2c*.client-id
+| *spring.cloud.azure.active-directory.b2c*.credential.client-id
+
+| *azure.activedirectory.b2c*.client-secret
+| *spring.cloud.azure.active-directory.b2c*.credential.client-secret
+
+| *azure.activedirectory.b2c*.jwt-connect-timeout
+| *spring.cloud.azure.active-directory.b2c*.jwt-connect-timeout
+
+| *azure.activedirectory.b2c*.jwt-read-timeout
+| *spring.cloud.azure.active-directory.b2c*.jwt-read-timeout
+
+| *azure.activedirectory.b2c*.jwt-size-limit
+| *spring.cloud.azure.active-directory.b2c*.jwt-size-limit
+
+| *azure.activedirectory.b2c*.login-flow
+| *spring.cloud.azure.active-directory.b2c*.login-flow
+
+| *azure.activedirectory.b2c*.logout-success-url
+| *spring.cloud.azure.active-directory.b2c*.logout-success-url
+
+| *azure.activedirectory.b2c*.reply-url
+| *spring.cloud.azure.active-directory.b2c*.reply-url
+
+| *azure.activedirectory.b2c*.tenant-id
+| *spring.cloud.azure.active-directory.b2c*.profile.tenant-id
+
+| *azure.activedirectory.b2c*.user-flows
+| *spring.cloud.azure.active-directory.b2c*.user-flows
+
+| *azure.activedirectory.b2c*.user-name-attribute-name
+| *spring.cloud.azure.active-directory.b2c*.user-name-attribute-name
 |===
 
-.Removed properties from azure-spring-boot-starter-active-directory-b2c
-[options="header"]
-|===
-| Removed property
-| azure.activedirectory.b2c.allow-telemetry
-| azure.activedirectory.b2c.tenant
-|===
+.Removed properties from azure-spring-boot-starter-active-directory-b2c:
+* azure.activedirectory.b2c.allow-telemetry
+* azure.activedirectory.b2c.tenant
 
-[NOTE]
-====
-The value type of the following properties is changed from `long` to `java.time.Duration`, they are `jwt-connect-timeout`, `jwt-read-timeout`.
-====
+.The value type of the following properties is changed from `long` to `Duration`:
+* `jwt-connect-timeout`
+* `jwt-read-timeout`
 
 [#api-spring-cloud-azure-starter-active-directory-b2c]
 ===== API Changes
@@ -588,17 +617,32 @@ The value type of the following properties is changed from `long` to `java.time.
 [cols="<~,<~", options="header"]
 |===
 |Legacy class |Modern class
-|com.azure.spring.autoconfigure.b2c.AADB2CAuthorizationRequestResolver |com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cAuthorizationRequestResolver
-|com.azure.spring.autoconfigure.b2c.AADB2CJwtBearerTokenAuthenticationConverter |com.azure.spring.cloud.autoconfigure.aad.AadJwtBearerTokenAuthenticationConverter
-|com.azure.spring.autoconfigure.b2c.AADB2CLogoutSuccessHandler |com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cLogoutSuccessHandler
-|com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer |com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cOidcLoginConfigurer
-|com.azure.spring.autoconfigure.b2c.AADB2CProperties |com.azure.spring.cloud.autoconfigure.aadb2c.properties.AadB2cProperties
-|com.azure.spring.autoconfigure.b2c.AADB2CTrustedIssuerRepository |com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cTrustedIssuerRepository
-|com.azure.spring.autoconfigure.b2c.AuthorizationClientProperties |com.azure.spring.cloud.autoconfigure.aad.properties.AuthorizationClientProperties
+
+|com.azure.spring.autoconfigure.b2c.AADB2CAuthorizationRequestResolver
+|com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cAuthorizationRequestResolver
+
+|com.azure.spring.autoconfigure.b2c.AADB2CJwtBearerTokenAuthenticationConverter
+|com.azure.spring.cloud.autoconfigure.aad.AadJwtBearerTokenAuthenticationConverter
+
+|com.azure.spring.autoconfigure.b2c.AADB2CLogoutSuccessHandler
+|com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cLogoutSuccessHandler
+
+|com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer
+|com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cOidcLoginConfigurer
+
+|com.azure.spring.autoconfigure.b2c.AADB2CProperties
+|com.azure.spring.cloud.autoconfigure.aadb2c.properties.AadB2cProperties
+
+|com.azure.spring.autoconfigure.b2c.AADB2CTrustedIssuerRepository
+|com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cTrustedIssuerRepository
+
+|com.azure.spring.autoconfigure.b2c.AuthorizationClientProperties
+|com.azure.spring.cloud.autoconfigure.aadb2c.properties.AuthorizationClientProperties
 |===
 
 ==== From azure-spring-boot-starter-cosmos to spring-cloud-azure-starter-data-cosmos
-This guide is intended to assist in the migration to
+
+This guide is intended to assist the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-data-cosmos[spring-cloud-azure-starter-data-cosmos] from
 version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-cosmos[azure-spring-boot-starter-cosmos].
 
@@ -612,22 +656,35 @@ version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 [#configuration-spring-cloud-azure-starter-data-cosmos]
 ===== SDK Configuration Changes
 
-All configuration property names changed the prefix from `azure.cosmos` to `spring.cloud.azure.cosmos`.
+All configuration property names' prefix is changed from `azure.cosmos` to `spring.cloud.azure.cosmos`.
 
 .Property mapping from azure-spring-boot-starter-cosmos to spring-cloud-azure-starter-data-cosmos
 [cols="<30,<~", options="header"]
 |===
 |Legacy properties |Morden properties
-|*azure.cosmos*.connection-mode |*spring.cloud.azure.cosmos*.connection-mode
-|*azure.cosmos*.consistency-level |*spring.cloud.azure.cosmos*.consistency-level
-|*azure.cosmos*.database |*spring.cloud.azure.cosmos*.database
-|*azure.cosmos*.key |*spring.cloud.azure.cosmos*.key
-|*azure.cosmos*.populate-query-metrics|*spring.cloud.azure.cosmos*.populate-query-metrics
-|*azure.cosmos*.uri |*spring.cloud.azure.cosmos*.endpoint
+
+|*azure.cosmos*.connection-mode
+|*spring.cloud.azure.cosmos*.connection-mode
+
+|*azure.cosmos*.consistency-level
+|*spring.cloud.azure.cosmos*.consistency-level
+
+|*azure.cosmos*.database
+|*spring.cloud.azure.cosmos*.database
+
+|*azure.cosmos*.key
+|*spring.cloud.azure.cosmos*.key
+
+|*azure.cosmos*.populate-query-metrics
+|*spring.cloud.azure.cosmos*.populate-query-metrics
+
+|*azure.cosmos*.uri
+|*spring.cloud.azure.cosmos*.endpoint
 |===
 
 ==== From azure-spring-boot-starter-keyvault-secrets to spring-cloud-azure-starter-keyvault-secrets
-This guide is intended to assist in the migration to
+
+This guide is intended to assist the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-keyvault-secrets[spring-cloud-azure-starter-keyvault-secrets] from
 version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-keyvault-secrets[azure-spring-boot-starter-keyvault-secrets].
 
@@ -641,41 +698,59 @@ version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 [#configuration-spring-cloud-azure-starter-keyvault-secrets]
 ===== SDK Configuration Changes
 
-IMPORTANT: If you're using the new `spring-cloud-azure-starter-keyvault-secrets`, you have to set `spring.cloud.azure.keyvault.secret.property-source-enabled=true` to enable property source.
+This section includes the changes about the properties added, removed and changed.
 
 .Property mapping from azure-spring-boot-starter-keyvault-secrets to spring-cloud-azure-starter-keyvault-secrets
 [cols="<30,<~", options="header"]
 |===
 | Legacy properties                        | Modern properties
-| *azure.keyvault*.case-sensitive-keys     | *spring.cloud.azure.keyvault.secret*.property-sources[n].case-sensitive
-| *azure.keyvault*.certificate-password    | *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-certificate-password
-| *azure.keyvault*.certificate-path        | *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-certificate-path
-| *azure.keyvault*.client-id               | *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-id
-| *azure.keyvault*.client-key              | *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-secret
-| *azure.keyvault*.enabled                 | *spring.cloud.azure.keyvault.secret*.enabled and *spring.cloud.azure.keyvault.secret*.property-source-enabled
-| *azure.keyvault*.order                   | Not supported anymore. Use the order in property-sources[n] instead.
-| *azure.keyvault*.refresh-interval        | *spring.cloud.azure.keyvault.secret*.property-sources[n].refresh-interval
-| *azure.keyvault*.secret-keys             | *spring.cloud.azure.keyvault.secret*.property-sources[n].secret-keys
-| *azure.keyvault*.tenant-id               | *spring.cloud.azure.keyvault.secret*.property-sources[n].profile.tenant-id
-| *azure.keyvault*.uri                     | *spring.cloud.azure.keyvault.secret*.property-sources[n].endpoint
+
+| *azure.keyvault*.case-sensitive-keys
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].case-sensitive
+
+| *azure.keyvault*.certificate-password
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-certificate-password
+
+| *azure.keyvault*.certificate-path
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-certificate-path
+
+| *azure.keyvault*.client-id
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-id
+
+| *azure.keyvault*.client-key
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-secret
+
+| *azure.keyvault*.enabled
+| *spring.cloud.azure.keyvault.secret*.enabled and *spring.cloud.azure.keyvault.secret*.property-source-enabled
+
+| *azure.keyvault*.refresh-interval
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].refresh-interval
+
+| *azure.keyvault*.secret-keys
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].secret-keys
+
+| *azure.keyvault*.tenant-id
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].profile.tenant-id
+
+| *azure.keyvault*.uri
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].endpoint
 |===
 
 .Removed properties from spring-cloud-azure-starter-keyvault-secrets
-[options="header"]
-|===
-| Removed property
-| azure.keyvault.allow-telemetry
-| azure.keyvault.order
-|===
+* azure.keyvault.allow-telemetry
+* azure.keyvault.order
 
+
+.The following points you should pay your attention to:
 . All configuration property names changed the prefix from `azure.keyvault` to `spring.cloud.azure.keyvault.secret`.
-. `spring.cloud.azure.keyvault.secret.enabled` is used to enable all Key Vault Secret features, include configure Key Vault secret client beans(like `SecretClient` and `SecretAsyncClient`) and add `KeyVaultPropertySource` in `ConfigurableEnvironment`.
-. `spring.cloud.azure.keyvault.secret.property-source-enabled` is used to enable all `KeyVaultPropertySource`. It will take effect only when `spring.cloud.azure.keyvault.secret.enabled=true`.
+. `spring.cloud.azure.keyvault.secret.enabled` is used to enable the feature of configuring Key Vault secret client beans(like SecretClient and SecretAsyncClient).
+. `spring.cloud.azure.keyvault.secret.property-source-enabled` is used to enable all `KeyVaultPropertySource`.
 . For Azure common properties(like `client`, `proxy`, `retry`, `credential`, `profile`) and Key Vault properties(like `endpoint`, `service-version`). If `spring.cloud.azure.keyvault.secret.property-sources[n].PROPERTY_NAME` isn't configured, `spring.cloud.azure.keyvault.secret.PROPERTY_NAME` will be used.
 . `spring.cloud.azure.keyvault.secret.property-sources[n].resource` is specific to a unique Azure resource, so if it's not configured, it won't get value from other places.
 
 ==== From azure-spring-boot-starter-servicebus-jms to spring-cloud-azure-starter-servicebus-jms
-This guide is intended to assist in the migration to
+
+This guide is intended to assist the migration to
 link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-servicebus-jms[spring-cloud-azure-starter-servicebus-jms] from
 version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-servicebus-jms[azure-spring-boot-starter-servicebus-jms].
 
@@ -689,7 +764,7 @@ version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-sprin
 [#configuration-spring-cloud-azure-starter-servicebus-jms]
 ===== SDK Configuration Changes
 
-Configuration type for `spring.jms.servicebus.idle-timeout` changed from `long`(milliseconds) to `Duration` pattern for readability.
+The value type for `spring.jms.servicebus.idle-timeout` is changed from `long`(milliseconds) to `Duration` for ease of readability.
 
 ==== From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob
 This guide is intended to assist in the migration to
