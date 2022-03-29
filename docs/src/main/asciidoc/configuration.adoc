@@ -1,7 +1,7 @@
 [#configuration]
 == Configuration
 
-Most of Azure SDKs could be divided into two categories by transport type, HTTP-based and AMQP-based. There are properties that are common to all SDKs such as authentication principals and Azure environment settings. Or common to HTTP-based clients, such as logging level to log http requests and responses. Spring Cloud Azure 4.0 provides five common categories of configuration properties, which could be specified to each Azure service.
+Most of Azure SDKs could be divided into two categories by transport type, HTTP-based and AMQP-based. There are properties that are common to all SDKs such as authentication principals and Azure environment settings. Or common to HTTP-based clients, such as logging level to log HTTP requests and responses. Spring Cloud Azure 4.0 provides five common categories of configuration properties, which could be specified to each Azure service.
 
 .Service common properties
 [cols="2,3", options="header"]
@@ -51,37 +51,46 @@ There are some properties that could be shared among different Azure services, f
 
 NOTE: Properties configured under each Azure service will override the global configurations.
 
-Spring Cloud Azure unifies configuration properties' prefixes to `spring.cloud.azure` since 4.0, which will make configuration properties more consistent and more intuitive. Here's a quick review of the prefixes of supported Azure services.
+Spring Cloud Azure unifies configuration properties' prefixes to `spring.cloud.azure` since 4.0, which will make configuration properties more consistent and more intuitive. Here's a quick review of the serivce specific properties.
 
 .Service specific properties
-[cols="<50,<50", options="header"]
+[cols="<3,<3,<3", options="header"]
 |===
-|Azure Service |Configuration Property Prefix 
+|Azure Service |Configuration Property Prefix | Configuration Properties Link
 
 |Azure App Configuration 
 |spring.cloud.azure.*appconfiguration*
+|link:appendix.html#_azure_app_configuration_proeprties[App Configuration Properties]
 
 |Azure Cosmos DB 
 |spring.cloud.azure.*cosmos*
+|link:appendix.html#_azure_cosmos_proeprties[Cosmos Properties]
 
 |Azure Event Hubs 
 |spring.cloud.azure.*eventhubs*
+|link:appendix.html#_azure_event_hubs_proeprties[Event Hubs Properties]
 
-|Azure Key Vault Certificate 
+|Azure Key Vault Certificates
 |spring.cloud.azure.*keyvault.certificate*
+|link:appendix.html#_azure_key_vault_certificates_proeprties[Key Vault Certificates Properties]
 
-|Azure Key Vault Secret 
+|Azure Key Vault Secrets 
 |spring.cloud.azure.*keyvault.secret*
+|link:appendix.html#_azure_key_vault_secrets_proeprties[Key Vault Secrets Properties]
 
 |Azure Service Bus 
 |spring.cloud.azure.*servicebus*
+|link:appendix.html#_azure_service_bus_proeprties[Service Bus Properties]
 
 |Azure Storage Blob
 |spring.cloud.azure.*storage.blob*
+|link:appendix.html#_azure_storage_blob_proeprties[Storage Blob Properties]
 
 |Azure Storage File Share 
 |spring.cloud.azure.*storage.fileshare*
+|link:appendix.html#_azure_storage_file_share_proeprties[Storage File Share Properties]
 
 |Azure Storage Queue
 |spring.cloud.azure.*storage.queue*
+|link:appendix.html#_azure_storage_queue_proeprties[Storage Queue Properties]
 |===

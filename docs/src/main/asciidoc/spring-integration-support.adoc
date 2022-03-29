@@ -287,7 +287,7 @@ class Demo {
         checkpointer.success()
                 .doOnSuccess(s -> LOGGER.info("Message '{}' successfully checkpointed", message))
                 .doOnError(e -> LOGGER.error("Error found", e))
-                .subscribe();
+                .block();
     }
 }
 ----
@@ -634,7 +634,7 @@ class Demo {
         checkpointer.success()
                 .doOnSuccess(s -> LOGGER.info("Message '{}' successfully checkpointed", message))
                 .doOnError(e -> LOGGER.error("Error found", e))
-                .subscribe();
+                .block();
     }
 }
 ----
@@ -647,74 +647,153 @@ class Demo {
 For some Service Bus headers that can be mapped to multiple Spring header constants, the priority of different Spring headers is listed.
 
 .Mapping between Service Bus Headers and Spring Headers
-[cols="<,<,<,<", options="header"]
+[cols="<,<,<,<,<", options="header"]
 |===
-|Service Bus Message Headers and Properties | Spring Message Header Constants | Type | Priority Number (Descending priority)
+|Service Bus Message Headers and Properties | Spring Message Header Constants | Type | Configurable | Description
 
-|ContentType
+| Content type
 | MessageHeaders#CONTENT_TYPE
 | String
-| N/A
+| Yes
+| The RFC2045 Content-Type descriptor of the message.
 
-|CorrelationId
+| Correlation id
 | ServiceBusMessageHeaders#CORRELATION_ID
-|String
-| N/A
+| String
+| Yes
+| The correlation id of the message
 
-|**MessageId**
+| Message id
 | ServiceBusMessageHeaders#MESSAGE_ID
 | String
-| 1
+| Yes
+| The message id of the message, this header has higher priority than `MessageHeaders#ID`.
 
-|**MessageId**
-| AzureHeaders#RAW_ID
-| String
-| 2
-
-|**MessageId**
+| Message id
 | MessageHeaders#ID
 | UUID
-| 3
+| Yes
+| The message id of the message, this header has lower priority than `ServiceBusMessageHeaders#MESSAGE_ID`.
 
-|PartitionKey
+| Partition key
 | ServiceBusMessageHeaders#PARTITION_KEY
-|String
-| N/A
+| String
+| Yes
+| The partition key for sending the message to a partitioned entity.
 
-|ReplyTo
+| Reply to
 | MessageHeaders#REPLY_CHANNEL
 | String
-| N/A
+| Yes
+| The address of an entity to send replies to.
 
-|ReplyToSessionId
+| Reply to session id
 | ServiceBusMessageHeaders#REPLY_TO_SESSION_ID
 | String
-| N/A
+| Yes
+| The ReplyToGroupId property value of the message.
 
-|**ScheduledEnqueueTimeUtc**
+| Scheduled enqueue time utc
+| ServiceBusMessageHeaders#SCHEDULED_ENQUEUE_TIME
+| OffsetDateTime
+| Yes
+| The datetime at which the message should be enqueued in Service Bus, this header has higher priority than `AzureHeaders#SCHEDULED_ENQUEUE_MESSAGE`.
+
+| Scheduled enqueue time utc
 | AzureHeaders#SCHEDULED_ENQUEUE_MESSAGE
 | Integer
-| 1
+| Yes
+| The datetime at which the message should be enqueued in Service Bus, this header has lower priority than `ServiceBusMessageHeaders#SCHEDULED_ENQUEUE_TIME`.
 
-|**ScheduledEnqueueTimeUtc**
-| ServiceBusMessageHeaders#SCHEDULED_ENQUEUE_TIME
-| Instant
-| 2
-
-|SessionID
+| Session id
 | ServiceBusMessageHeaders#SESSION_ID
 | String
-| N/A
+| Yes
+| The session identifier for a session-aware entity.
 
-|TimeToLive
+| Time to live
 | ServiceBusMessageHeaders#TIME_TO_LIVE
-|Duration
-| N/A
+| Duration
+| Yes
+| The duration of time before this message expires.
 
-|To
+| To
 | ServiceBusMessageHeaders#TO
 | String
-| N/A
+| Yes
+| The "to" address of the message, reserved for future use in routing scenarios and presently ignored by the broker itself.
+
+| Subject
+| ServiceBusMessageHeaders#SUBJECT
+| String
+| Yes
+| The subject for the message.
+
+| Dead letter error description
+| ServiceBusMessageHeaders#DEAD_LETTER_ERROR_DESCRIPTION
+| String
+| No
+| The description for a message that has been dead-lettered.
+
+| Dead letter reason
+| ServiceBusMessageHeaders#DEAD_LETTER_REASON
+| String
+| No
+| The reason a message was dead-lettered.
+
+| Dead letter source
+| ServiceBusMessageHeaders#DEAD_LETTER_SOURCE
+| String
+| No
+| The entity in which the message was dead-lettered.
+
+| Delivery count
+| ServiceBusMessageHeaders#DELIVERY_COUNT
+| long
+| No
+| The number of the times this message was delivered to clients.
+
+| Enqueued sequence number
+| ServiceBusMessageHeaders#ENQUEUED_SEQUENCE_NUMBER
+| long
+| No
+| The enqueued sequence number assigned to a message by Service Bus.
+
+| Enqueued time
+| ServiceBusMessageHeaders#ENQUEUED_TIME
+| OffsetDateTime
+| No
+| The datetime at which this message was enqueued in Service Bus.
+
+| Expires at
+| ServiceBusMessageHeaders#EXPIRES_AT
+| OffsetDateTime
+| No
+| The datetime at which this message will expire.
+
+| Lock token
+| ServiceBusMessageHeaders#LOCK_TOKEN
+| String
+| No
+| The lock token for the current message.
+
+| Locked until
+| ServiceBusMessageHeaders#LOCKED_UNTIL
+| OffsetDateTime
+| No
+| The datetime at which the lock of this message expires.
+
+| Sequence number
+| ServiceBusMessageHeaders#SEQUENCE_NUMBER
+| long
+| No
+| The unique number assigned to a message by Service Bus.
+
+| State
+| ServiceBusMessageHeaders#STATE
+| ServiceBusMessageState
+| No
+| The state of the message, which can be Active, Deferred, or Scheduled.
 |===
 
 ===== Partition Key Support
@@ -960,7 +1039,7 @@ class Demo {
         checkpointer.success()
             .doOnError(Throwable::printStackTrace)
             .doOnSuccess(t -> LOGGER.info("Message '{}' successfully checkpointed", message))
-            .subscribe();
+            .block();
     }
 }
 ----

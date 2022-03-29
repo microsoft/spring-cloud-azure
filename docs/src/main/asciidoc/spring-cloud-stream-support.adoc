@@ -282,10 +282,10 @@ spring:
   cloud:
     azure:
       credential:
-        client-id: ${SERVICE_PRINCIPAL_ID}
-        client-secret: ${SERVICE_PRINCIPAL_SECRET}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
       profile:
-        tenant-id: ${TENANT_ID}
+        tenant-id: ${AZURE_TENANT_ID}
       eventhubs:
         namespace: ${EVENTHUB_NAMESPACE}
         processor:
@@ -363,7 +363,7 @@ public Consumer<Message<String>> consume() {
         checkpointer.success()
                 .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                 .doOnError(error -> LOGGER.error("Exception found", error))
-                .subscribe();
+                .block();
     };
 }
 
@@ -456,7 +456,7 @@ public Consumer<Message<List<String>>> consume() {
         checkpointer.success()
                     .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                     .doOnError(error -> LOGGER.error("Exception found", error))
-                    .subscribe();
+                    .block();
     };
 }
 
@@ -518,8 +518,8 @@ public void producerError(Message<?> message) {
 ===== Event Hubs Message Headers
 See the <<si-eh-headers, Event Hubs message headers>> for the basic message headers supported.
 
-===== Multi Binder Support
-Connection to mutiple Event Hubs namespaces is also supported by using multi binders.This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder's environment settings.
+===== Multiple Binder Support
+Connection to multiple Event Hubs namespaces is also supported by using multiple binders.This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder's environment settings.
 
 Step 1. To use multiple binders of EventHubs, we need to configure below properties in application.yml
 [source,yaml]
@@ -612,7 +612,7 @@ public Consumer<Message<String>> consume1() {
         checkpointer.success()
                 .doOnSuccess(success -> LOGGER.info("Message1 '{}' successfully checkpointed", message))
                 .doOnError(error -> LOGGER.error("Exception found", error))
-                .subscribe();
+                .block();
     };
 }
 
@@ -624,7 +624,7 @@ public Consumer<Message<String>> consume2() {
         checkpointer.success()
                 .doOnSuccess(success -> LOGGER.info("Message2 '{}' successfully checkpointed", message))
                 .doOnError(error -> LOGGER.error("Exception found", error))
-                .subscribe();
+                .block();
     };
 }
 ----
@@ -844,10 +844,10 @@ spring:
   cloud:
     azure:
       credential:
-        client-id: ${CLIENT_ID}
-        client-secret: ${CLIENT_SECRET}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
       profile:
-        tenant-id: ${TENANT_ID}
+        tenant-id: ${AZURE_TENANT_ID}
       servicebus:
         namespace: ${SERVICEBUS_NAMESPACE}
     stream:
@@ -920,7 +920,7 @@ public Consumer<Message<String>> consume() {
         checkpointer.success()
                 .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                 .doOnError(error -> LOGGER.error("Exception found", error))
-                .subscribe();
+                .block();
     };
 }
 
@@ -937,7 +937,7 @@ public Supplier<Message<String>> supply() {
 
 The binder supports link:https://docs.microsoft.com/azure/service-bus-messaging/service-bus-partitioning[Service Bus partitioning] by allowing setting partition key and session id in the message header. This section introduces how to set partition key for messages.
 
-Spring Cloud Stream provides a partition key SpEL expression property `spring.cloud.stream.bindings.<binding-name>.producer.partition-key-expression`. For example, setting this properts as `&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;` and add a header called <message-header-key>. Spring Cloud Stream will use the value for this header when evaluating the above expression to assign a partition key. Here is an example producer code:
+Spring Cloud Stream provides a partition key SpEL expression property `spring.cloud.stream.bindings.<binding-name>.producer.partition-key-expression`. For example, setting this property as `&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;` and add a header called <message-header-key>. Spring Cloud Stream will use the value for this header when evaluating the above expression to assign a partition key. Here is an example producer code:
 
 [source,java]
 ----
@@ -1025,8 +1025,8 @@ See the <<si-sb-headers, Service Bus message headers>> for the basic message hea
 
 NOTE: When setting the partiton key, the priority of message header is higher than Spring Cloud Stream property. So `spring.cloud.stream.bindings.<binding-name>.producer.partition-key-expression` will take effect only when none of the headers of `ServiceBusMessageHeaders#SESSION_ID`, `ServiceBusMessageHeaders#PARTITION_KEY`, `AzureHeaders#PARTITION_KEY` is configured.
 
-===== Multi Binder Support
-Connection to mutiple Service Bus namespaces is also supported by using multi binders. This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder's environment settings.
+===== Multiple Binder Support
+Connection to multiple Service Bus namespaces is also supported by using multiple binders. This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder's environment settings.
 
 Step 1. To use multiple binders of ServiceBus, we need to configure below properties in application.yml
 [source,yaml]
@@ -1112,7 +1112,7 @@ public Consumer<Message<String>> consume1() {
         checkpointer.success()
                 .doOnSuccess(s -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                 .doOnError(e -> LOGGER.error("Error found", e))
-                .subscribe();
+                .block();
     };
 }
 
@@ -1124,7 +1124,7 @@ public Consumer<Message<String>> consume2() {
         checkpointer.success()
                 .doOnSuccess(s -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                 .doOnError(e -> LOGGER.error("Error found", e))
-                .subscribe();
+                .block();
     };
 
 }

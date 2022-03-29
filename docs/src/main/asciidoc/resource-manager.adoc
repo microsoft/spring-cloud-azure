@@ -51,11 +51,11 @@ spring:
   cloud:
     azure:
       credential:
-        client-id: ${CLIENT_ID}
-        client-secret: ${CLIENT_SECRET}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
       profile:
-        tenant-id: ${TENANT_ID}
-        subscription-id: ${SUBSCRIPTION_ID}
+        tenant-id: ${AZURE_TENANT_ID}
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
       <azure-service>:
         namespace: ${SERVICEBUS_NAMESPACE}
         resource:
