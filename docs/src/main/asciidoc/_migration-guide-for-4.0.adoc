@@ -743,8 +743,8 @@ This section includes the changes about the properties added, removed and change
 
 .The following points you should pay your attention to:
 . All configuration property names changed the prefix from `azure.keyvault` to `spring.cloud.azure.keyvault.secret`.
-. `spring.cloud.azure.keyvault.secret.enabled` is used to enable all Key Vault Secret features, include configure Key Vault secret client beans(like `SecretClient` and `SecretAsyncClient`) and add `KeyVaultPropertySource` in `ConfigurableEnvironment`.
-. `spring.cloud.azure.keyvault.secret.property-source-enabled` is used to enable all `KeyVaultPropertySource`. It will take effect only when `spring.cloud.azure.keyvault.secret.enabled=true`.
+. `spring.cloud.azure.keyvault.secret.enabled` is used to enable the feature of configuring Key Vault secret client beans(like SecretClient and SecretAsyncClient).
+. `spring.cloud.azure.keyvault.secret.property-source-enabled` is used to enable all `KeyVaultPropertySource`.
 . For Azure common properties(like `client`, `proxy`, `retry`, `credential`, `profile`) and Key Vault properties(like `endpoint`, `service-version`). If `spring.cloud.azure.keyvault.secret.property-sources[n].PROPERTY_NAME` isn't configured, `spring.cloud.azure.keyvault.secret.PROPERTY_NAME` will be used.
 . `spring.cloud.azure.keyvault.secret.property-sources[n].resource` is specific to a unique Azure resource, so if it's not configured, it won't get value from other places.
 
