@@ -1,14 +1,14 @@
----
+—
 title: "Tutorial: Secure Spring Boot apps using Azure Key Vault certificates"
 description: In this tutorial, you secure your Spring Boot (including Azure Spring Cloud) apps with TLS/SSL certificates using Azure Key Vault and managed identities for Azure resources.
 ms.date: 03/30/2022
 ms.service: key-vault
 ms.topic: tutorial
 ms.custom: devx-track-java, devx-track-azurecli
-ms.author: edburns
----
 
-# Tutorial: Secure Spring Boot apps using Azure Key Vault certificates
+== ms.author: edburns
+
+= Tutorial: Secure Spring Boot apps using Azure Key Vault certificates
 
 This tutorial shows you how to secure your Spring Boot (including Azure Spring Cloud) apps with TLS/SSL certificates using Azure Key Vault and managed identities for Azure resources.
 
@@ -16,42 +16,50 @@ Production-grade Spring Boot applications, whether in the cloud or on-premises, 
 
 Spring Boot apps typically enable TLS by installing the certificates. The certificates are installed into the local key store of the JVM that's running the Spring Boot app. With Spring on Azure, certificates are not installed locally. Instead, Spring integration for Microsoft Azure provides a secure and frictionless way to enable TLS with help from Azure Key Vault and managed identity for Azure resources.
 
-<!-- https://github.com/Azure/azure-sdk-for-java/blob/master/sdk/spring/azure-spring-doc-resource/spring-to-azure-keyvault-certificates.ai -->
 :::image type="content" source="media/configure-spring-boot-starter-java-app-with-azure-key-vault-certificates/spring-to-azure-key-vault-certificates.svg" alt-text="Diagram showing interaction of elements in this tutorial." border="false":::
 
 In this tutorial, you learn how to:
 
-> [!div class="checklist"]
-> * Create a GNU/Linux VM with system-assigned managed identity
-> * Create an Azure Key Vault
-> * Create a self-signed TLS/SSL certificate
-> * Store the self-signed TLS/SSL certificate in the Azure Key Vault
-> * Run a Spring Boot application where the TLS/SSL certificate for inbound connections comes from Azure Key Vault
-> * Run a Spring Boot application where the TLS/SSL certificate for outbound connections comes from Azure Key Vault
+____
 
-## Prerequisites
+[!div class="checklist"]
+* Create a GNU/Linux VM with system-assigned managed identity
+* Create an Azure Key Vault
+* Create a self-signed TLS/SSL certificate
+* Store the self-signed TLS/SSL certificate in the Azure Key Vault
+* Run a Spring Boot application where the TLS/SSL certificate for inbound connections comes from Azure Key Vault
+* Run a Spring Boot application where the TLS/SSL certificate for outbound connections comes from Azure Key Vault
 
-- [!INCLUDE [free subscription](includes/quickstarts-free-trial-note.md)]
-[!INCLUDE [curl](includes/prerequisites-curl.md)]
-[!INCLUDE [jq](includes/prerequisites-jq.md)]
-[!INCLUDE [Azure CLI](includes/prerequisites-azure-cli.md)]
+____
 
-- A supported Java Development Kit (JDK), version 8. For more information, see [Java support on Azure and Azure Stack](../fundamentals/java-support-on-azure.md).
+== Prerequisites
 
-- [Apache Maven](http://maven.apache.org/), version 3.0.
+* [!INCLUDE link:includes/quickstarts-free-trial-note.md[free subscription]]
+[!INCLUDE link:includes/prerequisites-curl.md[curl]]
+[!INCLUDE link:includes/prerequisites-jq.md[jq]]
+[!INCLUDE link:includes/prerequisites-azure-cli.md[Azure CLI]]
 
-> [!IMPORTANT]
-> Spring Boot version 2.5 or 2.6 is required to complete the steps in this article.
+* A supported Java Development Kit (JDK), version 8. For more information, see link:../fundamentals/java-support-on-azure.md[Java support on Azure and Azure Stack].
 
-## Create a GNU/Linux VM with system-assigned managed identity
+* http://maven.apache.org/[Apache Maven], version 3.0.
 
-Use the following steps to create an Azure VM with a system-assigned managed identity and prepare it to run the Spring Boot application. For an overview of managed identities for Azure resources, see [What are managed identities for Azure resources?](/azure/active-directory/managed-identities-azure-resources/overview).
+____
 
-1. Open a Bash shell.
+[!IMPORTANT]
+Spring Boot version 2.5 or 2.6 is required to complete the steps in this article.
 
-1. Sign out and delete some authentication files to remove any lingering credentials.
+____
 
-   ```azurecli
+== Create a GNU/Linux VM with system-assigned managed identity
+
+Use the following steps to create an Azure VM with a system-assigned managed identity and prepare it to run the Spring Boot application. For an overview of managed identities for Azure resources, see link:/azure/active-directory/managed-identities-azure-resources/overview[What are managed identities for Azure resources?].
+
+. Open a Bash shell.
+
+. Sign out and delete some authentication files to remove any lingering credentials.
+
+[source,azurecli]
+----
    az logout
    rm ~/.azure/accessTokens.json
    rm ~/.azure/azureProfile.json
@@ -182,12 +190,14 @@ Use the following steps to create an Azure Key Vault, and to grant permission fo
 
 The steps in this tutorial apply to any TLS/SSL certificate (including self-signed) stored directly in Azure Key Vault. Self-signed certificates aren't suitable for use in production, but are useful for dev and test applications. This tutorial uses a self-signed certificate. To create the certificate, use the following command.
 
-```azurecli
+----
+
 az keyvault certificate create \
-    --vault-name <your Key Vault name> \
-    --name mycert \
-    --policy "$(az keyvault certificate get-default-policy)"
-```
+ –vault-name <your Key Vault name> \
+ –name mycert \
+ –policy "$(az keyvault certificate get-default-policy)"
+
+----
 
 ## Run a Spring Boot application with secure inbound connections
 
@@ -507,13 +517,18 @@ You've now observed a simple illustration of the *load*, *present*, and *accept*
 
 When you're finished with the Azure resources you created in this tutorial, you can delete them using the following command:
 
-```azurecli
-az group delete --name <your resource group name>
+----
+
+az group delete –name <your resource group name>
 ```
 
-## Next steps
+== Next steps
 
 Explore other things you can do with Spring and Azure.
 
-> [!div class="nextstepaction"]
-> [More Spring Boot Starters](spring-boot-starters-for-azure.md)
+____
+
+[!div class="nextstepaction"]
+[More Spring Boot Starters](spring-boot-starters-for-azure.md)
+
+____
