@@ -216,7 +216,7 @@ spring:
 ----
 
 ====== Advanced Consumer Configuration
-The above <<eventhubs-connection-configuration, connection>>, <<Checkpoint Configuration Properties, checkpoint>> and <<Configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder consumer, which can be configured with the prefix `spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer.`.
+The above <<eventhubs-connection-configuration, connection>>, <<Checkpoint Configuration Properties, checkpoint>> and <<configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder consumer, which can be configured with the prefix `spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer.`.
 
 ====== Producer Properties
 
@@ -237,7 +237,7 @@ These properties are exposed via `EventHubsProducerProperties`.
 |===
 
 ====== Advanced Producer Configuration
-The above <<eventhubs-connection-configuration, connection>> and <<Configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder producer, which can be configured with the prefix `spring.cloud.stream.eventhubs.bindings.<binding-name>.producer.`.
+The above <<eventhubs-connection-configuration, connection>> and <<configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder producer, which can be configured with the prefix `spring.cloud.stream.eventhubs.bindings.<binding-name>.producer.`.
 
 ==== Basic Usage
 ===== Sending and Receiving Messages from/to Event Hubs
@@ -782,7 +782,7 @@ to enable developers to settle messages manually.
 |===
 
 ====== Advanced Consumer Configuration
-The above <<servicebus-connection-configuration, connection>> and <<Configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder consumer, which can be configured with the prefix `spring.cloud.stream.servicebus.bindings.<binding-name>.consumer.`.
+The above <<servicebus-connection-configuration, connection>> and <<configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder consumer, which can be configured with the prefix `spring.cloud.stream.servicebus.bindings.<binding-name>.consumer.`.
 
 ====== Producer Properties
 
@@ -803,7 +803,7 @@ value for sending of producer.
 IMPORTANT: When using the binding producer, property of `spring.cloud.stream.servicebus.bindings.<binding-name>.producer.entity-type` is required to be configured.
 
 ====== Advanced Producer Configuration
-The above <<servicebus-connection-configuration, connection>> and <<Configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder producer, which can be configured with the prefix `spring.cloud.stream.servicebus.bindings.<binding-name>.producer.`.
+The above <<servicebus-connection-configuration, connection>> and <<configuration.adoc#configuration, common Azure SDK client>> configuration are supported to be customized for each binder producer, which can be configured with the prefix `spring.cloud.stream.servicebus.bindings.<binding-name>.producer.`.
 
 ==== Basic Usage
 ===== Sending and Receiving Messages from/to Service Bus
