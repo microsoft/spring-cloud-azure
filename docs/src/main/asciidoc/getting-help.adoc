@@ -1,0 +1,20 @@
+
+== Getting Help
+
+If you have any questions about this document, please ask by creating GitHub issues. And Pull Request is welcome.
+
+.GitHub repositories
+[%autowidth.stretch]
+[cols="<30,<70", options="header"]
+|===
+|GitHub repositories | Description
+
+|https://github.com/Azure/azure-sdk-for-java/tree/spring-cloud-azure-dependencies_{project-version}/sdk/spring[Azure/azure-sdk-for-java]
+|This repository used to hold the source code.
+
+|https://github.com/microsoft/spring-cloud-azure/tree/{project-version}/docs/src/main/asciidoc[microsoft/spring-cloud-azure]
+|This repository used to hold the document which is displaying in current page.
+
+|===
+
+
