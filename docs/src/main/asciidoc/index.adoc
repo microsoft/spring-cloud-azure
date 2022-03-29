@@ -1,6 +1,6 @@
-:doctype: book
+include::_attributes.adoc[]
 
-= Spring on Azure documentation
+= Spring Cloud Azure Documentation
 
 include::getting-started-guides.adoc[]
 include::tutorials.adoc[]
