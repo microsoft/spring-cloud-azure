@@ -18,7 +18,7 @@
   <properties>
     <docs.main>spring-cloud-azure</docs.main>
     <main.basedir>${basedir}/..</main.basedir>
-    <docs.whitelisted.branches>${project.version}</docs.whitelisted.branches>
+    <docs.whitelisted.branches>4.0.0-beta.4</docs.whitelisted.branches>
     <configprops.inclusionPattern>spring.jms.servicebus.*|spring.cloud.azure.*</configprops.inclusionPattern>
     <upload-docs-zip.phase>none</upload-docs-zip.phase>
     <generated-docs-multipage-output.dir>${project.build.directory}/generated-docs/${project.version}/reference/html</generated-docs-multipage-output.dir>
