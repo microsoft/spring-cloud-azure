@@ -3,40 +3,40 @@
 == Configuration Properties
 
 === Global Properties
-include::reference-doc/_configprops_global.adoc[]
+include::spring-cloud-azure/_configprops_global.adoc[]
 
 === Azure Active Directory Properties
 
-include::reference-doc/_configprops_aad.adoc[]
+include::spring-cloud-azure/_configprops_aad.adoc[]
 
 === Azure Active Directory B2C Properties
-include::reference-doc/_configprops_aadb2c.adoc[]
+include::spring-cloud-azure/_configprops_aadb2c.adoc[]
 === Azure App Configuration Proeprties
-include::reference-doc/_configprops_appconf.adoc[]
+include::spring-cloud-azure/_configprops_appconf.adoc[]
 === Azure Cosmos Proeprties
-include::reference-doc/_configprops_cosmos.adoc[]
+include::spring-cloud-azure/_configprops_cosmos.adoc[]
 === Azure Event Hubs Proeprties
-include::reference-doc/_configprops_eventhubs.adoc[]
+include::spring-cloud-azure/_configprops_eventhubs.adoc[]
 === Azure Key Vault Secrets Proeprties
-include::reference-doc/_configprops_kv_secret.adoc[]
+include::spring-cloud-azure/_configprops_kv_secret.adoc[]
 === Azure Key Vault Certificates Proeprties
-include::reference-doc/_configprops_kv_certificate.adoc[]
+include::spring-cloud-azure/_configprops_kv_certificate.adoc[]
 === Azure Service Bus Proeprties
-include::reference-doc/_configprops_servicebus.adoc[]
+include::spring-cloud-azure/_configprops_servicebus.adoc[]
 === Azure Service Bus JMS Proeprties
-include::reference-doc/_configprops_servicebus_jms.adoc[]
+include::spring-cloud-azure/_configprops_servicebus_jms.adoc[]
 === Azure Storage Blob Proeprties
-include::reference-doc/_configprops_storage_blob.adoc[]
+include::spring-cloud-azure/_configprops_storage_blob.adoc[]
 === Azure Storage File Share Proeprties
-include::reference-doc/_configprops_storage_fileshare.adoc[]
+include::spring-cloud-azure/_configprops_storage_fileshare.adoc[]
 === Azure Storage Queue Proeprties
-include::reference-doc/_configprops_storage_queue.adoc[]
+include::spring-cloud-azure/_configprops_storage_queue.adoc[]
 === All Configuration Proeprties
-include::reference-doc/_configprops.adoc[]
+include::spring-cloud-azure/_configprops.adoc[]
 
 [appendix]
-include::reference-doc/_migration-guide-for-4.0.adoc[]
+include::spring-cloud-azure/_migration-guide-for-4.0.adoc[]
 
 [appendix]
-include::reference-doc/_known-issues.adoc[]
+include::spring-cloud-azure/_known-issues.adoc[]
 
