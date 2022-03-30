@@ -1,7 +1,4 @@
 
 = Tutorials
 
-== Placeholder
-
-placeholder
-
+. link:https://spring.io/guides/gs/spring-boot-for-azure/[Deploy to App Service and Azure Spring Cloud]
