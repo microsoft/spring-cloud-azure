@@ -14,12 +14,12 @@
 	<name>spring-cloud-azure-build-docs</name>
 	<packaging>jar</packaging>
 	<description>Spring Cloud Azure Build Docs</description>
-	<version>2.3.0</version>
+	<version>2.5.0</version>
 
 	<properties>
 		<docs.main>spring-cloud-azure</docs.main>
 		<main.basedir>${basedir}/..</main.basedir>
-		<docs.whitelisted.branches>2.3.x,docs</docs.whitelisted.branches>
+		<docs.whitelisted.branches>2.5.x,docs</docs.whitelisted.branches>
 		<configprops.inclusionPattern>spring.cloud.azure.*</configprops.inclusionPattern>
 		<upload-docs-zip.phase>none</upload-docs-zip.phase>
 		<generated-docs-multipage-output.dir>${project.build.directory}/generated-docs/${project.version}/reference/html</generated-docs-multipage-output.dir>

@@ -77,3 +77,18 @@ In order to "Confirm Selection" will send a setup notification to the given URI 
 NOTE: This validation only happens on the creation/modification of the endpoint.
 
 It is highly recommended that filters are set up as otherwise a refresh will be triggered after every key creation and modification.
+
+=== Forced Client Refresh
+
+The library can be configured to force a refresh of all configurations at a refresh interval.
+
+[%autowidth.stretch]
+[options="header"]
+|=== 
+|Name | Description | Required | Default
+|spring.cloud.azure.appconfiguration.refresh-interval | Amount of time, of type Duration, configurations are stored before a check can occur. | No | null
+|===
+
+Refreshing with `spring.cloud.azure.appconfiguration.refresh-interval` doesn't check any configured watch keys. This is mainly used to make sure Key Vault Secrets are kept up to date, as Azure App Configuration can't tell when they are updated.
+
+Since Azure Key Vault stores the public and private key pair of a certificate as a secret, your application can retrieve any certificate as a <<Key Vault References,Key Vault Reference>> in App Configuration. Because certificates need to be rotated periodically, client applications need to update just as frequently, which can be done by using the client refresh interval.
