@@ -1,5 +1,5 @@
 
-=== Spring Boot Starters for Azure
+=== Spring Boot
 
 This article describes the various Spring Boot Starters for the https://start.spring.io/[Spring Initializr] that provide Java developers with integration features for working with Microsoft Azure.
 

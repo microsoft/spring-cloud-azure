@@ -1,5 +1,5 @@
 
-=== How to use the Spring Boot Starter for Azure Service Bus JMS
+=== Azure Service Bus
 
 This article demonstrates how to use Spring Boot Starter for Azure Service Bus JMS to send messages to and receive messages from Service Bus `queues` and `topics`.
 

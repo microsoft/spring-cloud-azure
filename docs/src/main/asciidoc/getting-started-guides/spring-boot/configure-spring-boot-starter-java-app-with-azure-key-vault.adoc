@@ -1,5 +1,5 @@
 
-=== Tutorial: Read a secret from Azure Key Vault in a Spring Boot application
+=== Azure Key Vault Secrets
 
 This tutorial shows you how to create a Spring Boot app that reads a value from Azure Key Vault. After creating the app, you'll deploy it to Azure App Service and Azure Spring Cloud.
 

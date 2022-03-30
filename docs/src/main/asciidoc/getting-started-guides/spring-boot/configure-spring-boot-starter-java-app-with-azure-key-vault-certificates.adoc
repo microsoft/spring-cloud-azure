@@ -1,5 +1,5 @@
 
-=== Tutorial: Secure Spring Boot apps using Azure Key Vault certificates
+=== Azure Key Vault certificates
 
 This tutorial shows you how to secure your Spring Boot (including Azure Spring Cloud) apps with TLS/SSL certificates using Azure Key Vault and managed identities for Azure resources.
 

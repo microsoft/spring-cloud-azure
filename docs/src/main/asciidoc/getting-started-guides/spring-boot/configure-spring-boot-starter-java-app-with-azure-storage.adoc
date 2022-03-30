@@ -1,5 +1,5 @@
 
-=== How to use the Spring Boot Starter for Azure Storage
+=== Azure Storage
 
 This article walks you through creating a custom application using the *Spring Initializr*, then adding the Azure Storage Blob starter to your application, and then using your application to upload a blob to your Azure storage account.
 
