@@ -19,7 +19,6 @@
     <docs.main>spring-cloud-azure</docs.main>
     <main.basedir>${basedir}/..</main.basedir>
     <docs.whitelisted.branches>${project.version}</docs.whitelisted.branches>
-    <configprops.inclusionPattern>spring.jms.servicebus.*|spring.cloud.azure.*</configprops.inclusionPattern>
     <upload-docs-zip.phase>none</upload-docs-zip.phase>
     <generated-docs-multipage-output.dir>${project.build.directory}/generated-docs/${project.version}/reference/html</generated-docs-multipage-output.dir>
     <generated-docs-singlepage-output.dir>${project.build.directory}/generated-docs/${project.version}/reference/htmlsingle</generated-docs-singlepage-output.dir>
@@ -115,6 +114,7 @@
                 <configuration>
                   <arguments>
                     <argument>${project.basedir}/src/main/asciidoc/spring-cloud-azure/_configprops.adoc</argument>
+                    <argument>spring.jms.servicebus.*|spring.cloud.azure.*</argument>
                   </arguments>
                 </configuration>
               </execution>
