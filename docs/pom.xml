@@ -112,6 +112,11 @@
                 <goals>
                   <goal>java</goal>
                 </goals>
+                <configuration>
+                  <arguments>
+                    <argument>${project.basedir}/src/main/asciidoc/spring-cloud-azure/_configprops.adoc</argument>
+                  </arguments>
+                </configuration>
               </execution>
               <execution>
                 <id>generate-global-configprops</id>
