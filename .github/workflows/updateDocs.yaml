@@ -6,11 +6,6 @@ on:
     - main
     - docs
     - 4.*
-  pull_request:
-    branches:
-    - main
-    - docs
-    - 4.*
     # paths:
     # - 'docs/**'
   # release:
@@ -89,8 +84,6 @@ jobs:
           ./docs/src/main/asciidoc/ghpages.sh --version ${{ github.event.release.tag_name }} --destination . --build
         elif [[ -n "${{ github.event.inputs.committish }}" ]] && [[ "${{ github.event.inputs.committish }}" != "main" ]] ; then
             ./docs/src/main/asciidoc/ghpages.sh --version ${{ github.event.inputs.committish }} --destination . --build
-        elif [[ -n "${{ github.event.pull_request.base.ref }}" ]] ; then 
-          ./docs/src/main/asciidoc/ghpages.sh --version ${{ github.event.pull_request.base.ref }} --destination .  --build
-        else 
-          ./docs/src/main/asciidoc/ghpages.sh  --build
+        else
+          ./docs/src/main/asciidoc/ghpages.sh --build
         fi
