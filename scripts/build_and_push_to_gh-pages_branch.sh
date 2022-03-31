@@ -127,7 +127,7 @@ function copy_docs_for_current_version() {
         echo -e "Current branch is [${CURRENT_BRANCH}]"
         if [[ ",main," = ",${CURRENT_BRANCH}," ]] ; then
             mkdir -p ${ROOT_FOLDER}/${CURRENT_BRANCH}
-            echo -e "Branch [${CURRENT_BRANCH}] is whitelisted! Will copy the current docs to the [${CURRENT_BRANCH}] folder"
+            echo -e "Will copying the current docs to the [${CURRENT_BRANCH}] folder"
             for d in "${MODULES[@]}"; do
                 for f in "${d}"/target/generated-docs/*; do
                     file=${f#"${d}"/target/generated-docs/*}
@@ -182,7 +182,7 @@ function commit_changes_if_applicable() {
         # This is a little extreme. Use with care!
         ###################################################################
         if [[ "${COMMIT_SUCCESSFUL}" == "yes" ]] ; then
-            git push origin gh-pages
+            git push
         fi
     fi
 }
