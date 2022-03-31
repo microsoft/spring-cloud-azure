@@ -905,6 +905,7 @@ Let `Webapp` run on port _8080_.
 
 3. After you have logged in successfully, you should see the sample `home page` from the browser.
 
+[#usage-2-web-application-accessing-resource-servers]
 ===== Usage 2: Web Application Accessing Resource Servers
 
 This scenario is based on *Accessing a web application* scenario to allow application to access other resources, that is [The OAuth 2.0 client credentials grant] flow.
