@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.17">
+<title>Configuration</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script type="text/javascript"> (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "b9g1q6wz23"); </script>
+
+</head>
+<body class="book">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="configuration">Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Most of Azure SDKs could be divided into two categories by transport type, HTTP-based and AMQP-based. There are properties that are common to all SDKs such as authentication principals and Azure environment settings. Or common to HTTP-based clients, such as logging level to log HTTP requests and responses. Spring Cloud Azure 4.0 provides five common categories of configuration properties, which could be specified to each Azure service.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Service common properties</caption>
+<colgroup>
+<col style="width: 40%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong><em>&lt;azure-service&gt;</em>.client</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To configure the transport clients underneath one Azure service SDK.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong><em>&lt;azure-service&gt;</em>.credential</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To configure how to authenticate with Azure Active Directory for one Azure service SDK.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong><em>&lt;azure-service&gt;</em>.profile</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To configure the Azure cloud environment for one Azure service SDK.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong><em>&lt;azure-service&gt;</em>.proxy</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To configure the proxy options for one Azure service SDK.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong><em>&lt;azure-service&gt;</em>.retry</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To configure the retry options apply to one Azure service SDK. The retry options has supported part of the SDKs, there&#8217;s no <code>spring.cloud.azure.cosmos.retry</code>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>There are some properties that could be shared among different Azure services, for example using the same service principal to access Azure Cosmos DB and Azure Event Hubs. Spring Cloud Azure 4.0 allows application developers to specify properties that apply to all Azure SDKs with the prefix <code>spring.cloud.azure</code>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Global properties</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>client</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To configure the transport clients apply to all Azure SDKs by default.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>credential</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To configure how to authenticate with Azure Active Directory for all Azure SDKs by default.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>profile</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To configure the Azure cloud environment for all Azure SDKs by default.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>proxy</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To configure the proxy options apply to all Azure SDK clients by default.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>retry</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To configure the retry options apply to all Azure SDK clients by default.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Properties configured under each Azure service will override the global configurations.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Spring Cloud Azure unifies configuration properties' prefixes to <code>spring.cloud.azure</code> since 4.0, which will make configuration properties more consistent and more intuitive. Here&#8217;s a quick review of the serivce specific properties.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Service specific properties</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Azure Service</th>
+<th class="tableblock halign-left valign-top">Configuration Property Prefix</th>
+<th class="tableblock halign-left valign-top">Configuration Properties Link</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure App Configuration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>appconfiguration</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appendix.html#_azure_app_configuration_proeprties">App Configuration Properties</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Cosmos DB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>cosmos</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appendix.html#_azure_cosmos_proeprties">Cosmos Properties</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Event Hubs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>eventhubs</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appendix.html#_azure_event_hubs_proeprties">Event Hubs Properties</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Key Vault Certificates</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>keyvault.certificate</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appendix.html#_azure_key_vault_certificates_proeprties">Key Vault Certificates Properties</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Key Vault Secrets</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>keyvault.secret</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appendix.html#_azure_key_vault_secrets_proeprties">Key Vault Secrets Properties</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Service Bus</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>servicebus</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appendix.html#_azure_service_bus_proeprties">Service Bus Properties</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Storage Blob</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>storage.blob</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appendix.html#_azure_storage_blob_proeprties">Storage Blob Properties</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Storage File Share</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>storage.fileshare</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appendix.html#_azure_storage_file_share_proeprties">Storage File Share Properties</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Storage Queue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>storage.queue</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appendix.html#_azure_storage_queue_proeprties">Storage Queue Properties</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2022-03-31 22:38:59 +0800
+</div>
+</div>
+<script src="js/highlight/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>
