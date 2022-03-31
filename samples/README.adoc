@@ -1,0 +1,1 @@
+This project is used to manage docs displayed in the https://microsoft.github.io/spring-cloud-azure[GitHub Pages]

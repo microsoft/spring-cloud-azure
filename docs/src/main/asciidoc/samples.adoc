@@ -1,8 +1,0 @@
-
-= Sample
-
-== link:https://github.com/Microsoft/todo-app-java-on-azure/[To Do List with Cosmos DB]
-
-== link:https://github.com/Azure-Samples/mysql-spring-boot-todo[To Do List with MySQL]
-
-== link:https://start.spring.io/[Spring Initializr]

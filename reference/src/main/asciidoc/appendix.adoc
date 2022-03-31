@@ -1,0 +1,66 @@
+
+[appendix]
+== Configuration Properties
+
+=== Global Properties
+
+include::_configprops_global.adoc[]
+
+=== Azure Active Directory Properties
+
+include::_configprops_aad.adoc[]
+
+=== Azure Active Directory B2C Properties
+
+include::_configprops_aadb2c.adoc[]
+
+=== Azure App Configuration Properties
+
+include::_configprops_appconf.adoc[]
+
+=== Azure Cosmos Properties
+
+include::_configprops_cosmos.adoc[]
+
+=== Azure Event Hubs Properties
+
+include::_configprops_eventhubs.adoc[]
+
+=== Azure Key Vault Secrets Properties
+
+include::_configprops_kv_secret.adoc[]
+
+=== Azure Key Vault Certificates Properties
+
+include::_configprops_kv_certificate.adoc[]
+
+=== Azure Service Bus Properties
+
+include::_configprops_servicebus.adoc[]
+
+=== Azure Service Bus JMS Properties
+
+include::_configprops_servicebus_jms.adoc[]
+
+=== Azure Storage Blob Properties
+
+include::_configprops_storage_blob.adoc[]
+
+=== Azure Storage File Share Properties
+
+include::_configprops_storage_fileshare.adoc[]
+
+=== Azure Storage Queue Properties
+
+include::_configprops_storage_queue.adoc[]
+
+=== All Configuration Properties
+
+include::_configprops.adoc[]
+
+[appendix]
+include::_migration-guide-for-4.0.adoc[]
+
+[appendix]
+include::_known-issues.adoc[]
+
