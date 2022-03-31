@@ -47,7 +47,11 @@
     </properties>
 
     <modules>
-        <module>docs</module>
+        <module>portal</module>
+        <module>reference</module>
+        <module>getting-started</module>
+        <module>samples</module>
+        <module>tutorials</module>
     </modules>
 
     <dependencyManagement>
