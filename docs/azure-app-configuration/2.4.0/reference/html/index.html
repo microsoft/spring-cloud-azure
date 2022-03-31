@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Spring Cloud Azure App Configuration</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<h1>Spring Cloud Azure App Configuration</h1>
+<div class="details">
+<span id="revnumber">version 2.4.0</span>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#getting-help">1. Getting Help</a></li>
+<li><a href="#setting-up-your-app-configuration-store">2. Setting up your App Configuration Store</a></li>
+<li><a href="#client-usage">3. Client Usage</a></li>
+<li><a href="#loading-configuration">4. Loading Configuration</a>
+<ul class="sectlevel2">
+<li><a href="#selecting-configurations">4.1. Selecting Configurations</a></li>
+<li><a href="#spring-profiles">4.2. Spring Profiles</a></li>
+<li><a href="#disabled-stores">4.3. Disabled Stores</a></li>
+</ul>
+</li>
+<li><a href="#authentication">5. Authentication</a>
+<ul class="sectlevel2">
+<li><a href="#connection-string">5.1. Connection String</a></li>
+<li><a href="#user-assigned-identity">5.2. User Assigned Identity</a></li>
+<li><a href="#system-assigned-identity">5.3. System Assigned Identity</a></li>
+<li><a href="#token-credential">5.4. Token Credential</a></li>
+</ul>
+</li>
+<li><a href="#key-values">6. Key Values</a>
+<ul class="sectlevel2">
+<li><a href="#placeholders">6.1. Placeholders</a></li>
+<li><a href="#json">6.2. JSON</a></li>
+<li><a href="#key-vault-references">6.3. Key Vault References</a></li>
+</ul>
+</li>
+<li><a href="#health-indicator">7. Health Indicator</a></li>
+<li><a href="#configuration-refresh">8. Configuration Refresh</a>
+<ul class="sectlevel2">
+<li><a href="#pull-based-refresh">8.1. Pull Based Refresh</a></li>
+<li><a href="#push-based-refresh">8.2. Push Based Refresh</a></li>
+</ul>
+</li>
+<li><a href="#for-more-information">9. For more information</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>&#169; 2016-2021 the original authors.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<em>Copies of this document may be made for your own use and for distribution to others, provided that you do not charge any fee for such copies and further provided that each copy contains this Copyright Notice, whether distributed in print or electronically.</em>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Spring is an open-source application framework developed by VMware that provides a simplified, modular approach for creating Java applications. Spring Cloud Azure is an open-source project that provides seamless Spring integration with Azure services.</p>
+</div>
+<div class="paragraph">
+<p>The Azure Spring Cloud App Configuration Client Library loads configurations and feature flags from the Azure App Configuration service. The client library generates <code>PropertySource</code> abstractions, to match those already being generated by the Spring environment such as; Environment Variables, Command-line configurations, local configuration files, and so on.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="getting-help"><a class="anchor" href="#getting-help"></a><a class="link" href="#getting-help">1. Getting Help</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you have any questions about this doc, please ask by creating GitHub issue. And Pull requests is welcome.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content stretch">
+<caption class="title">Table 1. GitHub repositories</caption>
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">GitHub repositories</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/spring">Azure/azure-sdk-for-java</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This repository used to hold the source code.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/Azure/AppConfiguration" class="bare">github.com/Azure/AppConfiguration</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This repository used to hold release notes, and general Azure App Configuration Issues.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/microsoft/spring-cloud-azure/tree/docs/docs/src/main/asciidoc">microsoft/spring-cloud-azure</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This repository used to hold the document which is displaying in current page.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="setting-up-your-app-configuration-store"><a class="anchor" href="#setting-up-your-app-configuration-store"></a><a class="link" href="#setting-up-your-app-configuration-store">2. Setting up your App Configuration Store</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To create your Azure App Configuration store, you can use:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-azurecli" data-lang="azurecli">az appconfig create --resource-group &lt;your-resource-group&gt; --name &lt;name-of-your-new-store&gt; --sku Standard</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command will create you a new empty configuration store. You can upload you configurations using the import command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-azurecli" data-lang="azurecli">az appconfig kv import -n &lt;name-of-your-new-store&gt; -s file --path &lt;location-of-your-properties-file&gt; --format properties --prefix /application/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It will have you confirm your configurations before loading them. You can upload yaml files by changing the format to yaml. The prefix field is important as it is the default prefix loaded by the client library.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="client-usage"><a class="anchor" href="#client-usage"></a><a class="link" href="#client-usage">3. Client Usage</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To use the feature in an application, you can build it as a Spring Boot application. The most convenient way to add the dependency is with our Spring Boot starter <code>com.azure.spring:azure-spring-cloud-starter-appconfiguration-config</code>. The following example <code>pom.xml</code> file uses Azure App Configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;parent&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+    &lt;version&gt;{spring-boot-version}&lt;/version&gt;
+    &lt;relativePath /&gt;
+&lt;/parent&gt;
+
+&lt;dependencyManagement&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;
+            &lt;version&gt;{spring-cloud-version}&lt;/version&gt;
+            &lt;type&gt;pom&lt;/type&gt;
+            &lt;scope&gt;import&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/dependencyManagement&gt;
+
+&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+        &lt;artifactId&gt;azure-spring-cloud-starter-appconfiguration-config&lt;/artifactId&gt;
+        &lt;version&gt;{azure-appconfiguration-version}&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+&lt;build&gt;
+    &lt;plugins&gt;
+           &lt;plugin&gt;
+               &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+               &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+           &lt;/plugin&gt;
+    &lt;/plugins&gt;
+&lt;/build&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A basic Spring Boot application using App Configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
+@RestController
+public class Application {
+
+    @RequestMapping("/")
+    public String home() {
+        return "Hello World!";
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>with <code>bootstrap.properties</code> containing:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].connection-string=${CONFIG_STORE_CONNECTION_STRING}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>where <code>CONFIG_STORE_CONNECTION_STRING</code> is an Environment Variable with the connection string to your Azure App Configuration Store. You can access your connection string by running:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-azurecli" data-lang="azurecli">az appconfig credential list --name &lt;name-of-your-store&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default, if no configurations are set, then the configurations starting with <code>/application/</code> are loaded with a default label of <code>(No Label)</code> unless a Spring Profile is set in which case the default label is your Spring Profile. Because the store is empty no configurations are loaded, but the Azure App Configuration Property Source is still generated.</p>
+</div>
+<div class="paragraph">
+<p>A property source named <code>/application/https://&lt;name-of-your-store&gt;.azconfig.io/</code> is created containing the properties of that store.The label used in the request is appended to the end of the name, if no label is set the character <code>\0</code> is there, as an empty space.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="loading-configuration"><a class="anchor" href="#loading-configuration"></a><a class="link" href="#loading-configuration">4. Loading Configuration</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The library supports the loading of one or multiple App Configuration stores. This allows for complex configuration scenarios, such as loading of configurations from multiple stores at once or having fallbacks for added resilience. In the situation where a key is duplicated across multiple stores, loading all stores will result in the highest priority, last one wins, stores configuration being loaded. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].connection-string=[first-store-connection-string]
+spring.cloud.azure.appconfiguration.stores[1].connection-string=[second-store-connection-string]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example, if both the first and second stores have the same configuration, the configuration in the second store has the highest priority, last one wins.</p>
+</div>
+<div class="sect2">
+<h3 id="selecting-configurations"><a class="anchor" href="#selecting-configurations"></a><a class="link" href="#selecting-configurations">4.1. Selecting Configurations</a></h3>
+<div class="paragraph">
+<p>Configurations are loaded by their key and label. By default, the configurations that start with the key <code>/application/</code> are loaded. The default label is <code>${spring.profiles.active}</code>. If <code>${spring.profiles.active}</code> is not set then configuration with the null label seen as <code>(No Label)</code> in the portal are loaded.</p>
+</div>
+<div class="paragraph">
+<p>The configurations that are loaded can be configured by selecting different key and label filters.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].selects[0].key-filter=[my-key]
+spring.cloud.azure.appconfiguration.stores[0].selects[0].label-filter=[my-label]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>key-filter</code> supports the following filters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Key Filters</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key Filter</th>
+<th class="tableblock halign-left valign-top">Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches <strong>any</strong> key</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>abc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches a key named  <strong>abc</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>abc*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches key names that start with <strong>abc</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>abc,xyz</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches key names <strong>abc</strong> or <strong>xyz</strong> (limited to 5 CSV)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><code>label-filter</code> supports the following filters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Label Filters</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Label</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches <strong>any</strong> label, which includes <code>\0</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>\0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches <code>null</code> labels, seen as <code>(No Label)</code> in the portal</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1.0.0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches label <strong>1.0.0</strong> exactly</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1.0.*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches labels that start with <strong>1.0.</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,1.0.0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches labels <code>null</code> or <strong>1.0.0</strong>, limited to five CSVs</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If you are using yaml with label filters and need to start with <code>null</code>, then the label filter needs to be surrounded by single quotes.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yml" data-lang="yml">spring:
+  cloud:
+    azure:
+      appconfiguration:
+        stores:
+         -
+           selects:
+             -
+              label-filter: ',1.0.0'</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You are unable to combine <code>*</code> with <code>,</code> in filters. In that case you need to use an additional select.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="spring-profiles"><a class="anchor" href="#spring-profiles"></a><a class="link" href="#spring-profiles">4.2. Spring Profiles</a></h3>
+<div class="paragraph">
+<p>By default, <code>spring.profiles.active</code> is set as the default <code>label-filter</code> for all selected configurations. This functionality can be overridden by the <code>label-filter</code>. The Spring Profiles can be used in the <code>label-filter</code> by using <code>${spring.profiles.active}</code> in the <code>label-filter</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].selects[0].label-filter=,${spring.profiles.active}
+spring.cloud.azure.appconfiguration.stores[0].selects[1].label-filter=${spring.profiles.active}_local</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the first <code>label-filter</code>, all configurations with <code>null</code> label are loaded, then all configurations matching the Spring Profiles. Spring Profiles have priority over the <code>null</code> configurations, because they are at the end.</p>
+</div>
+<div class="paragraph">
+<p>In the second <code>label-filter</code>, the string <code>_local</code> is appended to the end of the Spring Profiles, though only to the last Spring Profile.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="disabled-stores"><a class="anchor" href="#disabled-stores"></a><a class="link" href="#disabled-stores">4.3. Disabled Stores</a></h3>
+<div class="paragraph">
+<p>Using the configuration <code>spring.cloud.azure.appconfiguration.enabled</code> you can disable loading all configuration stores. With the <code>spring.cloud.azure.appconfiguration.stores[0].enabled</code> configuration, you can disable an individual store.</p>
+</div>
+<div class="paragraph">
+<p>In addition to disabling all stores, stores can be configured to be disabled if they fail to load using the <code>spring.cloud.azure.appconfiguration.stores[0].fail-fast</code>. When <code>fail-fast</code> is enabled, set to <code>true</code>, a <code>RuntimeException</code> that would result in the application not starting up will instead have the store disabled with no configurations from it loaded. If a configuration store is disabled on startup it will not be checked for changes with refresh, or attempted to be loaded from if configurations are updated.</p>
+</div>
+<div class="paragraph">
+<p>If, an error resulting in a <code>RuntimeException</code> happens during a refresh check or a reload of configuration the refresh attempt is ended and will be retried after the <code>refresh-interval</code> has passed.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="authentication"><a class="anchor" href="#authentication"></a><a class="link" href="#authentication">5. Authentication</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The client library supports all forms of Identity supported by the <a href="https://github.com/Azure/azure-sdk-for-java/tree/azure-identity_1.3.6/sdk/identity/azure-identity">Azure Identity Library</a>. Authentication can be done through configuration for Connection Strings and Managed Identity. All other forms of Identity can be done by using the <code>TokenCredentialProvider</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="connection-string"><a class="anchor" href="#connection-string"></a><a class="link" href="#connection-string">5.1. Connection String</a></h3>
+<div class="paragraph">
+<p>Authentication through connection string is the simplest form to setup. You can access a stores connection strings using:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-azurecli" data-lang="azurecli">az appconfig credential list --name &lt;name-of-your-store&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The connection string can be then set to the property <code>spring.cloud.azure.appconfiguration.stores[0].connection-string</code>. It is highly recommended that the connection string in the local configuration file should be a placeholder value, which should map to an Environment Variable to avoid having it added to source control.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="user-assigned-identity"><a class="anchor" href="#user-assigned-identity"></a><a class="link" href="#user-assigned-identity">5.2. User Assigned Identity</a></h3>
+<div class="paragraph">
+<p>If you already don&#8217;t have one, you can create a new Managed Identity using:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-azurecli" data-lang="azurecli">az identity create -g myResourceGroup -n myUserAssignedIdentity</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Connecting to Azure app configuration with any authentication method other connection string requires three steps to setup.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Adding the Identity to the resource connecting to your App Configuration store</p>
+</li>
+<li>
+<p>Adding the required information to your client application.</p>
+</li>
+<li>
+<p>Authorizing the Identity to use App Configuration.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>For user assigned, the identity needs to be added to the azure resource. How the user assigned identity is added varies between resources so you will need to check the specific docs of that resource.</p>
+</div>
+<div class="paragraph">
+<p>Configuration of the client application just needs two values to be set.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.managed-identity.client-id= &lt;your client id&gt;
+spring.cloud.azure.appconfiguration.stores[0].endpoint= &lt;URI of your Configuration Store&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The first property tells us which of the configured User Assigned identities to use. The second is which configuration store we are connecting to. With this method, all configuration stores need to use the same User Assigned Identity.</p>
+</div>
+<div class="paragraph">
+<p>Next, the User Assigned Identity needs to be setup in your configuration store. Setup can be done through IAM in the Azure Portal or using the cli:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-azurecli" data-lang="azurecli">az role assignment  create --role "App Configuration Data Reader" --assignee &lt;your client id&gt; --scope /subscriptions/&lt;your subscription&gt;/resourceGroups/&lt;your stores resource group&gt;/providers/Microsoft.AppConfiguration/configurationStores/&lt;name of your Configuration Store&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="system-assigned-identity"><a class="anchor" href="#system-assigned-identity"></a><a class="link" href="#system-assigned-identity">5.3. System Assigned Identity</a></h3>
+<div class="paragraph">
+<p>Setting up System Assigned Identity involves enabling it on the azure resource. How the identity is enabled depends on the resource, so you will need to check the documentation for that resource. Once it is enabled, you need to configure your client application to use it.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].endpoint= &lt;URI of your Configuration Store&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You will then need to assign the System Assigned Identity to read configurations.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-azurecli" data-lang="azurecli">az role assignment  create --role "App Configuration Data Reader" --assignee &lt;your client id&gt; --scope /subscriptions/&lt;your subscription&gt;/resourceGroups/&lt;your stores resource group&gt;/providers/Microsoft.AppConfiguration/configurationStores/&lt;name of your Configuration Store&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="token-credential"><a class="anchor" href="#token-credential"></a><a class="link" href="#token-credential">5.4. Token Credential</a></h3>
+<div class="paragraph">
+<p>To authenticate with any other method supported by the [Azure Identity Library](<a href="https://github.com/Azure/azure-sdk-for-java/tree/azure-identity_1.3.6/sdk/identity/azure-identity" class="bare">github.com/Azure/azure-sdk-for-java/tree/azure-identity_1.3.6/sdk/identity/azure-identity</a>), you can use <code>AppConfigurationCredentialProvider</code>. <code>AppConfigurationCredentialProvider</code> allows you to dynamically return any <code>TokenCredential</code> for any given URI to connect to your Configuration stores.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public AppConfigurationCredentialProvider appConfigurationCredentialProvider() {
+    return new AppConfigurationCredentialProvider() {
+
+        @Override
+        public TokenCredential getAppConfigCredential(String uri) {
+
+            ...
+
+            return myTokenCredential;
+        }
+    };
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You will also need to configure the endpoints that you will be connecting too.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].endpoint= &lt;URI of your Configuration Store&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note: Only 1 authentication method can be defined per endpoint; Connection String, User Assigned Identity, Token Credential. If you need to mix and match you can have <code>AppConfigurationCredentialProvider</code> return <code>null</code> for stores that use a different method.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="key-values"><a class="anchor" href="#key-values"></a><a class="link" href="#key-values">6. Key Values</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Azure App Configuration Supports multiple types of key values, some of which have special features built into them. Azure App Configuration has built in support for JSON content type, Spring placeholders, an Key Value references.</p>
+</div>
+<div class="sect2">
+<h3 id="placeholders"><a class="anchor" href="#placeholders"></a><a class="link" href="#placeholders">6.1. Placeholders</a></h3>
+<div class="paragraph">
+<p>The client library supports configurations with <code>${}</code>-style environment placeholders. If referencing a Azure App Configuration key with a placeholder any prefix needs to be removed in the reference. For example: <code>/application/config.message</code> is referenced as <code>${config.message}</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The prefix being removed matches the value <code>spring.cloud.azure.appconfiguration.stores[0].selects[0].key-filter</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="json"><a class="anchor" href="#json"></a><a class="link" href="#json">6.2. JSON</a></h3>
+<div class="paragraph">
+<p>Configurations that have the a content-type <code>application/json</code> are processed as json objects. This enables one configuration mapping to a complex object in a <code>@Configuration</code>. The json key <code>/application/config.colors</code> with the value</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+    "Red": {
+        "value": [255, 0, 0]
+    },
+    "Blue": {
+        "value": [0, 255, 0]
+    },
+    "Green": {
+        "value": [0, 0, 255]
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>maps to</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@ConfigurationProperties(prefix = "config")
+public class MyConfigurations {
+
+    private HashMap&lt;String, Color&gt; colors;
+
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="key-vault-references"><a class="anchor" href="#key-vault-references"></a><a class="link" href="#key-vault-references">6.3. Key Vault References</a></h3>
+<div class="paragraph">
+<p>Azure App Configuration and its client libraries support referencing secrets stored in Key Vault. In App Configuration, keys can be created which have values that map to a  secret stored in a Key Vault. The secrets are securely stored in Key Vault, but can be accessed the same as any other configuration once loaded.</p>
+</div>
+<div class="paragraph">
+<p>Your application uses the client provider to retrieve Key Vault references, just as it does for any other keys stored in App Configuration. Because the client recognizes the keys as Key Vault references, they have a unique content-type, and the client will connect to Key Vault to retrieve their values for you.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Key Vault only allows for secrets to be retrieved one at a time, so each Key Vault reference stored in App Configuration will result in a pull against Key Vault.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="creating-key-vault-references"><a class="anchor" href="#creating-key-vault-references"></a><a class="link" href="#creating-key-vault-references">6.3.1. Creating Key Vault References</a></h4>
+<div class="paragraph">
+<p>You can easily create a Key Vault reference in the Azure Portal in the Configuration explorer using the Create &#8594; Key Vault reference option. You will be able to select a secret to reference, this can be from any of the Key Vaults you have access to. You can also create arbitrary Key Vault references using the Input option. Through the portal a valid URI Key Vault is required and using a Key Vault reference format.</p>
+</div>
+<div class="paragraph">
+<p>You can also create a Key Vault reference through the cli using:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-azurecli" data-lang="azurecli">az appconfig kv set-keyvault --name &lt;name-of-your-store&gt; --key &lt;key-name&gt; --secret-identifier &lt;uri-to-your-secret&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Though the CLI any secret-identifier with the format of <code>{vault}/{collection}/{name}/{version?}</code> where the version section is optional.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="using-key-vault-references"><a class="anchor" href="#using-key-vault-references"></a><a class="link" href="#using-key-vault-references">6.3.2. Using Key Vault References</a></h4>
+<div class="paragraph">
+<p>If you are using a User Assigned or System Assigned Identity all you need to do is make sure that identity also has access to the Key Vault and reading secrets.</p>
+</div>
+<div class="paragraph">
+<p>Otherwise, you need to provide a Token Credential for the client library to use to connect to your Key Vault with.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyCredentials implements KeyVaultCredentialProvider {
+
+    @Override
+    public TokenCredential getKeyVaultCredential(String uri) {
+            return buildCredential();
+    }
+
+    TokenCredential buildCredential() {
+            return new DefaultAzureCredentialBuilder().build();
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using the KeyVaultCredentialProvider you can provide any TokenCredential type supported by the <a href="https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/identity/azure-identity#credential-classes">Azure Identity Library</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="resolve-non-key-vault-secrets"><a class="anchor" href="#resolve-non-key-vault-secrets"></a><a class="link" href="#resolve-non-key-vault-secrets">6.3.3. Resolve Non Key Vault Secrets</a></h4>
+<div class="paragraph">
+<p>The App Configuration client provides a method of locally resolving secrets that don&#8217;t have a Key Vault associated with them. This is done through the <code>KeyVaultSecretProvider</code>. The <code>KeyVaultSecretProvider</code> is called when a <code>TokenCredential</code> isn&#8217;t provided for a Key Vault reference, the uri of the Key Vault reference is provided and return value becomes the value of the secret.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Creating a <code>KeyVaultSecretProvider</code> overrides the automatic use of System Assigned Identity. In order to use both, <code>KeyVaultCredentialProvider</code> needs to be used and return <code>null</code> for URI&#8217;s that need to resolve using <code>KeyVaultSecretProvider</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class MySecretProvider implements KeyVaultSecretProvider {
+
+    @Override
+    public String getSecret(String uri) {
+        ...
+    }
+
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="health-indicator"><a class="anchor" href="#health-indicator"></a><a class="link" href="#health-indicator">7. Health Indicator</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The client library comes with a Health Indicator that checks whether the connection to the Azure App Configuration store(s) is healthy or not. If enabled for each store, it gives a status of:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>UP - The last connection was successful</p>
+</li>
+<li>
+<p>DOWN- The last connection resulted in a non 200 error code. This could be due to a number of issues ranging from credentials expiring to a service issue. The client library will automatically retry to connect to the store at the next refresh-interval.</p>
+</li>
+<li>
+<p>NOT LOADED - The config store is listed in the local configuration file, but the config store wasn&#8217;t loaded from from the file at startup. Either the config store was disabled by configuration. Otherwise, the configuration(s) loading failed to load at startup while the <code>fail-fast</code> configuration for the store was set to false.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can enable the Health Indicator by setting <code>management.health.azure-app-configuration.enabled=true</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configuration-refresh"><a class="anchor" href="#configuration-refresh"></a><a class="link" href="#configuration-refresh">8. Configuration Refresh</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Enabling config refresh for your configurations lets you pull their latest values from your App Configuration store(s) without having to restart the application.</p>
+</div>
+<div class="paragraph">
+<p>To enable refresh, monitoring needs to be enabled along with monitoring triggers. A monitoring trigger is a key with an optional label that are checked for value change for triggering updates. The value of the monitoring trigger can be any value, as long as it changes when it a refresh is needed.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Any operation that changes the etag of a monitoring trigger will cause a refresh, such as a content-type change.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].monitoring.enabled=true
+spring.cloud.azure.appconfiguration.stores[0].monitoring.triggers[0].key=[my-watched-key]
+spring.cloud.azure.appconfiguration.stores[0].monitoring.triggers[0].label=[my-watched-label]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To trigger a configuration refresh, change the value of a key in your configuration store. Then update one of watch keys to a new value. This will trigger the creation of a log. For example, changing the value of <code>/application/config.message</code> triggers the log message below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console">INFO 17496 --- [TaskScheduler-1] o.s.c.e.event.RefreshEventListener       : Refresh keys changed: [config.message]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After generating the log, the application will refresh all <code>@Bean</code>'s in the refresh scope.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+By default, <code>@ConfiugrationProperties</code> annotated beans will be included in this scope.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="pull-based-refresh"><a class="anchor" href="#pull-based-refresh"></a><a class="link" href="#pull-based-refresh">8.1. Pull Based Refresh</a></h3>
+<div class="paragraph">
+<p>The App Configuration Spring libraries support the ability to periodically check on a refresh interval for changes made to the monitoring triggers. By default the refresh-interval is set to 30 seconds. Once the refresh interval has passed, all triggers will be checked in the given store for changes. Any change to the key will cause a refresh to trigger. Because the libraries integrate with the Spring refresh system, any refresh will reload all configurations from all stores. The refresh-interval can be set to any interval longer than 1 second. The supported units for the refresh-interval are s, m, h, d for seconds, minutes, hours, and days respectively.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].monitoring.refresh-interval= 1d</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="automated"><a class="anchor" href="#automated"></a><a class="link" href="#automated">8.1.1. Automated</a></h4>
+<div class="paragraph">
+<p>When using the <code>azure-spring-cloud-appconfiguration-config-web</code> library, the application will automatically check for refresh whenever a servlet request occurs, specifically <code>ServletRequestHandledEvent</code>. The most common way this event is sent is by connections to endpoints in a <code>@RestController</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="manual"><a class="anchor" href="#manual"></a><a class="link" href="#manual">8.1.2. Manual</a></h4>
+<div class="paragraph">
+<p>In applications that only use <code>azure-spring-cloud-appconfiguration-config</code>, such as console applications, refresh can be manually triggered. This can be done by calling <code>AppConfigurationRefresh&#8217;s refreshConfiguration method. `AppConfigurationRefresh</code> is a <code>@Bean</code> that can be injected into any <code>@Component</code>.</p>
+</div>
+<div class="paragraph">
+<p>Also, because the library uses Spring&#8217;s configuration system, triggering a refresh will also cause a refresh of all of your configurations, not just reloading the ones from your Azure App Configuration store.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="push-based-refresh"><a class="anchor" href="#push-based-refresh"></a><a class="link" href="#push-based-refresh">8.2. Push Based Refresh</a></h3>
+<div class="paragraph">
+<p>The <code>azure-spring-cloud-appconfiguration-config-web</code> library can be setup to receive push notifications from your Azure App Configuration store to refresh your configuration values. This is done via an Azure Event Grid Web Hook, which can be configured to send notifications of changes to specified keys. By adding the Spring Actuator library as a dependency you can expose App Configuration&#8217;s refresh endpoint(s). There are two different endpoints, <code>appconfiguration-refresh</code> and <code>appconfiguration-refresh-bus</code> these endpoints work sort of similarly to their counterparts <code>refresh</code> and <code>refresh-bus</code>, where the app configuration endpoints expire the refresh interval instead of forcing a refresh upon receiving. The <code>refresh</code> and <code>refresh-bus</code> can still be used, but can&#8217;t be directly connected to Azure Event Grid with a Web Hook as they require a response in setup.</p>
+</div>
+<div class="paragraph">
+<p><code>appconfiguration-refresh</code> expires the refresh interval, so the remaining refresh interval isn&#8217;t waited on before the next refresh check. <code>appconfiguration-refresh-bus</code> will send a notification to a connected messaging service, such as Azure Service Bus to notify all instances of an application to refresh. In both cases it doesn&#8217;t completely expire the refresh interval, but almost does by a small jitter amount. This makes sure not every instance of your application doesn&#8217;t try to refresh at the same time.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">management.endpoints.web.exposure.include= appconfiguration-refresh, appconfiguration-refresh-bus</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In addition to exposing the refresh endpoints a required query parameter has been added for security. No token name or value is set by default, but setting one is required in order to use the endpoints.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.appconfiguration.stores[0].monitoring.push-notification.primary-token.name=[primary-token-name]
+spring.cloud.appconfiguration.stores[0].monitoring.push-notification.primary-token.secret=[primary-token-secret]
+spring.cloud.appconfiguration.stores[0].monitoring.push-notification.secondary-token.name=[secondary-token-name]
+spring.cloud.appconfiguration.stores[0].monitoring.push-notification.secondary-token.secret=[secondary-token-secret]</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="setting-up-web-hooks"><a class="anchor" href="#setting-up-web-hooks"></a><a class="link" href="#setting-up-web-hooks">8.2.1. Setting Up Web Hooks</a></h4>
+<div class="paragraph">
+<p>To setup a Web Hook open your Azure App Configuration store and select the events tab. Select "+ Event Subscription". Set the name of your Event and select the Endpoint type to be Web Hook. Selecting Web Hook will cause an Endpoint option to appear, select "Select an endpoint". Your endpoint will look like the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>https://www.myaplication.com/actuator/appconfiguration-refresh?myTokenName=mySecret</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In order to "Confirm Selection" will send a setup notification to the given URI and it expects a response. If no response is returned it will fail. The <code>azure-spring-cloud-appconfiguration-web</code> library if setup for endpoints will return the correct response if the Azure App Configuration store is configured for the application. This confirmation can be sent in other ways see <a href="https://docs.microsoft.com/azure/event-grid/webhook-event-delivery">Event Grid Web Hook Delivery</a> for more information on Web Hook validation.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This validation only happens on the creation/modification of the endpoint.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>It is highly recommended that filters are set up as otherwise a refresh will be triggered after every key creation and modification.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="for-more-information"><a class="anchor" href="#for-more-information"></a><a class="link" href="#for-more-information">9. For more information</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>See <a href="https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/appconfiguration/azure-spring-cloud-starter-appconfiguration-config">Starter Readme</a> for more details and compete documentation of all settings.</p>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>
