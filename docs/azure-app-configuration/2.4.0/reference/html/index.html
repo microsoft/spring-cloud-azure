@@ -200,7 +200,16 @@ window.onload = function() {
 <li><a href="#push-based-refresh">8.2. Push Based Refresh</a></li>
 </ul>
 </li>
-<li><a href="#for-more-information">9. For more information</a></li>
+<li><a href="#feature-management">9. Feature Management</a>
+<ul class="sectlevel2">
+<li><a href="#feature-management-basics">9.1. Feature Management Basics</a></li>
+<li><a href="#evaluating-feature-flags">9.2. Evaluating Feature Flags</a></li>
+<li><a href="#built-in-feature-filters">9.3. Built-In Feature Filters</a></li>
+<li><a href="#custom-feature-filters">9.4. Custom Feature Filters</a></li>
+<li><a href="#targeting">9.5. Targeting</a></li>
+</ul>
+</li>
+<li><a href="#for-more-information">10. For more information</a></li>
 </ul>
 </div>
 </div>
@@ -639,7 +648,7 @@ spring.cloud.azure.appconfiguration.stores[0].endpoint= &lt;URI of your Configur
 <div class="sect2">
 <h3 id="token-credential"><a class="anchor" href="#token-credential"></a><a class="link" href="#token-credential">5.4. Token Credential</a></h3>
 <div class="paragraph">
-<p>To authenticate with any other method supported by the [Azure Identity Library](<a href="https://github.com/Azure/azure-sdk-for-java/tree/azure-identity_1.3.6/sdk/identity/azure-identity" class="bare">github.com/Azure/azure-sdk-for-java/tree/azure-identity_1.3.6/sdk/identity/azure-identity</a>), you can use <code>AppConfigurationCredentialProvider</code>. <code>AppConfigurationCredentialProvider</code> allows you to dynamically return any <code>TokenCredential</code> for any given URI to connect to your Configuration stores.</p>
+<p>To authenticate with any other method supported by the <a href="https://github.com/Azure/azure-sdk-for-java/tree/azure-identity_1.3.6/sdk/identity/azure-identity">Azure Identity Library</a>, you can use <code>AppConfigurationCredentialProvider</code>. <code>AppConfigurationCredentialProvider</code> allows you to dynamically return any <code>TokenCredential</code> for any given URI to connect to your Configuration stores.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -986,7 +995,384 @@ This validation only happens on the creation/modification of the endpoint.
 </div>
 </div>
 <div class="sect1">
-<h2 id="for-more-information"><a class="anchor" href="#for-more-information"></a><a class="link" href="#for-more-information">9. For more information</a></h2>
+<h2 id="feature-management"><a class="anchor" href="#feature-management"></a><a class="link" href="#feature-management">9. Feature Management</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Feature Management provides a way for Spring Boot applications to dynamically access content. Feature Management has a variety of functions, such as Feature Flags that can enable or disable content, Feature Filters for targeting when content is shown, Customized Feature Filters, and Feature Gates for dynamically enabling endpoints.</p>
+</div>
+<div class="paragraph">
+<p>To use feature flags, they can be enabled through configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].feature-flags.enabled= true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With Feature Flags enabled, they will be loaded into the Spring Configuration system with the prefix <code>feature-management</code>. Feature Flags can also be registered in the local configuration file, see <a href="#feature-flag-declaration">Feature Flag Declaration</a>. The easiest way to use Feature Management is by using the <code>azure-spring-cloud-feature-management</code> and <code>azure-spring-cloud-feature-management-web</code> libraries. The difference between the two libraries is that <code>azure-spring-cloud-feature-management-web</code> takes a dependency on the <code>spring-web</code> and <code>spring-webmvc</code> libraries to add additional features, such as <a href="#routing">Feature Gates</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="feature-management-basics"><a class="anchor" href="#feature-management-basics"></a><a class="link" href="#feature-management-basics">9.1. Feature Management Basics</a></h3>
+<div class="sect3">
+<h4 id="feature-flags"><a class="anchor" href="#feature-flags"></a><a class="link" href="#feature-flags">9.1.1. Feature Flags</a></h4>
+<div class="paragraph">
+<p>Feature flags are composed of two parts, a name and a list of feature-filters that are used to turn the feature on. Feature Flags can either have a boolean state of on/off, or they can have a list of Feature Filters. Feature Flags evaluate Feature Filters until one returns true. If no Feature Filter returns true, then the Feature Flag returns false.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="feature-filters"><a class="anchor" href="#feature-filters"></a><a class="link" href="#feature-filters">9.1.2. Feature Filters</a></h4>
+<div class="paragraph">
+<p>Feature Filters define a scenario for when a feature should be enabled. Feature Filters are evaluated synchronously.</p>
+</div>
+<div class="paragraph">
+<p>The Feature Management library comes with 4 pre-defined filters: <a href="#alwaysonfilter">AlwaysOnFilter</a>, <a href="#percentagefilter">PercentageFilter</a>, <a href="#timewindowfilter">TimeWindowFilter</a>, <a href="#targetingfilter">TargetingFilter</a>.</p>
+</div>
+<div class="paragraph">
+<p>Custom Feature Filters be made. For example, a Feature Filter could be used to provide a custom experience for only the customers who are using a Microsoft Edge browser. The features in this Feature Filter can be customized, for example to show a specific header for the Edge browser audience.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="feature-flag-declaration"><a class="anchor" href="#feature-flag-declaration"></a><a class="link" href="#feature-flag-declaration">9.1.3. Feature Flag Declaration</a></h4>
+<div class="paragraph">
+<p>The Feature Management library supports Azure App Configuration along with application.yml or bootstrap.yml as sources for Feature Flags. Below is an example of the format used to set up Feature Flags in a application.yml file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">feature-management:
+  feature-t: false
+  feature-u:
+    enabled-for:
+      -
+        name: Random
+  feature-v:
+    enabled-for:
+      -
+        name: TimeWindowFilter
+        parameters:
+          Start: "Wed, 01 May 2019 13:59:59 GMT"
+          End: "Mon, 01 July 2019 00:00:00 GMT"
+  feature-w:
+    evaluate: false
+    enabled-for:
+      -
+        name: AlwaysOnFilter</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>feature-t</code> is set to false, this setting will always return the Feature Flag&#8217;s value.</p>
+</li>
+<li>
+<p><code>feature-u</code> is used in conjunction with Feature Filters. These Filters will be defined under the <code>enabled-for</code> property.  In this case, <code>feature-u</code> has one Feature Filter called <code>Random</code>, which does not require any configuration, so only the name property is required.</p>
+</li>
+<li>
+<p><code>feature-v</code> specifies a Feature Filter named <code>TimeWindowFilter</code>. This Feature Filter can be passed parameters to use as configuration. In this case, for a <code>TimeWindowFilter</code>, pass in the start and end times for which the feature will be active.</p>
+</li>
+<li>
+<p><code>feature-w</code> is used for the <code>AlwaysOnFilter</code>, which will always evaluate to <code>true</code>. The <code>evaluate</code> field is used to stop the evaluation of the Feature Filters, and results in the Feature Filter always return <code>false</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="evaluating-feature-flags"><a class="anchor" href="#evaluating-feature-flags"></a><a class="link" href="#evaluating-feature-flags">9.2. Evaluating Feature Flags</a></h3>
+<div class="paragraph">
+<p><code>azure-spring-cloud-feature-management</code> library provides <code>FeatureManager</code> to check if a Feature Flag is enabled. It provides an asynchronous way to check the state of the flag.</p>
+</div>
+<div class="paragraph">
+<p><code>azure-spring-cloud-feature-management-web</code> along with providing <code>FeatureManager</code> has <code>FeatureManagerSnapshot</code> which caches the state of previously evaluated Feature Flags in the <code>@RequestScope</code> to guarantee all requests return the same value. In addition, the web library provides <code>@FeatureGate</code> which can either block or redirect web requests to different endpoints.</p>
+</div>
+<div class="sect3">
+<h4 id="feature-flag-check"><a class="anchor" href="#feature-flag-check"></a><a class="link" href="#feature-flag-check">9.2.1. Feature Flag Check</a></h4>
+<div class="paragraph">
+<p><code>FeatureManager</code> is a <code>@Bean</code> that can be <code>@Autowired</code> or injected into <code>@Component</code> type objects. <code>FeatureManager</code> has a method <code>isEnabledAsync</code> that, when passed the name of a Feature Flag, returns its state.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+FeatureManager featureManager;
+
+if(featureManager.isEnabledAsync("feature-t").block()) {
+    // Do Something
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If Feature Management has not been configured or the Feature Flag doesn&#8217;t exist, <code>isEnabledAsync</code> will always return false. If an existing Feature Flag is configured with an unknown Feature Filter, then a <code>FilterNotFoundException</code> is thrown. This can be changed to return false by configuring <code>fail-fast</code> to false.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content stretch">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Required</th>
+<th class="tableblock halign-left valign-top">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.feature.management.fail-fast</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If an exception occurs, a RuntimeException is thrown, if set to false then returns false instead.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><code>FeatureManagerSnapshot</code> works the same as <code>FeatureManager</code>, besides its caching of results in the <code>@RequestScope</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="feature-gate"><a class="anchor" href="#feature-gate"></a><a class="link" href="#feature-gate">9.2.2. Feature Gate</a></h4>
+<div class="paragraph">
+<p>With the Feature Management Web library, you can require that a given feature is enabled in order to execute an endpoint. This can be done by using the <code>@FeatureGate</code> annotation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@GetMapping("/featureT")
+@FeatureGate(feature = "feature-t")
+@ResponseBody
+public String featureT() {
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>featureT</code> endpoint can only be accessed if "feature-t" is enabled.</p>
+</div>
+<div class="sect4">
+<h5 id="disabled-action-handling"><a class="anchor" href="#disabled-action-handling"></a><a class="link" href="#disabled-action-handling">Disabled Action Handling</a></h5>
+<div class="paragraph">
+<p>When an endpoint is blocked because the feature it specifies is disabled, <code>IDisabledFeaturesHandler</code> will be invoked. By default, an HTTP 404 is returned. This can be overridden by implementing <code>IDisabledFeaturesHandler</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Component
+public class DisabledFeaturesHandler implements IDisabledFeaturesHandler{
+
+    @Override
+    public HttpServletResponse handleDisabledFeatures(HttpServletRequest request, HttpServletResponse response) {
+        ...
+        return response;
+    }
+
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="routing"><a class="anchor" href="#routing"></a><a class="link" href="#routing">Routing</a></h5>
+<div class="paragraph">
+<p>Certain routes may expose application capabilities that are gated by features. These routes can be redirected to another endpoint if a feature has been disabled.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@GetMapping("/featureT")
+@FeatureGate(feature = "feature-t" fallback= "/oldEndpoint")
+@ResponseBody
+public String featureT() {
+    ...
+}
+
+@GetMapping("/oldEndpoint")
+@ResponseBody
+public String oldEndpoint() {
+    ...
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="built-in-feature-filters"><a class="anchor" href="#built-in-feature-filters"></a><a class="link" href="#built-in-feature-filters">9.3. Built-In Feature Filters</a></h3>
+<div class="paragraph">
+<p>There are a few Feature Filters that come with the <code>azure-spring-cloud-feature-management</code> package. These Feature Filters are not added automatically, but can be setup in an <code>@Configuration</code> for use.</p>
+</div>
+<div class="sect3">
+<h4 id="alwaysonfilter"><a class="anchor" href="#alwaysonfilter"></a><a class="link" href="#alwaysonfilter">9.3.1. AlwaysOnFilter</a></h4>
+<div class="paragraph">
+<p>This filter always returns true. Usage can be see in <a href="#feature-flag-declaration">Feature Flag Declaration</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="percentagefilter"><a class="anchor" href="#percentagefilter"></a><a class="link" href="#percentagefilter">9.3.2. PercentageFilter</a></h4>
+<div class="paragraph">
+<p>Each evaluation of <code>PercentageFilter</code> can return a different result, which are not consistent among one user&#8217;s requests. This can be circumvented using the <code>FeatureManagementSnapshot</code>, which will cache the result of the Feature Flag per user. This ensures a User will have a consistent experience even if they have to resend the request.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">feature-management:
+  feature-v:
+    enabled-for:
+      -
+        name: PercentageFilter
+        parameters:
+          Value: 50</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="timewindowfilter"><a class="anchor" href="#timewindowfilter"></a><a class="link" href="#timewindowfilter">9.3.3. TimeWindowFilter</a></h4>
+<div class="paragraph">
+<p>This filter provides the capability to enable a feature based on a time window. If only <code>End</code> is specified, the feature will be considered on until that time. If only start is specified, the feature will be considered on at all points after that time. If both are specified the feature will be considered valid between the two times.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">feature-management:
+  feature-v:
+    enabled-for:
+      -
+       name: TimeWindowFilter
+        parameters:
+          Start: "Wed, 01 May 2019 13:59:59 GMT",
+          End: "Mon, 01 July 2019 00:00:00 GMT"</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="targetingfilter"><a class="anchor" href="#targetingfilter"></a><a class="link" href="#targetingfilter">9.3.4. TargetingFilter</a></h4>
+<div class="paragraph">
+<p>This filter provides the capability to enable a feature for a target audience. An in-depth explanation of targeting is explained in the <a href="#targeting">targeting section below</a>. The filter parameters include an audience object that describes users, groups, and a default percentage of the user base that should have access to the feature. For each group object that is listed in the target audience, a percentage is required which defines the percentage of that group&#8217;s members which have access to the feature. If a user is specified in the users section directly, or if the user is in the included percentage of any of the group rollouts, or if the user falls into the default rollout percentage, then that user will have the feature enabled.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">feature-management:
+  target:
+    enabled-for:
+      -
+        name: targetingFilter
+        parameters:
+          users:
+            - Jeff
+            - Alicia
+          groups:
+            -
+              name: Ring0
+              rolloutPercentage: 100
+            -
+              name: Ring1
+              rolloutPercentage: 100
+          defaultRolloutPercentage: 50</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="custom-feature-filters"><a class="anchor" href="#custom-feature-filters"></a><a class="link" href="#custom-feature-filters">9.4. Custom Feature Filters</a></h3>
+<div class="paragraph">
+<p>Creating a custom Feature Filter provides a way to enable features based on criteria that you define. To create a custom Feature Filter, the <code>FeatureFilter</code> interface must be implemented. <code>FeatureFilter</code> has a single method <code>evaluate</code>. When a feature specifies that it can be enabled with a Feature Filter, the <code>evaluate</code> method is called. If <code>evaluate</code> returns <code>true</code> it means the feature should be enabled. If <code>false</code> it will continue evaluating the Feature&#8217;s filters until one returns true. If all return <code>false</code> then the feature is off.</p>
+</div>
+<div class="paragraph">
+<p>Feature Filters are found by being defined as being Spring Beans, so they are either defined as <code>@Component</code> or defined in an <code>@Configuration</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Component("Random")
+public class Random implements FeatureFilter {
+
+    @Override
+    public boolean evaluate(FeatureFilterEvaluationContext context) {
+        double chance = Double.valueOf((String) context.getParameters().get("chance"));
+        return Math.random() &gt; chance / 100;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="parameterized-feature-filters"><a class="anchor" href="#parameterized-feature-filters"></a><a class="link" href="#parameterized-feature-filters">9.4.1. Parameterized Feature Filters</a></h4>
+<div class="paragraph">
+<p>Some Feature Filters require parameters to decide whether a feature should be turned on or not. For example, a browser Feature Filter may turn on a feature for a certain set of browsers. It may be desired that Edge and Chrome browsers enable a feature, while Firefox does not. To do this, a Feature Filter can be designed to expect parameters. These parameters would be specified in the feature configuration and in code, and would be accessible via the <code>FeatureFilterEvaluationContext</code> parameter of <code>evaluate</code>. <code>FeatureFilterEvaluationContext</code> has a property <code>parameters</code> which is a <code>HashMap&lt;String, Object&gt;</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="targeting"><a class="anchor" href="#targeting"></a><a class="link" href="#targeting">9.5. Targeting</a></h3>
+<div class="paragraph">
+<p>Targeting is a feature management strategy that enables developers to progressively roll out new features to their user base. The strategy is built on the concept of targeting a set of users known as the target audience. An audience is made up of specific users, groups, and a designated percentage of the entire user base. The groups that are included in the audience can be broken down further into percentages of their total members.</p>
+</div>
+<div class="paragraph">
+<p>The following steps demonstrate an example of a progressive rollout for a new 'Beta' feature:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Individual users Jeff and Alicia are granted access to the Beta</p>
+</li>
+<li>
+<p>Another user, Mark, asks to opt-in and is included.</p>
+</li>
+<li>
+<p>Twenty percent of a group known as "Ring1" users are included in the Beta.</p>
+</li>
+<li>
+<p>The number of "Ring1" users included in the beta is bumped up to 100 percent.</p>
+</li>
+<li>
+<p>Five percent of the user base is included in the beta.</p>
+</li>
+<li>
+<p>The rollout percentage is bumped up to 100 percent and the feature is completely rolled out.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This strategy for rolling out a feature is built into the library through the included <code>TargetingFilter</code> Feature Filter.</p>
+</div>
+<div class="sect3">
+<h4 id="targeting-in-an-application"><a class="anchor" href="#targeting-in-an-application"></a><a class="link" href="#targeting-in-an-application">9.5.1. Targeting in an Application</a></h4>
+<div class="paragraph">
+<p>An example web application that uses the targeting Feature Filter is available in the <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/appconfiguration/feature-management-web-sample">Example Project</a>.</p>
+</div>
+<div class="paragraph">
+<p>To begin using the <code>TargetingFilter</code> in an application, it must be added as a <code>@Bean</code> like any other Feature Filter. <code>TargetingFilter</code> relies on another <code>@Bean</code> to be added to the application, <code>ITargetingContextAccessor</code>. The <code>ITargetingContextAccessor</code> allows for defining the current <code>TargetingContext</code> to be used for defining the current user id and groups. An example of this is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class TargetingContextAccessor implements ITargetingContextAccessor {
+
+    @Override
+    public Mono&lt;TargetingContext&gt; getContextAsync() {
+        TargetingContext context = new TargetingContext();
+        context.setUserId("Jeff");
+        ArrayList&lt;String&gt; groups = new ArrayList&lt;String&gt;();
+        groups.add("Ring0");
+        context.setGroups(groups);
+        return Mono.just(context);
+    }
+
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="targeting-evaluation-options"><a class="anchor" href="#targeting-evaluation-options"></a><a class="link" href="#targeting-evaluation-options">9.5.2. Targeting Evaluation Options</a></h4>
+<div class="paragraph">
+<p>Options are available to customize how targeting evaluation is performed across a given <code>TargetingFilter</code>. An optional parameter, <code>TargetingEvaluationOptions</code> can be set during <code>TargetingFilter</code> creation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public TargetingFilter targetingFilter(ITargetingContextAccessor contextAccessor) {
+    return new TargetingFilter(contextAccessor, new TargetingEvaluationOptions().setIgnoreCase(true));
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="for-more-information"><a class="anchor" href="#for-more-information"></a><a class="link" href="#for-more-information">10. For more information</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>See <a href="https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/appconfiguration/azure-spring-cloud-starter-appconfiguration-config">Starter Readme</a> for more details and compete documentation of all settings.</p>

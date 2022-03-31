@@ -168,6 +168,7 @@ window.onload = function() {
 <ul class="sectlevel2">
 <li><a href="#_pull_based_refresh">Pull Based Refresh</a></li>
 <li><a href="#_push_based_refresh">Push Based Refresh</a></li>
+<li><a href="#_forced_client_refresh">Forced Client Refresh</a></li>
 </ul>
 </li>
 </ul>
@@ -303,6 +304,42 @@ This validation only happens on the creation/modification of the endpoint.
 <div class="paragraph">
 <p>It is highly recommended that filters are set up as otherwise a refresh will be triggered after every key creation and modification.</p>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_forced_client_refresh"><a class="link" href="#_forced_client_refresh">Forced Client Refresh</a></h3>
+<div class="paragraph">
+<p>The library can be configured to force a refresh of all configurations at a refresh interval.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content stretch">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Required</th>
+<th class="tableblock halign-left valign-top">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.appconfiguration.refresh-interval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of time, of type Duration, configurations are stored before a check can occur.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Refreshing with <code>spring.cloud.azure.appconfiguration.refresh-interval</code> doesn&#8217;t check any configured watch keys. This is mainly used to make sure Key Vault Secrets are kept up to date, as Azure App Configuration can&#8217;t tell when they are updated.</p>
+</div>
+<div class="paragraph">
+<p>Since Azure Key Vault stores the public and private key pair of a certificate as a secret, your application can retrieve any certificate as a <a href="#Key Vault References">Key Vault Reference</a> in App Configuration. Because certificates need to be rotated periodically, client applications need to update just as frequently, which can be done by using the client refresh interval.</p>
 </div>
 </div>
 </div>
