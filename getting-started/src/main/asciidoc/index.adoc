@@ -1,7 +1,7 @@
 
 include::_attributes.adoc[]
 
-= Getting Started Guides
+= Getting Started
 
 == Spring Boot
 

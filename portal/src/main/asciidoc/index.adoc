@@ -1,8 +1,11 @@
 include::_attributes.adoc[]
 
-= Spring Cloud Azure
+= Portal
 
-include::getting-started-guides.adoc[]
-include::tutorials.adoc[]
-include::samples.adoc[]
-include::reference.adoc[]
+== link:/getting-started/index.html[Getting Started]
+
+== link:/reference/index.html[Reference]
+
+== link:/samples/index.html[Samples]
+
+== link:/tutorials/index.html[Tutorials]
