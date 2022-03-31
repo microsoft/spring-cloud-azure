@@ -8,11 +8,11 @@ Spring Cloud Azure Documentation consists of the following sections:
 [%noheader,grid=none,frame=none,cols="<30,<70"]
 |===
 
-|link:spring-cloud-azure/{project-version}/portal/html/index.html[Getting Started] |Getting Started Guides
+|link:/spring-cloud-azure/{project-version}/portal/html/index.html[Getting Started] |Getting Started Guides
 
-|link:spring-cloud-azure/{project-version}/portal/html/index.html[Reference] |Reference Documentation
+|link:/spring-cloud-azure/{project-version}/portal/html/index.html[Reference] |Reference Documentation
 
-|link:spring-cloud-azure/{project-version}/portal/html/index.html[Samples] |Samples
+|link:/spring-cloud-azure/{project-version}/portal/html/index.html[Samples] |Samples
 
-|link:spring-cloud-azure/{project-version}/portal/html/index.html[Tutorials] |Tutorials
+|link:/spring-cloud-azure/{project-version}/portal/html/index.html[Tutorials] |Tutorials
 |===
