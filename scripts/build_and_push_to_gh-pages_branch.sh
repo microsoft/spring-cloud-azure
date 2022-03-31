@@ -21,6 +21,8 @@ function set_default_props() {
     echo "Repo name is [${REPO_NAME}]"
     SPRING_CLOUD_STATIC_REPO=${SPRING_CLOUD_STATIC_REPO:-git@github.com:spring-cloud/spring-cloud-static.git}
     echo "Spring Cloud Static repo is [${SPRING_CLOUD_STATIC_REPO}"
+    MODULES=("getting-started" "portal" "reference" "samples" "tutorials")
+    echo "MODULES: ${MODULES[*]}"
 }
 
 # Check if gh-pages exists and docs have been built
@@ -29,11 +31,6 @@ function check_if_anything_to_sync() {
 
     if ! (git remote set-branches --add origin gh-pages && git fetch -q); then
         echo "No gh-pages, so not syncing"
-        exit 0
-    fi
-
-    if ! [ -d docs/target/generated-docs ] && ! [ "${BUILD}" == "yes" ]; then
-        echo "No gh-pages sources in docs/target/generated-docs, so not syncing"
         exit 0
     fi
 }
@@ -62,27 +59,6 @@ function build_docs_if_applicable() {
     if [[ "${BUILD}" == "yes" ]] ; then
         ./mvnw clean install -P docs -pl docs -DskipTests
     fi
-}
-
-# Get the name of the `docs.main` property
-# Get whitelisted branches - assumes that a `docs` module is available under `docs` profile
-function retrieve_doc_properties() {
-    MAIN_ADOC_VALUE=$("${MAVEN_PATH}"mvn -q \
-        -Dexec.executable="echo" \
-        -Dexec.args='${docs.main}' \
-        --non-recursive \
-        org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
-    echo "Extracted 'main.adoc' from Maven build [${MAIN_ADOC_VALUE}]"
-
-
-    WHITELIST_PROPERTY=${WHITELIST_PROPERTY:-"docs.whitelisted.branches"}
-    WHITELISTED_BRANCHES_VALUE=$("${MAVEN_PATH}"mvn -q \
-        -Dexec.executable="echo" \
-        -Dexec.args="\${${WHITELIST_PROPERTY}}" \
-        org.codehaus.mojo:exec-maven-plugin:1.3.1:exec \
-        -P docs \
-        -pl docs)
-    echo "Extracted '${WHITELIST_PROPERTY}' from Maven build [${WHITELISTED_BRANCHES_VALUE}]"
 }
 
 # Stash any outstanding changes
@@ -136,41 +112,34 @@ function add_docs_from_target() {
 function copy_docs_for_current_version() {
     if [[ "${CURRENT_BRANCH}" == "main" ]] ; then
         echo -e "Current branch is main - will copy the current docs only to the root folder"
-        for f in docs/target/generated-docs/*; do
-            file=${f#docs/target/generated-docs/*}
-            if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
-                # Not ignored...
-                cp -rf $f ${ROOT_FOLDER}/
-                git add -A ${ROOT_FOLDER}/$file
-            fi
+        for d in "${MODULES[@]}"; do
+            for f in "${d}"/target/generated-docs/*; do
+                file=${f#"${d}"/target/generated-docs/*}
+                if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
+                    # Not ignored...
+                    cp -rf $f ${ROOT_FOLDER}/
+                    git add -A ${ROOT_FOLDER}/$file
+                fi
+            done
         done
         COMMIT_CHANGES="yes"
     else
         echo -e "Current branch is [${CURRENT_BRANCH}]"
-        # https://stackoverflow.com/questions/29300806/a-bash-script-to-check-if-a-string-is-present-in-a-comma-separated-list-of-strin
-        if [[ ",${WHITELISTED_BRANCHES_VALUE}," = *",${CURRENT_BRANCH},"* ]] ; then
+        if [[ ",main," = ",${CURRENT_BRANCH}," ]] ; then
             mkdir -p ${ROOT_FOLDER}/${CURRENT_BRANCH}
             echo -e "Branch [${CURRENT_BRANCH}] is whitelisted! Will copy the current docs to the [${CURRENT_BRANCH}] folder"
-            for f in docs/target/generated-docs/*; do
-                file=${f#docs/target/generated-docs/*}
-                if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
-                    # Not ignored...
-                    # We want users to access 1.0.0.RELEASE/ instead of 1.0.0.RELEASE/spring-cloud.sleuth.html
-                    if [[ "${file}" == "${MAIN_ADOC_VALUE}.html" ]] ; then
-                        # We don't want to copy the spring-cloud-sleuth.html
-                        # we want it to be converted to index.html
-                        cp -rf $f ${ROOT_FOLDER}/${CURRENT_BRANCH}/index.html
-                        git add -A ${ROOT_FOLDER}/${CURRENT_BRANCH}/index.html
-                    else
+            for d in "${MODULES[@]}"; do
+                for f in "${d}"/target/generated-docs/*; do
+                    file=${f#"${d}"/target/generated-docs/*}
+                    if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
                         cp -rf $f ${ROOT_FOLDER}/${CURRENT_BRANCH}
                         git add -A ${ROOT_FOLDER}/${CURRENT_BRANCH}/$file
                     fi
-                fi
+                done
             done
             COMMIT_CHANGES="yes"
         else
-            echo -e "Branch [${CURRENT_BRANCH}] is not on the white list! Check out the Maven [${WHITELIST_PROPERTY}] property in
-             [docs] module available under [docs] profile. Won't commit any changes to gh-pages for this branch."
+            echo -e "Skipping for current branch: ${CURRENT_BRANCH}"
         fi
     fi
 }
@@ -180,10 +149,12 @@ function copy_docs_for_provided_version() {
     local FOLDER=${DESTINATION_REPO_FOLDER}/${VERSION}
     mkdir -p ${FOLDER}
     echo -e "Current tag is [v${VERSION}] Will copy the current docs to the [${FOLDER}] folder"
-    for f in ${ROOT_FOLDER}/docs/target/generated-docs/*; do
-        file=${f#${ROOT_FOLDER}/docs/target/generated-docs/*}
-        copy_docs_for_branch ${file} ${FOLDER}
-    done
+    for d in "${MODULES[@]}"; do
+        for f in ${ROOT_FOLDER}/"${d}"/target/generated-docs/*; do
+            file=${f#${ROOT_FOLDER}/"${d}"/target/generated-docs/*}
+            copy_docs_for_branch ${file} ${FOLDER}
+        done
+    done;
     COMMIT_CHANGES="yes"
     CURRENT_BRANCH="v${VERSION}"
 }
@@ -196,17 +167,8 @@ function copy_docs_for_branch() {
     local file=$1
     local destination=$2
     if ! git ls-files -i -o --exclude-standard --directory | grep -q ^${file}$; then
-        # Not ignored...
-        # We want users to access 1.0.0.RELEASE/ instead of 1.0.0.RELEASE/spring-cloud.sleuth.html
-        if [[ ("${file}" == "${MAIN_ADOC_VALUE}.html") || ("${file}" == "${REPO_NAME}.html") ]] ; then
-            # We don't want to copy the spring-cloud-sleuth.html
-            # we want it to be converted to index.html
-            cp -rf $f ${destination}/index.html
-            git add -A ${destination}/index.html
-        else
-            cp -rf $f ${destination}
-            git add -A ${destination}/$file
-        fi
+        cp -rf $f ${destination}
+        git add -A ${destination}/$file
     fi
 }
 
@@ -324,7 +286,6 @@ else
     switch_to_tag
 fi
 build_docs_if_applicable
-retrieve_doc_properties
 stash_changes
 add_docs_from_target
 checkout_previous_branch
