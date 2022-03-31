@@ -63,7 +63,7 @@ function build_docs_if_applicable() {
 
 # Stash any outstanding changes
 function stash_changes() {
-    git diff-index --quiet HEAD && dirty=$? || (echo "Failed to check if the current repo is dirty. Assuming that it is." && dirty="1")
+    git diff-index --quiet HEAD && dirty=$? || (echo "Failed to check if the current repo is dirty. Assuming that it isn't." && dirty="0")
     if [ "$dirty" != "0" ]; then git stash; fi
 }
 
