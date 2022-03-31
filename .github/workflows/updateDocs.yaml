@@ -6,7 +6,7 @@ on:
     - main
     - docs
     - 4.*
-    # paths:
+  # paths:
     # - 'docs/**'
   # release:
   #   types: [published] # includes pre-release and regular releases, but does not include draft releases.
