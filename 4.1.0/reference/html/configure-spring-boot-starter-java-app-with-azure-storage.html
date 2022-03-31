@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Azure Storage</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript"> (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "b9g1q6wz23"); </script>
+
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel2">
+<li><a href="#_azure_storage">Azure Storage</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect2">
+<h3 id="_azure_storage"><a class="link" href="#_azure_storage">Azure Storage</a></h3>
+<div class="paragraph">
+<p>This article walks you through creating a custom application using the <strong>Spring Initializr</strong>, then adding the Azure Storage Blob starter to your application, and then using your application to upload a blob to your Azure storage account.</p>
+</div>
+<div class="sect3">
+<h4 id="_prerequisites"><a class="link" href="#_prerequisites">Prerequisites</a></h4>
+<div class="paragraph">
+<p>The following prerequisites are required in order to follow the steps in this article:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>An Azure subscription; if you don&#8217;t already have an Azure subscription, you can activate your <a href="https://azure.microsoft.com/pricing/member-offers/msdn-benefits-details/">MSDN subscriber benefits</a> or sign up for a <a href="https://azure.microsoft.com/pricing/free-trial/">free Azure account</a>.</p>
+</li>
+<li>
+<p>The <a href="/cli/azure/index">Azure Command-Line Interface (CLI)</a>.</p>
+</li>
+<li>
+<p>A supported Java Development Kit (JDK). For more information about the JDKs available for use when developing on Azure, see <a href="../fundamentals/java-support-on-azure.md">Java support on Azure and Azure Stack</a>.</p>
+</li>
+<li>
+<p><a href="http://maven.apache.org/">Apache Maven</a>, version 3.0 or later.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Spring Boot version 2.5 or 2.6 is required to complete the steps in this article.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_create_an_azure_storage_account_and_blob_container_for_your_application"><a class="link" href="#_create_an_azure_storage_account_and_blob_container_for_your_application">Create an Azure Storage Account and blob container for your application</a></h4>
+<div class="paragraph">
+<p>The following procedure creates an Azure storage account and container in the portal.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Browse to the Azure portal at <a href="https://portal.azure.com/" class="bare">https://portal.azure.com/</a> and sign in.</p>
+</li>
+<li>
+<p>Select <strong>Create a resource</strong>, then <strong>Get started</strong>, and then select <strong>Storage Account</strong>.</p>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/160536881-a9e3cb9d-bee6-40bd-80ce-634b4d198373.png" alt="Azure portal, create a resource, search for storage accounts."></span></p>
+</div>
+</li>
+<li>
+<p>On the <strong>Create storage account</strong> page, enter the following information:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Select <strong>Subscription</strong>.</p>
+</li>
+<li>
+<p>Select <strong>Resource group</strong>, or create a new resource group.</p>
+</li>
+<li>
+<p>Enter a unique <strong>Storage account name</strong>, which will become part of the URI for your storage account. For example: if you entered <strong>wingtiptoysstorage</strong> for the <strong>Name</strong>, the URI would be <em>wingtiptoysstorage.core.windows.net</em>.</p>
+</li>
+<li>
+<p>Specify the <strong>Location</strong> for your storage account.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>When you have specified the options listed above, select <strong>Review + create</strong>.</p>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/160536965-b233f379-dfd3-4de0-be5c-28ff4420bb42.png" alt="Azure portal, create a storage account."></span></p>
+</div>
+</li>
+<li>
+<p>Review the specification, then select <strong>Create</strong> to create your storage account.</p>
+</li>
+<li>
+<p>When the deployment is complete, select <strong>Go to resource</strong>.</p>
+</li>
+<li>
+<p>Select <strong>Containers</strong>.</p>
+</li>
+<li>
+<p>Select <strong>Container</strong>.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Name the container.</p>
+</li>
+<li>
+<p>Select <em>Blob</em> from the drop-down list.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/160537009-7dfb622f-8d38-4ef1-ba08-a60f38dd2af1.png" alt="Azure portal, storage account, containers, new container pane."></span></p>
+</div>
+</li>
+<li>
+<p>The Azure portal will list your blob container after is has been created.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>You can also use Azure CLI to create an Azure storage account and container using the following steps. Remember to replace the placeholder values (in angle brackets) with your own values.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open a command prompt.</p>
+</li>
+<li>
+<p>Sign in to your Azure account:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">   az login</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>If you don&#8217;t have a resource group, create one using the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">   az group create \
+      --name &lt;resource-group&gt; \
+      --location &lt;location&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create a storage account by using the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">    az storage account create \
+      --name &lt;storage-account-name&gt; \
+      --resource-group &lt;resource-group&gt; \
+      --location &lt;location&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>To create a container, use the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">    az storage container create \
+      --account-name &lt;storage-account-name&gt; \
+      --name &lt;container-name&gt; \
+      --auth-mode login</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_create_a_simple_spring_boot_application_with_the_spring_initializr"><a class="link" href="#_create_a_simple_spring_boot_application_with_the_spring_initializr">Create a simple Spring Boot application with the Spring Initializr</a></h4>
+<div class="paragraph">
+<p>The following procedure creates the Spring boot application.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Browse to <a href="https://start.spring.io/" class="bare">https://start.spring.io/</a>.</p>
+</li>
+<li>
+<p>Specify the following options:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Generate a <strong>Maven</strong> project.</p>
+</li>
+<li>
+<p>Specify <strong>Java 11</strong>.</p>
+</li>
+<li>
+<p>Specify a <strong>Spring Boot</strong> version that is equal to <strong>2.5.10</strong>.</p>
+</li>
+<li>
+<p>Specify the <strong>Group</strong> and <strong>Artifact</strong> names for your application.</p>
+</li>
+<li>
+<p>Add the <strong>Spring Web</strong> dependency.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/160537746-5ccdfcb8-9dbc-4d35-a78e-61875958bb8a.png" alt="Basic Spring Initializr options"></span>
+NOTE: The Spring Initializr uses the <strong>Group</strong> and <strong>Artifact</strong> names to create the package name; for example: <strong>com.wingtiptoys.storage</strong>.</p>
+</div>
+</li>
+<li>
+<p>When you have specified the options listed above, select <strong>GENERATE</strong>.</p>
+</li>
+<li>
+<p>When prompted, download the project to a path on your local computer.</p>
+</li>
+<li>
+<p>After you have extracted the files on your local system, your simple Spring Boot application will be ready to edit.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configure_your_spring_boot_app_to_use_the_azure_storage_blob_starter"><a class="link" href="#_configure_your_spring_boot_app_to_use_the_azure_storage_blob_starter">Configure your Spring Boot app to use the Azure Storage Blob starter</a></h4>
+<div class="sect4">
+<h5 id="_add_dependency_in_pom_xml"><a class="link" href="#_add_dependency_in_pom_xml">Add dependency in pom.xml</a></h5>
+<div class="paragraph">
+<p>The following procedure configures the Spring boot application to use Azure storage.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Locate the <strong>pom.xml</strong> file in the root directory of your app; for example:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>C:\SpringBoot\storage\pom.xml</code></p>
+</li>
+<li>
+<p><code>/users/example/home/storage/pom.xml</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Open the <strong>pom.xml</strong> file in a text editor, and add the Spring Cloud Azure Storage starter to the list of <code>&lt;dependencies&gt;</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">    &lt;dependency&gt;
+      &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-cloud-azure-starter-storage-blob&lt;/artifactId&gt;
+      &lt;version&gt;4.0.0&lt;/version&gt;
+    &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Save and close the <strong>pom.xml</strong> file.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_configure_property_in_application_yml"><a class="link" href="#_configure_property_in_application_yml">Configure property in application.yml</a></h5>
+<div class="paragraph">
+<p>The following procedure configures the Spring boot application to use your Azure storage account.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Locate the <strong>application.yml</strong> in the <strong>resources</strong> directory of your app; for example:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>C:\SpringBoot\storage\src\main\resources\application.yml</code></p>
+</li>
+<li>
+<p><code>/users/example/home/storage/src/main/resources/application.yml</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Open the <strong>application.yml</strong> file in a text editor, add the following lines, and then replace the sample values with the appropriate properties for your storage account:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      storage:
+        blob:
+          account-name: [storage-account-name]
+          account-key: [storage-account-access-key]
+          endpoint: [storage-blob-service-endpoint]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Spring Cloud Azure Storage Blob Properties</caption>
+<colgroup>
+<col style="width: 44.4444%;">
+<col style="width: 44.4444%;">
+<col style="width: 11.1112%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.blob.account-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Azure Storage account.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.blob.account-key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The access key of the Azure Storage account.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.storage.blob.endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The blob endpoint URL of the Azure Storage account.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>Save and close the <em>application.yml</em> file.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_add_sample_code_to_implement_basic_azure_storage_functionality"><a class="link" href="#_add_sample_code_to_implement_basic_azure_storage_functionality">Add sample code to implement basic Azure storage functionality</a></h4>
+<div class="paragraph">
+<p>In this section, you will create the necessary Java classes for storing a blob in your Azure storage account.</p>
+</div>
+<div class="sect4">
+<h5 id="_add_a_blob_controller_class"><a class="link" href="#_add_a_blob_controller_class">Add a blob controller class</a></h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a new Java file named <em>BlobController.java</em> in the package directory of your app; for example:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>C:\SpringBoot\storage\src\main\java\com\wingtiptoys\storage\BlobController.java</code></p>
+</li>
+<li>
+<p><code>/users/example/home/storage/src/main/java/com/wingtiptoys/storage/BlobController.java</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Open <code>BlobController.java</code> in a text editor, and add the following lines to the file. Replace the <code>your-resource-group</code>, <code>your-artifact-name</code>, <code>your-container-name</code>, and <code>your-blob-name</code> placeholders with your values.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package com.&lt;your-resource-group&gt;.&lt;your-artifact-name&gt;;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.WritableResource;
+import org.springframework.util.StreamUtils;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+
+@RestController
+@RequestMapping("blob")
+public class BlobController {
+    @Value("azure-blob://&lt;your-container-name&gt;/&lt;your-blob-name&gt;")
+    private Resource blobFile;
+
+    @GetMapping("/readBlobFile")
+    public String readBlobFile() throws IOException {
+        return StreamUtils.copyToString(
+                this.blobFile.getInputStream(),
+                Charset.defaultCharset());
+    }
+
+    @PostMapping("/writeBlobFile")
+    public String writeBlobFile(@RequestBody String data) throws IOException {
+        try (OutputStream os = ((WritableResource) this.blobFile).getOutputStream()) {
+            os.write(data.getBytes());
+        }
+        return "file was updated";
+    }
+
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Save and close the blob controller Java file.</p>
+</li>
+<li>
+<p>Open a command prompt and change directory to the folder where your <em>pom.xml</em> file is located; for example:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash"> cd C:\SpringBoot\storage</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">   cd /users/example/home/storage</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Build your Spring Boot application with Maven and run it; for example:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">   mvn clean package
+   mvn spring-boot:run</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Once your application is running, you can use <em>curl</em> to test your application; for example:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Send a POST request to update a file&#8217;s contents:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">curl http://localhost:8080/blob/writeBlobFile -d "new message" -H "Content-Type: text/plain"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see a response that  <code>file was updated</code>.</p>
+</div>
+</li>
+<li>
+<p>Send a GET request to verify the file&#8217;s contents:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">curl -X GET http://localhost:8080/blob/readBlobFile</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see the "new message" text that you posted.</p>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_summary"><a class="link" href="#_summary">Summary</a></h4>
+<div class="paragraph">
+<p>In this tutorial, you created a new Java application using the <strong>Spring Initializr</strong>, added the Azure Storage Blob starter to your application, and then configured your application to upload a blob to your Azure storage account.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_clean_up_resources"><a class="link" href="#_clean_up_resources">Clean up resources</a></h4>
+<div class="paragraph">
+<p>When no longer needed, use the <a href="https://portal.azure.com/">Azure portal</a> to delete the resources created in this article to avoid unexpected charges.</p>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>
