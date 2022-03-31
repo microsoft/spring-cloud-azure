@@ -6,9 +6,6 @@
   <groupId>com.azure.spring</groupId>
   <artifactId>spring-cloud-azure-docs-getting-started</artifactId>
   <version>4.1.0</version>
-  <packaging>jar</packaging>
-  <name>spring-cloud-azure-docs-getting-started</name>
-  <description>Spring Cloud Azure Docs Getting Started</description>
 
   <properties>
     <spring-doc-resources.version>0.2.5</spring-doc-resources.version>
