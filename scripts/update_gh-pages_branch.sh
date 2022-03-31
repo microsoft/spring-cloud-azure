@@ -182,7 +182,7 @@ function commit_changes_if_applicable() {
         # This is a little extreme. Use with care!
         ###################################################################
         if [[ "${COMMIT_SUCCESSFUL}" == "yes" ]] ; then
-            git push
+            git push origin gh-pages
         fi
     fi
 }
