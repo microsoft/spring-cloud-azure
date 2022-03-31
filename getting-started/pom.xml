@@ -10,10 +10,10 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>spring-cloud-azure-build-docs</artifactId>
-  <name>spring-cloud-azure-build-docs</name>
+  <artifactId>spring-cloud-azure-docs-getting-started</artifactId>
+  <name>spring-cloud-azure-docs-getting-started</name>
   <packaging>jar</packaging>
-  <description>Spring Cloud Azure Build Docs</description>
+  <description>Spring Cloud Azure Docs Getting Started</description>
 
   <properties>
     <docs.main>spring-cloud-azure</docs.main>
