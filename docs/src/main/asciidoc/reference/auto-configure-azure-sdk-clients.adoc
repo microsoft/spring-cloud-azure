@@ -43,11 +43,11 @@ Or including the Spring Cloud Azure starter directly without adding Azure SDK de
 </dependency>
 ----
 
-TIP: Please refer to link:reference-doc#starter-dependencies[Starter Dependencies] for the list of starters Spring Cloud Azure supports.
+TIP: Please refer to link:index.html#starter-dependencies[Starter Dependencies] for the list of starters Spring Cloud Azure supports.
 
 === Configuration
 
-NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:reference-doc#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
 Configuration properties for each Azure service are under prefix `spring.cloud.azure.<azure-service>`.
 

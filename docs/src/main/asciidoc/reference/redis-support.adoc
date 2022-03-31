@@ -23,7 +23,7 @@ Adding below dependencies if you want to use the Spring Cloud Azure Redis suppor
 
 === Configuration
 
-NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:reference-doc#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
 .Configurable properties when using Redis support
 [cols="4*", options="header"]
@@ -35,7 +35,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 |*spring.cloud.azure*.profile.subscription-id| The subscription id. ||Yes
 |===
 
-NOTE: Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix `spring.cloud.azure`. Please refer to link:reference-doc#authentication[Authentication] for more details.
+NOTE: Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix `spring.cloud.azure`. Please refer to link:index.html#authentication[Authentication] for more details.
 
 === Basic Usage
 

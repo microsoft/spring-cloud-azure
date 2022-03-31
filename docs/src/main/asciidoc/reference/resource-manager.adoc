@@ -15,7 +15,7 @@ Azure Resource Manager (ARM) is the deployment and management service for Azure.
 
 === Configuration
 
-NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:reference-doc#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
 .Configurable properties of spring-cloud-azure-resourcemanager
 [cols="2*", options="header"]
@@ -43,7 +43,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 Spring Cloud Azure Resource Manager can work together with specific Spring Cloud Azure starters to retrieve connection information, such as connection strings, to connect to Azure services. It can also together with `spring-cloud-azure-starter` and third-party libraries to retrieve metadata like username/password, to complete authentication, such as: <<Kafka Support>>, <<Redis Support>>.
 
 For example, to retrieve the connection string of an Azure Service, developers can use a service principal as the credential to authenticate and retrieve the connection string. The configuration is listed as below. The provided service principal should
-be assigned a role of `Contributor` of the associated namespace at least. Please refer to link:reference-doc#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the principal has been granted the sufficient permission to access the Azure resource.
+be assigned a role of `Contributor` of the associated namespace at least. Please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the principal has been granted the sufficient permission to access the Azure resource.
 
 [source,yaml]
 ----

@@ -71,7 +71,7 @@ The binder provides the following 3 parts of configuration options:
 
 This section contains the configuration options used for connecting to Azure Event Hubs.
 
-NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:reference-doc#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
 .Connection configurable properties of spring-cloud-azure-stream-binder-eventhubs
 [cols="<,<,<", options="header"]
@@ -103,7 +103,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 
 TIP: Common Azure Service SDK configuration options are configurable for the Spring Cloud Azure Stream Event Hubs binder as well. The supported configuration options are introduced in link:configuration.html[the Configuration page], and could be configured with either the unified prefix `spring.cloud.azure.` or the prefix of `spring.cloud.azure.eventhubs.`.
 
-The binder also supports link:reference-doc#spring-cloud-azure-resourcemanager[Spring Could Azure Resource Manager] by default. To learn about how to retrieve the connection string with security principals that are not granted with `Data` related roles, please refer to the link:reference-doc#resource-manager-basic-usage[resource manager example] for details.
+The binder also supports link:index.html#spring-cloud-azure-resourcemanager[Spring Could Azure Resource Manager] by default. To learn about how to retrieve the connection string with security principals that are not granted with `Data` related roles, please refer to the link:index.html#resource-manager-basic-usage[resource manager example] for details.
 
 ===== Checkpoint Configuration Properties
 This section contains the configuration options for the Storage Blobs service, which is used for persisting partition ownership and checkpoint information.
@@ -691,7 +691,7 @@ The binder provides the following 2 parts of configuration options:
 
 This section contains the configuration options used for connecting to Azure Service Bus.
 
-NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:reference-doc#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
 .Connection configurable properties of spring-cloud-azure-stream-binder-servicebus
 [cols="<,<,<", options="header"]
@@ -718,7 +718,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 
 TIP: Common Azure Service SDK configuration options are configurable for the Spring Cloud Azure Stream Service Bus binder as well. The supported configuration options are introduced in link:configuration.html[the Configuration page], and could be configured with either the unified prefix `spring.cloud.azure.` or the prefix of `spring.cloud.azure.servicebus.`.
 
-The binder also supports link:reference-doc#spring-cloud-azure-resourcemanager[Spring Could Azure Resource Manager] by default. To learn about how to retrieve the connection string with security principals that are not granted with `Data` related roles, please refer to the link:reference-doc#resource-manager-basic-usage[resource manager example] for details.
+The binder also supports link:index.html#spring-cloud-azure-resourcemanager[Spring Could Azure Resource Manager] by default. To learn about how to retrieve the connection string with security principals that are not granted with `Data` related roles, please refer to the link:index.html#resource-manager-basic-usage[resource manager example] for details.
 
 ===== Azure Service Bus Binding Configuration Properties
 Below options are divided into four sections: Consumer Properties, Advanced Consumer

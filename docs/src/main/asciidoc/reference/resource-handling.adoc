@@ -39,7 +39,7 @@ Spring project provides link:https://docs.spring.io/spring-framework/docs/curren
 
 === Configuration
 
-NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:reference-doc#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
 .Configurable properties of spring-cloud-azure-starter-storage-blob
 [cols="3,1,5", options="header"]
