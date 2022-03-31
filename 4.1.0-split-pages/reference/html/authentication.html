@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.17">
+<title>Authentication</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script type="text/javascript"> (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "b9g1q6wz23"); </script>
+
+</head>
+<body class="book">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="authentication">Authentication</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_defaultazurecredential">DefaultAzureCredential</h3>
+<div class="paragraph">
+<p>The <code>DefaultAzureCredential</code> is appropriate for most scenarios where the application is intended to be run in the Azure Cloud. This is because the DefaultAzureCredential combines credentials commonly used to authenticate when deployed, with credentials used to authenticate in a development environment.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+DefaultAzureCredential is intended to simplify getting started with the SDK by handling common scenarios with reasonable default behaviors. Developers who want more control or whose scenario isn&#8217;t served by the default settings should use other credential types.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The <code>DefaultAzureCredential</code> will attempt to authenticate via the following mechanisms in order.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://user-images.githubusercontent.com/13167207/143148654-f3a37180-85e2-4360-a47d-c1af2da8fada.png" alt="DefaultAzureCredential">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Environment - The <code>DefaultAzureCredential</code> will read account information specified via environment variables and use it to authenticate.</p>
+</li>
+<li>
+<p>Managed Identity - If the application is deployed to an Azure host with Managed Identity enabled, the <code>DefaultAzureCredential</code> will authenticate with that account.</p>
+</li>
+<li>
+<p>IntelliJ - If the developer has authenticated via Azure Toolkit for IntelliJ, the <code>DefaultAzureCredential</code> will authenticate with that account.</p>
+</li>
+<li>
+<p>Visual Studio Code - If the developer has authenticated via the Visual Studio Code Azure Account plugin, the <code>DefaultAzureCredential</code> will authenticate with that account.</p>
+</li>
+<li>
+<p>Azure CLI - If the developer has authenticated an account via the Azure CLI az login command, the <code>DefaultAzureCredential</code> will authenticate with that account.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_managed_identities">Managed Identities</h3>
+<div class="paragraph">
+<p>A common challenge for developers is the management of secrets and credentials used to secure communication between different components making up a solution. Managed identities eliminate the need for developers to manage credentials. Managed identities provide an identity for applications to use when connecting to resources that support Azure Active Directory (Azure AD) authentication. Applications may use the managed identity to obtain Azure AD tokens. For example, an application may use a managed identity to access resources like Azure Key Vault where developers can store credentials in a secure manner or to access storage accounts.</p>
+</div>
+<div class="paragraph">
+<p>We encourage using managed identity instead of using connection string or key in your application for it&#8217;s more secure and will save the trouble of managing secrets and credentials. In this case, <code>DefaultAzureCredential</code> could better serve the scenario of developing locally using account information stored locally and deploying the application to Azure Cloud and using Managed Identity.</p>
+</div>
+<div class="sect3">
+<h4 id="_managed_identity_types">Managed Identity Types</h4>
+<div class="paragraph">
+<p>There are two types of managed identities:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>System-assigned</strong> Some Azure services allow you to enable a managed identity directly on a service instance. When you enable a system-assigned managed identity an identity is created in Azure AD that&#8217;s tied to the lifecycle of that service instance. So when the resource is deleted, Azure automatically deletes the identity for you. By design, only that Azure resource can use this identity to request tokens from Azure AD.</p>
+</li>
+<li>
+<p><strong>User-assigned</strong> You may also create a managed identity as a standalone Azure resource. You can create a user-assigned managed identity and assign it to one or more instances of an Azure service. In the case of user-assigned managed identities, the identity is managed separately from the resources that use it.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When using a user-assigned managed identity, you can specify the client ID by <code>spring.cloud.azure.credential.client-id</code> or <code>spring.cloud.azure.&lt;azure-service&gt;.credential.client-id</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Please refer to <a href="https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview">What are managed identities for Azure resources?</a> for more details about managed identity.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_other_credential_types">Other Credential Types</h3>
+<div class="paragraph">
+<p>Developers who want more control or whose scenario isn&#8217;t served by the <code>DefaultAzureCredential</code> or whose scenario isn&#8217;t served by the default settings should use other credential types.</p>
+</div>
+<div class="sect3">
+<h4 id="_authentication_and_authorization_with_azure_active_directory">Authentication and Authorization with Azure Active Directory</h4>
+<div class="paragraph">
+<p>With Azure AD, you can use Azure role-based access control (Azure RBAC) to grant permissions to a security principal, which may be a user or an application service principal. When a security principal (a user, or an application) attempts to access an Azure resource, for example, an Event Hubs resource, the request must be authorized. With Azure AD, access to a resource is a two-step process.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>First, the security principal&#8217;s identity is authenticated, and an OAuth 2.0 token is returned.</p>
+</li>
+<li>
+<p>Next, the token is passed as part of a request to the Azure service to authorize access to the specified resource.</p>
+</li>
+</ol>
+</div>
+<div class="sect4">
+<h5 id="_authenticate_with_azure_active_directory">Authenticate with Azure Active Directory</h5>
+<div class="paragraph">
+<p>For applications want to connect to resources that support Azure AD authentication, below configurations could be set with prefix <code>spring.cloud.azure.credential</code> or <code>spring.cloud.azure.&lt;azure-service&gt;.credential</code>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Authentication properties</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">client-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">client-secret</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">client-certificate-path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path of a PEM certificate file to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">client-certificate-password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">managed-identity-enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable managed identity.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+To see the list of all Spring Cloud Azure related configuration properties please check <a href="appendix.html">the Appendix page</a>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="authorize-access-with-azure-active-directory">Authorize Access with Azure Active Directory</h5>
+<div class="paragraph">
+<p>The authorization step requires that one or more Azure roles be assigned to the security principal. The roles that are assigned to a security principal decide the permissions that the principal will have.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+To see the list of all Azure built-in roles please check <a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles">Azure built-in roles</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Following are the Azure built-in roles for authorizing access to Azure services supported in Spring Cloud Azure:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Azure built-in roles</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Role</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#app-configuration-data-owner">App Configuration Data Owner</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows full access to App Configuration data.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#app-configuration-data-reader">App Configuration Data Reader</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows read access to App Configuration data.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-event-hubs-data-owner">Azure Event Hubs Data Owner</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows for full access to Azure Event Hubs resources.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-event-hubs-data-receiver">Azure Event Hubs Data Receiver</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows receive access to Azure Event Hubs resources.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-event-hubs-data-send">Azure Event Hubs Data Sender</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows send access to Azure Event Hubs resources.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-service-bus-data-owner">Azure Service Bus Data Owner</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows for full access to Azure Service Bus resources.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-service-bus-data-receiver">Azure Service Bus Data Receiver</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows for receive access to Azure Service Bus resources.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-service-bus-data-sender">Azure Service Bus Data Sender</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows for send access to Azure Service Bus resources.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#storage-blob-data-owner">Storage Blob Data Owner</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provides full access to Azure Storage blob containers and data, including assigning POSIX access control.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#storage-blob-data-reader">Storage Blob Data Reader</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Read and list Azure Storage containers and blobs.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#storage-queue-data-reader">Storage Queue Data Reader</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Read and list Azure Storage queues and queue messages.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#redis-cache-contributor">Redis Cache Contributor</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Manage Redis caches.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When using Spring Cloud Azure Resource Manager to get the connection strings of Event Hubs, Service Bus, and Storage Queue, or properties of Cache for Redis, assign the Azure built-in role <code>Contributor</code>. Azure Cache for Redis is special, and you can also assign the <code>Redis Cache Contributor</code> role to get the Redis properties.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+A Key Vault access policy determines whether a given security principal, namely a user, application or user group, can perform different operations on Key Vault secrets, keys, and certificates. You can assign access policies using the Azure portal, the Azure CLI, or Azure PowerShell. Check <a href="https://docs.microsoft.com/azure/key-vault/general/assign-access-policy">here</a> for more details.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Azure Cosmos DB exposes 2 built-in role definitions: <code>Cosmos DB Built-in Data Reader</code> and <code>Cosmos DB Built-in Data Contributor</code>. However, Azure portal support for role management isn&#8217;t available yet. Check <a href="https://docs.microsoft.com/azure/cosmos-db/how-to-setup-rbac">here</a> for more details about the permission model, role definitions, and role assignment.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_sas_tokens">SAS tokens</h4>
+<div class="paragraph">
+<p>It&#8217;s also configurable for services support authenticating with Shared Access Signature (SAS). <code>spring.cloud.azure.&lt;azure-service&gt;.sas-token</code> is the property to configure. For example, using <code>spring.cloud.azure.storage.blob.sas-token</code> to authenticate to Storage Blob service.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_connection_strings">Connection Strings</h4>
+<div class="paragraph">
+<p>Connection strings are supported by some Azure services to provide connection information as well as credentials. To connect to those Azure services using a connection string, just configure <code>spring.cloud.azure.&lt;azure-service&gt;.connection-string</code> will do. For example, <code>spring.cloud.azure.eventhubs.connection-string</code> to connect to Event Hubs service.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2022-03-31 20:33:00 +0800
+</div>
+</div>
+<script src="js/highlight/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>

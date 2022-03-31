@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.17">
+<title>Spring Boot</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script type="text/javascript"> (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "b9g1q6wz23"); </script>
+
+</head>
+<body class="book">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect2">
+<h3 id="_spring_boot">Spring Boot</h3>
+<div class="paragraph">
+<p>This article describes the various Spring Boot Starters for the <a href="https://start.spring.io/">Spring Initializr</a> that provide Java developers with integration features for working with Microsoft Azure.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/160522559-5922e09f-737b-4696-9329-f238adf9b150.png" alt="Configure Azure Spring Boot Starters with Initializr"></span></p>
+</div>
+<div class="paragraph">
+<p>The following Spring Boot Starters are currently available for Azure:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Azure Support</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Provides autoconfiguration support for Azure Services; e.g. Service Bus, Storage, Active Directory, etc.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Azure Active Directory</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Provides integration support for Spring Security with Azure Active Directory for authentication.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Azure Key Vault</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Provides Spring value annotation support for integration with Azure Key Vault Secrets.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Azure Storage</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Provides Spring Boot support for Azure Storage services.</p>
+</div>
+<div class="sect3">
+<h4 id="_azure_support">Azure Support</h4>
+<div class="paragraph">
+<p>This Spring Boot Starter provides autoconfiguration support for Azure Services; for example: Service Bus, Storage, Active Directory, Cosmos DB, Key Vault, etc.</p>
+</div>
+<div class="paragraph">
+<p>For examples of how to use the various Azure features that are provided by this starter, see the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <a href="https://github.com/Azure-Samples/azure-spring-boot-samples">azure-spring-boot-samples</a> repo on GitHub.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>When you add this starter to a Spring Boot project, the following changes are made to the <em>pom.xml</em> file:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The following property is added to <code>&lt;properties&gt;</code> element:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;properties&gt;
+    &lt;!-- Other properties will be listed here --&gt;
+    &lt;java.version&gt;1.8&lt;/java.version&gt;
+    &lt;spring.cloud.azure.version&gt;4.0.0&lt;/azure.version&gt;
+&lt;/properties&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The default <code>spring-boot-starter</code> dependency is replaced with the following:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The following section is added to the file:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">   &lt;dependencyManagement&gt;
+      &lt;dependencies&gt;
+         &lt;dependency&gt;
+            &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-azure-dependencies&lt;/artifactId&gt;
+            &lt;version&gt;${version.spring.cloud.azure}&lt;/version&gt;
+            &lt;type&gt;pom&lt;/type&gt;
+            &lt;scope&gt;import&lt;/scope&gt;
+         &lt;/dependency&gt;
+      &lt;/dependencies&gt;
+   &lt;/dependencyManagement&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For more information about using this bom, see <a href="https://microsoft.github.io/spring-cloud-azure/current/reference/html/index.html#setting-up-dependencies">reference doc</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_azure_active_directory">Azure Active Directory</h4>
+<div class="paragraph">
+<p>This Spring Boot Starter provides autoconfiguration support for Spring Security in order to provide integration with Azure Active Directory for authentication.</p>
+</div>
+<div class="paragraph">
+<p>For examples of how to use the Azure Active Directory features that are provided by this starter, see the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/aad/spring-cloud-azure-starter-active-directory">spring-cloud-azure-starter-active-directory samples</a> repo on GitHub.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>When you add this starter to a Spring Boot project, the following changes are made to the <em>pom.xml</em> file:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The following property is added to <code>&lt;properties&gt;</code> element:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">   &lt;properties&gt;
+      &lt;!-- Other properties will be listed here --&gt;
+      &lt;java.version&gt;1.8&lt;/java.version&gt;
+      &lt;version.spring.cloud.azure&gt;4.0.0&lt;/version.spring.cloud.azure&gt;
+   &lt;/properties&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The default <code>spring-boot-starter</code> dependency is replaced with the following:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The following section is added to the file:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">   &lt;dependencyManagement&gt;
+      &lt;dependencies&gt;
+         &lt;dependency&gt;
+            &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-azure-dependencies&lt;/artifactId&gt;
+            &lt;version&gt;${version.spring.cloud.azure}&lt;/version&gt;
+            &lt;type&gt;pom&lt;/type&gt;
+            &lt;scope&gt;import&lt;/scope&gt;
+         &lt;/dependency&gt;
+      &lt;/dependencies&gt;
+   &lt;/dependencyManagement&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For more information about using this starter, see <a href="https://microsoft.github.io/spring-cloud-azure/current/reference/html/index.html#spring-security-support">Spring Security Support</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_azure_key_vault">Azure Key Vault</h4>
+<div class="paragraph">
+<p>This Spring Boot Starter provides Spring value annotation support for integration with Azure Key Vault Secrets.</p>
+</div>
+<div class="paragraph">
+<p>For examples of how to use the Azure Key Vault features that are provided by this starter, see the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/keyvault/spring-cloud-azure-starter-keyvault-secrets">spring-cloud-azure-starter-keyvault-secrets samples</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>When you add this starter to a Spring Boot project, the following changes are made to the <em>pom.xml</em> file:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The following property is added to <code>&lt;properties&gt;</code> element:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">   &lt;properties&gt;
+      &lt;!-- Other properties will be listed here --&gt;
+      &lt;java.version&gt;1.8&lt;/java.version&gt;
+      &lt;version.spring.cloud.azure&gt;4.0.0&lt;/version.spring.cloud.azure&gt;
+   &lt;/properties&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The default <code>spring-boot-starter</code> dependency is replaced with the following:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-azure-starter-keyvault-secrets&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The following section is added to the file:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">   &lt;dependencyManagement&gt;
+      &lt;dependencies&gt;
+         &lt;dependency&gt;
+            &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-azure-dependencies&lt;/artifactId&gt;
+            &lt;version&gt;${version.spring.cloud.azure}&lt;/version&gt;
+            &lt;type&gt;pom&lt;/type&gt;
+            &lt;scope&gt;import&lt;/scope&gt;
+         &lt;/dependency&gt;
+      &lt;/dependencies&gt;
+   &lt;/dependencyManagement&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For more information about using this starter, see <a href="https://microsoft.github.io/spring-cloud-azure/current/reference/html/index.html#secret-management">Secret Management</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_azure_storage">Azure Storage</h4>
+<div class="paragraph">
+<p>This Spring Boot Starter provides Spring Boot integration support for Azure Storage services.</p>
+</div>
+<div class="paragraph">
+<p>For examples of how to use the Azure Storage features that are provided by this starter, see the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/storage/spring-cloud-azure-starter-integration-storage-queue">spring-cloud-azure-starter-integration-storage-queue samples</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>When you add this starter to a Spring Boot project, the following changes are made to the <em>pom.xml</em> file:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The following property is added to <code>properties</code> element:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">   &lt;properties&gt;
+      &lt;!-- Other properties will be listed here --&gt;
+      &lt;java.version&gt;1.8&lt;/java.version&gt;
+      &lt;version.spring.cloud.azure&gt;4.0.0&lt;/version.spring.cloud.azure&gt;
+   &lt;/properties&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The default <code>spring-boot-starter</code> dependency is replaced with the following:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-azure-starter-integration-storage-queue&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The following section is added to the file:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">   &lt;dependencyManagement&gt;
+      &lt;dependencies&gt;
+         &lt;dependency&gt;
+            &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-azure-dependencies&lt;/artifactId&gt;
+            &lt;version&gt;${version.spring.cloud.azure}&lt;/version&gt;
+            &lt;type&gt;pom&lt;/type&gt;
+            &lt;scope&gt;import&lt;/scope&gt;
+         &lt;/dependency&gt;
+      &lt;/dependencies&gt;
+   &lt;/dependencyManagement&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For more information about using this starter, see <a href="https://microsoft.github.io/spring-cloud-azure/current/reference/html/index.html#spring-integration-with-azure-storage-queue">Spring Integration with Azure Storage Queue</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_application_insights">Application Insights</h4>
+<div class="paragraph">
+<p>Azure Monitor Application Insights can help you understand how your app is performing and how it&#8217;s being used. Application Insights uses the Java agent to enable the application monitor. There are no code changes needed, and you can enable the Java agent with just a couple of configuration changes. For instructions and more information, see <a href="/azure/azure-monitor/app/java-in-process-agent#configuration-options">Java codeless application monitoring Azure Monitor Application Insights</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2022-03-31 20:33:10 +0800
+</div>
+</div>
+<script src="js/highlight/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>
