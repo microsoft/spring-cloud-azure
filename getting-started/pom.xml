@@ -14,7 +14,7 @@
   <version>4.1.0</version>
 
   <properties>
-    <docs.output.directory>${project.build.directory}/generated-docs/getting-started/html</docs.output.directory>
+    <docs.output.directory>${project.build.directory}/generated-docs/${project.version}/getting-started/html</docs.output.directory>
   </properties>
 
 </project>

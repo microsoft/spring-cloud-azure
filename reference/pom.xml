@@ -14,7 +14,7 @@
   <name>spring-cloud-azure-docs-reference</name>
 
   <properties>
-    <docs.output.directory>${project.build.directory}/generated-docs/reference/html</docs.output.directory>
+    <docs.output.directory>${project.build.directory}/generated-docs/${project.version}/reference/html</docs.output.directory>
   </properties>
 
   <dependencyManagement>

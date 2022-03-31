@@ -14,7 +14,7 @@
   <name>spring-cloud-azure-docs-samples</name>
 
   <properties>
-    <docs.output.directory>${project.build.directory}/generated-docs/samples/html</docs.output.directory>
+    <docs.output.directory>${project.build.directory}/generated-docs/${project.version}/samples/html</docs.output.directory>
   </properties>
 
 </project>

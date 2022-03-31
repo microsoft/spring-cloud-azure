@@ -14,7 +14,7 @@
   <name>spring-cloud-azure-docs-tutorials</name>
 
   <properties>
-    <docs.output.directory>${project.build.directory}/generated-docs/tutorials/html</docs.output.directory>
+    <docs.output.directory>${project.build.directory}/generated-docs/${project.version}/tutorials/html</docs.output.directory>
   </properties>
 
 </project>
