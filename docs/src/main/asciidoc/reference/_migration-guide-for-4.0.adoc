@@ -16,7 +16,7 @@ This guide will focus the side-by-side comparisons for similar configurations be
 Familiarity with `com.azure.spring:azure-spring-boot-\*`, `com.azure.spring:azure-spring-cloud-*`
 or `com.azure.spring:azure-spring-integration-*` package is assumed.
 
-For those new to the Spring Cloud Azure 4.0 libraries, please refer to the link:reference-doc[Spring Cloud Azure 4.0 Reference Doc] rather than this guide.
+For those new to the Spring Cloud Azure 4.0 libraries, please refer to the link:index.html[Spring Cloud Azure 4.0 Reference Doc] rather than this guide.
 
 [#migration-guide-benefits]
 === Migration Benefits
@@ -1484,7 +1484,7 @@ the provided security principal should be granted with the link:https://docs.mic
 
 For Azure Spring Cloud 4.0, we provide two ways of leveraging security principals for authentication. One is still using the principals to connect to ARM and retrieve the connection strings where the `Contributor` role is required for the principals.
 The other leverages security principals to authenticate to Azure Active Directory (Azure AD) and then connect to Azure Event Hubs directly, in this case the `Contributor` role is not necessary anymore
-while other `Data` related roles are required for messaging operations, please refer to link:reference-doc#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+while other `Data` related roles are required for messaging operations, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
 For authentication based on ARM, taking service principal as example, configuration migration is listed as below, where the assigned role should not change:
 
@@ -1676,7 +1676,7 @@ the provided security principal should be granted with the link:https://docs.mic
 
 For Azure Spring Cloud 4.0, we provide two ways of leveraging security principals for authentication. One is still using the principals to connect to ARM and retrieve the connection strings where the `Contributor` role is required for the principals.
 The other leverages security principals to authenticate to Azure Active Directory (Azure AD) and then connect to the Azure Service Bus directly, in this case the `Contributor` role is not necessary anymore
-while other `Data` related roles are required for messaging operations, please refer to link:reference-doc#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+while other `Data` related roles are required for messaging operations, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
 For authentication based on ARM, taking service principal as example, configuration migration is listed as below, where the assigned role should not change:
 
