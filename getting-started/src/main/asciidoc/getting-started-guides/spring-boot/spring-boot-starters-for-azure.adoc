@@ -1,0 +1,236 @@
+
+=== Spring Boot
+
+This article describes the various Spring Boot Starters for the https://start.spring.io/[Spring Initializr] that provide Java developers with integration features for working with Microsoft Azure.
+
+image:https://user-images.githubusercontent.com/13167207/160522559-5922e09f-737b-4696-9329-f238adf9b150.png[Configure Azure Spring Boot Starters with Initializr]
+
+The following Spring Boot Starters are currently available for Azure:
+
+* Azure Support
+
+Provides autoconfiguration support for Azure Services; e.g. Service Bus, Storage, Active Directory, etc.
+
+* Azure Active Directory
+
+Provides integration support for Spring Security with Azure Active Directory for authentication.
+
+* Azure Key Vault
+
+Provides Spring value annotation support for integration with Azure Key Vault Secrets.
+
+* Azure Storage
+
+Provides Spring Boot support for Azure Storage services.
+
+==== Azure Support
+
+This Spring Boot Starter provides autoconfiguration support for Azure Services; for example: Service Bus, Storage, Active Directory, Cosmos DB, Key Vault, etc.
+
+For examples of how to use the various Azure features that are provided by this starter, see the following:
+
+* The https://github.com/Azure-Samples/azure-spring-boot-samples[azure-spring-boot-samples] repo on GitHub.
+
+When you add this starter to a Spring Boot project, the following changes are made to the _pom.xml_ file:
+
+* The following property is added to `&lt;properties&gt;` element:
+
+[source,xml]
+----
+<properties>
+    <!-- Other properties will be listed here -->
+    <java.version>1.8</java.version>
+    <spring.cloud.azure.version>4.0.0</azure.version>
+</properties>
+----
+
+* The default `spring-boot-starter` dependency is replaced with the following:
+
+[source,xml]
+----
+<dependencies>
+    <dependency>
+        <groupId>com.azure.spring</groupId>
+        <artifactId>spring-cloud-azure-starter</artifactId>
+    </dependency>
+</dependencies>
+----
+
+* The following section is added to the file:
+
+[source,xml]
+----
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>com.azure.spring</groupId>
+            <artifactId>spring-cloud-azure-dependencies</artifactId>
+            <version>${version.spring.cloud.azure}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+----
+
+* For more information about using this bom, see https://microsoft.github.io/spring-cloud-azure/current/reference/html/index.html#setting-up-dependencies[reference doc].
+
+==== Azure Active Directory
+
+This Spring Boot Starter provides autoconfiguration support for Spring Security in order to provide integration with Azure Active Directory for authentication.
+
+For examples of how to use the Azure Active Directory features that are provided by this starter, see the following:
+
+* The https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/aad/spring-cloud-azure-starter-active-directory[spring-cloud-azure-starter-active-directory samples] repo on GitHub.
+
+When you add this starter to a Spring Boot project, the following changes are made to the _pom.xml_ file:
+
+* The following property is added to `&lt;properties&gt;` element:
+
+[source,xml]
+----
+   <properties>
+      <!-- Other properties will be listed here -->
+      <java.version>1.8</java.version>
+      <version.spring.cloud.azure>4.0.0</version.spring.cloud.azure>
+   </properties>
+----
+
+* The default `spring-boot-starter` dependency is replaced with the following:
+
+[source,xml]
+----
+<dependencies>
+    <dependency>
+        <groupId>com.azure.spring</groupId>
+        <artifactId>spring-cloud-azure-starter-active-directory</artifactId>
+    </dependency>
+</dependencies>
+----
+
+* The following section is added to the file:
+
+[source,xml]
+----
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>com.azure.spring</groupId>
+            <artifactId>spring-cloud-azure-dependencies</artifactId>
+            <version>${version.spring.cloud.azure}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+----
+
+* For more information about using this starter, see https://microsoft.github.io/spring-cloud-azure/current/reference/html/index.html#spring-security-support[Spring Security Support].
+
+==== Azure Key Vault
+
+This Spring Boot Starter provides Spring value annotation support for integration with Azure Key Vault Secrets.
+
+For examples of how to use the Azure Key Vault features that are provided by this starter, see the following:
+
+* https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/keyvault/spring-cloud-azure-starter-keyvault-secrets[spring-cloud-azure-starter-keyvault-secrets samples].
+
+When you add this starter to a Spring Boot project, the following changes are made to the _pom.xml_ file:
+
+* The following property is added to `&lt;properties&gt;` element:
+
+[source,xml]
+----
+   <properties>
+      <!-- Other properties will be listed here -->
+      <java.version>1.8</java.version>
+      <version.spring.cloud.azure>4.0.0</version.spring.cloud.azure>
+   </properties>
+----
+
+* The default `spring-boot-starter` dependency is replaced with the following:
+
+[source,xml]
+----
+<dependencies>
+    <dependency>
+        <groupId>com.azure.spring</groupId>
+        <artifactId>spring-cloud-azure-starter-keyvault-secrets</artifactId>
+    </dependency>
+</dependencies>
+----
+
+* The following section is added to the file:
+
+[source,xml]
+----
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>com.azure.spring</groupId>
+            <artifactId>spring-cloud-azure-dependencies</artifactId>
+            <version>${version.spring.cloud.azure}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+----
+
+* For more information about using this starter, see https://microsoft.github.io/spring-cloud-azure/current/reference/html/index.html#secret-management[Secret Management].
+
+==== Azure Storage
+
+This Spring Boot Starter provides Spring Boot integration support for Azure Storage services.
+
+For examples of how to use the Azure Storage features that are provided by this starter, see the following:
+
+* https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0/storage/spring-cloud-azure-starter-integration-storage-queue[spring-cloud-azure-starter-integration-storage-queue samples]
+
+When you add this starter to a Spring Boot project, the following changes are made to the _pom.xml_ file:
+
+* The following property is added to `properties` element:
+
+[source,xml]
+----
+   <properties>
+      <!-- Other properties will be listed here -->
+      <java.version>1.8</java.version>
+      <version.spring.cloud.azure>4.0.0</version.spring.cloud.azure>
+   </properties>
+----
+
+* The default `spring-boot-starter` dependency is replaced with the following:
+
+[source,xml]
+----
+<dependencies>
+    <dependency>
+        <groupId>com.azure.spring</groupId>
+        <artifactId>spring-cloud-azure-starter-integration-storage-queue</artifactId>
+    </dependency>
+</dependencies>
+----
+
+* The following section is added to the file:
+
+[source,xml]
+----
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>com.azure.spring</groupId>
+            <artifactId>spring-cloud-azure-dependencies</artifactId>
+            <version>${version.spring.cloud.azure}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+----
+
+* For more information about using this starter, see https://microsoft.github.io/spring-cloud-azure/current/reference/html/index.html#spring-integration-with-azure-storage-queue[Spring Integration with Azure Storage Queue].
+
+==== Application Insights
+
+Azure Monitor Application Insights can help you understand how your app is performing and how it's being used. Application Insights uses the Java agent to enable the application monitor. There are no code changes needed, and you can enable the Java agent with just a couple of configuration changes. For instructions and more information, see link:/azure/azure-monitor/app/java-in-process-agent#configuration-options[Java codeless application monitoring Azure Monitor Application Insights].

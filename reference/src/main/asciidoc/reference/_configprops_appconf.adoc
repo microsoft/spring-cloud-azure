@@ -1,0 +1,65 @@
+|===
+|Name | Default | Description
+
+|spring.cloud.azure.appconfiguration.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
+|spring.cloud.azure.appconfiguration.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
+|spring.cloud.azure.appconfiguration.client.connection-idle-timeout |  | Amount of time before an idle connection.
+|spring.cloud.azure.appconfiguration.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
+|spring.cloud.azure.appconfiguration.client.logging.allowed-header-names |  | Comma-delimited list of whitelisted headers that should be logged.
+|spring.cloud.azure.appconfiguration.client.logging.allowed-query-param-names |  | Comma-delimited list of whitelisted query parameters.
+|spring.cloud.azure.appconfiguration.client.logging.level |  | The level of detail to log on HTTP messages.
+|spring.cloud.azure.appconfiguration.client.logging.pretty-print-body |  | Whether to pretty print the message bodies.
+|spring.cloud.azure.appconfiguration.client.maximum-connection-pool-size |  | Maximum connection pool size used by the underlying HTTP client.
+|spring.cloud.azure.appconfiguration.client.read-timeout |  | Amount of time used when reading the server response.
+|spring.cloud.azure.appconfiguration.client.response-timeout |  | Amount of time used when waiting for a server to reply.
+|spring.cloud.azure.appconfiguration.client.write-timeout |  | Amount of time each request being sent over the wire.
+|spring.cloud.azure.appconfiguration.connection-string |  | Connection string of the Azure App Configuration instance.
+|spring.cloud.azure.appconfiguration.credential.client-certificate-password |  | Password of the certificate file.
+|spring.cloud.azure.appconfiguration.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
+|spring.cloud.azure.appconfiguration.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
+|spring.cloud.azure.appconfiguration.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
+|spring.cloud.azure.appconfiguration.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client id as user assigned managed identity client id.
+|spring.cloud.azure.appconfiguration.credential.password |  | Password to use when performing username/password authentication with Azure.
+|spring.cloud.azure.appconfiguration.credential.username |  | Username to use when performing username/password authentication with Azure.
+|spring.cloud.azure.appconfiguration.enabled | `true` | Whether an Azure Service is enabled.
+|spring.cloud.azure.appconfiguration.endpoint |  | Endpoint of the Azure App Configuration instance.
+|spring.cloud.azure.appconfiguration.profile.cloud-type |  | Name of the Azure cloud to connect to.
+|spring.cloud.azure.appconfiguration.profile.environment.active-directory-endpoint |  | The Azure Active Directory endpoint to connect to.
+|spring.cloud.azure.appconfiguration.profile.environment.active-directory-graph-api-version |  | The Azure Active Directory Graph API version.
+|spring.cloud.azure.appconfiguration.profile.environment.active-directory-graph-endpoint |  | The Azure Active Directory Graph endpoint.
+|spring.cloud.azure.appconfiguration.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource id.
+|spring.cloud.azure.appconfiguration.profile.environment.azure-application-insights-endpoint |  | The Azure Application Insights endpoint.
+|spring.cloud.azure.appconfiguration.profile.environment.azure-data-lake-analytics-catalog-and-job-endpoint-suffix |  | The Data Lake analytics catalog and job endpoint suffix.
+|spring.cloud.azure.appconfiguration.profile.environment.azure-data-lake-store-file-system-endpoint-suffix |  | The Data Lake storage file system endpoint suffix.
+|spring.cloud.azure.appconfiguration.profile.environment.azure-log-analytics-endpoint |  | The Azure Log Analytics endpoint.
+|spring.cloud.azure.appconfiguration.profile.environment.data-lake-endpoint-resource-id |  | The Data Lake endpoint.
+|spring.cloud.azure.appconfiguration.profile.environment.gallery-endpoint |  | The gallery endpoint.
+|spring.cloud.azure.appconfiguration.profile.environment.key-vault-dns-suffix |  | The Key Vault DNS suffix.
+|spring.cloud.azure.appconfiguration.profile.environment.management-endpoint |  | The management service endpoint.
+|spring.cloud.azure.appconfiguration.profile.environment.microsoft-graph-endpoint |  | The Microsoft Graph endpoint.
+|spring.cloud.azure.appconfiguration.profile.environment.portal |  | The management portal URL.
+|spring.cloud.azure.appconfiguration.profile.environment.publishing-profile |  | The publishing settings file URL.
+|spring.cloud.azure.appconfiguration.profile.environment.resource-manager-endpoint |  | The resource management endpoint.
+|spring.cloud.azure.appconfiguration.profile.environment.sql-management-endpoint |  | The SQL management endpoint.
+|spring.cloud.azure.appconfiguration.profile.environment.sql-server-hostname-suffix |  | The SQL Server hostname suffix.
+|spring.cloud.azure.appconfiguration.profile.environment.storage-endpoint-suffix |  | The Storage endpoint suffix.
+|spring.cloud.azure.appconfiguration.profile.subscription-id |  | Subscription id to use when connecting to Azure resources.
+|spring.cloud.azure.appconfiguration.profile.tenant-id |  | Tenant id for Azure resources.
+|spring.cloud.azure.appconfiguration.proxy.hostname |  | The host of the proxy.
+|spring.cloud.azure.appconfiguration.proxy.non-proxy-hosts |  | A list of hosts or CIDR to not use proxy HTTP/HTTPS connections through.
+|spring.cloud.azure.appconfiguration.proxy.password |  | Password used to authenticate with the proxy.
+|spring.cloud.azure.appconfiguration.proxy.port |  | The port of the proxy.
+|spring.cloud.azure.appconfiguration.proxy.type |  | Type of the proxy.
+|spring.cloud.azure.appconfiguration.proxy.username |  | Username used to authenticate with the proxy.
+|spring.cloud.azure.appconfiguration.resource.region |  | The region of an Azure resource.
+|spring.cloud.azure.appconfiguration.resource.resource-group |  | The resource group holds an Azure resource.
+|spring.cloud.azure.appconfiguration.resource.resource-id |  | ID of an Azure resource.
+|spring.cloud.azure.appconfiguration.retry.exponential.base-delay |  | Amount of time to wait between retry attempts.
+|spring.cloud.azure.appconfiguration.retry.exponential.max-delay |  | Maximum permissible amount of time between retry attempts.
+|spring.cloud.azure.appconfiguration.retry.exponential.max-retries |  | The maximum number of attempts.
+|spring.cloud.azure.appconfiguration.retry.fixed.delay |  | Amount of time to wait between retry attempts.
+|spring.cloud.azure.appconfiguration.retry.fixed.max-retries |  | The maximum number of attempts.
+|spring.cloud.azure.appconfiguration.retry.mode |  | Retry backoff mode.
+|spring.cloud.azure.appconfiguration.service-version |  | Version of the app configuration service to be used when making request.
+
+|===

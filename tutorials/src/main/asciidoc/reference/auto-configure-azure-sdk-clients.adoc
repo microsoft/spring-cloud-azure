@@ -1,0 +1,90 @@
+== Autoconfigure Azure SDK Clients
+
+Spring Boot simplifies the Spring Cloud Azure development experience. Spring Cloud Azure starters are a set of convenient dependency descriptors to include in your application. They handle the object instantiation and configuration logic, so you don’t have to. Every starter depends on the `spring-cloud-azure-starter` to provide critical bits of configuration, like the Azure cloud environment and authentication information. You can configure these as properties in, for example, a yaml file:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+        cloud-type: Azure # <1>
+      credential:
+        client-id: ${AZURE_CLIENT_ID}
+----
+<1> `cloud-type` is optional for it has default value set to `Azure`.
+
+These properties are optional and, if not specified, Spring Boot will try to automatically find them for you. For details on how Spring Boot finds these properties, refer to the documentation.
+
+
+=== Dependency Setup
+There are two ways to use Spring Cloud Azure starters. One is using Azure SDKs with this `spring-cloud-azure-starter` dependency. For example with Cosmos DB:
+
+[source,xml]
+----
+<dependency>
+	<groupId>com.azure</groupId>
+	<artifactId>azure-cosmos</artifactId>
+</dependency>
+<dependency>
+	<groupId>com.azure.spring</groupId>
+	<artifactId>spring-cloud-azure-starter</artifactId>
+</dependency>
+----
+
+Or including the Spring Cloud Azure starter directly without adding Azure SDK dependencies. For example with Cosmos DB:
+
+[source,xml]
+----
+<dependency>
+	<groupId>com.azure.spring</groupId>
+	<artifactId>spring-cloud-azure-starter-cosmos</artifactId>
+</dependency>
+----
+
+TIP: Please refer to link:index.html#starter-dependencies[Starter Dependencies] for the list of starters Spring Cloud Azure supports.
+
+=== Configuration
+
+NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+
+Configuration properties for each Azure service are under prefix `spring.cloud.azure.<azure-service>`.
+
+TIP: To see the list of all Spring Cloud Azure related configuration properties please check link:appendix.html[the Appendix page].
+
+=== Basic Usage
+
+Adding below properties to your `application.yaml` will autoconfigure the Cosmos clients for you, both `CosmosClient` and `CosmosAsyncClient` are available in the context and could be autowired.
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      cosmos:
+        database: ${AZURE_COSMOS_DATABASE_NAME}
+        endpoint: ${AZURE_COSMOS_ENDPOINT}
+        consistency-level: eventual
+        connection-mode: direct
+----
+
+[source,java]
+----
+class Demo {
+    @Autowired
+    private CosmosClient cosmosClient;
+
+    @Override
+    public void run() {
+        User item = User.randomUser();
+        CosmosContainer container = cosmosClient.getDatabase(databaseName).getContainer(containerName);
+        container.createItem(item);
+    }
+}
+----
+
+=== Samples
+
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}[azure-spring-boot-samples] for more details.
+

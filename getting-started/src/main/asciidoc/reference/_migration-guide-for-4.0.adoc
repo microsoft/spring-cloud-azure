@@ -1,0 +1,1767 @@
+
+[#migration-guide-for-4-0]
+== Migration Guide for 4.0
+
+[#migration-guide-introduction]
+=== Introduction
+
+This guide assists in the migration to *Spring Cloud Azure 4.0* from legacy Azure Spring libraries.
+
+This guide will call libraries whose group Id and artifact Id following pattern `com.azure.spring:spring-cloud-azure-\*` the **modern** libraries,
+and those with pattern `com.azure.spring:azure-spring-boot-*`, `com.azure.spring:azure-spring-cloud-\*` ,
+or `com.azure.spring:azure-spring-integration-*` the *legacy* ones.
+
+This guide will focus the side-by-side comparisons for similar configurations between the modern and legacy libraries.
+
+Familiarity with `com.azure.spring:azure-spring-boot-\*`, `com.azure.spring:azure-spring-cloud-*`
+or `com.azure.spring:azure-spring-integration-*` package is assumed.
+
+For those new to the Spring Cloud Azure 4.0 libraries, please refer to the link:index.html[Spring Cloud Azure 4.0 Reference Doc] rather than this guide.
+
+[#migration-guide-benefits]
+=== Migration Benefits
+
+A natural question to ask when considering whether to adopt a new version or library is its benefits. As Azure has
+matured and been embraced by a more diverse group of developers, we've been focused on learning the patterns and
+practices to best support developer productivity and to understand the gaps that the Spring Cloud Azure libraries have.
+
+There were several areas of consistent feedback expressed across the Spring Cloud Azure libraries. The most important is
+that the libraries for different Azure services haven't enabled the complete set of configurations. Additionally, the
+inconsistency of project naming, artifact Ids, versions, configurations made the learning curve steep.
+
+To improve the development experience across Spring Cloud Azure libraries, a set of design guidelines was introduced to
+ensure that Spring Cloud Azure libraries have a natural and idiomatic feel with respect to the Spring ecosystem. Further
+details are available in the https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Cloud-Azure-4.0-design[design document] for those interested.
+
+The *Spring Cloud Azure 4.0* provides the shared experience across libraries integrating with different Spring
+projects, for example Spring Boot, Spring Integration, Spring Cloud Stream, etc. The shared experience includes:
+
+* A unified BOM to include all Spring Cloud Azure 4.0 libraries.
+* A consistent naming convention for artifacts.
+* A unified way to configure credential, proxy, retry, cloud environment, and transport layer settings.
+* Supporting all the authenticating methods an Azure Service or Azure Service SDK supports.
+
+=== Overview
+
+This migration guide will consist following sections:
+
+* Naming changes for Spring Cloud Azure 4.0
+* Artifact changes: renamed / added / deleted
+* Dependency changes
+* Authentication changes
+* Configuration properties
+* API breaking changes
+* Library changes
+
+[#migration-guide-naming]
+=== Naming Changes
+
+There has never been a consistent or official name to call all the Spring Cloud Azure libraries, some of them were
+called `Azure Spring Boot` and some of them `Spring on Azure`, and all these names will make developers confused. Since
+4.0, we began to use the project name `Spring Cloud Azure` to represent all the Azure Spring libraries.
+
+[#migration-guide-bom]
+=== BOM
+
+We used to ship two BOMs for Spring Cloud Azure libraries, the `azure-spring-boot-bom` and `azure-spring-cloud-dependencies`, but we
+combined these two BOMs into one BOM since 4.0, the `spring-cloud-azure-dependencies`. Please add an entry in the
+dependencyManagement of your project to benefit from the dependency management.
+
+[source,xml]
+----
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.azure.spring</groupId>
+            <artifactId>spring-cloud-azure-dependencies</artifactId>
+            <version>version</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+----
+
+The version for spring-cloud-azure-dependencies is {project-version}.
+
+=== Artifact Changes: Renamed / Added / Deleted
+
+Group Ids are the same for modern and legacy Spring Cloud Azure libraries, they're all `com.azure.spring`. Artifact Ids
+for the modern Spring Cloud Azure libraries have changed. And according to which Spring project it belongs, Spring Boot,
+Spring Integration or Spring Cloud Stream, the artifact ids pattern could be `spring-cloud-azure-starter-[service]`
+, `spring-integration-azure-[service]` and `spring-cloud-azure-stream-binder-[service]`. The legacy starters each has an
+artifact Id following the pattern `azure-spring-*`. This provides a quick and accessible means to help understand, at a
+glance, whether you are using modern or legacy starters.
+
+In the process of developing Spring Cloud Azure 4.0, we renamed some artifacts to make them follow the new naming
+conventions, deleted some artifacts for its functionality could be put in a more appropriate artifact, and added some
+new artifacts to better serve some scenarios.
+
+.Mapping of legacy artifact Id and modern artifact Id
+[cols="<,<,<", options="header"]
+|===
+|Legacy Artifact ID |Modern Artifact ID |Description
+|azure-spring-boot-starter |spring-cloud-azure-starter |Deleted this artifact with merging all functionalities into the new `spring-cloud-azure-starter` artifact.
+|azure-spring-boot-starter-active-directory |spring-cloud-azure-starter-active-directory | Renamed the artifact.
+|azure-spring-boot-starter-active-directory-b2c |spring-cloud-azure-starter-active-directory-b2c | Renamed the artifact.
+|azure-spring-boot-starter-cosmos |spring-cloud-azure-starter-data-cosmos | Renamed the artifact to add `data`, indicating using Spring Data Cosmos DB.
+|azure-spring-boot-starter-keyvault-certificates |N/A |Not included in this release, but will be supported in later version. 
+|azure-spring-boot-starter-keyvault-secrets |spring-cloud-azure-starter-keyvault-secrets | Renamed the artifact.
+|azure-spring-boot-starter-servicebus-jms |spring-cloud-azure-starter-servicebus-jms | Renamed the artifact.
+|azure-spring-boot-starter-storage |spring-cloud-azure-starter-storage-blob +
+spring-cloud-azure-starter-storage-file-share |Split into two separate artifacts. The legacy artifact contains the functionality of both Storage Blob and File Share, which got split into spring-cloud-azure-starter-storage-blob and spring-cloud-azure-starter-storage-file-share in 4.0.
+|azure-spring-boot |N/A |Deleted this artifact with merging all functionalities into the new `spring-cloud-azure-autoconfigure` artifact. 
+|azure-spring-cloud-autoconfigure |N/A |Deleted this artifact with merging all functionalities into the new `spring-cloud-azure-autoconfigure` artifact. 
+|azure-spring-cloud-context |N/A |Deleted this artifact with merging all functionalities into the new `spring-cloud-azure-autoconfigure` and `spring-cloud-azure-resourcemanager` artifacts. 
+|azure-spring-cloud-messaging |spring-messaging-azure | Deleted this artifact. The functionalities of messaging listener annotations are under refactoring and not ready in 4.0 yet.
+|azure-spring-cloud-starter-cache |N/A |Deleted this artifact. For using redis, just add spring-boot-starter-data-redis, spring-boot-starter-cache, spring-cloud-azure-resourcemanager and spring-cloud-azure-starter. Please see <<redis-support.adoc#redis-support, Redis Support>> for more information about usage.
+|azure-spring-cloud-starter-eventhubs-kafka |N/A |Deleted this artifact. For using kafka, import the dependencies of spring-kafka, spring-cloud-azure-resourcemanager and spring-cloud-azure-starter. Please see <<kafka-support.adoc#kafka-support, Kafka Support>> for more information about usage.
+|azure-spring-cloud-starter-eventhubs |spring-cloud-azure-starter-integration-eventhubs |Renamed the artifact to add `integration`, indicating using Spring Integration with Event Hubs. Remove the functionalities of messaging listener annotations.
+|azure-spring-cloud-starter-servicebus |spring-cloud-azure-starter-integration-servicebus |Renamed the artifact to add `integration`, indicating using Spring Integration with Service Bus.
+|azure-spring-cloud-starter-storage-queue |spring-cloud-azure-starter-integration-storage-queue |Renamed the artifact to add `integration`, indicating using Spring Integration with Storage Queue.
+|azure-spring-cloud-storage |N/A |Deleted this artifact with merging all functionalities into the new `spring-cloud-azure-autoconfigure` artifact. 
+|azure-spring-cloud-stream-binder-eventhubs |spring-cloud-azure-stream-binder-eventhubs |Renamed the artifact. This artifact has been refactored using new design, mainly `spring-cloud-azure-stream-binder-eventhubs` and `spring-cloud-azure-stream-binder-eventhubs-core`.
+|azure-spring-cloud-stream-binder-service-core |spring-cloud-azure-stream-binder-servicebus-core | Renamed the artifact.
+|azure-spring-cloud-stream-binder-servicebus-queue |spring-cloud-azure-stream-binder-servicebus |Deleted this artifact with merging all functionalities into the `spring-cloud-azure-stream-binder-servicebus` artifact.
+|azure-spring-cloud-stream-binder-servicebus-topic |spring-cloud-azure-stream-binder-servicebus |Deleted this artifact with merging all functionalities into the `spring-cloud-azure-stream-binder-servicebus` artifact.
+|azure-spring-integration-core |spring-integration-azure-core | Renamed the artifact.
+|azure-spring-integration-eventhubs |spring-integration-azure-eventhubs |  Renamed the artifact.
+|azure-spring-integration-servicebus |spring-integration-azure-servicebus |  Renamed the artifact.
+|azure-spring-integration-storage-queue |spring-integration-azure-storage-queue |  Renamed the artifact.
+|N/A |spring-cloud-azure-actuator |The newly added Spring Cloud Azure Actuator artifact. 
+|N/A |spring-cloud-azure-actuator-autoconfigure |The newly added Spring Cloud Azure Actuator AutoConfigure artifact, including autoconfiguration for actuator. 
+|N/A |spring-cloud-azure-autoconfigure |The newly added Spring Cloud Azure AutoConfigure artifact, including all autoconfiguration for SDK clients, Spring Security support, Spring Data support and Spring Integration support.
+|N/A |spring-cloud-azure-core | The newly added Spring Cloud Azure Core artifact, including all core functionality.
+|N/A |spring-cloud-azure-resourcemanager |The newly added Resource Manager artifact. It's the Core library using Azure Resource Manager to read metadata and create resources. 
+|N/A |spring-cloud-azure-service | The newly added Spring Cloud Azure Service artifact, including abstractions for Azure services.
+|N/A |spring-cloud-azure-starter | The newly added Core Spring Cloud Azure starter, including autoconfiguration support. 
+|N/A |spring-cloud-azure-starter-appconfiguration | The newly added starter for using Azure App Configuration SDK client. 
+|N/A |spring-cloud-azure-starter-cosmos | The newly added starter for using Azure Cosmos SDK client.
+|N/A |spring-cloud-azure-starter-eventhubs |The newly added starter for using Azure Event Hubs SDK client.
+|N/A |spring-cloud-azure-starter-servicebus |The newly added starter for using Azure Service Bus SDK client.
+|N/A |spring-cloud-azure-starter-storage-blob |The newly added starter for using Azure Storage Blob SDK client.
+|N/A |spring-cloud-azure-starter-storage-file-share |The newly added starter for using Azure Storage File Share  SDK client. 
+|N/A |spring-cloud-azure-starter-storage-queue |The newly added starter for using Azure Storage Queue SDK client.
+|N/A |spring-cloud-azure-starter-stream-eventhubs |The newly added starter for using Azure Event Hubs Spring Cloud Stream Binder.
+|N/A |spring-cloud-azure-starter-stream-servicebus |The newly added starter for using Azure Service Bus Spring Cloud Stream Binder 
+|N/A |spring-cloud-azure-stream-binder-eventhubs-core | The newly added Spring Cloud Stream core artifact for Azure Event Hubs.
+|===
+
+=== Dependency Changes
+
+Some unnecessary dependencies were included in the legacy artifacts, which we've removed in the modern Spring Cloud
+Azure 4.0 libraries. Please make sure add the removed dependencies manually to your project to prevent unintentionally
+crash.
+
+Libraries that have dependency changes include:
+
+- <<dependency-spring-cloud-azure-starter, spring-cloud-azure-starter>>
+- <<dependency-spring-cloud-azure-starter-active-directory, spring-cloud-azure-starter-active-directory>>
+- <<dependency-spring-cloud-azure-starter-active-directory-b2c, spring-cloud-azure-starter-active-directory-b2c>>
+
+[#migration-guide-authentication]
+=== Authentication
+
+Spring Cloud Azure 4.0 supports all the authentication methods each Azure Service SDK supports. It allows configuring a
+global token credential and providing the token credential at each service level. But credential isn't required
+to configure in Spring Cloud Azure 4.0, it can leverage the credential stored in a local developing environment, or
+managed identity in Azure Services, just make sure the principal has been granted sufficient permission to access the
+target Azure resources.
+
+NOTE: When assign roles to the security principals to interact with Azure messaging services, the `Data` related roles are required to conduct messaging operations. For Spring Cloud Azure Stream Event Hubs / Service Bus Binder libraries, `Contributor` role is required when the function of auto creating resources is needed. See link:https://docs.microsoft.com/azure/role-based-access-control/built-in-roles[Azure built-in roles] for more details.
+
+A chained credential, the https://docs.microsoft.com/java/api/overview/azure/identity-readme?view=azure-java-stable#defaultazurecredential[DefaultAzureCredential] bean is autoconfigured by default and will be used by all components if no more authentication information is specified.
+
+=== Configuration Properties
+
+[#migration-guide-properties-migration]
+==== Properties migration
+We've created an `additional-spring-configuration-metadata.json` file to smooth the property migration when using with `spring-boot-properties-migrator`. Before doing so, let’s add the property migrator to your application
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-properties-migrator</artifactId>
+    <scope>runtime</scope>
+</dependency>
+----
+Or, if you’re using Gradle:
+
+[source,groovy]
+----
+runtime("org.springframework.boot:spring-boot-properties-migrator")
+----
+
+If you run the app, it will identify the properties that are no longer managed by Spring Cloud Azure. If there is a replacement it will temporarily remap the property for you with a warning. If there isn’t a replacement, an error report will give you more information. Either way, the configuration has to be updated and the dependency removed once you have updated the configuration.
+
+Before you move on, it's a good idea to use the search feature of your IDE to double-check that you aren't using one of the properties you’ve migrated in an integration test.
+
+IMPORTANT: We've changed many configuration properties in this change, with using the `spring-boot-properties-migrator` will help smooth your migration.
+
+[#migration-guide-global-configurations]
+==== Global Configurations
+
+The modern `spring-cloud-azure-starter` allows developers to define properties that apply to all Azure SDKs in the
+namespace `spring.cloud.azure`. It wasn't supported in the legacy `azure-spring-boot-starter`. The global
+configurations can be divided into five categories:
+
+.Global configurations
+[cols="<30,<~", options="header"]
+|===
+|Prefix |Description
+|*spring.cloud.azure*.client |To configure the transport clients underneath each Azure SDK.
+|*spring.cloud.azure*.credential |To configure how to authenticate with Azure Active Directory.
+|*spring.cloud.azure*.profile |To configure the Azure cloud environment.
+|*spring.cloud.azure*.proxy |To configure the proxy options apply to all Azure SDK clients.
+|*spring.cloud.azure*.retry |To configure the retry options apply to all Azure SDK clients. The retry options have supported part of the SDKs, there's no `spring.cloud.azure.cosmos.retry`.
+|===
+
+Check link:appendix.html#_global_properties[Global Properties] for a full list of global configurations.
+
+==== Each SDK Configurations
+
+For the configuration options in SDK level, please refer to below links for details.
+
+- <<configuration-spring-cloud-azure-starter-active-directory, From azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory>>
+- <<configuration-spring-cloud-azure-starter-active-directory-b2c, From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c>>
+- <<configuration-spring-cloud-azure-starter-data-cosmos, From azure-spring-boot-starter-cosmos to spring-cloud-azure-starter-data-cosmos>>
+- <<configuration-spring-cloud-azure-starter-keyvault-secrets, From azure-spring-boot-starter-keyvault-secrets to spring-cloud-azure-starter-keyvault-secrets>>
+- <<configuration-spring-cloud-azure-starter-servicebus-jms, From azure-spring-boot-starter-servicebus-jms to spring-cloud-azure-starter-servicebus-jms>>
+- <<configuration-spring-cloud-azure-starter-storage-blob, From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob>>
+- <<configuration-spring-cloud-azure-starter-storage-file-share, From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share>>
+- <<configuration-spring-cloud-azure-starter-integration-eventhubs, From azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs>>
+- <<configuration-spring-cloud-azure-starter-integration-servicebus, From azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus>>
+- <<configuration-spring-cloud-azure-starter-integration-storage-queue, From azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue>>
+- <<configuration-spring-cloud-azure-stream-binder-eventhubs, From azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs>>
+- <<configuration-spring-cloud-azure-stream-binder-servicebus, From azure-spring-cloud-stream-binder-servicebus-* to spring-cloud-azure-stream-binder-servicebus>>
+
+=== API Breaking Changes
+
+For API breaking changes in each libraries, please refer to below links for details.
+
+- <<api-spring-cloud-azure-starter-active-directory, From azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory>>
+- <<api-spring-cloud-azure-starter-active-directory-b2c, From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c>>
+- <<api-spring-cloud-azure-starter-storage-blob, From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob>>
+- <<api-spring-cloud-azure-starter-storage-file-share, From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share>>
+- <<api-spring-cloud-azure-starter-integration-eventhubs, From azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs>>
+- <<api-spring-integration-azure-eventhubs, From azure-spring-integration-eventhubs to spring-integration-azure-eventhubs>>
+- <<api-spring-cloud-azure-starter-integration-servicebus, From azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus>>
+- <<api-spring-integration-azure-servicebus, From azure-spring-integration-servicebus to spring-integration-azure-servicebus>>
+- <<api-spring-cloud-azure-starter-integration-storage-queue, From azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue>>
+- <<api-spring-integration-azure-storage-queue, From azure-spring-integration-storage-queue to spring-integration-azure-storage-queue>>
+- <<api-spring-cloud-azure-stream-binder-eventhubs, From azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs>>
+- <<api-spring-cloud-azure-stream-binder-servicebus, From azure-spring-cloud-stream-binder-servicebus-* to spring-cloud-azure-stream-binder-servicebus>>
+
+=== Library Changes
+Breaking changes in each library are introduced as follows.
+
+==== From azure-spring-boot-starter to spring-cloud-azure-starter
+This guide is intended to assist in the migration to
+link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter[spring-cloud-azure-starter] from
+version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter[azure-spring-boot-starter].
+
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
+
+[#dependency-spring-cloud-azure-starter]
+===== Dependency Changes
+Some unnecessary dependencies were included in the legacy artifacts, which we have removed in the modern Spring Cloud
+Azure 4.0 libraries. Please make sure add the removed dependencies manually to your project to prevent unintentionally
+crash.
+
+.Removed dependencies of spring-cloud-starter
+[cols="<30,<~", options="header"]
+|===
+|Removed dependencies |Description
+|org.springframework.boot:spring-boot-starter-validation | Please include the validation starter if you want to use Hibernate Validator.
+|===
+
+==== From azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory
+
+This guide is intended to assist the migration to
+link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-active-directory[spring-cloud-azure-starter-active-directory] from
+version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-active-directory[azure-spring-boot-starter-active-directory].
+
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
+
+[#dependency-spring-cloud-azure-starter-active-directory]
+===== Dependency Changes
+
+Some unnecessary dependencies in the legacy artifact have been removed since the modern Spring Cloud
+Azure 4.0 library. Please add these removed dependencies to your project to prevent unintentional crash.
+
+.Removed Dependencies
+[cols="<30,<~", options="header"]
+|===
+|Removed Dependency |Description
+
+|com.fasterxml.jackson.core:jackson-databind
+|Please add this dependency to your project if needed.
+
+|io.projectreactor.netty:reactor-netty
+|Please add this dependency to your project if needed.
+
+|org.springframework.boot:spring-boot-starter-validation
+|Please add this dependency to your project if needed.
+
+|org.springframework.boot:spring-boot-starter-webflux
+|Please add this dependency to your project if needed.
+|===
+
+[#configuration-spring-cloud-azure-starter-active-directory]
+===== SDK Configuration Changes
+This section includes the changes about the properties added, removed and changed.
+
+.The following two points are the main to pay your attention to:
+. All configuration property names' prefix is changed from `azure.activedirectory` to `spring.cloud.azure.active-directory`.
+. New property `spring.cloud.azure.active-directory.enabled` is added to enable/disable AAD related features. The default value is `false`.
+
+.Property mapping from azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory
+[cols="<30,<~", options="header"]
+|===
+| Legacy properties     | Modern properties
+
+| *azure.activedirectory*.app-id-uri
+| *spring.cloud.azure.active-directory*.app-id-uri
+
+| *azure.activedirectory*.application-type
+| *spring.cloud.azure.active-directory*.application-type
+
+| *azure.activedirectory*.authorization-clients
+| *spring.cloud.azure.active-directory*.authorization-clients
+
+| *azure.activedirectory*.authorization-clients.<AZURE_CLIENT_NAME>.authorization-grant-type
+| *spring.cloud.azure.active-directory*.authorization-clients.<AZURE_CLIENT_NAME>.authorization-grant-type
+
+| *azure.activedirectory*.authorization-clients.<AZURE_CLIENT_NAME>.on-demand
+| *spring.cloud.azure.active-directory*.authorization-clients.<AZURE_CLIENT_NAME>.on-demand
+
+| *azure.activedirectory*.authorization-clients.<AZURE_CLIENT_NAME>.scopes
+| *spring.cloud.azure.active-directory*.authorization-clients.<AZURE_CLIENT_NAME>.scopes
+
+| *azure.activedirectory*.authenticate-additional-parameters
+| *spring.cloud.azure.active-directory*.authenticate-additional-parameters
+
+| *azure.activedirectory*.base-uri
+| *spring.cloud.azure.active-directory*.profile.environment.active-directory-endpoint
+
+| *azure.activedirectory*.client-id
+| *spring.cloud.azure.active-directory*.credential.client-id
+
+| *azure.activedirectory*.client-secret
+| *spring.cloud.azure.active-directory*.credential.client-secret
+
+| *azure.activedirectory*.graph-membership-uri
+| *spring.cloud.azure.active-directory*.graph-membership-uri
+
+| *azure.activedirectory*.jwt-connect-timeout
+| *spring.cloud.azure.active-directory*.jwt-connect-timeout
+
+| *azure.activedirectory*.jwt-read-timeout
+| *spring.cloud.azure.active-directory*.jwt-read-timeout
+
+| *azure.activedirectory*.jwt-size-limit
+| *spring.cloud.azure.active-directory*.jwt-size-limit
+
+| *azure.activedirectory*.jwk-set-cache-lifespan
+| *spring.cloud.azure.active-directory*.jwk-set-cache-lifespan
+
+| *azure.activedirectory*.jwk-set-cache-refresh-time
+| *spring.cloud.azure.active-directory*.jwk-set-cache-refresh-time
+
+| *azure.activedirectory*.post-logout-redirect-uri
+| *spring.cloud.azure.active-directory*.post-logout-redirect-uri
+
+| *azure.activedirectory*.session-stateless
+| *spring.cloud.azure.active-directory*.session-stateless
+
+| *azure.activedirectory*.redirect-uri-template
+| *spring.cloud.azure.active-directory*.redirect-uri-template
+
+| *azure.activedirectory*.resource-server.claim-to-authority-prefix-map
+| *spring.cloud.azure.active-directory*.resource-server.claim-to-authority-prefix-map
+
+| *azure.activedirectory*.resource-server.principal-claim-name
+| *spring.cloud.azure.active-directory*.resource-server.principal-claim-name
+
+| *azure.activedirectory*.tenant-id
+| *spring.cloud.azure.active-directory*.profile.tenant-id
+
+| *azure.activedirectory*.user-group.allowed-group-ids
+| *spring.cloud.azure.active-directory*.user-group.allowed-group-ids
+
+| *azure.activedirectory*.user-group.allowed-group-names
+| *spring.cloud.azure.active-directory*.user-group.allowed-group-names
+
+| *azure.activedirectory*.user-name-attribute
+| *spring.cloud.azure.active-directory*.user-name-attribute
+|===
+
+.The value type of the following properties is changed from `long` to `Duration`:
+* `jwt-connect-timeout`
+* `jwt-read-timeout`
+* `jwk-set-cache-lifespan`
+* `jwk-set-cache-refresh-time`.
+
+.The following properties are removed:
+* azure.activedirectory.allow-telemetry
+* azure.activedirectory.user-group.enable-full-list
+* azure.activedirectory.graph-base-uri
+* azure.activedirectory.graph-membership-uri
+
+.The following properties are added:
+* spring.cloud.azure.active-directory.enabled
+* spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint
+* spring.cloud.azure.active-directory.user-group.use-transitive-members
+
+NOTE: The function of `azure.activedirectory.graph-membership-uri` has been replaced by 2 properties: `spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint` and `spring.cloud.azure.active-directory.user-group.use-transitive-members`. The first property is used to specify the host name, and the second a flag for using the url path: `v1.0/me/memberOf` or `v1.0/me/transitiveMemberOf`.
+
+Here are some examples of migration:
+
+.Case 1
+====
+.For legacy:
+azure.activedirectory.graph-membership-uri=https://graph.microsoft.com/v1.0/me/memberOf
+
+.For modern:
+spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=`https://graph.microsoft.com/` +
+spring.cloud.azure.active-directory.user-group.use-transitive-members=`false`
+====
+
+.Case 2
+====
+.For legacy:
+azure.activedirectory.graph-membership-uri=https://graph.microsoft.com/v1.0/me/transitiveMemberOf
+
+.For modern:
+spring.cloud.azure.active-directory.profile.environment.microsoft-graph-endpoint=`https://graph.microsoft.com/` +
+spring.cloud.azure.active-directory.user-group.use-transitive-members=`true`
+====
+
+[#api-spring-cloud-azure-starter-active-directory]
+===== API Changes
+
+.Class mapping from azure-spring-boot-starter-active-directory to spring-cloud-azure-starter-active-directory
+[cols="<~,<~", options="header"]
+|===
+|Legacy class |Modern class
+
+|com.azure.spring.aad.webapi.AADJwtBearerTokenAuthenticationConverter
+|com.azure.spring.cloud.autoconfigure.aad.AadJwtBearerTokenAuthenticationConverter
+
+|com.azure.spring.aad.webapi.AADResourceServerProperties
+|com.azure.spring.cloud.autoconfigure.aad.properties.AadResourceServerProperties
+
+|com.azure.spring.aad.webapi.AADResourceServerWebSecurityConfigurerAdapter
+|com.azure.spring.cloud.autoconfigure.aad.AadResourceServerWebSecurityConfigurerAdapter
+
+|com.azure.spring.aad.webapp.AADWebSecurityConfigurerAdapter
+|com.azure.spring.cloud.autoconfigure.aad.AadWebSecurityConfigurerAdapter
+
+|com.azure.spring.aad.webapp.AuthorizationClientProperties
+|com.azure.spring.cloud.autoconfigure.aad.properties.AuthorizationClientProperties
+
+|com.azure.spring.aad.AADApplicationType
+|com.azure.spring.cloud.autoconfigure.aad.properties.AadApplicationType
+
+|com.azure.spring.aad.AADAuthorizationGrantType
+|com.azure.spring.cloud.autoconfigure.aad.properties.AadAuthorizationGrantType
+
+|com.azure.spring.aad.AADAuthorizationServerEndpoints
+|com.azure.spring.cloud.autoconfigure.aad.properties.AadAuthorizationServerEndpoints
+
+|com.azure.spring.aad.AADClientRegistrationRepository
+|com.azure.spring.cloud.autoconfigure.aad.AadClientRegistrationRepository
+
+|com.azure.spring.aad.AADTrustedIssuerRepository
+|com.azure.spring.cloud.autoconfigure.aad.AadTrustedIssuerRepository
+
+|com.azure.spring.autoconfigure.aad.AADAppRoleStatelessAuthenticationFilter
+|com.azure.spring.cloud.autoconfigure.aad.filter.AadAppRoleStatelessAuthenticationFilter
+
+|com.azure.spring.autoconfigure.aad.AADAuthenticationFilter
+|com.azure.spring.cloud.autoconfigure.aad.filter.AadAuthenticationFilter
+
+|com.azure.spring.autoconfigure.aad.AADAuthenticationProperties
+|com.azure.spring.cloud.autoconfigure.aad.properties.AadAuthenticationProperties
+
+|com.azure.spring.autoconfigure.aad.UserPrincipal
+|com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipal
+
+|com.azure.spring.autoconfigure.aad.UserPrincipalManager
+|com.azure.spring.cloud.autoconfigure.aad.filter.UserPrincipalManager
+|===
+
+
+This section lists the removed classes from azure-spring-boot-starter-active-directory +
+
+.Removed legacy class
+* com.azure.spring.aad.webapp.AADHandleConditionalAccessFilter
+* com.azure.spring.aad.webapi.validator.AADJwtAudienceValidator
+* com.azure.spring.aad.webapi.validator.AADJwtClaimValidator
+
+==== From azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c
+
+This guide is intended to assist the migration to
+link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-active-directory-b2c[spring-cloud-azure-starter-active-directory-b2c] from
+version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-active-directory-b2c[azure-spring-boot-starter-active-directory-b2c].
+
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
+
+[#dependency-spring-cloud-azure-starter-active-directory-b2c]
+===== Dependency Changes
+
+Some unnecessary dependencies in the legacy artifact have been removed since the modern Spring Cloud
+Azure 4.0 library. Please add these removed dependencies to your project to prevent unintentional crash.
+
+.Removed Dependencies
+[cols="<30,<~", options="header"]
+|===
+|Removed Dependency |Description
+|org.springframework.boot:spring-boot-starter-validation |Please include the validation starter if you want to use Hibernate Validator.
+|===
+
+[#configuration-spring-cloud-azure-starter-active-directory-b2c]
+===== SDK Configuration Changes
+
+This section includes the changes about the properties added, removed and changed.
+
+.The following two points are the main to pay your attention to:
+. All configuration property names' prefix is changed from `azure.activedirectory.b2c` to `spring.cloud.azure.active-directory.b2c`.
+. New property `spring.cloud.azure.active-directory.b2c.enabled` is added to enable/disable AAD B2C related features. The default value is false.
+
+.Property mapping from azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c
+[cols="<30,<~", options="header"]
+|===
+| Legacy properties  | Modern properties
+
+| *azure.activedirectory.b2c*.authenticate-additional-parameters
+| *spring.cloud.azure.active-directory.b2c*.authenticate-additional-parameters
+
+| *azure.activedirectory.b2c*.authorization-clients
+| *spring.cloud.azure.active-directory.b2c*.authorization-clients
+
+| *azure.activedirectory.b2c*.authorization-clients.<AZURE_CLIENT_NAME>.authorization-grant-type
+| *spring.cloud.azure.active-directory.b2c*.authorization-clients.<AZURE_CLIENT_NAME>.authorization-grant-type
+
+| *azure.activedirectory.b2c*.authorization-clients.<AZURE_CLIENT_NAME>.scopes
+| *spring.cloud.azure.active-directory.b2c*.authorization-clients.<AZURE_CLIENT_NAME>.scopes
+
+| *azure.activedirectory.b2c*.app-id-uri
+| *spring.cloud.azure.active-directory.b2c*.app-id-uri
+
+| *azure.activedirectory.b2c*.base-uri
+| *spring.cloud.azure.active-directory.b2c*.base-uri
+
+| *azure.activedirectory.b2c*.client-id
+| *spring.cloud.azure.active-directory.b2c*.credential.client-id
+
+| *azure.activedirectory.b2c*.client-secret
+| *spring.cloud.azure.active-directory.b2c*.credential.client-secret
+
+| *azure.activedirectory.b2c*.jwt-connect-timeout
+| *spring.cloud.azure.active-directory.b2c*.jwt-connect-timeout
+
+| *azure.activedirectory.b2c*.jwt-read-timeout
+| *spring.cloud.azure.active-directory.b2c*.jwt-read-timeout
+
+| *azure.activedirectory.b2c*.jwt-size-limit
+| *spring.cloud.azure.active-directory.b2c*.jwt-size-limit
+
+| *azure.activedirectory.b2c*.login-flow
+| *spring.cloud.azure.active-directory.b2c*.login-flow
+
+| *azure.activedirectory.b2c*.logout-success-url
+| *spring.cloud.azure.active-directory.b2c*.logout-success-url
+
+| *azure.activedirectory.b2c*.reply-url
+| *spring.cloud.azure.active-directory.b2c*.reply-url
+
+| *azure.activedirectory.b2c*.tenant-id
+| *spring.cloud.azure.active-directory.b2c*.profile.tenant-id
+
+| *azure.activedirectory.b2c*.user-flows
+| *spring.cloud.azure.active-directory.b2c*.user-flows
+
+| *azure.activedirectory.b2c*.user-name-attribute-name
+| *spring.cloud.azure.active-directory.b2c*.user-name-attribute-name
+|===
+
+.Removed properties from azure-spring-boot-starter-active-directory-b2c:
+* azure.activedirectory.b2c.allow-telemetry
+* azure.activedirectory.b2c.tenant
+
+.The value type of the following properties is changed from `long` to `Duration`:
+* `jwt-connect-timeout`
+* `jwt-read-timeout`
+
+[#api-spring-cloud-azure-starter-active-directory-b2c]
+===== API Changes
+
+.Class mapping from azure-spring-boot-starter-active-directory-b2c to spring-cloud-azure-starter-active-directory-b2c
+[cols="<~,<~", options="header"]
+|===
+|Legacy class |Modern class
+
+|com.azure.spring.autoconfigure.b2c.AADB2CAuthorizationRequestResolver
+|com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cAuthorizationRequestResolver
+
+|com.azure.spring.autoconfigure.b2c.AADB2CJwtBearerTokenAuthenticationConverter
+|com.azure.spring.cloud.autoconfigure.aad.AadJwtBearerTokenAuthenticationConverter
+
+|com.azure.spring.autoconfigure.b2c.AADB2CLogoutSuccessHandler
+|com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cLogoutSuccessHandler
+
+|com.azure.spring.autoconfigure.b2c.AADB2COidcLoginConfigurer
+|com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cOidcLoginConfigurer
+
+|com.azure.spring.autoconfigure.b2c.AADB2CProperties
+|com.azure.spring.cloud.autoconfigure.aadb2c.properties.AadB2cProperties
+
+|com.azure.spring.autoconfigure.b2c.AADB2CTrustedIssuerRepository
+|com.azure.spring.cloud.autoconfigure.aadb2c.AadB2cTrustedIssuerRepository
+
+|com.azure.spring.autoconfigure.b2c.AuthorizationClientProperties
+|com.azure.spring.cloud.autoconfigure.aadb2c.properties.AuthorizationClientProperties
+|===
+
+==== From azure-spring-boot-starter-cosmos to spring-cloud-azure-starter-data-cosmos
+
+This guide is intended to assist the migration to
+link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-data-cosmos[spring-cloud-azure-starter-data-cosmos] from
+version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-cosmos[azure-spring-boot-starter-cosmos].
+
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.Please refer to the <<migration-guide-global-configurations, global configurations>> section for the global and common configuration changes.
+
+[#configuration-spring-cloud-azure-starter-data-cosmos]
+===== SDK Configuration Changes
+
+All configuration property names' prefix is changed from `azure.cosmos` to `spring.cloud.azure.cosmos`.
+
+.Property mapping from azure-spring-boot-starter-cosmos to spring-cloud-azure-starter-data-cosmos
+[cols="<30,<~", options="header"]
+|===
+|Legacy properties |Morden properties
+
+|*azure.cosmos*.connection-mode
+|*spring.cloud.azure.cosmos*.connection-mode
+
+|*azure.cosmos*.consistency-level
+|*spring.cloud.azure.cosmos*.consistency-level
+
+|*azure.cosmos*.database
+|*spring.cloud.azure.cosmos*.database
+
+|*azure.cosmos*.key
+|*spring.cloud.azure.cosmos*.key
+
+|*azure.cosmos*.populate-query-metrics
+|*spring.cloud.azure.cosmos*.populate-query-metrics
+
+|*azure.cosmos*.uri
+|*spring.cloud.azure.cosmos*.endpoint
+|===
+
+==== From azure-spring-boot-starter-keyvault-secrets to spring-cloud-azure-starter-keyvault-secrets
+
+This guide is intended to assist the migration to
+link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-keyvault-secrets[spring-cloud-azure-starter-keyvault-secrets] from
+version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-keyvault-secrets[azure-spring-boot-starter-keyvault-secrets].
+
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
+
+[#configuration-spring-cloud-azure-starter-keyvault-secrets]
+===== SDK Configuration Changes
+
+This section includes the changes about the properties added, removed and changed.
+
+.Property mapping from azure-spring-boot-starter-keyvault-secrets to spring-cloud-azure-starter-keyvault-secrets
+[cols="<30,<~", options="header"]
+|===
+| Legacy properties                        | Modern properties
+
+| *azure.keyvault*.case-sensitive-keys
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].case-sensitive
+
+| *azure.keyvault*.certificate-password
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-certificate-password
+
+| *azure.keyvault*.certificate-path
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-certificate-path
+
+| *azure.keyvault*.client-id
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-id
+
+| *azure.keyvault*.client-key
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].credential.client-secret
+
+| *azure.keyvault*.enabled
+| *spring.cloud.azure.keyvault.secret*.enabled and *spring.cloud.azure.keyvault.secret*.property-source-enabled
+
+| *azure.keyvault*.refresh-interval
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].refresh-interval
+
+| *azure.keyvault*.secret-keys
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].secret-keys
+
+| *azure.keyvault*.tenant-id
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].profile.tenant-id
+
+| *azure.keyvault*.uri
+| *spring.cloud.azure.keyvault.secret*.property-sources[n].endpoint
+|===
+
+.Removed properties from spring-cloud-azure-starter-keyvault-secrets
+* azure.keyvault.allow-telemetry
+* azure.keyvault.order
+
+
+.The following points you should pay your attention to:
+. All configuration property names changed the prefix from `azure.keyvault` to `spring.cloud.azure.keyvault.secret`.
+. `spring.cloud.azure.keyvault.secret.enabled` is used to enable the feature of configuring Key Vault secret client beans(like SecretClient and SecretAsyncClient).
+. `spring.cloud.azure.keyvault.secret.property-source-enabled` is used to enable all `KeyVaultPropertySource`.
+. For Azure common properties(like `client`, `proxy`, `retry`, `credential`, `profile`) and Key Vault properties(like `endpoint`, `service-version`). If `spring.cloud.azure.keyvault.secret.property-sources[n].PROPERTY_NAME` isn't configured, `spring.cloud.azure.keyvault.secret.PROPERTY_NAME` will be used.
+. `spring.cloud.azure.keyvault.secret.property-sources[n].resource` is specific to a unique Azure resource, so if it's not configured, it won't get value from other places.
+
+==== From azure-spring-boot-starter-servicebus-jms to spring-cloud-azure-starter-servicebus-jms
+
+This guide is intended to assist the migration to
+link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-servicebus-jms[spring-cloud-azure-starter-servicebus-jms] from
+version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-servicebus-jms[azure-spring-boot-starter-servicebus-jms].
+
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
+
+[#configuration-spring-cloud-azure-starter-servicebus-jms]
+===== SDK Configuration Changes
+
+The value type for `spring.jms.servicebus.idle-timeout` is changed from `long`(milliseconds) to `Duration` for ease of readability.
+
+==== From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob
+This guide is intended to assist in the migration to
+link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-storage-blob[spring-cloud-azure-starter-storage-blob] from
+version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-storage[azure-spring-boot-starter-storage].
+
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
+
+[#configuration-spring-cloud-azure-starter-storage-blob]
+===== SDK Configuration Changes
+
+All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.blob`.
+
+.Property mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob
+[cols="<30,<~", options="header"]
+|===
+|Legacy properties |Modern properties
+|*azure.storage*.account-name |*spring.cloud.azure.storage.blob*.account-name
+|*azure.storage*.account-key |*spring.cloud.azure.storage.blob*.account-key
+|*azure.storage*.blob-endpoint |*spring.cloud.azure.storage.blob*.endpoint
+|===
+
+[#api-spring-cloud-azure-starter-storage-blob]
+===== API Changes
+
+.Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-blob
+[cols="<~,<~", options="header"]
+|===
+|Legacy class |Modern class
+|com.azure.spring.autoconfigure.storage.resource.AzureStorageProtocolResolver |com.azure.spring.cloud.core.resource.AzureStorageBlobProtocolResolver
+|com.azure.spring.autoconfigure.storage.resource.AzureStorageResourcePatternResolver|com.azure.spring.cloud.core.resource.AzureStorageBlobProtocolResolver
+|com.azure.spring.autoconfigure.storage.resource.BlobStorageResource|com.azure.spring.cloud.core.resource.StorageBlobResource
+|===
+
+==== From azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share
+This guide is intended to assist in the migration to
+link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-storage-file-share[spring-cloud-azure-starter-storage-file-share] from
+version 3 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-boot-starter-storage[azure-spring-boot-starter-storage].
+
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
+
+[#configuration-spring-cloud-azure-starter-storage-file-share]
+===== SDK Configuration Changes
+
+All configuration property names changed the prefix from `azure.storage` to `spring.cloud.azure.storage.fileshare`.
+
+.Property mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share
+[cols="<30,<~", options="header"]
+|===
+|Legacy properties |Modern properties
+|*azure.storage*.account-name |*spring.cloud.azure.storage.fileshare*.account-name
+|*azure.storage*.account-key |*spring.cloud.azure.storage.fileshare*.account-key
+|*azure.storage*.file-endpoint |*spring.cloud.azure.storage.fileshare*.endpoint
+|===
+
+[#api-spring-cloud-azure-starter-storage-file-share]
+===== API Changes
+.Class mapping from azure-spring-boot-starter-storage to spring-cloud-azure-starter-storage-file-share
+[cols="<~,<~", options="header"]
+|===
+|Legacy class |Modern class
+|com.azure.spring.autoconfigure.storage.resource.AzureStorageProtocolResolver |com.azure.spring.cloud.core.resource.AzureStorageFileProtocolResolver
+|com.azure.spring.autoconfigure.storage.resource.AzureStorageResourcePatternResolver|com.azure.spring.cloud.core.resource.AzureStorageFileProtocolResolver
+|com.azure.spring.autoconfigure.storage.resource.FileStorageResource|com.azure.spring.cloud.core.resource.StorageFileResource
+|===
+
+==== From azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs
+This guide is intended to assist in the migration to
+link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-integration-eventhubs[spring-cloud-azure-starter-integration-eventhubs] from
+version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-cloud-starter-eventhubs[azure-spring-cloud-starter-eventhubs].
+
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
+
+[#configuration-spring-cloud-azure-starter-integration-eventhubs]
+===== SDK Configuration Changes
+
+IMPORTANT: Configuration prefix has been changed from `spring.cloud.azure.eventhub` to `spring.cloud.azure.eventhubs.`
+
+Changes for the child entries for this prefix, please refer the following tables:
+
+.Property mapping from azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs
+[cols="<30,<~", options="header"]
+|===
+|Legacy properties | Modern properties
+|*spring.cloud.azure*.resource-group|*spring.cloud.azure.eventhubs*.resource.resource-group
+|*spring.cloud.azure.eventhub*.namespace|*spring.cloud.azure.eventhubs*.namespace
+|*spring.cloud.azure.eventhub*.connection-string|*spring.cloud.azure.eventhubs*.connection-string
+|*spring.cloud.azure.eventhub*.checkpoint-storage-account|*spring.cloud.azure.eventhubs.processor*.checkpoint-store.account-name
+|*spring.cloud.azure.eventhub*.checkpoint-access-key|*spring.cloud.azure.eventhubs.processor*.checkpoint-store.account-key
+|*spring.cloud.azure.eventhub*.checkpoint-container|*spring.cloud.azure.eventhubs.processor*.checkpoint-store.container-name
+|===
+
+For example, change from:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      eventhub:
+        connection-string: ${AZURE_EVENTHUBS_CONNECTION_STRING}
+        checkpoint-storage-account: ${AZURE_CHECKPOINT_STORAGE_ACCOUNT_NAME}
+        checkpoint-access-key: ${AZURE_CHECKPOINT_ACCOUNT_KEY}
+        checkpoint-container: ${AZURE_CHECKPOINT_CONTAINER_NAME}
+----
+
+to:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      eventhubs:
+        connection-string: ${AZURE_EVENTHUBS_CONNECTION_STRING}
+        processor:
+          checkpoint-store:
+            container-name: ${AZURE_STORAGE_CONTAINER_NAME}
+            account-name:  ${AZURE_STORAGE_ACCOUNT_NAME}
+            account-key: ${AZURE_STORAGE_ACCOUNT_KEY}
+----
+
+[#api-spring-cloud-azure-starter-integration-eventhubs]
+===== API Changes
+
+* Please refer to the migration guide of <<migration-azure-spring-cloud-messaging, azure-spring-cloud-messaging>> library for the changes of listener annotations.
+* Drop `EventHubOperation` with the subscribing function moved to class `EventHubsMessageListenerContainer` and the sending function moved to `EventHubsTemplate`.
+* Rename `EventHubInboundChannelAdapter` as `EventHubsInboundChannelAdapter` to keep consistent with the service of Azure
+Event Hubs.
+* Change the constructor from `EventHubInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer)` and `EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer, ListenerMode)`.
+* Change `CheckpointConfig` instantiation style to the simple constructor instead of build style.
+* Drop API `EventHubOperation#setCheckpointConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `EventHubsContainerProperties#setCheckpointConfig`.
+* Drop API `EventHubOperation#setBatchConsumerConfig`. To set the batch-consuming configuration for the inbound channel adapter, users can call the two methods `EventHubsContainerProperties#getBatch#setMaxSize` and `EventHubsContainerProperties#getBatch#setMaxWaitTime` meanwhile.
+* For the batch consuming mode, change the message header names converted from batched messages.
+    - Change message header from `azure_eventhub_enqueued_time` to `azure_eventhubs_batch_converted_enqueued_time`.
+    - Change message header from `azure_eventhub_offset` to `azure_eventhubs_batch_converted_offset`.
+    - Change message header from `azure_eventhub_sequence_number` to `azure_eventhubs_batch_converted_sequence_number`.
+    - Change message header from `azure_partition_key` to `azure_batch_converted_partition_key`.
+* When publishing messages to Event Hubs, ignore all message headers converted from batched messages. Headers include:
+    - azure_batch_converted_partition_key
+    - azure_eventhubs_batch_converted_enqueued_time
+    - azure_eventhubs_batch_converted_offset
+    - azure_eventhubs_batch_converted_sequence_number
+    - azure_eventhubs_batch_converted_system_properties
+    - azure_eventhubs_batch_converted_application_properties
+* The `BATCH` checkpoint mode only works in the batch-consuming mode now, which can be enabled by passing `ListenerMode.BATCH` to EventHubsInboundChannelAdapter constructor.
+
+.Class mapping from azure-spring-cloud-starter-eventhubs to spring-cloud-azure-starter-integration-eventhubs
+[cols="<~,<~", options="header"]
+|===
+|Legacy class |Modern class
+|com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
+|com.azure.spring.integration.core.EventHubHeaders |com.azure.spring.messaging.eventhubs.support.EventHubsHeaders
+|com.azure.spring.integration.core.api.CheckpointConfig |com.azure.spring.messaging.eventhubs.core.checkpoint.CheckpointConfig
+|com.azure.spring.integration.core.api.CheckpointMode |com.azure.spring.messaging.eventhubs.core.checkpoint.CheckpointMode
+|com.azure.spring.integration.core.api.reactor.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
+|com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.core.handler.DefaultMessageHandler
+|com.azure.spring.integration.eventhub.inbound.EventHubInboundChannelAdapter |com.azure.spring.integration.eventhubs.inbound.EventHubsInboundChannelAdapter
+|===
+
+====== Sample Code Snippet
+
+1.EventHubsInboundChannelAdapter sample code:
+
+Legacy code:
+
+[source,java]
+----
+public class Demo {
+    @Bean
+    public EventHubInboundChannelAdapter messageChannelAdapter(
+        @Qualifier("INPUT_CHANNEL") MessageChannel inputChannel, EventHubOperation eventhubOperation) {
+        eventhubOperation.setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.MANUAL).build());
+        EventHubInboundChannelAdapter adapter = new EventHubInboundChannelAdapter("EVENTHUB_NAME",
+            eventhubOperation, "CONSUMER_GROUP");
+        adapter.setOutputChannel(inputChannel);
+        return adapter;
+    }
+}
+----
+
+Modern code:
+
+[source,java]
+----
+public class Demo {
+    @Bean
+    public EventHubsMessageListenerContainer messageListenerContainer(EventHubsProcessorFactory processorFactory) {
+        EventHubsContainerProperties containerProperties = new EventHubsContainerProperties();
+        containerProperties.setEventHubName("EVENTHUB_NAME");
+        containerProperties.setConsumerGroup("CONSUMER_GROUP");
+        CheckpointConfig config = new CheckpointConfig(CheckpointMode.MANUAL);
+        containerProperties.setCheckpointConfig(config);
+        return new EventHubsMessageListenerContainer(processorFactory, containerProperties);
+    }
+
+    @Bean
+    public EventHubsInboundChannelAdapter messageChannelAdapter(@Qualifier("INPUT_CHANNEL") MessageChannel inputChannel,
+                                                                EventHubsMessageListenerContainer listenerContainer) {
+        EventHubsInboundChannelAdapter adapter = new EventHubsInboundChannelAdapter(listenerContainer);
+        adapter.setOutputChannel(inputChannel);
+        return adapter;
+    }
+}
+----
+
+2.DefaultMessageHandler sample code:
+
+Legacy code:
+
+[source,java]
+----
+public class Demo {
+    @Bean
+    @ServiceActivator(inputChannel = "OUTPUT_CHANNEL")
+    public MessageHandler messageSender(EventHubOperation eventhubOperation) {
+        DefaultMessageHandler handler = new DefaultMessageHandler("EVENTHUB_NAME", eventhubOperation);
+        handler.setSendCallback(new ListenableFutureCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                LOGGER.info("Message was sent successfully.");
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                LOGGER.error("There was an error sending the message.", ex);
+            }
+        });
+        return handler;
+    }
+}
+----
+
+Modern code:
+
+[source,java]
+----
+public class Demo {
+    @Bean
+    @ServiceActivator(inputChannel = "OUTPUT_CHANNEL")
+    public MessageHandler messageSender(EventHubsTemplate eventhubOperation) {
+        DefaultMessageHandler handler = new DefaultMessageHandler("EVENTHUB_NAME", eventhubOperation);
+        handler.setSendCallback(new ListenableFutureCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                LOGGER.info("Message was sent successfully.");
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                LOGGER.error("There was an error sending the message.", ex);
+            }
+        });
+
+        return handler;
+    }
+}
+----
+
+==== From azure-spring-integration-eventhubs to spring-integration-azure-eventhubs
+This guide is intended to assist in the migration to
+link:https://search.maven.org/artifact/com.azure.spring/spring-integration-azure-eventhubs[spring-integration-azure-eventhubs] from
+version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-integration-eventhubs[azure-spring-integration-eventhubs].
+
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+
+[#api-spring-integration-azure-eventhubs]
+===== API Changes
+
+* Drop `EventHubOperation` with the subscribing function moved to class `EventHubsMessageListenerContainer` and the sending function moved to `EventHubsTemplate`.
+* Rename `EventHubInboundChannelAdapter` as `EventHubsInboundChannelAdapter` to keep consistent with the service of Azure
+Event Hubs.
+* Change the constructor from `EventHubInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer)` and `EventHubsInboundChannelAdapter(EventHubsMessageListenerContainer, ListenerMode)`.
+* Change `CheckpointConfig` instantiation style to the simple constructor instead of build style.
+* Drop API `EventHubOperation#setCheckpointConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `EventHubsContainerProperties#setCheckpointConfig`.
+* Drop API `EventHubOperation#setBatchConsumerConfig`. To set the batch-consuming configuration for the inbound channel adapter, users can call the two methods `EventHubsContainerProperties#getBatch#setMaxSize` and `EventHubsContainerProperties#getBatch#setMaxWaitTime` meanwhile.
+* For the batch consuming mode, change the message header names converted from batched messages.
+    - Change message header from `azure_eventhub_enqueued_time` to `azure_eventhubs_batch_converted_enqueued_time`.
+    - Change message header from `azure_eventhub_offset` to `azure_eventhubs_batch_converted_offset`.
+    - Change message header from `azure_eventhub_sequence_number` to `azure_eventhubs_batch_converted_sequence_number`.
+    - Change message header from `azure_partition_key` to `azure_batch_converted_partition_key`.
+* When publishing messages to Event Hubs, ignore all message headers converted from batched messages. Headers include:
+    - azure_batch_converted_partition_key
+    - azure_eventhubs_batch_converted_enqueued_time
+    - azure_eventhubs_batch_converted_offset
+    - azure_eventhubs_batch_converted_sequence_number
+    - azure_eventhubs_batch_converted_system_properties
+    - azure_eventhubs_batch_converted_application_properties
+* The `BATCH` checkpoint mode only works in the batch-consuming mode now, which can be enabled by passing `ListenerMode.BATCH` to EventHubsInboundChannelAdapter constructor.
+
+.Class mapping from azure-spring-integration-eventhubs to spring-integration-azure-eventhubs
+[cols="<~,<~", options="header"]
+|===
+|Legacy class |Modern class
+|com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
+|com.azure.spring.integration.core.EventHubHeaders |com.azure.spring.messaging.eventhubs.support.EventHubsHeaders
+|com.azure.spring.integration.core.api.CheckpointConfig |com.azure.spring.messaging.eventhubs.core.checkpoint.CheckpointConfig
+|com.azure.spring.integration.core.api.CheckpointMode |com.azure.spring.messaging.eventhubs.core.checkpoint.CheckpointMode
+|com.azure.spring.integration.core.api.reactor.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
+|com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.core.handler.DefaultMessageHandler
+|com.azure.spring.integration.eventhub.inbound.EventHubInboundChannelAdapter |com.azure.spring.integration.eventhubs.inbound.EventHubsInboundChannelAdapter
+|===
+
+==== From azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus
+This guide is intended to assist in the migration to
+link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-integration-servicebus[spring-cloud-azure-starter-integration-servicebus] from
+version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-cloud-starter-servicebus[azure-spring-cloud-starter-servicebus].
+
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
+
+[#configuration-spring-cloud-azure-starter-integration-servicebus]
+===== SDK Configuration Changes
+
+For all configuration options supported in spring-cloud-azure-starter-integration-servicebus,
+the prefix remains to be as `spring.cloud.azure.servicebus`.
+
+.Property mapping from azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus
+[cols="<30,<~", options="header"]
+|===
+|Legacy properties |Modern properties
+|*spring.cloud.azure*.resource-group|*spring.cloud.azure.servicebus*.resource.resource-group
+|*spring.cloud.azure.servicebus*.transport-type |*spring.cloud.azure.servicebus*.client.transport-type
+|*spring.cloud.azure.servicebus*.retry-options.retry-mode |*spring.cloud.azure.servicebus*.retry.mode
+|*spring.cloud.azure.servicebus*.retry-options.max-retries |*spring.cloud.azure.servicebus*.retry.exponential.max-retries or *spring.cloud.azure.servicebus*.retry.fixed.max-retries, should be configured depending on *spring.cloud.azure.servicebus*.retry.mode=*fixed* or *exponential*
+|*spring.cloud.azure.servicebus*.retry-options.delay |*spring.cloud.azure.servicebus*.retry.exponential.base-delay or *spring.cloud.azure.servicebus*.retry.fixed.delay, should be configured depending on *spring.cloud.azure.servicebus*.retry.mode=*fixed* or *exponential*
+|*spring.cloud.azure.servicebus*.retry-options.max-delay |*spring.cloud.azure.servicebus*.retry.exponential.max-delay
+|*spring.cloud.azure.servicebus*.retry-options.try-timeout |*spring.cloud.azure.servicebus*.retry.try-timeout
+|===
+
+[#api-spring-cloud-azure-starter-integration-servicebus]
+===== API Changes
+* Drop `ServiceBusQueueOperation` and `ServiceBusTopicOperation` with the subscribing function moved to class `ServiceBusMessageListenerContainer` and the sending function moved to `ServiceBusTemplate`.
+* Drop `ServiceBusQueueInboundChannelAdapter` and `ServiceBusTopicInboundChannelAdapter`, and move the functionality to listen to a Service Bus queue/topic entity to ServiceBusInboundChannelAdapter.
+* Change the constructor from `ServiceBusQueueInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)` and `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)`.
+* Change the constructor from `ServiceBusTopicInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)` and `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)`.
+* Drop APIs `ServiceBusQueueOperation#setCheckpointConfig` and `ServiceBusTopicOperation#setCheckpointConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `ServiceBusContainerProperties#setAutoComplete` instead. To disable the auto-complete mode is equivalent to `MANUAL` checkpoint mode and to enable it will trigger the `RECORD` mode.
+* Drop APIs `ServiceBusQueueOperatio#setClientConfig` and `ServiceBusTopicOperation#setClientConfig`. To configure the underlying `ServiceBusProcessorClient` used by the inbound channel adapter, users can use `ServiceBusContainerProperties` instead.
+* Drop `CompletableFuture` support in `ServiceBusTemplate` and `DefaultMessageHandler`, support `Reactor` instead.
+* Add new API of `ServiceBusTemplate#setDefaultEntityType` to specify the entity type, which is required when no bean of `PropertiesSupplier&lt;String, ProducerProperties&gt;` is provided for the `ProducerProperties#entityType`.
+* Drop message header `AzureHeaders.RAW_ID`. Please use `ServiceBusMessageHeaders.MESSAGE_ID` instead.
+
+.Class mapping from azure-spring-cloud-starter-servicebus to spring-cloud-azure-starter-integration-servicebus
+[cols="<,<", options="header"]
+|===
+|Legacy class |Modern class
+|com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
+|com.azure.spring.integration.servicebus.converter.ServiceBusMessageHeaders |com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders
+|com.azure.spring.integration.servicebus.converter.ServiceBusMessageConverter |com.azure.spring.messaging.servicebus.support.converter.ServiceBusMessageConverter
+|com.azure.spring.integration.core.DefaultMessageHandler |com.azure.spring.integration.core.handler.DefaultMessageHandler
+|com.azure.spring.integration.servicebus.inbound.ServiceBusQueueInboundChannelAdapter |com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter
+|com.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter |com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter
+|===
+
+====== Sample Code Snippet
+
+1.ServiceBusInboundChannelAdapter sample code:
+
+Legacy code of using `ServiceBusQueueInboundChannelAdapter` or `ServiceBusTopicInboundChannelAdapter`:
+
+[source,java]
+----
+public class Demo {
+    @Bean
+    public ServiceBusQueueInboundChannelAdapter queueMessageChannelAdapter(
+        @Qualifier("INPUT_CHANNEL_NAME") MessageChannel inputChannel, ServiceBusQueueOperation queueOperation) {
+        queueOperation.setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.MANUAL).build());
+        ServiceBusQueueInboundChannelAdapter adapter = new ServiceBusQueueInboundChannelAdapter("QUEUE_NAME",
+            queueOperation);
+        adapter.setOutputChannel(inputChannel);
+        return adapter;
+    }
+
+    @Bean
+    public ServiceBusTopicInboundChannelAdapter topicMessageChannelAdapter(
+        @Qualifier("INPUT_CHANNEL_NAME") MessageChannel inputChannel, ServiceBusTopicOperation topicOperation) {
+        topicOperation.setCheckpointConfig(CheckpointConfig.builder().checkpointMode(CheckpointMode.MANUAL).build());
+        ServiceBusTopicInboundChannelAdapter adapter = new ServiceBusTopicInboundChannelAdapter("TOPIC_NAME",
+            topicOperation, "SUBSCRIPTION_NAME");
+        adapter.setOutputChannel(inputChannel);
+        return adapter;
+    }
+
+}
+----
+
+Modern code:
+
+[source,java]
+----
+public class Demo {
+    @Bean("queue-listener-container")
+    public ServiceBusMessageListenerContainer messageListenerContainer(ServiceBusProcessorFactory processorFactory) {
+        ServiceBusContainerProperties containerProperties = new ServiceBusContainerProperties();
+        containerProperties.setEntityName("QUEUE_NAME");
+        containerProperties.setAutoComplete(false);
+        return new ServiceBusMessageListenerContainer(processorFactory, containerProperties);
+    }
+
+    @Bean
+    public ServiceBusInboundChannelAdapter queueMessageChannelAdapter(
+        @Qualifier("INPUT_CHANNEL") MessageChannel inputChannel,
+        @Qualifier("queue-listener-container") ServiceBusMessageListenerContainer listenerContainer) {
+        ServiceBusInboundChannelAdapter adapter = new ServiceBusInboundChannelAdapter(listenerContainer);
+        adapter.setOutputChannel(inputChannel);
+        return adapter;
+    }
+
+    @Bean("topic-listener-container")
+    public ServiceBusMessageListenerContainer messageListenerContainer(ServiceBusProcessorFactory processorFactory) {
+        ServiceBusContainerProperties containerProperties = new ServiceBusContainerProperties();
+        containerProperties.setEntityName("TOPIC_NAME");
+        containerProperties.setSubscriptionName("SUBSCRIPTION_NAME");
+        containerProperties.setAutoComplete(false);
+        return new ServiceBusMessageListenerContainer(processorFactory, containerProperties);
+    }
+
+    @Bean
+    public ServiceBusInboundChannelAdapter topicMessageChannelAdapter(
+        @Qualifier("INPUT_CHANNEL") MessageChannel inputChannel,
+        @Qualifier("topic-listener-container") ServiceBusMessageListenerContainer listenerContainer) {
+        ServiceBusInboundChannelAdapter adapter = new ServiceBusInboundChannelAdapter(listenerContainer);
+        adapter.setOutputChannel(inputChannel);
+        return adapter;
+    }
+}
+----
+
+2.DefaultMessageHandler sample code:
+
+Legacy code, taking queue as example:
+
+[source,java]
+----
+public class Demo {
+    @Bean
+    @ServiceActivator(inputChannel = "OUTPUT_CHANNEL_NAME")
+    public MessageHandler queueMessageSender(ServiceBusQueueOperation queueOperation) {
+        DefaultMessageHandler handler = new DefaultMessageHandler("QUEUE_NAME", queueOperation);
+        handler.setSendCallback(new ListenableFutureCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                LOGGER.info("Message was sent successfully.");
+            }
+            @Override
+            public void onFailure(Throwable ex) {
+                LOGGER.info("There was an error sending the message.");
+            }
+        });
+        return handler;
+    }
+}
+----
+
+Modern code:
+
+[source,java]
+----
+public class Demo {
+
+    @Bean
+    @ServiceActivator(inputChannel = "OUTPUT_CHANNEL_NAME")
+    public MessageHandler queueMessageSender(ServiceBusTemplate serviceBusTemplate) {
+        serviceBusTemplate.setDefaultEntityType(ServiceBusEntityType.QUEUE);
+        DefaultMessageHandler handler = new DefaultMessageHandler("QUEUE_NAME", serviceBusTemplate);
+        handler.setSendCallback(new ListenableFutureCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                LOGGER.info("Message was sent successfully for {}.", "QUEUE_NAME");
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                LOGGER.info("There was an error sending the message.");
+            }
+        });
+
+        return handler;
+    }
+}
+----
+
+==== From azure-spring-integration-servicebus to spring-integration-azure-servicebus
+This guide is intended to assist in the migration to
+link:https://search.maven.org/artifact/com.azure.spring/spring-integration-azure-servicebus[spring-integration-azure-servicebus] from
+version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-integration-servicebus[azure-spring-integration-servicebus].
+
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+
+[#api-spring-integration-azure-servicebus]
+===== API Changes
+* Drop `ServiceBusQueueOperation` and `ServiceBusTopicOperation` with the subscribing function moved to class `ServiceBusMessageListenerContainer` and the sending function moved to `ServiceBusTemplate`.
+* Drop `ServiceBusQueueInboundChannelAdapter` and `ServiceBusTopicInboundChannelAdapter`, and move the functionality to listen to a Service Bus queue/topic entity to ServiceBusInboundChannelAdapter.
+* Change the constructor from `ServiceBusQueueInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)` and `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)`.
+* Change the constructor from `ServiceBusTopicInboundChannelAdapter(String, SubscribeByGroupOperation, String)` to `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer)` and `ServiceBusInboundChannelAdapter(ServiceBusMessageListenerContainer, ListenerMode)`.
+* Drop APIs `ServiceBusQueueOperation#setCheckpointConfig` and `ServiceBusTopicOperation#setCheckpointConfig`. To set the checkpoint configuration for the inbound channel adapter, users can call the method `ServiceBusContainerProperties#setAutoComplete` instead. To disable the auto-complete mode is equivalent to `MANUAL` checkpoint mode and to enable it will trigger the `RECORD` mode.
+* Drop APIs `ServiceBusQueueOperation#setClientConfig` and `ServiceBusTopicOperation#setClientConfig`. To configure the underlying `ServiceBusProcessorClient` used by the inbound channel adapter, users can use `ServiceBusContainerProperties` instead.
+* Drop `CompletableFuture` support in `ServiceBusTemplate` and `DefaultMessageHandler`, support `Reactor` instead.
+* Add new API of `ServiceBusTemplate#setDefaultEntityType` to specify the entity type, which is required when no bean of `PropertiesSupplier&lt;String, ProducerProperties&gt;` is provided for the `ProducerProperties#entityType`.
+* Drop message header `AzureHeaders.RAW_ID`. Please use `ServiceBusMessageHeaders.MESSAGE_ID` instead.
+
+.Class mapping from azure-spring-integration-servicebus to spring-integration-azure-servicebus
+[cols="<,<", options="header"]
+|===
+|Legacy class |Modern class
+|com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
+|com.azure.spring.integration.servicebus.converter.ServiceBusMessageHeaders |com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders
+|com.azure.spring.integration.servicebus.converter.ServiceBusMessageConverter |com.azure.spring.messaging.servicebus.support.converter.ServiceBusMessageConverter
+|com.azure.spring.integration.core.DefaultMessageHandler |com.azure.spring.integration.core.handler.DefaultMessageHandler
+|com.azure.spring.integration.servicebus.inbound.ServiceBusQueueInboundChannelAdapter |com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter
+|com.azure.spring.integration.servicebus.inbound.ServiceBusTopicInboundChannelAdapter |com.azure.spring.integration.servicebus.inbound.ServiceBusInboundChannelAdapter
+|===
+
+==== From azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue
+This guide is intended to assist in the migration to
+link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-starter-integration-storage-queue[spring-cloud-azure-starter-integration-storage-queue] from
+version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-cloud-starter-storage-queue[azure-spring-cloud-starter-storage-queue].
+
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
+
+[#configuration-spring-cloud-azure-starter-integration-storage-queue]
+===== SDK Configuration Changes
+
+All configuration property names changed the prefix from `spring.cloud.azure.storage` to `spring.cloud.azure.storage.queue`.
+
+.Property mapping from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue
+[cols="<30,<~", options="header"]
+|===
+|Legacy properties |Modern properties
+|*spring.cloud.azure.storage*.account |*spring.cloud.azure.storage.queue*.account-name
+|*spring.cloud.azure.storage*.access-key |*spring.cloud.azure.storage.queue*.account-key
+|*spring.cloud.azure.storage*.resource-group |*spring.cloud.azure.storage.queue*.resource.resource-group
+|===
+
+[#api-spring-cloud-azure-starter-integration-storage-queue]
+===== API Changes
+
+* Drop `StorageQueueOperation` and provide `StorageQueueTemplate` instead.
+* Drop `checkpoint-mode` configuration in `StorageQueueTemplate`, only support the `MANUAL` mode.
+
+.Class mapping from azure-spring-cloud-starter-storage-queue to spring-cloud-azure-starter-integration-storage-queue
+[cols="<~,<~", options="header"]
+|===
+|Legacy class |Modern class
+|com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
+|com.azure.spring.integration.storage.queue.converter.StorageQueueMessageConverter |com.azure.spring.messaging.storage.queue.support.converter.StorageQueueMessageConverter
+|com.azure.spring.integration.core.api.reactor.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
+|com.azure.spring.integration.storage.queue.StorageQueueTemplate |com.azure.spring.messaging.storage.queue.core.StorageQueueTemplate
+|com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.core.handler.DefaultMessageHandler
+|com.azure.spring.integration.storage.queue.inbound.StorageQueueMessageSource |com.azure.spring.integration.storage.queue.inbound.StorageQueueMessageSource
+|===
+
+==== From azure-spring-integration-storage-queue to spring-integration-azure-storage-queue
+This guide is intended to assist in the migration to
+link:https://search.maven.org/artifact/com.azure.spring/spring-integration-azure-storage-queue[spring-integration-azure-storage-queue] from
+version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-integration-storage-queue[azure-spring-integration-storage-queue].
+
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+
+[#api-spring-integration-azure-storage-queue]
+===== API Changes
+
+* Drop `StorageQueueOperation` and provide `StorageQueueTemplate` instead.
+* Drop `checkpoint-mode` configuration in `StorageQueueTemplate`, only support the `MANUAL` mode.
+
+.Class mapping from azure-spring-integration-storage-queue to spring-integration-azure-storage-queue
+[cols="<~,<~", options="header"]
+|===
+|Legacy class |Modern class
+|com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
+|com.azure.spring.integration.storage.queue.converter.StorageQueueMessageConverter |com.azure.spring.messaging.storage.queue.support.converter.StorageQueueMessageConverter
+|com.azure.spring.integration.core.api.reactor.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
+|com.azure.spring.integration.storage.queue.StorageQueueTemplate |com.azure.spring.messaging.storage.queue.core.StorageQueueTemplate
+|com.azure.spring.integration.core.api.reactor.DefaultMessageHandler |com.azure.spring.integration.core.handler.DefaultMessageHandler
+|com.azure.spring.integration.storage.queue.inbound.StorageQueueMessageSource |com.azure.spring.integration.storage.queue.inbound.StorageQueueMessageSource
+|===
+
+==== From azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs
+This guide is intended to assist in the migration to
+link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-stream-binder-eventhubs[spring-cloud-azure-stream-binder-eventhubs] from
+version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-cloud-stream-binder-eventhubs[azure-spring-cloud-stream-binder-eventhubs].
+
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
+
+[#configuration-spring-cloud-azure-stream-binder-eventhubs]
+===== SDK Configuration Changes
+IMPORTANT: Configuration prefix has been changed from `spring.cloud.azure.eventhub` to `spring.cloud.azure.eventhubs.`
+
+IMPORTANT: The binder type is renamed from: `eventhub` to `eventhubs`.
+
+Changes for the child entries for following prefix, please refer the following table:
+
+.Property mapping from azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs
+[cols="<30,<~", options="header"]
+|===
+|Legacy properties |Modern properties
+|*spring.cloud.azure*.resource-group|*spring.cloud.azure.eventhubs*.resource.resource-group
+|*spring.cloud.azure.eventhub*.namespace|*spring.cloud.azure.eventhubs*.namespace
+|*spring.cloud.azure.eventhub*.connection-string|*spring.cloud.azure.eventhubs*.connection-string
+|*spring.cloud.azure.eventhub*.checkpoint-storage-account|*spring.cloud.azure.eventhubs.processor*.checkpoint-store.account-name
+|*spring.cloud.azure.eventhub*.checkpoint-access-key|*spring.cloud.azure.eventhubs.processor*.checkpoint-store.account-key
+|*spring.cloud.azure.eventhub*.checkpoint-container|*spring.cloud.azure.eventhubs.processor*.checkpoint-store.container-name
+|*spring.cloud.stream.eventhub.bindings.<binding-name>.consumer*.max-batch-size |*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.batch.max-size
+|*spring.cloud.stream.eventhub.bindings.<binding-name>.consumer*.max-wait-time |*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.batch.max-wait-time
+|*spring.cloud.stream.eventhub.bindings.<binding-name>.consumer*.checkpoint-mode |*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.checkpoint.mode
+|*spring.cloud.stream.eventhub.bindings.<binding-name>.consumer*.checkpoint-count |*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.checkpoint.count
+|*spring.cloud.stream.eventhub.bindings.<binding-name>.consumer*.checkpoint-interval |*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.checkpoint.interval
+|*spring.cloud.stream.eventhub.bindings.<binding-name>.consumer*.start-position |*spring.cloud.stream.eventhubs.bindings.<binding-name>.consumer*.initial-partition-event-position
+|===
+
+NOTE: The value type of the `start-position` configuration is also changed from an enum of `com.azure.spring.integration.core.api.StartPosition` to a `map` of `StartPositionProperties` for each partition. Thus, the key is the partition id, and the value is of `com.azure.spring.cloud.service.eventhubs.properties.StartPositionProperties` which includes properties of offset, sequence number, enqueued date time and whether inclusive.
+
+====== Configuration migration examples
+To use the connection string for authentication and migrate the above mentioned properties, configuration changes are listed as below:
+
+Legacy configuration:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      eventhub:
+        connection-string: ${AZURE_EVENTHUBS_CONNECTION_STRING}
+        checkpoint-storage-account: ${AZURE_CHECKPOINT_STORAGE_ACCOUNT_NAME}
+        checkpoint-access-key: ${AZURE_CHECKPOINT_ACCOUNT_KEY}
+        checkpoint-container: ${AZURE_CHECKPOINT_CONTAINER_NAME}
+    stream:
+      eventhub:
+        bindings:
+          <binding-name>:
+            consumer:
+              max-batch-size: ${AZURE_MAX_BATCH_SIZE}
+              max-wait-time: ${AZURE_MAX_WAIT_TIME}
+              checkpoint-mode: ${AZURE_CHECKPOINT_MODE}
+              checkpoint-count: ${AZURE_CHECKPOINT_COUNT}
+              checkpoint-interval: ${AZURE_CHECKPOINT_INTERVAL}
+              start-position: EARLIEST
+
+----
+
+Modern configuration:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      eventhubs:
+        connection-string: ${AZURE_EVENTHUBS_CONNECTION_STRING}
+        processor:
+          checkpoint-store:
+            container-name: ${AZURE_STORAGE_CONTAINER_NAME}
+            account-name:  ${AZURE_STORAGE_ACCOUNT_NAME}
+            account-key: ${AZURE_STORAGE_ACCOUNT_KEY}
+    stream:
+      eventhubs:
+        bindings:
+          <binding-name>:
+            consumer:
+              batch:
+                max-size: ${AZURE_MAX_BATCH_SIZE}
+                max-wait-time: ${AZURE_MAX_WAIT_TIME}
+              checkpoint:
+                mode: ${AZURE_CHECKPOINT_MODE}
+                count: ${AZURE_CHECKPOINT_COUNT}
+                interval: ${AZURE_CHECKPOINT_INTERVAL}
+              initial-partition-event-position:
+                0:
+                  offset: earliest
+                1:
+                  sequence-number: 100
+                2:
+                  enqueued-date-time: 2022-01-12T13:32:47.650005Z
+                4:
+                  inclusive: false
+----
+
+If you use security principals instead of connection strings, in versions before 4.0 the application will firstly connect to Azure Resource Manager (ARM) with the provided security principal, and then
+retrieve the connection string of the specified namespace with ARM. In the end the application uses the retrieved connection string to connect to Azure Event Hubs. In this way
+the provided security principal should be granted with the link:https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#contributor[Contributor] role to retrieve of the associated Azure Event Hubs namespace.
+
+For Azure Spring Cloud 4.0, we provide two ways of leveraging security principals for authentication. One is still using the principals to connect to ARM and retrieve the connection strings where the `Contributor` role is required for the principals.
+The other leverages security principals to authenticate to Azure Active Directory (Azure AD) and then connect to Azure Event Hubs directly, in this case the `Contributor` role is not necessary anymore
+while other `Data` related roles are required for messaging operations, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+
+For authentication based on ARM, taking service principal as example, configuration migration is listed as below, where the assigned role should not change:
+
+Legacy configuration:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      client-id: ${AZURE_CLIENT_ID}
+      client-secret: ${AZURE_CLIENT_SECRET}
+      tenant-id: ${AZURE_TENANT_ID}
+      resource-group: ${EVENTHUB_RESOURCE_GROUP}
+      eventhub:
+        namespace: ${EVENTHUB_NAMESPACE}
+----
+
+Modern configuration, properties for Azure subscription id and resource group are required:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
+      eventhubs:
+        namespace: ${EVENTHUB_NAMESPACE}
+        resource:
+          resource-group: ${RESOURCE_GROUP}
+----
+
+You can also migrate to authenticate and authorize with Azure AD directly without making a detour to ARM. Make sure to grant the security principal necessary `Data` roles for messaging operations. The configuration examples of the service principal and the managed identity are listed as below:
+
+* With a service principal
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+      eventhubs:
+        namespace: ${EVENTHUB_NAMESPACE}
+----
+
+* With a managed identity
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        managed-identity-enabled: true
+        client-id: ${AZURE_MANAGED_IDENTITY_CLIENT_ID} # Only needed when using a user-assigned managed identity
+      eventhubs:
+        namespace: ${EVENTHUB_NAMESPACE}
+----
+
+[#api-spring-cloud-azure-stream-binder-eventhubs]
+===== API Changes
+
+.Class mapping from azure-spring-cloud-stream-binder-eventhubs to spring-cloud-azure-stream-binder-eventhubs
+[cols="<~,<~", options="header"]
+|===
+|Legacy class |Modern class
+|com.azure.spring.integration.core.api.reactor.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
+|com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
+|com.azure.spring.integration.core.EventHubHeaders |com.azure.spring.messaging.eventhubs.support.EventHubsHeaders
+|===
+
+==== From azure-spring-cloud-stream-binder-servicebus-* to spring-cloud-azure-stream-binder-servicebus
+This guide is intended to assist in the migration to
+link:https://search.maven.org/artifact/com.azure.spring/spring-cloud-azure-stream-binder-servicebus[spring-cloud-azure-stream-binder-servicebus] from
+version 2 of link:https://search.maven.org/artifact/com.azure.spring/azure-spring-cloud-stream-binder-servicebus-queue[azure-spring-cloud-stream-binder-servicebus-queue]
+or link:https://search.maven.org/artifact/com.azure.spring/azure-spring-cloud-stream-binder-servicebus-topic[azure-spring-cloud-stream-binder-servicebus-topic].
+
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 4.0.
+* Please refer to <<migration-guide-naming, naming changes>> to learn more about the strategy changes in the project naming.
+* Please refer to <<migration-guide-bom, bom>> to learn how to using one BOM for all Spring Cloud Azure libraries.
+* Please refer to <<migration-guide-authentication, authentication>> to learn how to handle authentication in Spring Cloud Azure 4.0.
+* Please refer to <<migration-guide-properties-migration, properties migration>> to learn how to leverage `spring-boot-properties-migrator` during migration.
+* Please refer to <<migration-guide-global-configurations, global configurations>> to learn more about the global and common configuration changes.
+
+[#configuration-spring-cloud-azure-stream-binder-servicebus]
+===== SDK Configuration changes
+IMPORTANT: Legacy binder libraries are `azure-spring-cloud-stream-binder-servicebus-queue` and `azure-spring-cloud-stream-binder-servicebus-topic`, and now they're merged into one `spring-cloud-azure-stream-binder-servicebus`
+to support both Service Bus Queue and Topic.
+
+IMPORTANT: The binder type is combined from `servicebus-queue` and `servicebus-topic` as `servicebus`.
+
+.New configuration properties of spring-cloud-azure-stream-binder-servicebus
+[cols="<30,<~", options="header"]
+|===
+|Modern properties |description
+|*spring.cloud.stream.servicebus*.bindings.<binding-name>.producer.entity-type |If you use the sending function, the entity-type property is required, which can be set to topic or queue.
+|===
+
+.Property mapping from azure-spring-cloud-stream-binder-servicebus-* to spring-cloud-azure-stream-binder-servicebus
+[cols="<30,<~", options="header"]
+|===
+|Legacy properties |Modern properties
+|*spring.cloud.azure*.resource-group|*spring.cloud.azure.servicebus*.resource.resource-group
+|*spring.cloud.azure.servicebus*.transport-type |*spring.cloud.azure.servicebus*.client.transport-type
+|*spring.cloud.azure.servicebus*.retry-options.retry-mode |*spring.cloud.azure.servicebus*.retry.mode
+|*spring.cloud.azure.servicebus*.retry-options.max-retries |*spring.cloud.azure.servicebus*.retry.exponential.max-retries or *spring.cloud.azure.servicebus*.retry.fixed.max-retries, should be configured depending on *spring.cloud.azure.servicebus*.retry.mode=*fixed* or *exponential*
+|*spring.cloud.azure.servicebus*.retry-options.delay |*spring.cloud.azure.servicebus*.retry.exponential.base-delay or *spring.cloud.azure.servicebus*.retry.fixed.delay, should be configured depending on *spring.cloud.azure.servicebus*.retry.mode=*fixed* or *exponential*
+|*spring.cloud.azure.servicebus*.retry-options.max-delay |*spring.cloud.azure.servicebus*.retry.exponential.max-delay
+|*spring.cloud.azure.servicebus*.retry-options.try-timeout |*spring.cloud.azure.servicebus*.retry.try-timeout
+|*spring.cloud.stream.servicebus.queue*.bindings.* |*spring.cloud.stream.servicebus*.bindings.*
+|*spring.cloud.stream.servicebus.queue*.bindings.<binding-name>.consumer.*concurrency* |*spring.cloud.stream.servicebus*.bindings.<binding-name>.consumer.max-concurrent-sessions/max-concurrent-calls
+|*spring.cloud.stream.servicebus.queue*.bindings.<binding-name>.consumer.*checkpoint-mode* |*spring.cloud.stream.servicebus*.bindings.<binding-name>.consumer.*auto-complete*
+|*spring.cloud.stream.servicebus.topic*.bindings.* |*spring.cloud.stream.servicebus*.bindings.*
+|*spring.cloud.stream.servicebus.topic*.bindings.<binding-name>.consumer.*concurrency* |*spring.cloud.stream.servicebus*.bindings.<binding-name>.consumer.max-concurrent-sessions/max-concurrent-calls
+|*spring.cloud.stream.servicebus.topic*.bindings.<binding-name>.consumer.*checkpoint-mode* |*spring.cloud.stream.servicebus*.bindings.<binding-name>.consumer.*auto-complete*
+|===
+
+NOTE: The concurrency property will be replaced by the maxConcurrentSessions when sessionsEnabled is `true` and the maxConcurrentCalls when sessionsEnabled is `false`.
+
+NOTE: Enabling auto-complete is equal to `RECORD` checkpoint mode, and oppositely the `MANUAL` mode.
+
+====== Configuration migration examples
+
+Legacy configuration, taking queue as example:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      servicebus:
+        connection-string: ${AZURE_SERVICEBUS_BINDER_CONNECTION_STRING}
+    stream:
+      function:
+        definition: consume;supply
+      bindings:
+        consume-in-0:
+          destination: ${AZURE_SERVICEBUS_QUEUE_NAME}
+        supply-out-0:
+          destination: ${AZURE_SERVICEBUS_QUEUE_NAME}
+      servicebus:
+        queue:
+          bindings:
+            consume-in-0:
+              consumer:
+                checkpoint-mode: MANUAL
+----
+
+Modern configuration:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      servicebus:
+        connection-string: ${AZURE_SERVICEBUS_BINDER_CONNECTION_STRING}
+    stream:
+      function:
+        definition: consume;supply
+      bindings:
+        consume-in-0:
+          destination: ${AZURE_SERVICEBUS_QUEUE_NAME}
+        supply-out-0:
+          destination: ${AZURE_SERVICEBUS_QUEUE_NAME}
+      servicebus:
+        bindings:
+          consume-in-0:
+            consumer:
+              auto-complete: false
+          supply-out-0:
+            producer:
+              entity-type: queue #set as topic if needed
+----
+
+If you use security principals instead of connection strings, in versions before 4.0 the application will firstly connect to Azure Resource Manager (ARM) with the provided security principal, and then
+retrieve the connection string of the specified namespace with ARM. In the end the application uses the retrieved connection string to connect to Azure Service Bus. In this way
+the provided security principal should be granted with the link:https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#contributor[Contributor] role to retrieve of the associated Azure Service Bus namespace.
+
+For Azure Spring Cloud 4.0, we provide two ways of leveraging security principals for authentication. One is still using the principals to connect to ARM and retrieve the connection strings where the `Contributor` role is required for the principals.
+The other leverages security principals to authenticate to Azure Active Directory (Azure AD) and then connect to the Azure Service Bus directly, in this case the `Contributor` role is not necessary anymore
+while other `Data` related roles are required for messaging operations, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+
+For authentication based on ARM, taking service principal as example, configuration migration is listed as below, where the assigned role should not change:
+
+Legacy configuration:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      client-id: ${AZURE_CLIENT_ID}
+      client-secret: ${AZURE_CLIENT_SECRET}
+      tenant-id: ${AZURE_TENANT_ID}
+      resource-group: ${SERVICEBUS_RESOURCE_GROUP}
+      servicebus:
+        namespace: ${SERVICEBUS_NAMESPACE}
+----
+
+Modern configuration, properties for Azure subscription id and resource group are required:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
+      servicebus:
+        namespace: ${SERVICEBUS_NAMESPACE}
+        resource:
+          resource-group: ${SERVICEBUS_RESOURCE_GROUP}
+----
+
+You can also migrate to authenticate and authorize with Azure AD directly without making a detour to ARM. Make sure to grant the security principal necessary `Data` roles for messaging operations. The configuration examples of the service principal and the managed identity are listed as below:
+
+* With a service principal
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+      servicebus:
+        namespace: ${SERVICEBUS_NAMESPACE}
+----
+
+* With a managed identity
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        managed-identity-enabled: true
+        client-id: ${AZURE_MANAGED_IDENTITY_CLIENT_ID} # Only needed when using a user-assigned managed identity
+      servicebus:
+        namespace: ${SERVICEBUS_NAMESPACE}
+----
+
+[#api-spring-cloud-azure-stream-binder-servicebus]
+===== API Changes
+
+* Drop message header `AzureHeaders.RAW_ID`. Please use `ServiceBusMessageHeaders.MESSAGE_ID` instead.
+
+.Class mapping from azure-spring-cloud-stream-binder-servicebus to spring-cloud-azure-stream-binder-servicebus
+[cols="<~,<~", options="header"]
+|===
+|Legacy class |Modern class
+|com.azure.spring.integration.core.AzureHeaders |com.azure.spring.messaging.AzureHeaders
+|com.azure.spring.integration.servicebus.converter.ServiceBusMessageHeaders |com.azure.spring.messaging.servicebus.support.ServiceBusMessageHeaders
+|com.azure.spring.integration.core.api.Checkpointer |com.azure.spring.messaging.checkpoint.Checkpointer
+|===
+
+[#migration-azure-spring-cloud-messaging]
+==== azure-spring-cloud-messaging
+
+Library of `com.azure.spring:azure-spring-cloud-messaging` is not ready for 4.0. The function of listener annotations is under redesign,
+so annotations of `@AzureMessageListener`, `@AzureMessageListeners` and `@EnableAzureMessaging` are not supported now.
