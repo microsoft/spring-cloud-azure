@@ -58,7 +58,6 @@
               <resources>
                 <resource>
                   <directory>src/main/asciidoc</directory>
-                  <filtering>false</filtering>
                 </resource>
               </resources>
             </configuration>
@@ -70,9 +69,6 @@
         <artifactId>asciidoctor-maven-plugin</artifactId>
         <configuration>
           <sourceDirectory>${docs.build.directory}</sourceDirectory>
-          <attributes>
-            <sources-root>${project.basedir}/src/main/asciidoc</sources-root>
-          </attributes>
         </configuration>
         <executions>
           <execution>
