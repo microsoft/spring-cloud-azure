@@ -13,4 +13,8 @@
   <artifactId>spring-cloud-azure-docs-samples</artifactId>
   <name>spring-cloud-azure-docs-samples</name>
 
+  <properties>
+    <docs.output.directory>${project.build.directory}/generated-docs/samples/html</docs.output.directory>
+  </properties>
+
 </project>

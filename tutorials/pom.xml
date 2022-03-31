@@ -13,4 +13,8 @@
   <artifactId>spring-cloud-azure-docs-tutorials</artifactId>
   <name>spring-cloud-azure-docs-tutorials</name>
 
+  <properties>
+    <docs.output.directory>${project.build.directory}/generated-docs/tutorials/html</docs.output.directory>
+  </properties>
+
 </project>

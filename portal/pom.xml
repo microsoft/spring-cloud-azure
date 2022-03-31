@@ -13,4 +13,8 @@
   <artifactId>spring-cloud-azure-docs-portal</artifactId>
   <name>spring-cloud-azure-docs-portal</name>
 
+  <properties>
+    <docs.output.directory>${project.build.directory}/generated-docs/portal/html</docs.output.directory>
+  </properties>
+
 </project>

@@ -13,4 +13,8 @@
   <artifactId>spring-cloud-azure-docs-getting-started</artifactId>
   <version>4.1.0</version>
 
+  <properties>
+    <docs.output.directory>${project.build.directory}/generated-docs/getting-started/html</docs.output.directory>
+  </properties>
+
 </project>

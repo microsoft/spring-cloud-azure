@@ -21,6 +21,7 @@
   <properties>
     <spring-doc-resources.version>0.2.5</spring-doc-resources.version>
     <docs.build.directory>${project.build.directory}/docs/</docs.build.directory>
+    <docs.output.directory>${project.build.directory}/generated-docs/html</docs.output.directory>
   </properties>
 
   <repositories>
@@ -93,6 +94,7 @@
             <configuration>
               <backend>html5</backend>
               <doctype>book</doctype>
+              <outputDirectory>${docs.output.directory}</outputDirectory>
               <attributes>
                 // these attributes are required to use the doc resources
                 <docinfo>shared</docinfo>

@@ -13,6 +13,10 @@
   <artifactId>spring-cloud-azure-docs-reference</artifactId>
   <name>spring-cloud-azure-docs-reference</name>
 
+  <properties>
+    <docs.output.directory>${project.build.directory}/generated-docs/reference/html</docs.output.directory>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
