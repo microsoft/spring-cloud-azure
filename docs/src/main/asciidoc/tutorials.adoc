@@ -1,4 +1,20 @@
 
 = Tutorials
 
-. link:https://spring.io/guides/gs/spring-boot-for-azure/[Deploy to App Service and Azure Spring Cloud]
+== link:https://spring.io/guides/gs/spring-boot-for-azure/[Deploy to App Service and Azure Spring Cloud]
+
+== Deploy to Kubernetes
+
+TODO: finish this content.
+
+== Deploy to Web App for Containers
+
+TODO: finish this content.
+
+== Azure Redis Cache
+
+TODO: finish this content.
+
+== End-to-end App Service with MySQL
+
+TODO: finish this content.

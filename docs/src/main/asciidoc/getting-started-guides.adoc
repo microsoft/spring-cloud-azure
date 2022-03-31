@@ -9,3 +9,18 @@ include::getting-started-guides/spring-boot/configure-spring-boot-starter-java-a
 include::getting-started-guides/spring-boot/configure-spring-boot-starter-java-app-with-azure-key-vault-certificates.adoc[]
 include::getting-started-guides/spring-boot/configure-spring-boot-starter-java-app-with-azure-service-bus.adoc[]
 
+== Spring Data
+
+TODO: finish this content.
+
+== Spring Security
+
+TODO: finish this content.
+
+== Spring Cloud
+
+TODO: finish this content.
+
+== Azure App Configuration
+
+TODO: finish this content.
