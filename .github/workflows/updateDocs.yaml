@@ -6,6 +6,7 @@ on:
     - main
     - docs
     - 4.*
+    - hotfix/*
     # paths:
     # - 'docs/**'
   # release:

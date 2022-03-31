@@ -134,8 +134,9 @@ function add_docs_from_target() {
 
 # Copies the docs by using the retrieved properties from Maven build
 function copy_docs_for_current_version() {
-    if [[ "${CURRENT_BRANCH}" == "main" ]] ; then
-        echo -e "Current branch is main - will copy the current docs only to the root folder"
+#   if [[ "${CURRENT_BRANCH}" == "main" ]] ; then
+#        echo -e "Current branch is main - will copy the current docs only to the root folder"
+        echo -e "Current branch is ${CURRENT_BRANCH} - will copy the current docs only to the root folder"
         for f in docs/target/generated-docs/*; do
             file=${f#docs/target/generated-docs/*}
             if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
@@ -145,34 +146,34 @@ function copy_docs_for_current_version() {
             fi
         done
         COMMIT_CHANGES="yes"
-    else
-        echo -e "Current branch is [${CURRENT_BRANCH}]"
-        # https://stackoverflow.com/questions/29300806/a-bash-script-to-check-if-a-string-is-present-in-a-comma-separated-list-of-strin
-        if [[ ",${WHITELISTED_BRANCHES_VALUE}," = *",${CURRENT_BRANCH},"* ]] ; then
-            mkdir -p ${ROOT_FOLDER}/${CURRENT_BRANCH}
-            echo -e "Branch [${CURRENT_BRANCH}] is whitelisted! Will copy the current docs to the [${CURRENT_BRANCH}] folder"
-            for f in docs/target/generated-docs/*; do
-                file=${f#docs/target/generated-docs/*}
-                if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
-                    # Not ignored...
-                    # We want users to access 1.0.0.RELEASE/ instead of 1.0.0.RELEASE/spring-cloud.sleuth.html
-                    if [[ "${file}" == "${MAIN_ADOC_VALUE}.html" ]] ; then
-                        # We don't want to copy the spring-cloud-sleuth.html
-                        # we want it to be converted to index.html
-                        cp -rf $f ${ROOT_FOLDER}/${CURRENT_BRANCH}/index.html
-                        git add -A ${ROOT_FOLDER}/${CURRENT_BRANCH}/index.html
-                    else
-                        cp -rf $f ${ROOT_FOLDER}/${CURRENT_BRANCH}
-                        git add -A ${ROOT_FOLDER}/${CURRENT_BRANCH}/$file
-                    fi
-                fi
-            done
-            COMMIT_CHANGES="yes"
-        else
-            echo -e "Branch [${CURRENT_BRANCH}] is not on the white list! Check out the Maven [${WHITELIST_PROPERTY}] property in
-             [docs] module available under [docs] profile. Won't commit any changes to gh-pages for this branch."
-        fi
-    fi
+#    else
+#        echo -e "Current branch is [${CURRENT_BRANCH}]"
+#        # https://stackoverflow.com/questions/29300806/a-bash-script-to-check-if-a-string-is-present-in-a-comma-separated-list-of-strin
+#        if [[ ",${WHITELISTED_BRANCHES_VALUE}," = *",${CURRENT_BRANCH},"* ]] ; then
+#            mkdir -p ${ROOT_FOLDER}/${CURRENT_BRANCH}
+#            echo -e "Branch [${CURRENT_BRANCH}] is whitelisted! Will copy the current docs to the [${CURRENT_BRANCH}] folder"
+#            for f in docs/target/generated-docs/*; do
+#                file=${f#docs/target/generated-docs/*}
+#                if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
+#                    # Not ignored...
+#                    # We want users to access 1.0.0.RELEASE/ instead of 1.0.0.RELEASE/spring-cloud.sleuth.html
+#                    if [[ "${file}" == "${MAIN_ADOC_VALUE}.html" ]] ; then
+#                        # We don't want to copy the spring-cloud-sleuth.html
+#                        # we want it to be converted to index.html
+#                        cp -rf $f ${ROOT_FOLDER}/${CURRENT_BRANCH}/index.html
+#                        git add -A ${ROOT_FOLDER}/${CURRENT_BRANCH}/index.html
+#                    else
+#                        cp -rf $f ${ROOT_FOLDER}/${CURRENT_BRANCH}
+#                        git add -A ${ROOT_FOLDER}/${CURRENT_BRANCH}/$file
+#                    fi
+#                fi
+#            done
+#            COMMIT_CHANGES="yes"
+#        else
+#            echo -e "Branch [${CURRENT_BRANCH}] is not on the white list! Check out the Maven [${WHITELIST_PROPERTY}] property in
+#             [docs] module available under [docs] profile. Won't commit any changes to gh-pages for this branch."
+#        fi
+#    fi
 }
 
 # Copies the docs by using the explicitly provided version
