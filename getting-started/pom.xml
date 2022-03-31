@@ -6,12 +6,12 @@
   <parent>
     <groupId>com.azure.spring</groupId>
     <artifactId>spring-cloud-azure-docs</artifactId>
-    <version>4.1.0</version>
+    <version>4.1.0-beta.1</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>spring-cloud-azure-docs-getting-started</artifactId>
-  <version>4.1.0</version>
+  <version>4.1.0-beta.1</version>
 
   <properties>
     <docs.output.directory>${project.build.directory}/generated-docs/${project.version}/getting-started/html</docs.output.directory>

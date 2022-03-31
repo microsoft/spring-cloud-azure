@@ -7,7 +7,7 @@
 
   <groupId>com.azure.spring</groupId>
   <artifactId>spring-cloud-azure-docs</artifactId>
-  <version>4.1.0</version>
+  <version>4.1.0-beta.1</version>
   <packaging>pom</packaging>
 
   <modules>
