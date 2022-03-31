@@ -34,7 +34,7 @@ image::https://user-images.githubusercontent.com/13167207/143148654-f3a37180-85e
 - Azure CLI - If the developer has authenticated an account via the Azure CLI az login command, the `DefaultAzureCredential` will authenticate with that account.
 
 
-TIP: Please refer to link:reference-doc#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+TIP: Please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
 
 === Managed Identities
@@ -51,7 +51,7 @@ There are two types of managed identities:
 
 NOTE: When using a user-assigned managed identity, you can specify the client ID by `spring.cloud.azure.credential.client-id` or `spring.cloud.azure.<azure-service>.credential.client-id`.
 
-TIP: Please refer to link:reference-doc#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+TIP: Please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
 TIP: Please refer to link:{managed-identity}[What are managed identities for Azure resources?] for more details about managed identity.
 
