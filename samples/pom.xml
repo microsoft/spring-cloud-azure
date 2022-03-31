@@ -5,7 +5,7 @@
 
   <parent>
     <groupId>com.azure.spring</groupId>
-    <artifactId>spring-cloud-azure-aggregator</artifactId>
+    <artifactId>spring-cloud-azure-docs</artifactId>
     <version>4.1.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>

@@ -3,99 +3,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.azure.spring</groupId>
+  <parent>
+    <groupId>com.azure.spring</groupId>
+    <artifactId>spring-cloud-azure-docs</artifactId>
+    <version>4.1.0</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
   <artifactId>spring-cloud-azure-docs-getting-started</artifactId>
   <version>4.1.0</version>
 
-  <properties>
-    <spring-doc-resources.version>0.2.5</spring-doc-resources.version>
-    <docs.build.directory>${project.build.directory}/docs/</docs.build.directory>
-  </properties>
-
-  <repositories>
-    <repository>
-      <id>spring-releases</id>
-      <name>Spring Releases</name>
-      <url>https://repo.spring.io/release</url>
-      <snapshots>
-      </snapshots>
-    </repository>
-  </repositories>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
-        <version>1.6.8</version>
-        <executions>
-          <execution>
-            <id>unpack-doc-resources</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>wget</goal>
-            </goals>
-            <configuration>
-              <url>https://repo.spring.io/release/io/spring/docresources/spring-doc-resources/${spring-doc-resources.version}/spring-doc-resources-${spring-doc-resources.version}.zip</url>
-              <unpack>true</unpack>
-              <outputDirectory>${docs.build.directory}</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-asciidoc-resources</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${docs.build.directory}</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/main/asciidoc</directory>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.asciidoctor</groupId>
-        <artifactId>asciidoctor-maven-plugin</artifactId>
-        <configuration>
-          <sourceDirectory>${docs.build.directory}</sourceDirectory>
-        </configuration>
-        <executions>
-          <execution>
-            <id>generate-html-documentation</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>process-asciidoc</goal>
-            </goals>
-            <configuration>
-              <backend>html5</backend>
-              <doctype>book</doctype>
-              <attributes>
-                // these attributes are required to use the doc resources
-                <docinfo>shared</docinfo>
-                <stylesdir>css/</stylesdir>
-                <stylesheet>spring.css</stylesheet>
-                <linkcss>true</linkcss>
-                <icons>font</icons>
-                <highlightjsdir>js/highlight</highlightjsdir>
-                <highlightjs-theme>github</highlightjs-theme>
-                <source-highlighter>highlight.js</source-highlighter>
-              </attributes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 </project>
 
