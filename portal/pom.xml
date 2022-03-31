@@ -20,9 +20,9 @@
     <main.basedir>${basedir}/..</main.basedir>
     <docs.whitelisted.branches>${project.version}</docs.whitelisted.branches>
     <upload-docs-zip.phase>none</upload-docs-zip.phase>
-    <generated-docs-multipage-output.dir>${project.build.directory}/generated-docs/${project.version}/reference/html</generated-docs-multipage-output.dir>
-    <generated-docs-singlepage-output.dir>${project.build.directory}/generated-docs/${project.version}/reference/htmlsingle</generated-docs-singlepage-output.dir>
-    <generated-docs-pdf-output.dir>${project.build.directory}/generated-docs/${project.version}/reference/pdf</generated-docs-pdf-output.dir>
+    <generated-docs-multipage-output.dir>${project.build.directory}/generated-docs/${project.version}/portal/html</generated-docs-multipage-output.dir>
+    <generated-docs-singlepage-output.dir>${project.build.directory}/generated-docs/${project.version}/portal/htmlsingle</generated-docs-singlepage-output.dir>
+    <generated-docs-pdf-output.dir>${project.build.directory}/generated-docs/${project.version}/portal/pdf</generated-docs-pdf-output.dir>
   </properties>
   <repositories>
     <repository>
