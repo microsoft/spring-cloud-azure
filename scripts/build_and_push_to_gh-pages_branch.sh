@@ -57,7 +57,7 @@ function switch_to_tag() {
 # Build the docs if switch is on
 function build_docs_if_applicable() {
     if [[ "${BUILD}" == "yes" ]] ; then
-        ./mvnw clean install -P docs -pl docs -DskipTests
+        ./mvnw clean install -DskipTests
     fi
 }
 
