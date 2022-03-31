@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.17">
+<title>Azure Key Vault Secrets</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script type="text/javascript"> (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "b9g1q6wz23"); </script>
+
+</head>
+<body class="book">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect2">
+<h3 id="_azure_key_vault_secrets">Azure Key Vault Secrets</h3>
+<div class="paragraph">
+<p>This tutorial shows you how to create a Spring Boot app that reads a value from Azure Key Vault. After creating the app, you&#8217;ll deploy it to Azure App Service and Azure Spring Cloud.</p>
+</div>
+<div class="paragraph">
+<p>Spring Boot applications externalize sensitive information such as usernames and passwords. Externalizing sensitive information enables better maintainability, testability, and security. Storing secrets outside of the code is better than hard coding the information, or inlining it at build time.</p>
+</div>
+<div class="paragraph">
+<p>In this tutorial, you learn how to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Create an Azure Key Vault and store a secret</p>
+</li>
+<li>
+<p>Create an app with Spring Initializr</p>
+</li>
+<li>
+<p>Add Key Vault integration to the app</p>
+</li>
+<li>
+<p>Deploy to Azure App Service</p>
+</li>
+<li>
+<p>Redeploy to Azure App Service with managed identities for Azure resources</p>
+</li>
+<li>
+<p>Deploy to Azure Spring Cloud</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_prerequisites">Prerequisites</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>If you don&#8217;t have an <a href="https://docs.microsoft.com/azure/guides/developer/azure-developer-guide#understanding-accounts-subscriptions-and-billing">Azure subscription</a>, create a <a href="https://azure.microsoft.com/free/?ref=microsoft.com&amp;utm_source=microsoft.com&amp;utm_medium=docs&amp;utm_campaign=visualstudio">free account</a> before you begin.</p>
+</li>
+<li>
+<p>The curl command. Most UNIX-like operating systems have this command pre-installed. OS-specific clients are available at <a href="https://curl.se/">the official curl website</a>.</p>
+</li>
+<li>
+<p>The jq command. Most UNIX-like operating systems have this command pre-installed. OS-specific clients are available at <a href="https://stedolan.github.io/jq/">the official jq website</a>.</p>
+</li>
+<li>
+<p><a href="https://docs.microsoft.com/en-us/cli/azure/install-azure-cli">Azure CLI</a>, version 2.14.1 or later</p>
+</li>
+<li>
+<p>A supported Java Development Kit (JDK). For more information, see Java support on <a href="https://docs.microsoft.com/en-us/cli/azure/install-azure-cli">Azure and Azure Stack</a>.</p>
+</li>
+<li>
+<p><a href="https://maven.apache.org/">Apache Maven</a>, version 3.0 or later.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Spring Boot version 2.5 or 2.6 is required to complete the steps in this article.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_create_a_new_azure_key_vault">Create a new Azure Key Vault</h4>
+<div class="paragraph">
+<p>The following sections show you how to sign in to Azure and create an Azure Key Vault.</p>
+</div>
+<div class="sect4">
+<h5 id="_sign_in_to_azure_and_set_your_subscription">Sign in to Azure and set your subscription</h5>
+<div class="paragraph">
+<p>First, use the following steps to authenticate using the Azure CLI.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Optionally, sign out and delete some authentication files to remove any lingering credentials:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">az logout
+rm ~/.azure/accessTokens.json
+rm ~/.azure/azureProfile.json</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Sign in by using the Azure CLI:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">   az login</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Follow the instructions to complete the sign-in process.</p>
+</div>
+</li>
+<li>
+<p>List your subscriptions:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">   az account list</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Azure will return a list of your subscriptions. Copy the <code>id</code> value for the subscription that you want to use; for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">[
+  {
+    "cloudName": "AzureCloud",
+    "id": "ssssssss-ssss-ssss-ssss-ssssssssssss",
+    "name": "Converted Windows Azure MSDN - Visual Studio Ultimate",
+    "state": "Enabled",
+    "tenantId": "tttttttt-tttt-tttt-tttt-tttttttttttt",
+    "user": {
+      "name": "contoso@microsoft.com",
+      "type": "user"
+    }
+  }
+]</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Specify the GUID for the subscription you want to use with Azure; for example:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">az account set -s ssssssss-ssss-ssss-ssss-ssssssssssss</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_create_a_service_principal">Create a service principal</h5>
+<div class="paragraph">
+<p>Azure AD <strong>service principals</strong> provide access to Azure resources within your subscription. You can think of a service principal as a user identity for a service. "Service" is any application, service, or platform that needs to access Azure resources. You can configure a service principal with access rights scoped only to those resources you specify. Then, configure your application or service to use the service principal&#8217;s credentials to access those resources.</p>
+</div>
+<div class="paragraph">
+<p>To create a service principal, use the following command.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">az ad sp create-for-rbac –name contososp –role Contributor</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The value of the <code>--name</code> option must be unique within the Azure subscription. If you see an error log similar to <code>Found an existing instance of "&#8230;&#8203;", We will patch it. Insufficient privileges to complete operation</code>, that means the <code>name</code> value already exist in your subscription. Try another name.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Save aside the values returned from the command for use later in the tutorial. The return JSON will look similar to the following output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+ "appId": "sample-app-id",
+ "displayName": "contososp",
+ "name": "http://contososp",
+ "password": "sample-password",
+ "tenant": "sample-tenant"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_create_the_key_vault_instance">Create the Key Vault instance</h5>
+<div class="paragraph">
+<p>To create and initialize the Azure Key Vault, use the following steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Determine which Azure region will hold your resources.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>To see the list of regions and their locations, see [Azure geographies](<a href="https://azure.microsoft.com/regions/" class="bare">https://azure.microsoft.com/regions/</a>).</p>
+</li>
+<li>
+<p>Use the <code>az account list-locations</code> command to find the correct <code>Name</code> for your chosen region.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">az account list-locations --output table</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This tutorial uses <code>eastus</code>.</p>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Create a resource group to hold the Key Vault and the App Service app. The value must be unique within the Azure subscription. This tutorial uses <code>contosorg</code>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">az group create --name contosorg --location eastus</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create a new Key Vault in the resource group.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">az keyvault create \
+    --resource-group contosorg \
+    --name contosokv \
+    --enabled-for-deployment true \
+    --enabled-for-disk-encryption true \
+    --enabled-for-template-deployment true \
+    --location eastus \
+    --query properties.vaultUri \
+    --sku standard</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The value of the <code>--name</code> option must be unique within the Azure subscription. If you see an error log similar to <code>Found an existing instance of "&#8230;&#8203;", We will patch it. Insufficient privileges to complete operation</code>, that means the <code>name</code> value already exist in your subscription. Try another name.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can refer to <a href="https://docs.microsoft.com/en-us/cli/azure/keyvault?view=azure-cli-latest#az-keyvault-create">az keyvault create command</a> to get more information about each parameter.
+The Azure CLI will display the URI for Key Vault, which you&#8217;ll use later; for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">"https://contosokv.vault.azure.net/"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configure the Key Vault to allow <code>get</code> and <code>list</code> operations from that managed identity. The value of the <code>object-id</code> is the <code>appId</code> from the <code>az ad sp create-for-rbac</code> command above.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">az keyvault set-policy --name contosokv --spn http://contososp --secret-permissions get list</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The output will be a JSON object full of information about the Key Vault. It will have a <code>type</code> entry with value <code>Microsoft.KeyVault/vaults</code>.
+You can refer to <a href="https://docs.microsoft.com/cli/azure/keyvault?view=azure-cli-latest#az-keyvault-set-policy">az keyvault set-policy</a> to get more information about each parameter.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+While the principle of the least privilege recommends granting the smallest possible set of privileges to a resource, the design of the Key Vault integration requires at least <code>get</code> and <code>list</code>.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Store a secret in your new Key Vault. A common use case is to store a JDBC connection string. For example:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">   az keyvault secret set --name "connectionString" \
+       --vault-name "contosokv" \
+       --value "jdbc:sqlserver://SERVER.database.windows.net:1433;database=DATABASE;"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can refer to <a href="https://docs.microsoft.com/en-us/cli/azure/keyvault/secret?view=azure-cli-latest#az-keyvault-secret-set">az keyvault secret set command</a> to get more information about each parameter.
+The Azure CLI will display the results of your secret creation; for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "attributes": {
+    "created": "2020-08-24T21:48:09+00:00",
+    "enabled": true,
+    "expires": null,
+    "notBefore": null,
+    "recoveryLevel": "Purgeable",
+    "updated": "2020-08-24T21:48:09+00:00"
+  },
+  "contentType": null,
+  "id": "https://contosokv.vault.azure.net/secrets/connectionString/sample-id",
+  "kid": null,
+  "managed": null,
+  "tags": {
+    "file-encoding": "utf-8"
+  },
+  "value": "jdbc:sqlserver://.database.windows.net:1433;database=DATABASE;"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now that you&#8217;ve created a Key Vault and stored a secret, the next section will show you how to create an app with Spring Initializr.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_create_the_app_with_spring_initializr">Create the app with Spring Initializr</h4>
+<div class="paragraph">
+<p>This section shows how to use Spring Initializr to create and run a Spring Boot web application with key vault secrets included.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Browse to <a href="https://start.spring.io/" class="bare">https://start.spring.io/</a>.</p>
+</li>
+<li>
+<p>Select the choices as shown in the picture following this list.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Project</strong>: <strong>Maven Project</strong></p>
+</li>
+<li>
+<p><strong>Language</strong>: <strong>Java</strong></p>
+</li>
+<li>
+<p><strong>Spring Boot</strong>: <strong>2.5.10</strong></p>
+</li>
+<li>
+<p><strong>Group</strong>: <strong>com.contoso</strong> (You can put any valid Java package name here.)</p>
+</li>
+<li>
+<p><strong>Artifact</strong>: <strong>keyvault</strong> (You can put any valid Java class name here.)</p>
+</li>
+<li>
+<p><strong>Packaging</strong>: <strong>Jar</strong></p>
+</li>
+<li>
+<p><strong>Java</strong>: <strong>11</strong> (You can choose 8, but this tutorial was validated with 11.)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Select <strong>Add Dependencies&#8230;&#8203;</strong>.</p>
+</li>
+<li>
+<p>In the text field, type <strong>Spring Web</strong> and press Ctrl+Enter.</p>
+</li>
+<li>
+<p>In the text field type <strong>Azure Key Vault</strong> and press Enter. Your screen should look like the following.
+<span class="image"><img src="https://user-images.githubusercontent.com/13167207/160542739-62ae6857-0229-4b4b-8a98-38df37747a6d.png" alt="Basic Spring Initializr options"></span></p>
+</li>
+<li>
+<p>At the bottom of the page, select <strong>Generate</strong>.</p>
+</li>
+<li>
+<p>When prompted, download the project to a path on your local computer. This tutorial uses a <strong>keyvault</strong> directory in the current user&#8217;s home directory. The values above will give you a <strong>keyvault.zip</strong> file in that directory.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Use the following steps to examine the application and run it locally.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Unzip the <strong>keyvault.zip</strong> file. The file layout will look like the following. This tutorial ignores the <strong>test</strong> directory and its contents.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-txt hljs" data-lang="txt">├── HELP.md
+├── mvnw
+├── mvnw.cmd
+├── pom.xml
+└── src
+   ├── main
+   │   ├── java
+   │   │   └── com
+   │   │       └── contoso
+   │   │           └── keyvault
+   │   │               └── KeyvaultApplication.java
+   │   └── resources
+   │       ├── application.properties
+   │       ├── static
+   │       └── templates</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Open the <strong>KeyvaultApplication.java</strong> file in a text editor. Edit the file so that it has the following contents.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@SpringBootApplication
+@RestController
+public class KeyvaultApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(KeyvaultApplication.class, args);
+    }
+
+    @GetMapping("get")
+    public String get() {
+        return connectionString;
+    }
+
+    private String connectionString = "defaultValue\n";
+
+    public void run(String... varl) throws Exception {
+        System.out.println(String.format("Connection String stored in Azure Key Vault:%s",connectionString));
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following list highlights some details about this code:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The class is annotated with <code>@RestController</code>. <code>@RestController</code> tells Spring Boot that the class can respond to RESTful HTTP requests.</p>
+</li>
+<li>
+<p>The class has a method annotated with <code>@GetMapping(get)</code>. <code>@GetMapping</code> tells Spring Boot to send HTTP requests with the path <code>/get</code> to that method, allowing the response from that method to be returned to the HTTP client.</p>
+</li>
+<li>
+<p>The class has a private instance variable <code>connectionString</code>. The value of this instance variable is returned from the <code>get()</code> method.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Open a Bash window and navigate to the top-level <strong>keyvault</strong> directory, where the <strong>pom.xml</strong> file is located.</p>
+</li>
+<li>
+<p>Enter the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mvn spring-boot:run</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The command outputs <code>Completed initialization</code>, which indicates that the server is ready.</p>
+</div>
+</li>
+<li>
+<p>In a separate Bash window, enter the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl http://localhost:8080/get</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The output will show <code>defaultValue</code>.</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Kill the process that&#8217;s running from <code>mvn spring-boot:run</code>. You can type Ctrl-C, or you can use the <code>jps</code> command to get the pid of the <code>Launcher</code> process and kill it.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_create_the_app_without_spring_initializr">Create the app without Spring Initializr</h4>
+<div class="paragraph">
+<p>This section shows how to include Azure Key Vault secrets to your existing Spring Boot project without using Spring Initializr.</p>
+</div>
+<div class="paragraph">
+<p>To manually add the same the configuration that Spring Initializr generates, add the following configuration to your <strong>pom.xml</strong> file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;project&gt;
+    &lt;properties&gt;
+         &lt;version.spring.cloud.azure&gt;4.0.0&lt;/version.spring.cloud.azure&gt;
+    &lt;/properties&gt;
+    &lt;dependencies&gt;
+         &lt;dependency&gt;
+             &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+             &lt;artifactId&gt;spring-cloud-azure-starter-keyvault-secrets&lt;/artifactId&gt;
+         &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+    &lt;dependencyManagement&gt;
+         &lt;dependencies&gt;
+             &lt;dependency&gt;
+                 &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+                 &lt;artifactId&gt;spring-cloud-azure-dependencies&lt;/artifactId&gt;
+                 &lt;version&gt;${version.spring.cloud.azure}&lt;/version&gt;
+                 &lt;type&gt;pom&lt;/type&gt;
+                 &lt;scope&gt;import&lt;/scope&gt;
+             &lt;/dependency&gt;
+         &lt;/dependencies&gt;
+    &lt;/dependencyManagement&gt;
+&lt;/project&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_add_key_vault_configuration_to_the_app">Add Key Vault configuration to the app</h4>
+<div class="paragraph">
+<p>This section shows you how to add Key Vault configuration to your locally running application by modifying the Spring Boot application <code>KeyvaultApplication</code>.</p>
+</div>
+<div class="paragraph">
+<p>Just as Key Vault allows externalizing secrets from application code, Spring configuration allows externalizing configuration from code. The simplest form of Spring configuration is the <strong>application.properties</strong> file. In a Maven project, this file is located at <strong>src/main/resources/application.properties</strong>. Spring Initializr helpfully includes a zero length file at this location. Use the following steps to add the necessary configuration to this file.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Edit the <strong>src/main/resources/application.properties</strong> file so that it has the following contents, adjusting the values for your Azure subscription.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">spring.cloud.azure.keyvault.secret.property-source-enabled=true
+spring.cloud.azure.keyvault.secret.property-sources[0].credential.client-id=&lt;your client ID&gt;
+spring.cloud.azure.keyvault.secret.property-sources[0].credential.client-secret=&lt;your client key&gt;
+spring.cloud.azure.keyvault.secret.property-sources[0].endpoint=https://contosokv.vault.azure.net/
+spring.cloud.azure.keyvault.secret.property-sources[0].profile.tenant-id=&lt;your tenant ID&gt;</code></pre>
+</div>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>spring.cloud.azure.keyvault.secret.property-source-enabled. Whether enable the property source feature of spring-cloud-azure-starter-keyvault-secrets. Default value is false.</p>
+</li>
+<li>
+<p>spring.cloud.azure.keyvault.secret.property-sources[0].credential.client-id. The <code>appId</code> from the return JSON from <code>az ad sp create-for-rbac</code>.</p>
+</li>
+<li>
+<p>spring.cloud.azure.keyvault.secret.property-sources[0].credential.client-secret. The <code>password</code> from the return JSON from <code>az ad sp create-for-rbac</code>.</p>
+</li>
+<li>
+<p>spring.cloud.azure.keyvault.secret.property-sources[0].endpoint. The value output from the <code>az keyvault create</code> command above.</p>
+</li>
+<li>
+<p>spring.cloud.azure.keyvault.secret.property-sources[0].profile.tenant-id. The <code>tenant</code> from the return JSON from <code>az ad sp create-for-rbac</code>.|.
+For the complete list of properties, see [Spring Cloud Azure Reference doc appendix](<a href="https://microsoft.github.io/spring-cloud-azure/current/reference/html/appendix.html#_configuration_properties" class="bare">https://microsoft.github.io/spring-cloud-azure/current/reference/html/appendix.html#_configuration_properties</a>).</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Save the file and close it.</p>
+</li>
+<li>
+<p>Open <strong>src/main/java/com/contoso/keyvault/KeyvaultApplication.java</strong> in an editor.</p>
+</li>
+<li>
+<p>Add the following <code>import</code> statement.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import org.springframework.beans.factory.annotation.Value;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Add the following annotation to the <code>connectionString</code> instance variable.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">   @Value("${connectionString}")
+   private String connectionString;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Open a Bash window and navigate to the top-level <strong>keyvault</strong> directory, where the <strong>pom.xml</strong> file is located.</p>
+</li>
+<li>
+<p>Enter the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mvn clean package spring-boot:run</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The command outputs <code>initialization completed</code>, which indicates that the server is ready.</p>
+</div>
+</li>
+<li>
+<p>In a separate Bash window, enter the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl http://localhost:8080/get</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The output will show <code>jdbc:sqlserver://SERVER.database.windows.net:1433;database=DATABASE</code> instead of <code>defaultValue</code>.</p>
+</div>
+</li>
+<li>
+<p>Kill the process that&#8217;s running from <code>mvn spring-boot:run</code>. You can type Ctrl-C, or you can use the <code>jps</code> command to get the pid of the <code>Launcher</code> process and kill it.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_deploy_to_azure_app_service">Deploy to Azure App Service</h4>
+<div class="paragraph">
+<p>The following steps show you how to deploy the <code>KeyvaultApplication</code> to Azure App Service.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In the top-level <strong>keyvault</strong> directory, open the <strong>pom.xml</strong> file.</p>
+</li>
+<li>
+<p>In the <code>&lt;build&gt;&lt;plugins&gt;</code> section, add the <code>azure-webapp-maven-plugin</code> by inserting the following XML.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;plugin&gt;
+    &lt;groupId&gt;com.microsoft.azure&lt;/groupId&gt;
+    &lt;artifactId&gt;azure-webapp-maven-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.2.2&lt;/version&gt;
+&lt;/plugin&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Don&#8217;t worry about the formatting. The <code>azure-webapp-maven-plugin</code> will reformat the entire POM during this process.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Save and close the <strong>pom.xml</strong> file</p>
+</li>
+<li>
+<p>At a command line, use the following command to invoke the <code>config</code> goal of the newly added plugin.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mvn azure-webapp:config</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Maven plugin will ask you some questions and edit the <strong>pom.xml</strong> file based on the answers. Use the following values:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For <strong>Subscription</strong>, ensure you&#8217;ve selected the same subscription ID with the Key Vault you created.</p>
+</li>
+<li>
+<p>For <strong>Web App</strong>, you can either select an existing Web App or select <code>&lt;create&gt;</code> to create a new one. If you select an existing Web App, it will jump directly to the last <strong>confirm</strong> step.</p>
+</li>
+<li>
+<p>For <strong>OS</strong>, ensure <strong>linux</strong> is selected.</p>
+</li>
+<li>
+<p>For <strong>javaVersion</strong>, ensure you select the Java version you chose in Spring Initializr. This tutorial uses version 11.</p>
+</li>
+<li>
+<p>Accept the defaults for the remaining questions.</p>
+</li>
+<li>
+<p>When asked to confirm, answer Y to continue or N to start answering the questions again. When the plugin completes running, you&#8217;re ready to edit the POM.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Next, open the modified <strong>pom.xml</strong> in an editor. The contents of the file should be similar to the following XML. Replace the following placeholders with the specified values if you didn&#8217;t already provide the value in the previous step.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>YOUR_SUBSCRIPTION_ID</code>: This placeholder shows the location of the ID provided previously.</p>
+</li>
+<li>
+<p><code>YOUR_RESOURCE_GROUP_NAME</code>: Replace this placeholder with the value that you specified when you created the Key Vault.</p>
+</li>
+<li>
+<p><code>YOUR_APP_NAME</code>: Replace this placeholder with a sensible value that&#8217;s unique within your subscription.</p>
+</li>
+<li>
+<p><code>YOUR_REGION</code>: Replace this placeholder with the value that you specified when you created the Key Vault.</p>
+</li>
+<li>
+<p><code>APP_SETTINGS</code>: Copy the indicated <code>&lt;appSettings&gt;</code> element from the example and paste it into that location in your <strong>pom.xml</strong> file. This setting causes the server to listen on TCP port 80.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;plugins&gt;
+  &lt;plugin&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+  &lt;/plugin&gt;
+  &lt;plugin&gt;
+    &lt;groupId&gt;com.microsoft.azure&lt;/groupId&gt;
+    &lt;artifactId&gt;azure-webapp-maven-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.2.2&lt;/version&gt;
+    &lt;configuration&gt;
+      &lt;schemaVersion&gt;V2&lt;/schemaVersion&gt;
+      &lt;subscriptionId&gt;YOUR_SUBSCRIPTION_ID&lt;/subscriptionId&gt;
+      &lt;resourceGroup&gt;YOUR_RESOURCE_GROUP_NAME&lt;/resourceGroup&gt;
+      &lt;appName&gt;YOUR_APP_NAME&lt;/appName&gt;
+      &lt;pricingTier&gt;P1v2&lt;/pricingTier&gt;
+      &lt;region&gt;YOUR_REGION&lt;/region&gt;
+      &lt;runtime&gt;
+        &lt;os&gt;linux&lt;/os&gt;
+        &lt;javaVersion&gt;java 11&lt;/javaVersion&gt;
+        &lt;webContainer&gt;Java SE&lt;/webContainer&gt;
+      &lt;/runtime&gt;
+      &lt;!-- start of APP_SETTINGS --&gt;
+      &lt;appSettings&gt;
+        &lt;property&gt;
+          &lt;name&gt;JAVA_OPTS&lt;/name&gt;
+          &lt;value&gt;-Dserver.port=80&lt;/value&gt;
+        &lt;/property&gt;
+      &lt;/appSettings&gt;
+      &lt;!-- end of APP_SETTINGS --&gt;
+      &lt;deployment&gt;
+        &lt;resources&gt;
+          &lt;resource&gt;
+            &lt;directory&gt;${project.basedir}/target&lt;/directory&gt;
+            &lt;includes&gt;
+              &lt;include&gt;*.jar&lt;/include&gt;
+            &lt;/includes&gt;
+          &lt;/resource&gt;
+        &lt;/resources&gt;
+      &lt;/deployment&gt;
+    &lt;/configuration&gt;
+  &lt;/plugin&gt;
+&lt;/plugins&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Save and close the POM.</p>
+</li>
+<li>
+<p>Use the following command to deploy the app to Azure App Service.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mvn -DskipTests clean package azure-webapp:deploy</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command may take several minutes, depending on many factors beyond your control. When you see output similar to the following example, you know your app has been successfully deployed.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-tExt hljs" data-lang="tExt">[INFO] Deploying the zip package contosokeyvault-22b7c1a3-b41b-4082-a9f0-9339723fa36a11893059035499017844.zip...
+[INFO] Successfully deployed the artifact to https://contosokeyvault.azurewebsites.net
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:45 min
+[INFO] Finished at: 2020-08-16T22:47:48-04:00
+[INFO] ------------------------------------------------------------------------</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Wait three to five minutes to allow the deployment to complete. Then you may access the deployment with a <code>curl</code> command similar to the one shown previously, but this time using the hostname shown in your <code>BUILD SUCCESS</code> output. The following example uses <code>contosokeyvault</code> as shown in the output above.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl https://contosokeyvault.azurewebsites.net/get</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following output indicates success.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-txt hljs" data-lang="txt">jdbc:sqlserver://SERVER.database.windows.net:1433;database=DATABASE;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You&#8217;ve now deployed your app to Azure App Service.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_redeploy_to_azure_app_service_and_use_managed_identities_for_azure_resources">Redeploy to Azure App Service and use managed identities for Azure resources</h4>
+<div class="paragraph">
+<p>This section describes how to associate an identity with the Azure resource for the app. This association is required so that Azure can apply security and track access.</p>
+</div>
+<div class="paragraph">
+<p>One of the foundational principles of cloud computing is to pay for only the resources you use. Such fine-grained resource tracking is only possible if every resource is associated with an identity. Azure App Service and Azure Key Vault are two of the many Azure services that take advantage of managed identities for Azure resources. For more information about this important technology, see [What are managed identities for Azure resources?](/azure/active-directory/managed-identities-azure-resources/overview)</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+"Managed identities for Azure resources" is the new name for the service formerly known as Managed Service Identity (MSI).
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Use the following steps to create the managed identity for the Azure App Service app and then allow that identity to access the Key Vault.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a managed identity for the App Service app. Replace the <code>&lt;your resource group name&gt;</code> and <code>&lt;your app name&gt;</code> placeholders with the values of the <code>&lt;resourceGroup&gt;</code> and <code>&lt;appName&gt;</code> elements from your <strong>pom.xml</strong> file.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">az webapp identity assign --resource-group &lt;your resource group name&gt; --name &lt;your app name&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The output will be similar to the following example. Note down the value of <code>principalId</code> for the next step.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "principalId": "&lt;your principal ID&gt;",
+  "tenantId": "&lt;your tenant ID&gt;",
+  "type": "SystemAssigned",
+  "userAssignedIdentities": null
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Edit the <strong>application.properties</strong> so that it names the managed identity for Azure resources created in the preceding step.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Remove the <code>spring.cloud.azure.keyvault.secret.property-sources[0].credential.client-secret</code>.</p>
+</li>
+<li>
+<p>Update the <code>spring.cloud.azure.keyvault.secret.property-sources[0].credential.client-id</code> to have the value of the <code>principalId</code> from the preceding step. The completed file should now look like the following example.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">spring.cloud.azure.keyvault.secret.property-source-enabled=true
+spring.cloud.azure.keyvault.secret.property-sources[0].credential.client-id=&lt;your principal ID&gt;
+spring.cloud.azure.keyvault.secret.property-sources[0].credential.managed-identity-enabled=true
+spring.cloud.azure.keyvault.secret.property-sources[0].profile.tenant-id=&lt;your tenant ID&gt;
+spring.cloud.azure.keyvault.secret.property-sources[0].endpoint=https://contosokv.vault.azure.net/</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configure the Key Vault to allow <code>get</code> and <code>list</code> operations from the managed identity. The value of the <code>object-id</code> is the <code>principalId</code> from the preceding output.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">az keyvault set-policy \
+    --name &lt;your Key Vault name&gt; \
+    --object-id &lt;your principal ID&gt; \
+    --secret-permissions get list</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The output will be a JSON object full of information about the Key Vault. It will have a <code>type</code> entry with value <code>Microsoft.KeyVault/vaults</code>. Here is the explanation of each property:</p>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>name: The name of the Key Vault.</p>
+</li>
+<li>
+<p>object-id: The <code>principalId</code> from the preceding command.</p>
+</li>
+<li>
+<p>secret-permissions: The list of operations to allow from the named principal.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Package and redeploy the application.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mvn -DskipTests clean package azure-webapp:deploy</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>For good measure, wait a few more minutes to allow the deployment to settle down. Then you may contact the deployment with a <code>curl</code> command similar to the one shown previously, but this time using the hostname shown in your <code>BUILD SUCCESS</code> output. The following example uses <code>contosokeyvault</code> as shown in the <code>BUILD SUCCESS</code> output from the previous section.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl https://contosokeyvault.azurewebsites.net/get</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following output indicates success.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">jdbc:sqlserver://SERVER.database.windows.net:1433;database=DATABASE;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Instead of returning <code>defaultValue</code>, the app gets <code>connectionString</code> from the Key Vault.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_deploy_to_azure_spring_cloud">Deploy to Azure Spring Cloud</h4>
+<div class="paragraph">
+<p>In this section, you&#8217;ll deploy the app to Azure Spring Cloud.</p>
+</div>
+<div class="paragraph">
+<p>Azure Spring Cloud is a fully managed platform for deploying and running your Spring Boot applications in Azure. For an overview of Azure Spring Cloud, see [What is Azure Spring Cloud?](/azure/spring-cloud/overview).</p>
+</div>
+<div class="paragraph">
+<p>This section will use the Spring Boot app and Key Vault that you created previously with a new instance of Azure Spring Cloud.</p>
+</div>
+<div class="paragraph">
+<p>The following steps will show how to create an Azure Spring Cloud resource and deploy the app to it. Make sure you&#8217;ve installed the Azure CLI extension for Azure Spring Cloud as shown in the [Prerequisites](#prerequisites).</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Decide on a name for the service instance. To use Azure Spring Cloud within your Azure subscription, you must create an Azure resource of type Azure Spring Cloud. As with all other Azure resources, the service instance must stay within a resource group. Use the resource group you already created to hold the service instance, and choose a name for your Azure Spring Cloud instance. Create the service instance with the following command.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">az spring-cloud create --resource-group &lt;your resource group name&gt; --name &lt;your Azure Spring Cloud instance name&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command takes several minutes to complete.</p>
+</div>
+</li>
+<li>
+<p>Create a Spring Cloud App within the service.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">az spring-cloud app create \
+    --resource-group &lt;your resource group name&gt; \
+    --service &lt;your Azure Spring Cloud instance name&gt; \
+    --name &lt;your app name&gt; \
+    --assign-identity \
+    --is-public true \
+    --runtime-version Java_11 \</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is the explanation of each property:</p>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>resource-group: The name of the resource group where you created the existing service instance.</p>
+</li>
+<li>
+<p>service: The name of the existing service.</p>
+</li>
+<li>
+<p>name: The name of the app.</p>
+</li>
+<li>
+<p>assign-identity:  Causes the service to create an identity for managed identities for Azure resources.</p>
+</li>
+<li>
+<p>is-public:  Assign a public DNS domain name to the service.</p>
+</li>
+<li>
+<p>runtime-version:  The Java runtime version. The value must match the value chosen in Spring Initializr above.</p>
+<div class="paragraph">
+<p>To understand the difference between <strong>service</strong> and <strong>app</strong>, see [App and deployment in Azure Spring Cloud](/azure/spring-cloud/concept-understand-app-and-deployment).</p>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Use the following command to get the managed identity for the Azure resource and use it to configure the existing Key Vault to allow access from this App.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">SERVICE_IDENTITY=$(az spring-cloud app show --resource-group "contosorg" --name "contosoascsapp" --service "contososvc" | jq -r '.identity.principalId')
+
+az keyvault set-policy \
+    --name &lt;your Key Vault name&gt; \
+    --object-id &lt;the value of the environment variable SERVICE_IDENTITY&gt; \
+    --secret-permissions set get list</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Because the existing Spring Boot app already has an <strong>application.properties</strong> file with the necessary configuration, we can deploy this app directly to Spring Cloud using the following command. Run the command in the directory containing the POM.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">az spring-cloud app deploy \
+    --resource-group &lt;your resource group name&gt; \
+    --name &lt;your Spring Cloud app name&gt; \
+    --jar-path target/keyvault-0.0.1-SNAPSHOT.jar \
+    --service &lt;your Azure Spring Cloud instance name&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command creates a <strong>Deployment</strong> within the app, within the service. For more details on the concepts of service instances, apps, and Deployments see [App and deployment in Azure Spring Cloud](/azure/spring-cloud/concept-understand-app-and-deployment).</p>
+</div>
+<div class="paragraph">
+<p>If the deployment isn&#8217;t successful, configure the logs for troubleshooting as described in [Configure application logs](<a href="https://aka.ms/azure-spring-cloud-configure-logs" class="bare">https://aka.ms/azure-spring-cloud-configure-logs</a>). The logs will likely have useful information to diagnose and resolve the problem.</p>
+</div>
+</li>
+<li>
+<p>When the app has been successfully deployed, you can use <code>curl</code> to verify the Key Vault integration is working. Because you specified <code>--is-public</code>, the default URL for your service is <code><a href="https://&lt;your" class="bare">https://&lt;your</a> Azure Spring Cloud instance name&gt;-&lt;your app name&gt;.azuremicroservices.io/</code>. The following command shows an example where the service instance name is <code>contososvc</code> and the app name is <code>contosoascsapp</code>. The URL appends the value of the <code>@GetMapping</code> annotation.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">   curl https://contososvc-contosoascsapp.azuremicroservices.io/get</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The output will show <code>jdbc:sqlserver://SERVER.database.windows.net:1433;database=DATABASE</code>.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_summary">Summary</h4>
+<div class="paragraph">
+<p>In this tutorial, you created a new Java web application using the Spring Initializr. You created an Azure Key Vault to store sensitive information, and then configured your application to retrieve information from your Key Vault. After testing it locally, you deployed the app to Azure App Service and Azure Spring Cloud.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_clean_up_resources">Clean up resources</h4>
+<div class="paragraph">
+<p>When you&#8217;re finished with the Azure resources you created in this tutorial, you can delete them using the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">az group delete –name &lt;your resource group name&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2022-03-31 16:00:56 UTC
+</div>
+</div>
+<script src="js/highlight/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>
