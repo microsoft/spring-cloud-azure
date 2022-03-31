@@ -4,18 +4,7 @@ on:
   push:
     branches:
     - main
-    - docs
-    - 4.*
-    # paths:
-    # - 'docs/**'
-  # release:
-  #   types: [published] # includes pre-release and regular releases, but does not include draft releases.
-  # workflow_dispatch:
-  #   inputs:
-  #     committish:
-  #       description: Tag or branch of the docs to be created or updated. Using `main` will update the landing page. Using anything else will create or update a versioned copy of the docs.
-  #       required: true
-  #       default: main
+    - hotfix/*
 
 jobs:
   updateDocs:
@@ -44,28 +33,5 @@ jobs:
       if: steps.mvn-cache.outputs.cache-hit != 'true'
       run: ./mvnw compile dependency:go-offline
 
-    - name: Mvn install # Need this when the version/directory/pom structure changes
-      run: |
-        ./mvnw \
-          --batch-mode \
-          --show-version \
-          --threads 1.5C \
-          --define maven.test.skip=true \
-          --define maven.javadoc.skip=true \
-          install
-
-    - name: Remove SNAPSHOT # Needed for releases
-      run: |
-        if [[ -n "${{ github.event.release.tag_name }}" ]] ; then
-          ./mvnw versions:set --batch-mode -DremoveSnapshot -DprocessAllModules
-        fi
-
     - name: Update Docs
-      run: |
-        if [[ -n "${{ github.event.release.tag_name }}" ]] ; then
-          ./docs/src/main/asciidoc/ghpages.sh --version ${{ github.event.release.tag_name }} --destination . --build
-        elif [[ -n "${{ github.event.inputs.committish }}" ]] && [[ "${{ github.event.inputs.committish }}" != "main" ]] ; then
-            ./docs/src/main/asciidoc/ghpages.sh --version ${{ github.event.inputs.committish }} --destination . --build
-        else
-          ./docs/src/main/asciidoc/ghpages.sh --build
-        fi
+      run: ../scripts/update_gh-pages_branch.sh --build
