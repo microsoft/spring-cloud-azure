@@ -186,9 +186,6 @@ window.onload = function() {
 <div class="paragraph">
 <p><a href="https://azure.microsoft.com/services/cosmos-db/">Azure Cosmos DB</a> is a globally-distributed database service that allows developers to work with data using a variety of standard APIs, such as SQL, MongoDB, Graph, and Azure Table storage.</p>
 </div>
-<div class="paragraph">
-<p>Connect to Cosmos DB using Spring Data and CosmosDB libraries.</p>
-</div>
 </div>
 <div class="sect2">
 <h3 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h3>
@@ -238,17 +235,17 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.database</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The CosmosDB database id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Cosmos DB database id.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.endpoint</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Uri to connect CosmosDB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Uri to connect Cosmos DB.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.key</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">PrivateKey to connect CosmosDB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Private key to connect Cosmos DB.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.credential.client-certificate-password</p></td>
@@ -293,7 +290,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.consistency-level</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/cosmos-db/consistency-levels">Consistency levels</a> in Azure Cosmos DB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/cosmos-db/consistency-levels">Consistency levels</a> in Azure Cosmos DB.</p></td>
 </tr>
 </tbody>
 </table>
@@ -545,7 +542,7 @@ public class CosmosSampleApplication implements CommandLineRunner {
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4/cosmos">azure-spring-boot-samples</a> for more details.</p>
 </div>
 <div class="paragraph">
-<p>Besides, using this Azure Cosmos DB Spring Boot Starter, you can directly use Spring Data for Azure Cosmos DB package for more complex scenarios. Please refer to <a href="https://github.com/Azure/azure-sdk-for-java/tree/spring-cloud-azure-dependencies_4.0.0-beta.4/sdk/cosmos/azure-spring-data-cosmos">Spring Data for Azure Cosmos DB</a> for more details.</p>
+<p>Apart from using the <code>spring-cloud-azure-starter-data-cosmos</code> library, you can directly use <code>azure-spring-data-cosmos</code> library for more complex scenarios. Please refer to <a href="https://github.com/Azure/azure-sdk-for-java/tree/spring-cloud-azure-dependencies_4.0.0-beta.4/sdk/cosmos/azure-spring-data-cosmos">Spring Data for Azure Cosmos DB</a> for more details.</p>
 </div>
 </div>
 </div>

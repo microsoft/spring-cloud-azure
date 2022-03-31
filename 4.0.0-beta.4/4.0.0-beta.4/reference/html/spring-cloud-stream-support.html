@@ -641,10 +641,10 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
   cloud:
     azure:
       credential:
-        client-id: ${SERVICE_PRINCIPAL_ID}
-        client-secret: ${SERVICE_PRINCIPAL_SECRET}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
       profile:
-        tenant-id: ${TENANT_ID}
+        tenant-id: ${AZURE_TENANT_ID}
       eventhubs:
         namespace: ${EVENTHUB_NAMESPACE}
         processor:
@@ -727,7 +727,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume() {
         checkpointer.success()
                 .doOnSuccess(success -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                 .doOnError(error -&gt; LOGGER.error("Exception found", error))
-                .subscribe();
+                .block();
     };
 }
 
@@ -832,7 +832,7 @@ public Consumer&lt;Message&lt;List&lt;String&gt;&gt;&gt; consume() {
         checkpointer.success()
                     .doOnSuccess(success -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                     .doOnError(error -&gt; LOGGER.error("Exception found", error))
-                    .subscribe();
+                    .block();
     };
 }
 
@@ -933,9 +933,9 @@ public void producerError(Message&lt;?&gt; message) {
 </div>
 </div>
 <div class="sect4">
-<h5 id="_multi_binder_support"><a class="link" href="#_multi_binder_support">Multi Binder Support</a></h5>
+<h5 id="_multiple_binder_support"><a class="link" href="#_multiple_binder_support">Multiple Binder Support</a></h5>
 <div class="paragraph">
-<p>Connection to mutiple Event Hubs namespaces is also supported by using multi binders.This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
+<p>Connection to multiple Event Hubs namespaces is also supported by using multiple binders.This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
 </div>
 <div class="paragraph">
 <p>Step 1. To use multiple binders of EventHubs, we need to configure below properties in application.yml</p>
@@ -1033,7 +1033,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume1() {
         checkpointer.success()
                 .doOnSuccess(success -&gt; LOGGER.info("Message1 '{}' successfully checkpointed", message))
                 .doOnError(error -&gt; LOGGER.error("Exception found", error))
-                .subscribe();
+                .block();
     };
 }
 
@@ -1045,7 +1045,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
         checkpointer.success()
                 .doOnSuccess(success -&gt; LOGGER.info("Message2 '{}' successfully checkpointed", message))
                 .doOnError(error -&gt; LOGGER.error("Exception found", error))
-                .subscribe();
+                .block();
     };
 }</code></pre>
 </div>
@@ -1410,10 +1410,10 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
   cloud:
     azure:
       credential:
-        client-id: ${CLIENT_ID}
-        client-secret: ${CLIENT_SECRET}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
       profile:
-        tenant-id: ${TENANT_ID}
+        tenant-id: ${AZURE_TENANT_ID}
       servicebus:
         namespace: ${SERVICEBUS_NAMESPACE}
     stream:
@@ -1493,7 +1493,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume() {
         checkpointer.success()
                 .doOnSuccess(success -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                 .doOnError(error -&gt; LOGGER.error("Exception found", error))
-                .subscribe();
+                .block();
     };
 }
 
@@ -1513,7 +1513,7 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 <p>The binder supports <a href="https://docs.microsoft.com/azure/service-bus-messaging/service-bus-partitioning">Service Bus partitioning</a> by allowing setting partition key and session id in the message header. This section introduces how to set partition key for messages.</p>
 </div>
 <div class="paragraph">
-<p>Spring Cloud Stream provides a partition key SpEL expression property <code>spring.cloud.stream.bindings.&lt;binding-name&gt;.producer.partition-key-expression</code>. For example, setting this properts as <code>&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;</code> and add a header called &lt;message-header-key&gt;. Spring Cloud Stream will use the value for this header when evaluating the above expression to assign a partition key. Here is an example producer code:</p>
+<p>Spring Cloud Stream provides a partition key SpEL expression property <code>spring.cloud.stream.bindings.&lt;binding-name&gt;.producer.partition-key-expression</code>. For example, setting this property as <code>&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;</code> and add a header called &lt;message-header-key&gt;. Spring Cloud Stream will use the value for this header when evaluating the above expression to assign a partition key. Here is an example producer code:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1651,9 +1651,9 @@ When setting the partiton key, the priority of message header is higher than Spr
 </div>
 </div>
 <div class="sect4">
-<h5 id="_multi_binder_support_2"><a class="link" href="#_multi_binder_support_2">Multi Binder Support</a></h5>
+<h5 id="_multiple_binder_support_2"><a class="link" href="#_multiple_binder_support_2">Multiple Binder Support</a></h5>
 <div class="paragraph">
-<p>Connection to mutiple Service Bus namespaces is also supported by using multi binders. This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
+<p>Connection to multiple Service Bus namespaces is also supported by using multiple binders. This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
 </div>
 <div class="paragraph">
 <p>Step 1. To use multiple binders of ServiceBus, we need to configure below properties in application.yml</p>
@@ -1744,7 +1744,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume1() {
         checkpointer.success()
                 .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                 .doOnError(e -&gt; LOGGER.error("Error found", e))
-                .subscribe();
+                .block();
     };
 }
 
@@ -1756,7 +1756,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
         checkpointer.success()
                 .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                 .doOnError(e -&gt; LOGGER.error("Error found", e))
-                .subscribe();
+                .block();
     };
 
 }</code></pre>

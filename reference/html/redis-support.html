@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.17">
+<title>Redis Support</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script type="text/javascript"> (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "b9g1q6wz23"); </script>
+
+</head>
+<body class="book">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="redis-support">Redis Support</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Connect to Azure Cache for Redis using Spring Redis libraries. With adding <code>spring-cloud-azure-starter</code> and <code>spring-cloud-azure-resourcemanager</code> to your application, it&#8217;s possible to read the Azure Cache for Redis connection information through Azure Resource Manager and auto-configure the Redis properties.</p>
+</div>
+<div class="sect2">
+<h3 id="_dependency_setup">Dependency Setup</h3>
+<div class="paragraph">
+<p>Adding below dependencies if you want to use the Spring Cloud Azure Redis support to your Spring Boot application using Redis.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-cloud-azure-resourcemanager&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration">Configuration</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Configurable properties when using Redis support</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default Value</th>
+<th class="tableblock halign-left valign-top">Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.redis</strong>.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Cache for Redis instance name.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.redis</strong>.name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Cache for Redis instance name.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.redis</strong>.resource.resource-group</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The resource group of Azure Cache for Redis.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure</strong>.profile.subscription-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The subscription id.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix <code>spring.cloud.azure</code>. Please refer to <a href="index.html#authentication">Authentication</a> for more details.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_basic_usage">Basic Usage</h3>
+<div class="paragraph">
+<p>Add below properties and you are good to go.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">spring.cloud.azure.redis.name=${AZURE_CACHE_REDIS_NAME}
+spring.cloud.azure.redis.resource.resource-group=${AZURE_CACHE_REDIS_RESOURCE_GROUP}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_samples">Samples</h3>
+<div class="paragraph">
+<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}">azure-spring-boot-samples</a> for more details.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2022-03-31 22:38:59 +0800
+</div>
+</div>
+<script src="js/highlight/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>

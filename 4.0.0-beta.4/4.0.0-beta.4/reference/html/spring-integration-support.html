@@ -607,7 +607,7 @@ class Demo {
         checkpointer.success()
                 .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
                 .doOnError(e -&gt; LOGGER.error("Error found", e))
-                .subscribe();
+                .block();
     }
 }</code></pre>
 </div>
@@ -1107,7 +1107,7 @@ class Demo {
         checkpointer.success()
                 .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
                 .doOnError(e -&gt; LOGGER.error("Error found", e))
-                .subscribe();
+                .block();
     }
 }</code></pre>
 </div>
@@ -1127,97 +1127,189 @@ class Demo {
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 6. Mapping between Service Bus Headers and Spring Headers</caption>
 <colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Service Bus Message Headers and Properties</th>
 <th class="tableblock halign-left valign-top">Spring Message Header Constants</th>
 <th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Priority Number (Descending priority)</th>
+<th class="tableblock halign-left valign-top">Configurable</th>
+<th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ContentType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Content type</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">MessageHeaders#CONTENT_TYPE</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The RFC2045 Content-Type descriptor of the message.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CorrelationId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Correlation id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#CORRELATION_ID</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The correlation id of the message</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>MessageId</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Message id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#MESSAGE_ID</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The message id of the message, this header has higher priority than <code>MessageHeaders#ID</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>MessageId</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AzureHeaders#RAW_ID</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>MessageId</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Message id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">MessageHeaders#ID</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">UUID</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The message id of the message, this header has lower priority than <code>ServiceBusMessageHeaders#MESSAGE_ID</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">PartitionKey</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Partition key</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#PARTITION_KEY</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The partition key for sending the message to a partitioned entity.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ReplyTo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reply to</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">MessageHeaders#REPLY_CHANNEL</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The address of an entity to send replies to.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ReplyToSessionId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reply to session id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#REPLY_TO_SESSION_ID</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ReplyToGroupId property value of the message.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>ScheduledEnqueueTimeUtc</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scheduled enqueue time utc</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#SCHEDULED_ENQUEUE_TIME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OffsetDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The datetime at which the message should be enqueued in Service Bus, this header has higher priority than <code>AzureHeaders#SCHEDULED_ENQUEUE_MESSAGE</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scheduled enqueue time utc</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AzureHeaders#SCHEDULED_ENQUEUE_MESSAGE</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The datetime at which the message should be enqueued in Service Bus, this header has lower priority than <code>ServiceBusMessageHeaders#SCHEDULED_ENQUEUE_TIME</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>ScheduledEnqueueTimeUtc</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#SCHEDULED_ENQUEUE_TIME</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instant</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SessionID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Session id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#SESSION_ID</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The session identifier for a session-aware entity.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">TimeToLive</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time to live</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#TIME_TO_LIVE</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The duration of time before this message expires.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">To</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#TO</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The "to" address of the message, reserved for future use in routing scenarios and presently ignored by the broker itself.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Subject</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#SUBJECT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The subject for the message.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dead letter error description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#DEAD_LETTER_ERROR_DESCRIPTION</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The description for a message that has been dead-lettered.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dead letter reason</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#DEAD_LETTER_REASON</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The reason a message was dead-lettered.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dead letter source</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#DEAD_LETTER_SOURCE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The entity in which the message was dead-lettered.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Delivery count</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#DELIVERY_COUNT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of the times this message was delivered to clients.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enqueued sequence number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#ENQUEUED_SEQUENCE_NUMBER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The enqueued sequence number assigned to a message by Service Bus.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enqueued time</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#ENQUEUED_TIME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OffsetDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The datetime at which this message was enqueued in Service Bus.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Expires at</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#EXPIRES_AT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OffsetDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The datetime at which this message will expire.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lock token</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#LOCK_TOKEN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The lock token for the current message.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Locked until</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#LOCKED_UNTIL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OffsetDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The datetime at which the lock of this message expires.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sequence number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#SEQUENCE_NUMBER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique number assigned to a message by Service Bus.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">State</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#STATE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageState</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The state of the message, which can be Active, Deferred, or Scheduled.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1591,7 +1683,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
         checkpointer.success()
             .doOnError(Throwable::printStackTrace)
             .doOnSuccess(t -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
-            .subscribe();
+            .block();
     }
 }</code></pre>
 </div>

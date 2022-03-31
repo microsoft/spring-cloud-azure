@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.17">
+<title>Azure Service Bus</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script type="text/javascript"> (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "b9g1q6wz23"); </script>
+
+</head>
+<body class="book">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect2">
+<h3 id="_azure_service_bus">Azure Service Bus</h3>
+<div class="paragraph">
+<p>This article demonstrates how to use Spring Boot Starter for Azure Service Bus JMS to send messages to and receive messages from Service Bus <code>queues</code> and <code>topics</code>.</p>
+</div>
+<div class="paragraph">
+<p>Azure provides an asynchronous messaging platform called <a href="/azure/service-bus-messaging/service-bus-messaging-overview">Azure Service Bus</a> ("Service Bus") that is based on the <a href="http://www.amqp.org/">Advanced Message Queueing Protocol 1.0</a> ("AMQP 1.0") standard. Service Bus can be used across the range of supported Azure platforms.</p>
+</div>
+<div class="paragraph">
+<p>The Spring Boot Starter for Azure Service Bus JMS provides Spring JMS integration with Service Bus.</p>
+</div>
+<div class="paragraph">
+<p>The following video describes how to integrate Spring JMS applications with Azure Service Bus using JMS 2.0.</p>
+</div>
+<div class="videoblock">
+<div class="content">
+<video src="https://www.youtube.com/embed/9O3CALyoZHE?list=PLPeZXlCR7ew8LlhnSH63KcM0XhMKxT1k_" controls>
+Your browser does not support the video tag.
+</video>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_prerequisites">Prerequisites</h4>
+<div class="paragraph">
+<p>The following prerequisites are required for this article:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>If you don&#8217;t have an <a href="https://docs.microsoft.com/azure/guides/developer/azure-developer-guide#understanding-accounts-subscriptions-and-billing">Azure subscription</a>, create a <a href="https://azure.microsoft.com/free/?ref=microsoft.com&amp;utm_source=microsoft.com&amp;utm_medium=docs&amp;utm_campaign=visualstudio">free account</a> before you begin.</p>
+</li>
+<li>
+<p>A supported Java Development Kit (JDK). For more information, see Java support on <a href="https://docs.microsoft.com/en-us/cli/azure/install-azure-cli">Azure and Azure Stack</a>.</p>
+</li>
+<li>
+<p><a href="https://maven.apache.org/">Apache Maven</a>, version 3.0 or later.</p>
+</li>
+<li>
+<p>If you already have a configured Service Bus queue or topic, ensure that the Service Bus namespace meets the following requirements:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Allows access from all networks</p>
+</li>
+<li>
+<p>Is Premium (or higher)</p>
+</li>
+<li>
+<p>Has an access policy with read/write access for your queue and topic</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>If you don&#8217;t have a configured Service Bus queue or topic, use the Azure portal to <a href="/azure/service-bus-messaging/service-bus-quickstart-portal">create a Service Bus queue</a> or <a href="/azure/service-bus-messaging/service-bus-quickstart-topics-subscriptions-portal">create a Service Bus topic</a>. Ensure that the namespace meets the requirements specified in the previous step. Also, make note of the connection string in the namespace as you need it for this tutorial&#8217;s test app.</p>
+</li>
+<li>
+<p>If you don&#8217;t have a Spring Boot application, create a <strong>Maven</strong> project with the <a href="https://start.spring.io/">Spring Initializr</a>. Remember to select <strong>Maven Project</strong> and, under <strong>Dependencies</strong>, add the <strong>Web</strong> dependency, select <strong>8</strong> or <strong>11</strong> Java version.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Spring Boot version 2.5 or 2.6 is required to complete the steps in this article.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_use_the_azure_service_bus_jms_starter">Use the Azure Service Bus JMS starter</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Locate the <em>pom.xml</em> file in the parent directory of your app; for example: <code>C:\SpringBoot\servicebus\pom.xml</code>.</p>
+</li>
+<li>
+<p>Open the <em>pom.xml</em> file in a text editor.</p>
+</li>
+<li>
+<p>Add the Spring Boot Azure Service Bus JMS starter to the list of <code>&lt;dependencies&gt;</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">    &lt;dependency&gt;
+      &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-cloud-azure-starter-servicebus-jms&lt;/artifactId&gt;
+      &lt;version&gt;4.0.0&lt;/version&gt;
+    &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Save and close the <strong>pom.xml</strong> file.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configure_the_app_for_your_service_bus">Configure the app for your service bus</h4>
+<div class="paragraph">
+<p>In this section, you see how to configure your app to use either a Service Bus queue or topic.</p>
+</div>
+<div class="sect4">
+<h5 id="_use_a_service_bus_queue">Use a Service Bus queue</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Locate the <strong>application.properties</strong> in the <strong>resources</strong> directory of your app; for example:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>C:\SpringBoot\servicebus\application.properties</p>
+</li>
+<li>
+<p>/users/example/home/servicebus/application.properties</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Open the <strong>application.properties</strong> file in a text editor.</p>
+</li>
+<li>
+<p>Append the following code to the end of the <strong>application.properties</strong> file. Replace the placeholder values with the appropriate values for your service bus, and do not put quotes around the values.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">spring.jms.servicebus.connection-string=&lt;ServiceBusNamespaceConnectionString&gt;
+spring.jms.servicebus.idle-timeout=&lt;IdleTimeout&gt;
+spring.jms.servicebus.pricing-tier=&lt;ServiceBusPricingTier&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Field descriptions</p>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>spring.jms.servicebus.connection-string</code>: Specify the connection string you obtained in your Service Bus namespace from the Azure portal.</p>
+</li>
+<li>
+<p><code>spring.jms.servicebus.idle-timeout</code>: Specify the duration for idle.</p>
+</li>
+<li>
+<p><code>spring.jms.servicebus.pricing-tier</code>: Specify the pricing tier of your service bus. Supported values are <strong>premium</strong>, <strong>standard</strong>, and <strong>basic</strong>. Premium uses Java Message Service (JMS) 2.0, while standard and basic use JMS 1.0 to interact with Azure Service Bus.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Save and close the <strong>application.properties</strong> file.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_use_service_bus_topic">Use Service Bus topic</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Locate the <strong>application.properties</strong> in the <strong>resources</strong> directory of your app; for example:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>C:\SpringBoot\servicebus\application.properties</p>
+</li>
+<li>
+<p>/users/example/home/servicebus/application.properties</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Open the <strong>application.properties</strong> file in a text editor.</p>
+</li>
+<li>
+<p>Append the following code to the end of the <strong>application.properties</strong> file. Replace the placeholder values with the appropriate values for your service bus, and do not put quotes around the values.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">spring.jms.servicebus.connection-string=&lt;ServiceBusNamespaceConnectionString&gt;
+spring.jms.servicebus.topic-client-id=&lt;ServiceBusSubscriptionID&gt;
+spring.jms.servicebus.idle-timeout=&lt;IdleTimeout&gt;
+spring.jms.servicebus.pricing-tier=&lt;ServiceBusPricingTier&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Field descriptions</p>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>spring.jms.servicebus.connection-string</code>: Specify the connection string you obtained in your Service Bus namespace from the Azure portal.</p>
+</li>
+<li>
+<p><code>spring.jms.servicebus.topic-client-id</code>: Specify the JMS client ID, which is your Service Bus Subscription ID in the Azure portal.</p>
+</li>
+<li>
+<p><code>spring.jms.servicebus.idle-timeout</code>: Specify the duration for idle.</p>
+</li>
+<li>
+<p><code>spring.jms.servicebus.pricing-tier</code>: Specify the pricing tier of your service bus. Supported values are <strong>premium</strong>, <strong>standard</strong>, and <strong>basic</strong>. Premium uses Java Message Service (JMS) 2.0, while standard and basic use JMS 1.0 to interact with Azure Service Bus.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Save and close the <strong>application.properties</strong> file.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_implement_basic_service_bus_functionality">Implement basic Service Bus functionality</h4>
+<div class="paragraph">
+<p>In this section, you create the necessary Java classes for sending messages to your Service Bus queue or topic and receive messages from your corresponding queue or topic subscription.</p>
+</div>
+<div class="sect4">
+<h5 id="_modify_the_main_application_class">Modify the main application class</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Locate the main application Java file in the package directory of your app; for example:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>C:\SpringBoot\servicebus\src\main\java\com\wingtiptoys\servicebus\ServiceBusJmsStarterApplication.java</p>
+</li>
+<li>
+<p>/users/example/home/servicebus/src/main/java/com/wingtiptoys/servicebus/ServiceBusJmsStarterApplication.java</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Open the main application Java file in a text editor.</p>
+</li>
+<li>
+<p>Add the following code to the file:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package com.wingtiptoys.servicebus;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class ServiceBusJmsStarterApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ServiceBusJmsStarterApplication.class, args);
+    }
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Save and close the file.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_define_a_test_java_class">Define a test Java class</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Using a text editor, create a Java file named <strong>User.java</strong> in the package directory of your app.</p>
+</li>
+<li>
+<p>Define a generic user class that stores and retrieves user&#8217;s name:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package com.wingtiptoys.servicebus;
+
+import java.io.Serializable;
+
+// Define a generic User class.
+public class User implements Serializable {
+
+    private static final long serialVersionUID = -295422703255886286L;
+
+    private String name;
+
+    public User() {
+    }
+
+    public User(String name) {
+        setName(name);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>Serializable</code> is implemented to use the <code>send</code> method in <code>JmsTemplate</code> in the Spring framework. Otherwise, a customized <code>MessageConverter</code> bean should be defined to serialize the content to json in text format. For more information about <code>MessageConverter</code>, see the official [Spring JMS starter project](<a href="https://spring.io/guides/gs/messaging-jms/" class="bare">https://spring.io/guides/gs/messaging-jms/</a>).</p>
+</div>
+</li>
+<li>
+<p>Save and close the <strong>User.java</strong> file.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_create_a_new_class_for_the_message_send_controller">Create a new class for the message send controller</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Using a text editor, create a Java file named <strong>SendController.java</strong> in the package directory of your app</p>
+</li>
+<li>
+<p>Add the following code to the new file:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package com.wingtiptoys.servicebus;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class SendController {
+
+    private static final String DESTINATION_NAME = "&lt;DestinationName&gt;";
+
+    private static final Logger logger = LoggerFactory.getLogger(SendController.class);
+
+    @Autowired
+    private JmsTemplate jmsTemplate;
+
+    @PostMapping("/messages")
+    public String postMessage(@RequestParam String message) {
+        logger.info("Sending message");
+        jmsTemplate.convertAndSend(DESTINATION_NAME, new User(message));
+        return message;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Replace <code>&lt;DestinationName&gt;</code> with your own queue name or topic name configured in your Service Bus namespace.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Save and close the <strong>SendController.java</strong>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_create_a_class_for_the_message_receive_controller">Create a class for the message receive controller</h5>
+<div class="sect5">
+<h6 id="_receive_messages_from_a_service_bus_queue">Receive messages from a Service Bus queue</h6>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Use a text editor to create a Java file named <strong>QueueReceiveController.java</strong> in the package directory of your app</p>
+</li>
+<li>
+<p>Add the following code to the new file:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">    package com.wingtiptoys.servicebus;
+
+    import org.slf4j.Logger;
+    import org.slf4j.LoggerFactory;
+    import org.springframework.jms.annotation.JmsListener;
+    import org.springframework.stereotype.Component;
+
+    @Component
+    public class QueueReceiveController {
+
+        private static final String QUEUE_NAME = "&lt;ServiceBusQueueName&gt;";
+
+        private final Logger logger = LoggerFactory.getLogger(QueueReceiveController.class);
+
+        @JmsListener(destination = QUEUE_NAME, containerFactory = "jmsListenerContainerFactory")
+        public void receiveMessage(User user) {
+            logger.info("Received message: {}", user.getName());
+        }
+    }</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Replace <code>&lt;ServiceBusQueueName&gt;</code> with your own queue name configured in your Service Bus namespace.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Save and close the <strong>QueueReceiveController.java</strong> file.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_receive_messages_from_a_service_bus_subscription">Receive messages from a Service Bus subscription</h6>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Using a text editor, create a Java file named <strong>TopicReceiveController.java</strong> in the package directory of your app.</p>
+</li>
+<li>
+<p>Add the following code to the new file. Replace the <code>&lt;ServiceBusTopicName&gt;</code> placeholder with your own topic name configured in your Service Bus namespace. Replace the <code>&lt;ServiceBusSubscriptionName&gt;</code> placeholder with your own subscription name for your Service Bus topic.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package com.wingtiptoys.servicebus;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jms.annotation.JmsListener;
+import org.springframework.stereotype.Component;
+
+@Component
+public class TopicReceiveController {
+
+    private static final String TOPIC_NAME = "&lt;ServiceBusTopicName&gt;";
+
+    private static final String SUBSCRIPTION_NAME = "&lt;ServiceBusSubscriptionName&gt;";
+
+    private final Logger logger = LoggerFactory.getLogger(TopicReceiveController.class);
+
+    @JmsListener(destination = TOPIC_NAME, containerFactory = "topicJmsListenerContainerFactory",
+            subscription = SUBSCRIPTION_NAME)
+    public void receiveMessage(User user) {
+        logger.info("Received message: {}", user.getName());
+    }
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Save and close the <strong>TopicReceiveController.java</strong> file.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_optional_service_bus_functionality">Optional Service Bus Functionality</h4>
+<div class="paragraph">
+<p>You can use a customized <code>MessageConverter</code> bean to convert between Java objects and JMS messages.</p>
+</div>
+<div class="sect4">
+<h5 id="_set_the_content_type_of_messages">Set the content-type of messages</h5>
+<div class="paragraph">
+<p>The following code example sets the <code>BytesMessage</code> content-type to <code>application/json</code>. For more information, see [Messages, payloads, and serialization](/azure/service-bus-messaging/service-bus-messages-payloads).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package com.wingtiptoys.servicebus;
+
+import com.fasterxml.jackson.databind.ObjectWriter;
+import org.apache.qpid.jms.message.JmsBytesMessage;
+import org.apache.qpid.jms.provider.amqp.message.AmqpJmsMessageFacade;
+import org.apache.qpid.proton.amqp.Symbol;
+import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
+import org.springframework.jms.support.converter.MessageType;
+import org.springframework.stereotype.Component;
+
+import javax.jms.BytesMessage;
+import javax.jms.JMSException;
+import javax.jms.Session;
+import java.io.IOException;
+
+@Component
+public class CustomMessageConverter extends MappingJackson2MessageConverter {
+
+    private static final String TYPE_ID_PROPERTY = "_type";
+    private static final Symbol CONTENT_TYPE = Symbol.valueOf("application/json");
+
+    public CustomMessageConverter() {
+        this.setTargetType(MessageType.BYTES);
+        this.setTypeIdPropertyName(TYPE_ID_PROPERTY);
+    }
+
+    @Override
+    protected BytesMessage mapToBytesMessage(Object object, Session session, ObjectWriter objectWriter)
+        throws JMSException, IOException {
+        final BytesMessage bytesMessage = super.mapToBytesMessage(object, session, objectWriter);
+        JmsBytesMessage jmsBytesMessage = (JmsBytesMessage) bytesMessage;
+        AmqpJmsMessageFacade facade = (AmqpJmsMessageFacade) jmsBytesMessage.getFacade();
+        facade.setContentType(CONTENT_TYPE);
+        return jmsBytesMessage;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For more information about <code>MessageConverter</code>, see the official <a href="https://spring.io/guides/gs/messaging-jms/">Spring JMS guide</a>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_set_session_id_in_jmstemplate">Set session-id in JmsTemplate</h5>
+<div class="paragraph">
+<p>Entities that have session support enabled, such as a session-enabled Service Bus queue, can only receive messages that have the <code>SessionId</code> set to a valid value. To send messages to such entities, use the <code>JmsTemplate.convertAndSend</code> method to set the string property "JMSXGroupID", which is mapped to the <code>SessionId</code> property, as shown in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@RestController
+public class QueueSendController {
+
+    private static final String QUEUE_NAME = "&lt;DestinationName&gt;";
+    private static final Logger LOGGER = LoggerFactory.getLogger(QueueSendController.class);
+
+    @Autowired
+    private JmsTemplate jmsTemplate;
+
+    @PostMapping("/queue")
+    public String postMessage(@RequestParam String message) {
+
+        LOGGER.info("Sending message");
+
+        jmsTemplate.convertAndSend(QUEUE_NAME, new User(message), jmsMessage -&gt; {
+            jmsMessage.setStringProperty("JMSXGroupID", "xxxeee");
+            return jmsMessage;
+        });
+        return message;
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_build_and_test_your_application">Build and test your application</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open a command prompt and change directory to the location of your <em>pom.xml</em>; for example:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd C:\SpringBoot\servicebus</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Build your Spring Boot application with Maven and run it:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mvn clean spring-boot:run</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Once your application is running, you can use <em>curl</em> to test your application:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -X POST localhost:8080/messages?message=hello</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_clean_up_resources">Clean up resources</h4>
+<div class="paragraph">
+<p>When no longer needed, use the <a href="https://portal.azure.com/">Azure portal</a> to delete the resources created in this article to avoid unexpected charges.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2022-03-31 16:15:57 UTC
+</div>
+</div>
+<script src="js/highlight/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>

@@ -217,17 +217,16 @@ window.onload = function() {
 <li><a href="#secret-management">10. Secret Management</a>
 <ul class="sectlevel2">
 <li><a href="#dependency-setup-3">10.1. Dependency Setup</a></li>
-<li><a href="#configuration-4">10.2. Configuration</a></li>
-<li><a href="#basic-usage-3">10.3. Basic Usage</a></li>
-<li><a href="#advanced-usage">10.4. Advanced Usage</a></li>
-<li><a href="#samples-3">10.5. Samples</a></li>
+<li><a href="#basic-usage-3">10.2. Basic Usage</a></li>
+<li><a href="#advanced-usage">10.3. Advanced Usage</a></li>
+<li><a href="#samples-3">10.4. Samples</a></li>
 </ul>
 </li>
 <li><a href="#spring-data-support">11. Spring Data Support</a>
 <ul class="sectlevel2">
 <li><a href="#spring-data-cosmosdb-support">11.1. Spring Data CosmosDB Support</a></li>
 <li><a href="#dependency-setup-4">11.2. Dependency Setup</a></li>
-<li><a href="#configuration-5">11.3. Configuration</a></li>
+<li><a href="#configuration-4">11.3. Configuration</a></li>
 <li><a href="#key-concepts">11.4. Key Concepts</a></li>
 <li><a href="#basic-usage-4">11.5. Basic Usage</a></li>
 <li><a href="#samples-4">11.6. Samples</a></li>
@@ -235,8 +234,8 @@ window.onload = function() {
 </li>
 <li><a href="#spring-security-support">12. Spring Security Support</a>
 <ul class="sectlevel2">
-<li><a href="#spring-security-with-azure-ad">12.1. Spring Security With Azure AD</a></li>
-<li><a href="#spring-security-with-azure-ad-b2c">12.2. Spring Security With Azure AD B2C</a></li>
+<li><a href="#spring-security-with-azure-active-directory">12.1. Spring Security With Azure Active Directory</a></li>
+<li><a href="#spring-security-with-azure-active-directory-b2c">12.2. Spring Security With Azure Active Directory B2C</a></li>
 </ul>
 </li>
 <li><a href="#spring-integration-support">13. Spring Integration Support</a>
@@ -254,40 +253,40 @@ window.onload = function() {
 </li>
 <li><a href="#spring-jms-support">15. Spring JMS Support</a>
 <ul class="sectlevel2">
-<li><a href="#dependency-setup-12">15.1. Dependency Setup</a></li>
-<li><a href="#configuration-13">15.2. Configuration</a></li>
-<li><a href="#basic-usage-12">15.3. Basic Usage</a></li>
-<li><a href="#samples-12">15.4. Samples</a></li>
+<li><a href="#dependency-setup-11">15.1. Dependency Setup</a></li>
+<li><a href="#configuration-12">15.2. Configuration</a></li>
+<li><a href="#basic-usage-11">15.3. Basic Usage</a></li>
+<li><a href="#samples-15">15.4. Samples</a></li>
 </ul>
 </li>
 <li><a href="#kafka-support">16. Kafka Support</a>
 <ul class="sectlevel2">
-<li><a href="#dependency-setup-13">16.1. Dependency Setup</a></li>
-<li><a href="#configuration-14">16.2. Configuration</a></li>
-<li><a href="#basic-usage-13">16.3. Basic Usage</a></li>
-<li><a href="#samples-13">16.4. Samples</a></li>
+<li><a href="#dependency-setup-12">16.1. Dependency Setup</a></li>
+<li><a href="#configuration-13">16.2. Configuration</a></li>
+<li><a href="#basic-usage-12">16.3. Basic Usage</a></li>
+<li><a href="#samples-16">16.4. Samples</a></li>
 </ul>
 </li>
 <li><a href="#redis-support">17. Redis Support</a>
 <ul class="sectlevel2">
-<li><a href="#dependency-setup-14">17.1. Dependency Setup</a></li>
-<li><a href="#configuration-15">17.2. Configuration</a></li>
-<li><a href="#basic-usage-14">17.3. Basic Usage</a></li>
-<li><a href="#samples-14">17.4. Samples</a></li>
+<li><a href="#dependency-setup-13">17.1. Dependency Setup</a></li>
+<li><a href="#configuration-14">17.2. Configuration</a></li>
+<li><a href="#basic-usage-13">17.3. Basic Usage</a></li>
+<li><a href="#samples-17">17.4. Samples</a></li>
 </ul>
 </li>
 <li><a href="#spring-cloud-azure-resourcemanager">18. Resource Manager</a>
 <ul class="sectlevel2">
-<li><a href="#dependency-setup-15">18.1. Dependency Setup</a></li>
-<li><a href="#configuration-16">18.2. Configuration</a></li>
+<li><a href="#dependency-setup-14">18.1. Dependency Setup</a></li>
+<li><a href="#configuration-15">18.2. Configuration</a></li>
 <li><a href="#resource-manager-basic-usage">18.3. Basic Usage</a></li>
-<li><a href="#samples-15">18.4. Samples</a></li>
+<li><a href="#samples-18">18.4. Samples</a></li>
 </ul>
 </li>
-<li><a href="#configuration-properties">19. Configuration Properties</a></li>
+<li><a href="#configuration-properties-2">19. Configuration Properties</a></li>
 <li><a href="#appendix">20. Appendix</a>
 <ul class="sectlevel2">
-<li><a href="#configuration-properties-2">20.1. Configuration properties</a></li>
+<li><a href="#configuration-properties-3">20.1. Configuration properties</a></li>
 <li><a href="#migration-guide-for-4-0-2">20.2. Migration guide for 4.0</a></li>
 <li><a href="#known-issues">20.3. Known issues</a></li>
 </ul>
@@ -299,7 +298,7 @@ window.onload = function() {
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>This doc is only for Spring Cloud Azure: <strong>4.0.0-beta.4</strong>. Please refer to <a href="https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Versions-Mapping">Spring Versions Mapping</a> to get more information about supported versions.</p>
+<p>This document is only for Spring Cloud Azure: <strong>4.0.0-beta.4</strong>. Please refer to <a href="https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Versions-Mapping">Spring Versions Mapping</a> to get more information about supported versions.</p>
 </div>
 <div class="paragraph">
 <p>&#169; 2016-2022 the original authors.</p>
@@ -325,7 +324,7 @@ window.onload = function() {
 <h2 id="getting-help"><a class="anchor" href="#getting-help"></a><a class="link" href="#getting-help">1. Getting Help</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>If you have any questions about this doc, please ask by creating GitHub issue. And Pull Request is welcome.</p>
+<p>If you have any questions about this document, please ask by creating GitHub issues. And Pull Request is welcome.</p>
 </div>
 <table class="tableblock frame-all grid-all fit-content stretch">
 <caption class="title">Table 1. GitHub repositories</caption>
@@ -365,7 +364,7 @@ window.onload = function() {
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-To learn how to migration to 4.0, please check <a href="appendix.html#migration-guide-for-4-0">the Appendix page</a>.
+To learn how to migrate to 4.0, please check <a href="appendix.html#migration-guide-for-4-0">the Appendix page</a>.
 </td>
 </tr>
 </table>
@@ -373,7 +372,7 @@ To learn how to migration to 4.0, please check <a href="appendix.html#migration-
 <div class="sect2">
 <h3 id="unified-development-experience"><a class="anchor" href="#unified-development-experience"></a><a class="link" href="#unified-development-experience">2.1. Unified Development Experience</a></h3>
 <div class="paragraph">
-<p>We constantly challenge ourselves on how we can make things more consistent and easier to understand, so our customers are not confronted with haphazard development choices. This is a long and self-evolving journey as consistency is relative and there will be things that are outside our control. We now humbly take another step in this direction to improve to our developer experience by unifying project name, artifact ID and properties.</p>
+<p>We constantly challenge ourselves on how we can make things more consistent and easier to understand, so our customers are not confronted with haphazard development choices. This is a long and self-evolving journey as consistency is relative and there will be things that are outside our control. We now humbly take another step in this direction to improve our developer experience by unifying project name, artifact ID and properties.</p>
 </div>
 </div>
 <div class="sect2">
@@ -440,7 +439,7 @@ To learn how to migration to 4.0, please check <a href="appendix.html#migration-
 <h2 id="migration-guide-for-4-0"><a class="anchor" href="#migration-guide-for-4-0"></a><a class="link" href="#migration-guide-for-4-0">3. Migration Guide for 4.0</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>To learn how to migration to 4.0, please check <a href="appendix.html#migration-guide-for-4-0">the Appendix page</a>.</p>
+<p>To learn how to migrate to 4.0, please check <a href="appendix.html#migration-guide-for-4-0">the Appendix page</a>.</p>
 </div>
 </div>
 </div>
@@ -645,7 +644,7 @@ To learn how to migration to 4.0, please check <a href="appendix.html#migration-
 <h2 id="configuration"><a class="anchor" href="#configuration"></a><a class="link" href="#configuration">5. Configuration</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Most of Azure SDKs could be divided into two categories by transport type, HTTP-based and AMQP-based. There are properties that are common to all SDKs such as authentication principals and Azure environment settings. Or common to HTTP-based clients, such as logging level to log http requests and responses. Spring Cloud Azure 4.0 provides five common categories of configuration properties, which could be specified to each Azure service.</p>
+<p>Most of Azure SDKs could be divided into two categories by transport type, HTTP-based and AMQP-based. There are properties that are common to all SDKs such as authentication principals and Azure environment settings. Or common to HTTP-based clients, such as logging level to log HTTP requests and responses. Spring Cloud Azure 4.0 provides five common categories of configuration properties, which could be specified to each Azure service.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 6. Service common properties</caption>
@@ -733,56 +732,67 @@ Properties configured under each Azure service will override the global configur
 </table>
 </div>
 <div class="paragraph">
-<p>Spring Cloud Azure unifies configuration properties' prefixes to <code>spring.cloud.azure</code> since 4.0, which will make configuration properties more consistent and more intuitive. Here&#8217;s a quick review of the prefixes of supported Azure services.</p>
+<p>Spring Cloud Azure unifies configuration properties' prefixes to <code>spring.cloud.azure</code> since 4.0, which will make configuration properties more consistent and more intuitive. Here&#8217;s a quick review of the serivce specific properties.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 8. Service specific properties</caption>
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Azure Service</th>
 <th class="tableblock halign-left valign-top">Configuration Property Prefix</th>
+<th class="tableblock halign-left valign-top">Configuration Properties Link</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Azure App Configuration</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>appconfiguration</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appendix.html#_azure_app_configuration_proeprties">App Configuration Properties</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Azure Cosmos DB</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>cosmos</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appendix.html#_azure_cosmos_proeprties">Cosmos Properties</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Azure Event Hubs</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>eventhubs</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appendix.html#_azure_event_hubs_proeprties">Event Hubs Properties</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Key Vault Certificate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Key Vault Certificates</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>keyvault.certificate</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appendix.html#_azure_key_vault_certificates_proeprties">Key Vault Certificates Properties</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Key Vault Secret</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Key Vault Secrets</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>keyvault.secret</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appendix.html#_azure_key_vault_secrets_proeprties">Key Vault Secrets Properties</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Azure Service Bus</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>servicebus</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appendix.html#_azure_service_bus_proeprties">Service Bus Properties</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Azure Storage Blob</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>storage.blob</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appendix.html#_azure_storage_blob_proeprties">Storage Blob Properties</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Azure Storage File Share</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>storage.fileshare</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appendix.html#_azure_storage_file_share_proeprties">Storage File Share Properties</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Azure Storage Queue</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.<strong>storage.queue</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="appendix.html#_azure_storage_queue_proeprties">Storage Queue Properties</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -854,7 +864,7 @@ Please refer to <a href="index.html#authorize-access-with-azure-active-directory
 <p>A common challenge for developers is the management of secrets and credentials used to secure communication between different components making up a solution. Managed identities eliminate the need for developers to manage credentials. Managed identities provide an identity for applications to use when connecting to resources that support Azure Active Directory (Azure AD) authentication. Applications may use the managed identity to obtain Azure AD tokens. For example, an application may use a managed identity to access resources like Azure Key Vault where developers can store credentials in a secure manner or to access storage accounts.</p>
 </div>
 <div class="paragraph">
-<p>We encourage using manged identity instead of using connection string or key in your application for it&#8217;s more secure and will save the trouble of managing secrets and credentials. In this case, <code>DefaultAzureCredential</code> could better serve the scenario of developing locally using account information stored locally and deploying the application to Azure Cloud and using Manged Identity.</p>
+<p>We encourage using managed identity instead of using connection string or key in your application for it&#8217;s more secure and will save the trouble of managing secrets and credentials. In this case, <code>DefaultAzureCredential</code> could better serve the scenario of developing locally using account information stored locally and deploying the application to Azure Cloud and using Managed Identity.</p>
 </div>
 <div class="sect3">
 <h4 id="managed-identity-types"><a class="anchor" href="#managed-identity-types"></a><a class="link" href="#managed-identity-types">6.2.1. Managed Identity Types</a></h4>
@@ -902,7 +912,7 @@ Please refer to <a href="index.html#authorize-access-with-azure-active-directory
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-Please refer to <a href="https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview">What are managed identities for Azure resources?</a> for more details about manged identity.
+Please refer to <a href="https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview">What are managed identities for Azure resources?</a> for more details about managed identity.
 </td>
 </tr>
 </table>
@@ -915,9 +925,9 @@ Please refer to <a href="https://docs.microsoft.com/azure/active-directory/manag
 <p>Developers who want more control or whose scenario isn&#8217;t served by the <code>DefaultAzureCredential</code> or whose scenario isn&#8217;t served by the default settings should use other credential types.</p>
 </div>
 <div class="sect3">
-<h4 id="authentication-and-authorization-with-azure-ad"><a class="anchor" href="#authentication-and-authorization-with-azure-ad"></a><a class="link" href="#authentication-and-authorization-with-azure-ad">6.3.1. Authentication and Authorization with Azure AD</a></h4>
+<h4 id="authentication-and-authorization-with-azure-active-directory"><a class="anchor" href="#authentication-and-authorization-with-azure-active-directory"></a><a class="link" href="#authentication-and-authorization-with-azure-active-directory">6.3.1. Authentication and Authorization with Azure Active Directory</a></h4>
 <div class="paragraph">
-<p>With Azure AD, you can use Azure role-based access control (Azure RBAC) to grant permissions to a security principal, which may be a user, or an application service principal. When a security principal (a user, or an application) attempts to access an Azure resource, for example an Event Hubs resource, the request must be authorized. With Azure AD, access to a resource is a two-step process.</p>
+<p>With Azure AD, you can use Azure role-based access control (Azure RBAC) to grant permissions to a security principal, which may be a user or an application service principal. When a security principal (a user, or an application) attempts to access an Azure resource, for example, an Event Hubs resource, the request must be authorized. With Azure AD, access to a resource is a two-step process.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -930,7 +940,7 @@ Please refer to <a href="https://docs.microsoft.com/azure/active-directory/manag
 </ol>
 </div>
 <div class="sect4">
-<h5 id="authenticate-with-azure-ad"><a class="anchor" href="#authenticate-with-azure-ad"></a><a class="link" href="#authenticate-with-azure-ad">Authenticate with Azure AD</a></h5>
+<h5 id="authenticate-with-azure-active-directory"><a class="anchor" href="#authenticate-with-azure-active-directory"></a><a class="link" href="#authenticate-with-azure-active-directory">Authenticate with Azure Active Directory</a></h5>
 <div class="paragraph">
 <p>For applications want to connect to resources that support Azure AD authentication, below configurations could be set with prefix <code>spring.cloud.azure.credential</code> or <code>spring.cloud.azure.&lt;azure-service&gt;.credential</code>.</p>
 </div>
@@ -991,7 +1001,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 </div>
 <div class="sect4">
-<h5 id="authorize-access-with-azure-active-directory"><a class="anchor" href="#authorize-access-with-azure-active-directory"></a><a class="link" href="#authorize-access-with-azure-active-directory">Authorize Access with Azure AD</a></h5>
+<h5 id="authorize-access-with-azure-active-directory"><a class="anchor" href="#authorize-access-with-azure-active-directory"></a><a class="link" href="#authorize-access-with-azure-active-directory">Authorize Access with Azure Active Directory</a></h5>
 <div class="paragraph">
 <p>The authorization step requires that one or more Azure roles be assigned to the security principal. The roles that are assigned to a security principal decide the permissions that the principal will have.</p>
 </div>
@@ -1130,7 +1140,7 @@ Azure Cosmos DB exposes 2 built-in role definitions: <code>Cosmos DB Built-in Da
 <h2 id="production-ready"><a class="anchor" href="#production-ready"></a><a class="link" href="#production-ready">7. Production Ready</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Spring Cloud Azure 4.0 supports health indicators for App Configuration, Event Hubs, Cosmos, Key Vault, Storage Blob, Storage Queue, and Storage File Share. It also provides integrations with Spring Cloud Sleuth for all HTTP-based Azure SDKs. As an example, you now can prob if storage blob is up or down via Spring Boot actuator endpoint, as well as track dependencies and latencies going from your application to Key Vault.</p>
+<p>Spring Cloud Azure 4.0 supports health indicators for App Configuration, Event Hubs, Cosmos, Key Vault Certificate, Key Vault Secret, Storage Blob, Storage Queue, and Storage File Share. It also provides integrations with Spring Cloud Sleuth for all HTTP-based Azure SDKs. As an example, you now can prob if storage blob is up or down via Spring Boot actuator endpoint, as well as track dependencies and latencies going from your application to Key Vault.</p>
 </div>
 <div class="sect2">
 <h3 id="enable-health-indicator"><a class="anchor" href="#enable-health-indicator"></a><a class="link" href="#enable-health-indicator">7.1. Enable Health Indicator</a></h3>
@@ -1684,7 +1694,7 @@ try (OutputStream fileos = ((WritableResource) this.storageFileResource).getOutp
 <h2 id="secret-management"><a class="anchor" href="#secret-management"></a><a class="link" href="#secret-management">10. Secret Management</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>spring-cloud-azure-starter-keyvault-secrets adds Azure Key Vault as one of the Spring PropertySource, so secrets stored in Azure Key Vault could be easily used and conveniently accessed like other externalized configuration property, e.g. properties in files.</p>
+<p>Spring Cloud Azure construct <a href="https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-property-source-abstraction">PropertySource</a> which holds secrets stored in Azure Key Vault Secrets.</p>
 </div>
 <div class="sect2">
 <h3 id="dependency-setup-3"><a class="anchor" href="#dependency-setup-3"></a><a class="link" href="#dependency-setup-3">10.1. Dependency Setup</a></h3>
@@ -1698,164 +1708,29 @@ try (OutputStream fileos = ((WritableResource) this.storageFileResource).getOutp
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-4"><a class="anchor" href="#configuration-4"></a><a class="link" href="#configuration-4">10.2. Configuration</a></h3>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
-</td>
-</tr>
-</table>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Configurable properties of spring-cloud-azure-starter-keyvault-secrets</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.endpoint</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Key Vault uri</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.service-version</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Service version</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source-enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enable this property source</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Multiple property source</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[].name</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of this property source</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[].endpoint</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Key Vault uri</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[].service-version</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Service version</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[].case-sensitive</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether the secret name is case-sensitive</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[].secret-keys</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The supported secret names. If not configured, it will retrieve all secret names.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[].refresh-interval</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Refresh interval</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect2">
-<h3 id="basic-usage-3"><a class="anchor" href="#basic-usage-3"></a><a class="link" href="#basic-usage-3">10.3. Basic Usage</a></h3>
-<div class="sect3">
-<h4 id="one-property-source"><a class="anchor" href="#one-property-source"></a><a class="link" href="#one-property-source">10.3.1. One Property Source</a></h4>
-<div class="sect4">
-<h5 id="property-configuration"><a class="anchor" href="#property-configuration"></a><a class="link" href="#property-configuration">Property Configuration</a></h5>
+<h3 id="basic-usage-3"><a class="anchor" href="#basic-usage-3"></a><a class="link" href="#basic-usage-3">10.2. Basic Usage</a></h3>
 <div class="paragraph">
 <p>If you want to authenticate by <code>client-id</code> and <code>client-secret</code>, the following properties are required:</p>
 </div>
+<div class="sect3">
+<h4 id="configuration-properties"><a class="anchor" href="#configuration-properties"></a><a class="link" href="#configuration-properties">10.2.1. Configuration Properties</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-yml" data-lang="yml">spring:
   cloud:
     azure:
-      profile:
-        tenant-id: ${AZURE_TENANT_ID}
-      credential:
-        client-id: ${AZURE_CLIENT_ID}
-        client-secret: ${AZURE_CLIENT_SECRET}
       keyvault:
         secret:
-          property-source-enabled: true
-          endpoint: ${AZURE_KEYVAULT_ENDPOINT}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>If your application is authenticated by other methods like Managed Identity or Azure CLI, properties like <code>tenant-id</code>, <code>client-id</code>, <code>client-secret</code> are not necessary. But if these properties are configured, then these properties have higher priority. Please refer to <a href="authentication.html">Authentication section</a> to get more information.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="java-code"><a class="anchor" href="#java-code"></a><a class="link" href="#java-code">Java Code</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
-public class SampleApplication implements CommandLineRunner {
-
-    @Value("${sampleProperty}")
-    private String sampleProperty;
-
-    public static void main(String[] args) {
-        SpringApplication.run(SampleApplication.class, args);
-    }
-
-    @Override
-    public void run(String... args) {
-        System.out.println("sampleProperty: " + sampleProperty);
-    }
-}</code></pre>
-</div>
+          property-sources:
+            - name: key-vault-property-souece-1
+              endpoint: ${ENDPOINT_1}
+            - name: key-vault-property-souece-2
+              endpoint: ${ENDPOINT_2}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="multiple-property-source"><a class="anchor" href="#multiple-property-source"></a><a class="link" href="#multiple-property-source">10.3.2. Multiple Property Source</a></h4>
-<div class="sect4">
-<h5 id="property-configuration-2"><a class="anchor" href="#property-configuration-2"></a><a class="link" href="#property-configuration-2">Property Configuration</a></h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yml" data-lang="yml">spring:
-  cloud:
-    azure:
-      keyvault:
-        secret:
-          property-source-enabled: true
-          property-sources:
-          -
-            name: key-vault-1
-            endpoint: ${ENDPOINT_1}
-            profile:
-              tenant-id: ${AZURE_TENANT_ID_1}
-            credential:
-              client-id: ${AZURE_CLIENT_ID_1}
-              client-secret: ${AZURE_CLIENT_SECRET_1}
-          -
-            name: key-vault-2
-            endpoint: ${ENDPOINT_2}
-            profile:
-              tenant-id: ${AZURE_TENANT_ID_2}
-            credential:
-              client-id: ${AZURE_CLIENT_ID_2}
-              client-secret: ${AZURE_CLIENT_SECRET_2}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Same as above, properties like <code>tenant-id</code>, <code>client-id</code>, <code>client-secret</code> are not necessary if authenticate by other methods.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="java-code-2"><a class="anchor" href="#java-code-2"></a><a class="link" href="#java-code-2">Java Code</a></h5>
+<h4 id="java-code"><a class="anchor" href="#java-code"></a><a class="link" href="#java-code">10.2.2. Java Code</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
@@ -1883,18 +1758,19 @@ public class SampleApplication implements CommandLineRunner {
 </div>
 </div>
 </div>
-</div>
 <div class="sect2">
-<h3 id="advanced-usage"><a class="anchor" href="#advanced-usage"></a><a class="link" href="#advanced-usage">10.4. Advanced Usage</a></h3>
+<h3 id="advanced-usage"><a class="anchor" href="#advanced-usage"></a><a class="link" href="#advanced-usage">10.3. Advanced Usage</a></h3>
 <div class="sect3">
-<h4 id="special-characters-in-property-name"><a class="anchor" href="#special-characters-in-property-name"></a><a class="link" href="#special-characters-in-property-name">10.4.1. Special Characters in Property Name</a></h4>
+<h4 id="special-characters-in-property-name"><a class="anchor" href="#special-characters-in-property-name"></a><a class="link" href="#special-characters-in-property-name">10.3.1. Special Characters in Property Name</a></h4>
 <div class="paragraph">
 <p>Key Vault secret name only support characters in <code>[0-9a-zA-Z-]</code>. Refs: <a href="https://docs.microsoft.com/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name">Vault-name and Object-name</a>. If your property name contains other characters, you can use these workarounds:</p>
 </div>
-<div class="sect4">
-<h5 id="use-instead-of-in-secret-name"><a class="anchor" href="#use-instead-of-in-secret-name"></a><a class="link" href="#use-instead-of-in-secret-name">Use <code>-</code> Instead of <code>.</code> in Secret Name</a></h5>
-<div class="paragraph">
-<p><code>.</code> is not supported in secret name. If your application have property name which contain <code>.</code>, like <code>spring.datasource.url</code>, just replace <code>.</code> to <code>-</code> when save secret in Azure Key Vault. For example: Save <code>spring-datasource-url</code> in Azure Key Vault. In your application, you can still use <code>spring.datasource.url</code> to retrieve property value.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Use <code>-</code> instead of <code>.</code> in secret name. <code>.</code> isn&#8217;t supported in secret name. If your application have property name which contains <code>.</code>, like <code>spring.datasource.url</code>, just replace <code>.</code> to <code>-</code> when save secret in Azure Key Vault. For example: Save <code>spring-datasource-url</code> in Azure Key Vault. In your application, you can still use <code>spring.datasource.url</code> to retrieve property value.</p>
+</li>
+</ul>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1903,43 +1779,154 @@ public class SampleApplication implements CommandLineRunner {
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-This method can not satisfy requirement like <code>spring.datasource-url</code>. When you save <code>spring-datasource-url</code> in Key Vault, only <code>spring.datasource.url</code> and <code>spring-datasource-url</code> is supported to retrieve property value, <code>spring.datasource-url</code> is not supported. To handle this case, please refer to the following section: Use property placeholders.
+This method can not satisfy requirement like <code>spring.datasource-url</code>. When you save <code>spring-datasource-url</code> in Key Vault, only <code>spring.datasource.url</code> and <code>spring-datasource-url</code> is supported to retrieve property value, <code>spring.datasource-url</code> isn&#8217;t supported. To handle this case, please refer to the following option: Use property placeholders.
 </td>
 </tr>
 </table>
 </div>
-</div>
-<div class="sect4">
-<h5 id="use-property-placeholders"><a class="anchor" href="#use-property-placeholders"></a><a class="link" href="#use-property-placeholders">Use Property Placeholders</a></h5>
-<div class="paragraph">
-<p>For example: setting this property in your application.properties:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">property.with.special.character__=${propertyWithoutSpecialCharacter}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The application will get  <code>propertyWithoutSpecialCharacter</code> key name and assign its value to <code>property.with.special.character__</code>.</p>
-</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Use property placeholders. For example: setting this property in your application.properties: <code>property.with.special.character_=${propertyWithoutSpecialCharacter}</code>. The application will get  <code>propertyWithoutSpecialCharacter</code> key name and assign its value to <code>property.with.special.character_</code>.</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect3">
-<h4 id="case-sensitive"><a class="anchor" href="#case-sensitive"></a><a class="link" href="#case-sensitive">10.4.2. Case Sensitive</a></h4>
+<h4 id="case-sensitive"><a class="anchor" href="#case-sensitive"></a><a class="link" href="#case-sensitive">10.3.2. Case Sensitive</a></h4>
 <div class="paragraph">
-<p>To enable case-sensitive mode, you can set the following property:</p>
+<p>By default, the secret names are case-insensitive. To enable case-sensitive mode, just set the following property: <code>spring.cloud.azure.keyvault.secret.property-sources[].case-sensitive=true</code>.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.keyvault.secret.property-sources[].case-sensitive=true</code></pre>
 </div>
+<div class="sect3">
+<h4 id="not-retrieve-all-secrets-in-key-vault"><a class="anchor" href="#not-retrieve-all-secrets-in-key-vault"></a><a class="link" href="#not-retrieve-all-secrets-in-key-vault">10.3.3. Not Retrieve All Secrets In Key Vault</a></h4>
+<div class="paragraph">
+<p>If you stored 1000 secrets in the Key Vault, and you just want to use 3 of them. You can list the 3 secret names by <code>spring.cloud.azure.keyvault.secret.property-sources[].secret-keys</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="setting-refresh-interval"><a class="anchor" href="#setting-refresh-interval"></a><a class="link" href="#setting-refresh-interval">10.3.4. Setting Refresh Interval</a></h4>
+<div class="paragraph">
+<p>By default, the secrets in <code>KeyVaultPropertySource</code> will refresh every 30 minutes. You can configure the time by <code>spring.cloud.azure.keyvault.secret.property-sources[].refresh-interval</code>. For example: <code>spring.cloud.azure.keyvault.secret.property-sources[].refresh-interval=60m</code> means refresh every 60 minutes. Set to <code>0</code> to disable auto refresh.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="propertysource-priority"><a class="anchor" href="#propertysource-priority"></a><a class="link" href="#propertysource-priority">10.3.5. PropertySource Priority</a></h4>
+<div class="paragraph">
+<p>If key exists in multiple PropertySources, which will take effect is decided by the priority.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If there is no <code>SystemEnvironmentPropertySource</code> in PropertySource list, then <code>KeyVaultPropertySource</code> will take the highest priority.</p>
+</li>
+<li>
+<p>If there is <code>SystemEnvironmentPropertySource</code> in PropertySource list, then <code>SystemEnvironmentPropertySource</code> have higher priority than KeyVaultPropertySource. Which means you can use environment variable to override the Key Vault secret value in your application.</p>
+</li>
+<li>
+<p>If there are multiple KeyVaultPropertySource in PropertySource list, then the definition order is the priority order. Take above sample as example, <code>key-vault-property-souece-1</code> has higher priority than <code>key-vault-property-souece-2</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="all-configurable-properties"><a class="anchor" href="#all-configurable-properties"></a><a class="link" href="#all-configurable-properties">10.3.6. All Configurable Properties</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 15. Configurable properties of Key Vault Secret PropertySource</caption>
+<colgroup>
+<col style="width: 45%;">
+<col style="width: 5%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-source-enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable the Key Vault property source.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[].name</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of this property source.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[].endpoint</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Key Vault endpoint.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[].case-sensitive</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether the secret keys are case-sensitive.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[].secret-keys</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The secret keys supported for this property source. All keys be retrieved if this property is missing.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[].refresh-interval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">30m</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time interval to refresh all Key Vault secrets.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[].service-version</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Secret service version used when making API requests.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[].client</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client related properties.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[].credential</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Credential related properties.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[].profile</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Profile related properties.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[].proxy</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Proxy related properties.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.keyvault.secret</strong>.property-sources[].retry</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Retry related properties.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p>Please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the <a href="https://docs.microsoft.com/azure/active-directory/develop/app-objects-and-service-principals#service-principal-object">security principal</a> has been granted the sufficient permission to access the Azure Key Vault Secrets.</p>
+</li>
+<li>
+<p>If common properties like <code>client</code>, <code>credential</code>, <code>profile</code>, <code>proxy</code>, <code>retry</code> aren&#8217;t configured in <code>spring.cloud.azure.keyvault.secret.property-sources[].xxx</code>, <code>spring.cloud.azure.xxx</code> will be used. Please refer to <a href="index.html#configuration">Configuration</a> to get more information about these common properties.</p>
+</li>
+<li>
+<p>Please refer to <a href="appendix.html#_configuration_properties">Configuration Properties</a> to get more information about nested properties.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="samples-3"><a class="anchor" href="#samples-3"></a><a class="link" href="#samples-3">10.5. Samples</a></h3>
+<h3 id="samples-3"><a class="anchor" href="#samples-3"></a><a class="link" href="#samples-3">10.4. Samples</a></h3>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4/keyvault/spring-cloud-azure-starter-keyvault-secrets">spring-cloud-azure-starter-keyvault-secrets samples</a> for more details.</p>
+<p>Sample project: <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4/keyvault/spring-cloud-azure-starter-keyvault-secrets/property-source">property-source</a>.</p>
 </div>
 </div>
 </div>
@@ -1951,9 +1938,6 @@ This method can not satisfy requirement like <code>spring.datasource-url</code>.
 <h3 id="spring-data-cosmosdb-support"><a class="anchor" href="#spring-data-cosmosdb-support"></a><a class="link" href="#spring-data-cosmosdb-support">11.1. Spring Data CosmosDB Support</a></h3>
 <div class="paragraph">
 <p><a href="https://azure.microsoft.com/services/cosmos-db/">Azure Cosmos DB</a> is a globally-distributed database service that allows developers to work with data using a variety of standard APIs, such as SQL, MongoDB, Graph, and Azure Table storage.</p>
-</div>
-<div class="paragraph">
-<p>Connect to Cosmos DB using Spring Data and CosmosDB libraries.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1968,7 +1952,7 @@ This method can not satisfy requirement like <code>spring.datasource-url</code>.
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-5"><a class="anchor" href="#configuration-5"></a><a class="link" href="#configuration-5">11.3. Configuration</a></h3>
+<h3 id="configuration-4"><a class="anchor" href="#configuration-4"></a><a class="link" href="#configuration-4">11.3. Configuration</a></h3>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -2004,17 +1988,17 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.database</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The CosmosDB database id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Cosmos DB database id.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.endpoint</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Uri to connect CosmosDB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Uri to connect Cosmos DB.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.key</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">PrivateKey to connect CosmosDB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Private key to connect Cosmos DB.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.credential.client-certificate-password</p></td>
@@ -2059,7 +2043,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.consistency-level</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/cosmos-db/consistency-levels">Consistency levels</a> in Azure Cosmos DB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/cosmos-db/consistency-levels">Consistency levels</a> in Azure Cosmos DB.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2311,7 +2295,7 @@ public class CosmosSampleApplication implements CommandLineRunner {
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4/cosmos">azure-spring-boot-samples</a> for more details.</p>
 </div>
 <div class="paragraph">
-<p>Besides, using this Azure Cosmos DB Spring Boot Starter, you can directly use Spring Data for Azure Cosmos DB package for more complex scenarios. Please refer to <a href="https://github.com/Azure/azure-sdk-for-java/tree/spring-cloud-azure-dependencies_4.0.0-beta.4/sdk/cosmos/azure-spring-data-cosmos">Spring Data for Azure Cosmos DB</a> for more details.</p>
+<p>Apart from using the <code>spring-cloud-azure-starter-data-cosmos</code> library, you can directly use <code>azure-spring-data-cosmos</code> library for more complex scenarios. Please refer to <a href="https://github.com/Azure/azure-sdk-for-java/tree/spring-cloud-azure-dependencies_4.0.0-beta.4/sdk/cosmos/azure-spring-data-cosmos">Spring Data for Azure Cosmos DB</a> for more details.</p>
 </div>
 </div>
 </div>
@@ -2320,7 +2304,7 @@ public class CosmosSampleApplication implements CommandLineRunner {
 <h2 id="spring-security-support"><a class="anchor" href="#spring-security-support"></a><a class="link" href="#spring-security-support">12. Spring Security Support</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="spring-security-with-azure-ad"><a class="anchor" href="#spring-security-with-azure-ad"></a><a class="link" href="#spring-security-with-azure-ad">12.1. Spring Security With Azure AD</a></h3>
+<h3 id="spring-security-with-azure-active-directory"><a class="anchor" href="#spring-security-with-azure-active-directory"></a><a class="link" href="#spring-security-with-azure-active-directory">12.1. Spring Security With Azure Active Directory</a></h3>
 <div class="paragraph">
 <p>When you are building a web application, identity and access management will always be foundational pieces.</p>
 </div>
@@ -2331,21 +2315,936 @@ public class CosmosSampleApplication implements CommandLineRunner {
 <p>Spring Security has made it easy to secure your Spring based applications with powerful abstractions and extensible interfaces. However, as powerful as the Spring framework can be, it is not tailored to a specific identity provider.</p>
 </div>
 <div class="paragraph">
-<p>The <code>spring-cloud-azure-starter-active-directory</code> (<code>aad-starter</code> for short) provides the most optimal way to connect your <code>web application</code> to an Azure Active Directory(AAD for short) tenant and protect <code>resource server</code> with AAD. It uses the Oauth 2.0 protocol to protect <code>web applications</code> and <code>resource servers</code>.</p>
+<p>The <code>spring-cloud-azure-starter-active-directory</code> (<code>aad-starter</code> for short) provides the most optimal way to connect your <code>web application</code> to an Azure Active Directory (AAD for short) tenant and protect <code>resource server</code> with AAD. It uses the Oauth 2.0 protocol to protect <code>web applications</code> and <code>resource servers</code>.</p>
 </div>
 <div class="sect3">
-<h4 id="dependency-setup-5"><a class="anchor" href="#dependency-setup-5"></a><a class="link" href="#dependency-setup-5">12.1.1. Dependency Setup</a></h4>
+<h4 id="accessing-a-web-application"><a class="anchor" href="#accessing-a-web-application"></a><a class="link" href="#accessing-a-web-application">12.1.1. Accessing a Web Application</a></h4>
+<div class="paragraph">
+<p>This scenario uses <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">The OAuth 2.0 authorization code grant</a> flow to log in a user with a Microsoft account.</p>
+</div>
+<div class="sect4">
+<h5 id="system-diagram"><a class="anchor" href="#system-diagram"></a><a class="link" href="#system-diagram">System Diagram</a></h5>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142617664-f1704adb-db64-49e0-b1b6-078c62b6945b.png" alt="Standalone Web Application"></span></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="create-required-resources-in-azure"><a class="anchor" href="#create-required-resources-in-azure"></a><a class="link" href="#create-required-resources-in-azure">Create Required Resources in Azure</a></h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Read <a href="https://docs.microsoft.com/azure/active-directory/develop/quickstart-register-app">MS docs about register an application with the Microsoft identity platform</a>.</p>
+</li>
+<li>
+<p>Create app registration. Get <code>AZURE_TENANT_ID</code>, <code>AZURE_CLIENT_ID</code> and <code>AZURE_CLIENT_SECRET</code>.</p>
+</li>
+<li>
+<p>Set <code>redirect URI</code> to <code>APPLICATION_BASE_URI/login/oauth2/code/</code>, for example <code><a href="http://localhost:8080/login/oauth2/code/" class="bare">localhost:8080/login/oauth2/code/</a></code>. The tailing <code>/</code> is required.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="add-required-dependencies"><a class="anchor" href="#add-required-dependencies"></a><a class="link" href="#add-required-dependencies">Add Required Dependencies</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
-    &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
-&lt;/dependency&gt;</code></pre>
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-oauth2-client&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="add-required-properties"><a class="anchor" href="#add-required-properties"></a><a class="link" href="#add-required-properties">Add Required Properties</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        profile:
+          tenant-id: ${AZURE_TENANT_ID}
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-secret: ${AZURE_CLIENT_SECRET}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now start you application and access your application by browser, then you will be redirected into Microsoft login page.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="advanced-usages"><a class="anchor" href="#advanced-usages"></a><a class="link" href="#advanced-usages">Advanced Usages</a></h5>
+<div class="sect5">
+<h6 id="add-extra-security-configurations"><a class="anchor" href="#add-extra-security-configurations"></a><a class="link" href="#add-extra-security-configurations">Add Extra Security Configurations</a></h6>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">    @EnableWebSecurity
+    @EnableGlobalMethodSecurity(prePostEnabled = true)
+    public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
+
+        /**
+         * Add configuration logic as needed.
+         */
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            super.configure(http);
+            http.authorizeRequests()
+                    .anyRequest().authenticated();
+            // Do some custom configuration
+        }
+    }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="authorize-access-by-app-roles"><a class="anchor" href="#authorize-access-by-app-roles"></a><a class="link" href="#authorize-access-by-app-roles">Authorize Access by App Roles</a></h6>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 1: Create Required Resources in Azure</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Read <a href="https://docs.microsoft.com/azure/active-directory/develop/howto-add-app-roles-in-azure-ad-apps">MS docs about Add app roles to your application and receive them in the token</a>.</p>
+</li>
+<li>
+<p>Create an app role with the following parameters:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Display name: Admin</p>
+</li>
+<li>
+<p>Allowed member types: Users/Groups</p>
+</li>
+<li>
+<p>Value: Admin</p>
+</li>
+<li>
+<p>Do you want to enable this app role: yes</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you want to use app role based access control, you can&#8217;t put group names in <code>role</code> claim . Refs: <a href="https://docs.microsoft.com/azure/active-directory/develop/active-directory-optional-claims#configuring-groups-optional-claims">Configuring groups optional claims</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 2: Protect specific method.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>class Demo {
+    @GetMapping("Admin")
+    @ResponseBody
+    @PreAuthorize("hasAuthority('APPROLE_Admin')")
+    public String admin() {
+        return "Admin message";
+    }
+}</pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="authorize-access-by-group-name-or-group-id"><a class="anchor" href="#authorize-access-by-group-name-or-group-id"></a><a class="link" href="#authorize-access-by-group-name-or-group-id">Authorize Access by Group Name Or Group ID</a></h6>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 1: Add related configuration properties.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      active-directory:
+        user-group:
+          allowed-group-names: group1_name_1, group2_name_2
+          # 1. If allowed-group-ids == all, then all group id will take effect.
+          # 2. If "all" is used, we should not configure other group ids.
+          # 3. "all" is only supported for allowed-group-ids, not supported for allowed-group-names.
+          allowed-group-ids: group_id_1, group_id_2</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 2: Protect specific method.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@Controller
+public class RoleController {
+    @GetMapping("group1")
+    @ResponseBody
+    @PreAuthorize("hasRole('ROLE_group1')")
+    public String group1() {
+        return "group1 message";
+    }
+
+    @GetMapping("group2")
+    @ResponseBody
+    @PreAuthorize("hasRole('ROLE_group2')")
+    public String group2() {
+        return "group2 message";
+    }
+
+    @GetMapping("group1Id")
+    @ResponseBody
+    @PreAuthorize("hasRole('ROLE_&lt;group1-id&gt;')")
+    public String group1Id() {
+        return "group1Id message";
+    }
+
+    @GetMapping("group2Id")
+    @ResponseBody
+    @PreAuthorize("hasRole('ROLE_&lt;group2-id&gt;')")
+    public String group2Id() {
+        return "group2Id message";
+    }
+}</pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="use-national-azure-instead-of-global-azure"><a class="anchor" href="#use-national-azure-instead-of-global-azure"></a><a class="link" href="#use-national-azure-instead-of-global-azure">Use National Azure Instead of Global Azure</a></h6>
+<div class="paragraph">
+<p>Now except global Azure cloud, Azure Active Directory is deployed in the following national clouds:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Azure Government</p>
+</li>
+<li>
+<p>Azure China 21Vianet</p>
+</li>
+<li>
+<p>Azure Germany</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Here is a sample of you want to use Azure China 21Vianet.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        base-uri: https://login.partner.microsoftonline.cn
+        graph-base-uri: https://microsoftgraph.chinacloudapi.cn</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can refer to these MS doc to get more information from <a href="https://docs.microsoft.com/en-us/graph/deployments">MS docs about National cloud deployments</a>.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="configure-redirect-uri-template"><a class="anchor" href="#configure-redirect-uri-template"></a><a class="link" href="#configure-redirect-uri-template">Configure Redirect URI Template</a></h6>
+<div class="paragraph">
+<p>Developers can customize the redirect-uri.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/149295662-072ca3d5-f9e1-4f25-bb0e-be7bb751e9af.png" alt="redirect-uri"></span></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 1: Add <code>redirect-uri-template</code> properties in application.yml.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      active-directory
+        redirect-uri-template: ${REDIRECT-URI-TEMPLATE}</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 2: Update redirect-uri in Azure portal.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/149296913-a4259df9-e0c3-4e38-8d4e-77ee845de4ad.png" alt="web-application-config-redirect-uri"></span></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 3: Update WebSecurityConfigurerAdapter</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>After we set redirect-uri-template, we need to update <code>WebSecurityConfigurerAdapter</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
+    /**
+     * Add configuration logic as needed.
+     */
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        super.configure(http);
+        http.oauth2Login()
+                .loginProcessingUrl("${REDIRECT-URI-TEMPLATE}")
+                .and()
+            .authorizeRequests()
+                .anyRequest().authenticated();
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="samples-5"><a class="anchor" href="#samples-5"></a><a class="link" href="#samples-5">Samples</a></h5>
+<div class="paragraph">
+<p>Sample project: <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4/aad/spring-cloud-azure-starter-active-directory/web-client-access-resource-server/aad-web-application">aad-web-application</a>.</p>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="configuration-6"><a class="anchor" href="#configuration-6"></a><a class="link" href="#configuration-6">12.1.2. Configuration</a></h4>
+<h4 id="web-application-accessing-resource-servers"><a class="anchor" href="#web-application-accessing-resource-servers"></a><a class="link" href="#web-application-accessing-resource-servers">12.1.2. Web Application Accessing Resource Servers</a></h4>
+<div class="sect4">
+<h5 id="system-diagram-2"><a class="anchor" href="#system-diagram-2"></a><a class="link" href="#system-diagram-2">System Diagram</a></h5>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142617853-0526205f-fdef-47f9-ac01-77963f8c34be.png" alt="web-application-visiting-resource-servers.png"></span></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="create-required-resources-in-azure-2"><a class="anchor" href="#create-required-resources-in-azure-2"></a><a class="link" href="#create-required-resources-in-azure-2">Create Required Resources in Azure</a></h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Read <a href="https://docs.microsoft.com/azure/active-directory/develop/quickstart-register-app">MS docs about register an application with the Microsoft identity platform</a>.</p>
+</li>
+<li>
+<p>Create app registration. Get <code>AZURE_TENANT_ID</code>, <code>AZURE_CLIENT_ID</code> and <code>AZURE_CLIENT_SECRET</code>.</p>
+</li>
+<li>
+<p>Set <code>redirect URI</code> to <code>APPLICATION_BASE_URI/login/oauth2/code/</code>, for example <code><a href="http://localhost:8080/login/oauth2/code/" class="bare">localhost:8080/login/oauth2/code/</a></code>. The tailing <code>/</code> is required.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="add-required-dependencies-2"><a class="anchor" href="#add-required-dependencies-2"></a><a class="link" href="#add-required-dependencies-2">Add Required Dependencies</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-oauth2-client&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="add-required-properties-2"><a class="anchor" href="#add-required-properties-2"></a><a class="link" href="#add-required-properties-2">Add Required Properties</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        profile:
+          tenant-id: ${AZURE_TENANT_ID}
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-secret: ${AZURE_CLIENT_SECRET}
+        authorization-clients:
+          graph:
+            scopes: https://graph.microsoft.com/Analytics.Read, email</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here, <code>graph</code> is the name of <code>OAuth2AuthorizedClient</code>, <code>scopes</code> means the scopes need to consent when login.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="use-oauth2authorizedclient-in-your-application"><a class="anchor" href="#use-oauth2authorizedclient-in-your-application"></a><a class="link" href="#use-oauth2authorizedclient-in-your-application">Use OAuth2AuthorizedClient in Your Application</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class Demo {
+    @GetMapping("/graph")
+    @ResponseBody
+    public String graph(
+    @RegisteredOAuth2AuthorizedClient("graph") OAuth2AuthorizedClient graphClient) {
+        // toJsonString() is just a demo.
+        // oAuth2AuthorizedClient contains access_token. We can use this access_token to access resource server.
+        return toJsonString(graphClient);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now start you application and access your application by browser, then you will be redirected into Microsoft login page.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="advanced-usages-2"><a class="anchor" href="#advanced-usages-2"></a><a class="link" href="#advanced-usages-2">Advanced Usages</a></h5>
+<div class="sect5">
+<h6 id="client-credential-flow"><a class="anchor" href="#client-credential-flow"></a><a class="link" href="#client-credential-flow">Client Credential Flow</a></h6>
+<div class="paragraph">
+<p>The default flow is <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">authorization code flow</a>, if you want to use <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow">client credentials flow</a>, you can configure like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        profile:
+          tenant-id: ${AZURE_TENANT_ID}
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-secret: ${AZURE_CLIENT_SECRET}
+        authorization-clients:
+          graph:
+            authorization-grant-type: client_credentials # Change type to client_credentials
+            scopes: https://graph.microsoft.com/Analytics.Read, email</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="access-multiple-resource-servers"><a class="anchor" href="#access-multiple-resource-servers"></a><a class="link" href="#access-multiple-resource-servers">Access Multiple Resource Servers</a></h6>
+<div class="paragraph">
+<p>In one web application, you can access multiple resource server by configuring like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        profile:
+          tenant-id: ${AZURE_TENANT_ID}
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-secret: ${AZURE_CLIENT_SECRET}
+        authorization-clients:
+          resource-server-1:
+            scopes: # Scopes for resource-server-1
+          resource-server-2:
+            scopes: # Scopes for resource-server-2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then you can use OAuth2AuthorizedClient in application like this</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class Demo {
+    @GetMapping("/resource-server-1")
+    @ResponseBody
+    public String graph(
+    @RegisteredOAuth2AuthorizedClient("resource-server-1") OAuth2AuthorizedClient client) {
+        return callResourceServer1(client);
+    }
+
+    @GetMapping("/resource-server-2")
+    @ResponseBody
+    public String graph(
+    @RegisteredOAuth2AuthorizedClient("resource-server-2") OAuth2AuthorizedClient client) {
+        return callResourceServer2(client);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="incremental-consent"><a class="anchor" href="#incremental-consent"></a><a class="link" href="#incremental-consent">Incremental Consent</a></h6>
+<div class="paragraph">
+<p>In previous sample, all scopes will be consented when customer first login, no matter it&#8217;s belong to resource-server-1 or resource-server-2. If you don&#8217;t want to let customer consent all scopes, you can do like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        profile:
+          tenant-id: ${AZURE_TENANT_ID}
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-secret: ${AZURE_CLIENT_SECRET}
+        authorization-clients:
+          resource-server-1:
+            scopes: # Scopes for resource-server-1
+          resource-server-2:
+            on-demand: true  # means incremental consent
+            scopes: # Scopes for resource-server-2</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="samples-6"><a class="anchor" href="#samples-6"></a><a class="link" href="#samples-6">Samples</a></h5>
+<div class="paragraph">
+<p>Sample project: <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4/aad/spring-cloud-azure-starter-active-directory/web-client-access-resource-server/aad-web-application">aad-web-application</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="accessing-a-resource-server"><a class="anchor" href="#accessing-a-resource-server"></a><a class="link" href="#accessing-a-resource-server">12.1.3. Accessing a Resource Server</a></h4>
+<div class="paragraph">
+<p>This scenario doesn&#8217;t support login, just protect the server by validating the access token. If the access token is valid, the server serves the request.</p>
+</div>
+<div class="sect4">
+<h5 id="system-diagram-3"><a class="anchor" href="#system-diagram-3"></a><a class="link" href="#system-diagram-3">System Diagram</a></h5>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142617910-1ee3eb6a-ddc7-4b85-af4e-71344c91b248.png" alt="Standalone resource server usage"></span></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="create-required-resources-in-azure-3"><a class="anchor" href="#create-required-resources-in-azure-3"></a><a class="link" href="#create-required-resources-in-azure-3">Create Required Resources in Azure</a></h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Read <a href="https://docs.microsoft.com/azure/active-directory/develop/quickstart-register-app">MS docs about register an application with the Microsoft identity platform</a>.</p>
+</li>
+<li>
+<p>Create app registration. Get <code>AZURE_CLIENT_ID</code>.</p>
+</li>
+<li>
+<p>Read <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-configure-app-expose-web-apis">MS docs about configure an application to expose a web API</a>.</p>
+</li>
+<li>
+<p>Expose a web API with a scope named <code>Scope-1</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="add-required-dependencies-3"><a class="anchor" href="#add-required-dependencies-3"></a><a class="link" href="#add-required-dependencies-3">Add Required Dependencies</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-oauth2-resource-server&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="add-required-properties-3"><a class="anchor" href="#add-required-properties-3"></a><a class="link" href="#add-required-properties-3">Add Required Properties</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        credential:
+          client-id: ${AZURE_CLIENT_ID}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now start your application and access your application&#8217;s web api.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>You will get 401 without an access token.</p>
+</li>
+<li>
+<p>Access your application with an access token, the following claims in access token will be validated:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>iss</code>: The access token must be issued by Azure AD.</p>
+</li>
+<li>
+<p><code>nbf</code>: Current time can not before <code>nbf</code>.</p>
+</li>
+<li>
+<p><code>exp</code>: Current time can not after <code>exp</code>.</p>
+</li>
+<li>
+<p><code>aud</code>: If <code>spring.cloud.azure.active-directory.credential.client-id</code> or <code>spring.cloud.azure.active-directory.credential.app-id-uri</code> configured, the audience must equal to the configured <code>client-id</code> or <code>app-id-uri</code>. If the 2 properties are not configured, this claim will not be validated.</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Refer to <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/access-tokens">MS docs about Microsoft identity platform access tokens</a> to get more information about access token.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="advanced-usages-3"><a class="anchor" href="#advanced-usages-3"></a><a class="link" href="#advanced-usages-3">Advanced Usages</a></h5>
+<div class="sect5">
+<h6 id="add-extra-security-configurations-2"><a class="anchor" href="#add-extra-security-configurations-2"></a><a class="link" href="#add-extra-security-configurations-2">Add Extra Security Configurations</a></h6>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebSecurityConfigurerAdapter {
+    /**
+     * Add configuration logic as needed.
+     */
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        super.configure(http);
+        http.authorizeRequests((requests) -&gt; requests.anyRequest().authenticated());
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="validate-permission-by-scopes"><a class="anchor" href="#validate-permission-by-scopes"></a><a class="link" href="#validate-permission-by-scopes">Validate Permission by Scopes</a></h6>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 1: : Create Required Resources in Azure</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Read <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-configure-app-expose-web-apis">MS docs about configure an application to expose a web API</a>.</p>
+</li>
+<li>
+<p>Expose a web API with a scope named <code>Scope1</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Step 2: Protect specific method.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>class Demo {
+    @GetMapping("scope1")
+    @ResponseBody
+    @PreAuthorize("hasAuthority('SCOPE_Scope1')")
+    public String scope1() {
+        return "Congratulations, you can access `scope1` endpoint.";
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By doing this, when access <code>/scope1</code> endpoint, the following claims in access token will be validated:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>scp</code>: The value must contains <code>Scope1</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect5">
+<h6 id="validate-permission-by-app-roles"><a class="anchor" href="#validate-permission-by-app-roles"></a><a class="link" href="#validate-permission-by-app-roles">Validate Permission by App Roles</a></h6>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 1: Create Required Resources in Azure</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Read <a href="https://docs.microsoft.com/azure/active-directory/develop/howto-add-app-roles-in-azure-ad-apps">MS docs about Add app roles to your application and receive them in the token</a>.</p>
+</li>
+<li>
+<p>Create an app role with the following parameters:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Display name: AppRole1</p>
+</li>
+<li>
+<p>Allowed member types: Users/Groups</p>
+</li>
+<li>
+<p>Value: AppRole1</p>
+</li>
+<li>
+<p>Do you want to enable this app role: yes</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Step 2: Protect specific method.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>class Demo {
+    @GetMapping("app-role1")
+    @ResponseBody
+    @PreAuthorize("hasAuthority('APPROLE_AppRole1')")
+    public String appRole1() {
+        return "Congratulations, you can access `app-role1` endpoint.";
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By doing this, when access <code>/app-role1</code> endpoint, the following claims in access token will be validated:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>roles</code>: The value must contains <code>AppRole1</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="samples-7"><a class="anchor" href="#samples-7"></a><a class="link" href="#samples-7">Samples</a></h5>
+<div class="paragraph">
+<p>Sample project: <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4/aad/spring-cloud-azure-starter-active-directory/web-client-access-resource-server/aad-resource-server">aad-resource-server</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="resource-server-visiting-other-resource-servers"><a class="anchor" href="#resource-server-visiting-other-resource-servers"></a><a class="link" href="#resource-server-visiting-other-resource-servers">12.1.4. Resource Server Visiting Other Resource Servers</a></h4>
+<div class="sect4">
+<h5 id="system-diagram-4"><a class="anchor" href="#system-diagram-4"></a><a class="link" href="#system-diagram-4">System Diagram</a></h5>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142618294-aa546ced-d241-4fbd-97ac-fb06881503b1.png" alt="resource-server-visiting-other-resource-servers.png"></span></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="create-required-resources-in-azure-4"><a class="anchor" href="#create-required-resources-in-azure-4"></a><a class="link" href="#create-required-resources-in-azure-4">Create Required Resources in Azure</a></h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Read <a href="https://docs.microsoft.com/azure/active-directory/develop/quickstart-register-app">MS docs about register an application with the Microsoft identity platform</a>.</p>
+</li>
+<li>
+<p>Create app registration. Get <code>AZURE_TENANT_ID</code>, <code>AZURE_CLIENT_ID</code> and <code>AZURE_CLIENT_SECRET</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="add-required-dependencies-4"><a class="anchor" href="#add-required-dependencies-4"></a><a class="link" href="#add-required-dependencies-4">Add Required Dependencies</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-oauth2-resource-server&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-oauth2-client&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="add-required-properties-4"><a class="anchor" href="#add-required-properties-4"></a><a class="link" href="#add-required-properties-4">Add Required Properties</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        profile:
+          tenant-id: ${AZURE_TENANT_ID}
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-secret: ${AZURE_CLIENT_SECRET}
+        authorization-clients:
+          graph:
+            scopes:
+              - https://graph.microsoft.com/User.Read</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="use-oauth2authorizedclient-in-your-application-2"><a class="anchor" href="#use-oauth2authorizedclient-in-your-application-2"></a><a class="link" href="#use-oauth2authorizedclient-in-your-application-2">Use OAuth2AuthorizedClient in Your Application</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
+    @GetMapping("call-graph")
+    public String callGraph(@RegisteredOAuth2AuthorizedClient("graph") OAuth2AuthorizedClient graph) {
+        return callMicrosoftGraphMeEndpoint(graph);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="samples-8"><a class="anchor" href="#samples-8"></a><a class="link" href="#samples-8">Samples</a></h5>
+<div class="paragraph">
+<p>Sample project: <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4/aad/spring-cloud-azure-starter-active-directory/web-client-access-resource-server/aad-resource-server-obo">aad-resource-server-obo</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="web-application-and-resource-server-in-one-application"><a class="anchor" href="#web-application-and-resource-server-in-one-application"></a><a class="link" href="#web-application-and-resource-server-in-one-application">12.1.5. Web Application and Resource Server in One Application</a></h4>
+<div class="sect4">
+<h5 id="create-required-resources-in-azure-5"><a class="anchor" href="#create-required-resources-in-azure-5"></a><a class="link" href="#create-required-resources-in-azure-5">Create Required Resources in Azure</a></h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Read <a href="https://docs.microsoft.com/azure/active-directory/develop/quickstart-register-app">MS docs about register an application with the Microsoft identity platform</a>.</p>
+</li>
+<li>
+<p>Create app registration. Get <code>AZURE_TENANT_ID</code>, <code>AZURE_CLIENT_ID</code> and <code>AZURE_CLIENT_SECRET</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="add-required-dependencies-5"><a class="anchor" href="#add-required-dependencies-5"></a><a class="link" href="#add-required-dependencies-5">Add Required Dependencies</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-oauth2-resource-server&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-oauth2-client&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="add-required-properties-5"><a class="anchor" href="#add-required-properties-5"></a><a class="link" href="#add-required-properties-5">Add Required Properties</a></h5>
+<div class="paragraph">
+<p>Set property <code>spring.cloud.azure.active-directory.application-type</code> to <code>web_application_and_resource_server</code>, and specify the authorization type for each authorization client.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        profile:
+          tenant-id: ${AZURE_TENANT_ID}
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-secret: ${AZURE_CLIENT_SECRET}
+        app-id-uri: ${WEB_API_ID_URI}
+        application-type: web_application_and_resource_server  # This is required.
+        authorization-clients:
+          graph:
+            authorizationGrantType: authorization_code # This is required.
+            scopes:
+              - https://graph.microsoft.com/User.Read
+              - https://graph.microsoft.com/Directory.Read.All</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="define-securityconfigurationadapter"><a class="anchor" href="#define-securityconfigurationadapter"></a><a class="link" href="#define-securityconfigurationadapter">Define SecurityConfigurationAdapter</a></h5>
+<div class="paragraph">
+<p>Configure multiple HttpSecurity instances, <code>AadWebApplicationAndResourceServerConfig</code> contain two security configurations for resource server and web application.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class AadWebApplicationAndResourceServerConfig {
+
+    @Order(1)
+    @Configuration
+    public static class ApiWebSecurityConfigurationAdapter extends AadResourceServerWebSecurityConfigurerAdapter {
+        protected void configure(HttpSecurity http) throws Exception {
+            super.configure(http);
+            // All the paths that match `/api/**`(configurable) work as `Resource Server`, other paths work as `Web application`.
+            http.antMatcher("/api/**")
+                .authorizeRequests().anyRequest().authenticated();
+        }
+    }
+
+    @Configuration
+    public static class HtmlWebSecurityConfigurerAdapter extends AadWebSecurityConfigurerAdapter {
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            super.configure(http);
+            // @formatter:off
+            http.authorizeRequests()
+                    .antMatchers("/login").permitAll()
+                    .anyRequest().authenticated();
+            // @formatter:on
+        }
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="configuration-5"><a class="anchor" href="#configuration-5"></a><a class="link" href="#configuration-5">12.1.6. Configuration</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 17. Configurable properties of spring-cloud-azure-starter-active-directory</caption>
 <colgroup>
@@ -2482,9 +3381,9 @@ public class CosmosSampleApplication implements CommandLineRunner {
 <p>Here are some examples about how to use these properties:</p>
 </div>
 <div class="sect4">
-<h5 id="property-example-1-application-type"><a class="anchor" href="#property-example-1-application-type"></a><a class="link" href="#property-example-1-application-type">Property Example 1: Application Type</a></h5>
+<h5 id="application-type"><a class="anchor" href="#application-type"></a><a class="link" href="#application-type">Application Type</a></h5>
 <div class="paragraph">
-<p>This property(<code>spring.cloud.azure.active-directory.application-type</code>) is optional, its value can be inferred by dependencies, only <code>web_application_and_resource_server</code> must be configured manually: <code>spring.cloud.azure.active-directory.application-type=web_application_and_resource_server</code>.</p>
+<p>THe application type can be inferred from the dependencies: spring-security-oauth2-client or spring-security-oauth2-resource-server. If the inferred value is not the value you want, you can specify the application type. Here is the table about valid values and inferred value:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 18. Application type of spring-cloud-azure-starter-active-directory</caption>
@@ -2499,7 +3398,7 @@ public class CosmosSampleApplication implements CommandLineRunner {
 <th class="tableblock halign-left valign-top">Has dependency: spring-security-oauth2-client</th>
 <th class="tableblock halign-left valign-top">Has dependency: spring-security-oauth2-resource-server</th>
 <th class="tableblock halign-left valign-top">Valid values of application type</th>
-<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Inferred value</th>
 </tr>
 </thead>
 <tbody>
@@ -2518,904 +3417,21 @@ public class CosmosSampleApplication implements CommandLineRunner {
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>web_application</code>,<code>resource_server</code>,<code>resource_server_with_obo</code>, <code>web_application_and_resource_server</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>web_application</code>, <code>resource_server</code>, <code>resource_server_with_obo</code>, <code>web_application_and_resource_server</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>resource_server_with_obo</code></p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="sect4">
-<h5 id="property-example-2-use-azure-china-instead-of-azure-global"><a class="anchor" href="#property-example-2-use-azure-china-instead-of-azure-global"></a><a class="link" href="#property-example-2-use-azure-china-instead-of-azure-global">Property Example 2: Use <a href="https://docs.microsoft.com/azure/china/resources-developer-guide#check-endpoints-in-azure">Azure China</a> Instead of Azure Global</a></h5>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 1: Add property in application.yml</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>spring:
-  cloud:
-    azure:
-      active-directory:
-        base-uri: https://login.partner.microsoftonline.cn
-        graph-base-uri: https://microsoftgraph.chinacloudapi.cn</pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="property-example-3-use-group-name-or-group-id-to-protect-some-method-in-web-application"><a class="anchor" href="#property-example-3-use-group-name-or-group-id-to-protect-some-method-in-web-application"></a><a class="link" href="#property-example-3-use-group-name-or-group-id-to-protect-some-method-in-web-application">Property Example 3: Use <code>Group Name</code> Or <code>Group ID</code> to Protect Some Method in Web Application</a></h5>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 1: Add property in application.yml</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
-  cloud:
-    azure:
-      active-directory:
-        user-group:
-          allowed-group-names: group1_name_1, group2_name_2
-          # 1. If allowed-group-ids == all, then all group id will take effect.
-          # 2. If "all" is used, we should not configure other group ids.
-          # 3. "all" is only supported for allowed-group-ids, not supported for allowed-group-names.
-          allowed-group-ids: group_id_1, group_id_2</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 2: Add <code>@EnableGlobalMethodSecurity(prePostEnabled = true)</code> in web application:</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
-
-    /**
-     * Add configuration logic as needed.
-     */
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
-        http.authorizeRequests()
-            .anyRequest().authenticated();
-        // Do some custom configuration
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then we can protect the method by <code>@PreAuthorize</code> annotation:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Controller
-public class RoleController {
-    @GetMapping("group1")
-    @ResponseBody
-    @PreAuthorize("hasRole('ROLE_group1')")
-    public String group1() {
-        return "group1 message";
-    }
-
-    @GetMapping("group2")
-    @ResponseBody
-    @PreAuthorize("hasRole('ROLE_group2')")
-    public String group2() {
-        return "group2 message";
-    }
-
-    @GetMapping("group1Id")
-    @ResponseBody
-    @PreAuthorize("hasRole('ROLE_&lt;group1-id&gt;')")
-    public String group1Id() {
-        return "group1Id message";
-    }
-
-    @GetMapping("group2Id")
-    @ResponseBody
-    @PreAuthorize("hasRole('ROLE_&lt;group2-id&gt;')")
-    public String group2Id() {
-        return "group2Id message";
-    }
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="property-example-4-incremental-consent-in-web-application-visiting-resource-servers"><a class="anchor" href="#property-example-4-incremental-consent-in-web-application-visiting-resource-servers"></a><a class="link" href="#property-example-4-incremental-consent-in-web-application-visiting-resource-servers">Property Example 4: <a href="https://docs.microsoft.com/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison#incremental-and-dynamic-consent">Incremental consent</a> In Web Application Visiting Resource Servers</a></h5>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 1: Add property in application.yml</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
-  cloud:
-    azure:
-      active-directory:
-        authorization-clients:
-          graph:
-            scopes: https://graph.microsoft.com/Analytics.Read, email
-          arm: # client registration id
-            on-demand: true  # means incremental consent
-            scopes: https://management.core.windows.net/user_impersonation</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 2: Write Java code:</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>After these steps. <code>arm&#8217;s scopes (<a href="https://management.core.windows.net/user_impersonation" class="bare">management.core.windows.net/user_impersonation</a>) doesn&#8217;t
-need to be consented at login time. When user request `/arm</code> endpoint, user need to consent the
-scope. That&#8217;s <code>incremental consent</code> means.</p>
-</div>
-<div class="paragraph">
-<p>After the scopes have been consented, AAD server will remember that this user has already granted
-the permission to the web application. So incremental consent will not happen anymore after user
-consented.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="property-example-5-client-credential-flow-in-resource-server-visiting-resource-servers"><a class="anchor" href="#property-example-5-client-credential-flow-in-resource-server-visiting-resource-servers"></a><a class="link" href="#property-example-5-client-credential-flow-in-resource-server-visiting-resource-servers">Property Example 5: <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow">Client credential flow</a> In Resource Server Visiting Resource Servers</a></h5>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 1: Add property in application.yml</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
-  cloud:
-    azure:
-      active-directory:
-        authorization-clients:
-          webapiC:                          # When authorization-grant-type is null, on behalf of flow is used by default
-            authorization-grant-type: client_credentials
-            scopes:
-                - &lt;Web-API-C-app-id-url&gt;/.default</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 2: Write Java code:</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="basic-usage-5"><a class="anchor" href="#basic-usage-5"></a><a class="link" href="#basic-usage-5">12.1.3. Basic Usage</a></h4>
-<div class="sect4">
-<h5 id="usage-1-accessing-a-web-application"><a class="anchor" href="#usage-1-accessing-a-web-application"></a><a class="link" href="#usage-1-accessing-a-web-application">Usage 1: Accessing a Web Application</a></h5>
-<div class="paragraph">
-<p>This scenario uses <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">The OAuth 2.0 authorization code grant</a> flow to log in a user with a Microsoft account.</p>
-</div>
-<div class="paragraph">
-<p><strong>System diagram</strong>:</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142617664-f1704adb-db64-49e0-b1b6-078c62b6945b.png" alt="Standalone Web Application"></span></p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 1: Make sure <code>redirect URI</code> has been set to <code>APPLICATION_BASE_URI/login/oauth2/code/</code>, for
-example <code><a href="http://localhost:8080/login/oauth2/code/" class="bare">localhost:8080/login/oauth2/code/</a></code>.</p>
-</li>
-</ul>
-</div>
-<div class="admonitionblock caution">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
-</td>
-<td class="content">
-The tailing <code>/</code> cannot be omitted.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142617751-154c156c-9035-4641-9b79-b26380ddad72.png" alt="web-application-set-redirect-uri-1.png"></span>
-<span class="image"><img src="https://user-images.githubusercontent.com/13167207/142617785-b4ca1afc-79f6-48ae-b7a3-99fba5856689.png" alt="web-application-set-redirect-uri-2.png"></span></p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 2: Add the following dependencies in your pom.xml.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-boot-starter-oauth2-client&lt;/artifactId&gt;
-    &lt;/dependency&gt;
-&lt;/dependencies&gt;</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 3: Add properties in application.yml.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
-  cloud:
-    azure:
-      active-directory:
-        profile:
-          tenant-id: ${AZURE_TENANT_ID}
-        credential:
-          client-id: ${AZURE_CLIENT_ID}
-          client-secret: ${AZURE_CLIENT_SECRET}</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 4: Write your Java code:</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The <code>AadWebSecurityConfigurerAdapter</code> contains necessary web security configuration for <strong>aad-starter</strong>.</p>
-</div>
-<div class="paragraph">
-<p>(A). <code>DefaultAadWebSecurityConfigurerAdapter</code> is configured automatically if you not provide one.</p>
-</div>
-<div class="paragraph">
-<p>(B). You can provide one by extending <code>AadWebSecurityConfigurerAdapter</code> and call <code>super.configure(http)</code> explicitly in the <code>configure(HttpSecurity http)</code> function. Here is an example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">    @EnableWebSecurity
-    @EnableGlobalMethodSecurity(prePostEnabled = true)
-    public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
-
-        /**
-         * Add configuration logic as needed.
-         */
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            super.configure(http);
-            http.authorizeRequests()
-                    .anyRequest().authenticated();
-            // Do some custom configuration
-        }
-    }</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="usage-2-web-application-accessing-resource-servers"><a class="anchor" href="#usage-2-web-application-accessing-resource-servers"></a><a class="link" href="#usage-2-web-application-accessing-resource-servers">Usage 2: Web Application Accessing Resource Servers</a></h5>
-<div class="paragraph">
-<p><strong>System diagram</strong>:</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142617853-0526205f-fdef-47f9-ac01-77963f8c34be.png" alt="web-application-visiting-resource-servers.png"></span></p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 1: Make sure <code>redirect URI</code> has been set.</p>
-</li>
-<li>
-<p>Step 2: Add the following dependencies in you pom.xml.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-boot-starter-oauth2-client&lt;/artifactId&gt;
-    &lt;/dependency&gt;
-&lt;/dependencies&gt;</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 3: Add properties in application.yml:</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
-  cloud:
-    azure:
-      active-directory:
-        profile:
-          tenant-id: ${AZURE_TENANT_ID}
-        credential:
-          client-id: ${AZURE_CLIENT_ID}
-          client-secret: ${AZURE_CLIENT_SECRET}
-        authorization-clients:
-          graph:
-            scopes: https://graph.microsoft.com/Analytics.Read, email</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Here, <code>graph</code> is the name of <code>OAuth2AuthorizedClient</code>, <code>scopes</code> means the scopes need to consent when login.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 4: Write your Java code:</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>public class Demo {
-    @GetMapping("/graph")
-    @ResponseBody
-    public String graph(
-    @RegisteredOAuth2AuthorizedClient("graph") OAuth2AuthorizedClient graphClient) {
-        // toJsonString() is just a demo.
-        // oAuth2AuthorizedClient contains access_token. We can use this access_token to access resource server.
-        return toJsonString(graphClient);
-    }
-}</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Here, <code>graph</code> is the client name configured in step 2. OAuth2AuthorizedClient contains access_token. access_token can be used to access resource server.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="usage-3-accessing-a-resource-server"><a class="anchor" href="#usage-3-accessing-a-resource-server"></a><a class="link" href="#usage-3-accessing-a-resource-server">Usage 3: Accessing a Resource Server</a></h5>
-<div class="paragraph">
-<p>This scenario doesn&#8217;t support login, just protect the server by validating the access_token. If the access token is valid, the server serves the request.</p>
-</div>
-<div class="paragraph">
-<p><strong>System diagram</strong>:</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142617910-1ee3eb6a-ddc7-4b85-af4e-71344c91b248.png" alt="Standalone resource server usage"></span></p>
-</div>
-<div class="paragraph">
-<p>To use <strong>aad-starter</strong> in this scenario, we need these steps:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 1: Add the following dependencies in you pom.xml.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>&lt;dependencies&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-boot-starter-oauth2-resource-server&lt;/artifactId&gt;
-    &lt;/dependency&gt;
-&lt;/dependencies&gt;</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 2: Add properties in application.yml:</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>spring:
-  cloud:
-    azure:
-      active-directory:
-        client-id: ${AZURE_CLIENT_ID}
-        app-id-uri: ${AZURE_APP_ID_URI}</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Both <code>client-id</code> and <code>app-id-uri</code> can be used to verify access token. <code>app-id-uri</code> can be got in Azure Portal:</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142617979-167e7509-b82e-4475-99b7-91bcf0ec249c.png" alt="get-app-id-uri-1.png"></span>
-<span class="image"><img src="https://user-images.githubusercontent.com/13167207/142618069-074289df-11aa-4d2c-ac8e-9a8a61c96288.png" alt="get-app-id-uri-2.png"></span></p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 3: Write Java code:</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The <code>AadResourceServerWebSecurityConfigurerAdapter</code> contains necessary web security configuration for resource server.</p>
-</div>
-<div class="paragraph">
-<p>(A). <code>DefaultAadResourceServerWebSecurityConfigurerAdapter</code> is configured automatically if you not provide one.</p>
-</div>
-<div class="paragraph">
-<p>(B). You can provide one by extending <code>AadResourceServerWebSecurityConfigurerAdapter</code> and call <code>super.configure(http)</code> explicitly in the <code>configure(HttpSecurity http)</code> function. Here is an example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebSecurityConfigurerAdapter {
-    /**
-     * Add configuration logic as needed.
-     */
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
-        http.authorizeRequests((requests) -&gt; requests.anyRequest().authenticated());
-    }
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="usage-4-resource-server-visiting-other-resource-servers"><a class="anchor" href="#usage-4-resource-server-visiting-other-resource-servers"></a><a class="link" href="#usage-4-resource-server-visiting-other-resource-servers">Usage 4: Resource Server Visiting Other Resource Servers</a></h5>
-<div class="paragraph">
-<p>This scenario support visit other resource servers in resource servers.</p>
-</div>
-<div class="paragraph">
-<p><strong>System diagram</strong>:</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142618294-aa546ced-d241-4fbd-97ac-fb06881503b1.png" alt="resource-server-visiting-other-resource-servers.png"></span></p>
-</div>
-<div class="paragraph">
-<p>To use <strong>aad-starter</strong> in this scenario, we need these steps:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 1: Add the following dependencies in you pom.xml.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>&lt;dependencies&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-boot-starter-oauth2-resource-server&lt;/artifactId&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-boot-starter-oauth2-client&lt;/artifactId&gt;
-    &lt;/dependency&gt;
-&lt;/dependencies&gt;</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 2: Add properties in application.yml:</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
-  cloud:
-    azure:
-      active-directory:
-        profile:
-          tenant-id: ${AZURE_TENANT_ID}
-        credential:
-          client-id: ${AZURE_CLIENT_ID}
-          client-secret: ${AZURE_CLIENT_SECRET}
-        app-id-uri: ${WEB_API_ID_URI}
-        authorization-clients:
-          graph:
-            scopes:
-              - https://graph.microsoft.com/User.Read</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 3: Write Java code:</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Using <code>@RegisteredOAuth2AuthorizedClient</code> to access related resource server:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
-    @PreAuthorize("hasAuthority('SCOPE_Obo.Graph.Read')")
-    @GetMapping("call-graph")
-    public String callGraph(@RegisteredOAuth2AuthorizedClient("graph") OAuth2AuthorizedClient graph) {
-        return callMicrosoftGraphMeEndpoint(graph);
-    }
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="usage-5-web-application-and-resource-server-in-one-application"><a class="anchor" href="#usage-5-web-application-and-resource-server-in-one-application"></a><a class="link" href="#usage-5-web-application-and-resource-server-in-one-application">Usage 5: Web Application and Resource Server in One Application</a></h5>
-<div class="paragraph">
-<p>This scenario supports <code>Web application</code> and <code>Resource server</code> in one application.</p>
-</div>
-<div class="paragraph">
-<p>To use <strong>aad-starter</strong> in this scenario, we need these steps:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 1: Add the following dependencies in you pom.xml.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>&lt;dependencies&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-boot-starter-oauth2-resource-server&lt;/artifactId&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-boot-starter-oauth2-client&lt;/artifactId&gt;
-    &lt;/dependency&gt;
-&lt;/dependencies&gt;</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 2: Add properties in application.yml:</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Set property <code>spring.cloud.azure.active-directory.application-type</code> to <code>web_application_and_resource_server</code>, and specify the authorization type for each authorization client.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
-  cloud:
-    azure:
-      active-directory:
-        profile:
-          tenant-id: ${AZURE_TENANT_ID}
-        credential:
-          client-id: ${AZURE_CLIENT_ID}
-          client-secret: ${AZURE_CLIENT_SECRET}
-        app-id-uri: ${WEB_API_ID_URI}
-        application-type: web_application_and_resource_server  # This is required.
-        authorization-clients:
-          graph:
-            authorizationGrantType: authorization_code # This is required.
-            scopes:
-              - https://graph.microsoft.com/User.Read
-              - https://graph.microsoft.com/Directory.Read.All</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 3: Write Java code:</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Configure multiple HttpSecurity instances, <code>AadOAuth2SecurityMultiConfig</code> contain two security configurations for resource server and web application.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class AadWebApplicationAndResourceServerConfig {
-
-    @Order(1)
-    @Configuration
-    public static class ApiWebSecurityConfigurationAdapter extends AadResourceServerWebSecurityConfigurerAdapter {
-        protected void configure(HttpSecurity http) throws Exception {
-            super.configure(http);
-            // All the paths that match `/api/**`(configurable) work as `Resource Server`, other paths work as `Web application`.
-            http.antMatcher("/api/**")
-                .authorizeRequests().anyRequest().authenticated();
-        }
-    }
-
-    @Configuration
-    public static class HtmlWebSecurityConfigurerAdapter extends AadWebSecurityConfigurerAdapter {
-
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            super.configure(http);
-            // @formatter:off
-            http.authorizeRequests()
-                    .antMatchers("/login").permitAll()
-                    .anyRequest().authenticated();
-            // @formatter:on
-        }
-    }
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="advanced-features"><a class="anchor" href="#advanced-features"></a><a class="link" href="#advanced-features">12.1.4. Advanced Features</a></h4>
-<div class="sect4">
-<h5 id="support-access-control-by-id-token-in-web-application"><a class="anchor" href="#support-access-control-by-id-token-in-web-application"></a><a class="link" href="#support-access-control-by-id-token-in-web-application">Support Access Control by ID Token in Web Application</a></h5>
-<div class="paragraph">
-<p>This starter supports creating <code>GrantedAuthority</code> from id_token&#8217;s <code>roles</code> claim to allow using <code>id_token</code> for authorization in web application. Developers can use the <code>appRoles</code> feature of Azure Active Directory to create <code>roles</code> claim and implement access control.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The <code>roles</code> claim generated from <code>appRoles</code> is decorated with prefix <code>APPROLE_</code>. When using <code>appRoles</code> as <code>roles</code> claim, please avoid configuring group attribute as <code>roles</code> at the same time. The latter will override the claim to contain group information instead of <code>appRoles</code>. Below configuration in manifest should be avoided:
-</td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-json" data-lang="json">{
-    "optionalClaims": {
-        "idtoken": [{
-            "name": "groups",
-            "additionalProperties": ["emit_as_roles"]
-        }]
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Follow <a href="https://docs.microsoft.com/azure/active-directory/develop/howto-add-app-roles-in-azure-ad-apps">the guide</a> to add app roles in your application and assign to users or groups.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 1: Add below <code>appRoles</code> configuration in your application&#8217;s manifest:</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>{
-    "appRoles": [
-        {
-        "allowedMemberTypes": [
-          "User"
-        ],
-        "displayName": "Admin",
-        "id": "2fa848d0-8054-4e11-8c73-7af5f1171001",
-        "isEnabled": true,
-        "description": "Full admin access",
-        "value": "Admin"
-        }
-    ]
-}</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 2: Write Java code:</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
-    @GetMapping("Admin")
-    @ResponseBody
-    @PreAuthorize("hasAuthority('APPROLE_Admin')")
-    public String admin() {
-        return "Admin message";
-    }
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="support-conditional-access-in-web-application"><a class="anchor" href="#support-conditional-access-in-web-application"></a><a class="link" href="#support-conditional-access-in-web-application">Support Conditional Access in Web Application</a></h5>
-<div class="paragraph">
-<p>This starter supports <a href="https://docs.microsoft.com/azure/active-directory/conditional-access/">Conditional Access</a> policy. By using Conditional Access policies, you can apply the right <strong>access controls</strong> when needed to keep your organization secure. <strong>Access controls</strong> has many concepts, <a href="https://docs.microsoft.com/azure/active-directory/conditional-access/howto-conditional-access-policy-block-access">Block Access</a> and <a href="https://docs.microsoft.com/azure/active-directory/conditional-access/concept-conditional-access-grant">Grant Access</a> are important. In some scenarios, this stater will help you complete Grant Access controls.</p>
-</div>
-<div class="paragraph">
-<p>In <code>Resource server visiting other resource server</code> scenario(For better description, we think that resource server with OBO function as <strong>webapiA</strong> and the other resource servers as <strong>webapiB</strong>), When we configure the webapiB application with Conditional Access(such as <a href="https://docs.microsoft.com/azure/active-directory/authentication/concept-mfa-howitworks">multi-factor authentication</a>), this stater will help us send the Conditional Access information of the webapiA to the web application and the web application will help us complete the Conditional Access Policy. As shown below:</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/149291667-930e8559-b8ce-4955-b9ae-11a0a8013ea9.png" alt="aad-conditional-access-flow.png"></span></p>
-</div>
-<div class="paragraph">
-<p>We can use our sample to create a Conditional Access scenario.</p>
-</div>
-<div class="paragraph">
-<p><strong>webapp</strong>: <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4/aad/spring-cloud-azure-starter-active-directory/aad-web-application">aad-web-application</a>.</p>
-</div>
-<div class="paragraph">
-<p><strong>webapiA</strong>:  <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4/aad/spring-cloud-azure-starter-active-directory/aad-resource-server-obo">aad-resource-server-obo</a>.</p>
-</div>
-<div class="paragraph">
-<p><strong>webapiB</strong>: <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4/aad/spring-cloud-azure-starter-active-directory/aad-resource-server">aad-resource-server</a>.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 1: Follow the guide to create conditional access policy for webapiB.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/149294175-af143a10-a242-476d-a20b-5ab91b45cee3.png" alt="aad-create-conditional-access"></span></p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/149294294-75af3386-89b6-43fa-84e6-7a21c3da0352.png" alt="aad-conditional-access-add-application"></span></p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 2: <a href="https://docs.microsoft.com/azure/active-directory/conditional-access/howto-conditional-access-policy-all-users-mfa">Require MFA for all users</a> or specify the user account in your policy.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/149294469-f2785eee-ddfc-49f0-b16e-efc29aca626e.png" alt="aad-create-conditional-access"></span></p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 3: Follow the guide, configure and run sample</p>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><strong>webapiB</strong>: <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4/aad/spring-cloud-azure-starter-active-directory/aad-resource-server#configure-web-api">configure webapiB</a></p>
-</li>
-<li>
-<p><strong>webapiA</strong>: <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/aad/azure-spring-boot-starter-active-directory/aad-resource-server-obo#configure-your-middle-tier-web-api-a">configure webapiA</a></p>
-</li>
-<li>
-<p><strong>webapp</strong>: <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/aad/azure-spring-boot-starter-active-directory/aad-web-application#configure-web-app">configure webapp</a></p>
-</li>
-</ol>
-</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect4">
-<h5 id="support-setting-redirect-uri-template"><a class="anchor" href="#support-setting-redirect-uri-template"></a><a class="link" href="#support-setting-redirect-uri-template">Support Setting Redirect-URI-Template</a></h5>
-<div class="paragraph">
-<p>Developers can customize the redirect-uri.</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/149295662-072ca3d5-f9e1-4f25-bb0e-be7bb751e9af.png" alt="redirect-uri"></span></p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 1: Add <code>redirect-uri-template</code> properties in application.yml.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>spring:
-  cloud:
-    azure:
-      active-directory
-        redirect-uri-template: ${REDIRECT-URI-TEMPLATE}</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 2: Update the configuration of the azure cloud platform in the portal.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>We need to configure the same redirect-uri as application.yml:</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/149296913-a4259df9-e0c3-4e38-8d4e-77ee845de4ad.png" alt="web-application-config-redirect-uri"></span></p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Step 3: Write your Java code:</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>After we set redirect-uri-template, we need to update <code>SecurityConfigurerAdapter</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
-    /**
-     * Add configuration logic as needed.
-     */
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
-        http.oauth2Login()
-                .loginProcessingUrl("${REDIRECT-URI-TEMPLATE}")
-                .and()
-            .authorizeRequests()
-                .anyRequest().authenticated();
-    }
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="samples-5"><a class="anchor" href="#samples-5"></a><a class="link" href="#samples-5">12.1.5. Samples</a></h4>
-<div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4">azure-spring-boot-samples</a> for more details.</p>
-</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="spring-security-with-azure-ad-b2c"><a class="anchor" href="#spring-security-with-azure-ad-b2c"></a><a class="link" href="#spring-security-with-azure-ad-b2c">12.2. Spring Security With Azure AD B2C</a></h3>
+<h3 id="spring-security-with-azure-active-directory-b2c"><a class="anchor" href="#spring-security-with-azure-active-directory-b2c"></a><a class="link" href="#spring-security-with-azure-active-directory-b2c">12.2. Spring Security With Azure Active Directory B2C</a></h3>
 <div class="paragraph">
 <p>Azure Active Directory (Azure AD) B2C is an identity management service that enables you to customize and control how customers sign up, sign in, and manage their profiles when using your applications. Azure AD B2C enables these actions while protecting the identities of your customers at the same time.</p>
 </div>
 <div class="sect3">
-<h4 id="dependency-setup-6"><a class="anchor" href="#dependency-setup-6"></a><a class="link" href="#dependency-setup-6">12.2.1. Dependency Setup</a></h4>
+<h4 id="dependency-setup-5"><a class="anchor" href="#dependency-setup-5"></a><a class="link" href="#dependency-setup-5">12.2.1. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
@@ -3428,7 +3444,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 </div>
 </div>
 <div class="sect3">
-<h4 id="configuration-7"><a class="anchor" href="#configuration-7"></a><a class="link" href="#configuration-7">12.2.2. Configuration</a></h4>
+<h4 id="configuration-6"><a class="anchor" href="#configuration-6"></a><a class="link" href="#configuration-6">12.2.2. Configuration</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 19. Configurable properties of spring-cloud-azure-starter-active-directory-b2c</caption>
 <colgroup>
@@ -3521,7 +3537,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 </div>
 </div>
 <div class="sect3">
-<h4 id="basic-usage-6"><a class="anchor" href="#basic-usage-6"></a><a class="link" href="#basic-usage-6">12.2.3. Basic Usage</a></h4>
+<h4 id="basic-usage-5"><a class="anchor" href="#basic-usage-5"></a><a class="link" href="#basic-usage-5">12.2.3. Basic Usage</a></h4>
 <div class="paragraph">
 <p>A <code>web application</code> is any web based application that allows user to login Azure AD, whereas a <code>resource server</code> will either accept or deny access after validating access_token obtained from Azure AD. We will cover 4 scenarios in this guide:</p>
 </div>
@@ -3545,7 +3561,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 <p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142620440-f970b572-2646-4f50-9f77-db62d6e965f1.png" alt="B2C Web application &amp; Web Api Overall"></span></p>
 </div>
 <div class="sect4">
-<h5 id="usage-1-accessing-a-web-application-2"><a class="anchor" href="#usage-1-accessing-a-web-application-2"></a><a class="link" href="#usage-1-accessing-a-web-application-2">Usage 1: Accessing a Web Application</a></h5>
+<h5 id="usage-1-accessing-a-web-application"><a class="anchor" href="#usage-1-accessing-a-web-application"></a><a class="link" href="#usage-1-accessing-a-web-application">Usage 1: Accessing a Web Application</a></h5>
 <div class="paragraph">
 <p>This scenario uses <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">The OAuth 2.0 authorization code grant</a> flow to log in a user with your Azure AD B2C user.</p>
 </div>
@@ -3722,7 +3738,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 </div>
 <div class="sect4">
-<h5 id="usage-2-web-application-accessing-resource-servers-2"><a class="anchor" href="#usage-2-web-application-accessing-resource-servers-2"></a><a class="link" href="#usage-2-web-application-accessing-resource-servers-2">Usage 2: Web Application Accessing Resource Servers</a></h5>
+<h5 id="usage-2-web-application-accessing-resource-servers"><a class="anchor" href="#usage-2-web-application-accessing-resource-servers"></a><a class="link" href="#usage-2-web-application-accessing-resource-servers">Usage 2: Web Application Accessing Resource Servers</a></h5>
 <div class="paragraph">
 <p>This scenario is based on <strong>Accessing a web application</strong> scenario to allow application to access other resources, that is [The OAuth 2.0 client credentials grant] flow.</p>
 </div>
@@ -3877,7 +3893,7 @@ record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_UR
 </div>
 </div>
 <div class="sect4">
-<h5 id="usage-3-accessing-a-resource-server-2"><a class="anchor" href="#usage-3-accessing-a-resource-server-2"></a><a class="link" href="#usage-3-accessing-a-resource-server-2">Usage 3: Accessing a Resource Server</a></h5>
+<h5 id="usage-3-accessing-a-resource-server"><a class="anchor" href="#usage-3-accessing-a-resource-server"></a><a class="link" href="#usage-3-accessing-a-resource-server">Usage 3: Accessing a Resource Server</a></h5>
 <div class="paragraph">
 <p>This scenario not support login. Just protect the server by validating the access token, and if valid, serves the request.</p>
 </div>
@@ -3989,7 +4005,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 </div>
 <div class="sect4">
-<h5 id="usage-4resource-server-accessing-other-resource-servers"><a class="anchor" href="#usage-4resource-server-accessing-other-resource-servers"></a><a class="link" href="#usage-4resource-server-accessing-other-resource-servers">Usage 4:Resource Server Accessing Other Resource Servers</a></h5>
+<h5 id="usage-4-resource-server-accessing-other-resource-servers"><a class="anchor" href="#usage-4-resource-server-accessing-other-resource-servers"></a><a class="link" href="#usage-4-resource-server-accessing-other-resource-servers">Usage 4: Resource Server Accessing Other Resource Servers</a></h5>
 <div class="paragraph">
 <p>This scenario is an upgrade of <strong>Accessing a resource server</strong>, supports access to other application resources, based on OAuth2 client credentials flow.</p>
 </div>
@@ -4147,9 +4163,9 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 </div>
 <div class="sect3">
-<h4 id="samples-6"><a class="anchor" href="#samples-6"></a><a class="link" href="#samples-6">12.2.4. Samples</a></h4>
+<h4 id="samples-9"><a class="anchor" href="#samples-9"></a><a class="link" href="#samples-9">12.2.4. Samples</a></h4>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4">azure-spring-boot-samples</a> for more details.</p>
+<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4/aad/spring-cloud-azure-starter-active-directory-b2c">spring-cloud-azure-starter-active-directory-b2c samples</a> for more details.</p>
 </div>
 </div>
 </div>
@@ -4244,7 +4260,7 @@ To specify the batch consuming strategy, developers can use <code>EventHubsConta
 </div>
 </div>
 <div class="sect3">
-<h4 id="dependency-setup-7"><a class="anchor" href="#dependency-setup-7"></a><a class="link" href="#dependency-setup-7">13.1.2. Dependency Setup</a></h4>
+<h4 id="dependency-setup-6"><a class="anchor" href="#dependency-setup-6"></a><a class="link" href="#dependency-setup-6">13.1.2. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -4255,7 +4271,7 @@ To specify the batch consuming strategy, developers can use <code>EventHubsConta
 </div>
 </div>
 <div class="sect3">
-<h4 id="configuration-8"><a class="anchor" href="#configuration-8"></a><a class="link" href="#configuration-8">13.1.3. Configuration</a></h4>
+<h4 id="configuration-7"><a class="anchor" href="#configuration-7"></a><a class="link" href="#configuration-7">13.1.3. Configuration</a></h4>
 <div class="paragraph">
 <p>This starter provides the following 3 parts of configuration options:</p>
 </div>
@@ -4392,7 +4408,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 </div>
 </div>
 <div class="sect3">
-<h4 id="basic-usage-7"><a class="anchor" href="#basic-usage-7"></a><a class="link" href="#basic-usage-7">13.1.4. Basic Usage</a></h4>
+<h4 id="basic-usage-6"><a class="anchor" href="#basic-usage-6"></a><a class="link" href="#basic-usage-6">13.1.4. Basic Usage</a></h4>
 <div class="sect4">
 <h5 id="send-messages-to-azure-event-hubs"><a class="anchor" href="#send-messages-to-azure-event-hubs"></a><a class="link" href="#send-messages-to-azure-event-hubs">Send messages to Azure Event Hubs</a></h5>
 <div class="paragraph">
@@ -4587,7 +4603,7 @@ class Demo {
         checkpointer.success()
                 .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
                 .doOnError(e -&gt; LOGGER.error("Error found", e))
-                .subscribe();
+                .block();
     }
 }</code></pre>
 </div>
@@ -4791,7 +4807,7 @@ When publish messages, all the above batch headers will be removed from the mess
 </div>
 </div>
 <div class="sect3">
-<h4 id="samples-7"><a class="anchor" href="#samples-7"></a><a class="link" href="#samples-7">13.1.5. Samples</a></h4>
+<h4 id="samples-10"><a class="anchor" href="#samples-10"></a><a class="link" href="#samples-10">13.1.5. Samples</a></h4>
 <div class="paragraph">
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4/eventhubs/spring-cloud-azure-starter-integration-eventhubs/eventhubs-integration">azure-spring-boot-samples</a> for more details.</p>
 </div>
@@ -4822,7 +4838,7 @@ Please refer to Javadoc for details.
 </div>
 </div>
 <div class="sect3">
-<h4 id="dependency-setup-8"><a class="anchor" href="#dependency-setup-8"></a><a class="link" href="#dependency-setup-8">13.2.2. Dependency Setup</a></h4>
+<h4 id="dependency-setup-7"><a class="anchor" href="#dependency-setup-7"></a><a class="link" href="#dependency-setup-7">13.2.2. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -4833,7 +4849,7 @@ Please refer to Javadoc for details.
 </div>
 </div>
 <div class="sect3">
-<h4 id="configuration-9"><a class="anchor" href="#configuration-9"></a><a class="link" href="#configuration-9">13.2.3. Configuration</a></h4>
+<h4 id="configuration-8"><a class="anchor" href="#configuration-8"></a><a class="link" href="#configuration-8">13.2.3. Configuration</a></h4>
 <div class="paragraph">
 <p>This starter provides the following 2 parts of configuration options:</p>
 </div>
@@ -4901,7 +4917,7 @@ developers can use <code>ServiceBusContainerProperties</code> for the configurat
 </div>
 </div>
 <div class="sect3">
-<h4 id="basic-usage-8"><a class="anchor" href="#basic-usage-8"></a><a class="link" href="#basic-usage-8">13.2.4. Basic Usage</a></h4>
+<h4 id="basic-usage-7"><a class="anchor" href="#basic-usage-7"></a><a class="link" href="#basic-usage-7">13.2.4. Basic Usage</a></h4>
 <div class="sect4">
 <h5 id="send-messages-to-azure-service-bus"><a class="anchor" href="#send-messages-to-azure-service-bus"></a><a class="link" href="#send-messages-to-azure-service-bus">Send Messages to Azure Service Bus</a></h5>
 <div class="paragraph">
@@ -5087,7 +5103,7 @@ class Demo {
         checkpointer.success()
                 .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
                 .doOnError(e -&gt; LOGGER.error("Error found", e))
-                .subscribe();
+                .block();
     }
 }</code></pre>
 </div>
@@ -5107,97 +5123,189 @@ class Demo {
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 25. Mapping between Service Bus Headers and Spring Headers</caption>
 <colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Service Bus Message Headers and Properties</th>
 <th class="tableblock halign-left valign-top">Spring Message Header Constants</th>
 <th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Priority Number (Descending priority)</th>
+<th class="tableblock halign-left valign-top">Configurable</th>
+<th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ContentType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Content type</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">MessageHeaders#CONTENT_TYPE</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The RFC2045 Content-Type descriptor of the message.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CorrelationId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Correlation id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#CORRELATION_ID</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The correlation id of the message</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>MessageId</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Message id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#MESSAGE_ID</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The message id of the message, this header has higher priority than <code>MessageHeaders#ID</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>MessageId</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AzureHeaders#RAW_ID</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>MessageId</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Message id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">MessageHeaders#ID</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">UUID</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The message id of the message, this header has lower priority than <code>ServiceBusMessageHeaders#MESSAGE_ID</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">PartitionKey</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Partition key</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#PARTITION_KEY</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The partition key for sending the message to a partitioned entity.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ReplyTo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reply to</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">MessageHeaders#REPLY_CHANNEL</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The address of an entity to send replies to.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ReplyToSessionId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reply to session id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#REPLY_TO_SESSION_ID</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ReplyToGroupId property value of the message.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>ScheduledEnqueueTimeUtc</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scheduled enqueue time utc</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#SCHEDULED_ENQUEUE_TIME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OffsetDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The datetime at which the message should be enqueued in Service Bus, this header has higher priority than <code>AzureHeaders#SCHEDULED_ENQUEUE_MESSAGE</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scheduled enqueue time utc</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AzureHeaders#SCHEDULED_ENQUEUE_MESSAGE</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The datetime at which the message should be enqueued in Service Bus, this header has lower priority than <code>ServiceBusMessageHeaders#SCHEDULED_ENQUEUE_TIME</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>ScheduledEnqueueTimeUtc</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#SCHEDULED_ENQUEUE_TIME</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instant</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SessionID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Session id</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#SESSION_ID</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The session identifier for a session-aware entity.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">TimeToLive</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time to live</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#TIME_TO_LIVE</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The duration of time before this message expires.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">To</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#TO</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The "to" address of the message, reserved for future use in routing scenarios and presently ignored by the broker itself.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Subject</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#SUBJECT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The subject for the message.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dead letter error description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#DEAD_LETTER_ERROR_DESCRIPTION</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The description for a message that has been dead-lettered.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dead letter reason</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#DEAD_LETTER_REASON</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The reason a message was dead-lettered.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dead letter source</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#DEAD_LETTER_SOURCE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The entity in which the message was dead-lettered.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Delivery count</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#DELIVERY_COUNT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of the times this message was delivered to clients.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enqueued sequence number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#ENQUEUED_SEQUENCE_NUMBER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The enqueued sequence number assigned to a message by Service Bus.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enqueued time</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#ENQUEUED_TIME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OffsetDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The datetime at which this message was enqueued in Service Bus.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Expires at</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#EXPIRES_AT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OffsetDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The datetime at which this message will expire.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lock token</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#LOCK_TOKEN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The lock token for the current message.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Locked until</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#LOCKED_UNTIL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OffsetDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The datetime at which the lock of this message expires.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sequence number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#SEQUENCE_NUMBER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique number assigned to a message by Service Bus.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">State</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#STATE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageState</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The state of the message, which can be Active, Deferred, or Scheduled.</p></td>
 </tr>
 </tbody>
 </table>
@@ -5290,7 +5398,7 @@ the value of the session id will eventually be used to overwrite the value of th
 </div>
 </div>
 <div class="sect3">
-<h4 id="samples-8"><a class="anchor" href="#samples-8"></a><a class="link" href="#samples-8">13.2.5. Samples</a></h4>
+<h4 id="samples-11"><a class="anchor" href="#samples-11"></a><a class="link" href="#samples-11">13.2.5. Samples</a></h4>
 <div class="paragraph">
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4/servicebus/spring-cloud-azure-starter-integration-servicebus">azure-spring-boot-samples</a> for more details.</p>
 </div>
@@ -5305,7 +5413,7 @@ the value of the session id will eventually be used to overwrite the value of th
 </div>
 </div>
 <div class="sect3">
-<h4 id="dependency-setup-9"><a class="anchor" href="#dependency-setup-9"></a><a class="link" href="#dependency-setup-9">13.3.2. Dependency Setup</a></h4>
+<h4 id="dependency-setup-8"><a class="anchor" href="#dependency-setup-8"></a><a class="link" href="#dependency-setup-8">13.3.2. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -5316,7 +5424,7 @@ the value of the session id will eventually be used to overwrite the value of th
 </div>
 </div>
 <div class="sect3">
-<h4 id="configuration-10"><a class="anchor" href="#configuration-10"></a><a class="link" href="#configuration-10">13.3.3. Configuration</a></h4>
+<h4 id="configuration-9"><a class="anchor" href="#configuration-9"></a><a class="link" href="#configuration-9">13.3.3. Configuration</a></h4>
 <div class="paragraph">
 <p>This starter provides the following configuration options:</p>
 </div>
@@ -5397,7 +5505,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 </div>
 <div class="sect3">
-<h4 id="basic-usage-9"><a class="anchor" href="#basic-usage-9"></a><a class="link" href="#basic-usage-9">13.3.4. Basic Usage</a></h4>
+<h4 id="basic-usage-8"><a class="anchor" href="#basic-usage-8"></a><a class="link" href="#basic-usage-8">13.3.4. Basic Usage</a></h4>
 <div class="sect4">
 <h5 id="send-messages-to-azure-storage-queue"><a class="anchor" href="#send-messages-to-azure-storage-queue"></a><a class="link" href="#send-messages-to-azure-storage-queue">Send messages to Azure Storage Queue</a></h5>
 <div class="paragraph">
@@ -5571,7 +5679,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
         checkpointer.success()
             .doOnError(Throwable::printStackTrace)
             .doOnSuccess(t -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
-            .subscribe();
+            .block();
     }
 }</code></pre>
 </div>
@@ -5579,7 +5687,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 </div>
 <div class="sect3">
-<h4 id="samples-9"><a class="anchor" href="#samples-9"></a><a class="link" href="#samples-9">13.3.5. Samples</a></h4>
+<h4 id="samples-12"><a class="anchor" href="#samples-12"></a><a class="link" href="#samples-12">13.3.5. Samples</a></h4>
 <div class="paragraph">
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4/storage/spring-cloud-azure-starter-integration-storage-queue">azure-spring-boot-samples</a> for more details.</p>
 </div>
@@ -5667,7 +5775,7 @@ The checkpoint header only exists when <strong>MANUAL</strong> checkpoint mode i
 </div>
 </div>
 <div class="sect3">
-<h4 id="dependency-setup-10"><a class="anchor" href="#dependency-setup-10"></a><a class="link" href="#dependency-setup-10">14.1.2. Dependency Setup</a></h4>
+<h4 id="dependency-setup-9"><a class="anchor" href="#dependency-setup-9"></a><a class="link" href="#dependency-setup-9">14.1.2. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -5689,7 +5797,7 @@ The checkpoint header only exists when <strong>MANUAL</strong> checkpoint mode i
 </div>
 </div>
 <div class="sect3">
-<h4 id="configuration-11"><a class="anchor" href="#configuration-11"></a><a class="link" href="#configuration-11">14.1.3. Configuration</a></h4>
+<h4 id="configuration-10"><a class="anchor" href="#configuration-10"></a><a class="link" href="#configuration-10">14.1.3. Configuration</a></h4>
 <div class="paragraph">
 <p>The binder provides the following 3 parts of configuration options:</p>
 </div>
@@ -5999,7 +6107,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 </div>
 </div>
 <div class="sect3">
-<h4 id="basic-usage-10"><a class="anchor" href="#basic-usage-10"></a><a class="link" href="#basic-usage-10">14.1.4. Basic Usage</a></h4>
+<h4 id="basic-usage-9"><a class="anchor" href="#basic-usage-9"></a><a class="link" href="#basic-usage-9">14.1.4. Basic Usage</a></h4>
 <div class="sect4">
 <h5 id="sending-and-receiving-messages-fromto-event-hubs"><a class="anchor" href="#sending-and-receiving-messages-fromto-event-hubs"></a><a class="link" href="#sending-and-receiving-messages-fromto-event-hubs">Sending and Receiving Messages from/to Event Hubs</a></h5>
 <div class="paragraph">
@@ -6054,10 +6162,10 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
   cloud:
     azure:
       credential:
-        client-id: ${SERVICE_PRINCIPAL_ID}
-        client-secret: ${SERVICE_PRINCIPAL_SECRET}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
       profile:
-        tenant-id: ${TENANT_ID}
+        tenant-id: ${AZURE_TENANT_ID}
       eventhubs:
         namespace: ${EVENTHUB_NAMESPACE}
         processor:
@@ -6140,7 +6248,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume() {
         checkpointer.success()
                 .doOnSuccess(success -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                 .doOnError(error -&gt; LOGGER.error("Exception found", error))
-                .subscribe();
+                .block();
     };
 }
 
@@ -6245,7 +6353,7 @@ public Consumer&lt;Message&lt;List&lt;String&gt;&gt;&gt; consume() {
         checkpointer.success()
                     .doOnSuccess(success -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                     .doOnError(error -&gt; LOGGER.error("Exception found", error))
-                    .subscribe();
+                    .block();
     };
 }
 
@@ -6346,9 +6454,9 @@ public void producerError(Message&lt;?&gt; message) {
 </div>
 </div>
 <div class="sect4">
-<h5 id="multi-binder-support"><a class="anchor" href="#multi-binder-support"></a><a class="link" href="#multi-binder-support">Multi Binder Support</a></h5>
+<h5 id="multiple-binder-support"><a class="anchor" href="#multiple-binder-support"></a><a class="link" href="#multiple-binder-support">Multiple Binder Support</a></h5>
 <div class="paragraph">
-<p>Connection to mutiple Event Hubs namespaces is also supported by using multi binders.This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
+<p>Connection to multiple Event Hubs namespaces is also supported by using multiple binders.This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
 </div>
 <div class="paragraph">
 <p>Step 1. To use multiple binders of EventHubs, we need to configure below properties in application.yml</p>
@@ -6446,7 +6554,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume1() {
         checkpointer.success()
                 .doOnSuccess(success -&gt; LOGGER.info("Message1 '{}' successfully checkpointed", message))
                 .doOnError(error -&gt; LOGGER.error("Exception found", error))
-                .subscribe();
+                .block();
     };
 }
 
@@ -6458,7 +6566,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
         checkpointer.success()
                 .doOnSuccess(success -&gt; LOGGER.info("Message2 '{}' successfully checkpointed", message))
                 .doOnError(error -&gt; LOGGER.error("Exception found", error))
-                .subscribe();
+                .block();
     };
 }</code></pre>
 </div>
@@ -6486,7 +6594,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
 </div>
 </div>
 <div class="sect3">
-<h4 id="samples-10"><a class="anchor" href="#samples-10"></a><a class="link" href="#samples-10">14.1.5. Samples</a></h4>
+<h4 id="samples-13"><a class="anchor" href="#samples-13"></a><a class="link" href="#samples-13">14.1.5. Samples</a></h4>
 <div class="paragraph">
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4/eventhubs/spring-cloud-azure-stream-binder-eventhubs">azure-spring-boot-samples</a> for more details.</p>
 </div>
@@ -6516,7 +6624,7 @@ This binder relies on <code>Subscription</code> of a topic to act as a consumer 
 </div>
 </div>
 <div class="sect3">
-<h4 id="dependency-setup-11"><a class="anchor" href="#dependency-setup-11"></a><a class="link" href="#dependency-setup-11">14.2.2. Dependency Setup</a></h4>
+<h4 id="dependency-setup-10"><a class="anchor" href="#dependency-setup-10"></a><a class="link" href="#dependency-setup-10">14.2.2. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -6538,7 +6646,7 @@ This binder relies on <code>Subscription</code> of a topic to act as a consumer 
 </div>
 </div>
 <div class="sect3">
-<h4 id="configuration-12"><a class="anchor" href="#configuration-12"></a><a class="link" href="#configuration-12">14.2.3. Configuration</a></h4>
+<h4 id="configuration-11"><a class="anchor" href="#configuration-11"></a><a class="link" href="#configuration-11">14.2.3. Configuration</a></h4>
 <div class="paragraph">
 <p>The binder provides the following 2 parts of configuration options:</p>
 </div>
@@ -6770,7 +6878,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
 </div>
 </div>
 <div class="sect3">
-<h4 id="basic-usage-11"><a class="anchor" href="#basic-usage-11"></a><a class="link" href="#basic-usage-11">14.2.4. Basic Usage</a></h4>
+<h4 id="basic-usage-10"><a class="anchor" href="#basic-usage-10"></a><a class="link" href="#basic-usage-10">14.2.4. Basic Usage</a></h4>
 <div class="sect4">
 <h5 id="sending-and-receiving-messages-fromto-service-bus"><a class="anchor" href="#sending-and-receiving-messages-fromto-service-bus"></a><a class="link" href="#sending-and-receiving-messages-fromto-service-bus">Sending and Receiving Messages from/to Service Bus</a></h5>
 <div class="paragraph">
@@ -6823,10 +6931,10 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
   cloud:
     azure:
       credential:
-        client-id: ${CLIENT_ID}
-        client-secret: ${CLIENT_SECRET}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
       profile:
-        tenant-id: ${TENANT_ID}
+        tenant-id: ${AZURE_TENANT_ID}
       servicebus:
         namespace: ${SERVICEBUS_NAMESPACE}
     stream:
@@ -6906,7 +7014,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume() {
         checkpointer.success()
                 .doOnSuccess(success -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                 .doOnError(error -&gt; LOGGER.error("Exception found", error))
-                .subscribe();
+                .block();
     };
 }
 
@@ -6926,7 +7034,7 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 <p>The binder supports <a href="https://docs.microsoft.com/azure/service-bus-messaging/service-bus-partitioning">Service Bus partitioning</a> by allowing setting partition key and session id in the message header. This section introduces how to set partition key for messages.</p>
 </div>
 <div class="paragraph">
-<p>Spring Cloud Stream provides a partition key SpEL expression property <code>spring.cloud.stream.bindings.&lt;binding-name&gt;.producer.partition-key-expression</code>. For example, setting this properts as <code>&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;</code> and add a header called &lt;message-header-key&gt;. Spring Cloud Stream will use the value for this header when evaluating the above expression to assign a partition key. Here is an example producer code:</p>
+<p>Spring Cloud Stream provides a partition key SpEL expression property <code>spring.cloud.stream.bindings.&lt;binding-name&gt;.producer.partition-key-expression</code>. For example, setting this property as <code>&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;</code> and add a header called &lt;message-header-key&gt;. Spring Cloud Stream will use the value for this header when evaluating the above expression to assign a partition key. Here is an example producer code:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7064,9 +7172,9 @@ When setting the partiton key, the priority of message header is higher than Spr
 </div>
 </div>
 <div class="sect4">
-<h5 id="multi-binder-support-2"><a class="anchor" href="#multi-binder-support-2"></a><a class="link" href="#multi-binder-support-2">Multi Binder Support</a></h5>
+<h5 id="multiple-binder-support-2"><a class="anchor" href="#multiple-binder-support-2"></a><a class="link" href="#multiple-binder-support-2">Multiple Binder Support</a></h5>
 <div class="paragraph">
-<p>Connection to mutiple Service Bus namespaces is also supported by using multi binders. This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
+<p>Connection to multiple Service Bus namespaces is also supported by using multiple binders. This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
 </div>
 <div class="paragraph">
 <p>Step 1. To use multiple binders of ServiceBus, we need to configure below properties in application.yml</p>
@@ -7157,7 +7265,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume1() {
         checkpointer.success()
                 .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                 .doOnError(e -&gt; LOGGER.error("Error found", e))
-                .subscribe();
+                .block();
     };
 }
 
@@ -7169,7 +7277,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
         checkpointer.success()
                 .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
                 .doOnError(e -&gt; LOGGER.error("Error found", e))
-                .subscribe();
+                .block();
     };
 
 }</code></pre>
@@ -7204,7 +7312,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
 </div>
 </div>
 <div class="sect3">
-<h4 id="samples-11"><a class="anchor" href="#samples-11"></a><a class="link" href="#samples-11">14.2.5. Samples</a></h4>
+<h4 id="samples-14"><a class="anchor" href="#samples-14"></a><a class="link" href="#samples-14">14.2.5. Samples</a></h4>
 <div class="paragraph">
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4/servicebus/spring-cloud-azure-stream-binder-servicebus">azure-spring-boot-samples</a> for more details.</p>
 </div>
@@ -7220,7 +7328,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
 Azure Service Bus connection string have to be provided which is to be parsed into the login username, password and remote URI for the AMQP broker.</p>
 </div>
 <div class="sect2">
-<h3 id="dependency-setup-12"><a class="anchor" href="#dependency-setup-12"></a><a class="link" href="#dependency-setup-12">15.1. Dependency Setup</a></h3>
+<h3 id="dependency-setup-11"><a class="anchor" href="#dependency-setup-11"></a><a class="link" href="#dependency-setup-11">15.1. Dependency Setup</a></h3>
 <div class="paragraph">
 <p>Adding below dependencies if you want to migrate your Spring JMS application to use Azure Service Bus.</p>
 </div>
@@ -7234,7 +7342,7 @@ Azure Service Bus connection string have to be provided which is to be parsed in
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-13"><a class="anchor" href="#configuration-13"></a><a class="link" href="#configuration-13">15.2. Configuration</a></h3>
+<h3 id="configuration-12"><a class="anchor" href="#configuration-12"></a><a class="link" href="#configuration-12">15.2. Configuration</a></h3>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 34. Configurable properties when using Spring JMS support</caption>
 <colgroup>
@@ -7358,14 +7466,14 @@ Azure Service Bus connection string have to be provided which is to be parsed in
 </td>
 <td class="content">
 Spring JMS general configuration is omited for short.
-Please refer to <a href="https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/jms.html">Spring JMS Doc</a> for more details.
+Please refer to <a href="https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/jms.html">Spring JMS Document</a> for more details.
 </td>
 </tr>
 </table>
 </div>
 </div>
 <div class="sect2">
-<h3 id="basic-usage-12"><a class="anchor" href="#basic-usage-12"></a><a class="link" href="#basic-usage-12">15.3. Basic Usage</a></h3>
+<h3 id="basic-usage-11"><a class="anchor" href="#basic-usage-11"></a><a class="link" href="#basic-usage-11">15.3. Basic Usage</a></h3>
 <div class="sect3">
 <h4 id="use-service-bus-connection-string"><a class="anchor" href="#use-service-bus-connection-string"></a><a class="link" href="#use-service-bus-connection-string">15.3.1. Use Service Bus Connection String</a></h4>
 <div class="paragraph">
@@ -7399,7 +7507,7 @@ The default enabled <code>ConnectionFactory</code> is the <code>CachingConnectio
 </div>
 </div>
 <div class="sect2">
-<h3 id="samples-12"><a class="anchor" href="#samples-12"></a><a class="link" href="#samples-12">15.4. Samples</a></h3>
+<h3 id="samples-15"><a class="anchor" href="#samples-15"></a><a class="link" href="#samples-15">15.4. Samples</a></h3>
 <div class="paragraph">
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4">azure-spring-boot-samples</a> for more details.</p>
 </div>
@@ -7413,7 +7521,7 @@ The default enabled <code>ConnectionFactory</code> is the <code>CachingConnectio
 <p>Connect to Azure Event Hubs (<a href="https://azure.microsoft.com/pricing/details/event-hubs/#explore-pricing-options">Basic pricing tier is not supported</a>) using Spring Kafka libraries. There are two approaches to connect to Azure Event Hubs for Kafka, the first one is to provide the Azure Event Hubs connection string directly, the other is to use Azure Resource Manager to retrieve the connection string.</p>
 </div>
 <div class="sect2">
-<h3 id="dependency-setup-13"><a class="anchor" href="#dependency-setup-13"></a><a class="link" href="#dependency-setup-13">16.1. Dependency Setup</a></h3>
+<h3 id="dependency-setup-12"><a class="anchor" href="#dependency-setup-12"></a><a class="link" href="#dependency-setup-12">16.1. Dependency Setup</a></h3>
 <div class="paragraph">
 <p>Adding below dependencies if you want to migrate your Apache Kafka application to use Azure Event Hubs for Kafka.</p>
 </div>
@@ -7438,7 +7546,7 @@ The default enabled <code>ConnectionFactory</code> is the <code>CachingConnectio
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-14"><a class="anchor" href="#configuration-14"></a><a class="link" href="#configuration-14">16.2. Configuration</a></h3>
+<h3 id="configuration-13"><a class="anchor" href="#configuration-13"></a><a class="link" href="#configuration-13">16.2. Configuration</a></h3>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -7500,7 +7608,7 @@ Authentication information is also required for authenticating for Azure Resourc
 </div>
 </div>
 <div class="sect2">
-<h3 id="basic-usage-13"><a class="anchor" href="#basic-usage-13"></a><a class="link" href="#basic-usage-13">16.3. Basic Usage</a></h3>
+<h3 id="basic-usage-12"><a class="anchor" href="#basic-usage-12"></a><a class="link" href="#basic-usage-12">16.3. Basic Usage</a></h3>
 <div class="sect3">
 <h4 id="use-event-hubs-connection-string"><a class="anchor" href="#use-event-hubs-connection-string"></a><a class="link" href="#use-event-hubs-connection-string">16.3.1. Use Event Hubs Connection String</a></h4>
 <div class="paragraph">
@@ -7543,7 +7651,7 @@ Authentication information is also required for authenticating for Azure Resourc
 </div>
 </div>
 <div class="sect2">
-<h3 id="samples-13"><a class="anchor" href="#samples-13"></a><a class="link" href="#samples-13">16.4. Samples</a></h3>
+<h3 id="samples-16"><a class="anchor" href="#samples-16"></a><a class="link" href="#samples-16">16.4. Samples</a></h3>
 <div class="paragraph">
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4">azure-spring-boot-samples</a> for more details.</p>
 </div>
@@ -7557,7 +7665,7 @@ Authentication information is also required for authenticating for Azure Resourc
 <p>Connect to Azure Cache for Redis using Spring Redis libraries. With adding <code>spring-cloud-azure-starter</code> and <code>spring-cloud-azure-resourcemanager</code> to your application, it&#8217;s possible to read the Azure Cache for Redis connection information through Azure Resource Manager and auto-configure the Redis properties.</p>
 </div>
 <div class="sect2">
-<h3 id="dependency-setup-14"><a class="anchor" href="#dependency-setup-14"></a><a class="link" href="#dependency-setup-14">17.1. Dependency Setup</a></h3>
+<h3 id="dependency-setup-13"><a class="anchor" href="#dependency-setup-13"></a><a class="link" href="#dependency-setup-13">17.1. Dependency Setup</a></h3>
 <div class="paragraph">
 <p>Adding below dependencies if you want to use the Spring Cloud Azure Redis support to your Spring Boot application using Redis.</p>
 </div>
@@ -7577,7 +7685,7 @@ Authentication information is also required for authenticating for Azure Resourc
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-15"><a class="anchor" href="#configuration-15"></a><a class="link" href="#configuration-15">17.2. Configuration</a></h3>
+<h3 id="configuration-14"><a class="anchor" href="#configuration-14"></a><a class="link" href="#configuration-14">17.2. Configuration</a></h3>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -7647,7 +7755,7 @@ Authentication information is also required for authenticating for Azure Resourc
 </div>
 </div>
 <div class="sect2">
-<h3 id="basic-usage-14"><a class="anchor" href="#basic-usage-14"></a><a class="link" href="#basic-usage-14">17.3. Basic Usage</a></h3>
+<h3 id="basic-usage-13"><a class="anchor" href="#basic-usage-13"></a><a class="link" href="#basic-usage-13">17.3. Basic Usage</a></h3>
 <div class="paragraph">
 <p>Add below properties and you are good to go.</p>
 </div>
@@ -7659,7 +7767,7 @@ spring.cloud.azure.redis.resource.resource-group=${AZURE_CACHE_REDIS_RESOURCE_GR
 </div>
 </div>
 <div class="sect2">
-<h3 id="samples-14"><a class="anchor" href="#samples-14"></a><a class="link" href="#samples-14">17.4. Samples</a></h3>
+<h3 id="samples-17"><a class="anchor" href="#samples-17"></a><a class="link" href="#samples-17">17.4. Samples</a></h3>
 <div class="paragraph">
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4">azure-spring-boot-samples</a> for more details.</p>
 </div>
@@ -7673,7 +7781,7 @@ spring.cloud.azure.redis.resource.resource-group=${AZURE_CACHE_REDIS_RESOURCE_GR
 <p>Azure Resource Manager (ARM) is the deployment and management service for Azure. It provides a management layer that enables you to create, update, and delete resources in your Azure account. Spring Cloud Azure Resourcemanger can help provision resources or retrieve resource metadata.</p>
 </div>
 <div class="sect2">
-<h3 id="dependency-setup-15"><a class="anchor" href="#dependency-setup-15"></a><a class="link" href="#dependency-setup-15">18.1. Dependency Setup</a></h3>
+<h3 id="dependency-setup-14"><a class="anchor" href="#dependency-setup-14"></a><a class="link" href="#dependency-setup-14">18.1. Dependency Setup</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -7684,7 +7792,7 @@ spring.cloud.azure.redis.resource.resource-group=${AZURE_CACHE_REDIS_RESOURCE_GR
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-16"><a class="anchor" href="#configuration-16"></a><a class="link" href="#configuration-16">18.2. Configuration</a></h3>
+<h3 id="configuration-15"><a class="anchor" href="#configuration-15"></a><a class="link" href="#configuration-15">18.2. Configuration</a></h3>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -7784,11 +7892,11 @@ be assigned a role of <code>Contributor</code> of the associated namespace at le
   cloud:
     azure:
       credential:
-        client-id: ${CLIENT_ID}
-        client-secret: ${CLIENT_SECRET}
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
       profile:
-        tenant-id: ${TENANT_ID}
-        subscription-id: ${SUBSCRIPTION_ID}
+        tenant-id: ${AZURE_TENANT_ID}
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
       &lt;azure-service&gt;:
         namespace: ${SERVICEBUS_NAMESPACE}
         resource:
@@ -7797,7 +7905,7 @@ be assigned a role of <code>Contributor</code> of the associated namespace at le
 </div>
 </div>
 <div class="sect2">
-<h3 id="samples-15"><a class="anchor" href="#samples-15"></a><a class="link" href="#samples-15">18.4. Samples</a></h3>
+<h3 id="samples-18"><a class="anchor" href="#samples-18"></a><a class="link" href="#samples-18">18.4. Samples</a></h3>
 <div class="paragraph">
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.0.0-beta.4">azure-spring-boot-samples</a> for more details.</p>
 </div>
@@ -7805,7 +7913,7 @@ be assigned a role of <code>Contributor</code> of the associated namespace at le
 </div>
 </div>
 <div class="sect1">
-<h2 id="configuration-properties"><a class="anchor" href="#configuration-properties"></a><a class="link" href="#configuration-properties">19. Configuration Properties</a></h2>
+<h2 id="configuration-properties-2"><a class="anchor" href="#configuration-properties-2"></a><a class="link" href="#configuration-properties-2">19. Configuration Properties</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>To see the list of all Spring Cloud Azure related configuration properties please check <a href="appendix.html">the Appendix page</a>.</p>
@@ -7816,7 +7924,7 @@ be assigned a role of <code>Contributor</code> of the associated namespace at le
 <h2 id="appendix"><a class="anchor" href="#appendix"></a><a class="link" href="#appendix">20. Appendix</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="configuration-properties-2"><a class="anchor" href="#configuration-properties-2"></a><a class="link" href="#configuration-properties-2">20.1. <a href="appendix.html##configuration-properties">Configuration properties</a></a></h3>
+<h3 id="configuration-properties-3"><a class="anchor" href="#configuration-properties-3"></a><a class="link" href="#configuration-properties-3">20.1. <a href="appendix.html##configuration-properties">Configuration properties</a></a></h3>
 
 </div>
 <div class="sect2">
