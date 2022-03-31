@@ -6,6 +6,11 @@ on:
     - main
     - docs
     - 4.*
+  pull_request:
+    branches:
+    - main
+    - docs
+    - 4.*  
     # paths:
     # - 'docs/**'
   # release:
