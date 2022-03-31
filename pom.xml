@@ -105,7 +105,7 @@
                 <highlightjsdir>js/highlight</highlightjsdir>
                 <highlightjs-theme>github</highlightjs-theme>
                 <source-highlighter>highlight.js</source-highlighter>
-                <project-version>${project.version}@</project-version>
+                <project-version>${project.version}</project-version>
               </attributes>
             </configuration>
           </execution>
