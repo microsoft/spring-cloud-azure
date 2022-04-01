@@ -8,6 +8,8 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+  
 
 jobs:
   check_html_links_job:
@@ -17,13 +19,12 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build Docs
         run: |
-          cd docs
-          mvn clean install -Pdocs
+          mvn clean install
       - name: Link Checker
         id: link-report
         uses: peter-evans/link-checker@v1
         with:
-          args: -d --document-root ./docs/target/generated-docs -r -x "localhost|127.0.0.1"
+          args: -d --document-root . -r -x "localhost|127.0.0.1"
       - name: Get the result
         run: |
           errors=`cat link-checker/out.md | grep 'ERROR' | wc -l`
