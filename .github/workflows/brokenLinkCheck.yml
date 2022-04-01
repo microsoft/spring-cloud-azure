@@ -1,0 +1,35 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Broken Link Checker
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches:
+      - main
+
+jobs:
+  check_html_links_job:
+    runs-on: ubuntu-latest
+    name: check-html-links-action
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build Docs
+        run: |
+          cd docs
+          mvn clean install -Pdocs
+      - name: Link Checker
+        id: link-report
+        uses: peter-evans/link-checker@v1
+        with:
+          args: -d --document-root ./docs/target/generated-docs -r -x "localhost|127.0.0.1"
+      - name: Get the result
+        run: |
+          errors=`cat link-checker/out.md | grep 'ERROR' | wc -l`
+          if [[ $errors -gt 0 ]] ; then
+              echo 'Check for broken links'
+              exit 1
+          else
+              echo 'Link check passed'
+          fi

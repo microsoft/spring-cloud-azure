@@ -1,0 +1,20 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Schedule Current Link Check
+
+# Controls when the workflow will run
+on:
+  # The schedule event allows you to trigger a workflow at a scheduled time.
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: technote-space/broken-link-checker-action@v1.1.3
+        with:
+          TARGET: https://microsoft.github.io/spring-cloud-azure/current/reference/html/index.html
+          EXCLUDED_KEYWORDS: localhost,127.0.0.1
+          EXCLUDE_LINKS_TO_SAME_PAGE: false
+
