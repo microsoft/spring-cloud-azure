@@ -83,7 +83,7 @@ function retrieve_doc_properties() {
         -Dexec.args="\${${WHITELIST_PROPERTY}}" \
         org.codehaus.mojo:exec-maven-plugin:1.3.1:exec \
         -P docs \
-        -pl docs/turotials)
+        -pl docs/reference)
     echo "Extracted '${WHITELIST_PROPERTY}' from Maven build [${WHITELISTED_BRANCHES_VALUE}]"
 }
 
