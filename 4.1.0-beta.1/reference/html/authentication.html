@@ -4,23 +4,183 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.17">
+<meta name="generator" content="Asciidoctor 2.0.10">
 <title>Authentication</title>
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
 <script type="text/javascript"> (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "b9g1q6wz23"); </script>
 
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
 </head>
-<body class="book">
+<body class="book toc2 toc-left">
 <div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#authentication">Authentication</a>
+<ul class="sectlevel2">
+<li><a href="#_defaultazurecredential">DefaultAzureCredential</a></li>
+<li><a href="#_managed_identities">Managed Identities</a></li>
+<li><a href="#_other_credential_types">Other Credential Types</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="authentication">Authentication</h2>
+<h2 id="authentication"><a class="link" href="#authentication">Authentication</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_defaultazurecredential">DefaultAzureCredential</h3>
+<h3 id="_defaultazurecredential"><a class="link" href="#_defaultazurecredential">DefaultAzureCredential</a></h3>
 <div class="paragraph">
 <p>The <code>DefaultAzureCredential</code> is appropriate for most scenarios where the application is intended to be run in the Azure Cloud. This is because the DefaultAzureCredential combines credentials commonly used to authenticate when deployed, with credentials used to authenticate in a development environment.</p>
 </div>
@@ -77,7 +237,7 @@ Please refer to <a href="index.html#authorize-access-with-azure-active-directory
 </div>
 </div>
 <div class="sect2">
-<h3 id="_managed_identities">Managed Identities</h3>
+<h3 id="_managed_identities"><a class="link" href="#_managed_identities">Managed Identities</a></h3>
 <div class="paragraph">
 <p>A common challenge for developers is the management of secrets and credentials used to secure communication between different components making up a solution. Managed identities eliminate the need for developers to manage credentials. Managed identities provide an identity for applications to use when connecting to resources that support Azure Active Directory (Azure AD) authentication. Applications may use the managed identity to obtain Azure AD tokens. For example, an application may use a managed identity to access resources like Azure Key Vault where developers can store credentials in a secure manner or to access storage accounts.</p>
 </div>
@@ -85,7 +245,7 @@ Please refer to <a href="index.html#authorize-access-with-azure-active-directory
 <p>We encourage using managed identity instead of using connection string or key in your application for it&#8217;s more secure and will save the trouble of managing secrets and credentials. In this case, <code>DefaultAzureCredential</code> could better serve the scenario of developing locally using account information stored locally and deploying the application to Azure Cloud and using Managed Identity.</p>
 </div>
 <div class="sect3">
-<h4 id="_managed_identity_types">Managed Identity Types</h4>
+<h4 id="_managed_identity_types"><a class="link" href="#_managed_identity_types">Managed Identity Types</a></h4>
 <div class="paragraph">
 <p>There are two types of managed identities:</p>
 </div>
@@ -138,12 +298,12 @@ Please refer to <a href="https://docs.microsoft.com/azure/active-directory/manag
 </div>
 </div>
 <div class="sect2">
-<h3 id="_other_credential_types">Other Credential Types</h3>
+<h3 id="_other_credential_types"><a class="link" href="#_other_credential_types">Other Credential Types</a></h3>
 <div class="paragraph">
 <p>Developers who want more control or whose scenario isn&#8217;t served by the <code>DefaultAzureCredential</code> or whose scenario isn&#8217;t served by the default settings should use other credential types.</p>
 </div>
 <div class="sect3">
-<h4 id="_authentication_and_authorization_with_azure_active_directory">Authentication and Authorization with Azure Active Directory</h4>
+<h4 id="_authentication_and_authorization_with_azure_active_directory"><a class="link" href="#_authentication_and_authorization_with_azure_active_directory">Authentication and Authorization with Azure Active Directory</a></h4>
 <div class="paragraph">
 <p>With Azure AD, you can use Azure role-based access control (Azure RBAC) to grant permissions to a security principal, which may be a user or an application service principal. When a security principal (a user, or an application) attempts to access an Azure resource, for example, an Event Hubs resource, the request must be authorized. With Azure AD, access to a resource is a two-step process.</p>
 </div>
@@ -158,7 +318,7 @@ Please refer to <a href="https://docs.microsoft.com/azure/active-directory/manag
 </ol>
 </div>
 <div class="sect4">
-<h5 id="_authenticate_with_azure_active_directory">Authenticate with Azure Active Directory</h5>
+<h5 id="_authenticate_with_azure_active_directory"><a class="link" href="#_authenticate_with_azure_active_directory">Authenticate with Azure Active Directory</a></h5>
 <div class="paragraph">
 <p>For applications want to connect to resources that support Azure AD authentication, below configurations could be set with prefix <code>spring.cloud.azure.credential</code> or <code>spring.cloud.azure.&lt;azure-service&gt;.credential</code>.</p>
 </div>
@@ -219,7 +379,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 </div>
 <div class="sect4">
-<h5 id="authorize-access-with-azure-active-directory">Authorize Access with Azure Active Directory</h5>
+<h5 id="authorize-access-with-azure-active-directory"><a class="link" href="#authorize-access-with-azure-active-directory">Authorize Access with Azure Active Directory</a></h5>
 <div class="paragraph">
 <p>The authorization step requires that one or more Azure roles be assigned to the security principal. The roles that are assigned to a security principal decide the permissions that the principal will have.</p>
 </div>
@@ -340,13 +500,13 @@ Azure Cosmos DB exposes 2 built-in role definitions: <code>Cosmos DB Built-in Da
 </div>
 </div>
 <div class="sect3">
-<h4 id="_sas_tokens">SAS tokens</h4>
+<h4 id="_sas_tokens"><a class="link" href="#_sas_tokens">SAS tokens</a></h4>
 <div class="paragraph">
 <p>It&#8217;s also configurable for services support authenticating with Shared Access Signature (SAS). <code>spring.cloud.azure.&lt;azure-service&gt;.sas-token</code> is the property to configure. For example, using <code>spring.cloud.azure.storage.blob.sas-token</code> to authenticate to Storage Blob service.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_connection_strings">Connection Strings</h4>
+<h4 id="_connection_strings"><a class="link" href="#_connection_strings">Connection Strings</a></h4>
 <div class="paragraph">
 <p>Connection strings are supported by some Azure services to provide connection information as well as credentials. To connect to those Azure services using a connection string, just configure <code>spring.cloud.azure.&lt;azure-service&gt;.connection-string</code> will do. For example, <code>spring.cloud.azure.eventhubs.connection-string</code> to connect to Event Hubs service.</p>
 </div>
@@ -355,18 +515,6 @@ Azure Cosmos DB exposes 2 built-in role definitions: <code>Cosmos DB Built-in Da
 </div>
 </div>
 </div>
-<div id="footer">
-<div id="footer-text">
-Last updated 2022-03-31 16:15:52 UTC
-</div>
-</div>
-<script src="js/highlight/highlight.min.js"></script>
-<script>
-if (!hljs.initHighlighting.called) {
-  hljs.initHighlighting.called = true
-  ;[].slice.call(document.querySelectorAll('pre.highlight > code')).forEach(function (el) { hljs.highlightBlock(el) })
-}
-</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

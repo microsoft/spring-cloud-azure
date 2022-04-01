@@ -4,20 +4,180 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.17">
+<meta name="generator" content="Asciidoctor 2.0.10">
 <title>Spring Integration Support</title>
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="js/highlight/styles/github.min.css">
 <script type="text/javascript"> (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "b9g1q6wz23"); </script>
 
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
 </head>
-<body class="book">
+<body class="book toc2 toc-left">
 <div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_spring_integration_support">Spring Integration Support</a>
+<ul class="sectlevel2">
+<li><a href="#_spring_integration_with_azure_event_hubs">Spring Integration with Azure Event Hubs</a></li>
+<li><a href="#_spring_integration_with_azure_service_bus">Spring Integration with Azure Service Bus</a></li>
+<li><a href="#_spring_integration_with_azure_storage_queue">Spring Integration with Azure Storage Queue</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_spring_integration_support">Spring Integration Support</h2>
+<h2 id="_spring_integration_support"><a class="link" href="#_spring_integration_support">Spring Integration Support</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Spring Integration Extension for Azure provides Spring Integration adapters for the various services provided by the <a href="https://github.com/Azure/azure-sdk-for-java/">Azure SDK for Java</a>. We provide Spring Integration support for these Azure services: Event Hubs, Service Bus, Storage Queue. Below is a list of supported adapters:</p>
@@ -36,9 +196,9 @@
 </ul>
 </div>
 <div class="sect2">
-<h3 id="_spring_integration_with_azure_event_hubs">Spring Integration with Azure Event Hubs</h3>
+<h3 id="_spring_integration_with_azure_event_hubs"><a class="link" href="#_spring_integration_with_azure_event_hubs">Spring Integration with Azure Event Hubs</a></h3>
 <div class="sect3">
-<h4 id="_key_concepts">Key Concepts</h4>
+<h4 id="_key_concepts"><a class="link" href="#_key_concepts">Key Concepts</a></h4>
 <div class="paragraph">
 <p>Azure Event Hubs is a big data streaming platform and event ingestion service. It can receive and process millions of events per second. Data sent to an event hub can be transformed and stored by using any real-time analytics provider or batching/storage adapters.</p>
 </div>
@@ -59,7 +219,7 @@ Please refer to Javadoc for details.
 </table>
 </div>
 <div class="sect4">
-<h5 id="_consumer_group">Consumer Group</h5>
+<h5 id="_consumer_group"><a class="link" href="#_consumer_group">Consumer Group</a></h5>
 <div class="paragraph">
 <p>Event Hubs provides similar support of consumer group as Apache Kafka, but with slight different logic. While Kafka
 stores all committed offsets in the broker, you have to store offsets of Event Hubs messages
@@ -67,7 +227,7 @@ being processed manually. Event Hubs SDK provides the function to store such off
 </div>
 </div>
 <div class="sect4">
-<h5 id="_partitioning_support">Partitioning Support</h5>
+<h5 id="_partitioning_support"><a class="link" href="#_partitioning_support">Partitioning Support</a></h5>
 <div class="paragraph">
 <p>Event Hubs provides a similar concept of physical partition as Kafka. But unlike Kafka&#8217;s auto re-balancing between consumers and partitions, Event Hubs provides a kind of preemptive mode. The storage account acts as a lease to determine which partition is owned by which consumer. When a new consumer starts, it will try to steal some partitions
 from most heavy-loaded consumers to achieve the workload balancing.</p>
@@ -77,7 +237,7 @@ from most heavy-loaded consumers to achieve the workload balancing.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_batch_consumer_support">Batch Consumer Support</h5>
+<h5 id="_batch_consumer_support"><a class="link" href="#_batch_consumer_support">Batch Consumer Support</a></h5>
 <div class="paragraph">
 <p>The <code>EventHubsInboundChannelAdapter</code> supports the batch-consuming mode. To enable it, users can specify the listener mode as <code>ListenerMode.BATCH</code> when constructing an <code>EventHubsInboundChannelAdapter</code> instance.
 When enabled, an <strong>Message</strong> of which the payload is a list of batched events will be received and passed to the downstream channel. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of partition id, checkpointer and last enqueued properties, they are presented as a single value for the entire batch of events shares the same one. See <a href="#si-eh-headers">Event Hubs Message Headers</a> for more details.</p>
@@ -105,10 +265,10 @@ To specify the batch consuming strategy, developers can use <code>EventHubsConta
 </div>
 </div>
 <div class="sect3">
-<h4 id="_dependency_setup">Dependency Setup</h4>
+<h4 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
 	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
 	&lt;artifactId&gt;spring-cloud-azure-starter-integration-eventhubs&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -116,12 +276,12 @@ To specify the batch consuming strategy, developers can use <code>EventHubsConta
 </div>
 </div>
 <div class="sect3">
-<h4 id="_configuration">Configuration</h4>
+<h4 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h4>
 <div class="paragraph">
 <p>This starter provides the following 3 parts of configuration options:</p>
 </div>
 <div class="sect4">
-<h5 id="_connection_configuration_properties">Connection Configuration Properties</h5>
+<h5 id="_connection_configuration_properties"><a class="link" href="#_connection_configuration_properties">Connection Configuration Properties</a></h5>
 <div class="paragraph">
 <p>This section contains the configuration options used for connecting to Azure Event Hubs.</p>
 </div>
@@ -187,7 +347,7 @@ default, a new connection is constructed and used created for each Event Hub cli
 </table>
 </div>
 <div class="sect4">
-<h5 id="_checkpoint_configuration_properties">Checkpoint Configuration Properties</h5>
+<h5 id="_checkpoint_configuration_properties"><a class="link" href="#_checkpoint_configuration_properties">Checkpoint Configuration Properties</a></h5>
 <div class="paragraph">
 <p>This section contains the configuration options for the Storage Blobs service, which is used for persisting partition ownership and checkpoint information.</p>
 </div>
@@ -245,7 +405,7 @@ From version 4.0.0, when the property of <strong>spring.cloud.azure.eventhubs.pr
 </div>
 </div>
 <div class="sect4">
-<h5 id="_event_hub_processor_configuration_properties">Event Hub Processor Configuration Properties</h5>
+<h5 id="_event_hub_processor_configuration_properties"><a class="link" href="#_event_hub_processor_configuration_properties">Event Hub Processor Configuration Properties</a></h5>
 <div class="paragraph">
 <p>The <code>EventHubsInboundChannelAdapter</code> uses the <code>EventProcessorClient</code> to consume messages from an event hub, to configure the overall properties of an <code>EventProcessorClient</code>,
 developers can use <code>EventHubsContainerProperties</code> for the configuration. See <a href="#receive-from-eh">the below section</a> about how to work with <code>EventHubsInboundChannelAdapter</code>.</p>
@@ -253,9 +413,9 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 </div>
 </div>
 <div class="sect3">
-<h4 id="_basic_usage">Basic Usage</h4>
+<h4 id="_basic_usage"><a class="link" href="#_basic_usage">Basic Usage</a></h4>
 <div class="sect4">
-<h5 id="_send_messages_to_azure_event_hubs">Send messages to Azure Event Hubs</h5>
+<h5 id="_send_messages_to_azure_event_hubs"><a class="link" href="#_send_messages_to_azure_event_hubs">Send messages to Azure Event Hubs</a></h5>
 <div class="paragraph">
 <p>Step 1. Fill the credential configuration options.</p>
 </div>
@@ -333,7 +493,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">class Demo {
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
     private static final String OUTPUT_CHANNEL = "output";
     private static final String EVENTHUB_NAME = "eh1";
 
@@ -361,7 +521,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">class Demo {
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
     @Autowired
     EventHubOutboundGateway messagingGateway;
 
@@ -377,7 +537,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">class Demo {
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
     public void demo() {
         this.messagingGateway.send(message);
     }
@@ -386,7 +546,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 </div>
 </div>
 <div class="sect4">
-<h5 id="receive-from-eh">Receive Messages from Azure Event Hubs</h5>
+<h5 id="receive-from-eh"><a class="link" href="#receive-from-eh">Receive Messages from Azure Event Hubs</a></h5>
 <div class="paragraph">
 <p>Step 1. Fill the credential configuration options.</p>
 </div>
@@ -395,7 +555,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Configuration
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
 class Demo {
     @Bean
     public MessageChannel input() {
@@ -409,7 +569,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Configuration
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
 class Demo {
     private static final String INPUT_CHANNEL = "input";
     private static final String EVENTHUB_NAME = "eh1";
@@ -440,7 +600,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">class Demo {
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
     @ServiceActivator(inputChannel = INPUT_CHANNEL)
     public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
         String message = new String(payload);
@@ -455,13 +615,13 @@ class Demo {
 </div>
 </div>
 <div class="sect4">
-<h5 id="_configure_eventhubsmessageconverter_to_customize_objectmapper">Configure EventHubsMessageConverter to Customize ObjectMapper</h5>
+<h5 id="_configure_eventhubsmessageconverter_to_customize_objectmapper"><a class="link" href="#_configure_eventhubsmessageconverter_to_customize_objectmapper">Configure EventHubsMessageConverter to Customize ObjectMapper</a></h5>
 <div class="paragraph">
 <p><code>EventHubsMessageConverter</code> is made as a configurable bean to allow users to customize ObjectMapper.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="si-eh-batch">Batch Consumer Support</h5>
+<h5 id="si-eh-batch"><a class="link" href="#si-eh-batch">Batch Consumer Support</a></h5>
 <div class="paragraph">
 <p>To consume messages from Event Hubs in batches is similar with the above sample, besides users should set the batch-consuming related configuration options for <code>EventHubsInboundChannelAdapter</code>.</p>
 </div>
@@ -470,7 +630,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Configuration
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
 class Demo {
     private static final String INPUT_CHANNEL = "input";
     private static final String EVENTHUB_NAME = "eh1";
@@ -499,7 +659,7 @@ class Demo {
 </div>
 </div>
 <div class="sect4">
-<h5 id="si-eh-headers">Event Hubs Message Headers</h5>
+<h5 id="si-eh-headers"><a class="link" href="#si-eh-headers">Event Hubs Message Headers</a></h5>
 <div class="paragraph">
 <p>The following table illustrates how Event Hubs message properties are mapped to Spring message headers. For Azure Event Hubs, message is called as <code>event</code>.</p>
 </div>
@@ -652,16 +812,16 @@ When publish messages, all the above batch headers will be removed from the mess
 </div>
 </div>
 <div class="sect3">
-<h4 id="_samples">Samples</h4>
+<h4 id="_samples"><a class="link" href="#_samples">Samples</a></h4>
 <div class="paragraph">
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/eventhubs/spring-cloud-azure-starter-integration-eventhubs/eventhubs-integration">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_spring_integration_with_azure_service_bus">Spring Integration with Azure Service Bus</h3>
+<h3 id="_spring_integration_with_azure_service_bus"><a class="link" href="#_spring_integration_with_azure_service_bus">Spring Integration with Azure Service Bus</a></h3>
 <div class="sect3">
-<h4 id="_key_concepts_2">Key Concepts</h4>
+<h4 id="_key_concepts_2"><a class="link" href="#_key_concepts_2">Key Concepts</a></h4>
 <div class="paragraph">
 <p>Spring Integration enables lightweight messaging within Spring-based applications and supports integration with external systems via declarative adapters.</p>
 </div>
@@ -683,10 +843,10 @@ Please refer to Javadoc for details.
 </div>
 </div>
 <div class="sect3">
-<h4 id="_dependency_setup_2">Dependency Setup</h4>
+<h4 id="_dependency_setup_2"><a class="link" href="#_dependency_setup_2">Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
 	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
 	&lt;artifactId&gt;spring-cloud-azure-starter-integration-servicebus&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -694,12 +854,12 @@ Please refer to Javadoc for details.
 </div>
 </div>
 <div class="sect3">
-<h4 id="_configuration_2">Configuration</h4>
+<h4 id="_configuration_2"><a class="link" href="#_configuration_2">Configuration</a></h4>
 <div class="paragraph">
 <p>This starter provides the following 2 parts of configuration options:</p>
 </div>
 <div class="sect4">
-<h5 id="_connection_configuration_properties_2">Connection Configuration Properties</h5>
+<h5 id="_connection_configuration_properties_2"><a class="link" href="#_connection_configuration_properties_2">Connection Configuration Properties</a></h5>
 <div class="paragraph">
 <p>This section contains the configuration options used for connecting to Azure Service Bus.</p>
 </div>
@@ -754,7 +914,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </table>
 </div>
 <div class="sect4">
-<h5 id="_service_bus_processor_configuration_properties">Service Bus Processor Configuration Properties</h5>
+<h5 id="_service_bus_processor_configuration_properties"><a class="link" href="#_service_bus_processor_configuration_properties">Service Bus Processor Configuration Properties</a></h5>
 <div class="paragraph">
 <p>The <code>ServiceBusInboundChannelAdapter</code> uses the <code>ServiceBusProcessorClient</code> to consume messages, to configure the overall properties of an <code>ServiceBusProcessorClient</code>,
 developers can use <code>ServiceBusContainerProperties</code> for the configuration. See <a href="#receive-from-sb">the below section</a> about how to work with <code>ServiceBusInboundChannelAdapter</code>.</p>
@@ -762,9 +922,9 @@ developers can use <code>ServiceBusContainerProperties</code> for the configurat
 </div>
 </div>
 <div class="sect3">
-<h4 id="_basic_usage_2">Basic Usage</h4>
+<h4 id="_basic_usage_2"><a class="link" href="#_basic_usage_2">Basic Usage</a></h4>
 <div class="sect4">
-<h5 id="_send_messages_to_azure_service_bus">Send Messages to Azure Service Bus</h5>
+<h5 id="_send_messages_to_azure_service_bus"><a class="link" href="#_send_messages_to_azure_service_bus">Send Messages to Azure Service Bus</a></h5>
 <div class="paragraph">
 <p>Step 1. Fill the credential configuration options.</p>
 </div>
@@ -832,7 +992,7 @@ set the entity type for the ServiceBusTemplate. This sample takes Service Bus Qu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">class Demo {
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
     private static final String OUTPUT_CHANNEL = "queue.output";
 
     @Bean
@@ -862,7 +1022,7 @@ set the entity type for the ServiceBusTemplate. This sample takes Service Bus Qu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">class Demo {
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
     @Autowired
     QueueOutboundGateway messagingGateway;
 
@@ -878,7 +1038,7 @@ set the entity type for the ServiceBusTemplate. This sample takes Service Bus Qu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">class Demo {
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
     public void demo() {
         this.messagingGateway.send(message);
     }
@@ -887,7 +1047,7 @@ set the entity type for the ServiceBusTemplate. This sample takes Service Bus Qu
 </div>
 </div>
 <div class="sect4">
-<h5 id="receive-from-sb">Receive Messages from Azure Service Bus</h5>
+<h5 id="receive-from-sb"><a class="link" href="#receive-from-sb">Receive Messages from Azure Service Bus</a></h5>
 <div class="paragraph">
 <p>Step 1. Fill the credential configuration options.</p>
 </div>
@@ -896,7 +1056,7 @@ set the entity type for the ServiceBusTemplate. This sample takes Service Bus Qu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Configuration
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
 class Demo {
     private static final String INPUT_CHANNEL = "input";
 
@@ -912,7 +1072,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Configuration
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
 class Demo {
     private static final String QUEUE_NAME = "queue1";
 
@@ -940,7 +1100,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">class Demo {
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
     @ServiceActivator(inputChannel = INPUT_CHANNEL)
     public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
         String message = new String(payload);
@@ -955,13 +1115,13 @@ class Demo {
 </div>
 </div>
 <div class="sect4">
-<h5 id="_configure_servicebusmessageconverter_to_customize_objectmapper">Configure ServiceBusMessageConverter to Customize ObjectMapper</h5>
+<h5 id="_configure_servicebusmessageconverter_to_customize_objectmapper"><a class="link" href="#_configure_servicebusmessageconverter_to_customize_objectmapper">Configure ServiceBusMessageConverter to Customize ObjectMapper</a></h5>
 <div class="paragraph">
 <p><code>ServiceBusMessageConverter</code> is made as a configurable bean to allow users to customize ObjectMapper.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="si-sb-headers">Service Bus Message Headers</h5>
+<h5 id="si-sb-headers"><a class="link" href="#si-sb-headers">Service Bus Message Headers</a></h5>
 <div class="paragraph">
 <p>For some Service Bus headers that can be mapped to multiple Spring header constants, the priority of different Spring headers is listed.</p>
 </div>
@@ -1156,7 +1316,7 @@ class Demo {
 </table>
 </div>
 <div class="sect4">
-<h5 id="_partition_key_support">Partition Key Support</h5>
+<h5 id="_partition_key_support"><a class="link" href="#_partition_key_support">Partition Key Support</a></h5>
 <div class="paragraph">
 <p>This starter supports <a href="https://docs.microsoft.com/azure/service-bus-messaging/service-bus-partitioning">Service Bus partitioning</a> by allowing setting partition key and session id in the message header. This section introduces how to set partition key for messages.</p>
 </div>
@@ -1165,7 +1325,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class SampleController {
+<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
     @PostMapping("/messages")
     public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
         LOGGER.info("Going to add message {} to Sinks.Many.", message);
@@ -1182,7 +1342,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class SampleController {
+<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
     @PostMapping("/messages")
     public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
         LOGGER.info("Going to add message {} to Sinks.Many.", message);
@@ -1209,13 +1369,13 @@ When both <code>ServiceBusMessageHeaders.PARTITION_KEY</code> and <code>AzureHea
 </div>
 </div>
 <div class="sect4">
-<h5 id="_session_support">Session Support</h5>
+<h5 id="_session_support"><a class="link" href="#_session_support">Session Support</a></h5>
 <div class="paragraph">
 <p>This example demonstrates how to manually set the session id of a message in the application.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class SampleController {
+<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
     @PostMapping("/messages")
     public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
         LOGGER.info("Going to add message {} to Sinks.Many.", message);
@@ -1243,25 +1403,25 @@ the value of the session id will eventually be used to overwrite the value of th
 </div>
 </div>
 <div class="sect3">
-<h4 id="_samples_2">Samples</h4>
+<h4 id="_samples_2"><a class="link" href="#_samples_2">Samples</a></h4>
 <div class="paragraph">
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/servicebus/spring-cloud-azure-starter-integration-servicebus">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_spring_integration_with_azure_storage_queue">Spring Integration with Azure Storage Queue</h3>
+<h3 id="_spring_integration_with_azure_storage_queue"><a class="link" href="#_spring_integration_with_azure_storage_queue">Spring Integration with Azure Storage Queue</a></h3>
 <div class="sect3">
-<h4 id="_key_concepts_3">Key Concepts</h4>
+<h4 id="_key_concepts_3"><a class="link" href="#_key_concepts_3">Key Concepts</a></h4>
 <div class="paragraph">
 <p>Azure Queue Storage is a service for storing large numbers of messages. You access messages from anywhere in the world via authenticated calls using HTTP or HTTPS. A queue message can be up to 64 KB in size. A queue may contain millions of messages, up to the total capacity limit of a storage account. Queues are commonly used to create a backlog of work to process asynchronously.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_dependency_setup_3">Dependency Setup</h4>
+<h4 id="_dependency_setup_3"><a class="link" href="#_dependency_setup_3">Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
 	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
 	&lt;artifactId&gt;spring-cloud-azure-starter-integration-storage-queue&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -1269,12 +1429,12 @@ the value of the session id will eventually be used to overwrite the value of th
 </div>
 </div>
 <div class="sect3">
-<h4 id="_configuration_3">Configuration</h4>
+<h4 id="_configuration_3"><a class="link" href="#_configuration_3">Configuration</a></h4>
 <div class="paragraph">
 <p>This starter provides the following configuration options:</p>
 </div>
 <div class="sect4">
-<h5 id="_connection_configuration_properties_3">Connection Configuration Properties</h5>
+<h5 id="_connection_configuration_properties_3"><a class="link" href="#_connection_configuration_properties_3">Connection Configuration Properties</a></h5>
 <div class="paragraph">
 <p>This section contains the configuration options used for connecting to Azure Storage Queue.</p>
 </div>
@@ -1350,9 +1510,9 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 </div>
 <div class="sect3">
-<h4 id="_basic_usage_3">Basic Usage</h4>
+<h4 id="_basic_usage_3"><a class="link" href="#_basic_usage_3">Basic Usage</a></h4>
 <div class="sect4">
-<h5 id="_send_messages_to_azure_storage_queue">Send messages to Azure Storage Queue</h5>
+<h5 id="_send_messages_to_azure_storage_queue"><a class="link" href="#_send_messages_to_azure_storage_queue">Send messages to Azure Storage Queue</a></h5>
 <div class="paragraph">
 <p>Step 1. Fill the credential configuration options.</p>
 </div>
@@ -1422,7 +1582,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">class Demo {
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
     private static final String STORAGE_QUEUE_NAME = "example";
     private static final String OUTPUT_CHANNEL = "output";
 
@@ -1451,7 +1611,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">class Demo {
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
     @Autowired
     StorageQueueOutboundGateway storageQueueOutboundGateway;
 
@@ -1467,7 +1627,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">class Demo {
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
     public void demo() {
         this.storageQueueOutboundGateway.send(message);
     }
@@ -1476,7 +1636,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 </div>
 <div class="sect4">
-<h5 id="_receive_messages_from_azure_storage_queue">Receive Messages from Azure Storage Queue</h5>
+<h5 id="_receive_messages_from_azure_storage_queue"><a class="link" href="#_receive_messages_from_azure_storage_queue">Receive Messages from Azure Storage Queue</a></h5>
 <div class="paragraph">
 <p>Step 1. Fill the credential configuration options.</p>
 </div>
@@ -1485,7 +1645,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">class Demo {
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
     private static final String INPUT_CHANNEL = "input";
 
     @Bean
@@ -1500,7 +1660,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">class Demo {
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
     private static final String STORAGE_QUEUE_NAME = "example";
 
     @Bean
@@ -1516,7 +1676,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">class Demo {
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
     @ServiceActivator(inputChannel = INPUT_CHANNEL)
     public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
         String message = new String(payload);
@@ -1532,7 +1692,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 </div>
 <div class="sect3">
-<h4 id="_samples_3">Samples</h4>
+<h4 id="_samples_3"><a class="link" href="#_samples_3">Samples</a></h4>
 <div class="paragraph">
 <p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/storage/spring-cloud-azure-starter-integration-storage-queue">azure-spring-boot-samples</a> for more details.</p>
 </div>
@@ -1541,18 +1701,6 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 </div>
 </div>
-<div id="footer">
-<div id="footer-text">
-Last updated 2022-03-31 16:15:52 UTC
-</div>
-</div>
-<script src="js/highlight/highlight.min.js"></script>
-<script>
-if (!hljs.initHighlighting.called) {
-  hljs.initHighlighting.called = true
-  ;[].slice.call(document.querySelectorAll('pre.highlight > code')).forEach(function (el) { hljs.highlightBlock(el) })
-}
-</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>
