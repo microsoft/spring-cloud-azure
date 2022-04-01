@@ -5,9 +5,9 @@ name: Schedule Current Link Check
 # Controls when the workflow will run
 on:
   # The schedule event allows you to trigger a workflow at a scheduled time.
+  workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'
-  workflow_dispatch:
 
 jobs:
   link-check:
