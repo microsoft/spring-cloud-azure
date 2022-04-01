@@ -1,0 +1,8 @@
+include::_attributes.adoc[]
+
+= Spring Cloud Azure
+
+include::getting-started-guides.adoc[]
+include::tutorials.adoc[]
+include::samples.adoc[]
+include::reference.adoc[]
