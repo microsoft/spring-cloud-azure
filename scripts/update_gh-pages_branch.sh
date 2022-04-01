@@ -21,7 +21,7 @@ function set_default_props() {
     echo "Repo name is [${REPO_NAME}]"
     SPRING_CLOUD_STATIC_REPO=${SPRING_CLOUD_STATIC_REPO:-git@github.com:spring-cloud/spring-cloud-static.git}
     echo "Spring Cloud Static repo is [${SPRING_CLOUD_STATIC_REPO}"
-    MODULES=("getting-started" "portal" "reference" "samples" "tutorials")
+    MODULES=("docs/getting-started" "docs/portal" "docs/reference" "docs/samples" "docs/tutorials")
     echo "MODULES: ${MODULES[*]}"
 }
 
@@ -57,7 +57,7 @@ function switch_to_tag() {
 # Build the docs if switch is on
 function build_docs_if_applicable() {
     if [[ "${BUILD}" == "yes" ]] ; then
-        ./mvnw clean install -DskipTests
+        ./mvnw clean install -DskipTests -Pdocs
     fi
 }
 

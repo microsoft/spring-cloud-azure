@@ -1,117 +1,230 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<!--
+  ~ Copyright 2013-2019 the original author or authors.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-build</artifactId>
+    <version>3.1.1</version>
+    <relativePath /> <!-- lookup parent from repository -->
+  </parent>
 
   <groupId>com.azure.spring</groupId>
-  <artifactId>spring-cloud-azure-docs</artifactId>
-  <version>4.1.0-beta.1</version>
+  <artifactId>spring-cloud-azure-aggregator</artifactId>
+  <version>4.0.0</version>
   <packaging>pom</packaging>
+  <name>Spring Cloud Azure</name>
+  <description>Spring Cloud Azure</description>
 
-  <modules>
-    <module>portal</module>
-    <module>reference</module>
-    <module>getting-started</module>
-    <module>samples</module>
-    <module>tutorials</module>
-  </modules>
 
   <properties>
-    <spring-doc-resources.version>0.2.5</spring-doc-resources.version>
-    <docs.build.directory>${project.build.directory}/docs/</docs.build.directory>
-    <docs.output.directory>${project.build.directory}/generated-docs/html</docs.output.directory>
+    <!-- <tomcat.version>8.0.33</tomcat.version> -->
+    <!-- <javax-mail.version>1.5.5</javax-mail.version> -->
+    <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+    <!-- <javax.activation.version>1.2.0</javax.activation.version> -->
+    <spring-cloud-commons.version>3.1.1</spring-cloud-commons.version>
+    <version.spring.cloud.azure>4.0.0</version.spring.cloud.azure>
+    <spring-javaformat.version>0.0.29</spring-javaformat.version>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
-  <repositories>
-    <repository>
-      <id>spring-releases</id>
-      <name>Spring Releases</name>
-      <url>https://repo.spring.io/release</url>
-      <snapshots>
-      </snapshots>
-    </repository>
-  </repositories>
+  <modules>
+    <module>docs/getting-started</module>
+    <module>docs/portal</module>
+    <module>docs/reference</module>
+    <module>docs/samples</module>
+    <module>docs/tutorials</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.azure.spring</groupId>
+        <artifactId>spring-cloud-azure-dependencies</artifactId>
+        <version>${version.spring.cloud.azure}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-commons-dependencies</artifactId>
+        <version>${spring-cloud-commons.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.junit.vintage</groupId>
+          <artifactId>junit-vintage-engine</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <compilerArgs>
+              <!-- Enable all warnings -->
+              <compilerArg>-Xlint:all</compilerArg>
+              <!-- Disable options warning because we will have differences between the compiler and source code level-->
+              <compilerArg>-Xlint:-options</compilerArg>
+              <!-- Disable serialversionuid warnings -->
+              <compilerArg>-Xlint:-serial</compilerArg>
+              <!--compilerArg>-Werror</compilerArg-->
+            </compilerArgs>
+          </configuration>
+        </plugin>
+
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
-        <version>1.6.8</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>io.spring.javaformat</groupId>
+        <artifactId>spring-javaformat-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>unpack-doc-resources</id>
-            <phase>generate-resources</phase>
+            <phase>validate</phase>
+            <inherited>true</inherited>
             <goals>
-              <goal>wget</goal>
+              <goal>validate</goal>
             </goals>
-            <configuration>
-              <url>
-                https://repo.spring.io/release/io/spring/docresources/spring-doc-resources/${spring-doc-resources.version}/spring-doc-resources-${spring-doc-resources.version}.zip
-              </url>
-              <unpack>true</unpack>
-              <outputDirectory>${docs.build.directory}</outputDirectory>
-            </configuration>
           </execution>
         </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-asciidoc-resources</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${docs.build.directory}</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/main/asciidoc</directory>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.asciidoctor</groupId>
-        <artifactId>asciidoctor-maven-plugin</artifactId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.3.2</version>
         <configuration>
-          <sourceDirectory>${docs.build.directory}</sourceDirectory>
+          <links>
+            <link>https://docs.oracle.com/javase/8/docs/api/</link>
+            <link>https://docs.oracle.com/javaee/8/api/</link>
+            <link>https://fasterxml.github.io/jackson-core/javadoc/2.8/</link>
+            <link>https://docs.spring.io/spring/docs/5.3.x/javadoc-api/</link>
+          </links>
+          <author>true</author>
+          <header>${project.name}</header>
+          <reportOutputDirectory>${project.build.directory}/site/${project.version}/apidocs</reportOutputDirectory>
         </configuration>
-        <executions>
-          <execution>
-            <id>generate-html-documentation</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>process-asciidoc</goal>
-            </goals>
-            <configuration>
-              <backend>html5</backend>
-              <doctype>book</doctype>
-              <outputDirectory>${docs.output.directory}</outputDirectory>
-              <attributes>
-                // these attributes are required to use the doc resources
-                <docinfo>shared</docinfo>
-                <stylesdir>css/</stylesdir>
-                <stylesheet>spring.css</stylesheet>
-                <linkcss>true</linkcss>
-                <icons>font</icons>
-                <highlightjsdir>js/highlight</highlightjsdir>
-                <highlightjs-theme>github</highlightjs-theme>
-                <source-highlighter>highlight.js</source-highlighter>
-                <project-version>${project.version}</project-version>
-              </attributes>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </reporting>
+
+  <profiles>
+    <profile>
+      <id>spring</id>
+      <repositories>
+        <repository>
+          <id>spring-snapshots</id>
+          <name>Spring Snapshots</name>
+          <url>https://repo.spring.io/libs-snapshot-local</url>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+        </repository>
+        <repository>
+          <id>spring-milestones</id>
+          <name>Spring Milestones</name>
+          <url>https://repo.spring.io/libs-milestone-local</url>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+        <repository>
+          <id>spring-releases</id>
+          <name>Spring Releases</name>
+          <url>https://repo.spring.io/release</url>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>spring-snapshots</id>
+          <name>Spring Snapshots</name>
+          <url>https://repo.spring.io/libs-snapshot-local</url>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+        </pluginRepository>
+        <pluginRepository>
+          <id>spring-milestones</id>
+          <name>Spring Milestones</name>
+          <url>https://repo.spring.io/libs-milestone-local</url>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+          <id>spring-releases</id>
+          <name>Spring Releases</name>
+          <url>https://repo.spring.io/libs-release-local</url>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+
+
+  </profiles>
+
 
 </project>
