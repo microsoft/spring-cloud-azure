@@ -4,15 +4,24 @@ on:
   push:
     branches:
     - main
-    - hotfix/*
+    - docs
+    - 4.*
+  # paths:
+    # - 'docs/**'
+  # release:
+  #   types: [published] # includes pre-release and regular releases, but does not include draft releases.
+  # workflow_dispatch:
+  #   inputs:
+  #     committish:
+  #       description: Tag or branch of the docs to be created or updated. Using `main` will update the landing page. Using anything else will create or update a versioned copy of the docs.
+  #       required: true
+  #       default: main
 
 jobs:
   updateDocs:
     runs-on: ubuntu-20.04
     steps:
-
-    - name: Install azure-sdk-for-java
-      run: | 
+    - run: | 
           git init azure-sdk-for-java
           cd azure-sdk-for-java
           git remote add origin https://github.com/Azure/azure-sdk-for-java.git
@@ -30,15 +39,11 @@ jobs:
             -Dparallel-test-playback \
             -Pdev \
             -f sdk/spring/pom.xml
-
     - name: Get current date
       id: date
       run: echo "::set-output name=date::$(date +'%Y-%m-%d' --utc)"
-
     - uses: actions/checkout@v2
-
-    - name: Config git
-      run: |
+    - run: |
         git config user.name github-actions
         git config user.email github-actions@github.com
 
@@ -57,5 +62,28 @@ jobs:
       if: steps.mvn-cache.outputs.cache-hit != 'true'
       run: ./mvnw compile dependency:go-offline
 
+    - name: Mvn install # Need this when the version/directory/pom structure changes
+      run: |
+        ./mvnw \
+          --batch-mode \
+          --show-version \
+          --threads 1.5C \
+          --define maven.test.skip=true \
+          --define maven.javadoc.skip=true \
+          install
+
+    - name: Remove SNAPSHOT # Needed for releases
+      run: |
+        if [[ -n "${{ github.event.release.tag_name }}" ]] ; then
+          ./mvnw versions:set --batch-mode -DremoveSnapshot -DprocessAllModules
+        fi
+
     - name: Update Docs
-      run: ./scripts/update_gh-pages_branch.sh --build
+      run: |
+        if [[ -n "${{ github.event.release.tag_name }}" ]] ; then
+          ./docs/src/main/asciidoc/ghpages.sh --version ${{ github.event.release.tag_name }} --destination . --build
+        elif [[ -n "${{ github.event.inputs.committish }}" ]] && [[ "${{ github.event.inputs.committish }}" != "main" ]] ; then
+            ./docs/src/main/asciidoc/ghpages.sh --version ${{ github.event.inputs.committish }} --destination . --build
+        else
+          ./docs/src/main/asciidoc/ghpages.sh --build
+        fi
