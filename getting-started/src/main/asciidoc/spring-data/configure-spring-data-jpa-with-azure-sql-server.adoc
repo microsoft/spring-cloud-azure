@@ -1,0 +1,314 @@
+
+=== JPA with Azure SQL Server
+
+This article demonstrates creating a sample application that uses link:https://spring.io/projects/spring-data-jpa[Spring Data JPA] to store and retrieve information in link:https://docs.microsoft.com/en-us/azure/azure-sql/[Azure SQL Database].
+
+link:https://en.wikipedia.org/wiki/Java_Persistence_API[The Java Persistence API (JPA)] is the standard Java API for object-relational mapping.
+
+==== Prerequisites
+
+- An Azure account. If you don't have one, link:https://azure.microsoft.com/free/[get a free trial].
+- link:https://docs.microsoft.com/en-us/azure/cloud-shell/quickstart[Azure Cloud Shell] or link:https://docs.microsoft.com/en-us/cli/azure/install-azure-cli[Azure CLI]. We recommend Azure Cloud Shell so you'll be logged in automatically and have access to all the tools you'll need.
+- A supported link:https://docs.microsoft.com/en-us/azure/developer/java/fundamentals/java-support-on-azure[Java Development Kit], version 8 (included in Azure Cloud Shell).
+- link:https://curl.haxx.se[cURL] or a similar HTTP utility to test functionality.
+
+==== Sample application
+
+In this article, we will code a sample application. If you want to go faster, this application is already coded and available at link:https://github.com/Azure-Samples/quickstart-spring-data-jpa-sql-server[https://github.com/Azure-Samples/quickstart-spring-data-jpa-sql-server].
+
+==== Prepare the working environment
+
+First, set up some environment variables by using the following commands:
+
+[source,bash]
+----
+AZ_RESOURCE_GROUP=database-workshop
+AZ_DATABASE_NAME=<YOUR_DATABASE_NAME>
+AZ_LOCATION=<YOUR_AZURE_REGION>
+AZ_SQL_SERVER_USERNAME=spring
+AZ_SQL_SERVER_PASSWORD=<YOUR_AZURE_SQL_PASSWORD>
+AZ_LOCAL_IP_ADDRESS=<YOUR_LOCAL_IP_ADDRESS>
+----
+
+Replace the placeholders with the following values, which are used throughout this article:
+
+- `<YOUR_DATABASE_NAME>`: The name of your Azure SQL Database server. It should be unique across Azure.
+- `<YOUR_AZURE_REGION>`: The Azure region you'll use. You can use `eastus` by default, but we recommend that you configure a region closer to where you live. You can have the full list of available regions by entering `az account list-locations`.
+- `<AZ_SQL_SERVER_PASSWORD>`: The password of your Azure SQL Database server. That password should have a minimum of eight characters. The characters should be from three of the following categories: English uppercase letters, English lowercase letters, numbers (0-9), and non-alphanumeric characters (!, $, #, %, and so on).
+- `<YOUR_LOCAL_IP_ADDRESS>`: The IP address of your local computer, from which you'll run your Spring Boot application. One convenient way to find it is to point your browser to link:http://whatismyip.akamai.com/[whatismyip.akamai.com].
+
+Next, create a resource group using the following command:
+
+[source,bash]
+----
+az group create \
+    --name $AZ_RESOURCE_GROUP \
+    --location $AZ_LOCATION \
+    | jq
+----
+
+NOTE: We use the `jq` utility to display JSON data and make it more readable. This utility is installed by default on link:https://shell.azure.com/[Azure Cloud Shell]. If you don't like that utility, you can safely remove the `| jq` part of all the commands we'll use.
+
+==== Create an Azure SQL Database instance
+
+The first thing we'll create is a managed Azure SQL Database server.
+
+NOTE: You can read more detailed information about creating Azure SQL Database servers in link:https://docs.microsoft.com/en-us/azure/azure-sql/database/single-database-create-quickstart?tabs=azure-portal[Quickstart: Create an Azure SQL Database single database].
+
+In link:https://shell.azure.com/[Azure Cloud Shell], run the following command:
+
+[source,bash]
+----
+az sql server create \
+    --resource-group $AZ_RESOURCE_GROUP \
+    --name $AZ_DATABASE_NAME \
+    --location $AZ_LOCATION \
+    --admin-user $AZ_SQL_SERVER_USERNAME \
+    --admin-password $AZ_SQL_SERVER_PASSWORD \
+    | jq
+----
+
+This command creates an Azure SQL Database server.
+
+===== Configure a firewall rule for your Azure SQL Database server
+
+Azure SQL Database instances are secured by default. They have a firewall that doesn't allow any incoming connection. To be able to use your database, you need to add a firewall rule that will allow the local IP address to access the database server.
+
+Because you configured our local IP address at the beginning of this article, you can open the server's firewall by running the following command:
+
+[source,bash]
+----
+az sql server firewall-rule create \
+    --resource-group $AZ_RESOURCE_GROUP \
+    --name $AZ_DATABASE_NAME-database-allow-local-ip \
+    --server $AZ_DATABASE_NAME \
+    --start-ip-address $AZ_LOCAL_IP_ADDRESS \
+    --end-ip-address $AZ_LOCAL_IP_ADDRESS \
+    | jq
+----
+
+===== Configure a Azure SQL database
+
+The Azure SQL Database server that you created earlier is empty. It doesn't have any database that you can use with the Spring Boot application. Create a new database called `demo` by running the following command:
+
+[source,bash]
+----
+az sql db create \
+    --resource-group $AZ_RESOURCE_GROUP \
+    --name demo \
+    --server $AZ_DATABASE_NAME \
+    | jq
+----
+
+
+===== Generate the application by using Spring Initializr
+
+Generate the application on the command line by entering:
+
+[source,bash]
+----
+curl https://start.spring.io/starter.tgz -d dependencies=web,data-jpa,sqlserver -d baseDir=azure-database-workshop -d bootVersion=2.3.1.RELEASE -d javaVersion=8 | tar -xzvf -
+----
+
+===== Configure Spring Boot to use Azure SQL Database
+
+Open the *src/main/resources/application.properties* file, and add the following. Be sure to replace the two `$AZ_DATABASE_NAME` variables and the `$AZ_SQL_SERVER_PASSWORD` variable with the values that you configured at the beginning of this article.
+
+[source,properties]
+----
+logging.level.org.hibernate.SQL=DEBUG
+
+spring.datasource.url=jdbc:sqlserver://$AZ_DATABASE_NAME.database.windows.net:1433;database=demo;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
+spring.datasource.username=spring@$AZ_DATABASE_NAME
+spring.datasource.password=$AZ_SQL_SERVER_PASSWORD
+
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=create-drop
+----
+
+WARNING: The configuration property `spring.jpa.hibernate.ddl-auto=create-drop` means that Spring Boot will automatically create a database schema at application start-up, and will try to delete it when it shuts down. This is great for testing, but this shouldn't be used in production!
+
+You should now be able to start your application by using the provided Maven wrapper:
+
+[source,bash]
+----
+./mvnw spring-boot:run
+----
+
+Here's a screenshot of the application running for the first time:
+
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-data-jpa-with-azure-sql-server/create-sql-server-01.png[The running application]
+
+==== Code the application
+
+Next, add the Java code that will use JPA to store and retrieve data from your Azure SQL Database.
+
+Create a new `Todo` Java class, next to the `DemoApplication` class, and add the following code:
+
+[source,java]
+----
+package com.example.demo;
+
+import org.springframework.data.annotation.Id;
+
+public class Todo {
+
+    public Todo() {
+    }
+
+    public Todo(String description, String details, boolean done) {
+        this.description = description;
+        this.details = details;
+        this.done = done;
+    }
+
+    @Id
+    private Long id;
+
+    private String description;
+
+    private String details;
+
+    private boolean done;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
+
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
+    }
+}
+----
+
+This class is a domain model mapped on the `todo` table that you created before.
+
+To manage that class, you'll need a repository. Define a new `TodoRepository` interface in the same package:
+
+[source,java]
+----
+package com.example.demo;
+
+import org.springframework.data.repository.CrudRepository;
+
+public interface TodoRepository extends CrudRepository<Todo, Long> {
+}
+----
+
+This repository is a repository that Spring Data JDBC manages.
+
+Finish the application by creating a controller that can store and retrieve data. Implement a `TodoController` class in the same package, and add the following code:
+
+[source,java]
+----
+package com.example.demo;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/")
+public class TodoController {
+
+    private final TodoRepository todoRepository;
+
+    public TodoController(TodoRepository todoRepository) {
+        this.todoRepository = todoRepository;
+    }
+
+    @PostMapping("/")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Todo createTodo(@RequestBody Todo todo) {
+        return todoRepository.save(todo);
+    }
+
+    @GetMapping("/")
+    public Iterable<Todo> getTodos() {
+        return todoRepository.findAll();
+    }
+}
+----
+
+Finally, halt the application and start it again using the following command:
+
+[source,bash]
+----
+./mvnw spring-boot:run
+----
+
+==== Test the application
+
+To test the application, you can use cURL.
+
+First, create a new "todo" item in the database using the following command:
+
+[source,bash]
+----
+curl --header "Content-Type: application/json" \
+    --request POST \
+    --data '{"description":"configuration","details":"congratulations, you have set up JDBC correctly!","done": "true"}' \
+    http://127.0.0.1:8080
+----
+
+This command should return the created item as follows:
+
+[source,json]
+----
+{"id":1,"description":"configuration","details":"congratulations, you have set up JDBC correctly!","done":true}
+----
+
+Next, retrieve the data by using a new cURL request as follows:
+
+[source,bash]
+----
+curl http://127.0.0.1:8080
+----
+
+This command will return the list of "todo" items, including the item you've created, as follows:
+
+[source,json]
+----
+[{"id":1,"description":"configuration","details":"congratulations, you have set up JDBC correctly!","done":true}]
+----
+
+
+Here's a screenshot of these cURL requests:
+
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-data-jpa-with-azure-sql-server/create-sql-server-02.png[Test with cURL]
+
+Congratulations! You've created a Spring Boot application that uses JPA to store and retrieve data from Azure SQL Database.
+
+==== Clean up resources
+
+To clean up all resources used during this quickstart, delete the resource group using the following command:
+
+[source,bash]
+----
+az group delete \
+    --name $AZ_RESOURCE_GROUP \
+    --yes
+----

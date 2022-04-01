@@ -13,7 +13,20 @@ include::spring-boot/configure-spring-boot-starter-java-app-with-azure-service-b
 
 == Spring Data
 
-TODO: finish this content.
+include::spring-data/how-to-guides-spring-data-cosmosdb.adoc[]
+include::spring-data/configure-spring-boot-starter-java-app-with-cosmos-db.adoc[]
+include::spring-data/configure-spring-app-with-cosmos-db-on-app-service-linux.adoc[]
+include::spring-data/configure-spring-data-apache-cassandra-with-cosmos-db.adoc[]
+include::spring-data/configure-spring-data-mongodb-with-cosmos-db.adoc[]
+include::spring-data/configure-spring-data-jdbc-with-azure-mysql.adoc[]
+include::spring-data/configure-spring-data-jdbc-with-azure-postgresql.adoc[]
+include::spring-data/configure-spring-data-jdbc-with-azure-sql-server.adoc[]
+include::spring-data/configure-spring-data-r2dbc-with-azure-mysql.adoc[]
+include::spring-data/configure-spring-data-r2dbc-with-azure-postgresql.adoc[]
+include::spring-data/configure-spring-data-r2dbc-with-azure-sql-server.adoc[]
+include::spring-data/configure-spring-data-jpa-with-azure-mysql.adoc[]
+include::spring-data/configure-spring-data-jpa-with-azure-postgresql.adoc[]
+include::spring-data/configure-spring-data-jpa-with-azure-sql-server.adoc[]
 
 == Spring Security
 
