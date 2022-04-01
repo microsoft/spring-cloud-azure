@@ -33,6 +33,11 @@ function check_if_anything_to_sync() {
         echo "No gh-pages, so not syncing"
         exit 0
     fi
+
+    if ! [ -d docs/reference/target/generated-docs ] && ! [ "${BUILD}" == "yes" ]; then
+        echo "No gh-pages sources in docs/reference/target/generated-docs, so not syncing"
+        exit 0
+    fi
 }
 
 function retrieve_current_branch() {
@@ -57,14 +62,35 @@ function switch_to_tag() {
 # Build the docs if switch is on
 function build_docs_if_applicable() {
     if [[ "${BUILD}" == "yes" ]] ; then
-        ./mvnw clean install -DskipTests -Pdocs
+        ./mvnw clean install -P docs -DskipTests
     fi
+}
+
+# Get the name of the `docs.main` property
+# Get whitelisted branches - assumes that a `docs` module is available under `docs` profile
+function retrieve_doc_properties() {
+    MAIN_ADOC_VALUE=$("${MAVEN_PATH}"mvn -q \
+        -Dexec.executable="echo" \
+        -Dexec.args='${docs.main}' \
+        --non-recursive \
+        org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
+    echo "Extracted 'main.adoc' from Maven build [${MAIN_ADOC_VALUE}]"
+
+
+    WHITELIST_PROPERTY=${WHITELIST_PROPERTY:-"docs.whitelisted.branches"}
+    WHITELISTED_BRANCHES_VALUE=$("${MAVEN_PATH}"mvn -q \
+        -Dexec.executable="echo" \
+        -Dexec.args="\${${WHITELIST_PROPERTY}}" \
+        org.codehaus.mojo:exec-maven-plugin:1.3.1:exec \
+        -P docs \
+        -pl docs)
+    echo "Extracted '${WHITELIST_PROPERTY}' from Maven build [${WHITELISTED_BRANCHES_VALUE}]"
 }
 
 # Stash any outstanding changes
 function stash_changes() {
-    git diff-index --quiet HEAD && dirty=$? || (echo "Failed to check if the current repo is dirty. Assuming that it isn't." && dirty="")
-    if [ "$dirty" != "" ]; then git stash; fi
+    git diff-index --quiet HEAD && dirty=$? || (echo "Failed to check if the current repo is dirty. Assuming that it is." && dirty="1")
+    if [ "$dirty" != "0" ]; then git stash; fi
 }
 
 # Switch to gh-pages branch to sync it with current branch
@@ -110,7 +136,7 @@ function add_docs_from_target() {
 
 # Copies the docs by using the retrieved properties from Maven build
 function copy_docs_for_current_version() {
-    if [[ "${CURRENT_BRANCH}" == "main" ]] ; then
+   if [[ "${CURRENT_BRANCH}" == "main" ]] ; then
         echo -e "Current branch is main - will copy the current docs only to the root folder"
         for d in "${MODULES[@]}"; do
             for f in "${d}"/target/generated-docs/*; do
@@ -125,7 +151,8 @@ function copy_docs_for_current_version() {
         COMMIT_CHANGES="yes"
     else
         echo -e "Current branch is [${CURRENT_BRANCH}]"
-        if [[ ",main," = ",${CURRENT_BRANCH}," ]] ; then
+        # https://stackoverflow.com/questions/29300806/a-bash-script-to-check-if-a-string-is-present-in-a-comma-separated-list-of-strin
+        if [[ ",${WHITELISTED_BRANCHES_VALUE}," = *",${CURRENT_BRANCH},"* ]] ; then
             mkdir -p ${ROOT_FOLDER}/${CURRENT_BRANCH}
             echo -e "Will copying the current docs to the [${CURRENT_BRANCH}] folder"
             for d in "${MODULES[@]}"; do
@@ -139,7 +166,8 @@ function copy_docs_for_current_version() {
             done
             COMMIT_CHANGES="yes"
         else
-            echo -e "Skipping for current branch: ${CURRENT_BRANCH}"
+            echo -e "Branch [${CURRENT_BRANCH}] is not on the white list! Check out the Maven [${WHITELIST_PROPERTY}] property in
+             [docs] module available under [docs] profile. Won't commit any changes to gh-pages for this branch."
         fi
     fi
 }
@@ -167,8 +195,17 @@ function copy_docs_for_branch() {
     local file=$1
     local destination=$2
     if ! git ls-files -i -o --exclude-standard --directory | grep -q ^${file}$; then
-        cp -rf $f ${destination}
-        git add -A ${destination}/$file
+        # Not ignored...
+        # We want users to access 1.0.0.RELEASE/ instead of 1.0.0.RELEASE/spring-cloud.sleuth.html
+        if [[ ("${file}" == "${MAIN_ADOC_VALUE}.html") || ("${file}" == "${REPO_NAME}.html") ]] ; then
+            # We don't want to copy the spring-cloud-sleuth.html
+            # we want it to be converted to index.html
+            cp -rf $f ${destination}/index.html
+            git add -A ${destination}/index.html
+        else
+            cp -rf $f ${destination}
+            git add -A ${destination}/$file
+        fi
     fi
 }
 
@@ -192,7 +229,7 @@ function checkout_previous_branch() {
     # If -version was provided we need to come back to root project
     cd ${ROOT_FOLDER}
     git checkout ${CURRENT_BRANCH} || echo "Failed to check the branch... continuing with the script"
-    if [ "$dirty" != "" ]; then git stash pop; fi
+    if [ "$dirty" != "0" ]; then git stash pop; fi
     exit 0
 }
 
@@ -286,6 +323,7 @@ else
     switch_to_tag
 fi
 build_docs_if_applicable
+retrieve_doc_properties
 stash_changes
 add_docs_from_target
 checkout_previous_branch
