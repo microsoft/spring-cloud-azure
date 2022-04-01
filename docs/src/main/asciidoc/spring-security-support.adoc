@@ -2,13 +2,13 @@
 
 === Spring Security With Azure Active Directory
 
-When you are building a web application, identity and access management will always be foundational pieces.
+When you build a web application, identity and access management are two foundational pieces.
 
-Azure offers a great platform to democratize your application development journey, as it not only offers a cloud-base identity service, but also deep integration with the rest of the Azure ecosystem.
+Azure offers a great platform to democratize your application developing journey, as it not only offers a cloud-based identity service, but also provides a deep integration with the rest of the Azure ecosystem.
 
-Spring Security has made it easy to secure your Spring based applications with powerful abstractions and extensible interfaces. However, as powerful as the Spring framework can be, it is not tailored to a specific identity provider.
+`Spring Security` makes it easy to secure your Spring based application with powerful abstractions and extensible interfaces. However, as powerful as `Spring framework`, `Spring Security` is not tailored to a specific identity provider, like `Azure AD`.
 
-The `spring-cloud-azure-starter-active-directory` (`aad-starter` for short) provides the most optimal way to connect your `web application` to an Azure Active Directory (AAD for short) tenant and protect `resource server` with AAD. It uses the Oauth 2.0 protocol to protect `web applications` and `resource servers`.
+The `spring-cloud-azure-starter-active-directory` (`aad-starter` for short) provides a most optimal way to connect your `web application` to an Azure Active Directory (Azure AD) tenant and protects a `resource server` with Azure AD. It uses the `OAuth 2.0` protocol to protect a `web application` or a `resource server`.
 
 ==== Accessing a Web Application
 
@@ -22,7 +22,7 @@ image:https://user-images.githubusercontent.com/13167207/142617664-f1704adb-db64
 
 1. Read link:https://docs.microsoft.com/azure/active-directory/develop/quickstart-register-app[MS docs about register an application with the Microsoft identity platform].
 2. Create app registration. Get `AZURE_TENANT_ID`, `AZURE_CLIENT_ID` and `AZURE_CLIENT_SECRET`.
-3. Set `redirect URI` to `APPLICATION_BASE_URI/login/oauth2/code/`, for example `http://localhost:8080/login/oauth2/code/`. The tailing `/` is required.
+3. Set `redirect URI` to `<APPLICATION_BASE_URI>/login/oauth2/code/`, for example `http://localhost:8080/login/oauth2/code/`. The tailing `/` is required.
 
 ===== Add Required Dependencies
 
@@ -55,7 +55,7 @@ spring:
           client-secret: ${AZURE_CLIENT_SECRET}
 ----
 
-Now start you application and access your application by browser, then you will be redirected into Microsoft login page.
+Now you start the application and access your application by a browser, then you will be redirected to the Microsoft login page.
 
 ===== Advanced Usages
 
@@ -92,7 +92,7 @@ Now start you application and access your application by browser, then you will 
 
 NOTE: If you want to use app role based access control, you can't put group names in `role` claim . Refs: link:https://docs.microsoft.com/azure/active-directory/develop/active-directory-optional-claims#configuring-groups-optional-claims[Configuring groups optional claims].
 
-* Step 2: Protect specific method.
+* Step 2: Protect Specific Method.
 [source,java]
 ----
 class Demo {
@@ -122,7 +122,7 @@ spring:
           allowed-group-ids: group_id_1, group_id_2
 ----
 
-* Step 2: Protect specific method.
+* Step 2: Protect Specific Method.
 [source,java]
 ----
 @Controller
@@ -238,7 +238,7 @@ image:https://user-images.githubusercontent.com/13167207/142617853-0526205f-fdef
 
 1. Read link:https://docs.microsoft.com/azure/active-directory/develop/quickstart-register-app[MS docs about register an application with the Microsoft identity platform].
 2. Create app registration. Get `AZURE_TENANT_ID`, `AZURE_CLIENT_ID` and `AZURE_CLIENT_SECRET`.
-3. Set `redirect URI` to `APPLICATION_BASE_URI/login/oauth2/code/`, for example `http://localhost:8080/login/oauth2/code/`. The tailing `/` is required.
+3. Set `redirect URI` to `<APPLICATION_BASE_URI>/login/oauth2/code/`, for example `http://localhost:8080/login/oauth2/code/`. The tailing `/` is required.
 
 ===== Add Required Dependencies
 [source,xml]
@@ -317,7 +317,7 @@ spring:
 
 ====== Access Multiple Resource Servers
 
-In one web application, you can access multiple resource server by configuring like this:
+In one web application, you can access multiple resource servers by configuring like this:
 
 [source,yaml]
 ----
@@ -360,7 +360,7 @@ public class Demo {
 
 ====== Incremental Consent
 
-In previous sample, all scopes will be consented when customer first login, no matter it's belong to resource-server-1 or resource-server-2. If you don't want to let customer consent all scopes, you can do like this:
+In previous sample, all scopes will be consented when customer first login, no matter it belongs to `resource-server-1` or `resource-server-2`. If you don't want the customer consent all scopes at the first login, you can do like this:
 
 [source,yaml]
 ----
@@ -387,7 +387,7 @@ Sample project: link:https://github.com/Azure-Samples/azure-spring-boot-samples/
 
 ==== Accessing a Resource Server
 
-This scenario doesn't support login, just protect the server by validating the access token. If the access token is valid, the server serves the request.
+This scenario doesn't support login, it just protects the server by validating the `access token`. If the `access token` is valid, the server accepts the request.
 
 ===== System Diagram
 
@@ -433,7 +433,7 @@ Now start your application and access your application's web api.
   - `iss`: The access token must be issued by Azure AD.
   - `nbf`: Current time can not before `nbf`.
   - `exp`: Current time can not after `exp`.
-  - `aud`: If `spring.cloud.azure.active-directory.credential.client-id` or `spring.cloud.azure.active-directory.credential.app-id-uri` configured, the audience must equal to the configured `client-id` or `app-id-uri`. If the 2 properties are not configured, this claim will not be validated.
+  - `aud`: If `spring.cloud.azure.active-directory.credential.client-id` or `spring.cloud.azure.active-directory.credential.app-id-uri` configured, the audience must be equal to the configured `client-id` or `app-id-uri`. If this 2 properties are not configured, this claim will not be validated.
 
 Refer to link:https://docs.microsoft.com/en-us/azure/active-directory/develop/access-tokens[MS docs about Microsoft identity platform access tokens] to get more information about access token.
 
@@ -463,7 +463,7 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
     - Read link:https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-configure-app-expose-web-apis[MS docs about configure an application to expose a web API].
     - Expose a web API with a scope named `Scope1`.
 
-* Step 2: Protect specific method.
+* Step 2: Protect Specific Method.
 [source,java]
 ----
 class Demo {
@@ -476,7 +476,7 @@ class Demo {
 }
 ----
 
-By doing this, when access `/scope1` endpoint, the following claims in access token will be validated:
+When accessing `/scope1` endpoint, the following claims in access token will be validated:
 
   - `scp`: The value must contains `Scope1`.
 
@@ -491,7 +491,7 @@ By doing this, when access `/scope1` endpoint, the following claims in access to
     - Value: AppRole1
     - Do you want to enable this app role: yes
 
-* Step 2: Protect specific method.
+* Step 2: Protect Specific Method.
 [source,java]
 ----
 class Demo {
@@ -504,7 +504,7 @@ class Demo {
 }
 ----
 
-By doing this, when access `/app-role1` endpoint, the following claims in access token will be validated:
+When accessing `/app-role1` endpoint, the following claims in the `access token` will be validated:
 
   - `roles`: The value must contains `AppRole1`.
 
@@ -609,7 +609,7 @@ Sample project: link:https://github.com/Azure-Samples/azure-spring-boot-samples/
 
 ===== Add Required Properties
 
-Set property `spring.cloud.azure.active-directory.application-type` to `web_application_and_resource_server`, and specify the authorization type for each authorization client.
+Set property `spring.cloud.azure.active-directory.application-type` to `web_application_and_resource_server`, and specify the `authorization grant type` for each authorization client.
 
 [source,yaml]
 ----
@@ -634,7 +634,7 @@ spring:
 
 ===== Define SecurityConfigurationAdapter
 
-Configure multiple HttpSecurity instances, `AadWebApplicationAndResourceServerConfig` contain two security configurations for resource server and web application.
+Configure multiple `HttpSecurity` instances, `AadWebApplicationAndResourceServerConfig` contains two security configurations for `resource server` and `web application`.
 
 [source,java]
 ----
@@ -705,7 +705,7 @@ Here are some examples about how to use these properties:
 
 ===== Application Type
 
-THe application type can be inferred from the dependencies: spring-security-oauth2-client or spring-security-oauth2-resource-server. If the inferred value is not the value you want, you can specify the application type. Here is the table about valid values and inferred value:
+The application type can be inferred from the dependencies: spring-security-oauth2-client or spring-security-oauth2-resource-server. If the inferred value is not what you expect, you can explicitly specify it. Here is the table describing the valid values and the corresponding inferred value:
 
 .Application type of spring-cloud-azure-starter-active-directory
 [cols="4*", options="header"]
@@ -1023,7 +1023,7 @@ Let `Webapp` and `WebApiA` run on port _8080_ and _8081_ respectively.
 
 ===== Usage 3: Accessing a Resource Server
 
-This scenario not support login. Just protect the server by validating the access token, and if valid, serves the request.
+This scenario doesn't support login, it just protects the server by validating the `access token`. If the `access token` is valid, the server accepts the request.
 
 * Step 1: Refer to <<#usage-2-web-application-accessing-resource-servers,Usage 2: Web Application Accessing Resource Servers>> to build your `WebApiA` permission.
 
