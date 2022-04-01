@@ -63,8 +63,8 @@ function build_docs_if_applicable() {
 
 # Stash any outstanding changes
 function stash_changes() {
-    git diff-index --quiet HEAD && dirty=$? || (echo "Failed to check if the current repo is dirty. Assuming that it isn't." && dirty="")
-    if [ "$dirty" != "" ]; then git stash; fi
+    git diff-index --quiet HEAD && dirty=$? || (echo "Failed to check if the current repo is dirty. Assuming that it isn't." && dirty="0")
+    if [ "$dirty" != "0" ]; then git stash; fi
 }
 
 # Switch to gh-pages branch to sync it with current branch
@@ -192,7 +192,7 @@ function checkout_previous_branch() {
     # If -version was provided we need to come back to root project
     cd ${ROOT_FOLDER}
     git checkout ${CURRENT_BRANCH} || echo "Failed to check the branch... continuing with the script"
-    if [ "$dirty" != "" ]; then git stash pop; fi
+    if [ "$dirty" != "0" ]; then git stash pop; fi
     exit 0
 }
 
