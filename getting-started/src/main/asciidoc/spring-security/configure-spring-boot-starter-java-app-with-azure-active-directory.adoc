@@ -1,0 +1,269 @@
+
+[#configure-spring-boot-starter-java-app-with-azure-active-directory]
+=== Azure Active Directory
+
+This article demonstrates creating a Java app with the **link:https://start.spring.io/[Spring Initializr]** that uses the Spring Boot Starter for Azure Active Directory (Azure AD).
+
+In this tutorial, you learn how to:
+
+* Create a Java application using the Spring Initializr
+* Configure Azure Active Directory
+* Secure the application with Spring Boot classes and annotations
+* Build and test your Java application
+
+If you don't have an Azure subscription, create a link:https://azure.microsoft.com/free/?WT.mc_id=A261C142F[free account] before you begin.
+
+==== Prerequisites
+
+The following prerequisites are required to complete the steps in this article:
+
+* A supported Java Development Kit (JDK). For more information about the JDKs available for use when developing on Azure, see link:https://docs.microsoft.com/en-us/azure/developer/java/fundamentals/java-support-on-azure[Java support on Azure and Azure Stack].
+* link:http://maven.apache.org/[Apache Maven], version 3.0 or later.
+
+IMPORTANT: Spring Boot version 2.5 or 2.6 is required to complete the steps in this article.
+
+==== Create an app using Spring Initializr
+
+. Browse to <https://start.spring.io/>.
+. Specify that you want to generate a **Maven** project with **Java**, enter the **Group** and **Artifact** names for your application.
+. Add **Dependencies** for **Spring Web**, **Azure Active Directory**, and **OAuth2 Client**.
+. At the bottom of the page, select the **GENERATE** button.
+
++
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/spring-initializer/2.5.10/mvn-java8-aad-oauth2-web.png[Screenshot of Spring Initializr with the indicated options selected]
+
+. When prompted, download the project to a path on your local computer.
+
+==== Create Azure Active Directory instance
+
+===== Create the Active Directory instance
+
+If you're the administrator of an existing instance, you can skip this process.
+
+. Log into <https://portal.azure.com>.
+
+. Select **All services**, then **Identity**, and then **Azure Active Directory**.
+
+. Enter your **Organization name** and your **Initial domain name**. Copy the full URL of your directory. You'll use the URL to add user accounts later in this tutorial. (For example: `azuresampledirectory.onmicrosoft.com`.)
+
++
+Copy the full URL of your directory. You'll use the URL to add user accounts later in this tutorial. (For example: `azuresampledirectory.onmicrosoft.com`.).
+
++
+When you've finished, select **Create**. It will take a few minutes to create the new resource.
+
++
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-boot-starter-java-app-with-azure-active-directory/specify-azure-active-directory-name.png[Screenshot of the Configuration section of the Azure Active Directory]
+
+. When complete, select the displayed link to access the new directory.
+
++
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-boot-starter-java-app-with-azure-active-directory/select-your-azure-account-name.png[Screenshot of 'Create a tenant' success message.]
+
+. Copy the **Tenant ID**. You'll use the ID value to configure your *application.properties* file later in this tutorial.
+
++
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-boot-starter-java-app-with-azure-active-directory/your-tenant-id.png[Screenshot of Azure Active Directory tenant screen with]
+
+===== Add an application registration for your Spring Boot app
+
+. From the portal menu, select **App registrations**, and then select **Register an application**.
+
+. Specify your application, and then select **Register**.
+
+. When the page for your app registration appears, copy your **Application (client) ID** and the **Directory (tenant) ID**. You'll use these values to configure your *application.properties* file later in this tutorial.
+
++
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-boot-starter-java-app-with-azure-active-directory/your-application-id-and-tenant-id.png[Screenshot of application with 'Application (client) ID' and 'Directory (tenant) ID' highlighted.]
+
+. Select **Certificates & secrets** in the left navigation pane.  Then select **New client secret**.
+
++
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-boot-starter-java-app-with-azure-active-directory/create-client-secret.png[Screenshot of application 'Certificates & secrets' screen with 'New client secret' highlighted.]
+
+. Add a **Description** and select duration in the **Expires** list. Select **Add**. The value for the key will be automatically filled in.
+
+. Copy and save the value of the client secret to configure your *application.properties* file later in this tutorial. (You won't be able to retrieve this value later.)
+
++
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-boot-starter-java-app-with-azure-active-directory/copy-client-secret.png[Screenshot of application with new client secret highlighted.]
+
+. From the main page for your app registration, select **Authentication**, and select **Add a platform**.  Then select **Web applications**.
+
++
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-boot-starter-java-app-with-azure-active-directory/add-web-platforms.png[Screenshot of application Authentication screen with 'Configure platforms' section showing and Web platform highlighted.]
+
+. Enter *http://localhost:8080/login/oauth2/code/* as a new **Redirect URI**, and then select **Configure**.
+
++
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-boot-starter-java-app-with-azure-active-directory/specify-redirect-uri.png[Screenshot of application Authentication screen with 'Configure Web' section showing and 'Redirect URIs' highlighted.]
+
+. If you've modified the *pom.xml* file to use an Azure AD starter version earlier than 3.0.0: under **Implicit grant and hybrid flows**, select **ID tokens (used for implicit and hybrid flows)**, then select **Save**.
+
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-boot-starter-java-app-with-azure-active-directory/enable-id-tokens.png[Screenshot of application Authentication screen with 'ID tokens' selected.]
+
+===== Add a user account to your directory, and add that account to an appRole
+
+. From the **Overview** page of your Active Directory, select **Users**, and then select **New user**.
+
+. When the **User** panel is displayed, enter the **User name** and **Name**.  Then select **Create**.
+
++
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-boot-starter-java-app-with-azure-active-directory/create-user-with-name.png[Screenshot of 'New user' dialog.]
+
++
+NOTE: You need to specify your directory URL from earlier in this tutorial when you enter the user name. For example: `test-user@azuresampledirectory.onmicrosoft.com`
+
+. From the main page for your app registration, select **App roles**, then select **Create app role**. Provide values for the form fields, select **Do you want to enable this app role?**, then select **Apply**.
+
++
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-boot-starter-java-app-with-azure-active-directory/create-app-role-for-application.png[Screenshot of application 'App roles' screen with 'Create app role' pane showing.]
+
+. From the **Overview** page of your Azure AD directory, select **Enterprise applications**.
+
++
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-boot-starter-java-app-with-azure-active-directory/select-enterprise-application.png[Screenshot of Azure Active Directory 'Enterprise applications' screen.]
+
+. Select **All applications**, then select the application you added the app role to in a previous step.
+
++
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-boot-starter-java-app-with-azure-active-directory/select-application-to-add-role.png[Screenshot of 'Enterprise applications' screen with 'All applications' list showing.]
+
+. Select **Users and groups**, then select **Add user/group**.
+
+. Under **Users**, select **None Selected**. Select the user you created earlier, select **Select**, then select **Assign**. If you created more than one app role earlier, select a role.
+
++
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-boot-starter-java-app-with-azure-active-directory/assign-user-to-app-role.png[Screenshot of application 'Add Assignment' screen with Users pane showing.]
+
+. Go back to the **Users** panel, select your test user, and select **Reset password**, and copy the password. You'll use the password when you log into your application later in this tutorial.
+
++
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-boot-starter-java-app-with-azure-active-directory/reset-user-password.png[Screenshot of user with 'Temporary password' field highlighted.]
+
+==== Configure and compile your app
+
+. Extract the files from the project archive you created and downloaded earlier in this tutorial into a directory.
+
+. Navigate to the *src/main/resources* folder in your project, then open the *application.properties* file in a text editor.
+
+. Specify the settings for your app registration using the values you created earlier. For example:
+
++
+[source,properties]
+----
+# Enable related features.
+spring.cloud.azure.active-directory.enabled=true
+# Specifies your Active Directory ID:
+spring.cloud.azure.active-directory.profile.tenant-id=22222222-2222-2222-2222-222222222222
+# Specifies your App Registration's Application ID:
+spring.cloud.azure.active-directory.credential.client-id=11111111-1111-1111-1111-1111111111111111
+# Specifies your App Registration's secret key:
+spring.cloud.azure.active-directory.credential.client-secret=AbCdEfGhIjKlMnOpQrStUvWxYz==
+----
+
++
+.Configurable properties
+[cols="<,<", options="header"]
+|===
+| Parameter | Description
+
+| *spring.cloud.azure.active-directory*.enabled | Enable the features provided by spring-cloud-azure-starter-active-directory.
+| *spring.cloud.azure.active-directory*.profile.tenant-id | Contains your Active Directory's Directory ID from earlier.
+| *spring.cloud.azure.active-directory*.credential.client-id | Contains the Application ID from your app registration that you completed earlier.
+| *spring.cloud.azure.active-directory*.credential.client-secret |Contains the Value from your app registration key that you completed earlier.
+
+|===
+
+. Save and close the *application.properties* file.
+
+. Create a folder named *controller* in the Java source folder for your application. For example: *src/main/java/com/wingtiptoys/security/controller*.
+
+. Create a new Java file named *HelloController.java* in the *controller* folder and open it in a text editor.
+
+. Enter the following code, then save and close the file:
+
++
+[source,java]
+----
+   package com.wingtiptoys.security;
+
+   import org.springframework.web.bind.annotation.GetMapping;
+   import org.springframework.web.bind.annotation.ResponseBody;
+   import org.springframework.web.bind.annotation.RestController;
+   import org.springframework.security.access.prepost.PreAuthorize;
+
+   @RestController
+   public class HelloController {
+        @GetMapping("Admin")
+        @ResponseBody
+        @PreAuthorize("hasAuthority('APPROLE_Admin')")
+        public String Admin() {
+            return "Admin message";
+        }
+   }
+----
+
+. Open your application class in a text editor.
+
+. Add `@EnableWebSecurity` and `@EnableGlobalMethodSecurity(prePostEnabled = true)` in your application class as shown in the following example, then save and close the file:
+
++
+[source,java]
+----
+   package com.wingtiptoys;
+
+   import org.springframework.boot.SpringApplication;
+   import org.springframework.boot.autoconfigure.SpringBootApplication;
+   import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+   import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+
+   @EnableWebSecurity
+   @EnableGlobalMethodSecurity(prePostEnabled = true)
+   @SpringBootApplication
+   public class SpringBootSampleActiveDirectoryApplication {
+       public static void main(String[] args) {
+           SpringApplication.run(SpringBootSampleActiveDirectoryApplication.class, args);
+       }
+   }
+----
+
+==== Build and test your app
+
+. Open a command prompt and change directory to the folder where your app's *pom.xml* file is located.
+
+. Build your Spring Boot application with Maven and run it. For example:
+
++
+[source,shell script]
+----
+   mvn clean package
+   mvn spring-boot:run
+----
+
++
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-boot-starter-java-app-with-azure-active-directory/build-application.png[Screenshot of Maven build output.]
+
+. After your application is built and started by Maven, open `http://localhost:8080/Admin` in a web browser. You should be prompted for a user name and password.
+
++
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-boot-starter-java-app-with-azure-active-directory/application-login.png[Screenshot of application 'Sign in' dialog.]
+
++
+NOTE: You may be prompted to change your password if this is the first login for a new user account.
+
++
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-boot-starter-java-app-with-azure-active-directory/update-password.png[Screenshot of application 'Update your password' dialog.]
+
+. After you've logged in successfully, you should see the sample "Admin message" text from the controller.
+
++
+image:https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-boot-starter-java-app-with-azure-active-directory/hello-admin.png[Screenshot of application admin message.]
+
+==== Summary
+
+In this tutorial, you created a new Java web application using the Azure Active Directory starter, configured a new Azure AD tenant, registered a new application in the tenant, and then configured your application to use the Spring annotations and classes to protect the web app.
+
+==== See also
+
+* For information about new UI options, see link:https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app[New Azure portal app registration training guide]

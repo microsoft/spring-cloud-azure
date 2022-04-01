@@ -17,7 +17,9 @@ TODO: finish this content.
 
 == Spring Security
 
-TODO: finish this content.
+include::spring-security/spring-boot-starter-for-azure-active-directory-developer-guide.adoc[]
+include::spring-security/configure-spring-boot-starter-java-app-with-azure-active-directory.adoc[]
+include::spring-security/configure-spring-boot-starter-java-app-with-azure-active-directory-b2c-oidc.adoc[]
 
 == Spring Cloud
 
