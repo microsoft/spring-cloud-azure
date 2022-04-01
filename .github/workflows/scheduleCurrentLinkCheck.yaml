@@ -7,6 +7,7 @@ on:
   # The schedule event allows you to trigger a workflow at a scheduled time.
   schedule:
     - cron: '0 0 * * *'
+  workflow_dispatch:
 
 jobs:
   link-check:
@@ -14,7 +15,7 @@ jobs:
     steps:
       - uses: technote-space/broken-link-checker-action@v1.1.3
         with:
-          TARGET: https://microsoft.github.io/spring-cloud-azure/current/reference/html/index.html
+          TARGET: https://microsoft.github.io/spring-cloud-azure/
           EXCLUDED_KEYWORDS: localhost,127.0.0.1
           EXCLUDE_LINKS_TO_SAME_PAGE: false
 
