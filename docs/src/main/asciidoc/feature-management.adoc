@@ -11,6 +11,13 @@ spring.cloud.azure.appconfiguration.stores[0].feature-flags.enabled= true
 
 With Feature Flags enabled, they will be loaded into the Spring Configuration system with the prefix `feature-management`. Feature Flags can also be registered in the local configuration file, see <<Feature Flag Declaration>>. The easiest way to use Feature Management is by using the `azure-spring-cloud-feature-management` and `azure-spring-cloud-feature-management-web` libraries. The difference between the two libraries is that `azure-spring-cloud-feature-management-web` takes a dependency on the `spring-web` and `spring-webmvc` libraries to add additional features, such as <<Routing, Feature Gates>>.
 
+Feature Flags can also be loaded by label. By default, null label, seen as `(No Label)` are loaded. The Feature Flags that are loaded can be configured by setting a label filter:
+
+[source,properties,indent=0]
+----
+spring.cloud.azure.appconfiguration.stores[0].feature-flags.label-filter= dev
+----
+
 === Feature Management Basics
 
 ==== Feature Flags
