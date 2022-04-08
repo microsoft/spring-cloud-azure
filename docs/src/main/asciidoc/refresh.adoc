@@ -30,7 +30,7 @@ The App Configuration Spring libraries support the ability to periodically check
 
 [,properties,indent=0]
 ----
-spring.cloud.azure.appconfiguration.stores[0].monitoring.refresh-interval= 30s
+spring.cloud.azure.appconfiguration.stores[0].monitoring.refresh-interval= 5m
 ----
 
 ==== Automated
@@ -99,5 +99,5 @@ If Feature Flags and Monitoring are both enabled, then by default the refresh in
 
 [,properties,indent=0]
 ----
-spring.cloud.azure.appconfiguration.stores[0].monitoring.feature-flag-refresh-interval= 30s
+spring.cloud.azure.appconfiguration.stores[0].monitoring.feature-flag-refresh-interval= 5m
 ----
