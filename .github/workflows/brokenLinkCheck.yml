@@ -6,6 +6,8 @@ name: Broken Link Checker
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
@@ -41,7 +43,7 @@ jobs:
         run: |
           ./mvnw clean install -P docs -pl docs -DskipTests
 
-      - name: Link Checker
+      - name: Html Link Checker
         id: html-link-report
         uses: peter-evans/link-checker@v1
         with:

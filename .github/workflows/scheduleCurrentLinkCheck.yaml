@@ -10,12 +10,14 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
-  link-check:
+  broken_link_checker_job:
     runs-on: ubuntu-latest
+    name: Check for broken links
     steps:
-      - uses: technote-space/broken-link-checker-action@v1.1.3
+      - name: Check for broken links
+        id: link-report
+        uses: ScholliYT/Broken-Links-Crawler-Action@v3
         with:
-          TARGET: https://microsoft.github.io/spring-cloud-azure/
-          EXCLUDED_KEYWORDS: localhost,127.0.0.1
-          EXCLUDE_LINKS_TO_SAME_PAGE: false
-
+          website_url: 'https://microsoft.github.io/spring-cloud-azure/'
+          exclude_url_prefix: 'http://localhost:,http://HOST_NAME:,http://127.0.0.1:,https://my.'
+          verbose: 'true'
