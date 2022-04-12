@@ -30,7 +30,7 @@ The App Configuration Spring libraries support the ability to periodically check
 
 [,properties,indent=0]
 ----
-spring.cloud.azure.appconfiguration.stores[0].monitoring.refresh-interval= 1d
+spring.cloud.azure.appconfiguration.stores[0].monitoring.refresh-interval= 5m
 ----
 
 ==== Automated
@@ -58,10 +58,10 @@ In addition to exposing the refresh endpoints a required query parameter has bee
 
 [,properties,indent=0]
 ----
-spring.cloud.appconfiguration.stores[0].monitoring.push-notification.primary-token.name=[primary-token-name]
-spring.cloud.appconfiguration.stores[0].monitoring.push-notification.primary-token.secret=[primary-token-secret]
-spring.cloud.appconfiguration.stores[0].monitoring.push-notification.secondary-token.name=[secondary-token-name]
-spring.cloud.appconfiguration.stores[0].monitoring.push-notification.secondary-token.secret=[secondary-token-secret]
+spring.cloud.azure.appconfiguration.stores[0].monitoring.push-notification.primary-token.name=[primary-token-name]
+spring.cloud.azure.appconfiguration.stores[0].monitoring.push-notification.primary-token.secret=[primary-token-secret]
+spring.cloud.azure.appconfiguration.stores[0].monitoring.push-notification.secondary-token.name=[secondary-token-name]
+spring.cloud.azure.appconfiguration.stores[0].monitoring.push-notification.secondary-token.secret=[secondary-token-secret]
 ----
 
 ==== Setting Up Web Hooks
@@ -92,3 +92,12 @@ The library can be configured to force a refresh of all configurations at a refr
 Refreshing with `spring.cloud.azure.appconfiguration.refresh-interval` doesn't check any configured watch keys. This is mainly used to make sure Key Vault Secrets are kept up to date, as Azure App Configuration can't tell when they are updated.
 
 Since Azure Key Vault stores the public and private key pair of a certificate as a secret, your application can retrieve any certificate as a <<Key Vault References,Key Vault Reference>> in App Configuration. Because certificates need to be rotated periodically, client applications need to update just as frequently, which can be done by using the client refresh interval.
+
+=== Feature Flag Refresh
+
+If Feature Flags and Monitoring are both enabled, then by default the refresh interval for feature flags is set to 30s. Once the refresh interval has passed, all feature flags will be checked in the given store for changes. Any change to the key will cause a refresh to trigger. Because the libraries integrate with the Spring refresh system, any refresh will reload all configurations from all stores. The refresh-interval can be set to any interval longer than 1 second. The supported units for the refresh-interval are s, m, h, d for seconds, minutes, hours, and days respectively.
+
+[,properties,indent=0]
+----
+spring.cloud.azure.appconfiguration.stores[0].monitoring.feature-flag-refresh-interval= 5m
+----

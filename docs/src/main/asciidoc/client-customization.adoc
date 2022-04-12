@@ -1,0 +1,47 @@
+== Client Customization
+
+The App Configuration library uses the https://github.com/Azure/azure-sdk-for-java[Azure SDK for Java] for connecting to Azure App Configuration and Azure Key Vault. Two interfaces, `ConfigurationClientBuilderSetup` and `SecretClientBuilderSetup` are provided to modify the clients. Each interface has a `setup` method that takes in their respective builder along with the `String` value of the URI that the client will connect to. 
+
+[source,java,indent=0]
+----
+public interface ConfigurationClientBuilderSetup {
+    public void setup(ConfigurationClientBuilder builder, String endpoint);
+}
+
+public interface SecretClientBuilderSetup {
+    public void setup(SecretClientBuilder builder, String uri);
+}
+----
+
+These interfaces allow for customization of the http client and its configurations, for example, by replacing the default `HttpClient` with another that uses a proxy for all traffic directed to App Configuration and Key Vault. This example can be seen below
+
+NOTE: The `ConfigurationClientBuilder` and `SecretClientBuilder` are already setup for use when passed into `setup`. Any changes to the clients, including the credentials and retry policy will override those already in place.
+
+[source,java,indent=0]
+----
+public class CustomClient implements ConfigurationClientBuilderSetup, SecretClientBuilderSetup {
+
+    @Override
+    public void setup(ConfigurationClientBuilder builder, String endpoint) {
+        builder.httpClient(buildHttpClient());
+    }
+
+    @Override
+    public void setup(SecretClientBuilder builder, String uri) {
+        builder.httpClient(buildHttpClient());
+    }
+
+    private HttpClient buildHttpClient() {
+        String hostname = System.getProperty("https.proxyHosts");
+        String portString = System.getProperty("https.proxyPort");
+        int port = Integer.valueOf(portString);
+
+        ProxyOptions proxyOptions = new ProxyOptions(ProxyOptions.Type.HTTP,
+                new InetSocketAddress(hostname, port));
+        return new NettyAsyncHttpClientBuilder()
+                .proxy(proxyOptions)
+                .build();
+    }
+
+}
+----

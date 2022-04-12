@@ -10,6 +10,8 @@ spring.cloud.azure.appconfiguration.stores[1].connection-string=[second-store-co
 
 In the example, if both the first and second stores have the same configuration, the configuration in the second store has the highest priority, last one wins.
 
+NOTE: Azure App Configuration settings can be used link any other Spring Configuration. See https://docs.spring.io/spring-boot/docs/current/reference/html/features.html[Spring Boot Docs] or https://docs.microsoft.com/azure/azure-app-configuration/quickstart-java-spring-app[Azure App Configuration Quick Start].
+
 === Selecting Configurations
 
 Configurations are loaded by their key and label. By default, the configurations that start with the key `/application/` are loaded. The default label is `${spring.profiles.active}`. If `${spring.profiles.active}` is not set then configuration with the null label seen as `(No Label)` in the portal are loaded.
