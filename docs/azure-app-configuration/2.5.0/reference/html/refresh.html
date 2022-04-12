@@ -169,6 +169,7 @@ window.onload = function() {
 <li><a href="#_pull_based_refresh">Pull Based Refresh</a></li>
 <li><a href="#_push_based_refresh">Push Based Refresh</a></li>
 <li><a href="#_forced_client_refresh">Forced Client Refresh</a></li>
+<li><a href="#_feature_flag_refresh">Feature Flag Refresh</a></li>
 </ul>
 </li>
 </ul>
@@ -233,7 +234,7 @@ By default, <code>@ConfiugrationProperties</code> annotated beans will be includ
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].monitoring.refresh-interval= 1d</code></pre>
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].monitoring.refresh-interval= 5m</code></pre>
 </div>
 </div>
 <div class="sect3">
@@ -270,10 +271,10 @@ By default, <code>@ConfiugrationProperties</code> annotated beans will be includ
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.appconfiguration.stores[0].monitoring.push-notification.primary-token.name=[primary-token-name]
-spring.cloud.appconfiguration.stores[0].monitoring.push-notification.primary-token.secret=[primary-token-secret]
-spring.cloud.appconfiguration.stores[0].monitoring.push-notification.secondary-token.name=[secondary-token-name]
-spring.cloud.appconfiguration.stores[0].monitoring.push-notification.secondary-token.secret=[secondary-token-secret]</code></pre>
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].monitoring.push-notification.primary-token.name=[primary-token-name]
+spring.cloud.azure.appconfiguration.stores[0].monitoring.push-notification.primary-token.secret=[primary-token-secret]
+spring.cloud.azure.appconfiguration.stores[0].monitoring.push-notification.secondary-token.name=[secondary-token-name]
+spring.cloud.azure.appconfiguration.stores[0].monitoring.push-notification.secondary-token.secret=[secondary-token-secret]</code></pre>
 </div>
 </div>
 <div class="sect3">
@@ -340,6 +341,17 @@ This validation only happens on the creation/modification of the endpoint.
 </div>
 <div class="paragraph">
 <p>Since Azure Key Vault stores the public and private key pair of a certificate as a secret, your application can retrieve any certificate as a <a href="#Key Vault References">Key Vault Reference</a> in App Configuration. Because certificates need to be rotated periodically, client applications need to update just as frequently, which can be done by using the client refresh interval.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_feature_flag_refresh"><a class="link" href="#_feature_flag_refresh">Feature Flag Refresh</a></h3>
+<div class="paragraph">
+<p>If Feature Flags and Monitoring are both enabled, then by default the refresh interval for feature flags is set to 30s. Once the refresh interval has passed, all feature flags will be checked in the given store for changes. Any change to the key will cause a refresh to trigger. Because the libraries integrate with the Spring refresh system, any refresh will reload all configurations from all stores. The refresh-interval can be set to any interval longer than 1 second. The supported units for the refresh-interval are s, m, h, d for seconds, minutes, hours, and days respectively.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].monitoring.feature-flag-refresh-interval= 5m</code></pre>
+</div>
 </div>
 </div>
 </div>

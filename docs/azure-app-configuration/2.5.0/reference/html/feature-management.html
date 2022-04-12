@@ -194,6 +194,14 @@ window.onload = function() {
 <div class="paragraph">
 <p>With Feature Flags enabled, they will be loaded into the Spring Configuration system with the prefix <code>feature-management</code>. Feature Flags can also be registered in the local configuration file, see <a href="#_feature_flag_declaration">Feature Flag Declaration</a>. The easiest way to use Feature Management is by using the <code>azure-spring-cloud-feature-management</code> and <code>azure-spring-cloud-feature-management-web</code> libraries. The difference between the two libraries is that <code>azure-spring-cloud-feature-management-web</code> takes a dependency on the <code>spring-web</code> and <code>spring-webmvc</code> libraries to add additional features, such as <a href="#_routing">Feature Gates</a>.</p>
 </div>
+<div class="paragraph">
+<p>Feature Flags can also be loaded by label. By default, a null label, seen as <code>(No Label)</code> is assigned. The Feature Flags that are loaded can be configured by setting a label filter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].feature-flags.label-filter= dev</code></pre>
+</div>
+</div>
 <div class="sect2">
 <h3 id="_feature_management_basics"><a class="link" href="#_feature_management_basics">Feature Management Basics</a></h3>
 <div class="sect3">
