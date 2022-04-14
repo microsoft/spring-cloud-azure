@@ -1,0 +1,56 @@
+[#spring-native-support]
+== Spring Native Support
+
+=== Spring Native
+
+Spring Native provides support for compiling Spring applications to native executables using the GraalVM `native-image` compiler. We provide a native configuration extension based on `spring-aot` to support Spring Cloud Azure libraries.
+
+=== Dependencies
+
+==== GraalVM
+
+GraalVM version 22.0.0 is supported, see link:https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/#support-graalvm[GraalVM] for more details.
+
+==== Spring Boot
+
+==== Spring Cloud
+
+==== Azure GraalVM support
+
+[source,xml]
+----
+<dependency>
+  <groupId>com.azure.spring</groupId>
+  <artifactId>azure-aot-graalvm-support</artifactId>
+  <version>1.0.0-beta.2</version>
+</dependency>
+----
+
+==== Spring Cloud Azure Native Support
+
+[source,xml]
+----
+<dependency>
+  <groupId>com.azure.spring</groupId>
+  <artifactId>spring-cloud-azure-native-configuration</artifactId>
+  <version>4.1.0-beta.1</version>
+</dependency>
+----
+
+=== Configuration
+
+=== Key Concepts
+
+==== AOT generation
+
+==== Native hints
+
+=== Basic Usage
+
+==== Using Native Buildpacks
+
+==== Using Native Build Tools
+
+=== Samples
+
+
