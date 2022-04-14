@@ -1,0 +1,65 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Broken Link Checker
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  check_html_links_job:
+    runs-on: ubuntu-latest
+    name: Check-Links-Action
+    steps:
+      - run: |
+          git init azure-sdk-for-java
+          cd azure-sdk-for-java
+          git remote add origin https://github.com/Azure/azure-sdk-for-java.git
+          git config core.sparsecheckout true
+          echo "sdk/spring" >> .git/info/sparse-checkout
+          echo "eng" >> .git/info/sparse-checkout
+          echo "sdk/keyvault" >> .git/info/sparse-checkout
+          echo "sdk/boms" >> .git/info/sparse-checkout
+          git pull --depth=1 origin main
+          mvn clean install -Dmaven.javadoc.skip=true -DskipTests \
+            -Dcheckstyle.skip=true \
+            -ntp \
+            -Dspotbugs.skip=true \
+            -Drevapi.skip=true -Djacoco.skip=true \
+            -Dparallel-test-playback \
+            -Pdev \
+            -f sdk/spring/pom.xml
+
+      - uses: actions/checkout@v2
+
+      - name: Build Docs
+        run: |
+          ./mvnw clean install -P docs -pl docs -DskipTests
+
+      - name: Html Link Checker
+        id: html-link-report
+        uses: peter-evans/link-checker@v1
+        with:
+          args: -d --document-root ./docs/target/generated-docs -r -x "my|localhost|127.0.0.1"
+
+      - name: Link version replacement
+        run: |
+          cd link-checker
+          sudo sed -i 's/spring-cloud-azure_*.*.*-beta.[0-9]/main/g' *
+          sudo sed -i 's/```/ /g' *
+
+      - name: Markdown Links Check
+        id: markdown-link-report
+        uses: peter-evans/link-checker@v1
+        with:
+          args: -d --document-root ./link-checker -v -r *.md
+
+      - name: Fail if there were link errors
+        run: exit ${{ steps.markdown-link-report.outputs.exit_code }}
