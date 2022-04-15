@@ -3,9 +3,10 @@
 
 === Spring Native
 
-Spring Native provides support for compiling Spring applications to native executables using the GraalVM `native-image` compiler. We provide a native configuration extension based on `spring-aot` to support Spring Cloud Azure libraries, it will be recognized by the `Spring AOT plugin` and help convert them into the configuration files of the `native-image` compiler.
+Spring Native provides support for compiling Spring applications to native executables using the GraalVM `native-image` compiler. We provide a native configuration extension based on `spring-aot` to support Spring Cloud Azure libraries, it will be recognized by the Spring AOT plugins and help convert them into the configuration files of the `native-image` compiler.
 
 The following are the libraries we have supported:
+
 .Supported Spring Cloud Azure Libraries
 [cols="4*", options="header"]
 |===
@@ -24,21 +25,21 @@ The following are the libraries we have supported:
 
 ==== GraalVM
 
-GraalVM version 22.0.0 is supported, see link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#support-graalvm[GraalVM] for more details.
+GraalVM version 22.0.0 is supported. See link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#support-graalvm[Support GraalVM] for more details.
 
 ==== Spring Boot
 
-The Azure native configuration extension has been tested against Spring Boot 2.6.3. See link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#support-spring-boot[Spring Boot] for more details.
+The Azure native configuration extension has been tested against Spring Boot 2.6.3. See link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#support-spring-boot[Support Spring Boot] for more details.
 
 ==== Spring Cloud
 
-The Azure native configuration extension has been tested against Spring Cloud 2021.0.1. See link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#support-spring-cloud[Spring Cloud] for more details.
+The Azure native configuration extension has been tested against Spring Cloud 2021.0.1. See link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#support-spring-cloud[Support Spring Cloud] for more details.
 
 ==== Azure GraalVM support
 
-This library `azure-aot-graalvm-support` contains GraalVM Support configuration for Azure SDKs, it is the foundational part of building the Azure native configuration extension and only focuses on the Azure SDK level.
+This library of `azure-aot-graalvm-support` contains GraalVM Support configuration for all Azure SDKs, it is the foundational part of building the Azure native configuration extension and only focuses on the Azure SDK level. See link:https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/aot/azure-aot-graalvm-support[GraalVM Support configuration for Azure SDKs] for more details.
 
-[source,xml]
+[source,xml,indent=2]
 ----
 <dependency>
   <groupId>com.azure.spring</groupId>
@@ -49,9 +50,9 @@ This library `azure-aot-graalvm-support` contains GraalVM Support configuration 
 
 ==== Spring Cloud Azure Native Support
 
-This library `spring-cloud-azure-native-configuration` contains Spring Native Support configuration for Spring Cloud Azure libraries, focusing on the Spring Cloud Azure level.
+This library of `spring-cloud-azure-native-configuration` contains the Spring Native Support configuration and Azure GraalVM configuration, it's used for all Spring Cloud Azure libraries and will only focus on the Spring Cloud Azure level. See link:https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/spring/spring-cloud-azure-native-configuration[Spring Cloud Azure Native Configuration] for more details.
 
-[source,xml]
+[source,xml,indent=2]
 ----
 <dependency>
   <groupId>com.azure.spring</groupId>
@@ -59,6 +60,8 @@ This library `spring-cloud-azure-native-configuration` contains Spring Native Su
   <version>4.1.0-beta.1</version>
 </dependency>
 ----
+
+NOTE: You can build Spring Boot native executables without changing existing code that uses Spring Cloud Azure libraries.
 
 === Configuration
 
@@ -74,15 +77,15 @@ Most of the GraalVM native image link:https://www.graalvm.org/reference-manual/n
 
 ==== AOT generation
 
-AOT generation is driven by the Spring AOT plugins, the AOT engine finds the main class according to Spring's `@SpringBootApplication` annotation, obtains the bean definition according to the prepared `BeanFactory`, and generates the source code or configuration file for bean initialization, which will be automatically used by the native-image compiler. See link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#aot[AOT generation] for more details.
+AOT generation is driven by the Spring AOT plugins, the AOT engine finds the main class according to Spring's `@SpringBootApplication` annotation, obtains the bean definition according to the prepared `BeanFactory`, and generates the source code or configuration files for bean initialization, which will be automatically used by the native-image compiler. See link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#aot[AOT generation] for more details.
 
 ==== Native hints
 
-Native hints means the configuration files located in *META-INF/native-image*, it's used for the GraalVM native-image to initialize the context in a native image. Spring Native provides the annotated hints and programmatic hints to generate configuration files for GraalVM native-image. See link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#native-hints[Native Hints] for more details.
+Native hints means the configuration files located in *META-INF/native-image*, it's used for the GraalVM `native-image` to initialize the context in a native image. Spring Native provides the annotated hints and programmatic hints to generate configuration files for GraalVM native-image. See link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#native-hints[Native Hints] for more details.
 
 === Basic Usage
 
-There are two main ways to build a Spring Boot native application with Spring Cloud Azure libraries, each way requires the support of the `spring-native` and the `spring-cloud-azure-native-configuration` when generating a native executable. Either way, you need to add the following two dependencies.
+There are two main ways to build a Spring Boot native application with Spring Cloud Azure libraries, each way requires the following two dependencies which are the `spring-native` and `the spring-cloud-azure-native-configuration` when generating a native executable.
 
 [source,xml,indent=2]
 ----
@@ -101,17 +104,17 @@ There are two main ways to build a Spring Boot native application with Spring Cl
 
 ==== Using Native Buildpacks
 
-This method will combine the link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#aot[Spring AOT plugins] and the link:https://docs.spring.io/spring-boot/docs/2.6.3/reference/html/container-images.html#container-images.buildpacks[Cloud Native Buildpacks], and enable GraalVM Native Image builder to build a lightweight container containing a native executable.
+This method will combine the link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#aot[Spring AOT plugins] and the link:https://docs.spring.io/spring-boot/docs/2.6.3/reference/html/container-images.html#container-images.buildpacks[Cloud Native Buildpacks], and enable GraalVM Native Image builder to build a lightweight container containing a native executable. See link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#getting-started-buildpacks[Getting started with Buildpacks] for every step details.
 
 ==== Using Native Build Tools
 
-This method will combine the link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#aot[Spring AOT plugins] and the link:https://github.com/graalvm/native-build-tools[GraalVM native build tools], and enable GraalVM Native Image builder to build a native executable.
+This method will combine the link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#aot[Spring AOT plugins] and the link:https://github.com/graalvm/native-build-tools[GraalVM native build tools], and enable GraalVM Native Image builder to build a native executable. See link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#getting-started-native-build-tools[Getting started with Native Build Tools] for every step details.
 
 === Samples
 
 The following are the samples we have supported, see link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main[Spring Cloud Azure Samples] for more details.
 
-.Supported Samples
+.Supported Spring Cloud Azure Samples
 [cols="2*", options="header"]
 |===
 |Library artifact id                                     |Native Image Support Sample
