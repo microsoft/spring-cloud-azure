@@ -3,19 +3,40 @@
 
 === Spring Native
 
-Spring Native provides support for compiling Spring applications to native executables using the GraalVM `native-image` compiler. We provide a native configuration extension based on `spring-aot` to support Spring Cloud Azure libraries.
+Spring Native provides support for compiling Spring applications to native executables using the GraalVM `native-image` compiler. We provide a native configuration extension based on `spring-aot` to support Spring Cloud Azure libraries, it will be recognized by the `Spring AOT plugin` and help convert them into the configuration files of the `native-image` compiler.
+
+The following are the libraries we have supported:
+.Supported Spring Cloud Azure Libraries
+[cols="4*", options="header"]
+|===
+|Library artifact id                                     |Native Image Support Version |GraalVM Compiler Version |Spring Native Version
+|spring-cloud-azure-starter-appconfiguration             |4.1.0-beta.1                 |22.0.0.2                 |0.11.3
+|spring-cloud-azure-starter-eventhubs                    |4.1.0-beta.1                 |22.0.0.2                 |0.11.3
+|spring-cloud-azure-starter-integration-eventhubs        |4.1.0-beta.1                 |22.0.0.2                 |0.11.3
+|spring-cloud-azure-starter-integration-storage-queue    |4.1.0-beta.1                 |22.0.0.2                 |0.11.3
+|spring-cloud-azure-starter-keyvault-secrets             |4.1.0-beta.1                 |22.0.0.2                 |0.11.3
+|spring-cloud-azure-starter-storage-blob                 |4.1.0-beta.1                 |22.0.0.2                 |0.11.3
+|spring-cloud-azure-starter-storage-file-share           |4.1.0-beta.1                 |22.0.0.2                 |0.11.3
+|spring-cloud-azure-starter-storage-queue                |4.1.0-beta.1                 |22.0.0.2                 |0.11.3
+|===
 
 === Dependencies
 
 ==== GraalVM
 
-GraalVM version 22.0.0 is supported, see link:https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/#support-graalvm[GraalVM] for more details.
+GraalVM version 22.0.0 is supported, see link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#support-graalvm[GraalVM] for more details.
 
 ==== Spring Boot
 
+The Azure native configuration extension has been tested against Spring Boot 2.6.3. See link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#support-spring-boot[Spring Boot] for more details.
+
 ==== Spring Cloud
 
+The Azure native configuration extension has been tested against Spring Cloud 2021.0.1. See link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#support-spring-cloud[Spring Cloud] for more details.
+
 ==== Azure GraalVM support
+
+This library `azure-aot-graalvm-support` contains GraalVM Support configuration for Azure SDKs, it is the foundational part of building the Azure native configuration extension and only focuses on the Azure SDK level.
 
 [source,xml]
 ----
@@ -28,6 +49,8 @@ GraalVM version 22.0.0 is supported, see link:https://docs.spring.io/spring-nati
 
 ==== Spring Cloud Azure Native Support
 
+This library `spring-cloud-azure-native-configuration` contains Spring Native Support configuration for Spring Cloud Azure libraries, focusing on the Spring Cloud Azure level.
+
 [source,xml]
 ----
 <dependency>
@@ -39,18 +62,65 @@ GraalVM version 22.0.0 is supported, see link:https://docs.spring.io/spring-nati
 
 === Configuration
 
+==== AOT configuration
+
+The Spring AOT plugins allow you to express opinions about the source generation process. See link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#aot-build-setup-configuration[AOT configuration] for more details.
+
+====  Native Image options
+
+Most of the GraalVM native image link:https://www.graalvm.org/reference-manual/native-image/Options/[options] is supported by `Spring Native`. They can be specified using the `BP_NATIVE_IMAGE_BUILD_ARGUMENTS` environment variable in Spring Boot plugin if you are using link:https://docs.spring.io/spring-boot/docs/2.6.3/reference/html/container-images.html#container-images.buildpacks[Cloud Native Buildpacks] or using the <buildArgs></buildArgs> configuration element if you are using `native-maven-plugin`.
+
 === Key Concepts
 
 ==== AOT generation
 
+AOT generation is driven by the Spring AOT plugins, the AOT engine finds the main class according to Spring's `@SpringBootApplication` annotation, obtains the bean definition according to the prepared `BeanFactory`, and generates the source code or configuration file for bean initialization, which will be automatically used by the native-image compiler. See link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#aot[AOT generation] for more details.
+
 ==== Native hints
+
+Native hints means the configuration files located in *META-INF/native-image*, it's used for the GraalVM native-image to initialize the context in a native image. Spring Native provides the annotated hints and programmatic hints to generate configuration files for GraalVM native-image. See link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#native-hints[Native Hints] for more details.
 
 === Basic Usage
 
+There are two main ways to build a Spring Boot native application with Spring Cloud Azure libraries, each way requires the support of the `spring-native` and the `spring-cloud-azure-native-configuration` when generating a native executable. Either way, you need to add the following two dependencies.
+
+[source,xml,indent=2]
+----
+<dependencies>
+  <dependency>
+    <groupId>org.springframework.experimental</groupId>
+    <artifactId>spring-native</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>com.azure.spring</groupId>
+    <artifactId>spring-cloud-azure-native-configuration</artifactId>
+    <version>4.1.0-beta.1</version>
+  </dependency>
+</dependencies>
+----
+
 ==== Using Native Buildpacks
+
+This method will combine the link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#aot[Spring AOT plugins] and the link:https://docs.spring.io/spring-boot/docs/2.6.3/reference/html/container-images.html#container-images.buildpacks[Cloud Native Buildpacks], and enable GraalVM Native Image builder to build a lightweight container containing a native executable.
 
 ==== Using Native Build Tools
 
+This method will combine the link:https://docs.spring.io/spring-native/docs/0.11.3/reference/htmlsingle/#aot[Spring AOT plugins] and the link:https://github.com/graalvm/native-build-tools[GraalVM native build tools], and enable GraalVM Native Image builder to build a native executable.
+
 === Samples
 
+The following are the samples we have supported, see link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main[Spring Cloud Azure Samples] for more details.
 
+.Supported Samples
+[cols="2*", options="header"]
+|===
+|Library artifact id                                     |Native Image Support Sample
+|spring-cloud-azure-starter-appconfiguration             |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/appconfiguration/spring-cloud-azure-starter-appconfiguration/appconfiguration-sample[appconfiguration-sample]
+|spring-cloud-azure-starter-eventhubs                    |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/eventhubs/spring-cloud-azure-starter-eventhubs/eventhubs-client[eventhubs-client]
+|spring-cloud-azure-starter-integration-eventhubs        |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/eventhubs/spring-cloud-azure-starter-integration-eventhubs/eventhubs-integration[eventhubs-integration]
+|spring-cloud-azure-starter-integration-storage-queue    |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-integration-storage-queue/storage-queue-integration[storage-queue-integration], link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-integration-storage-queue/storage-queue-operation[storage-queue-operation]
+|spring-cloud-azure-starter-keyvault-secrets             |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/keyvault/spring-cloud-azure-starter-keyvault-secrets/property-source[property-source], link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/keyvault/spring-cloud-azure-starter-keyvault-secrets/secret-client[secret-client]
+|spring-cloud-azure-starter-storage-blob                 |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-storage-blob/storage-blob-sample[storage-blob-sample]
+|spring-cloud-azure-starter-storage-file-share           |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-storage-file-share/storage-file-sample[storage-file-sample]
+|spring-cloud-azure-starter-storage-queue                |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-storage-queue/storage-queue-sample[storage-queue-sample]
+|===
