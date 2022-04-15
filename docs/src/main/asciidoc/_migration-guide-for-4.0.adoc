@@ -134,7 +134,6 @@ spring-cloud-azure-starter-storage-file-share |Split into two separate artifacts
 |N/A |spring-cloud-azure-core | The newly added Spring Cloud Azure Core artifact, including all core functionality.
 |N/A |spring-cloud-azure-resourcemanager |The newly added Resource Manager artifact. It's the Core library using Azure Resource Manager to read metadata and create resources. 
 |N/A |spring-cloud-azure-service | The newly added Spring Cloud Azure Service artifact, including abstractions for Azure services.
-|N/A |spring-cloud-azure-starter | The newly added Core Spring Cloud Azure starter, including autoconfiguration support. 
 |N/A |spring-cloud-azure-starter-appconfiguration | The newly added starter for using Azure App Configuration SDK client. 
 |N/A |spring-cloud-azure-starter-cosmos | The newly added starter for using Azure Cosmos SDK client.
 |N/A |spring-cloud-azure-starter-eventhubs |The newly added starter for using Azure Event Hubs SDK client.
