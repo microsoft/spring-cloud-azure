@@ -10,7 +10,7 @@ The following are the libraries we have supported:
 .Supported Spring Cloud Azure Libraries
 [cols="4*", options="header"]
 |===
-|Library artifact id                                     |Native Image Support Version |GraalVM Compiler Version |Spring Native Version
+|Library Artifact ID                                     |Native Image Support Version |GraalVM Compiler Version |Spring Native Version
 |spring-cloud-azure-starter-appconfiguration             |4.1.0-beta.1                 |22.0.0.2                 |0.11.3
 |spring-cloud-azure-starter-eventhubs                    |4.1.0-beta.1                 |22.0.0.2                 |0.11.3
 |spring-cloud-azure-starter-integration-eventhubs        |4.1.0-beta.1                 |22.0.0.2                 |0.11.3
@@ -117,7 +117,7 @@ The following are the samples we have supported, see link:https://github.com/Azu
 .Supported Spring Cloud Azure Samples
 [cols="2*", options="header"]
 |===
-|Library artifact id                                     |Native Image Support Sample
+|Library Artifact ID                                     |Native Image Support Sample
 |spring-cloud-azure-starter-appconfiguration             |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/appconfiguration/spring-cloud-azure-starter-appconfiguration/appconfiguration-sample[appconfiguration-sample]
 |spring-cloud-azure-starter-eventhubs                    |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/eventhubs/spring-cloud-azure-starter-eventhubs/eventhubs-client[eventhubs-client]
 |spring-cloud-azure-starter-integration-eventhubs        |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/eventhubs/spring-cloud-azure-starter-integration-eventhubs/eventhubs-integration[eventhubs-integration]
