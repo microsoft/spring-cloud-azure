@@ -1,0 +1,16 @@
+name: Sync Labels
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Labels
+        run:  curl https://api.github.com/repos/Azure/azure-sdk-for-java/labels\?per_page\=1000 | jq -c '.[] | select(.name | contains("spring"))' | jq -s >> labels.json
+
+      - name: Label Sync
+        uses: EndBug/label-sync@v2.1.0
+        with:
+          config-file: ./labels.json
+          dry-run: false
