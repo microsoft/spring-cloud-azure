@@ -15,7 +15,7 @@ Spring Cloud Azure `{project-version}` has been tested against Spring Native `{s
 
 ==== Spring Cloud Azure Native
 
-NOTE: Spring Native `{spring-native-version}` has been tested against Spring Cloud Azure Native Configuration `{project-version}`.
+NOTE: Spring Native `{spring-native-version}` has been tested against Spring Cloud Azure Native Configuration `{spring-cloud-azure-native-configuration-version}`.
 
 Spring Cloud Azure provides a dependency `spring-cloud-azure-native-configuration` that is an extension of Spring Native configuration for Spring Cloud Azure level, the Spring Native AOT plugin will combine the `spring-native-configuration` and `spring-cloud-azure-native-configuration` to build Spring Cloud Azure application to native executables. The application built by Spring Cloud Azure does not require additional code modification, it only covers to the code at the Spring Cloud Azure library level.
 
@@ -57,7 +57,7 @@ The Spring CLoud Azure applications can enable Spring Native support according t
 <dependency>
   <groupId>com.azure.spring</groupId>
   <artifactId>spring-cloud-azure-native-configuration</artifactId>
-  <version>{project-version}</version>
+  <version>{spring-cloud-azure-native-configuration-version}</version>
 </dependency>
 ----
 
