@@ -1,6 +1,6 @@
 = Spring Cloud Azure - Reference Documentation
 
-include::_attributes.adoc[]
+include::attributes.adoc[]
 include::version-information.adoc[]
 include::legal.adoc[]
 include::intro.adoc[]
