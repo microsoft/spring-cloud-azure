@@ -7,7 +7,7 @@ Spring Native provides support for compiling Spring Boot applications to native 
 
 === Support
 
-Spring Cloud Azure has been validated against GraalVM and Spring Native, and provides the beta version support. You can try it on your projects if they are using those supported dependencies, and {azure-sdk-java-issues}[raise bugs] or {spring-cloud-azure-native-configuration}[contribute pull requests] if something goes wrong on Spring Cloud Azure level. See the link:https://docs.spring.io/spring-native/docs/{spring-native-version}/reference/htmlsingle/#overview[Support] for more details.
+Spring Cloud Azure has been validated against GraalVM and Spring Native, and provides the beta version support. You can try it on your projects if they are using those supported dependencies, and {azure-sdk-java-issues}[raise bugs] or {spring-cloud-azure-native-configuration}[contribute pull requests] if something goes wrong on Spring Cloud Azure level. See the link:https://docs.spring.io/spring-native/docs/{spring-native-version}/reference/htmlsingle/#overview[Spring Native Support] for more details.
 
 ==== Spring Native
 
@@ -17,32 +17,32 @@ Spring Cloud Azure `{project-version}` has been tested against Spring Native `{s
 
 NOTE: Spring Native `{spring-native-version}` has been tested against Spring Cloud Azure Native Configuration `{spring-cloud-azure-native-configuration-version}`.
 
-Spring Cloud Azure provides a dependency `spring-cloud-azure-native-configuration` that is an extension of Spring Native configuration for Spring Cloud Azure level, the Spring Native AOT plugin will combine the `spring-native-configuration` and `spring-cloud-azure-native-configuration` to build Spring Cloud Azure application to native executables. The application built by Spring Cloud Azure does not require additional code modification, it only covers to the code at the Spring Cloud Azure library level.
+Spring Cloud Azure provides a dependency `spring-cloud-azure-native-configuration` that is an extension of Spring Native configuration for Spring Cloud Azure level, the Spring Native AOT plugin will combine the `spring-native-configuration` and `spring-cloud-azure-native-configuration` to build applications to native executables. No extra modifications are needed to the code that uses Spring Cloud Azure libraries apart from adding the dependency, it only covers to the code at the Spring Cloud Azure libraries.
 
 Supported features:
 
-* `Azure App Configuration client Auto-Configuration`
-* `Azure Event Hubs client Auto-Configuration`
+* `Azure App Configuration clients auto-configuration`
+* `Azure Event Hubs clients auto-configuration`
+* `Azure Key Vault Certificates clients auto-configuration`
+* `Azure Key Vault Secrets clients auto-configuration`
+* `Azure Storage Blob clients auto-configuration`
+* `Azure Storage File Share clients auto-configuration`
+* `Azure Storage Queue clients auto-configuration`
 * `Spring Integration for Azure Event Hubs`
 * `Spring Integration for Azure Storage Queue`
-* `Azure Key Vault Certificates client Auto-Configuration`
-* `Azure Key Vault Secrets client Auto-Configuration`
-* `Azure Storage Blob client Auto-Configuration`
-* `Azure Storage File Share client Auto-Configuration`
-* `Azure Storage Queue client Auto-Configuration`
 
 ==== Limitations
 
 The Spring Cloud Azure support for Spring Native is still in the early stages and continues to be updated, the following features are not yet supported:
 
-* `Azure Cosmos client Auto-Configuration`
+* `Azure Cosmos clients auto-configuration`
+* `Azure Service Bus clients auto-configuration`
 * `Spring Data for Azure Cache for Redis`
 * `Spring Data for Azure Cosmos`
-* `Spring Cloud Stream for Azure Service Bus`
 * `Spring Cloud Stream for Azure Event Hubs`
-* `Spring Integration for Azure Service Bus`
+* `Spring Cloud Stream for Azure Service Bus`
 * `Spring Kafka for Azure Event Hubs`
-* `Azure Service Bus client Auto-Configuration`
+* `Spring Integration for Azure Service Bus`
 
 NOTE: Not all the native image options are supported by Spring Native, see the link:https://docs.spring.io/spring-native/docs/{spring-native-version}/reference/htmlsingle/#native-image-options[Native image options] for more details.
 
@@ -50,7 +50,7 @@ WARNING: Spring Cloud Azure `{project-version}` is not validated for building na
 
 === Project Setup
 
-The Spring CLoud Azure applications can enable Spring Native support according to link:https://docs.spring.io/spring-native/docs/{spring-native-version}/reference/htmlsingle/#getting-started[Getting started], the only additional processing required is to add the following dependency to the POM file.
+The Spring Cloud Azure applications can enable Spring Native support according to link:https://docs.spring.io/spring-native/docs/{spring-native-version}/reference/htmlsingle/#getting-started[Getting started], the only additional processing required is to add the following dependency to the POM file.
 
 [source,xml,indent=2,subs="attributes,verbatim"]
 ----
@@ -103,7 +103,7 @@ See the link:https://docs.spring.io/spring-native/docs/{spring-native-version}/r
 
 There are two main ways to run a native executable.
 
-TIP: Assuming the project artifact id is `{spring-cloud-azure-sample}`, the project version is `0.0.1-SNAPSHOT`, the custom image name can be specified using the *<image><name>custom-image-name</name></image>* configuration element in Spring Boot plugin if you are using link:https://docs.spring.io/spring-boot/docs/{spring-boot-version}/reference/html/container-images.html#container-images.buildpacks[Cloud Native Buildpacks] or using the *<imageName>custom-image-name</imageName>* configuration element if you are using link:{graalvm-native-buildtools}[`native-maven-plugin`].
+TIP: Assuming the project artifact id is `{spring-cloud-azure-sample}`, the project version is `0.0.1-SNAPSHOT`, the custom image name can be specified using the *<image><name>custom-image-name</name></image>* configuration element in Spring Boot plugin if you are using link:https://docs.spring.io/spring-boot/docs/{spring-boot-version}/reference/html/container-images.html#container-images.buildpacks[Cloud Native Buildpacks] or using the *<imageName>custom-image-name</imageName>* configuration element if you are using link:{graalvm-native-buildtools}[native-maven-plugin].
 
 ==== Run with Buildpacks
 
