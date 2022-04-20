@@ -1,0 +1,6 @@
+# Instructions for CODEOWNERS file format and automatic build failure notifications:
+# https://github.blog/2017-07-06-introducing-code-owners/
+# https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+*                         @backwind1233 @chenrujun @hui1110 @jialigit @moarychan @netyyyy @saragluna @stliu @yiliuTo
+docs/src/main/asciidoc/   @chenrujun @hui1110
