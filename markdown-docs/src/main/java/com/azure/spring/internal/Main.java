@@ -19,8 +19,10 @@ package com.azure.spring.internal;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -124,8 +126,12 @@ public final class Main {
 				offset[0] = descriptions.get(key[0]).getDescription().trim().length();
 				descriptions.keySet().stream().max(Comparator.comparingInt(String::length))
 						.ifPresent(longest -> offset[1] = longest.length());
+				SimpleDateFormat sdf = new SimpleDateFormat();
+				sdf.applyPattern("MM/dd/yyyy");
+				Date date = new Date();
 				Files.write(new File(outputFile).toPath(),
-						("> [!div class=\"mx-tdBreakAll\"]\n" + "> | Property"
+						("---\n" + "ms.author:\n" + "ms.date: " + sdf.format(date) + "\n" + "---\n\n"
+								+ "> [!div class=\"mx-tdBreakAll\"]\n" + "> | Property"
 								+ new String(new char[offset[1] - 7]).replace("\0", " ") + "| Description"
 								+ new String(new char[offset[0] - 10]).replace("\0", " ") + "|\n" + "> |"
 								+ new String(new char[offset[1] + 2]).replace("\0", "-") + "|"
