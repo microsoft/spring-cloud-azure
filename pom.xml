@@ -48,6 +48,7 @@
 
     <modules>
         <module>docs</module>
+        <module>markdown-docs</module>
     </modules>
 
     <dependencyManagement>
