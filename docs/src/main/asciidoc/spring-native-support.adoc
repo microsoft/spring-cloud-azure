@@ -1,4 +1,7 @@
 [#spring-native-support]
+
+include::attributes.adoc[]
+
 == Spring Native Support
 
 === Spring Native
