@@ -60,7 +60,7 @@ public final class Main {
 			String outputFile = item.toString();
 			String inclusionPattern = properties.get(item).toString();
 			String path = System.getProperty("user.dir");
-			String outputFilePath = path + "\\markdown-docs\\src\\main\\markdown\\" + outputFile;
+			String outputFilePath = path + "//markdown-docs//src//main//markdown//" + outputFile;
 			File parentPath = new File(outputFilePath).getParentFile();
 			if (!parentPath.exists()) {
 				System.out.println("No markdown parent directory [" + parentPath

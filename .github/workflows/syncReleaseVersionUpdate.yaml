@@ -1,0 +1,105 @@
+name: Sync release version changes
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+
+jobs:
+  update-change:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          git init azure-sdk-for-java
+          cd azure-sdk-for-java
+          git remote add origin https://github.com/Azure/azure-sdk-for-java.git
+          git config core.sparsecheckout true
+          echo "sdk/spring" >> .git/info/sparse-checkout
+          echo "eng" >> .git/info/sparse-checkout
+          echo "sdk/keyvault" >> .git/info/sparse-checkout
+          echo "sdk/boms" >> .git/info/sparse-checkout
+          git pull --depth=1 origin main
+          mvn clean install -Dmaven.javadoc.skip=true -DskipTests \
+            -Dcheckstyle.skip=true \
+            -ntp \
+            -Dspotbugs.skip=true \
+            -Drevapi.skip=true -Djacoco.skip=true \
+            -Dparallel-test-playback \
+            -Pdev \
+            -pl '!spring-cloud-azure-native-configuration' \
+            -f sdk/spring/pom.xml
+
+      - uses: actions/checkout@v3
+      - name: Build Markdown file
+        run: |
+          mkdir markdown-docs/src/main/markdown
+          ./mvnw clean install -P markdown-docs -pl markdown-docs -DskipTests
+
+      - uses: actions/cache@v2
+        id: mvn-cache
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-unified-${{ steps.date.outputs.date }}
+
+      - name: Maven go offline
+        id: mvn-offline
+        if: steps.mvn-cache.outputs.cache-hit != 'true'
+        run: ./mvnw compile dependency:go-offline
+
+      - name: Mvn install # Need this when the version/directory/pom structure changes
+        run: |
+          ./mvnw \
+            --batch-mode \
+            --show-version \
+            --threads 1.5C \
+            --define maven.test.skip=true \
+            --define maven.javadoc.skip=true \
+            install
+
+      - name: Remove SNAPSHOT # Needed for releases
+        run: |
+          if [[ -n "${{ github.event.release.tag_name }}" ]] ; then
+            ./mvnw versions:set --batch-mode -DremoveSnapshot -DprocessAllModules
+          fi
+
+      - uses: actions/checkout@v3
+        name: Checkot  repository
+        with:
+          repository: MicrosoftDocs/azure-dev-docs-pr
+          ref: 'main'
+          path: 'azure-dev-docs-pr'
+          token: ${{ secrets.ACCESS_TOKEN }}
+
+      - name: Create folder spring-cloud-azure # Now this directory does not exist, when the 4.0 reference documentation is synced to msdocs, this step will not be required.
+        run: |
+          mkdir azure-dev-docs-pr/articles/java/spring-framework/includes/spring-cloud-azure
+
+      - name: Set branch name
+        id: data
+        run: |
+          tag_name=${{github.event.release.tag_name}}
+          echo "::set-output name=suite_update_branch::${tag_name}"
+          echo "::set-output name=tag_version::${tag_name#*_}"
+
+      - name: Push files
+        run: |
+          echo ${{ steps.data.outputs.tag_version }}
+          cp -f markdown-docs/src/main/markdown/*.md azure-dev-docs-pr/articles/java/spring-framework/includes/spring-cloud-azure
+          cd azure-dev-docs-pr
+          git config --global user.email github-actions@github.com
+          git config --global user.name github-actions
+          git add ./articles/java/spring-framework/includes/spring-cloud-azure/configuration-*.md
+          git commit -m "update Spring Cloud Azure Reference documentation release version changes"
+          git push --force "https://${{ github.actor }}:${{ secrets.ACCESS_TOKEN }}@github.com/${{ github.actor }}/azure-dev-docs-pr.git" HEAD:${{ steps.data.outputs.suite_update_branch }}
+
+      - name: Create Pull Request
+        uses: vsoch/pull-request-action@master
+        env:
+          PULL_REQUEST_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          PULL_REQUEST_REPOSITORY: MicrosoftDocs/azure-dev-docs-pr
+          PULL_REQUEST_TITLE: Sync Spring Cloud Azure Reference documentation ${{ steps.data.outputs.tag_version }} properties table changes
+          PULL_REQUEST_FROM_BRANCH: ${{ github.actor }}:${{ steps.data.outputs.suite_update_branch }}
+          PULL_REQUEST_BRANCH: "main"
+          PULL_REQUEST_BODY: "The Spring Cloud Azure Reference documentation ${{ steps.data.outputs.tag_version }} has been released,, this pull request syncs property table changes."
+          PULL_REQUEST_UPDATE: true
+          
