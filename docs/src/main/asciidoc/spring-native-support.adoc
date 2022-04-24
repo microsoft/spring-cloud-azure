@@ -55,6 +55,8 @@ WARNING: Spring Cloud Azure `{project-version}` is not validated for building na
 
 The Spring Cloud Azure applications can enable Spring Native support according to link:https://docs.spring.io/spring-native/docs/{spring-native-version}/reference/htmlsingle/#getting-started[Getting started], the only additional processing required is to add the following dependency to the POM file.
 
+TIP:  Note that this dependency `com.azure.spring:spring-cloud-azure-native-configuration` is not managed in `com.azure.spring:spring-cloud-azure-dependencies`.
+
 [source,xml,indent=2,subs="attributes,verbatim"]
 ----
 <dependency>
@@ -128,7 +130,9 @@ target/{spring-cloud-azure-sample}
 
 === Samples
 
-Below are all samples that support Spring Native, see link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main#run-samples-based-on-spring-native[Spring Cloud Azure Samples] for more details.
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/spring-native/storage-blob[storage-blob].
+
+Here are other verified samples that support Spring Native, see link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main#run-samples-based-on-spring-native[Spring Cloud Azure Samples] for more details.
 
 .Supported Spring Cloud Azure Samples
 [cols="2", options="header"]
