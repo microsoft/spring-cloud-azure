@@ -191,7 +191,7 @@ image:https://user-images.githubusercontent.com/13167207/149295662-072ca3d5-f9e1
 spring:
   cloud:
     azure:
-      active-directory
+      active-directory:
         redirect-uri-template: ${REDIRECT-URI-TEMPLATE}
 ----
 
