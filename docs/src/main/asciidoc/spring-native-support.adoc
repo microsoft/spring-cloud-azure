@@ -130,20 +130,20 @@ target/{spring-cloud-azure-sample}
 
 === Samples
 
-Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/spring-native/storage-blob[storage-blob].
+Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/spring-native/storage-blob-native[storage-blob-native].
 
-Here are other verified samples that support Spring Native, see link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main#run-samples-based-on-spring-native[Spring Cloud Azure Samples] for more details.
+Here are other verified samples that support Spring Native, see link:https://github.com/Azure-Samples/azure-spring-boot-samples#run-samples-based-on-spring-native[Spring Cloud Azure Samples] for more details.
 
 .Supported Spring Cloud Azure Samples
 [cols="2", options="header"]
 |===
 |Library Artifact ID                                     |Supported Example Projects
-|spring-cloud-azure-starter-appconfiguration             |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/appconfiguration/spring-cloud-azure-starter-appconfiguration/appconfiguration-sample[appconfiguration-sample]
+|spring-cloud-azure-starter-appconfiguration             |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/appconfiguration/spring-cloud-azure-starter-appconfiguration/appconfiguration-client[appconfiguration-client]
 |spring-cloud-azure-starter-eventhubs                    |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/eventhubs/spring-cloud-azure-starter-eventhubs/eventhubs-client[eventhubs-client]
 |spring-cloud-azure-starter-integration-eventhubs        |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/eventhubs/spring-cloud-azure-starter-integration-eventhubs/eventhubs-integration[eventhubs-integration]
 |spring-cloud-azure-starter-integration-storage-queue    |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-integration-storage-queue/storage-queue-integration[storage-queue-integration], link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-integration-storage-queue/storage-queue-operation[storage-queue-operation]
 |spring-cloud-azure-starter-keyvault-secrets             |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/keyvault/spring-cloud-azure-starter-keyvault-secrets/property-source[property-source], link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/keyvault/spring-cloud-azure-starter-keyvault-secrets/secret-client[secret-client]
 |spring-cloud-azure-starter-storage-blob                 |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-storage-blob/storage-blob-sample[storage-blob-sample]
 |spring-cloud-azure-starter-storage-file-share           |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-storage-file-share/storage-file-sample[storage-file-sample]
-|spring-cloud-azure-starter-storage-queue                |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-storage-queue/storage-queue-sample[storage-queue-sample]
+|spring-cloud-azure-starter-storage-queue                |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-storage-queue/storage-queue-client[storage-queue-client]
 |===
