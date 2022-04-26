@@ -28,9 +28,7 @@ jobs:
           git config core.sparsecheckout true
           echo "sdk/spring" >> .git/info/sparse-checkout
           echo "eng" >> .git/info/sparse-checkout
-          echo "sdk/keyvault" >> .git/info/sparse-checkout
           echo "sdk/boms" >> .git/info/sparse-checkout
-          echo "sdk/aot" >> .git/info/sparse-checkout
           git pull --depth=1 origin main
           mvn clean install -Dmaven.javadoc.skip=true -DskipTests \
             -Dcheckstyle.skip=true \
