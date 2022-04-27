@@ -11,7 +11,7 @@
     <dependency>
       <groupId>com.azure.spring</groupId>
       <artifactId>spring-cloud-azure-dependencies</artifactId>
-      <version>version</version> <!--1-->
+      <version>${spring.cloud.azure.version}</version> <!--1-->
       <type>pom</type>
       <scope>import</scope>
     </dependency>
