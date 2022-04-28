@@ -25,7 +25,7 @@
 :graalvm-native-docs: {graalvm-docs}/native-image
 :graalvm-native-buildtools: https://github.com/graalvm/native-build-tools
 :spring-native-version: 0.11.4
-:spring-cloud-azure-native-configuration: https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/spring/spring-cloud-azure-native-configuration
+:spring-cloud-azure-native-configuration: https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/spring-experimental/spring-cloud-azure-native-configuration
 :spring-cloud-azure-native-configuration-version: 4.0.0-beta.1
 :spring-cloud-azure-sample: spring-cloud-azure-sample
 // End for Spring Native Support
