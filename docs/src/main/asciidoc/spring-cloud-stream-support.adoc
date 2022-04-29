@@ -71,7 +71,7 @@ The binder provides the following 3 parts of configuration options:
 
 This section contains the configuration options used for connecting to Azure Event Hubs.
 
-NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, See link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
 .Connection configurable properties of spring-cloud-azure-stream-binder-eventhubs
 [cols="<,<,<", options="header"]
@@ -103,7 +103,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 
 TIP: Common Azure Service SDK configuration options are configurable for the Spring Cloud Azure Stream Event Hubs binder as well. The supported configuration options are introduced in link:configuration.html[the Configuration page], and could be configured with either the unified prefix `spring.cloud.azure.` or the prefix of `spring.cloud.azure.eventhubs.`.
 
-The binder also supports link:index.html#spring-cloud-azure-resourcemanager[Spring Could Azure Resource Manager] by default. To learn about how to retrieve the connection string with security principals that are not granted with `Data` related roles, please refer to the link:index.html#resource-manager-basic-usage[resource manager example] for details.
+The binder also supports link:index.html#spring-cloud-azure-resourcemanager[Spring Could Azure Resource Manager] by default. To learn about how to retrieve the connection string with security principals that are not granted with `Data` related roles, see the link:index.html#resource-manager-basic-usage[resource manager example] for details.
 
 ===== Checkpoint Configuration Properties
 This section contains the configuration options for the Storage Blobs service, which is used for persisting partition ownership and checkpoint information.
@@ -135,7 +135,7 @@ NOTE: From version 4.0.0, when the property of **spring.cloud.azure.eventhubs.pr
 TIP: Common Azure Service SDK configuration options are configurable for Storage Blob checkpoint store as well. The supported configuration options are introduced in link:configuration.html[the Configuration page], and could be configured with either the unified prefix `spring.cloud.azure.` or the prefix of `spring.cloud.azure.eventhubs.processor.checkpoint-store`.
 
 ===== Azure Event Hubs Binding Configuration Properties
-Below options are divided into four sections: Consumer Properties, Advanced Consumer
+The following options are divided into four sections: Consumer Properties, Advanced Consumer
 Configurations, Producer Properties and Advanced Producer Configurations.
 
 [#eventhubs-consumer-properties]
@@ -243,7 +243,7 @@ The above <<eventhubs-connection-configuration, connection>> and <<configuration
 ===== Sending and Receiving Messages from/to Event Hubs
 Step 1. Fill the configuration options with credential information.
 
-- For credentials as connection string, configure below properties in application.yml:
+- For credentials as connection string, configure the following properties in application.yml:
 
 [source,yaml]
 ----
@@ -274,7 +274,7 @@ spring:
                 mode: MANUAL
 ----
 
-- For credentials as service principal, configure below properties in application.yml:
+- For credentials as service principal, configure the following properties in application.yml:
 
 [source, yaml]
 ----
@@ -309,7 +309,7 @@ spring:
                 mode: MANUAL
 ----
 
-- For credentials as managed identites, configure below properties in application.yml:
+- For credentials as managed identites, configure the following properties in application.yml:
 
 [source, yaml]
 ----
@@ -410,7 +410,7 @@ spring:
 
 Step2. Define supplier and consumer.
 
-For checkpointing mode as `BATCH`, you can use below code to send messages and consume in batches.
+For checkpointing mode as `BATCH`, you can use the following code to send messages and consume in batches.
 [source,java]
 ----
 @Bean
@@ -437,7 +437,7 @@ public Supplier<Message<String>> supply() {
 }
 ----
 
-For checkpointing mode as `MANUAL`, you can use below code to send messages and consume/checkpoint in batches.
+For checkpointing mode as `MANUAL`, you can use the following code to send messages and consume/checkpoint in batches.
 [source,java]
 ----
 @Bean
@@ -469,7 +469,7 @@ public Supplier<Message<String>> supply() {
 }
 ----
 
-NOTE: In the batch-consuming mode, the default content type of Spring Cloud Stream binder is `application/json`, so make sure the message payload is aligned with the content type. For example, when using the default content type of `application/json` to receive messages with `String` payload, the payload should be JSON String, surrounded with double quotes for the original String text. While for `text/plain` content type, it can be a `String` object directly. For more details, please refer to the official doc of {content-type-negotiation}[Spring Cloud Stream Content Type Negotiation].
+NOTE: In the batch-consuming mode, the default content type of Spring Cloud Stream binder is `application/json`, so make sure the message payload is aligned with the content type. For example, when using the default content type of `application/json` to receive messages with `String` payload, the payload should be JSON String, surrounded with double quotes for the original String text. While for `text/plain` content type, it can be a `String` object directly. For more details, see the official doc of {content-type-negotiation}[Spring Cloud Stream Content Type Negotiation].
 
 ===== Error Channels
 - Consumer error channel
@@ -521,7 +521,7 @@ See the <<si-eh-headers, Event Hubs message headers>> for the basic message head
 ===== Multiple Binder Support
 Connection to multiple Event Hubs namespaces is also supported by using multiple binders.This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder's environment settings.
 
-Step 1. To use multiple binders of EventHubs, we need to configure below properties in application.yml
+Step 1. To use multiple binders of EventHubs, we need to configure the following properties in application.yml
 [source,yaml]
 ----
 spring:
@@ -630,7 +630,7 @@ public Consumer<Message<String>> consume2() {
 ----
 
 ===== Resource Provision
-Event Hubs binder supports provisioning of event hub and consumer group, users could use below properties to enable provisioning.
+Event Hubs binder supports provisioning of event hub and consumer group, users could use the following properties to enable provisioning.
 [source,yaml]
 ----
 spring:
@@ -647,7 +647,7 @@ spring:
 
 ==== Samples
 
-Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/eventhubs/spring-cloud-azure-stream-binder-eventhubs[azure-spring-boot-samples] for more details.
+See link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/eventhubs/spring-cloud-azure-stream-binder-eventhubs[azure-spring-boot-samples] for more details.
 
 === Spring Cloud Stream Binder for Azure Service Bus
 
@@ -691,7 +691,7 @@ The binder provides the following 2 parts of configuration options:
 
 This section contains the configuration options used for connecting to Azure Service Bus.
 
-NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+NOTE: If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, see link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
 .Connection configurable properties of spring-cloud-azure-stream-binder-servicebus
 [cols="<,<,<", options="header"]
@@ -718,10 +718,10 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 
 TIP: Common Azure Service SDK configuration options are configurable for the Spring Cloud Azure Stream Service Bus binder as well. The supported configuration options are introduced in link:configuration.html[the Configuration page], and could be configured with either the unified prefix `spring.cloud.azure.` or the prefix of `spring.cloud.azure.servicebus.`.
 
-The binder also supports link:index.html#spring-cloud-azure-resourcemanager[Spring Could Azure Resource Manager] by default. To learn about how to retrieve the connection string with security principals that are not granted with `Data` related roles, please refer to the link:index.html#resource-manager-basic-usage[resource manager example] for details.
+The binder also supports link:index.html#spring-cloud-azure-resourcemanager[Spring Could Azure Resource Manager] by default. To learn about how to retrieve the connection string with security principals that are not granted with `Data` related roles, see the link:index.html#resource-manager-basic-usage[resource manager example] for details.
 
 ===== Azure Service Bus Binding Configuration Properties
-Below options are divided into four sections: Consumer Properties, Advanced Consumer
+The following options are divided into four sections: Consumer Properties, Advanced Consumer
 Configurations, Producer Properties and Advanced Producer Configurations.
 
 ====== Consumer Properties
@@ -809,7 +809,7 @@ The above <<servicebus-connection-configuration, connection>> and <<configuratio
 ===== Sending and Receiving Messages from/to Service Bus
 Step 1. Fill the configuration options with credential information.
 
-- For credentials as connection string, configure below properties in application.yml:
+- For credentials as connection string, configure the following properties in application.yml:
 [source,yaml]
 ----
 spring:
@@ -823,7 +823,7 @@ spring:
       bindings:
         consume-in-0:
           destination: ${SERVICEBUS_ENTITY_NAME}
-          # If you use Service Bus Topic, please add below configuration
+          # If you use Service Bus Topic, please add the following configuration
           # group: ${SUBSCRIPTION_NAME}
         supply-out-0:
           destination: ${SERVICEBUS_ENTITY_NAME_SAME_AS_ABOVE}
@@ -837,7 +837,7 @@ spring:
               entity-type: queue # set as "topic" if you use Service Bus Topic
 ----
 
-- For credentials as service principal, configure below properties in application.yml:
+- For credentials as service principal, configure the following properties in application.yml:
 [source,yaml]
 ----
 spring:
@@ -856,7 +856,7 @@ spring:
       bindings:
         consume-in-0:
           destination: ${SERVICEBUS_ENTITY_NAME}
-          # If you use Service Bus Topic, please add below configuration
+          # If you use Service Bus Topic, please add the following configuration
           # group: ${SUBSCRIPTION_NAME}
         supply-out-0:
           destination: ${SERVICEBUS_ENTITY_NAME_SAME_AS_ABOVE}
@@ -870,7 +870,7 @@ spring:
               entity-type: queue # set as "topic" if you use Service Bus Topic
 ----
 
-- For credentials as managed identities, configure below properties in application.yml:
+- For credentials as managed identities, configure the following properties in application.yml:
 [source, yaml]
 ----
 spring:
@@ -887,7 +887,7 @@ spring:
       bindings:
         consume-in-0:
           destination: ${SERVICEBUS_ENTITY_NAME}
-          # If you use Service Bus Topic, please add below configuration
+          # If you use Service Bus Topic, please add the following configuration
           # group: ${SUBSCRIPTION_NAME}
         supply-out-0:
           destination: ${SERVICEBUS_ENTITY_NAME_SAME_AS_ABOVE}
@@ -1028,7 +1028,7 @@ NOTE: When setting the partiton key, the priority of message header is higher th
 ===== Multiple Binder Support
 Connection to multiple Service Bus namespaces is also supported by using multiple binders. This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder's environment settings.
 
-Step 1. To use multiple binders of ServiceBus, we need to configure below properties in application.yml
+Step 1. To use multiple binders of ServiceBus, we need to configure the following properties in application.yml
 [source,yaml]
 ----
 spring:
@@ -1131,7 +1131,7 @@ public Consumer<Message<String>> consume2() {
 ----
 
 ===== Resource Provision
-Service bus binder supports provisioning of queue, topic and subscription, users could use below properties to enable provisioning.
+Service bus binder supports provisioning of queue, topic and subscription, users could use the following properties to enable provisioning.
 [source,yaml]
 ----
 spring:
@@ -1154,4 +1154,4 @@ spring:
 
 ==== Samples
 
-Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/servicebus/spring-cloud-azure-stream-binder-servicebus[azure-spring-boot-samples] for more details.
+See link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/servicebus/spring-cloud-azure-stream-binder-servicebus[azure-spring-boot-samples] for more details.

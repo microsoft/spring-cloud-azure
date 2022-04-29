@@ -126,7 +126,7 @@ You can use the annotation of @Value("azure-file://[your-fileshare-name]/[your-f
 private Resource storageFileResource;
 ----
 
-===== Get a Resource with ResourceLoader
+===== Get a resource with ResourceLoader
 
 [source,java]
 ----

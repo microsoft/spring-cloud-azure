@@ -918,7 +918,7 @@ This scenario is based on *Accessing a web application* scenario to allow applic
 * Step 4: Select *Expose an API* on your left, and then Click the *Set* link,
  record the *Application ID URI* as your `WEB_API_A_APP_ID_URL`, then *Save*.
 
-* Step 5: Select *Manifest* on your left, and then paste the below json segment into `appRoles` array,
+* Step 5: Select *Manifest* on your left, and then paste the following json segment into `appRoles` array,
  record the *Application ID URI* as your `WEB_API_A_APP_ID_URL`, record the value of the app role as your `WEB_API_A_ROLE_VALUE`, then *save*.
 
 [source,json]
@@ -1014,7 +1014,7 @@ public class SampleConfiguration {
 }
 ----
 
-* Step 11: Please refer to *Accessing a resource server* section to write your `WebApiA` Java code.
+* Step 11: See *Accessing a resource server* section to write your `WebApiA` Java code.
 
 * Step 12: Build and test your app
 
@@ -1230,6 +1230,6 @@ Let `WebApiA` and `WebApiB` run on port _8081_ and _8082_ respectively.
 
 ==== Samples
 
-Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/aad/spring-cloud-azure-starter-active-directory-b2c[spring-cloud-azure-starter-active-directory-b2c samples] for more details.
+See link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}/aad/spring-cloud-azure-starter-active-directory-b2c[spring-cloud-azure-starter-active-directory-b2c samples] for more details.
 
 
