@@ -36,6 +36,7 @@ image::https://user-images.githubusercontent.com/13167207/143148654-f3a37180-85e
 
 TIP: Please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 
+NOTE: As of Spring Cloud Azure AutoConfigure 4.1.0, a `ThreadPoolTaskExecutor` bean named **springCloudAzureCredentialTaskExecutor** will be automatically registered by default, which will manage all threads related to Azure credential. Each thread name is prefixed with **az-identity-**, which is independent of the bean `Executor` provided by Spring Boot by default.
 
 === Managed Identities
 
