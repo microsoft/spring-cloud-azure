@@ -293,7 +293,7 @@ The checkpoint header only exists when <strong>MANUAL</strong> checkpoint mode i
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, See <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 </td>
 </tr>
 </table>
@@ -353,7 +353,7 @@ Common Azure Service SDK configuration options are configurable for the Spring C
 </table>
 </div>
 <div class="paragraph">
-<p>The binder also supports <a href="index.html#spring-cloud-azure-resourcemanager">Spring Could Azure Resource Manager</a> by default. To learn about how to retrieve the connection string with security principals that are not granted with <code>Data</code> related roles, please refer to the <a href="index.html#resource-manager-basic-usage">resource manager example</a> for details.</p>
+<p>The binder also supports <a href="index.html#spring-cloud-azure-resourcemanager">Spring Could Azure Resource Manager</a> by default. To learn about how to retrieve the connection string with security principals that are not granted with <code>Data</code> related roles, see the <a href="index.html#resource-manager-basic-usage">resource manager example</a> for details.</p>
 </div>
 </div>
 <div class="sect4">
@@ -426,7 +426,7 @@ Common Azure Service SDK configuration options are configurable for Storage Blob
 <div class="sect4">
 <h5 id="_azure_event_hubs_binding_configuration_properties"><a class="link" href="#_azure_event_hubs_binding_configuration_properties">Azure Event Hubs Binding Configuration Properties</a></h5>
 <div class="paragraph">
-<p>Below options are divided into four sections: Consumer Properties, Advanced Consumer
+<p>The following options are divided into four sections: Consumer Properties, Advanced Consumer
 Configurations, Producer Properties and Advanced Producer Configurations.</p>
 </div>
 <div class="sect5">
@@ -596,7 +596,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as connection string, configure below properties in application.yml:</p>
+<p>For credentials as connection string, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -632,7 +632,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as service principal, configure below properties in application.yml:</p>
+<p>For credentials as service principal, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -672,7 +672,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as managed identites, configure below properties in application.yml:</p>
+<p>For credentials as managed identites, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -784,7 +784,7 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 <p>Step2. Define supplier and consumer.</p>
 </div>
 <div class="paragraph">
-<p>For checkpointing mode as <code>BATCH</code>, you can use below code to send messages and consume in batches.</p>
+<p>For checkpointing mode as <code>BATCH</code>, you can use the following code to send messages and consume in batches.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -813,7 +813,7 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 </div>
 </div>
 <div class="paragraph">
-<p>For checkpointing mode as <code>MANUAL</code>, you can use below code to send messages and consume/checkpoint in batches.</p>
+<p>For checkpointing mode as <code>MANUAL</code>, you can use the following code to send messages and consume/checkpoint in batches.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -853,7 +853,7 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-In the batch-consuming mode, the default content type of Spring Cloud Stream binder is <code>application/json</code>, so make sure the message payload is aligned with the content type. For example, when using the default content type of <code>application/json</code> to receive messages with <code>String</code> payload, the payload should be JSON String, surrounded with double quotes for the original String text. While for <code>text/plain</code> content type, it can be a <code>String</code> object directly. For more details, please refer to the official doc of <a href="https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#content-type-management">Spring Cloud Stream Content Type Negotiation</a>.
+In the batch-consuming mode, the default content type of Spring Cloud Stream binder is <code>application/json</code>, so make sure the message payload is aligned with the content type. For example, when using the default content type of <code>application/json</code> to receive messages with <code>String</code> payload, the payload should be JSON String, surrounded with double quotes for the original String text. While for <code>text/plain</code> content type, it can be a <code>String</code> object directly. For more details, see the official doc of <a href="https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#content-type-management">Spring Cloud Stream Content Type Negotiation</a>.
 </td>
 </tr>
 </table>
@@ -939,7 +939,7 @@ public void producerError(Message&lt;?&gt; message) {
 <p>Connection to multiple Event Hubs namespaces is also supported by using multiple binders.This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
 </div>
 <div class="paragraph">
-<p>Step 1. To use multiple binders of EventHubs, we need to configure below properties in application.yml</p>
+<p>Step 1. To use multiple binders of EventHubs, we need to configure the following properties in application.yml</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1055,7 +1055,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
 <div class="sect4">
 <h5 id="_resource_provision"><a class="link" href="#_resource_provision">Resource Provision</a></h5>
 <div class="paragraph">
-<p>Event Hubs binder supports provisioning of event hub and consumer group, users could use below properties to enable provisioning.</p>
+<p>Event Hubs binder supports provisioning of event hub and consumer group, users could use the following properties to enable provisioning.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1076,7 +1076,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
 <div class="sect3">
 <h4 id="_samples"><a class="link" href="#_samples">Samples</a></h4>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/eventhubs/spring-cloud-azure-stream-binder-eventhubs">azure-spring-boot-samples</a> for more details.</p>
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/eventhubs/spring-cloud-azure-stream-binder-eventhubs">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
@@ -1142,7 +1142,7 @@ This binder relies on <code>Subscription</code> of a topic to act as a consumer 
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, see <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 </td>
 </tr>
 </table>
@@ -1197,13 +1197,13 @@ Common Azure Service SDK configuration options are configurable for the Spring C
 </table>
 </div>
 <div class="paragraph">
-<p>The binder also supports <a href="index.html#spring-cloud-azure-resourcemanager">Spring Could Azure Resource Manager</a> by default. To learn about how to retrieve the connection string with security principals that are not granted with <code>Data</code> related roles, please refer to the <a href="index.html#resource-manager-basic-usage">resource manager example</a> for details.</p>
+<p>The binder also supports <a href="index.html#spring-cloud-azure-resourcemanager">Spring Could Azure Resource Manager</a> by default. To learn about how to retrieve the connection string with security principals that are not granted with <code>Data</code> related roles, see the <a href="index.html#resource-manager-basic-usage">resource manager example</a> for details.</p>
 </div>
 </div>
 <div class="sect4">
 <h5 id="_azure_service_bus_binding_configuration_properties"><a class="link" href="#_azure_service_bus_binding_configuration_properties">Azure Service Bus Binding Configuration Properties</a></h5>
 <div class="paragraph">
-<p>Below options are divided into four sections: Consumer Properties, Advanced Consumer
+<p>The following options are divided into four sections: Consumer Properties, Advanced Consumer
 Configurations, Producer Properties and Advanced Producer Configurations.</p>
 </div>
 <div class="sect5">
@@ -1367,7 +1367,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as connection string, configure below properties in application.yml:</p>
+<p>For credentials as connection string, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -1384,7 +1384,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
       bindings:
         consume-in-0:
           destination: ${SERVICEBUS_ENTITY_NAME}
-          # If you use Service Bus Topic, please add below configuration
+          # If you use Service Bus Topic, please add the following configuration
           # group: ${SUBSCRIPTION_NAME}
         supply-out-0:
           destination: ${SERVICEBUS_ENTITY_NAME_SAME_AS_ABOVE}
@@ -1401,7 +1401,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as service principal, configure below properties in application.yml:</p>
+<p>For credentials as service principal, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -1423,7 +1423,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
       bindings:
         consume-in-0:
           destination: ${SERVICEBUS_ENTITY_NAME}
-          # If you use Service Bus Topic, please add below configuration
+          # If you use Service Bus Topic, please add the following configuration
           # group: ${SUBSCRIPTION_NAME}
         supply-out-0:
           destination: ${SERVICEBUS_ENTITY_NAME_SAME_AS_ABOVE}
@@ -1440,7 +1440,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as managed identities, configure below properties in application.yml:</p>
+<p>For credentials as managed identities, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -1460,7 +1460,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
       bindings:
         consume-in-0:
           destination: ${SERVICEBUS_ENTITY_NAME}
-          # If you use Service Bus Topic, please add below configuration
+          # If you use Service Bus Topic, please add the following configuration
           # group: ${SUBSCRIPTION_NAME}
         supply-out-0:
           destination: ${SERVICEBUS_ENTITY_NAME_SAME_AS_ABOVE}
@@ -1657,7 +1657,7 @@ When setting the partiton key, the priority of message header is higher than Spr
 <p>Connection to multiple Service Bus namespaces is also supported by using multiple binders. This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
 </div>
 <div class="paragraph">
-<p>Step 1. To use multiple binders of ServiceBus, we need to configure below properties in application.yml</p>
+<p>Step 1. To use multiple binders of ServiceBus, we need to configure the following properties in application.yml</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1767,7 +1767,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
 <div class="sect4">
 <h5 id="_resource_provision_2"><a class="link" href="#_resource_provision_2">Resource Provision</a></h5>
 <div class="paragraph">
-<p>Service bus binder supports provisioning of queue, topic and subscription, users could use below properties to enable provisioning.</p>
+<p>Service bus binder supports provisioning of queue, topic and subscription, users could use the following properties to enable provisioning.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1794,7 +1794,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
 <div class="sect3">
 <h4 id="_samples_2"><a class="link" href="#_samples_2">Samples</a></h4>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/servicebus/spring-cloud-azure-stream-binder-servicebus">azure-spring-boot-samples</a> for more details.</p>
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/servicebus/spring-cloud-azure-stream-binder-servicebus">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>

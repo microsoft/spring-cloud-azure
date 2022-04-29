@@ -167,17 +167,7 @@ window.onload = function() {
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#getting-help">1. Getting Help</a></li>
-<li><a href="#what-is-new-in-4-0-since-3-10-x">2. What Is New in 4.0 Since 3.10.x</a>
-<ul class="sectlevel2">
-<li><a href="#unified-development-experience">2.1. Unified Development Experience</a></li>
-<li><a href="#simplified-dependency-management">2.2. Simplified Dependency Management</a></li>
-<li><a href="#expanded-support-scope-of-azure-support-on-start-spring-io">2.3. Expanded Support Scope of Azure Support on start.spring.io</a></li>
-<li><a href="#untethered-and-unrestrained">2.4. Untethered and Unrestrained</a></li>
-<li><a href="#more-control-and-secure">2.5. More Control and Secure</a></li>
-<li><a href="#more-options-exposed-in-a-spring-idiomatic-way">2.6. More Options Exposed in a Spring Idiomatic Way</a></li>
-<li><a href="#more-production-ready">2.7. More Production Ready</a></li>
-</ul>
-</li>
+<li><a href="#what-is-new-in-4-0-since-3-10-x">2. What Is New in 4.0 Since 3.10.x</a></li>
 <li><a href="#migration-guide-for-4-0">3. Migration Guide for 4.0</a></li>
 <li><a href="#getting-started">4. Getting Started</a>
 <ul class="sectlevel2">
@@ -276,7 +266,7 @@ window.onload = function() {
 <li><a href="#samples-17">17.4. Samples</a></li>
 </ul>
 </li>
-<li><a href="#spring-cloud-azure-resourcemanager">18. Resource Manager</a>
+<li><a href="#spring-cloud-azure-resourcemanager">18. Azure Resource Manager</a>
 <ul class="sectlevel2">
 <li><a href="#dependency-setup-14">18.1. Dependency Setup</a></li>
 <li><a href="#configuration-15">18.2. Configuration</a></li>
@@ -299,7 +289,7 @@ window.onload = function() {
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>This document is only for Spring Cloud Azure: <strong>4.1.0-beta.1</strong>. Please refer to <a href="https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Versions-Mapping">Spring Versions Mapping</a> to get more information about supported versions.</p>
+<p>This document is only for Spring Cloud Azure: <strong>4.1.0-beta.1</strong>. See <a href="https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Versions-Mapping">Spring Versions Mapping</a> to get more information about supported versions.</p>
 </div>
 <div class="paragraph">
 <p>&#169; 2016-2022 the original authors.</p>
@@ -370,69 +360,45 @@ To learn how to migrate to 4.0, please check <a href="appendix.html#migration-gu
 </tr>
 </table>
 </div>
-<div class="sect2">
-<h3 id="unified-development-experience"><a class="anchor" href="#unified-development-experience"></a><a class="link" href="#unified-development-experience">2.1. Unified Development Experience</a></h3>
 <div class="paragraph">
-<p>We constantly challenge ourselves on how we can make things more consistent and easier to understand, so our customers are not confronted with haphazard development choices. This is a long and self-evolving journey as consistency is relative and there will be things that are outside our control. We now humbly take another step in this direction to improve our developer experience by unifying project name, artifact ID and properties.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="simplified-dependency-management"><a class="anchor" href="#simplified-dependency-management"></a><a class="link" href="#simplified-dependency-management">2.2. Simplified Dependency Management</a></h3>
-<div class="paragraph">
-<p>Dependency management is one of the core value pillars that has helped Spring establish preeminence over to other Java frameworks. In that spirit, we have also been exploring ways to make dependency management easier for Spring developers on Azure. In this release, we have codified best practices and expertise from Spring experts and condensed all of our dependency BOMs into one, <code>spring-cloud-azure-dependencies</code>, which we believe will further bring down the learning curve and avoid ill-handling of dependencies.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="expanded-support-scope-of-azure-support-on-start-spring-io"><a class="anchor" href="#expanded-support-scope-of-azure-support-on-start-spring-io"></a><a class="link" href="#expanded-support-scope-of-azure-support-on-start-spring-io">2.3. Expanded Support Scope of Azure Support on start.spring.io</a></h3>
-<div class="paragraph">
-<p>The Azure Support module in <a href="https://start.spring.io">Spring Initializr</a> provides auto-configuration of many Azure services.</p>
-</div>
-<div class="paragraph">
-<p>In this release we have expanded the scope of Azure Support to cover the additional 4 more services:</p>
+<p>The following list summarizes some of the changes that Spring Cloud Azure 4.0 provides:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Kafka</p>
+<p>A unified development experience, with unified project name, artifact ID, and properties.</p>
 </li>
 <li>
-<p>Event Hubs</p>
+<p>Simplified dependency management using a single <code>spring-cloud-azure-dependencies</code> BOM.</p>
 </li>
 <li>
-<p>Azure Cache for Redis</p>
+<p>Expanded Azure support on <a href="https://start.spring.io">Spring Initializr</a> to cover Kafka, Event Hubs, Azure Cache for Redis, and Azure App Configuration.</p>
 </li>
 <li>
-<p>App Configuration</p>
+<p>Rearchitected Spring module dependencies to remove excess layers and entanglement.</p>
+</li>
+<li>
+<p>Managed Identity support for Azure App Configuration, Event Hubs, Service Bus, Cosmos DB, Key Vault, Storage Blob, and Storage Queue.</p>
+</li>
+<li>
+<p>Continued support for authentication methods in the underlying Azure SDK from our Spring libraries, such as SAS token and token credential authentication with Service Bus and Event Hubs.</p>
+</li>
+<li>
+<p><a href="https://docs.microsoft.com/en-us/java/api/overview/azure/identity-readme?view=azure-java-stable&amp;preserve-view=true#defaultazurecredential">Credential chain</a> is now enabled by default, enabling applications to obtain credentials from application properties, environment variables, managed identity, IDEs, and so on.</p>
+</li>
+<li>
+<p>Granular access control at the resource level (such as Service Bus queue) to enable better security governance and adherence to IT policies.</p>
+</li>
+<li>
+<p>More options exposed in a Spring-idiomatic way through significantly improved auto-configuration coverage of Azure SDK clients for both synchronous and asynchronous scenarios.</p>
+</li>
+<li>
+<p>Added health indicators for Azure App Configuration, Event Hubs, Cosmos DB, Key Vault, Storage Blob, Storage Queue, and Storage File.</p>
+</li>
+<li>
+<p>Spring Cloud Sleuth support for all HTTP-based Azure SDKs.</p>
 </li>
 </ul>
-</div>
-<div class="paragraph">
-<p>Our journey does end here and over time we will bring even more Azure services into the fold.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="untethered-and-unrestrained"><a class="anchor" href="#untethered-and-unrestrained"></a><a class="link" href="#untethered-and-unrestrained">2.4. Untethered and Unrestrained</a></h3>
-<div class="paragraph">
-<p>One feedback that we consistently hear is our Spring modules are unnecessarily stacked on top of too many layers of dependencies, which has prevented broader adoption. As an example, all of our early Spring modules rely on Spring Boot, and many of our customers are running Spring MVC apps in Tomcat, leveraging nothing but Spring Data, as an example, to communicate with data services. We now realize the flaw in our original design, and have rearchitected our Spring module dependencies from the ground up, untethered from layers of excess and entanglement.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="more-control-and-secure"><a class="anchor" href="#more-control-and-secure"></a><a class="link" href="#more-control-and-secure">2.5. More Control and Secure</a></h3>
-<div class="paragraph">
-<p>At the heart of every real-world application, is identity and secret management. Support for managed identity has become an Azure fundamental that are getting mandated as a security baseline at individual services. We believe aligning on those guidelines will also benefit Spring developers at large, and have added Managed Identity support for App Configuration, Event Hub, Service Bus, Cosmos, Key Vault, Storage Blob, and Storage Queue. This enables building credential-free applications, which is a pattern that has picked up tremendous momentum both at Microsoft and in the community. In addition to Managed Identity, you can use any authentication methods supported in the underlying Azure SDK from our Spring libraries. For instance, you use SAS token and token credential to authenticate with Service Bus and Event Hubs. <a href="https://docs.microsoft.com/java/api/overview/azure/identity-readme?view=azure-java-stable#defaultazurecredential">Credential chain</a> is now enabled by default, allowing applications to obtain credentials from application properties, environment variables, managed identity, IDEs, etc. Lastly providing granular level access control at the resource level (i.e.: Service Bus queue), is often of paramount importance when it comes to meeting the needs of our enterprise customers. We’ve now unlocked these controls to our customers for better security governance and adherence to IT policies.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="more-options-exposed-in-a-spring-idiomatic-way"><a class="anchor" href="#more-options-exposed-in-a-spring-idiomatic-way"></a><a class="link" href="#more-options-exposed-in-a-spring-idiomatic-way">2.6. More Options Exposed in a Spring Idiomatic Way</a></h3>
-<div class="paragraph">
-<p>Spring developers have long enjoyed the convenience of defining client options in application configuration files. We certainly do not want to take that privilege away and burden Spring developers with setting options via client objects. To that end, we’ve significantly improved autoconfiguration coverage of Azure SDK clients for both synchronous and asynchronous scenarios.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="more-production-ready"><a class="anchor" href="#more-production-ready"></a><a class="link" href="#more-production-ready">2.7. More Production Ready</a></h3>
-<div class="paragraph">
-<p>Lastly all the above would be in vain if we do not have enough feature coverage to support our customers in production. Many things come to my mind to make an application production-ready, but observability often arrives at the top. We’ve added health indicators for App Configuration, Event Hubs, Cosmos, Key Vault, Storage Blob, Storage Queue, Storage File, as well as Spring Cloud Sleuth support for all HTTP-based Azure SDKs. As an example, you now can prob if storage blob is up or down via Spring Boot actuator endpoint, as well as track dependencies and latencies going from your application to Cosmos DB.</p>
-</div>
 </div>
 </div>
 </div>
@@ -458,7 +424,7 @@ To learn how to migrate to 4.0, please check <a href="appendix.html#migration-gu
     &lt;dependency&gt;
       &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
       &lt;artifactId&gt;spring-cloud-azure-dependencies&lt;/artifactId&gt;
-      &lt;version&gt;version&lt;/version&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+      &lt;version&gt;${spring.cloud.azure.version}&lt;/version&gt; <i class="conum" data-value="1"></i><b>(1)</b>
       &lt;type&gt;pom&lt;/type&gt;
       &lt;scope&gt;import&lt;/scope&gt;
     &lt;/dependency&gt;
@@ -1581,7 +1547,7 @@ private Resource storageFileResource;</code></pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="get-a-resource-with-resourceloader"><a class="anchor" href="#get-a-resource-with-resourceloader"></a><a class="link" href="#get-a-resource-with-resourceloader">Get a Resource with ResourceLoader</a></h5>
+<h5 id="get-a-resource-with-resourceloader"><a class="anchor" href="#get-a-resource-with-resourceloader"></a><a class="link" href="#get-a-resource-with-resourceloader">Get a resource with ResourceLoader</a></h5>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Autowired
@@ -1912,13 +1878,13 @@ This method can not satisfy requirement like <code>spring.datasource-url</code>.
 <div class="ulist">
 <ul>
 <li>
-<p>Please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the <a href="https://docs.microsoft.com/azure/active-directory/develop/app-objects-and-service-principals#service-principal-object">security principal</a> has been granted the sufficient permission to access the Azure Key Vault Secrets.</p>
+<p>See <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the <a href="https://docs.microsoft.com/azure/active-directory/develop/app-objects-and-service-principals#service-principal-object">security principal</a> has been granted the sufficient permission to access the Azure Key Vault Secrets.</p>
 </li>
 <li>
-<p>If common properties like <code>client</code>, <code>credential</code>, <code>profile</code>, <code>proxy</code>, <code>retry</code> aren&#8217;t configured in <code>spring.cloud.azure.keyvault.secret.property-sources[].xxx</code>, <code>spring.cloud.azure.xxx</code> will be used. Please refer to <a href="index.html#configuration">Configuration</a> to get more information about these common properties.</p>
+<p>If common properties like <code>client</code>, <code>credential</code>, <code>profile</code>, <code>proxy</code>, <code>retry</code> aren&#8217;t configured in <code>spring.cloud.azure.keyvault.secret.property-sources[].xxx</code>, <code>spring.cloud.azure.xxx</code> will be used. See <a href="index.html#configuration">Configuration</a> to get more information about these common properties.</p>
 </li>
 <li>
-<p>Please refer to <a href="appendix.html#_configuration_properties">Configuration Properties</a> to get more information about nested properties.</p>
+<p>See <a href="appendix.html#_configuration_properties">Configuration Properties</a> to get more information about nested properties.</p>
 </li>
 </ul>
 </div>
@@ -2023,7 +1989,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.credential.managed-identity-enabled</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable managed identity.</p></td>
 </tr>
 <tr>
@@ -2592,7 +2558,7 @@ public class RoleController {
 <pre>spring:
   cloud:
     azure:
-      active-directory
+      active-directory:
         redirect-uri-template: ${REDIRECT-URI-TEMPLATE}</pre>
 </div>
 </div>
@@ -3759,7 +3725,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_URL</code>, then <strong>Save</strong>.</p>
 </li>
 <li>
-<p>Step 5: Select <strong>Manifest</strong> on your left, and then paste the below json segment into <code>appRoles</code> array,
+<p>Step 5: Select <strong>Manifest</strong> on your left, and then paste the following json segment into <code>appRoles</code> array,
 record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_URL</code>, record the value of the app role as your <code>WEB_API_A_ROLE_VALUE</code>, then <strong>save</strong>.</p>
 </li>
 </ul>
@@ -3881,7 +3847,7 @@ record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_UR
 <div class="ulist">
 <ul>
 <li>
-<p>Step 11: Please refer to <strong>Accessing a resource server</strong> section to write your <code>WebApiA</code> Java code.</p>
+<p>Step 11: See <strong>Accessing a resource server</strong> section to write your <code>WebApiA</code> Java code.</p>
 </li>
 <li>
 <p>Step 12: Build and test your app</p>
@@ -4166,7 +4132,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 <div class="sect3">
 <h4 id="samples-9"><a class="anchor" href="#samples-9"></a><a class="link" href="#samples-9">12.2.4. Samples</a></h4>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/aad/spring-cloud-azure-starter-active-directory-b2c">spring-cloud-azure-starter-active-directory-b2c samples</a> for more details.</p>
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/aad/spring-cloud-azure-starter-active-directory-b2c">spring-cloud-azure-starter-active-directory-b2c samples</a> for more details.</p>
 </div>
 </div>
 </div>
@@ -4176,7 +4142,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 <h2 id="spring-integration-support"><a class="anchor" href="#spring-integration-support"></a><a class="link" href="#spring-integration-support">13. Spring Integration Support</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Spring Integration Extension for Azure provides Spring Integration adapters for the various services provided by the <a href="https://github.com/Azure/azure-sdk-for-java/">Azure SDK for Java</a>. We provide Spring Integration support for these Azure services: Event Hubs, Service Bus, Storage Queue. Below is a list of supported adapters:</p>
+<p>Spring Integration Extension for Azure provides Spring Integration adapters for the various services provided by the <a href="https://github.com/Azure/azure-sdk-for-java/">Azure SDK for Java</a>. We provide Spring Integration support for these Azure services: Event Hubs, Service Bus, Storage Queue. The following is a list of supported adapters:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -4209,7 +4175,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </td>
 <td class="content">
 RxJava support APIs are dropped from version 4.0.0.
-Please refer to Javadoc for details.
+See Javadoc for details.
 </td>
 </tr>
 </table>
@@ -4229,7 +4195,7 @@ being processed manually. Event Hubs SDK provides the function to store such off
 from most heavy-loaded consumers to achieve the workload balancing.</p>
 </div>
 <div class="paragraph">
-<p>To specify the load balancing strategy, developers can use <code>EventHubsContainerProperties</code> for the configuration. See <a href="#receive-from-eh">the below section</a> for an example of how to configure <code>EventHubsContainerProperties</code>.</p>
+<p>To specify the load balancing strategy, developers can use <code>EventHubsContainerProperties</code> for the configuration. See <a href="#receive-from-eh">the following section</a> for an example of how to configure <code>EventHubsContainerProperties</code>.</p>
 </div>
 </div>
 <div class="sect4">
@@ -4256,7 +4222,7 @@ The checkpoint header only exists when <strong>MANUAL</strong> checkpoint mode i
 </div>
 <div class="paragraph">
 <p>The batch consuming policy can be specified by properties of <code>max-size</code> and <code>max-wait-time</code>, where <code>max-size</code> is a necessary property while <code>max-wait-time</code> is optional.
-To specify the batch consuming strategy, developers can use <code>EventHubsContainerProperties</code> for the configuration. See <a href="#receive-from-eh">the below section</a> for an example of how to configure <code>EventHubsContainerProperties</code>.</p>
+To specify the batch consuming strategy, developers can use <code>EventHubsContainerProperties</code> for the configuration. See <a href="#receive-from-eh">the following section</a> for an example of how to configure <code>EventHubsContainerProperties</code>.</p>
 </div>
 </div>
 </div>
@@ -4288,7 +4254,7 @@ To specify the batch consuming strategy, developers can use <code>EventHubsConta
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, see <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 </td>
 </tr>
 </table>
@@ -4404,7 +4370,7 @@ From version 4.0.0, when the property of <strong>spring.cloud.azure.eventhubs.pr
 <h5 id="event-hub-processor-configuration-properties"><a class="anchor" href="#event-hub-processor-configuration-properties"></a><a class="link" href="#event-hub-processor-configuration-properties">Event Hub Processor Configuration Properties</a></h5>
 <div class="paragraph">
 <p>The <code>EventHubsInboundChannelAdapter</code> uses the <code>EventProcessorClient</code> to consume messages from an event hub, to configure the overall properties of an <code>EventProcessorClient</code>,
-developers can use <code>EventHubsContainerProperties</code> for the configuration. See <a href="#receive-from-eh">the below section</a> about how to work with <code>EventHubsInboundChannelAdapter</code>.</p>
+developers can use <code>EventHubsContainerProperties</code> for the configuration. See <a href="#receive-from-eh">the following section</a> about how to work with <code>EventHubsInboundChannelAdapter</code>.</p>
 </div>
 </div>
 </div>
@@ -4418,7 +4384,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as connection string, configure below properties in <code>application.yml</code>:</p>
+<p>For credentials as connection string, configure the following properties in <code>application.yml</code>:</p>
 </li>
 </ul>
 </div>
@@ -4439,7 +4405,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as managed identities, configure below properties in <code>application.yml</code>:</p>
+<p>For credentials as managed identities, configure the following properties in <code>application.yml</code>:</p>
 </li>
 </ul>
 </div>
@@ -4462,7 +4428,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as service principal, configure below properties in application.yml:</p>
+<p>For credentials as service principal, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -4736,7 +4702,7 @@ Message headers of partition key, enqueued time, offset and sequence number is n
 </table>
 </div>
 <div class="paragraph">
-<p>When the batch-consumer mode is enabled, the specific headers of batched messages are listed as below, which contains a list of values from each single Event Hubs event.</p>
+<p>When the batch-consumer mode is enabled, the specific headers of batched messages are listed the following, which contains a list of values from each single Event Hubs event.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 23. Mapping between Event Hubs Message / Event Properties and Spring Message Headers in Batch Listener Mode</caption>
@@ -4810,7 +4776,7 @@ When publish messages, all the above batch headers will be removed from the mess
 <div class="sect3">
 <h4 id="samples-10"><a class="anchor" href="#samples-10"></a><a class="link" href="#samples-10">13.1.5. Samples</a></h4>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/eventhubs/spring-cloud-azure-starter-integration-eventhubs/eventhubs-integration">azure-spring-boot-samples</a> for more details.</p>
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/eventhubs/spring-cloud-azure-starter-integration-eventhubs/eventhubs-integration">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
@@ -4832,7 +4798,7 @@ When publish messages, all the above batch headers will be removed from the mess
 </td>
 <td class="content">
 CompletableFuture support APIs have been deprecated from version 2.10.0, and is replaced by Reactor Core from version 4.0.0.
-Please refer to Javadoc for details.
+See Javadoc for details.
 </td>
 </tr>
 </table>
@@ -4866,7 +4832,7 @@ Please refer to Javadoc for details.
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, see <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 </td>
 </tr>
 </table>
@@ -4913,7 +4879,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <h5 id="service-bus-processor-configuration-properties"><a class="anchor" href="#service-bus-processor-configuration-properties"></a><a class="link" href="#service-bus-processor-configuration-properties">Service Bus Processor Configuration Properties</a></h5>
 <div class="paragraph">
 <p>The <code>ServiceBusInboundChannelAdapter</code> uses the <code>ServiceBusProcessorClient</code> to consume messages, to configure the overall properties of an <code>ServiceBusProcessorClient</code>,
-developers can use <code>ServiceBusContainerProperties</code> for the configuration. See <a href="#receive-from-sb">the below section</a> about how to work with <code>ServiceBusInboundChannelAdapter</code>.</p>
+developers can use <code>ServiceBusContainerProperties</code> for the configuration. See <a href="#receive-from-sb">the following section</a> about how to work with <code>ServiceBusInboundChannelAdapter</code>.</p>
 </div>
 </div>
 </div>
@@ -4927,7 +4893,7 @@ developers can use <code>ServiceBusContainerProperties</code> for the configurat
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as connection string, configure below properties in application.yml:</p>
+<p>For credentials as connection string, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -4943,7 +4909,7 @@ developers can use <code>ServiceBusContainerProperties</code> for the configurat
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as managed identities, configure below properties in application.yml:</p>
+<p>For credentials as managed identities, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -4964,7 +4930,7 @@ developers can use <code>ServiceBusContainerProperties</code> for the configurat
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as service principal, configure below properties in application.yml:</p>
+<p>For credentials as service principal, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -5401,7 +5367,7 @@ the value of the session id will eventually be used to overwrite the value of th
 <div class="sect3">
 <h4 id="samples-11"><a class="anchor" href="#samples-11"></a><a class="link" href="#samples-11">13.2.5. Samples</a></h4>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/servicebus/spring-cloud-azure-starter-integration-servicebus">azure-spring-boot-samples</a> for more details.</p>
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/servicebus/spring-cloud-azure-starter-integration-servicebus">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
@@ -5441,7 +5407,7 @@ the value of the session id will eventually be used to overwrite the value of th
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, see <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 </td>
 </tr>
 </table>
@@ -5515,7 +5481,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as connection string, configure below properties in application.yml:</p>
+<p>For credentials as connection string, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -5532,7 +5498,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as managed identities, configure below properties in application.yml:</p>
+<p>For credentials as managed identities, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -5554,7 +5520,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as service principal, configure below properties in application.yml:</p>
+<p>For credentials as service principal, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -5690,7 +5656,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <div class="sect3">
 <h4 id="samples-12"><a class="anchor" href="#samples-12"></a><a class="link" href="#samples-12">13.3.5. Samples</a></h4>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/storage/spring-cloud-azure-starter-integration-storage-queue">azure-spring-boot-samples</a> for more details.</p>
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/storage/spring-cloud-azure-starter-integration-storage-queue">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
@@ -5814,7 +5780,7 @@ The checkpoint header only exists when <strong>MANUAL</strong> checkpoint mode i
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, See <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 </td>
 </tr>
 </table>
@@ -5874,7 +5840,7 @@ Common Azure Service SDK configuration options are configurable for the Spring C
 </table>
 </div>
 <div class="paragraph">
-<p>The binder also supports <a href="index.html#spring-cloud-azure-resourcemanager">Spring Could Azure Resource Manager</a> by default. To learn about how to retrieve the connection string with security principals that are not granted with <code>Data</code> related roles, please refer to the <a href="index.html#resource-manager-basic-usage">resource manager example</a> for details.</p>
+<p>The binder also supports <a href="index.html#spring-cloud-azure-resourcemanager">Spring Could Azure Resource Manager</a> by default. To learn about how to retrieve the connection string with security principals that are not granted with <code>Data</code> related roles, see the <a href="index.html#resource-manager-basic-usage">resource manager example</a> for details.</p>
 </div>
 </div>
 <div class="sect4">
@@ -5947,7 +5913,7 @@ Common Azure Service SDK configuration options are configurable for Storage Blob
 <div class="sect4">
 <h5 id="azure-event-hubs-binding-configuration-properties"><a class="anchor" href="#azure-event-hubs-binding-configuration-properties"></a><a class="link" href="#azure-event-hubs-binding-configuration-properties">Azure Event Hubs Binding Configuration Properties</a></h5>
 <div class="paragraph">
-<p>Below options are divided into four sections: Consumer Properties, Advanced Consumer
+<p>The following options are divided into four sections: Consumer Properties, Advanced Consumer
 Configurations, Producer Properties and Advanced Producer Configurations.</p>
 </div>
 <div class="sect5">
@@ -6117,7 +6083,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as connection string, configure below properties in application.yml:</p>
+<p>For credentials as connection string, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -6153,7 +6119,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as service principal, configure below properties in application.yml:</p>
+<p>For credentials as service principal, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -6193,7 +6159,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as managed identites, configure below properties in application.yml:</p>
+<p>For credentials as managed identites, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -6305,7 +6271,7 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 <p>Step2. Define supplier and consumer.</p>
 </div>
 <div class="paragraph">
-<p>For checkpointing mode as <code>BATCH</code>, you can use below code to send messages and consume in batches.</p>
+<p>For checkpointing mode as <code>BATCH</code>, you can use the following code to send messages and consume in batches.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -6334,7 +6300,7 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 </div>
 </div>
 <div class="paragraph">
-<p>For checkpointing mode as <code>MANUAL</code>, you can use below code to send messages and consume/checkpoint in batches.</p>
+<p>For checkpointing mode as <code>MANUAL</code>, you can use the following code to send messages and consume/checkpoint in batches.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -6374,7 +6340,7 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-In the batch-consuming mode, the default content type of Spring Cloud Stream binder is <code>application/json</code>, so make sure the message payload is aligned with the content type. For example, when using the default content type of <code>application/json</code> to receive messages with <code>String</code> payload, the payload should be JSON String, surrounded with double quotes for the original String text. While for <code>text/plain</code> content type, it can be a <code>String</code> object directly. For more details, please refer to the official doc of <a href="https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#content-type-management">Spring Cloud Stream Content Type Negotiation</a>.
+In the batch-consuming mode, the default content type of Spring Cloud Stream binder is <code>application/json</code>, so make sure the message payload is aligned with the content type. For example, when using the default content type of <code>application/json</code> to receive messages with <code>String</code> payload, the payload should be JSON String, surrounded with double quotes for the original String text. While for <code>text/plain</code> content type, it can be a <code>String</code> object directly. For more details, see the official doc of <a href="https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#content-type-management">Spring Cloud Stream Content Type Negotiation</a>.
 </td>
 </tr>
 </table>
@@ -6460,7 +6426,7 @@ public void producerError(Message&lt;?&gt; message) {
 <p>Connection to multiple Event Hubs namespaces is also supported by using multiple binders.This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
 </div>
 <div class="paragraph">
-<p>Step 1. To use multiple binders of EventHubs, we need to configure below properties in application.yml</p>
+<p>Step 1. To use multiple binders of EventHubs, we need to configure the following properties in application.yml</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -6576,7 +6542,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
 <div class="sect4">
 <h5 id="resource-provision"><a class="anchor" href="#resource-provision"></a><a class="link" href="#resource-provision">Resource Provision</a></h5>
 <div class="paragraph">
-<p>Event Hubs binder supports provisioning of event hub and consumer group, users could use below properties to enable provisioning.</p>
+<p>Event Hubs binder supports provisioning of event hub and consumer group, users could use the following properties to enable provisioning.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -6597,7 +6563,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
 <div class="sect3">
 <h4 id="samples-13"><a class="anchor" href="#samples-13"></a><a class="link" href="#samples-13">14.1.5. Samples</a></h4>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/eventhubs/spring-cloud-azure-stream-binder-eventhubs">azure-spring-boot-samples</a> for more details.</p>
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/eventhubs/spring-cloud-azure-stream-binder-eventhubs">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
@@ -6663,7 +6629,7 @@ This binder relies on <code>Subscription</code> of a topic to act as a consumer 
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, see <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 </td>
 </tr>
 </table>
@@ -6718,13 +6684,13 @@ Common Azure Service SDK configuration options are configurable for the Spring C
 </table>
 </div>
 <div class="paragraph">
-<p>The binder also supports <a href="index.html#spring-cloud-azure-resourcemanager">Spring Could Azure Resource Manager</a> by default. To learn about how to retrieve the connection string with security principals that are not granted with <code>Data</code> related roles, please refer to the <a href="index.html#resource-manager-basic-usage">resource manager example</a> for details.</p>
+<p>The binder also supports <a href="index.html#spring-cloud-azure-resourcemanager">Spring Could Azure Resource Manager</a> by default. To learn about how to retrieve the connection string with security principals that are not granted with <code>Data</code> related roles, see the <a href="index.html#resource-manager-basic-usage">resource manager example</a> for details.</p>
 </div>
 </div>
 <div class="sect4">
 <h5 id="azure-service-bus-binding-configuration-properties"><a class="anchor" href="#azure-service-bus-binding-configuration-properties"></a><a class="link" href="#azure-service-bus-binding-configuration-properties">Azure Service Bus Binding Configuration Properties</a></h5>
 <div class="paragraph">
-<p>Below options are divided into four sections: Consumer Properties, Advanced Consumer
+<p>The following options are divided into four sections: Consumer Properties, Advanced Consumer
 Configurations, Producer Properties and Advanced Producer Configurations.</p>
 </div>
 <div class="sect5">
@@ -6888,7 +6854,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as connection string, configure below properties in application.yml:</p>
+<p>For credentials as connection string, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -6905,7 +6871,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
       bindings:
         consume-in-0:
           destination: ${SERVICEBUS_ENTITY_NAME}
-          # If you use Service Bus Topic, please add below configuration
+          # If you use Service Bus Topic, please add the following configuration
           # group: ${SUBSCRIPTION_NAME}
         supply-out-0:
           destination: ${SERVICEBUS_ENTITY_NAME_SAME_AS_ABOVE}
@@ -6922,7 +6888,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as service principal, configure below properties in application.yml:</p>
+<p>For credentials as service principal, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -6944,7 +6910,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
       bindings:
         consume-in-0:
           destination: ${SERVICEBUS_ENTITY_NAME}
-          # If you use Service Bus Topic, please add below configuration
+          # If you use Service Bus Topic, please add the following configuration
           # group: ${SUBSCRIPTION_NAME}
         supply-out-0:
           destination: ${SERVICEBUS_ENTITY_NAME_SAME_AS_ABOVE}
@@ -6961,7 +6927,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as managed identities, configure below properties in application.yml:</p>
+<p>For credentials as managed identities, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -6981,7 +6947,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
       bindings:
         consume-in-0:
           destination: ${SERVICEBUS_ENTITY_NAME}
-          # If you use Service Bus Topic, please add below configuration
+          # If you use Service Bus Topic, please add the following configuration
           # group: ${SUBSCRIPTION_NAME}
         supply-out-0:
           destination: ${SERVICEBUS_ENTITY_NAME_SAME_AS_ABOVE}
@@ -7178,7 +7144,7 @@ When setting the partiton key, the priority of message header is higher than Spr
 <p>Connection to multiple Service Bus namespaces is also supported by using multiple binders. This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
 </div>
 <div class="paragraph">
-<p>Step 1. To use multiple binders of ServiceBus, we need to configure below properties in application.yml</p>
+<p>Step 1. To use multiple binders of ServiceBus, we need to configure the following properties in application.yml</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7288,7 +7254,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
 <div class="sect4">
 <h5 id="resource-provision-2"><a class="anchor" href="#resource-provision-2"></a><a class="link" href="#resource-provision-2">Resource Provision</a></h5>
 <div class="paragraph">
-<p>Service bus binder supports provisioning of queue, topic and subscription, users could use below properties to enable provisioning.</p>
+<p>Service bus binder supports provisioning of queue, topic and subscription, users could use the following properties to enable provisioning.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7315,7 +7281,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
 <div class="sect3">
 <h4 id="samples-14"><a class="anchor" href="#samples-14"></a><a class="link" href="#samples-14">14.2.5. Samples</a></h4>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/servicebus/spring-cloud-azure-stream-binder-servicebus">azure-spring-boot-samples</a> for more details.</p>
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/servicebus/spring-cloud-azure-stream-binder-servicebus">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
@@ -7331,7 +7297,7 @@ Azure Service Bus connection string have to be provided which is to be parsed in
 <div class="sect2">
 <h3 id="dependency-setup-11"><a class="anchor" href="#dependency-setup-11"></a><a class="link" href="#dependency-setup-11">15.1. Dependency Setup</a></h3>
 <div class="paragraph">
-<p>Adding below dependencies if you want to migrate your Spring JMS application to use Azure Service Bus.</p>
+<p>Adding the following dependencies if you want to migrate your Spring JMS application to use Azure Service Bus.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7466,8 +7432,8 @@ Azure Service Bus connection string have to be provided which is to be parsed in
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Spring JMS general configuration is omited for short.
-Please refer to <a href="https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/jms.html">Spring JMS Document</a> for more details.
+Spring JMS general configuration is omitted for short.
+See <a href="https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/jms.html">Spring JMS Document</a> for more details.
 </td>
 </tr>
 </table>
@@ -7481,7 +7447,7 @@ Please refer to <a href="https://docs.spring.io/spring-framework/docs/3.2.x/spri
 <p>The simplest way to connect to Service Bus for Spring JMS application is with the connection string.</p>
 </div>
 <div class="paragraph">
-<p>Add below properties and you are good to go.</p>
+<p>Add the following properties and you are good to go.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7510,7 +7476,7 @@ The default enabled <code>ConnectionFactory</code> is the <code>CachingConnectio
 <div class="sect2">
 <h3 id="samples-15"><a class="anchor" href="#samples-15"></a><a class="link" href="#samples-15">15.4. Samples</a></h3>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1">azure-spring-boot-samples</a> for more details.</p>
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
@@ -7524,7 +7490,7 @@ The default enabled <code>ConnectionFactory</code> is the <code>CachingConnectio
 <div class="sect2">
 <h3 id="dependency-setup-12"><a class="anchor" href="#dependency-setup-12"></a><a class="link" href="#dependency-setup-12">16.1. Dependency Setup</a></h3>
 <div class="paragraph">
-<p>Adding below dependencies if you want to migrate your Apache Kafka application to use Azure Event Hubs for Kafka.</p>
+<p>Add the following dependencies if you want to migrate your Apache Kafka application to use Azure Event Hubs for Kafka.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7602,7 +7568,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix <code>spring.cloud.azure</code>. Please refer to <a href="index.html#authentication">Authentication</a> for more details.
+Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix <code>spring.cloud.azure</code>. For more information, see the <a href="index.html#authentication">Authentication</a> section.
 </td>
 </tr>
 </table>
@@ -7616,7 +7582,7 @@ Authentication information is also required for authenticating for Azure Resourc
 <p>The simplest way to connect to Event Hubs for Kafka is with the connection string.</p>
 </div>
 <div class="paragraph">
-<p>Add below properties and you are good to go.</p>
+<p>Add the following properties and you are good to go.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7634,7 +7600,7 @@ Authentication information is also required for authenticating for Azure Resourc
 <p>If you don&#8217;t want to configure connection string in your application, it&#8217;s also possible to use Azure Resource Manager to retrieve the connection string. And you could use credentials stored in Azure CLI or other local development tool, like Visual Studio Code or Intellij IDEA to authenticate with Azure Resource Manager. Or Managed Identity if your application is deployed to Azure Cloud. Just make sure the principal have sufficient permission to read resource metadata.</p>
 </div>
 <div class="paragraph">
-<p>Add below properties and you are good to go.</p>
+<p>Add the following properties and you are good to go.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7654,7 +7620,7 @@ Authentication information is also required for authenticating for Azure Resourc
 <div class="sect2">
 <h3 id="samples-16"><a class="anchor" href="#samples-16"></a><a class="link" href="#samples-16">16.4. Samples</a></h3>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1">azure-spring-boot-samples</a> for more details.</p>
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
@@ -7668,7 +7634,7 @@ Authentication information is also required for authenticating for Azure Resourc
 <div class="sect2">
 <h3 id="dependency-setup-13"><a class="anchor" href="#dependency-setup-13"></a><a class="link" href="#dependency-setup-13">17.1. Dependency Setup</a></h3>
 <div class="paragraph">
-<p>Adding below dependencies if you want to use the Spring Cloud Azure Redis support to your Spring Boot application using Redis.</p>
+<p>Add the following dependencies if you want to use the Spring Cloud Azure Redis support to your Spring Boot application using Redis.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7718,7 +7684,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.redis</strong>.enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Cache for Redis instance name.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A value that indicates whether the Azure Cache for Redis is enabled.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
 </tr>
@@ -7749,7 +7715,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix <code>spring.cloud.azure</code>. Please refer to <a href="index.html#authentication">Authentication</a> for more details.
+Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix <code>spring.cloud.azure</code>. For more information, see the <a href="index.html#authentication">Authentication</a> section.
 </td>
 </tr>
 </table>
@@ -7758,7 +7724,7 @@ Authentication information is also required for authenticating for Azure Resourc
 <div class="sect2">
 <h3 id="basic-usage-13"><a class="anchor" href="#basic-usage-13"></a><a class="link" href="#basic-usage-13">17.3. Basic Usage</a></h3>
 <div class="paragraph">
-<p>Add below properties and you are good to go.</p>
+<p>Add the following properties and you are good to go.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7770,16 +7736,16 @@ spring.cloud.azure.redis.resource.resource-group=${AZURE_CACHE_REDIS_RESOURCE_GR
 <div class="sect2">
 <h3 id="samples-17"><a class="anchor" href="#samples-17"></a><a class="link" href="#samples-17">17.4. Samples</a></h3>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1">azure-spring-boot-samples</a> for more details.</p>
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="spring-cloud-azure-resourcemanager"><a class="anchor" href="#spring-cloud-azure-resourcemanager"></a><a class="link" href="#spring-cloud-azure-resourcemanager">18. Resource Manager</a></h2>
+<h2 id="spring-cloud-azure-resourcemanager"><a class="anchor" href="#spring-cloud-azure-resourcemanager"></a><a class="link" href="#spring-cloud-azure-resourcemanager">18. Azure Resource Manager</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Azure Resource Manager (ARM) is the deployment and management service for Azure. It provides a management layer that enables you to create, update, and delete resources in your Azure account. Spring Cloud Azure Resourcemanger can help provision resources or retrieve resource metadata.</p>
+<p>Azure Resource Manager (ARM) is the deployment and management service for Azure. It provides a management layer that enables you to create, update, and delete resources in your Azure account. Spring Cloud Azure Resource Manager can help provision resources or retrieve resource metadata.</p>
 </div>
 <div class="sect2">
 <h3 id="dependency-setup-14"><a class="anchor" href="#dependency-setup-14"></a><a class="link" href="#dependency-setup-14">18.1. Dependency Setup</a></h3>
@@ -7881,11 +7847,11 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <div class="sect2">
 <h3 id="resource-manager-basic-usage"><a class="anchor" href="#resource-manager-basic-usage"></a><a class="link" href="#resource-manager-basic-usage">18.3. Basic Usage</a></h3>
 <div class="paragraph">
-<p>Spring Cloud Azure Resource Manager can work together with specific Spring Cloud Azure starters to retrieve connection information, such as connection strings, to connect to Azure services. It can also together with <code>spring-cloud-azure-starter</code> and third-party libraries to retrieve metadata like username/password, to complete authentication, such as: <a href="#kafka-support">Kafka Support</a>, <a href="#redis-support">Redis Support</a>.</p>
+<p>Spring Cloud Azure Resource Manager can work together with specific Spring Cloud Azure starters to retrieve connection information, such as connection strings, to connect to Azure services. It can also work together with <code>spring-cloud-azure-starter</code> and third-party libraries to retrieve metadata like username/password, and to complete authentication, For more information, see the <a href="#kafka-support">Kafka Support</a> and <a href="#redis-support">Redis Support</a> sections.</p>
 </div>
 <div class="paragraph">
-<p>For example, to retrieve the connection string of an Azure Service, developers can use a service principal as the credential to authenticate and retrieve the connection string. The configuration is listed as below. The provided service principal should
-be assigned a role of <code>Contributor</code> of the associated namespace at least. Please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the principal has been granted the sufficient permission to access the Azure resource.</p>
+<p>For example, to retrieve the connection string of an Azure Service, developers can use a service principal as the credential to authenticate and retrieve the connection string. The configuration is listed the follows. The provided service principal should
+be assigned a role of <code>Contributor</code> of the associated namespace at least. See <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the principal has been granted the sufficient permission to access the Azure resource.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7908,7 +7874,7 @@ be assigned a role of <code>Contributor</code> of the associated namespace at le
 <div class="sect2">
 <h3 id="samples-18"><a class="anchor" href="#samples-18"></a><a class="link" href="#samples-18">18.4. Samples</a></h3>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1">azure-spring-boot-samples</a> for more details.</p>
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>

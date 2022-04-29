@@ -180,7 +180,7 @@ window.onload = function() {
 <h2 id="_spring_integration_support"><a class="link" href="#_spring_integration_support">Spring Integration Support</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Spring Integration Extension for Azure provides Spring Integration adapters for the various services provided by the <a href="https://github.com/Azure/azure-sdk-for-java/">Azure SDK for Java</a>. We provide Spring Integration support for these Azure services: Event Hubs, Service Bus, Storage Queue. Below is a list of supported adapters:</p>
+<p>Spring Integration Extension for Azure provides Spring Integration adapters for the various services provided by the <a href="https://github.com/Azure/azure-sdk-for-java/">Azure SDK for Java</a>. We provide Spring Integration support for these Azure services: Event Hubs, Service Bus, Storage Queue. The following is a list of supported adapters:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -213,7 +213,7 @@ window.onload = function() {
 </td>
 <td class="content">
 RxJava support APIs are dropped from version 4.0.0.
-Please refer to Javadoc for details.
+See Javadoc for details.
 </td>
 </tr>
 </table>
@@ -233,7 +233,7 @@ being processed manually. Event Hubs SDK provides the function to store such off
 from most heavy-loaded consumers to achieve the workload balancing.</p>
 </div>
 <div class="paragraph">
-<p>To specify the load balancing strategy, developers can use <code>EventHubsContainerProperties</code> for the configuration. See <a href="#receive-from-eh">the below section</a> for an example of how to configure <code>EventHubsContainerProperties</code>.</p>
+<p>To specify the load balancing strategy, developers can use <code>EventHubsContainerProperties</code> for the configuration. See <a href="#receive-from-eh">the following section</a> for an example of how to configure <code>EventHubsContainerProperties</code>.</p>
 </div>
 </div>
 <div class="sect4">
@@ -260,7 +260,7 @@ The checkpoint header only exists when <strong>MANUAL</strong> checkpoint mode i
 </div>
 <div class="paragraph">
 <p>The batch consuming policy can be specified by properties of <code>max-size</code> and <code>max-wait-time</code>, where <code>max-size</code> is a necessary property while <code>max-wait-time</code> is optional.
-To specify the batch consuming strategy, developers can use <code>EventHubsContainerProperties</code> for the configuration. See <a href="#receive-from-eh">the below section</a> for an example of how to configure <code>EventHubsContainerProperties</code>.</p>
+To specify the batch consuming strategy, developers can use <code>EventHubsContainerProperties</code> for the configuration. See <a href="#receive-from-eh">the following section</a> for an example of how to configure <code>EventHubsContainerProperties</code>.</p>
 </div>
 </div>
 </div>
@@ -292,7 +292,7 @@ To specify the batch consuming strategy, developers can use <code>EventHubsConta
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, see <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 </td>
 </tr>
 </table>
@@ -408,7 +408,7 @@ From version 4.0.0, when the property of <strong>spring.cloud.azure.eventhubs.pr
 <h5 id="_event_hub_processor_configuration_properties"><a class="link" href="#_event_hub_processor_configuration_properties">Event Hub Processor Configuration Properties</a></h5>
 <div class="paragraph">
 <p>The <code>EventHubsInboundChannelAdapter</code> uses the <code>EventProcessorClient</code> to consume messages from an event hub, to configure the overall properties of an <code>EventProcessorClient</code>,
-developers can use <code>EventHubsContainerProperties</code> for the configuration. See <a href="#receive-from-eh">the below section</a> about how to work with <code>EventHubsInboundChannelAdapter</code>.</p>
+developers can use <code>EventHubsContainerProperties</code> for the configuration. See <a href="#receive-from-eh">the following section</a> about how to work with <code>EventHubsInboundChannelAdapter</code>.</p>
 </div>
 </div>
 </div>
@@ -422,7 +422,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as connection string, configure below properties in <code>application.yml</code>:</p>
+<p>For credentials as connection string, configure the following properties in <code>application.yml</code>:</p>
 </li>
 </ul>
 </div>
@@ -443,7 +443,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as managed identities, configure below properties in <code>application.yml</code>:</p>
+<p>For credentials as managed identities, configure the following properties in <code>application.yml</code>:</p>
 </li>
 </ul>
 </div>
@@ -466,7 +466,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as service principal, configure below properties in application.yml:</p>
+<p>For credentials as service principal, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -740,7 +740,7 @@ Message headers of partition key, enqueued time, offset and sequence number is n
 </table>
 </div>
 <div class="paragraph">
-<p>When the batch-consumer mode is enabled, the specific headers of batched messages are listed as below, which contains a list of values from each single Event Hubs event.</p>
+<p>When the batch-consumer mode is enabled, the specific headers of batched messages are listed the following, which contains a list of values from each single Event Hubs event.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 4. Mapping between Event Hubs Message / Event Properties and Spring Message Headers in Batch Listener Mode</caption>
@@ -814,7 +814,7 @@ When publish messages, all the above batch headers will be removed from the mess
 <div class="sect3">
 <h4 id="_samples"><a class="link" href="#_samples">Samples</a></h4>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/eventhubs/spring-cloud-azure-starter-integration-eventhubs/eventhubs-integration">azure-spring-boot-samples</a> for more details.</p>
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/eventhubs/spring-cloud-azure-starter-integration-eventhubs/eventhubs-integration">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
@@ -836,7 +836,7 @@ When publish messages, all the above batch headers will be removed from the mess
 </td>
 <td class="content">
 CompletableFuture support APIs have been deprecated from version 2.10.0, and is replaced by Reactor Core from version 4.0.0.
-Please refer to Javadoc for details.
+See Javadoc for details.
 </td>
 </tr>
 </table>
@@ -870,7 +870,7 @@ Please refer to Javadoc for details.
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, see <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 </td>
 </tr>
 </table>
@@ -917,7 +917,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <h5 id="_service_bus_processor_configuration_properties"><a class="link" href="#_service_bus_processor_configuration_properties">Service Bus Processor Configuration Properties</a></h5>
 <div class="paragraph">
 <p>The <code>ServiceBusInboundChannelAdapter</code> uses the <code>ServiceBusProcessorClient</code> to consume messages, to configure the overall properties of an <code>ServiceBusProcessorClient</code>,
-developers can use <code>ServiceBusContainerProperties</code> for the configuration. See <a href="#receive-from-sb">the below section</a> about how to work with <code>ServiceBusInboundChannelAdapter</code>.</p>
+developers can use <code>ServiceBusContainerProperties</code> for the configuration. See <a href="#receive-from-sb">the following section</a> about how to work with <code>ServiceBusInboundChannelAdapter</code>.</p>
 </div>
 </div>
 </div>
@@ -931,7 +931,7 @@ developers can use <code>ServiceBusContainerProperties</code> for the configurat
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as connection string, configure below properties in application.yml:</p>
+<p>For credentials as connection string, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -947,7 +947,7 @@ developers can use <code>ServiceBusContainerProperties</code> for the configurat
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as managed identities, configure below properties in application.yml:</p>
+<p>For credentials as managed identities, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -968,7 +968,7 @@ developers can use <code>ServiceBusContainerProperties</code> for the configurat
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as service principal, configure below properties in application.yml:</p>
+<p>For credentials as service principal, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -1405,7 +1405,7 @@ the value of the session id will eventually be used to overwrite the value of th
 <div class="sect3">
 <h4 id="_samples_2"><a class="link" href="#_samples_2">Samples</a></h4>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/servicebus/spring-cloud-azure-starter-integration-servicebus">azure-spring-boot-samples</a> for more details.</p>
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/servicebus/spring-cloud-azure-starter-integration-servicebus">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
@@ -1445,7 +1445,7 @@ the value of the session id will eventually be used to overwrite the value of th
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, see <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
 </td>
 </tr>
 </table>
@@ -1519,7 +1519,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as connection string, configure below properties in application.yml:</p>
+<p>For credentials as connection string, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -1536,7 +1536,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as managed identities, configure below properties in application.yml:</p>
+<p>For credentials as managed identities, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -1558,7 +1558,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <div class="ulist">
 <ul>
 <li>
-<p>For credentials as service principal, configure below properties in application.yml:</p>
+<p>For credentials as service principal, configure the following properties in application.yml:</p>
 </li>
 </ul>
 </div>
@@ -1694,7 +1694,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <div class="sect3">
 <h4 id="_samples_3"><a class="link" href="#_samples_3">Samples</a></h4>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/storage/spring-cloud-azure-starter-integration-storage-queue">azure-spring-boot-samples</a> for more details.</p>
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1/storage/spring-cloud-azure-starter-integration-storage-queue">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>

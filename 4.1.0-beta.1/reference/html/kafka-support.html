@@ -186,7 +186,7 @@ window.onload = function() {
 <div class="sect2">
 <h3 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h3>
 <div class="paragraph">
-<p>Adding below dependencies if you want to migrate your Apache Kafka application to use Azure Event Hubs for Kafka.</p>
+<p>Add the following dependencies if you want to migrate your Apache Kafka application to use Azure Event Hubs for Kafka.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -264,7 +264,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix <code>spring.cloud.azure</code>. Please refer to <a href="index.html#authentication">Authentication</a> for more details.
+Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix <code>spring.cloud.azure</code>. For more information, see the <a href="index.html#authentication">Authentication</a> section.
 </td>
 </tr>
 </table>
@@ -278,7 +278,7 @@ Authentication information is also required for authenticating for Azure Resourc
 <p>The simplest way to connect to Event Hubs for Kafka is with the connection string.</p>
 </div>
 <div class="paragraph">
-<p>Add below properties and you are good to go.</p>
+<p>Add the following properties and you are good to go.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -296,7 +296,7 @@ Authentication information is also required for authenticating for Azure Resourc
 <p>If you don&#8217;t want to configure connection string in your application, it&#8217;s also possible to use Azure Resource Manager to retrieve the connection string. And you could use credentials stored in Azure CLI or other local development tool, like Visual Studio Code or Intellij IDEA to authenticate with Azure Resource Manager. Or Managed Identity if your application is deployed to Azure Cloud. Just make sure the principal have sufficient permission to read resource metadata.</p>
 </div>
 <div class="paragraph">
-<p>Add below properties and you are good to go.</p>
+<p>Add the following properties and you are good to go.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -316,7 +316,7 @@ Authentication information is also required for authenticating for Azure Resourc
 <div class="sect2">
 <h3 id="_samples"><a class="link" href="#_samples">Samples</a></h3>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1">azure-spring-boot-samples</a> for more details.</p>
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0-beta.1">azure-spring-boot-samples</a> for more details.</p>
 </div>
 </div>
 </div>
