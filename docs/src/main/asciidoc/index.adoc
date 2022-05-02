@@ -4,6 +4,7 @@
 (C) 2016-2021 the original authors.
 
 include::_attributes.adoc[]
+
 include::legal.adoc[]
 
 include::intro.adoc[]
@@ -20,10 +21,12 @@ include::authentication.adoc[]
 
 include::key-values.adoc[]
 
-include::health-indicator.adoc[]
+include::feature-management.adoc[]
 
 include::refresh.adoc[]
 
-include::feature-management.adoc[]
+include::health-indicator.adoc[]
+
+include::client-customization.adoc[]
 
 include::forMoreInfo.adoc[]
