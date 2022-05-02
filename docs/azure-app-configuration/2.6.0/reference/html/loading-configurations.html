@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Loading Configuration</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_loading_configuration">Loading Configuration</a>
+<ul class="sectlevel2">
+<li><a href="#_selecting_configurations">Selecting Configurations</a></li>
+<li><a href="#_spring_profiles">Spring Profiles</a></li>
+<li><a href="#_disabled_stores">Disabled Stores</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_loading_configuration"><a class="link" href="#_loading_configuration">Loading Configuration</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The library supports the loading of one or multiple App Configuration stores. This allows for complex configuration scenarios, such as loading of configurations from multiple stores at once or having fallbacks for added resilience. In the situation where a key is duplicated across multiple stores, loading all stores will result in the highest priority, last one wins, stores configuration being loaded. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].connection-string=[first-store-connection-string]
+spring.cloud.azure.appconfiguration.stores[1].connection-string=[second-store-connection-string]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example, if both the first and second stores have the same configuration, the configuration in the second store has the highest priority, last one wins.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Azure App Configuration settings can be used link any other Spring Configuration. See <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/features.html">Spring Boot Docs</a> or <a href="https://docs.microsoft.com/azure/azure-app-configuration/quickstart-java-spring-app">Azure App Configuration Quick Start</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_selecting_configurations"><a class="link" href="#_selecting_configurations">Selecting Configurations</a></h3>
+<div class="paragraph">
+<p>Configurations are loaded by their key and label. By default, the configurations that start with the key <code>/application/</code> are loaded. The default label is <code>${spring.profiles.active}</code>. If <code>${spring.profiles.active}</code> is not set then configuration with the null label seen as <code>(No Label)</code> in the portal are loaded.</p>
+</div>
+<div class="paragraph">
+<p>The configurations that are loaded can be configured by selecting different key and label filters.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].selects[0].key-filter=[my-key]
+spring.cloud.azure.appconfiguration.stores[0].selects[0].label-filter=[my-label]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>key-filter</code> supports the following filters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Key Filters</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key Filter</th>
+<th class="tableblock halign-left valign-top">Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches <strong>any</strong> key</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>abc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches a key named  <strong>abc</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>abc*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches key names that start with <strong>abc</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>abc,xyz</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches key names <strong>abc</strong> or <strong>xyz</strong> (limited to 5 CSV)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><code>label-filter</code> supports the following filters:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Label Filters</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Label</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches <strong>any</strong> label, which includes <code>\0</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>\0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches <code>null</code> labels, seen as <code>(No Label)</code> in the portal</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1.0.0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches label <strong>1.0.0</strong> exactly</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1.0.*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches labels that start with <strong>1.0.</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,1.0.0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches labels <code>null</code> or <strong>1.0.0</strong>, limited to five CSVs</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If you are using yaml with label filters and need to start with <code>null</code>, then the label filter needs to be surrounded by single quotes.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yml" data-lang="yml">spring:
+  cloud:
+    azure:
+      appconfiguration:
+        stores:
+         -
+           selects:
+             -
+              label-filter: ',1.0.0'</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You are unable to combine <code>*</code> with <code>,</code> in filters. In that case you need to use an additional select.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_spring_profiles"><a class="link" href="#_spring_profiles">Spring Profiles</a></h3>
+<div class="paragraph">
+<p>By default, <code>spring.profiles.active</code> is set as the default <code>label-filter</code> for all selected configurations. This functionality can be overridden by the <code>label-filter</code>. The Spring Profiles can be used in the <code>label-filter</code> by using <code>${spring.profiles.active}</code> in the <code>label-filter</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].selects[0].label-filter=,${spring.profiles.active}
+spring.cloud.azure.appconfiguration.stores[0].selects[1].label-filter=${spring.profiles.active}_local</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the first <code>label-filter</code>, all configurations with <code>null</code> label are loaded, then all configurations matching the Spring Profiles. Spring Profiles have priority over the <code>null</code> configurations, because they are at the end.</p>
+</div>
+<div class="paragraph">
+<p>In the second <code>label-filter</code>, the string <code>_local</code> is appended to the end of the Spring Profiles, though only to the last Spring Profile.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_disabled_stores"><a class="link" href="#_disabled_stores">Disabled Stores</a></h3>
+<div class="paragraph">
+<p>Using the configuration <code>spring.cloud.azure.appconfiguration.enabled</code> you can disable loading all configuration stores. With the <code>spring.cloud.azure.appconfiguration.stores[0].enabled</code> configuration, you can disable an individual store.</p>
+</div>
+<div class="paragraph">
+<p>In addition to disabling all stores, stores can be configured to be disabled if they fail to load using the <code>spring.cloud.azure.appconfiguration.stores[0].fail-fast</code>. When <code>fail-fast</code> is enabled, set to <code>true</code>, a <code>RuntimeException</code> that would result in the application not starting up will instead have the store disabled with no configurations from it loaded. If a configuration store is disabled on startup it will not be checked for changes with refresh, or attempted to be loaded from if configurations are updated.</p>
+</div>
+<div class="paragraph">
+<p>If, an error resulting in a <code>RuntimeException</code> happens during a refresh check or a reload of configuration the refresh attempt is ended and will be retried after the <code>refresh-interval</code> has passed.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>
