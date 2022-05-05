@@ -10,7 +10,7 @@ Spring Native provides support for compiling Spring Boot applications to native 
 
 === Support
 
-Spring Cloud Azure has been validated against GraalVM and Spring Native, and provides the beta version support. You can try it on your projects if they are using those supported dependencies, and {azure-sdk-java-issues}[raise bugs] or {spring-cloud-azure-native-configuration}[contribute pull requests] if something goes wrong on Spring Cloud Azure level. See the link:https://docs.spring.io/spring-native/docs/{spring-native-version}/reference/htmlsingle/#overview[Spring Native Support] for more details.
+Spring Cloud Azure has been validated against GraalVM and Spring Native, and provides the beta version support. You can try it on your projects if they are using those supported dependencies, and {azure-sdk-java-issues}[raise bugs] or {spring-cloud-azure-native-configuration}[contribute pull requests] if something goes wrong on Spring Cloud Azure. See the link:https://docs.spring.io/spring-native/docs/{spring-native-version}/reference/htmlsingle/#overview[Spring Native Support] for more details.
 
 ==== Spring Native
 
@@ -20,7 +20,7 @@ Spring Cloud Azure `{project-version}` has been tested against Spring Native `{s
 
 NOTE: Spring Native `{spring-native-version}` has been tested against Spring Cloud Azure Native Configuration `{spring-cloud-azure-native-configuration-version}`.
 
-Spring Cloud Azure provides a dependency `spring-cloud-azure-native-configuration` that is an extension of Spring Native configuration for Spring Cloud Azure level, the Spring Native AOT plugin will combine the `spring-native-configuration` and `spring-cloud-azure-native-configuration` to build applications to native executables. No extra modifications are needed to the code that uses Spring Cloud Azure libraries apart from adding the dependency, it only covers to the code at the Spring Cloud Azure libraries.
+Spring Cloud Azure provides a dependency `spring-cloud-azure-native-configuration` that is an extension of Spring Native configuration for Spring Cloud Azure libraries, the Spring Native AOT plugin will combine the `spring-native-configuration` and `spring-cloud-azure-native-configuration` to build applications to native executables. No extra modifications are needed to the code that uses Spring Cloud Azure libraries apart from adding the dependency, it only covers to the code at the Spring Cloud Azure libraries.
 
 Supported features:
 

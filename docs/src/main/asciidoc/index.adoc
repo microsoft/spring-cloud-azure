@@ -27,7 +27,7 @@ include::resource-manager.adoc[]
 include::configuration-properties.adoc[]
 
 == Appendix
-=== link:appendix.html##configuration-properties[Configuration properties]
-=== link:appendix.html#migration-guide-for-4-0[Migration guide for 4.0]
-=== link:appendix.html#known-issues[Known issues]
+=== xref:appendix.adoc##configuration-properties[Configuration properties]
+=== xref:appendix.adoc#migration-guide-for-4-0[Migration guide for 4.0]
+=== xref:appendix.adoc#known-issues[Known issues]
 
