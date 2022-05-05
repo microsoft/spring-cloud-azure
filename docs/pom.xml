@@ -135,7 +135,7 @@
                 <configuration>
                   <arguments>
                     <argument>${project.basedir}/src/main/asciidoc/_configprops_aad.adoc</argument>
-                    <argument>spring.cloud.azure.active-directory.*</argument>
+                    <argument>(?!spring.cloud.azure.active-directory.b2c.*)(spring.cloud.azure.active-directory.*)</argument>
                   </arguments>
                 </configuration>
               </execution>

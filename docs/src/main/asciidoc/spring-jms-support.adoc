@@ -6,7 +6,7 @@ Azure Service Bus connection string have to be provided which is to be parsed in
 
 === Dependency Setup
 
-Adding below dependencies if you want to migrate your Spring JMS application to use Azure Service Bus.
+Adding the following dependencies if you want to migrate your Spring JMS application to use Azure Service Bus.
 
 [source,xml]
 ----
@@ -102,8 +102,8 @@ Adding below dependencies if you want to migrate your Spring JMS application to 
 | Login user of the AMQP broker.
 |===
 
-NOTE: Spring JMS general configuration is omited for short.
-Please refer to link:https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/jms.html[Spring JMS Document] for more details.
+NOTE: Spring JMS general configuration is omitted for short.
+See link:https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/jms.html[Spring JMS Document] for more details.
 
 === Basic Usage
 
@@ -111,7 +111,7 @@ Please refer to link:https://docs.spring.io/spring-framework/docs/3.2.x/spring-f
 
 The simplest way to connect to Service Bus for Spring JMS application is with the connection string.
 
-Add below properties and you are good to go.
+Add the following properties and you are good to go.
 
 [source,yaml]
 ----
@@ -127,4 +127,4 @@ NOTE: The default enabled `ConnectionFactory` is the `CachingConnectionFactory` 
 
 === Samples
 
-Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}[azure-spring-boot-samples] for more details.
+See link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}[azure-spring-boot-samples] for more details.

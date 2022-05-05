@@ -5,7 +5,7 @@ Connect to Azure Cache for Redis using Spring Redis libraries. With adding `spri
 
 === Dependency Setup
 
-Adding below dependencies if you want to use the Spring Cloud Azure Redis support to your Spring Boot application using Redis.
+Add the following dependencies if you want to use the Spring Cloud Azure Redis support to your Spring Boot application using Redis.
 
 [source,xml]
 ----
@@ -29,17 +29,17 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
 [cols="4*", options="header"]
 |===
 |Property |Description |Default Value | Required
-|*spring.cloud.azure.redis*.enabled |Azure Cache for Redis instance name.|true | No
+|*spring.cloud.azure.redis*.enabled |A value that indicates whether the Azure Cache for Redis is enabled.|true | No
 |*spring.cloud.azure.redis*.name |Azure Cache for Redis instance name.| |Yes
 |*spring.cloud.azure.redis*.resource.resource-group |The resource group of Azure Cache for Redis.||Yes
 |*spring.cloud.azure*.profile.subscription-id| The subscription id. ||Yes
 |===
 
-NOTE: Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix `spring.cloud.azure`. Please refer to link:index.html#authentication[Authentication] for more details.
+NOTE: Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix `spring.cloud.azure`. For more information, see the link:index.html#authentication[Authentication] section.
 
 === Basic Usage
 
-Add below properties and you are good to go.
+Add the following properties and you are good to go.
 
 [source,properties]
 ----
@@ -49,6 +49,6 @@ spring.cloud.azure.redis.resource.resource-group=${AZURE_CACHE_REDIS_RESOURCE_GR
 
 === Samples
 
-Please refer to link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}[azure-spring-boot-samples] for more details.
+See link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}[azure-spring-boot-samples] for more details.
 
 
