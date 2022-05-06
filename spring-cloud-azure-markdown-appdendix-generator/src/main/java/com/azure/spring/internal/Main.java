@@ -26,8 +26,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
@@ -37,7 +35,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.util.StreamUtils;
 
 /**
@@ -50,27 +47,16 @@ public final class Main {
 
 	public static void main(String... args) {
 
-		Properties properties = new Properties();
-		try {
-			properties = PropertiesLoaderUtils.loadAllProperties("prefix-patterns.properties");
+		String outputFile = args[0];
+		outputFile = outputFile.replace("adoc", "md");
+		String inclusionPattern = args.length > 1 ? args[1] : ".*";
+		File parent = new File(outputFile).getParentFile();
+		if (!parent.exists()) {
+			System.out.println(
+					"No parent directory [" + parent + "] found. Will not generate the configuration properties file");
+			return;
 		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		Set<Object> items = properties.keySet();
-		for (Object item : items) {
-			String outputFile = item.toString();
-			String inclusionPattern = properties.get(item).toString();
-			String path = System.getProperty("user.dir");
-			String outputFilePath = path + "//markdown-docs//src//main//markdown//" + outputFile;
-			File parentPath = new File(outputFilePath).getParentFile();
-			if (!parentPath.exists()) {
-				System.out.println("No markdown parent directory [" + parentPath
-						+ "] found. Will not generate the configuration properties file");
-				return;
-			}
-			new Generator().generate(outputFilePath, inclusionPattern);
-		}
+		new Generator().generate(outputFile, inclusionPattern);
 	}
 
 	/**
@@ -130,7 +116,7 @@ public final class Main {
 				sdf.applyPattern("MM/dd/yyyy");
 				Date date = new Date();
 				Files.write(new File(outputFile).toPath(),
-						("---\n" + "ms.author:\n" + "ms.date: " + sdf.format(date) + "\n" + "---\n\n"
+						("---\n" + "ms.author: v-yonghuiye\n" + "ms.date: " + sdf.format(date) + "\n" + "---\n\n"
 								+ "> [!div class=\"mx-tdBreakAll\"]\n" + "> | Property"
 								+ new String(new char[offset[1] - 7]).replace("\0", " ") + "| Description"
 								+ new String(new char[offset[0] - 10]).replace("\0", " ") + "|\n" + "> |"
@@ -162,7 +148,7 @@ public final class Main {
 		}
 
 		/**
-		 * Get configuration properties prefix and descriptions.
+		 * Get configuration properties name and descriptions.
 		 */
 		protected Resource[] getResources() throws IOException {
 			return new PathMatchingResourcePatternResolver()
