@@ -10,7 +10,7 @@ Spring Native provides support for compiling Spring Boot applications to native 
 
 === Support
 
-Spring Cloud Azure has been validated against GraalVM and Spring Native, and provides the beta version support. You can try it on your projects if they are using those supported dependencies, and {azure-sdk-java-issues}[raise bugs] or {spring-cloud-azure-native-configuration}[contribute pull requests] if something goes wrong on Spring Cloud Azure. See the link:https://docs.spring.io/spring-native/docs/{spring-native-version}/reference/htmlsingle/#overview[Spring Native Support] for more details.
+Spring Cloud Azure has been validated against GraalVM and Spring Native, and provides the beta version support. You can try it on your projects if they are using those supported dependencies, and {azure-sdk-java-issues}[raise bugs] or {spring-cloud-azure-native-configuration}[contribute pull requests] if something goes wrong on Spring Cloud Azure. See the link:https://docs.spring.io/spring-native/docs/{spring-native-version}/reference/htmlsingle/#support[Spring Native Support] for more details.
 
 ==== Spring Native
 
@@ -57,13 +57,21 @@ The Spring Cloud Azure applications can enable Spring Native support according t
 
 TIP:  Note that this dependency `com.azure.spring:spring-cloud-azure-native-configuration` is not managed in `com.azure.spring:spring-cloud-azure-dependencies`.
 
-[source,xml,indent=2,subs="attributes,verbatim"]
+[source,xml,indent=2,subs="attributes,verbatim",role="primary"]
+.Maven
 ----
 <dependency>
   <groupId>com.azure.spring</groupId>
   <artifactId>spring-cloud-azure-native-configuration</artifactId>
   <version>{spring-cloud-azure-native-configuration-version}</version>
 </dependency>
+----
+[source,groovy,subs="attributes,verbatim",role="secondary"]
+.Gradle Groovy
+----
+dependencies {
+    implementation "com.azure.spring:spring-cloud-azure-native-configuration:{spring-cloud-azure-native-configuration-version}"
+}
 ----
 
 === Build the native application
@@ -108,7 +116,7 @@ See the link:https://docs.spring.io/spring-native/docs/{spring-native-version}/r
 
 There are two main ways to run a native executable.
 
-TIP: Assuming the project artifact id is `{spring-cloud-azure-sample}`, the project version is `0.0.1-SNAPSHOT`, the custom image name can be specified using the *<image><name>custom-image-name</name></image>* configuration element in Spring Boot plugin if you are using link:https://docs.spring.io/spring-boot/docs/{spring-boot-version}/reference/html/container-images.html#container-images.buildpacks[Cloud Native Buildpacks] or using the *<imageName>custom-image-name</imageName>* configuration element if you are using link:{graalvm-native-buildtools}[native-maven-plugin].
+TIP: Assuming the project artifact id is `spring-cloud-azure-sample`, the project version is `0.0.1-SNAPSHOT`, the custom image name can be specified using the *<image><name>custom-image-name</name></image>* configuration element in Spring Boot plugin if you are using link:https://docs.spring.io/spring-boot/docs/{spring-boot-version}/reference/html/container-images.html#container-images.buildpacks[Cloud Native Buildpacks] or using the *<imageName>custom-image-name</imageName>* configuration element if you are using link:{graalvm-native-buildtools}[native-maven-plugin].
 
 ==== Run with Buildpacks
 
@@ -116,16 +124,22 @@ To run the application, you can use `docker` the usual way as shown in the follo
 
 [source,bash,subs="attributes,verbatim"]
 ----
-docker run --rm -p 8080:8080 {spring-cloud-azure-sample}:0.0.1-SNAPSHOT
+docker run --rm -p 8080:8080 spring-cloud-azure-sample:0.0.1-SNAPSHOT
 ----
 
 ==== Run with Native Build Tools
 
 To run your application, invoke the following:
 
-[source,bash,subs="attributes,verbatim"]
+[source,bash,role="primary"]
+.Build with Maven
 ----
-target/{spring-cloud-azure-sample}
+target\spring-cloud-azure-sample
+----
+[source,bash,role="secondary"]
+.Build with Gradle
+----
+build\native\nativeCompile\spring-cloud-azure-sample
 ----
 
 === Samples
