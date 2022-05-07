@@ -52,17 +52,17 @@ jobs:
           repository: MicrosoftDocs/azure-dev-docs-pr
           ref: 'main'
           path: 'azure-dev-docs-pr'
-          token: ${{ secrets.ACCESS_TOKEN }}
+          token: ${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_ACCESS_TOKEN }}
           fetch-depth: '0'
 
-      - name: Set pull request branch name
+      - name: Set pull request from branch
         id: data
         run: |
           result=$(git ls-remote --heads origin ${{ steps.branch.outputs.branch_name }} | wc -l)
           if [[ "${result}" -eq 1 ]] ; then
           echo ::set-output name=pr_branch_name::${{ steps.branch.outputs.branch_name }}
           elif [[ "${result}" -eq 0 ]] ; then
-          echo ::set-output name=pr_branch_name::microsoft:${{ steps.branch.outputs.branch_name }}
+          echo ::set-output name=pr_branch_name::${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_USERNAME }}:${{ steps.branch.outputs.branch_name }}
           fi
 
       - name: Push files
@@ -73,7 +73,7 @@ jobs:
           git config --global user.name github-actions
           git add ./articles/java/spring-framework/includes/spring-cloud-azure/configuration-*.md
           git commit -m "update Spring Cloud Azure reference appendix ${{ steps.branch.outputs.project_version }} properties table changes"
-          git push --force "https://microsoft:${{ secrets.ACCESS_TOKEN }}@github.com/microsoft/spring-cloud-azure.git" HEAD:${{ steps.branch.outputs.branch_name }}
+          git push --force "https://${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_USERNAME }}:${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_ACCESS_TOKEN }}@github.com/MicrosoftDocs/azure-dev-docs-pr.git" HEAD:${{ steps.branch.outputs.branch_name }}
 
       - name: Create Pull Request
         uses: vsoch/pull-request-action@master
