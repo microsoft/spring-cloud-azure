@@ -38,7 +38,7 @@
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
                         <configuration>
-                            <mainClass>com.azure.spring.internal.Main</mainClass>
+                            <mainClass>com.azure.spring.cloud.internal.Main</mainClass>
                         </configuration>
                     </plugin>
                 </plugins>

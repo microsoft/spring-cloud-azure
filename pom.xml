@@ -122,7 +122,7 @@
                             </goals>
                             <configuration>
                                 <arguments>
-                                    <argument>${project.basedir}/src/main/asciidoc/configuration-properties-all.adoc</argument>
+                                    <argument>${project.basedir}/src/main/asciidoc/_configuration-properties-all.adoc</argument>
                                     <argument>spring.jms.servicebus.*|spring.cloud.azure.*</argument>
                                 </arguments>
                             </configuration>
@@ -135,7 +135,7 @@
                             </goals>
                             <configuration>
                                 <arguments>
-                                    <argument>${project.basedir}/src/main/asciidoc/configuration-properties-global.adoc</argument>
+                                    <argument>${project.basedir}/src/main/asciidoc/_configuration-properties-global.adoc</argument>
                                     <argument>spring.cloud.azure.(client|credential|profile|proxy|retry).*</argument>
                                 </arguments>
                             </configuration>
@@ -148,7 +148,7 @@
                             </goals>
                             <configuration>
                                 <arguments>
-                                    <argument>${project.basedir}/src/main/asciidoc/configuration-properties-azure-active-directory.adoc</argument>
+                                    <argument>${project.basedir}/src/main/asciidoc/_configuration-properties-azure-active-directory.adoc</argument>
                                     <argument>(?!spring.cloud.azure.active-directory.b2c.*)(spring.cloud.azure.active-directory.*)</argument>
                                 </arguments>
                             </configuration>
@@ -161,7 +161,7 @@
                             </goals>
                             <configuration>
                                 <arguments>
-                                    <argument>${project.basedir}/src/main/asciidoc/configuration-properties-azure-active-directory-b2c.adoc</argument>
+                                    <argument>${project.basedir}/src/main/asciidoc/_configuration-properties-azure-active-directory-b2c.adoc</argument>
                                     <argument>spring.cloud.azure.active-directory.b2c.*</argument>
                                 </arguments>
                             </configuration>
@@ -174,7 +174,7 @@
                             </goals>
                             <configuration>
                                 <arguments>
-                                    <argument>${project.basedir}/src/main/asciidoc/configuration-properties-azure-app-configuration.adoc</argument>
+                                    <argument>${project.basedir}/src/main/asciidoc/_configuration-properties-azure-app-configuration.adoc</argument>
                                     <argument>spring.cloud.azure.appconfiguration.*</argument>
                                 </arguments>
                             </configuration>
@@ -187,7 +187,7 @@
                             </goals>
                             <configuration>
                                 <arguments>
-                                    <argument>${project.basedir}/src/main/asciidoc/configuration-properties-azure-cosmos-db.adoc</argument>
+                                    <argument>${project.basedir}/src/main/asciidoc/_configuration-properties-azure-cosmos-db.adoc</argument>
                                     <argument>spring.cloud.azure.cosmos.*</argument>
                                 </arguments>
                             </configuration>
@@ -200,7 +200,7 @@
                             </goals>
                             <configuration>
                                 <arguments>
-                                    <argument>${project.basedir}/src/main/asciidoc/configuration-properties-azure-event-hubs.adoc</argument>
+                                    <argument>${project.basedir}/src/main/asciidoc/_configuration-properties-azure-event-hubs.adoc</argument>
                                     <argument>spring.cloud.azure.eventhubs.*</argument>
                                 </arguments>
                             </configuration>
@@ -213,7 +213,7 @@
                             </goals>
                             <configuration>
                                 <arguments>
-                                    <argument>${project.basedir}/src/main/asciidoc/configuration-properties-azure-key-vault-secrets.adoc</argument>
+                                    <argument>${project.basedir}/src/main/asciidoc/_configuration-properties-azure-key-vault-secrets.adoc</argument>
                                     <argument>spring.cloud.azure.keyvault.secret.*</argument>
                                 </arguments>
                             </configuration>
@@ -226,7 +226,7 @@
                             </goals>
                             <configuration>
                                 <arguments>
-                                    <argument>${project.basedir}/src/main/asciidoc/configuration-properties-azure-key-vault-certificates.adoc</argument>
+                                    <argument>${project.basedir}/src/main/asciidoc/_configuration-properties-azure-key-vault-certificates.adoc</argument>
                                     <argument>spring.cloud.azure.keyvault.certificate.*</argument>
                                 </arguments>
                             </configuration>
@@ -239,7 +239,7 @@
                             </goals>
                             <configuration>
                                 <arguments>
-                                    <argument>${project.basedir}/src/main/asciidoc/configuration-properties-azure-service-bus.adoc</argument>
+                                    <argument>${project.basedir}/src/main/asciidoc/_configuration-properties-azure-service-bus.adoc</argument>
                                     <argument>spring.cloud.azure.servicebus.*</argument>
                                 </arguments>
                             </configuration>
@@ -252,7 +252,7 @@
                             </goals>
                             <configuration>
                                 <arguments>
-                                    <argument>${project.basedir}/src/main/asciidoc/configuration-properties-azure-service-bus-jms.adoc</argument>
+                                    <argument>${project.basedir}/src/main/asciidoc/_configuration-properties-azure-service-bus-jms.adoc</argument>
                                     <argument>spring.jms.servicebus.*</argument>
                                 </arguments>
                             </configuration>
@@ -265,7 +265,7 @@
                             </goals>
                             <configuration>
                                 <arguments>
-                                    <argument>${project.basedir}/src/main/asciidoc/configuration-properties-azure-storage-blob.adoc</argument>
+                                    <argument>${project.basedir}/src/main/asciidoc/_configuration-properties-azure-storage-blob.adoc</argument>
                                     <argument>spring.cloud.azure.storage.blob.*</argument>
                                 </arguments>
                             </configuration>
@@ -278,7 +278,7 @@
                             </goals>
                             <configuration>
                                 <arguments>
-                                    <argument>${project.basedir}/src/main/asciidoc/configuration-properties-azure-storage-file-share.adoc</argument>
+                                    <argument>${project.basedir}/src/main/asciidoc/_configuration-properties-azure-storage-file-share.adoc</argument>
                                     <argument>spring.cloud.azure.storage.fileshare.*</argument>
                                 </arguments>
                             </configuration>
@@ -291,7 +291,7 @@
                             </goals>
                             <configuration>
                                 <arguments>
-                                    <argument>${project.basedir}/src/main/asciidoc/configuration-properties-azure-storage-queue.adoc</argument>
+                                    <argument>${project.basedir}/src/main/asciidoc/_configuration-properties-azure-storage-queue.adoc</argument>
                                     <argument>spring.cloud.azure.storage.queue.*</argument>
                                 </arguments>
                             </configuration>

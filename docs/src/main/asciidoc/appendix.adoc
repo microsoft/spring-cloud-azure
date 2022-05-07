@@ -2,33 +2,33 @@
 [appendix]
 == Configuration Properties
 === Global Properties
-include::configuration-properties-global.adoc[]
+include::_configuration-properties-global.adoc[]
 === Azure Active Directory Properties
-include::configuration-properties-azure-active-directory.adoc[]
+include::_configuration-properties-azure-active-directory.adoc[]
 === Azure Active Directory B2C Properties
-include::configuration-properties-azure-active-directory-b2c.adoc[]
+include::_configuration-properties-azure-active-directory-b2c.adoc[]
 === Azure App Configuration Properties
-include::configuration-properties-azure-app-configuration.adoc[]
+include::_configuration-properties-azure-app-configuration.adoc[]
 === Azure Cosmos Properties
-include::configuration-properties-azure-cosmos-db.adoc[]
+include::_configuration-properties-azure-cosmos-db.adoc[]
 === Azure Event Hubs Properties
-include::configuration-properties-azure-event-hubs.adoc[]
+include::_configuration-properties-azure-event-hubs.adoc[]
 === Azure Key Vault Secrets Properties
-include::configuration-properties-azure-key-vault-secrets.adoc[]
+include::_configuration-properties-azure-key-vault-secrets.adoc[]
 === Azure Key Vault Certificates Properties
-include::configuration-properties-azure-key-vault-certificates.adoc[]
+include::_configuration-properties-azure-key-vault-certificates.adoc[]
 === Azure Service Bus Properties
-include::configuration-properties-azure-service-bus.adoc[]
+include::_configuration-properties-azure-service-bus.adoc[]
 === Azure Service Bus JMS Properties
-include::configuration-properties-azure-service-bus-jms.adoc[]
+include::_configuration-properties-azure-service-bus-jms.adoc[]
 === Azure Storage Blob Properties
-include::configuration-properties-azure-storage-blob.adoc[]
+include::_configuration-properties-azure-storage-blob.adoc[]
 === Azure Storage File Share Properties
-include::configuration-properties-azure-storage-file-share.adoc[]
+include::_configuration-properties-azure-storage-file-share.adoc[]
 === Azure Storage Queue Properties
-include::configuration-properties-azure-storage-queue.adoc[]
+include::_configuration-properties-azure-storage-queue.adoc[]
 === All Configuration Properties
-include::configuration-properties-all.adoc[]
+include::_configuration-properties-all.adoc[]
 
 [appendix]
 include::_migration-guide-for-4.0.adoc[]

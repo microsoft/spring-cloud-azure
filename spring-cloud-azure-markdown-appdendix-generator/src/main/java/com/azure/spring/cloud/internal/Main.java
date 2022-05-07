@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-package com.azure.spring.internal;
+package com.azure.spring.cloud.internal;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,7 +33,6 @@ import java.util.Map;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -48,7 +51,7 @@ public final class Main {
 	public static void main(String... args) {
 
 		String outputFile = args[0];
-		outputFile = outputFile.replace("adoc", "md");
+		outputFile = outputFile.replace("adoc", "md").replace("_", "");
 		String inclusionPattern = args.length > 1 ? args[1] : ".*";
 		File parent = new File(outputFile).getParentFile();
 		if (!parent.exists()) {
@@ -75,11 +78,12 @@ public final class Main {
 				final AtomicInteger matchingPropertyCount = new AtomicInteger();
 				final AtomicInteger propertyCount = new AtomicInteger();
 				Pattern pattern = Pattern.compile(inclusionPattern);
+				ObjectMapper objectMapper = new ObjectMapper();
 				for (Resource resource : resources) {
 					if (resourceNameContainsPattern(resource)) {
 						count.incrementAndGet();
 						byte[] bytes = StreamUtils.copyToByteArray(resource.getInputStream());
-						Map<String, Object> response = new ObjectMapper().readValue(bytes, HashMap.class);
+						Map<String, Object> response = objectMapper.readValue(bytes, HashMap.class);
 						List<Map<String, Object>> properties = (List<Map<String, Object>>) response.get("properties");
 						properties.forEach(val -> {
 							propertyCount.incrementAndGet();
@@ -107,26 +111,12 @@ public final class Main {
 
 				int[] offset = new int[2];
 				String[] key = new String[1];
+				descriptions.keySet().stream().max(Comparator.comparingInt(String::length))
+						.ifPresent(longest -> offset[0] = longest.length());
 				names.stream().max(Comparator.comparingInt(aName -> descriptions.get(aName).getDescription().length()))
 						.ifPresent(longest -> key[0] = longest);
-				offset[0] = descriptions.get(key[0]).getDescription().trim().length();
-				descriptions.keySet().stream().max(Comparator.comparingInt(String::length))
-						.ifPresent(longest -> offset[1] = longest.length());
-				SimpleDateFormat sdf = new SimpleDateFormat();
-				sdf.applyPattern("MM/dd/yyyy");
-				Date date = new Date();
-				Files.write(new File(outputFile).toPath(),
-						("---\n" + "ms.author: v-yonghuiye\n" + "ms.date: " + sdf.format(date) + "\n" + "---\n\n"
-								+ "> [!div class=\"mx-tdBreakAll\"]\n" + "> | Property"
-								+ new String(new char[offset[1] - 7]).replace("\0", " ") + "| Description"
-								+ new String(new char[offset[0] - 10]).replace("\0", " ") + "|\n" + "> |"
-								+ new String(new char[offset[1] + 2]).replace("\0", "-") + "|"
-								+ new String(new char[offset[0] + 2]).replace("\0", "-") + "|\n"
-								+ names.stream().map(it -> "> " + addOffset(descriptions.get(it), offset).toString())
-										.collect(Collectors.joining(" |\n"))
-								+ " |\n").getBytes());
-
-				System.out.println("Successfully stored the output Markdown file!");
+				offset[1] = descriptions.get(key[0]).getDescription().trim().length();
+				generatePropertiesFiles(outputFile, names, descriptions, offset);
 			}
 			catch (IOException e) {
 				throw new IllegalStateException(e);
@@ -155,21 +145,54 @@ public final class Main {
 					.getResources("classpath*:/META-INF/spring-configuration-metadata.json");
 		}
 
-		/**
-		 * Get the value with the longest prefix and description in the object list,
-		 * calculate the difference with the prefix and description of other object, and
-		 * add spaces for the number of differences to make the table neat.
-		 * @param configValue The object to compare
-		 * @param offset An array recording the maximum length prefix and description
-		 */
-		protected ConfigValue addOffset(ConfigValue configValue, int[] offset) {
-			int diff1 = offset[1] - configValue.getName().length();
-			int diff2 = offset[0] - configValue.getDescription().trim().length();
-			String name = configValue.getName() + String.join("", Collections.nCopies(diff1, " "));
-			String description = configValue.getDescription() + String.join("", Collections.nCopies(diff2, " "));
-			configValue.setName(name);
-			configValue.setDescription(description);
-			return configValue;
+		protected String getCurrentDate() {
+			SimpleDateFormat sdf = new SimpleDateFormat();
+			sdf.applyPattern("MM/dd/yyyy");
+			Date date = new Date();
+			return sdf.format(date);
+		}
+
+		private String paddingWithChar(String printableStr, char c, int maxLength) {
+			String trimmedString = printableStr.trim();
+			return printableStr + String.join("", Collections.nCopies(maxLength - trimmedString.length(), c + ""));
+		}
+
+		private void generatePropertiesFiles(String outputFile, TreeSet<String> names,
+				Map<String, ConfigValue> descriptions, int[] offset) {
+			Path path = Paths.get(outputFile);
+			try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+				writer.write("---");
+				writer.newLine();
+				writer.write("ms.author: v-yonghuiye");
+				writer.newLine();
+				writer.write("ms.date: " + getCurrentDate());
+				writer.newLine();
+				writer.write("---");
+				writer.newLine();
+				writer.newLine();
+				writer.write("> [!div class=\"mx-tdBreakAll\"]");
+				writer.newLine();
+				String propertyHeader = paddingWithChar(" Property", ' ', offset[0] + 1);
+				String descriptionHeader = paddingWithChar(" Description", ' ', offset[1] + 1);
+				writer.write("> |" + propertyHeader + "|" + descriptionHeader + "|");
+				writer.newLine();
+				String markdownTableCol1 = paddingWithChar("", '-', offset[0] + 2);
+				String markdownTableCol2 = paddingWithChar("", '-', offset[1] + 2);
+				writer.write("> |" + markdownTableCol1 + "|" + markdownTableCol2 + "|");
+				writer.newLine();
+				for (String name : names) {
+					ConfigValue configValue = descriptions.get(name);
+					String nameCol = paddingWithChar(configValue.getName(), ' ', offset[0]);
+					String descriptionCol = paddingWithChar(configValue.getDescription(), ' ', offset[1]);
+					writer.write("> | " + nameCol + " | " + descriptionCol + " |");
+					writer.newLine();
+				}
+
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+			System.out.println("Successfully stored the output Markdown file!");
 		}
 
 	}
@@ -199,14 +222,6 @@ public final class Main {
 
 		public String getDescription() {
 			return description;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		public void setDescription(String description) {
-			this.description = description;
 		}
 
 	}
