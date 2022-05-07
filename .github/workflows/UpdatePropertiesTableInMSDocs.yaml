@@ -71,7 +71,7 @@ jobs:
           cd azure-dev-docs-pr
           git config --global user.email github-actions@github.com
           git config --global user.name github-actions
-          git add ././spring-cloud-azure-markdown-appdendix-generator/src/main/asciidoc/configuration-*.md
+          git add .././spring-cloud-azure-markdown-appdendix-generator/src/main/asciidoc/configuration-*.md
           git commit -m "update Spring Cloud Azure reference appendix ${{ steps.branch.outputs.project_version }} properties table changes"
           git push --force "https://${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_USERNAME }}:${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_ACCESS_TOKEN }}@github.com/${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_USERNAME }}/azure-dev-docs-pr.git" HEAD:${{ steps.branch.outputs.branch_name }}
 
