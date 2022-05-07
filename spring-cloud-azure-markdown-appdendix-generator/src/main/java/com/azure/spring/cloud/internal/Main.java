@@ -157,6 +157,25 @@ public final class Main {
 			return printableStr + String.join("", Collections.nCopies(maxLength - trimmedString.length(), c + ""));
 		}
 
+		private String generateAnchorName(String outputFile) {
+			outputFile = outputFile.substring(outputFile.lastIndexOf("/") + 26, outputFile.lastIndexOf("."))
+					.replace("-", " ");
+			if (outputFile.equals("all")) {
+				return "List of configuration";
+			}
+			String result = " ";
+			String[] value = outputFile.split(" ");
+			for (String s : value) {
+				if (s.equals("db") | s.equals("jms") | s.equals("b2c")) {
+					result = result.concat(s.toUpperCase() + " ");
+				}
+				else {
+					result = result.concat(s.substring(0, 1).toUpperCase().concat(s.substring(1)) + " ");
+				}
+			}
+			return result.trim();
+		}
+
 		private void generatePropertiesFiles(String outputFile, TreeSet<String> names,
 				Map<String, ConfigValue> descriptions, int[] offset) {
 			Path path = Paths.get(outputFile);
@@ -168,6 +187,9 @@ public final class Main {
 				writer.write("ms.date: " + getCurrentDate());
 				writer.newLine();
 				writer.write("---");
+				writer.newLine();
+				writer.newLine();
+				writer.write("## " + generateAnchorName(outputFile) + " properties");
 				writer.newLine();
 				writer.newLine();
 				writer.write("> [!div class=\"mx-tdBreakAll\"]");
