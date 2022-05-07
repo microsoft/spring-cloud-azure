@@ -54,6 +54,17 @@ jobs:
           path: 'azure-dev-docs-pr'
           token: ${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_ACCESS_TOKEN }}
           fetch-depth: '0'
+          
+      - name: Set pull request from branch
+        id: data
+        run: |
+          curl -X GET -u ${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_USERNAME }}:${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_ACCESS_TOKEN }} https://api.github.com/repos/MicrosoftDocs/azure-dev-docs-pr/pulls?state=open | grep -w title >out.md
+          result=$(grep -o "Update Spring Cloud Azure Reference documentation ${{ steps.branch.outputs.project_version }} changes" out.md | wc -l)
+          if [[ "${result}" -eq 1 ]] ; then
+          echo ::set-output name=pr_branch_name::${{ steps.branch.outputs.branch_name }}
+          elif [[ "${result}" -eq 0 ]] ; then
+          echo ::set-output name=pr_branch_name::${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_USERNAME }}:${{ steps.branch.outputs.branch_name }}
+          fi
 
       - name: Push files
         run: |
@@ -71,7 +82,7 @@ jobs:
           PULL_REQUEST_TOKEN: ${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_ACCESS_TOKEN }}
           PULL_REQUEST_REPOSITORY: MicrosoftDocs/azure-dev-docs-pr
           PULL_REQUEST_TITLE: "Update Spring Cloud Azure Reference documentation ${{ steps.branch.outputs.project_version }} changes"
-          PULL_REQUEST_FROM_BRANCH: ${{ steps.branch.outputs.branch_name }}
+          PULL_REQUEST_FROM_BRANCH: ${{ steps.data.outputs.pr_branch_name }}
           PULL_REQUEST_BRANCH: "main"
           PULL_REQUEST_BODY: "Update referece docs for Spring Cloud Azure: ${{ steps.branch.outputs.project_version }}."
           PULL_REQUEST_UPDATE: true
