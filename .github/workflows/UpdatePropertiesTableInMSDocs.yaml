@@ -68,6 +68,7 @@ jobs:
 
       - name: Push files
         run: |
+          cp -f spring-cloud-azure-markdown-appdendix-generator/src/main/asciidoc/configuration-*.md azure-dev-docs-pr/articles/java/spring-framework/includes/spring-cloud-azure
           cd azure-dev-docs-pr
           git config --global user.email github-actions@github.com
           git config --global user.name github-actions
