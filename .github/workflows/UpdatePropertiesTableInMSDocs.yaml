@@ -1,0 +1,78 @@
+# This workflow is used to update the configuration properties files MS docs repo: https://github.com/MicrosoftDocs/azure-dev-docs-pr/tree/main/articles/java/spring-framework/includes/spring-cloud-azure
+
+name: Update properties table in MS Docs
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  update-change:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build latest azure-sdk-for-java repository
+        run: |
+          git init azure-sdk-for-java
+          cd azure-sdk-for-java
+          git remote add origin https://github.com/Azure/azure-sdk-for-java.git
+          git config core.sparsecheckout true
+          echo "sdk/spring" >> .git/info/sparse-checkout
+          echo "eng" >> .git/info/sparse-checkout
+          echo "sdk/keyvault" >> .git/info/sparse-checkout
+          echo "sdk/boms" >> .git/info/sparse-checkout
+          echo "sdk/aot" >> .git/info/sparse-checkout
+          git pull --depth=1 origin main
+          mvn clean install -Dmaven.javadoc.skip=true -DskipTests \
+            -Dcheckstyle.skip=true \
+            -ntp \
+            -Dspotbugs.skip=true \
+            -Drevapi.skip=true -Djacoco.skip=true \
+            -Dparallel-test-playback \
+            -Pdev \
+            -f sdk/spring/pom.xml
+
+      - uses: actions/checkout@v3
+
+      - name: Generate configuration properties files
+        run: |
+          mkdir spring-cloud-azure-markdown-appdendix-generator/src/main/asciidoc
+          ./mvnw clean install -P markdown-docs -pl spring-cloud-azure-markdown-appdendix-generator -DskipTests
+
+      - name: Get project name and version
+        id: branch
+        run: |
+          project_version=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec)
+          echo ::set-output name=branch_name::spring-cloud-azure_${project_version%-*}
+          echo ::set-output name=project_version::${project_version%-*}
+
+      - uses: actions/checkout@v3
+        name: Checkot  repository
+        with:
+          repository: MicrosoftDocs/azure-dev-docs-pr
+          ref: 'main'
+          path: 'azure-dev-docs-pr'
+          token: ${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_ACCESS_TOKEN }}
+          fetch-depth: '0'
+
+      - name: Commit files changes to branch
+        run: |
+          cp -f spring-cloud-azure-markdown-appdendix-generator/src/main/asciidoc/configuration-*.md azure-dev-docs-pr/articles/java/spring-framework/includes/spring-cloud-azure
+          cd azure-dev-docs-pr
+          git config --global user.email github-actions@github.com
+          git config --global user.name github-actions
+          git add ./articles/java/spring-framework/includes/spring-cloud-azure/configuration-*.md
+          git commit -m "update Spring Cloud Azure reference appendix ${{ steps.branch.outputs.project_version }} properties table changes"
+          git push --force "https://${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_USERNAME }}:${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_ACCESS_TOKEN }}@github.com/${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_USERNAME }}/azure-dev-docs-pr.git" HEAD:${{ steps.branch.outputs.branch_name }}
+
+      - name: Create Pull Request
+        uses: vsoch/pull-request-action@master
+        env:
+          PULL_REQUEST_TOKEN: ${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_ACCESS_TOKEN }}
+          PULL_REQUEST_REPOSITORY: MicrosoftDocs/azure-dev-docs-pr
+          PULL_REQUEST_TITLE: "Update Spring Cloud Azure Reference documentation ${{ steps.branch.outputs.project_version }} changes"
+          PULL_REQUEST_FROM_BRANCH: ${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_USERNAME }}:${{ steps.branch.outputs.branch_name }}
+          PULL_REQUEST_BRANCH: "main"
+          PULL_REQUEST_BODY: "Update referece docs for Spring Cloud Azure: ${{ steps.branch.outputs.project_version }}."
+          PULL_REQUEST_DRAFT: true
+          PASS_ON_ERROR: true # The variable PASS_IF_EXISTS is invalid, temporarily use PASS_ON_ERROR instead
