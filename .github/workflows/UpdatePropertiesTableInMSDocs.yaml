@@ -76,5 +76,5 @@ jobs:
           PULL_REQUEST_BODY: "Update referece docs for Spring Cloud Azure: ${{ steps.branch.outputs.project_version }}."
           PULL_REQUEST_UPDATE: true
           PULL_REQUEST_DRAFT: true
-          PASS_IF_EXISTS: true
+          PASS_IF_EXISTS: false
 
