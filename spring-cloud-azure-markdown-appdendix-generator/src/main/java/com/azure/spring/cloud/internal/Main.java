@@ -157,23 +157,27 @@ public final class Main {
 			return printableStr + String.join("", Collections.nCopies(maxLength - trimmedString.length(), c + ""));
 		}
 
+		private String capitalize(String letters) {
+			if ("db".equals(letters) | "jms".equals(letters) | "b2c".equals(letters)) {
+				return letters.toUpperCase();
+			}
+			else {
+				return letters.substring(0, 1).toUpperCase().concat(letters.substring(1));
+			}
+		}
+
 		private String generateAnchorName(String outputFile) {
 			outputFile = outputFile.substring(outputFile.lastIndexOf("/") + 26, outputFile.lastIndexOf("."))
-					.replace("-", " ");
-			if (outputFile.equals("all")) {
+					.replace('-', ' ');
+			if ("all".equals(outputFile)) {
 				return "List of configuration";
 			}
-			String result = " ";
 			String[] value = outputFile.split(" ");
+			StringBuilder result = new StringBuilder(" ");
 			for (String s : value) {
-				if (s.equals("db") | s.equals("jms") | s.equals("b2c")) {
-					result = result.concat(s.toUpperCase() + " ");
-				}
-				else {
-					result = result.concat(s.substring(0, 1).toUpperCase().concat(s.substring(1)) + " ");
-				}
+				result.append(capitalize(s)).append(" ");
 			}
-			return result.trim();
+			return result.toString().trim();
 		}
 
 		private void generatePropertiesFiles(String outputFile, TreeSet<String> names,
