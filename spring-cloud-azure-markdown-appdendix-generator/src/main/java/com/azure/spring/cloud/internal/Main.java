@@ -145,7 +145,7 @@ public final class Main {
                     .getResources("classpath*:/META-INF/spring-configuration-metadata.json");
         }
 
-        protected String getCurrentDate() {
+        private String getCurrentDate() {
             SimpleDateFormat sdf = new SimpleDateFormat();
             sdf.applyPattern("MM/dd/yyyy");
             Date date = new Date();

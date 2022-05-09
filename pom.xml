@@ -44,6 +44,7 @@
         <spring-javaformat.version>0.0.29</spring-javaformat.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <checkstyle.additional.suppressions.file>checkstyle-suppressions.xml</checkstyle.additional.suppressions.file>
     </properties>
 
     <modules>
