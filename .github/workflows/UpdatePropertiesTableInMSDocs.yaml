@@ -74,7 +74,6 @@ jobs:
           PULL_REQUEST_FROM_BRANCH: ${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_USERNAME }}:${{ steps.branch.outputs.branch_name }}
           PULL_REQUEST_BRANCH: "main"
           PULL_REQUEST_BODY: "Update referece docs for Spring Cloud Azure: ${{ steps.branch.outputs.project_version }}."
-          PULL_REQUEST_UPDATE: true
           PULL_REQUEST_DRAFT: true
-          PASS_IF_EXISTS: false
+          PASS_IF_EXISTS: true
 
