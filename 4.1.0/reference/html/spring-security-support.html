@@ -466,7 +466,7 @@ public class RoleController {
 <pre>spring:
   cloud:
     azure:
-      active-directory
+      active-directory:
         redirect-uri-template: ${REDIRECT-URI-TEMPLATE}</pre>
 </div>
 </div>
@@ -1613,7 +1613,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 </div>
 <div class="sect4">
-<h5 id="usage-2-web-application-accessing-resource-servers"><a class="link" href="#usage-2-web-application-accessing-resource-servers">Usage 2: Web Application Accessing Resource Servers</a></h5>
+<h5 id="_usage_2_web_application_accessing_resource_servers"><a class="link" href="#_usage_2_web_application_accessing_resource_servers">Usage 2: Web Application Accessing Resource Servers</a></h5>
 <div class="paragraph">
 <p>This scenario is based on <strong>Accessing a web application</strong> scenario to allow application to access other resources, that is [The OAuth 2.0 client credentials grant] flow.</p>
 </div>
@@ -1633,7 +1633,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_URL</code>, then <strong>Save</strong>.</p>
 </li>
 <li>
-<p>Step 5: Select <strong>Manifest</strong> on your left, and then paste the below json segment into <code>appRoles</code> array,
+<p>Step 5: Select <strong>Manifest</strong> on your left, and then paste the following json segment into <code>appRoles</code> array,
 record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_URL</code>, record the value of the app role as your <code>WEB_API_A_ROLE_VALUE</code>, then <strong>save</strong>.</p>
 </li>
 </ul>
@@ -1755,7 +1755,7 @@ record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_UR
 <div class="ulist">
 <ul>
 <li>
-<p>Step 11: Please refer to <strong>Accessing a resource server</strong> section to write your <code>WebApiA</code> Java code.</p>
+<p>Step 11: See <strong>Accessing a resource server</strong> section to write your <code>WebApiA</code> Java code.</p>
 </li>
 <li>
 <p>Step 12: Build and test your app</p>
@@ -2040,7 +2040,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 <div class="sect3">
 <h4 id="_samples_5"><a class="link" href="#_samples_5">Samples</a></h4>
 <div class="paragraph">
-<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0/aad/spring-cloud-azure-starter-active-directory-b2c">spring-cloud-azure-starter-active-directory-b2c samples</a> for more details.</p>
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.1.0/aad/spring-cloud-azure-starter-active-directory-b2c">spring-cloud-azure-starter-active-directory-b2c samples</a> for more details.</p>
 </div>
 </div>
 </div>
