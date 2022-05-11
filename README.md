@@ -10,6 +10,6 @@ Spring Cloud Azure is an open-source project that provides seamless Spring integ
 
 - Documentation:
     - [Documentation in GitHub pages](https://microsoft.github.io/spring-cloud-azure).
-    - [Documentation in Microsoft docs](https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/)
+    - [Documentation in Microsoft docs](https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/).
 - Samples: [Azure-Samples/azure-spring-boot-samples](https://github.com/Azure-Samples/azure-spring-boot-samples).
 - Source code: [Azure/azure-sdk-for-java/sdk/spring](https://github.com/Azure/azure-sdk-for-java/tree/master/sdk/spring).
