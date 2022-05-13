@@ -1,0 +1,14 @@
+{
+  "ignorePatterns": [
+    {
+      "pattern": "^http://localhost"
+    },
+    {
+      "pattern": "^https://localhost"
+    },
+    {
+      "pattern": "https://my.custom.endpoint.com:55300"
+    }
+  ],
+  "aliveStatusCodes": [200]
+}
