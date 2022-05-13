@@ -44,13 +44,13 @@ jobs:
         run: |
           ./mvnw clean install -P docs -pl docs -DskipTests
 
-      - name: Html Link Checker
+      - name: Check link in generated html files
         id: html-link-report
         uses: peter-evans/link-checker@v1
         with:
-          args: -d --document-root ./docs/target/generated-docs -r -x "my|localhost|127.0.0.1"
+          args: -d --document-root ./docs/target/generated-docs -r -x "https://my.custom.endpoint.com:55300|localhost"
 
-      - name: Link version replacement
+      - name: Replace bata to main in html-link-report result
         run: |
           if [ -d "link-checker/" ] ; then
              cd link-checker
@@ -59,11 +59,11 @@ jobs:
              sudo mv out.md ../
           fi
 
-      - name: Markdown Links Check
+      - name: Check link in all markdown files
         id: markdown-link-report
         uses: peter-evans/link-checker@v1
         with:
-          args: -d . -v -r -x "my|localhost|127.0.0.1" *.md
+          args: -d . -v -r -x "https://my.custom.endpoint.com:55300|localhost" *.md
 
       - name: Fail if there were link errors
         run: exit ${{ steps.markdown-link-report.outputs.exit_code }}
