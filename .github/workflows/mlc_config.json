@@ -10,5 +10,6 @@
       "pattern": "https://my.custom.endpoint.com:55300"
     }
   ],
+  "timeout": "20s",
   "aliveStatusCodes": [200]
 }
