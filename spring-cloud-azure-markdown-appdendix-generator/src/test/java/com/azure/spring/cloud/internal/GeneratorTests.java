@@ -49,7 +49,7 @@ class GeneratorTests {
 			}
 		};
 		File file = getOutputFilePath();
-		String outputFile = file.toString().replaceAll("\\\\", "/");
+		String outputFile = file.getPath().replaceAll("\\\\", "/");
 		generator.generate(outputFile, INCLUSION_PATTERN, DATE);
 		then(file).doesNotExist();
 	}
@@ -73,27 +73,24 @@ class GeneratorTests {
 			}
 		};
 		File file = getOutputFilePath();
-		String outputFile = file.toString().replaceAll("\\\\", "/");
+		String outputFile = file.getPath().replaceAll("\\\\", "/");
 		generator.generate(outputFile, INCLUSION_PATTERN, DATE);
 		then(file).exists();
 		assert compareFile(outputFile) : "Files are different!";
 	}
 
 	private Boolean compareFile(String file2) {
-		boolean result = true;
+		boolean result = false;
 		try {
 			BufferedInputStream inFile1 = new BufferedInputStream(
 					new FileInputStream("src/test/resources/configuration-properties-output.md"));
 			BufferedInputStream inFile2 = new BufferedInputStream(new FileInputStream(file2));
 			if (inFile1.available() == inFile2.available()) {
 				while (inFile1.read() != -1 && inFile2.read() != -1) {
-					if (inFile1.read() != inFile2.read()) {
-						result = false;
+					if (inFile1.read() == inFile2.read()) {
+						result = true;
 					}
 				}
-			}
-			else {
-				result = false;
 			}
 			inFile1.close();
 			inFile2.close();
