@@ -52,15 +52,18 @@ jobs:
 
       - name: Link version replacement
         run: |
-          cd link-checker
-          sudo sed -i 's/spring-cloud-azure_*.*.*-beta.[0-9]/main/g' *
-          sudo sed -i 's/```/ /g' *
+          if [ -d "link-checker/" ] ; then
+             cd link-checker
+             sudo sed -i 's/spring-cloud-azure_*.*.*-beta.[0-9]/main/g' *
+             sudo sed -i 's/```/ /g' *
+             sudo mv out.md ../
+          fi
 
       - name: Markdown Links Check
         id: markdown-link-report
         uses: peter-evans/link-checker@v1
         with:
-          args: -d --document-root ./link-checker -v -r *.md
+          args: -d . -v -r -x "my|localhost|127.0.0.1" *.md
 
       - name: Fail if there were link errors
         run: exit ${{ steps.markdown-link-report.outputs.exit_code }}
