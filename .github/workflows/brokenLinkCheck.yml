@@ -59,11 +59,12 @@ jobs:
              sudo mv out.md ../
           fi
 
-      - name: Check link in all markdown files
-        id: markdown-link-report
-        uses: peter-evans/link-checker@v1
-        with:
-          args: -d . -v -r -x "https://my.custom.endpoint.com:55300|localhost" *.md
+      - uses: actions/checkout@master
 
-      - name: Fail if there were link errors
-        run: exit ${{ steps.markdown-link-report.outputs.exit_code }}
+      - name: Check link in all markdown files
+        uses: gaurav-nelson/github-action-markdown-link-check@1.0.13
+        with:
+          use-quiet-mode: 'yes'
+          use-verbose-mode: 'yes'
+          config-file: '.github/workflows/mlc_config.json'
+
