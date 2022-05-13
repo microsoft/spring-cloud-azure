@@ -24,15 +24,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Objects;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -45,211 +45,173 @@ import org.springframework.util.StreamUtils;
  */
 public final class Main {
 
-    private Main() {
-    }
+	private Main() {
+	}
 
-    public static void main(String... args) {
+	public static void main(String... args) {
+		String outputFile = args[0].replace("adoc", "md").replace("_", "");
+		String inclusionPattern = args.length > 1 ? args[1] : ".*";
+		File parent = new File(outputFile).getParentFile();
+		if (!parent.exists()) {
+			System.out.println(
+					"No parent directory [" + parent + "] found. Will not generate the configuration properties file");
+			return;
+		}
+		new Generator().generate(outputFile, inclusionPattern, getCurrentDate());
+	}
 
-        String outputFile = args[0];
-        outputFile = outputFile.replace("adoc", "md").replace("_", "");
-        String inclusionPattern = args.length > 1 ? args[1] : ".*";
-        File parent = new File(outputFile).getParentFile();
-        if (!parent.exists()) {
-            System.out.println(
-                    "No parent directory [" + parent + "] found. Will not generate the configuration properties file");
-            return;
-        }
-        new Generator().generate(outputFile, inclusionPattern);
-    }
+	static String getCurrentDate() {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+		simpleDateFormat.applyPattern("MM/dd/yyyy");
+		Date date = new Date();
+		return simpleDateFormat.format(date);
+	}
 
-    /**
-     * Generate Markdown files based on prefix and filename.
-     */
-    static class Generator {
+	/**
+	 * Generate Markdown files based on prefix and filename.
+	 */
+	static class Generator {
 
-        void generate(String outputFile, String inclusionPattern) {
-            try {
-                System.out.println("Parsing all configuration metadata");
-                Resource[] resources = getResources();
-                System.out.println("Found [" + resources.length + "] configuration metadata jsons");
-                TreeSet<String> names = new TreeSet<>();
-                Map<String, ConfigValue> descriptions = new HashMap<>();
-                final AtomicInteger count = new AtomicInteger();
-                final AtomicInteger matchingPropertyCount = new AtomicInteger();
-                final AtomicInteger propertyCount = new AtomicInteger();
-                Pattern pattern = Pattern.compile(inclusionPattern);
-                ObjectMapper objectMapper = new ObjectMapper();
-                for (Resource resource : resources) {
-                    if (resourceNameContainsPattern(resource)) {
-                        count.incrementAndGet();
-                        byte[] bytes = StreamUtils.copyToByteArray(resource.getInputStream());
-                        Map<String, Object> response = objectMapper.readValue(bytes, HashMap.class);
-                        List<Map<String, Object>> properties = (List<Map<String, Object>>) response.get("properties");
-                        properties.forEach(val -> {
-                            propertyCount.incrementAndGet();
-                            String name = String.valueOf(val.get("name"));
-                            if (!pattern.matcher(name).matches()) {
-                                return;
-                            }
-                            Object description = val.get("description");
-                            Object defaultValue = val.get("defaultValue");
-                            matchingPropertyCount.incrementAndGet();
-                            names.add(name);
-                            descriptions.put(name, new ConfigValue(name, defaultValue == null ? description
-                                    : description + " The default value is " + "`" + defaultValue + "`" + "."));
-                        });
-                    }
-                }
-                System.out.println(
-                        "Found [" + count + "] Cloud projects configuration metadata jsons. [" + matchingPropertyCount
-                                + "/" + propertyCount + "] were matching the pattern [" + inclusionPattern + "]");
-                System.out.println("Successfully built the description table");
-                if (names.isEmpty()) {
-                    System.out.println("Will not update the table, since no configuration properties were found!");
-                    return;
-                }
+		/**
+		 * Generate files prefixed with _configuration-properties.
+		 * @param outputFile the output file
+		 * @param inclusionPattern the inclusion pattern
+		 */
+		void generate(String outputFile, String inclusionPattern, String date) {
+			try {
+				System.out.println("Parsing all configuration metadata");
+				List<Resource> resources = getSpringConfigurationMetadataJsonFilesInClasspath();
+				Map<String, Object> descriptions = new HashMap<>();
+				int count = 0;
+				int propertyCount = 0;
+				Pattern pattern = Pattern.compile(inclusionPattern);
+				ObjectMapper objectMapper = new ObjectMapper();
+				for (Resource resource : resources) {
+					byte[] bytes = StreamUtils.copyToByteArray(resource.getInputStream());
+					Map<String, Object> rootMap = objectMapper.readValue(bytes, HashMap.class);
+					List<Map<String, Object>> properties = (List<Map<String, Object>>) rootMap.get("properties");
+					count++;
+					propertyCount += properties.size();
+					properties.forEach(propertyItem -> {
+						String name = String.valueOf(propertyItem.get("name"));
+						if (!pattern.matcher(name).matches()) {
+							return;
+						}
+						Object description = propertyItem.get("description");
+						Object defaultValue = propertyItem.get("defaultValue");
+						descriptions.put(name, defaultValue == null ? description
+								: description + " The default value is " + "`" + defaultValue + "`" + ".");
+					});
+				}
+				System.out.println(
+						"Found [" + count + "] Azure projects configuration metadata jsons. [" + descriptions.size()
+								+ "/" + propertyCount + "] were matching the pattern [" + inclusionPattern + "]");
+				System.out.println("Successfully built the description table");
+				if (descriptions.isEmpty()) {
+					System.out.println("Will not update the table, since no configuration properties were found!");
+					return;
+				}
+				generatePropertiesFile(outputFile, descriptions, date);
+			}
+			catch (IOException e) {
+				throw new IllegalStateException(e);
+			}
+		}
 
-                int[] offset = new int[2];
-                String[] key = new String[1];
-                descriptions.keySet().stream().max(Comparator.comparingInt(String::length))
-                        .ifPresent(longest -> offset[0] = longest.length());
-                names.stream().max(Comparator.comparingInt(aName -> descriptions.get(aName).getDescription().length()))
-                        .ifPresent(longest -> key[0] = longest);
-                offset[1] = descriptions.get(key[0]).getDescription().trim().length();
-                generatePropertiesFiles(outputFile, names, descriptions, offset);
-            }
-            catch (IOException e) {
-                throw new IllegalStateException(e);
-            }
-        }
+		/**
+		 * Get all "spring-configuration-metadata.json" files in classpath.
+		 */
+		protected List<Resource> getSpringConfigurationMetadataJsonFilesInClasspath() throws IOException {
+			Resource[] resources = new PathMatchingResourcePatternResolver()
+					.getResources("classpath*:/META-INF/spring-configuration-metadata.json");
+			return Arrays.stream(resources).filter(resource -> {
+				try {
+					return resource.getURL().toString().contains("azure");
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+				}
+				return false;
+			}).collect(Collectors.toList());
+		}
 
-        /**
-         * Prefix check.
-         */
-        protected boolean resourceNameContainsPattern(Resource resource) {
-            try {
-                return resource.getURL().toString().contains("cloud");
-            }
-            catch (Exception e) {
-                System.out.println("Exception [" + e + "] for resource [" + resource
-                        + "] occurred while trying to retrieve its URL");
-                return false;
-            }
-        }
+		private String paddingWithChar(String string, char c, int resultLength) {
+			if ('-' == c) {
+				return String.format("%1$-" + resultLength + "s", string.trim()).replace(' ', c);
+			}
+			else {
+				return String.format("%1$-" + resultLength + "s", string.trim());
+			}
+		}
 
-        /**
-         * Get configuration properties name and descriptions.
-         */
-        protected Resource[] getResources() throws IOException {
-            return new PathMatchingResourcePatternResolver()
-                    .getResources("classpath*:/META-INF/spring-configuration-metadata.json");
-        }
+		private String capitalize(String letters) {
+			if ("db".equals(letters) | "jms".equals(letters) | "b2c".equals(letters)) {
+				return letters.toUpperCase();
+			}
+			else {
+				return letters.substring(0, 1).toUpperCase().concat(letters.substring(1));
+			}
+		}
 
-        private String getCurrentDate() {
-            SimpleDateFormat sdf = new SimpleDateFormat();
-            sdf.applyPattern("MM/dd/yyyy");
-            Date date = new Date();
-            return sdf.format(date);
-        }
+		private String generateAnchorName(String outputFile) {
+			outputFile = outputFile.substring(outputFile.lastIndexOf("/") + "_configuration-properties-".length(),
+					outputFile.lastIndexOf(".")).replace('-', ' ').trim();
+			if ("all".equals(outputFile)) {
+				return "List of configuration";
+			}
+			String[] value = outputFile.split(" ");
+			StringBuilder result = new StringBuilder(" ");
+			for (String s : value) {
+				result.append(capitalize(s)).append(" ");
+			}
+			return result.toString().trim();
+		}
 
-        private String paddingWithChar(String printableStr, char c, int maxLength) {
-            String trimmedString = printableStr.trim();
-            return printableStr + String.join("", Collections.nCopies(maxLength - trimmedString.length(), c + ""));
-        }
+		private void generatePropertiesFile(String outputFile, Map<String, Object> descriptions, String date) {
+			int nameColumnWidth = Objects
+					.requireNonNull(
+							descriptions.keySet().stream().max(Comparator.comparingInt(String::length)).orElse(null))
+					.trim().length();
+			int descriptionColumnWidth = descriptions.values().stream().map(Object::toString)
+					.max(Comparator.comparingInt(String::length)).orElse(null).trim().length();
+			Path path = Paths.get(outputFile);
+			try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+				writer.write("---");
+				writer.newLine();
+				writer.write("ms.author: v-yonghuiye");
+				writer.newLine();
+				writer.write("ms.date: " + date);
+				writer.newLine();
+				writer.write("---");
+				writer.newLine();
+				writer.newLine();
+				writer.write("## " + generateAnchorName(outputFile) + " properties");
+				writer.newLine();
+				writer.newLine();
+				writer.write("> [!div class=\"mx-tdBreakAll\"]");
+				writer.newLine();
+				String propertyHeader = paddingWithChar("Property", ' ', nameColumnWidth + 1);
+				String descriptionHeader = paddingWithChar("Description", ' ', descriptionColumnWidth + 1);
+				writer.write("> | " + propertyHeader + "| " + descriptionHeader + "|");
+				writer.newLine();
+				String markdownTableCol1 = paddingWithChar("", '-', nameColumnWidth + 2);
+				String markdownTableCol2 = paddingWithChar("", '-', descriptionColumnWidth + 2);
+				writer.write("> |" + markdownTableCol1 + "|" + markdownTableCol2 + "|");
+				writer.newLine();
+				for (Map.Entry<String, Object> description : descriptions.entrySet()) {
+					String nameCol = paddingWithChar(description.getKey(), ' ', nameColumnWidth);
+					String descriptionCol = paddingWithChar(description.getValue().toString(), ' ',
+							descriptionColumnWidth);
+					writer.write("> | " + nameCol + " | " + descriptionCol + " |");
+					writer.newLine();
+				}
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+			System.out.println("Successfully stored the output Markdown file!");
+		}
 
-        private String capitalize(String letters) {
-            if ("db".equals(letters) | "jms".equals(letters) | "b2c".equals(letters)) {
-                return letters.toUpperCase();
-            }
-            else {
-                return letters.substring(0, 1).toUpperCase().concat(letters.substring(1));
-            }
-        }
-
-        private String generateAnchorName(String outputFile) {
-            outputFile = outputFile.substring(outputFile.lastIndexOf("/") + 26, outputFile.lastIndexOf("."))
-                    .replace('-', ' ');
-            if ("all".equals(outputFile)) {
-                return "List of configuration";
-            }
-            String[] value = outputFile.split(" ");
-            StringBuilder result = new StringBuilder(" ");
-            for (String s : value) {
-                result.append(capitalize(s)).append(" ");
-            }
-            return result.toString().trim();
-        }
-
-        private void generatePropertiesFiles(String outputFile, TreeSet<String> names,
-                Map<String, ConfigValue> descriptions, int[] offset) {
-            Path path = Paths.get(outputFile);
-            try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-                writer.write("---");
-                writer.newLine();
-                writer.write("ms.author: v-yonghuiye");
-                writer.newLine();
-                writer.write("ms.date: " + getCurrentDate());
-                writer.newLine();
-                writer.write("---");
-                writer.newLine();
-                writer.newLine();
-                writer.write("## " + generateAnchorName(outputFile) + " properties");
-                writer.newLine();
-                writer.newLine();
-                writer.write("> [!div class=\"mx-tdBreakAll\"]");
-                writer.newLine();
-                String propertyHeader = paddingWithChar(" Property", ' ', offset[0] + 1);
-                String descriptionHeader = paddingWithChar(" Description", ' ', offset[1] + 1);
-                writer.write("> |" + propertyHeader + "|" + descriptionHeader + "|");
-                writer.newLine();
-                String markdownTableCol1 = paddingWithChar("", '-', offset[0] + 2);
-                String markdownTableCol2 = paddingWithChar("", '-', offset[1] + 2);
-                writer.write("> |" + markdownTableCol1 + "|" + markdownTableCol2 + "|");
-                writer.newLine();
-                for (String name : names) {
-                    ConfigValue configValue = descriptions.get(name);
-                    String nameCol = paddingWithChar(configValue.getName(), ' ', offset[0]);
-                    String descriptionCol = paddingWithChar(configValue.getDescription(), ' ', offset[1]);
-                    writer.write("> | " + nameCol + " | " + descriptionCol + " |");
-                    writer.newLine();
-                }
-
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-            System.out.println("Successfully stored the output Markdown file!");
-        }
-
-    }
-
-    static class ConfigValue {
-
-        public String name;
-
-        public String description;
-
-        ConfigValue(String name, Object description) {
-            this.name = name;
-            this.description = escapedValue(description);
-        }
-
-        private String escapedValue(Object value) {
-            return value != null ? value.toString().replaceAll("\\|", "\\\\|") : "";
-        }
-
-        public String toString() {
-            return "| " + name + " | " + description;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-    }
+	}
 
 }
