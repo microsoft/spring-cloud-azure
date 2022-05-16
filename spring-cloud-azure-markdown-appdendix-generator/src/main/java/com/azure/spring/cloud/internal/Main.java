@@ -108,7 +108,7 @@ public final class Main {
 						}
 						String description = String.valueOf(propertyItem.get("description"));
 						String defaultValue = String.valueOf(propertyItem.get("defaultValue"));
-						descriptions.put(name, defaultValue == null ? description
+						descriptions.put(name, defaultValue == null || defaultValue.equals("null") ? description
 								: description + " The default value is " + "`" + defaultValue + "`" + ".");
 					});
 				}

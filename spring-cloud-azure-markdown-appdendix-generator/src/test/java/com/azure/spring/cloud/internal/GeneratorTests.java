@@ -43,7 +43,7 @@ class GeneratorTests {
 	public void before() {
 		File file = getOutputFilePath();
 		if (file.delete()) {
-			System.out.println("File deleted");
+			System.out.println("File deleted!");
 		}
 	}
 
