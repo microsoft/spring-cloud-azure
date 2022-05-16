@@ -59,7 +59,7 @@ jobs:
              sudo mv out.md ../
           fi
 
-      - name: Remove markdown files that don't check for links
+      - name: Remove files generated at build-time.
         run: |
           ./mvnw clean
 
