@@ -34,7 +34,7 @@ jobs:
             -f sdk/spring/pom.xml
 
       - uses: actions/checkout@v3
-      - name: Checkout microsoft/spring-cloud-azure
+        name: Checkout microsoft/spring-cloud-azure
 
       - name: Generate configuration properties files
         run: |
