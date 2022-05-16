@@ -59,11 +59,13 @@ jobs:
              sudo mv out.md ../
           fi
 
+      - name: Remove markdown files that don't check for links
+        run: |
+          ./mvnw clean
+
       - name: Check link in all markdown files
         uses: gaurav-nelson/github-action-markdown-link-check@1.0.13
         with:
           use-quiet-mode: 'yes'
           use-verbose-mode: 'yes'
           config-file: '.github/workflows/markdown_link_check_config.json'
-          folder-path: '.'
-          max-depth: 1
