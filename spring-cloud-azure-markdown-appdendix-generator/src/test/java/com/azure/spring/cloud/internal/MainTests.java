@@ -25,7 +25,7 @@ import static org.assertj.core.api.BDDAssertions.then;
 class MainTests {
 
 	@Test
-	void should_do_nothing_when_parent_dir_is_not_found() {
+	void notCreateFileWhenNoParentDirectoryFound() {
 		File nonExistantFile = new File("/this/file/does/not/exist");
 
 		Main.main(nonExistantFile.getAbsolutePath());

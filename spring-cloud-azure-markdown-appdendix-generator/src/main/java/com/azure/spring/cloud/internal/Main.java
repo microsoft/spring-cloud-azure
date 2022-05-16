@@ -25,14 +25,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -41,13 +41,19 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.StreamUtils;
 
 /**
- * Generate Markdown files.
+ * Generate markdown files with configuration properties based on the path of the file to
+ * be output and the pattern included in the properties.
  */
 public final class Main {
 
 	private Main() {
 	}
 
+	/**
+	 * When the parent dictionary is found, change the suffix of the output file to md and
+	 * remove the "_" from the filename, generate configuration properties markdown files.
+	 * @param args arg[0] the output file, arg[1] the properties inclusion pattern
+	 */
 	public static void main(String... args) {
 		String outputFile = args[0].replace("adoc", "md").replace("_", "");
 		String inclusionPattern = args.length > 1 ? args[1] : ".*";
@@ -57,10 +63,14 @@ public final class Main {
 					"No parent directory [" + parent + "] found. Will not generate the configuration properties file");
 			return;
 		}
-		new Generator().generate(outputFile, inclusionPattern, getCurrentDate());
+		new Generator().generate(outputFile, inclusionPattern, getCurrentDateString());
 	}
 
-	static String getCurrentDate() {
+	/**
+	 * Get current date string.
+	 * @return the current date string
+	 */
+	static String getCurrentDateString() {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
 		simpleDateFormat.applyPattern("MM/dd/yyyy");
 		Date date = new Date();
@@ -68,21 +78,21 @@ public final class Main {
 	}
 
 	/**
-	 * Generate Markdown files based on prefix and filename.
+	 * Generate Markdown files based on properties and filename.
 	 */
 	static class Generator {
 
 		/**
-		 * Generate files prefixed with _configuration-properties.
+		 * Generate files prefixed with configuration-properties.
 		 * @param outputFile the output file
 		 * @param inclusionPattern the inclusion pattern
+		 * @param date the current date string
 		 */
 		void generate(String outputFile, String inclusionPattern, String date) {
 			try {
 				System.out.println("Parsing all configuration metadata");
 				List<Resource> resources = getSpringConfigurationMetadataJsonFilesInClasspath();
-				Map<String, Object> descriptions = new HashMap<>();
-				int count = 0;
+				TreeMap<String, String> descriptions = new TreeMap<>();
 				int propertyCount = 0;
 				Pattern pattern = Pattern.compile(inclusionPattern);
 				ObjectMapper objectMapper = new ObjectMapper();
@@ -90,22 +100,21 @@ public final class Main {
 					byte[] bytes = StreamUtils.copyToByteArray(resource.getInputStream());
 					Map<String, Object> rootMap = objectMapper.readValue(bytes, HashMap.class);
 					List<Map<String, Object>> properties = (List<Map<String, Object>>) rootMap.get("properties");
-					count++;
 					propertyCount += properties.size();
 					properties.forEach(propertyItem -> {
 						String name = String.valueOf(propertyItem.get("name"));
 						if (!pattern.matcher(name).matches()) {
 							return;
 						}
-						Object description = propertyItem.get("description");
-						Object defaultValue = propertyItem.get("defaultValue");
+						String description = String.valueOf(propertyItem.get("description"));
+						String defaultValue = String.valueOf(propertyItem.get("defaultValue"));
 						descriptions.put(name, defaultValue == null ? description
 								: description + " The default value is " + "`" + defaultValue + "`" + ".");
 					});
 				}
-				System.out.println(
-						"Found [" + count + "] Azure projects configuration metadata jsons. [" + descriptions.size()
-								+ "/" + propertyCount + "] were matching the pattern [" + inclusionPattern + "]");
+				System.out.println("Found [" + resources.size() + "] Azure projects configuration metadata jsons. ["
+						+ descriptions.size() + "/" + propertyCount + "] were matching the pattern [" + inclusionPattern
+						+ "]");
 				System.out.println("Successfully built the description table");
 				if (descriptions.isEmpty()) {
 					System.out.println("Will not update the table, since no configuration properties were found!");
@@ -120,6 +129,9 @@ public final class Main {
 
 		/**
 		 * Get all "spring-configuration-metadata.json" files in classpath.
+		 * @return a result set containing the specified fields
+		 * @throws IOException did not get any "spring-configuration-metadata.json" files
+		 * in classpath
 		 */
 		protected List<Resource> getSpringConfigurationMetadataJsonFilesInClasspath() throws IOException {
 			Resource[] resources = new PathMatchingResourcePatternResolver()
@@ -135,16 +147,27 @@ public final class Main {
 			}).collect(Collectors.toList());
 		}
 
+		/**
+		 * Padding the string to the required length.
+		 * @param string the string to padding
+		 * @param c the padding content
+		 * @param resultLength the length of padding
+		 * @return the padded string
+		 */
 		private String paddingWithChar(String string, char c, int resultLength) {
-			if ('-' == c) {
-				return String.format("%1$-" + resultLength + "s", string.trim()).replace(' ', c);
+			String result = String.format("%1$-" + resultLength + "s", string.trim());
+			if (' ' != c) {
+				return result.replace(' ', c);
 			}
-			else {
-				return String.format("%1$-" + resultLength + "s", string.trim());
-			}
+			return result;
 		}
 
-		private String capitalize(String letters) {
+		/**
+		 * Uppercase string.
+		 * @param letters the uppercase string required
+		 * @return the uppercase string
+		 */
+		private String uppercaseString(String letters) {
 			if ("db".equals(letters) | "jms".equals(letters) | "b2c".equals(letters)) {
 				return letters.toUpperCase();
 			}
@@ -153,6 +176,11 @@ public final class Main {
 			}
 		}
 
+		/**
+		 * Generate anchor name for markdown files.
+		 * @param outputFile the output file
+		 * @return the anchor name
+		 */
 		private String generateAnchorName(String outputFile) {
 			outputFile = outputFile.substring(outputFile.lastIndexOf("/") + "_configuration-properties-".length(),
 					outputFile.lastIndexOf(".")).replace('-', ' ').trim();
@@ -162,18 +190,30 @@ public final class Main {
 			String[] value = outputFile.split(" ");
 			StringBuilder result = new StringBuilder(" ");
 			for (String s : value) {
-				result.append(capitalize(s)).append(" ");
+				result.append(uppercaseString(s)).append(" ");
 			}
 			return result.toString().trim();
 		}
 
-		private void generatePropertiesFile(String outputFile, Map<String, Object> descriptions, String date) {
-			int nameColumnWidth = Objects
-					.requireNonNull(
-							descriptions.keySet().stream().max(Comparator.comparingInt(String::length)).orElse(null))
-					.trim().length();
-			int descriptionColumnWidth = descriptions.values().stream().map(Object::toString)
-					.max(Comparator.comparingInt(String::length)).orElse(null).trim().length();
+		/**
+		 * Compare the lengths of elements in the given result set and return the max
+		 * length.
+		 * @param stringStream the result sets to compare
+		 * @return the max length
+		 */
+		private int getMaxLength(Stream<String> stringStream) {
+			return stringStream.map(String::trim).mapToInt(String::length).max().orElse(0);
+		}
+
+		/**
+		 * Generate propertie markdown files.
+		 * @param outputFile the output file
+		 * @param descriptions the result set of properties and their descriptions
+		 * @param date the current date string
+		 */
+		private void generatePropertiesFile(String outputFile, TreeMap<String, String> descriptions, String date) {
+			int nameColumnWidth = getMaxLength(descriptions.keySet().stream());
+			int descriptionColumnWidth = getMaxLength(descriptions.values().stream());
 			Path path = Paths.get(outputFile);
 			try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 				writer.write("---");
@@ -198,10 +238,9 @@ public final class Main {
 				String markdownTableCol2 = paddingWithChar("", '-', descriptionColumnWidth + 2);
 				writer.write("> |" + markdownTableCol1 + "|" + markdownTableCol2 + "|");
 				writer.newLine();
-				for (Map.Entry<String, Object> description : descriptions.entrySet()) {
+				for (Map.Entry<String, String> description : descriptions.entrySet()) {
 					String nameCol = paddingWithChar(description.getKey(), ' ', nameColumnWidth);
-					String descriptionCol = paddingWithChar(description.getValue().toString(), ' ',
-							descriptionColumnWidth);
+					String descriptionCol = paddingWithChar(description.getValue(), ' ', descriptionColumnWidth);
 					writer.write("> | " + nameCol + " | " + descriptionCol + " |");
 					writer.newLine();
 				}

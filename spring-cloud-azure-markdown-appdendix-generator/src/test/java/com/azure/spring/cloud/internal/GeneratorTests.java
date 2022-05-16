@@ -20,13 +20,12 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.core.io.Resource;
@@ -40,8 +39,16 @@ class GeneratorTests {
 
 	private static final String INCLUSION_PATTERN = "spring.cloud.azure.*";
 
+	@BeforeEach
+	public void before() {
+		File file = getOutputFilePath();
+		if (file.delete()) {
+			System.out.println("File deleted");
+		}
+	}
+
 	@Test
-	void notCreateFileNoPropertiesFound() throws URISyntaxException {
+	void notCreateFileWhenNoPropertiesFound() {
 		Main.Generator generator = new Main.Generator() {
 			@Override
 			protected List<Resource> getSpringConfigurationMetadataJsonFilesInClasspath() {
@@ -55,21 +62,13 @@ class GeneratorTests {
 	}
 
 	@Test
-	void CreateFilePropertiesFound() throws URISyntaxException {
+	void createFileWhenPropertiesFound() {
 		Main.Generator generator = new Main.Generator() {
 			@Override
 			protected List<Resource> getSpringConfigurationMetadataJsonFilesInClasspath() throws IOException {
 				Resource[] resources = new PathMatchingResourcePatternResolver()
 						.getResources("/with-azure-in-name.json");
-				return Arrays.stream(resources).filter(resource -> {
-					try {
-						return resource.getURL().toString().contains("azure");
-					}
-					catch (IOException e) {
-						e.printStackTrace();
-					}
-					return false;
-				}).collect(Collectors.toList());
+				return Arrays.asList(resources);
 			}
 		};
 		File file = getOutputFilePath();
@@ -81,10 +80,9 @@ class GeneratorTests {
 
 	private Boolean compareFile(String file2) {
 		boolean result = false;
-		try {
-			BufferedInputStream inFile1 = new BufferedInputStream(
-					new FileInputStream("src/test/resources/configuration-properties-output.md"));
-			BufferedInputStream inFile2 = new BufferedInputStream(new FileInputStream(file2));
+		try (BufferedInputStream inFile1 = new BufferedInputStream(
+				new FileInputStream("src/test/resources/configuration-properties-output.md"));
+				BufferedInputStream inFile2 = new BufferedInputStream(new FileInputStream(file2))) {
 			if (inFile1.available() == inFile2.available()) {
 				while (inFile1.read() != -1 && inFile2.read() != -1) {
 					if (inFile1.read() == inFile2.read()) {
@@ -92,8 +90,6 @@ class GeneratorTests {
 					}
 				}
 			}
-			inFile1.close();
-			inFile2.close();
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -101,10 +97,14 @@ class GeneratorTests {
 		return result;
 	}
 
-	private File getOutputFilePath() throws URISyntaxException {
-		URL root = GeneratorTests.class.getResource(".");
-		assert root != null;
-		return new File(root.toURI().toString().substring(6), "configuration-properties-output.md");
+	private File getOutputFilePath() {
+		URL root = this.getClass().getResource(".");
+		if (root == null) {
+			throw new IllegalArgumentException("The output file path is not found!");
+		}
+		else {
+			return new File(root.getPath(), "configuration-properties-output.md");
+		}
 	}
 
 }
