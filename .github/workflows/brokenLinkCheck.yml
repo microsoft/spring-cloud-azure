@@ -59,11 +59,11 @@ jobs:
              sudo mv out.md ../
           fi
 
-      - uses: actions/checkout@master
-
       - name: Check link in all markdown files
         uses: gaurav-nelson/github-action-markdown-link-check@1.0.13
         with:
           use-quiet-mode: 'yes'
           use-verbose-mode: 'yes'
-          config-file: '.github/workflows/mlc_config.json'
+          config-file: '.github/workflows/markdown_link_check_config.json'
+          folder-path: '.'
+          max-depth: 1
