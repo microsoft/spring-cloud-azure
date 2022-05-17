@@ -80,7 +80,7 @@ jobs:
           fi
           cp -f ../spring-cloud-azure-markdown-appdendix-generator/src/main/asciidoc/configuration-*.md articles/java/spring-framework/includes/spring-cloud-azure
           if [[ -n "$(git status -s)" ]] ;then
-            echo '::set-output name=whether_to_create_pr::true'
+            echo '::set-output name=added_a_commit_in_topic_branch::true'
             git add ./articles/java/spring-framework/includes/spring-cloud-azure/configuration-*.md
             git commit -m "Update the configuration properties for Spring Cloud Azure: ${{ steps.get_project_version_and_branch_name.outputs.project_version }}. This commit is created by GitHub Action: https://github.com/microsoft/spring-cloud-azure/actions"
             git push "https://${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_USERNAME }}:${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_ACCESS_TOKEN }}@github.com/${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_USERNAME }}/azure-dev-docs-pr.git"
@@ -89,7 +89,7 @@ jobs:
           fi
 
       - name: Create Pull Request
-        if: ${{ steps.check-whether-topic-branch-exist.outputs.topic_branch_exists == '0' && steps.commit_files_changes_to_topic_branch.outputs.whether_to_create_pr == 'true' }}
+        if: ${{ steps.check-whether-topic-branch-exist.outputs.topic_branch_exists == '0' && steps.commit_files_changes_to_topic_branch.outputs.added_a_commit_in_topic_branch == 'true' }}
         uses: vsoch/pull-request-action@master
         env:
           PULL_REQUEST_TOKEN: ${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_ACCESS_TOKEN }}
@@ -97,5 +97,5 @@ jobs:
           PULL_REQUEST_TITLE: "Update the configuration properties for Spring Cloud Azure: ${{ steps.get_project_version_and_branch_name.outputs.project_version }}"
           PULL_REQUEST_FROM_BRANCH: ${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_USERNAME }}:${{ steps.get_project_version_and_branch_name.outputs.branch_name }}
           PULL_REQUEST_BRANCH: "main"
-          PULL_REQUEST_BODY: "Update the configuration properties for Spring Cloud Azure: ${{ steps.get_project_version_and_branch_name.outputs.project_version }}."
+          PULL_REQUEST_BODY: "Update the configuration properties for Spring Cloud Azure: ${{ steps.get_project_version_and_branch_name.outputs.project_version }}. This PR is created by GitHub Actions: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}"
           PULL_REQUEST_DRAFT: true
