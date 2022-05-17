@@ -63,7 +63,7 @@ class GeneratorTests {
 	}
 
 	@Test
-	void createFileWhenPropertiesFound() {
+	void createFileWhenPropertiesFound() throws IOException {
 		Main.Generator generator = new Main.Generator() {
 			@Override
 			protected List<Resource> getSpringConfigurationMetadataJsonFilesInClasspath() throws IOException {
@@ -79,14 +79,11 @@ class GeneratorTests {
 		compareFile(outputFile);
 	}
 
-	private void compareFile(String file2) {
+	private void compareFile(String file2) throws IOException {
 		try (BufferedInputStream inFile1 = new BufferedInputStream(
 				new FileInputStream("src/test/resources/configuration-properties-output.md"));
 				BufferedInputStream inFile2 = new BufferedInputStream(new FileInputStream(file2))) {
 			Assertions.assertThat(inFile1).hasSameContentAs(inFile2);
-		}
-		catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 
