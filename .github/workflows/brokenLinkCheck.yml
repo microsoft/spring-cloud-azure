@@ -44,23 +44,28 @@ jobs:
         run: |
           ./mvnw clean install -P docs -pl docs -DskipTests
 
-      - name: Html Link Checker
+      - name: Check link in generated html files
         id: html-link-report
         uses: peter-evans/link-checker@v1
         with:
-          args: -d --document-root ./docs/target/generated-docs -r -x "my|localhost|127.0.0.1"
+          args: -d --document-root ./docs/target/generated-docs -r -x "https://my.custom.endpoint.com:55300|localhost"
 
-      - name: Link version replacement
+      - name: Replace bata to main in html-link-report result
         run: |
-          cd link-checker
-          sudo sed -i 's/spring-cloud-azure_*.*.*-beta.[0-9]/main/g' *
-          sudo sed -i 's/```/ /g' *
+          if [ -d "link-checker/" ] ; then
+             cd link-checker
+             sudo sed -i 's/spring-cloud-azure_*.*.*-beta.[0-9]/main/g' *
+             sudo sed -i 's/```/ /g' *
+             sudo mv out.md ../
+          fi
 
-      - name: Markdown Links Check
-        id: markdown-link-report
-        uses: peter-evans/link-checker@v1
+      - name: Remove files generated at build-time.
+        run: |
+          ./mvnw clean
+
+      - name: Check link in all markdown files
+        uses: gaurav-nelson/github-action-markdown-link-check@1.0.13
         with:
-          args: -d --document-root ./link-checker -v -r *.md
-
-      - name: Fail if there were link errors
-        run: exit ${{ steps.markdown-link-report.outputs.exit_code }}
+          use-quiet-mode: 'yes'
+          use-verbose-mode: 'yes'
+          config-file: '.github/workflows/markdown_link_check_config.json'

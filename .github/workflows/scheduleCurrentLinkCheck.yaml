@@ -19,5 +19,5 @@ jobs:
         uses: ScholliYT/Broken-Links-Crawler-Action@v3
         with:
           website_url: 'https://microsoft.github.io/spring-cloud-azure/'
-          exclude_url_prefix: 'http://localhost:,http://HOST_NAME:,http://127.0.0.1:,https://my.'
+          exclude_url_prefix: 'http://localhost:,http://HOST_NAME:,https://my.custom.endpoint.com:55300'
           verbose: 'true'
