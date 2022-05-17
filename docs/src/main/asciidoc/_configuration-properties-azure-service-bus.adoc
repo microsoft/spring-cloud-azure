@@ -225,10 +225,10 @@
 |spring.cloud.azure.servicebus.resource.resource-group |  | The resource group holds an Azure resource.
 |spring.cloud.azure.servicebus.resource.resource-id |  | ID of an Azure resource.
 |spring.cloud.azure.servicebus.retry-options.delay |  | Amount of time to wait between retry attempts. This is a legacy property.
-|spring.cloud.azure.servicebus.retry-options.maxDelay |  | Maximum permissible amount of time between retry attempts. This is a legacy property.
-|spring.cloud.azure.servicebus.retry-options.maxRetries |  | The maximum number of attempts. This is a legacy property.
-|spring.cloud.azure.servicebus.retry-options.retryMode |  | The type of approach to apply when calculating the delay between retry attempts. This is a legacy property.
-|spring.cloud.azure.servicebus.retry-options.tryTimeout |  | Amount of time to wait until a timeout. This is a legacy property.
+|spring.cloud.azure.servicebus.retry-options.max-delay |  | Maximum permissible amount of time between retry attempts. This is a legacy property.
+|spring.cloud.azure.servicebus.retry-options.max-retries |  | The maximum number of attempts. This is a legacy property.
+|spring.cloud.azure.servicebus.retry-options.retry-mode |  | The type of approach to apply when calculating the delay between retry attempts. This is a legacy property.
+|spring.cloud.azure.servicebus.retry-options.try-timeout |  | Amount of time to wait until a timeout. This is a legacy property.
 |spring.cloud.azure.servicebus.retry.exponential.base-delay |  | Amount of time to wait between retry attempts.
 |spring.cloud.azure.servicebus.retry.exponential.max-delay |  | Maximum permissible amount of time between retry attempts.
 |spring.cloud.azure.servicebus.retry.exponential.max-retries |  | The maximum number of attempts.

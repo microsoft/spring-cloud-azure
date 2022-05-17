@@ -8,6 +8,8 @@
 |spring.cloud.azure.storage.blob.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
 |spring.cloud.azure.storage.blob.client.connection-idle-timeout |  | Amount of time before an idle connection.
 |spring.cloud.azure.storage.blob.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
+|spring.cloud.azure.storage.blob.client.headers[0].name |  | The name of the header.
+|spring.cloud.azure.storage.blob.client.headers[0].values |  | List of values of the header.
 |spring.cloud.azure.storage.blob.client.logging.allowed-header-names |  | Comma-delimited list of whitelisted headers that should be logged.
 |spring.cloud.azure.storage.blob.client.logging.allowed-query-param-names |  | Comma-delimited list of whitelisted query parameters.
 |spring.cloud.azure.storage.blob.client.logging.level |  | The level of detail to log on HTTP messages.

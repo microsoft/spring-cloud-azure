@@ -46,6 +46,8 @@
 |spring.cloud.azure.appconfiguration.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
 |spring.cloud.azure.appconfiguration.client.connection-idle-timeout |  | Amount of time before an idle connection.
 |spring.cloud.azure.appconfiguration.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
+|spring.cloud.azure.appconfiguration.client.headers[0].name |  | The name of the header.
+|spring.cloud.azure.appconfiguration.client.headers[0].values |  | List of values of the header.
 |spring.cloud.azure.appconfiguration.client.logging.allowed-header-names |  | Comma-delimited list of whitelisted headers that should be logged.
 |spring.cloud.azure.appconfiguration.client.logging.allowed-query-param-names |  | Comma-delimited list of whitelisted query parameters.
 |spring.cloud.azure.appconfiguration.client.logging.level |  | The level of detail to log on HTTP messages.
@@ -110,6 +112,8 @@
 |spring.cloud.azure.client.http.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
 |spring.cloud.azure.client.http.connection-idle-timeout |  | Amount of time before an idle connection.
 |spring.cloud.azure.client.http.headers |  | Comma-delimited list of headers applied to each request sent with client.
+|spring.cloud.azure.client.http.headers[0].name |  | The name of the header.
+|spring.cloud.azure.client.http.headers[0].values |  | List of values of the header.
 |spring.cloud.azure.client.http.logging.allowed-header-names |  | Comma-delimited list of whitelisted headers that should be logged.
 |spring.cloud.azure.client.http.logging.allowed-query-param-names |  | Comma-delimited list of whitelisted query parameters.
 |spring.cloud.azure.client.http.logging.level |  | The level of detail to log on HTTP messages.
@@ -278,6 +282,8 @@
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.client.connection-idle-timeout |  | Amount of time before an idle connection.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.headers[0].name |  | The name of the header.
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.headers[0].values |  | List of values of the header.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.client.logging.allowed-header-names |  | Comma-delimited list of whitelisted headers that should be logged.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.client.logging.allowed-query-param-names |  | Comma-delimited list of whitelisted query parameters.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.client.logging.level |  | The level of detail to log on HTTP messages.
@@ -498,6 +504,8 @@
 |spring.cloud.azure.keyvault.certificate.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
 |spring.cloud.azure.keyvault.certificate.client.connection-idle-timeout |  | Amount of time before an idle connection.
 |spring.cloud.azure.keyvault.certificate.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
+|spring.cloud.azure.keyvault.certificate.client.headers[0].name |  | The name of the header.
+|spring.cloud.azure.keyvault.certificate.client.headers[0].values |  | List of values of the header.
 |spring.cloud.azure.keyvault.certificate.client.logging.allowed-header-names |  | Comma-delimited list of whitelisted headers that should be logged.
 |spring.cloud.azure.keyvault.certificate.client.logging.allowed-query-param-names |  | Comma-delimited list of whitelisted query parameters.
 |spring.cloud.azure.keyvault.certificate.client.logging.level |  | The level of detail to log on HTTP messages.
@@ -557,11 +565,14 @@
 |spring.cloud.azure.keyvault.secret.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
 |spring.cloud.azure.keyvault.secret.client.connection-idle-timeout |  | Amount of time before an idle connection.
 |spring.cloud.azure.keyvault.secret.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
+|spring.cloud.azure.keyvault.secret.client.headers[0].name |  | The name of the header.
+|spring.cloud.azure.keyvault.secret.client.headers[0].values |  | List of values of the header.
 |spring.cloud.azure.keyvault.secret.client.logging.allowed-header-names |  | Comma-delimited list of whitelisted headers that should be logged.
 |spring.cloud.azure.keyvault.secret.client.logging.allowed-query-param-names |  | Comma-delimited list of whitelisted query parameters.
 |spring.cloud.azure.keyvault.secret.client.logging.level |  | The level of detail to log on HTTP messages.
 |spring.cloud.azure.keyvault.secret.client.logging.pretty-print-body |  | Whether to pretty print the message bodies.
 |spring.cloud.azure.keyvault.secret.client.maximum-connection-pool-size |  | Maximum connection pool size used by the underlying HTTP client.
+|spring.cloud.azure.keyvault.secret.client.property-sources[0].response-timeout |  | Amount of time used when waiting for a server to reply.
 |spring.cloud.azure.keyvault.secret.client.read-timeout |  | Amount of time used when reading the server response.
 |spring.cloud.azure.keyvault.secret.client.response-timeout |  | Amount of time used when waiting for a server to reply.
 |spring.cloud.azure.keyvault.secret.client.write-timeout |  | Amount of time each request being sent over the wire.
@@ -598,6 +609,68 @@
 |spring.cloud.azure.keyvault.secret.profile.tenant-id |  | Tenant id for Azure resources.
 |spring.cloud.azure.keyvault.secret.property-source-enabled | `true` | Whether to enable the Key Vault property source.
 |spring.cloud.azure.keyvault.secret.property-sources |  | Azure Key Vault property sources.
+|spring.cloud.azure.keyvault.secret.property-sources[0].case-sensitive |  | Defines the constant for the property that enables/disables case-sensitive keys.
+|spring.cloud.azure.keyvault.secret.property-sources[0].client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
+|spring.cloud.azure.keyvault.secret.property-sources[0].client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
+|spring.cloud.azure.keyvault.secret.property-sources[0].client.connection-idle-timeout |  | Amount of time before an idle connection.
+|spring.cloud.azure.keyvault.secret.property-sources[0].client.headers[0].name |  | The name of the header.
+|spring.cloud.azure.keyvault.secret.property-sources[0].client.headers[0].values |  | List of values of the header.
+|spring.cloud.azure.keyvault.secret.property-sources[0].client.logging.allowed-header-names |  | Comma-delimited list of whitelisted headers that should be logged.
+|spring.cloud.azure.keyvault.secret.property-sources[0].client.logging.allowed-query-param-names |  | Comma-delimited list of whitelisted query parameters.
+|spring.cloud.azure.keyvault.secret.property-sources[0].client.logging.level |  | The level of detail to log on HTTP messages.
+|spring.cloud.azure.keyvault.secret.property-sources[0].client.logging.pretty-print-body |  | Whether to pretty print the message bodies.
+|spring.cloud.azure.keyvault.secret.property-sources[0].client.maximum-connection-pool-size |  | Maximum connection pool size used by the underlying HTTP client.
+|spring.cloud.azure.keyvault.secret.property-sources[0].client.read-timeout |  | Amount of time used when reading the server response.
+|spring.cloud.azure.keyvault.secret.property-sources[0].client.write-timeout |  | Amount of time each request being sent over the wire.
+|spring.cloud.azure.keyvault.secret.property-sources[0].credential.client-certificate-password |  | Password of the certificate file.
+|spring.cloud.azure.keyvault.secret.property-sources[0].credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
+|spring.cloud.azure.keyvault.secret.property-sources[0].credential.client-id |  | Client id to use when performing service principal authentication with Azure.
+|spring.cloud.azure.keyvault.secret.property-sources[0].credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
+|spring.cloud.azure.keyvault.secret.property-sources[0].credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client id as user assigned managed identity client id.
+|spring.cloud.azure.keyvault.secret.property-sources[0].credential.password |  | Password to use when performing username/password authentication with Azure.
+|spring.cloud.azure.keyvault.secret.property-sources[0].credential.username |  | Username to use when performing username/password authentication with Azure.
+|spring.cloud.azure.keyvault.secret.property-sources[0].enabled | `true` | Whether an Azure Service is enabled.
+|spring.cloud.azure.keyvault.secret.property-sources[0].endpoint |  | Azure Key Vault endpoint.
+|spring.cloud.azure.keyvault.secret.property-sources[0].name |  | Name of this property source.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.cloud-type |  | Name of the Azure cloud to connect to.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.environment.active-directory-endpoint |  | The Azure Active Directory endpoint to connect to.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.environment.active-directory-graph-api-version |  | The Azure Active Directory Graph API version.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.environment.active-directory-graph-endpoint |  | The Azure Active Directory Graph endpoint.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.environment.active-directory-resource-id |  | The Azure Active Directory resource id.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.environment.azure-application-insights-endpoint |  | The Azure Application Insights endpoint.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.environment.azure-data-lake-analytics-catalog-and-job-endpoint-suffix |  | The Data Lake analytics catalog and job endpoint suffix.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.environment.azure-data-lake-store-file-system-endpoint-suffix |  | The Data Lake storage file system endpoint suffix.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.environment.azure-log-analytics-endpoint |  | The Azure Log Analytics endpoint.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.environment.data-lake-endpoint-resource-id |  | The Data Lake endpoint.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.environment.gallery-endpoint |  | The gallery endpoint.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.environment.key-vault-dns-suffix |  | The Key Vault DNS suffix.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.environment.management-endpoint |  | The management service endpoint.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.environment.microsoft-graph-endpoint |  | The Microsoft Graph endpoint.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.environment.portal |  | The management portal URL.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.environment.publishing-profile |  | The publishing settings file URL.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.environment.resource-manager-endpoint |  | The resource management endpoint.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.environment.sql-management-endpoint |  | The SQL management endpoint.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.environment.sql-server-hostname-suffix |  | The SQL Server hostname suffix.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.environment.storage-endpoint-suffix |  | The Storage endpoint suffix.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.subscription-id |  | Subscription id to use when connecting to Azure resources.
+|spring.cloud.azure.keyvault.secret.property-sources[0].profile.tenant-id |  | Tenant id for Azure resources.
+|spring.cloud.azure.keyvault.secret.property-sources[0].proxy.hostname |  | The host of the proxy.
+|spring.cloud.azure.keyvault.secret.property-sources[0].proxy.non-proxy-hosts |  | A list of hosts or CIDR to not use proxy HTTP/HTTPS connections through.
+|spring.cloud.azure.keyvault.secret.property-sources[0].proxy.password |  | Password used to authenticate with the proxy.
+|spring.cloud.azure.keyvault.secret.property-sources[0].proxy.port |  | The port of the proxy.
+|spring.cloud.azure.keyvault.secret.property-sources[0].proxy.type |  | Type of the proxy.
+|spring.cloud.azure.keyvault.secret.property-sources[0].proxy.username |  | Username used to authenticate with the proxy.
+|spring.cloud.azure.keyvault.secret.property-sources[0].resource.region |  | The region of an Azure resource.
+|spring.cloud.azure.keyvault.secret.property-sources[0].resource.resource-group |  | The resource group holds an Azure resource.
+|spring.cloud.azure.keyvault.secret.property-sources[0].resource.resource-id |  | ID of an Azure resource.
+|spring.cloud.azure.keyvault.secret.property-sources[0].retry.exponential.base-delay |  | Amount of time to wait between retry attempts.
+|spring.cloud.azure.keyvault.secret.property-sources[0].retry.exponential.max-delay |  | Maximum permissible amount of time between retry attempts.
+|spring.cloud.azure.keyvault.secret.property-sources[0].retry.exponential.max-retries |  | The maximum number of attempts.
+|spring.cloud.azure.keyvault.secret.property-sources[0].retry.fixed.delay |  | Amount of time to wait between retry attempts.
+|spring.cloud.azure.keyvault.secret.property-sources[0].retry.fixed.max-retries |  | The maximum number of attempts.
+|spring.cloud.azure.keyvault.secret.property-sources[0].retry.mode |  | Retry backoff mode.
+|spring.cloud.azure.keyvault.secret.property-sources[0].secret-keys |  | The secret keys supported for this property source.
+|spring.cloud.azure.keyvault.secret.property-sources[0].service-version |  | Secret service version used when making API requests.
 |spring.cloud.azure.keyvault.secret.proxy.hostname |  | The host of the proxy.
 |spring.cloud.azure.keyvault.secret.proxy.non-proxy-hosts |  | A list of hosts or CIDR to not use proxy HTTP/HTTPS connections through.
 |spring.cloud.azure.keyvault.secret.proxy.password |  | Password used to authenticate with the proxy.
@@ -881,10 +954,10 @@
 |spring.cloud.azure.servicebus.resource.resource-group |  | The resource group holds an Azure resource.
 |spring.cloud.azure.servicebus.resource.resource-id |  | ID of an Azure resource.
 |spring.cloud.azure.servicebus.retry-options.delay |  | Amount of time to wait between retry attempts. This is a legacy property.
-|spring.cloud.azure.servicebus.retry-options.maxDelay |  | Maximum permissible amount of time between retry attempts. This is a legacy property.
-|spring.cloud.azure.servicebus.retry-options.maxRetries |  | The maximum number of attempts. This is a legacy property.
-|spring.cloud.azure.servicebus.retry-options.retryMode |  | The type of approach to apply when calculating the delay between retry attempts. This is a legacy property.
-|spring.cloud.azure.servicebus.retry-options.tryTimeout |  | Amount of time to wait until a timeout. This is a legacy property.
+|spring.cloud.azure.servicebus.retry-options.max-delay |  | Maximum permissible amount of time between retry attempts. This is a legacy property.
+|spring.cloud.azure.servicebus.retry-options.max-retries |  | The maximum number of attempts. This is a legacy property.
+|spring.cloud.azure.servicebus.retry-options.retry-mode |  | The type of approach to apply when calculating the delay between retry attempts. This is a legacy property.
+|spring.cloud.azure.servicebus.retry-options.try-timeout |  | Amount of time to wait until a timeout. This is a legacy property.
 |spring.cloud.azure.servicebus.retry.exponential.base-delay |  | Amount of time to wait between retry attempts.
 |spring.cloud.azure.servicebus.retry.exponential.max-delay |  | Maximum permissible amount of time between retry attempts.
 |spring.cloud.azure.servicebus.retry.exponential.max-retries |  | The maximum number of attempts.
@@ -902,6 +975,8 @@
 |spring.cloud.azure.storage.blob.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
 |spring.cloud.azure.storage.blob.client.connection-idle-timeout |  | Amount of time before an idle connection.
 |spring.cloud.azure.storage.blob.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
+|spring.cloud.azure.storage.blob.client.headers[0].name |  | The name of the header.
+|spring.cloud.azure.storage.blob.client.headers[0].values |  | List of values of the header.
 |spring.cloud.azure.storage.blob.client.logging.allowed-header-names |  | Comma-delimited list of whitelisted headers that should be logged.
 |spring.cloud.azure.storage.blob.client.logging.allowed-query-param-names |  | Comma-delimited list of whitelisted query parameters.
 |spring.cloud.azure.storage.blob.client.logging.level |  | The level of detail to log on HTTP messages.
@@ -970,6 +1045,8 @@
 |spring.cloud.azure.storage.fileshare.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
 |spring.cloud.azure.storage.fileshare.client.connection-idle-timeout |  | Amount of time before an idle connection.
 |spring.cloud.azure.storage.fileshare.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
+|spring.cloud.azure.storage.fileshare.client.headers[0].name |  | The name of the header.
+|spring.cloud.azure.storage.fileshare.client.headers[0].values |  | List of values of the header.
 |spring.cloud.azure.storage.fileshare.client.logging.allowed-header-names |  | Comma-delimited list of whitelisted headers that should be logged.
 |spring.cloud.azure.storage.fileshare.client.logging.allowed-query-param-names |  | Comma-delimited list of whitelisted query parameters.
 |spring.cloud.azure.storage.fileshare.client.logging.level |  | The level of detail to log on HTTP messages.
@@ -1038,6 +1115,8 @@
 |spring.cloud.azure.storage.queue.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
 |spring.cloud.azure.storage.queue.client.connection-idle-timeout |  | Amount of time before an idle connection.
 |spring.cloud.azure.storage.queue.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
+|spring.cloud.azure.storage.queue.client.headers[0].name |  | The name of the header.
+|spring.cloud.azure.storage.queue.client.headers[0].values |  | List of values of the header.
 |spring.cloud.azure.storage.queue.client.logging.allowed-header-names |  | Comma-delimited list of whitelisted headers that should be logged.
 |spring.cloud.azure.storage.queue.client.logging.allowed-query-param-names |  | Comma-delimited list of whitelisted query parameters.
 |spring.cloud.azure.storage.queue.client.logging.level |  | The level of detail to log on HTTP messages.
