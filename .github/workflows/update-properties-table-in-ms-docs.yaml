@@ -9,21 +9,21 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-change:
+  update_properties_table_in_ms_docs_job:
     runs-on: ubuntu-latest
     steps:
+      - uses: snow-actions/sparse-checkout@v1.1.0
+        name: Checkout Azure/azure-sdk-for-java
+        with:
+          patterns: |
+            sdk/spring eng sdk/keyvault sdk/boms sdk/aot
+          repository: Azure/azure-sdk-for-java
+          ref: main
+          path: azure-sdk-for-java
+
       - name: Build latest azure-sdk-for-java repository
         run: |
-          git init azure-sdk-for-java
           cd azure-sdk-for-java
-          git remote add origin https://github.com/Azure/azure-sdk-for-java.git
-          git config core.sparsecheckout true
-          echo "sdk/spring" >> .git/info/sparse-checkout
-          echo "eng" >> .git/info/sparse-checkout
-          echo "sdk/keyvault" >> .git/info/sparse-checkout
-          echo "sdk/boms" >> .git/info/sparse-checkout
-          echo "sdk/aot" >> .git/info/sparse-checkout
-          git pull --depth=1 origin main
           mvn clean install -Dmaven.javadoc.skip=true -DskipTests \
             -Dcheckstyle.skip=true \
             -ntp \
@@ -39,7 +39,7 @@ jobs:
       - name: Generate configuration properties files
         run: |
           mkdir spring-cloud-azure-markdown-appdendix-generator/src/main/asciidoc # Output files to asciidoc directory configured in parent pom.
-          ./mvnw clean install -P markdown-docs -pl spring-cloud-azure-markdown-appdendix-generator -DskipTests
+          ./mvnw clean install -P markdown-docs -pl spring-cloud-azure-markdown-appdendix-generator -DskipTests -ntp
 
       - name: Get project_version and branch_name
         id: get_project_version_and_branch_name
@@ -82,7 +82,7 @@ jobs:
           if [[ -n "$(git status -s)" ]] ;then
             echo '::set-output name=added_a_commit_in_topic_branch::true'
             git add ./articles/java/spring-framework/includes/spring-cloud-azure/configuration-*.md
-            git commit -m "Update the configuration properties for Spring Cloud Azure: ${{ steps.get_project_version_and_branch_name.outputs.project_version }}. This commit is created by GitHub Action: https://github.com/microsoft/spring-cloud-azure/actions"
+            git commit -m "Update the configuration properties for Spring Cloud Azure: ${{ steps.get_project_version_and_branch_name.outputs.project_version }}. This commit is created by GitHub Action: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}"
             git push "https://${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_USERNAME }}:${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_ACCESS_TOKEN }}@github.com/${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_USERNAME }}/azure-dev-docs-pr.git"
           else
             echo "No file changes, no commits."

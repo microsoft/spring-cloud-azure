@@ -18,17 +18,18 @@ jobs:
     runs-on: ubuntu-latest
     name: Check-Links-Action
     steps:
-      - run: |
-          git init azure-sdk-for-java
+      - uses: snow-actions/sparse-checkout@v1.1.0
+        name: Checkout Azure/azure-sdk-for-java
+        with:
+          patterns: |
+            sdk/spring eng sdk/keyvault sdk/boms sdk/aot
+          repository: Azure/azure-sdk-for-java
+          ref: main
+          path: azure-sdk-for-java
+
+      - name: Build latest azure-sdk-for-java repository
+        run: |
           cd azure-sdk-for-java
-          git remote add origin https://github.com/Azure/azure-sdk-for-java.git
-          git config core.sparsecheckout true
-          echo "sdk/spring" >> .git/info/sparse-checkout
-          echo "eng" >> .git/info/sparse-checkout
-          echo "sdk/keyvault" >> .git/info/sparse-checkout
-          echo "sdk/boms" >> .git/info/sparse-checkout
-          echo "sdk/aot" >> .git/info/sparse-checkout
-          git pull --depth=1 origin main
           mvn clean install -Dmaven.javadoc.skip=true -DskipTests \
             -Dcheckstyle.skip=true \
             -ntp \
@@ -68,4 +69,4 @@ jobs:
         with:
           use-quiet-mode: 'yes'
           use-verbose-mode: 'yes'
-          config-file: '.github/workflows/markdown_link_check_config.json'
+          config-file: '.github/workflows/markdown-link-check-config.json'
