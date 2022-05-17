@@ -50,9 +50,15 @@ public final class Main {
 	}
 
 	/**
-	 * When the parent dictionary is found, change the suffix of the output file to md and
-	 * remove the "_" from the filename, generate configuration properties markdown files.
-	 * @param args arg[0] the output file, arg[1] the properties inclusion pattern
+	 * This method is used to generate configuration properties Markdown files.
+	 * @param args args[0]: output file name. The file name must start with
+	 * "_configuration-properties-". And in actual outputted file name, ".adoc" will be
+	 * replaced by ".md", "_" will be replaced by "". For example:
+	 * "_configuration-properties-global.adoc" after the replacement is
+	 * "configuration-properties-global.md". This is required because this module and the
+	 * docs' module use the configuration of the parent pom and changes to configuration
+	 * properties need to be synced to MS Docs. args[1]: property inclusion pattern.
+	 * Filter unwanted properties based on patterns.
 	 */
 	public static void main(String... args) {
 		String outputFile = args[0].replace("adoc", "md").replace("_", "");
@@ -84,7 +90,7 @@ public final class Main {
 
 		/**
 		 * Generate files prefixed with configuration-properties.
-		 * @param outputFile the output file
+		 * @param outputFile the file name must start with "configuration-properties-"
 		 * @param inclusionPattern the inclusion pattern
 		 * @param date the current date string
 		 */
@@ -128,7 +134,8 @@ public final class Main {
 		}
 
 		/**
-		 * Get all "spring-configuration-metadata.json" files in classpath.
+		 * Get Spring on Azure related "spring-configuration-metadata.json" files in
+		 * classpath.
 		 * @return a result set containing the specified fields
 		 * @throws IOException did not get any "spring-configuration-metadata.json" files
 		 * in classpath
@@ -152,7 +159,7 @@ public final class Main {
 		 * @param string the string to padding
 		 * @param c the padding content
 		 * @param resultLength the length of padding
-		 * @return the padded string
+		 * @return the required length
 		 */
 		private String paddingWithChar(String string, char c, int resultLength) {
 			String result = String.format("%1$-" + resultLength + "s", string.trim());
@@ -177,13 +184,15 @@ public final class Main {
 		}
 
 		/**
-		 * Generate anchor name for markdown files.
-		 * @param outputFile the output file
-		 * @return the anchor name
+		 * Generate title name for markdown files.
+		 * @param outputFile the output file name
+		 * @return the title name
 		 */
-		private String generateAnchorName(String outputFile) {
-			outputFile = outputFile.substring(outputFile.lastIndexOf("/") + "_configuration-properties-".length(),
-					outputFile.lastIndexOf(".")).replace('-', ' ').trim();
+		private String generateTitleName(String outputFile) {
+			outputFile = outputFile
+					.substring(outputFile.lastIndexOf(File.separator) + "_configuration-properties-".length(),
+							outputFile.lastIndexOf("."))
+					.replace('-', ' ').trim();
 			if ("all".equals(outputFile)) {
 				return "List of configuration";
 			}
@@ -206,7 +215,7 @@ public final class Main {
 		}
 
 		/**
-		 * Generate propertie markdown files.
+		 * Generate properties markdown files.
 		 * @param outputFile the output file
 		 * @param descriptions the result set of properties and their descriptions
 		 * @param date the current date string
@@ -225,7 +234,7 @@ public final class Main {
 				writer.write("---");
 				writer.newLine();
 				writer.newLine();
-				writer.write("## " + generateAnchorName(outputFile) + " properties");
+				writer.write("## " + generateTitleName(outputFile) + " properties");
 				writer.newLine();
 				writer.newLine();
 				writer.write("> [!div class=\"mx-tdBreakAll\"]");

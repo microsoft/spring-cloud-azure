@@ -27,9 +27,7 @@ class MainTests {
 	@Test
 	void notCreateFileWhenNoParentDirectoryFound() {
 		File nonExistantFile = new File("/this/file/does/not/exist");
-
 		Main.main(nonExistantFile.getAbsolutePath());
-
 		then(nonExistantFile).doesNotExist();
 	}
 

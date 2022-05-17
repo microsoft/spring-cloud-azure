@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -56,7 +57,7 @@ class GeneratorTests {
 			}
 		};
 		File file = getOutputFilePath();
-		String outputFile = file.getPath().replaceAll("\\\\", "/");
+		String outputFile = file.getPath();
 		generator.generate(outputFile, INCLUSION_PATTERN, DATE);
 		then(file).doesNotExist();
 	}
@@ -72,29 +73,21 @@ class GeneratorTests {
 			}
 		};
 		File file = getOutputFilePath();
-		String outputFile = file.getPath().replaceAll("\\\\", "/");
+		String outputFile = file.getPath();
 		generator.generate(outputFile, INCLUSION_PATTERN, DATE);
 		then(file).exists();
-		assert compareFile(outputFile) : "Files are different!";
+		compareFile(outputFile);
 	}
 
-	private Boolean compareFile(String file2) {
-		boolean result = false;
+	private void compareFile(String file2) {
 		try (BufferedInputStream inFile1 = new BufferedInputStream(
 				new FileInputStream("src/test/resources/configuration-properties-output.md"));
 				BufferedInputStream inFile2 = new BufferedInputStream(new FileInputStream(file2))) {
-			if (inFile1.available() == inFile2.available()) {
-				while (inFile1.read() != -1 && inFile2.read() != -1) {
-					if (inFile1.read() == inFile2.read()) {
-						result = true;
-					}
-				}
-			}
+			Assertions.assertThat(inFile1).hasSameContentAs(inFile2);
 		}
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-		return result;
 	}
 
 	private File getOutputFilePath() {
