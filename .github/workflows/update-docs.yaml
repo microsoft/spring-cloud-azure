@@ -21,25 +21,27 @@ jobs:
   updateDocs:
     runs-on: ubuntu-20.04
     steps:
-    - run: | 
-          git init azure-sdk-for-java
-          cd azure-sdk-for-java
-          git remote add origin https://github.com/Azure/azure-sdk-for-java.git
-          git config core.sparsecheckout true
-          echo "sdk/spring" >> .git/info/sparse-checkout
-          echo "eng" >> .git/info/sparse-checkout
-          echo "sdk/keyvault" >> .git/info/sparse-checkout
-          echo "sdk/boms" >> .git/info/sparse-checkout
-          echo "sdk/aot" >> .git/info/sparse-checkout
-          git pull --depth=1 origin main
-          mvn clean install -Dmaven.javadoc.skip=true -DskipTests \
-            -Dcheckstyle.skip=true \
-            -ntp \
-            -Dspotbugs.skip=true \
-            -Drevapi.skip=true -Djacoco.skip=true \
-            -Dparallel-test-playback \
-            -Pdev \
-            -f sdk/spring/pom.xml
+    - uses: snow-actions/sparse-checkout@v1.1.0
+      name: Checkout Azure/azure-sdk-for-java
+      with:
+        patterns: |
+          sdk/spring eng sdk/keyvault sdk/boms sdk/aot
+        repository: Azure/azure-sdk-for-java
+        ref: main
+        path: azure-sdk-for-java
+
+    - name: Build latest azure-sdk-for-java repository
+      run: |
+        cd azure-sdk-for-java
+        mvn clean install -Dmaven.javadoc.skip=true -DskipTests \
+          -Dcheckstyle.skip=true \
+          -ntp \
+          -Dspotbugs.skip=true \
+          -Drevapi.skip=true -Djacoco.skip=true \
+          -Dparallel-test-playback \
+          -Pdev \
+          -f sdk/spring/pom.xml
+
     - name: Get current date
       id: date
       run: echo "::set-output name=date::$(date +'%Y-%m-%d' --utc)"
