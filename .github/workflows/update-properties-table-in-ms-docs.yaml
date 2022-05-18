@@ -1,7 +1,7 @@
 # This workflow will create PR to update the configuration properties files in MS docs repository: https://github.com/MicrosoftDocs/azure-dev-docs-pr/tree/main/articles/java/spring-framework/includes/spring-cloud-azure
 # For example, this PR is created by this workflow: https://github.com/MicrosoftDocs/azure-dev-docs-pr/pull/3035
 
-name: Update the configuration properties files in MS docs repo
+name: Update Properties Table In Microsoft Docs
 on:
   push:
     branches:
