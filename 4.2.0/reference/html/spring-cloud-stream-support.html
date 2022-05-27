@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Spring Cloud Stream Support</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript"> (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "b9g1q6wz23"); </script>
+
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_spring_cloud_stream_support">Spring Cloud Stream Support</a>
+<ul class="sectlevel2">
+<li><a href="#_spring_cloud_stream_binder_for_azure_event_hubs">Spring Cloud Stream Binder for Azure Event Hubs</a></li>
+<li><a href="#_spring_cloud_stream_binder_for_azure_service_bus">Spring Cloud Stream Binder for Azure Service Bus</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_spring_cloud_stream_support"><a class="link" href="#_spring_cloud_stream_support">Spring Cloud Stream Support</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Spring Cloud Stream is a framework for building highly scalable event-driven microservices connected with shared messaging systems.</p>
+</div>
+<div class="paragraph">
+<p>The framework provides a flexible programming model built on already established and familiar Spring idioms and best practices, including support for persistent pub/sub semantics, consumer groups, and stateful partitions.</p>
+</div>
+<div class="paragraph">
+<p>Current binder implementations include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>spring-cloud-azure-stream-binder-eventhubs</p>
+</li>
+<li>
+<p>spring-cloud-azure-stream-binder-servicebus</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_spring_cloud_stream_binder_for_azure_event_hubs"><a class="link" href="#_spring_cloud_stream_binder_for_azure_event_hubs">Spring Cloud Stream Binder for Azure Event Hubs</a></h3>
+<div class="sect3">
+<h4 id="_key_concepts"><a class="link" href="#_key_concepts">Key Concepts</a></h4>
+<div class="paragraph">
+<p>The Spring Cloud Stream Binder for Azure Event Hubs provides the binding implementation for the Spring Cloud Stream framework.
+This implementation uses Spring Integration Event Hubs Channel Adapters at its foundation. From design&#8217;s perspective,
+Event Hubs is similar as Kafka. Also, Event Hubs could be accessed via Kafka API. If your project has tight dependency
+on Kafka API, you can try <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.2.0/eventhubs/spring-cloud-azure-starter/spring-cloud-azure-sample-eventhubs-kafka">Events Hub with Kafka API Sample</a></p>
+</div>
+<div class="sect4">
+<h5 id="_consumer_group"><a class="link" href="#_consumer_group">Consumer Group</a></h5>
+<div class="paragraph">
+<p>Event Hubs provides similar support of consumer group as Apache Kafka, but with slight different logic. While Kafka
+stores all committed offsets in the broker, you have to store offsets of Event Hubs messages
+being processed manually. Event Hubs SDK provides the function to store such offsets inside Azure Storage.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_partitioning_support"><a class="link" href="#_partitioning_support">Partitioning Support</a></h5>
+<div class="paragraph">
+<p>Event Hubs provides a similar concept of physical partition as Kafka. But unlike Kafka&#8217;s auto re-balancing between consumers and partitions, Event Hubs provides a kind of preemptive mode. The storage account acts as a lease to determine which partition is owned by which consumer. When a new consumer starts, it will try to steal some partitions
+from most heavy-loaded consumers to achieve the workload balancing.</p>
+</div>
+<div class="paragraph">
+<p>To specify the load balancing strategy, properties of <code>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer.load-balancing.*</code> are provided. See <a href="#eventhubs-consumer-properties">the consumer properties</a> for more details.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_batch_consumer_support"><a class="link" href="#_batch_consumer_support">Batch Consumer Support</a></h5>
+<div class="paragraph">
+<p>Spring Cloud Azure Stream Event Hubs binder supports <a href="https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_batch_consumers">Spring Cloud Stream Batch Consumer feature</a>.</p>
+</div>
+<div class="paragraph">
+<p>To work with the batch-consumer mode, the property of <code>spring.cloud.stream.bindings.&lt;binding-name&gt;.consumer.batch-mode</code> should be set as <code>true</code>. When enabled, an <strong>Message</strong> of which the payload is a list of batched events will be received and passed to the <code>Consumer</code> function. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of partition id, checkpointer and last enqueued properties, they are presented as a single value for the entire batch of events shares the same one. See <a href="#scs-eh-headers">Event Hubs Message Headers</a> for more details.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The checkpoint header only exists when <strong>MANUAL</strong> checkpoint mode is used.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Checkpointing of batch consumer supports two modes: <code>BATCH</code> and <code>MANUAL</code>. <code>BATCH</code> mode is an auto checkpointing mode to checkpoint the entire batch of events together once they are received by the binder. <code>MANUAL</code> mode is to checkpoint the events by users. When used, the
+<strong>Checkpointer</strong> will be passed into the message header, and users could use it to do checkpointing.</p>
+</div>
+<div class="paragraph">
+<p>The batch size can be specified by properties of <code>max-size</code> and <code>max-wait-time</code> with prefix as <code>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer.batch.</code>, where <code>max-size</code> is a necessary property while <code>max-wait-time</code> is optional. See <a href="#eventhubs-consumer-properties">the consumer properties</a> for more details.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-cloud-azure-stream-binder-eventhubs&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, you can also use the Spring Cloud Azure Stream Event Hubs Starter, as shown in the following example for Maven:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-cloud-azure-starter-stream-eventhubs&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h4>
+<div class="paragraph">
+<p>The binder provides the following 3 parts of configuration options:</p>
+</div>
+<div class="sect4">
+<h5 id="eventhubs-connection-configuration"><a class="link" href="#eventhubs-connection-configuration">Connection Configuration Properties</a></h5>
+<div class="paragraph">
+<p>This section contains the configuration options used for connecting to Azure Event Hubs.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, See <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Connection configurable properties of spring-cloud-azure-stream-binder-eventhubs</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether an Azure Event Hubs is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.connection-string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Event Hubs Namespace connection string value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.namespace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Event Hubs Namespace value, which is the prefix of the FQDN. A FQDN should be composed of &lt;NamespaceName&gt;.&lt;DomainName&gt;</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.domain-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Domain name of an Azure Event Hubs Namespace value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.custom-endpoint-address</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Custom Endpoint address.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Common Azure Service SDK configuration options are configurable for the Spring Cloud Azure Stream Event Hubs binder as well. The supported configuration options are introduced in <a href="configuration.html">the Configuration page</a>, and could be configured with either the unified prefix <code>spring.cloud.azure.</code> or the prefix of <code>spring.cloud.azure.eventhubs.</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The binder also supports <a href="index.html#spring-cloud-azure-resourcemanager">Spring Could Azure Resource Manager</a> by default. To learn about how to retrieve the connection string with security principals that are not granted with <code>Data</code> related roles, see the <a href="index.html#resource-manager-basic-usage">resource manager example</a> for details.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_checkpoint_configuration_properties"><a class="link" href="#_checkpoint_configuration_properties">Checkpoint Configuration Properties</a></h5>
+<div class="paragraph">
+<p>This section contains the configuration options for the Storage Blobs service, which is used for persisting partition ownership and checkpoint information.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+From version 4.0.0, when the property of <strong>spring.cloud.azure.eventhubs.processor.checkpoint-store.create-container-if-not-exists</strong> is not enabled manually, no Storage container will be created automatically with the name from <strong>spring.cloud.stream.bindings.&lt;binding-name&gt;.destination</strong>.
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Checkpointing configurable properties of spring-cloud-azure-stream-binder-eventhubs</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs.processor.checkpoint-store</strong>.create-container-if-not-exists</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to allow creating containers if not exists.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs.processor.checkpoint-store</strong>.account-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name for the storage account.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs.processor.checkpoint-store</strong>.account-key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage account access key.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs.processor.checkpoint-store</strong>.container-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage container name.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Common Azure Service SDK configuration options are configurable for Storage Blob checkpoint store as well. The supported configuration options are introduced in <a href="configuration.html">the Configuration page</a>, and could be configured with either the unified prefix <code>spring.cloud.azure.</code> or the prefix of <code>spring.cloud.azure.eventhubs.processor.checkpoint-store</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_azure_event_hubs_binding_configuration_properties"><a class="link" href="#_azure_event_hubs_binding_configuration_properties">Azure Event Hubs Binding Configuration Properties</a></h5>
+<div class="paragraph">
+<p>The following options are divided into four sections: Consumer Properties, Advanced Consumer
+Configurations, Producer Properties and Advanced Producer Configurations.</p>
+</div>
+<div class="sect5">
+<h6 id="eventhubs-consumer-properties"><a class="link" href="#eventhubs-consumer-properties">Consumer Properties</a></h6>
+<div class="paragraph">
+<p>These properties are exposed via <code>EventHubsConsumerProperties</code>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Consumer configurable properties of spring-cloud-azure-stream-binder-eventhubs</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.checkpoint.mode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CheckpointMode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Checkpoint mode used when consumer decide how to checkpoint message</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.checkpoint.count</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Decides the amount of message for each partition to do one checkpoint. Will take effect only when <code>PARTITION_COUNT</code> checkpoint mode is used.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.checkpoint.interval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Decides the time interval to do one checkpoint. Will take effect only when <code>TIME</code> checkpoint mode is used.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.batch.max-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of events in a batch. Required for the batch-consumer mode.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.batch.max-wait-time</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum time duration for batch consuming. Will take effect only when the batch-consumer mode is enabled and is optional.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.load-balancing.update-interval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The interval time duration for updating.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.load-balancing.strategy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LoadBalancingStrategy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The load balancing strategy.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.load-balancing.partition-ownership-expiration-interval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The time duration after which the ownership of partition expires.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.track-last-enqueued-event-properties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether the event processor should request information on the last enqueued event on its associated partition, and track that information as events are received.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.prefetch-count</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The count used by the consumer to control the number of events the Event Hub consumer will actively receive and queue locally.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer</strong>.initial-partition-event-position</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map with the key as the partition id, and values of <code>StartPositionProperties</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The map containing the event position to use for each partition if a checkpoint for the partition does not exist in checkpoint store. This map is keyed off of the partition id.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>initial-partition-event-position</code> configuration accepts a <code>map</code> to specify the initial position for each event hub. Thus, its key is the partition id, and the value is of <code>StartPositionProperties</code> which includes properties of offset, sequence number, enqueued date time and whether inclusive. For example, you can set it as
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    stream:
+      eventhubs:
+        bindings:
+          &lt;binding-name&gt;:
+            consumer:
+              initial-partition-event-position:
+                0:
+                  offset: earliest
+                1:
+                  sequence-number: 100
+                2:
+                  enqueued-date-time: 2022-01-12T13:32:47.650005Z
+                4:
+                  inclusive: false</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_advanced_consumer_configuration"><a class="link" href="#_advanced_consumer_configuration">Advanced Consumer Configuration</a></h6>
+<div class="paragraph">
+<p>The above <a href="#eventhubs-connection-configuration">connection</a>, <a href="#_checkpoint_configuration_properties">checkpoint</a> and <a href="configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder consumer, which can be configured with the prefix <code>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.consumer.</code>.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_producer_properties"><a class="link" href="#_producer_properties">Producer Properties</a></h6>
+<div class="paragraph">
+<p>These properties are exposed via <code>EventHubsProducerProperties</code>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. Producer configurable properties of spring-cloud-azure-stream-binder-eventhubs</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.producer</strong>.sync</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The switch flag for sync of producer. If true, the producer will wait for a response after a send operation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.producer</strong>.send-timeout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The amount of time to wait for a response after a send operation. Will take effect only when a sync producer is enabled.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect5">
+<h6 id="_advanced_producer_configuration"><a class="link" href="#_advanced_producer_configuration">Advanced Producer Configuration</a></h6>
+<div class="paragraph">
+<p>The above <a href="#eventhubs-connection-configuration">connection</a> and <a href="configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder producer, which can be configured with the prefix <code>spring.cloud.stream.eventhubs.bindings.&lt;binding-name&gt;.producer.</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_basic_usage"><a class="link" href="#_basic_usage">Basic Usage</a></h4>
+<div class="sect4">
+<h5 id="_sending_and_receiving_messages_fromto_event_hubs"><a class="link" href="#_sending_and_receiving_messages_fromto_event_hubs">Sending and Receiving Messages from/to Event Hubs</a></h5>
+<div class="paragraph">
+<p>Step 1. Fill the configuration options with credential information.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as connection string, configure the following properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      eventhubs:
+        connection-string: ${EVENTHUB_NAMESPACE_CONNECTION_STRING}
+        processor:
+          checkpoint-store:
+            container-name: ${CHECKPOINT_CONTAINER}
+            account-name: ${CHECKPOINT_STORAGE_ACCOUNT}
+            account-key: ${CHECKPOINT_ACCESS_KEY}
+    stream:
+      function:
+        definition: consume;supply
+      bindings:
+        consume-in-0:
+          destination: ${EVENTHUB_NAME}
+          group: ${CONSUMER_GROUP}
+        supply-out-0:
+          destination: ${THE_SAME_EVENTHUB_NAME_AS_ABOVE}
+      eventhubs:
+        bindings:
+          consume-in-0:
+            consumer:
+              checkpoint:
+                mode: MANUAL</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as service principal, configure the following properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+      eventhubs:
+        namespace: ${EVENTHUB_NAMESPACE}
+        processor:
+          checkpoint-store:
+            container-name: ${CONTAINER_NAME}
+            account-name: ${ACCOUNT_NAME}
+    stream:
+      function:
+        definition: consume;supply
+      bindings:
+        consume-in-0:
+          destination: ${EVENTHUB_NAME}
+          group: ${CONSUMER_GROUP}
+        supply-out-0:
+          destination: ${THE_SAME_EVENTHUB_NAME_AS_ABOVE}
+      eventhubs:
+        bindings:
+          consume-in-0:
+            consumer:
+              checkpoint:
+                mode: MANUAL</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as managed identites, configure the following properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      credential:
+        managed-identity-enabled: true
+        client-id: ${AZURE_MANAGED_IDENTITY_CLIENT_ID} # Only needed when using a user-assigned managed identity
+      eventhubs:
+        namespace: ${EVENTHUB_NAMESPACE}
+        processor:
+          checkpoint-store:
+            container-name: ${CONTAINER_NAME}
+            account-name: ${ACCOUNT_NAME}
+    stream:
+      function:
+        definition: consume;supply
+      bindings:
+        consume-in-0:
+          destination: ${EVENTHUB_NAME}
+          group: ${CONSUMER_GROUP}
+        supply-out-0:
+          destination: ${THE_SAME_EVENTHUB_NAME_AS_ABOVE}
+
+      eventhubs:
+        bindings:
+          consume-in-0:
+            consumer:
+              checkpoint:
+                mode: MANUAL</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step2. Define supplier and consumer.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public Consumer&lt;Message&lt;String&gt;&gt; consume() {
+    return message -&gt; {
+        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
+                message.getPayload(),
+                message.getHeaders().get(EventHubsHeaders.PARTITION_KEY),
+                message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER),
+                message.getHeaders().get(EventHubsHeaders.OFFSET),
+                message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)
+        );
+
+        checkpointer.success()
+                .doOnSuccess(success -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
+                .doOnError(error -&gt; LOGGER.error("Exception found", error))
+                .block();
+    };
+}
+
+@Bean
+public Supplier&lt;Message&lt;String&gt;&gt; supply() {
+    return () -&gt; {
+        LOGGER.info("Sending message, sequence " + i);
+        return MessageBuilder.withPayload("Hello world, " + i++).build();
+    };
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_partitioning_support_2"><a class="link" href="#_partitioning_support_2">Partitioning Support</a></h5>
+<div class="paragraph">
+<p>A <code>PartitionSupplier</code> with user-provided partition information will be created to configure the partition information about the message to be sent, the following is the process of obtaining different priorities of the partition ID and key:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/63028776/145347877-fa8afa90-ec28-4c0a-8277-63b9fdaa5d0f.png" alt="145347877 fa8afa90 ec28 4c0a 8277 63b9fdaa5d0f"></span></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_batch_consumer_support_2"><a class="link" href="#_batch_consumer_support_2">Batch Consumer Support</a></h5>
+<div class="paragraph">
+<p>Step 1. Fill the batch configuration options</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    stream:
+      function:
+        definition: consume
+      bindings:
+        consume-in-0:
+          destination: ${AZURE_EVENTHUB_NAME}
+          group: ${AZURE_EVENTHUB_CONSUMER_GROUP}
+          consumer:
+            batch-mode: true
+      eventhubs:
+        bindings:
+          consume-in-0:
+            consumer:
+              batch:
+                max-batch-size: 10 # Required for batch-consumer mode
+                max-wait-time: 1m # Optional, the default value is null
+              checkpoint:
+                mode: BATCH # or MANUAL as needed</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step2. Define supplier and consumer.</p>
+</div>
+<div class="paragraph">
+<p>For checkpointing mode as <code>BATCH</code>, you can use the following code to send messages and consume in batches.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public Consumer&lt;Message&lt;List&lt;String&gt;&gt;&gt; consume() {
+    return message -&gt; {
+            for (int i = 0; i &lt; message.getPayload().size(); i++) {
+                LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
+                        message.getPayload().get(i),
+                        ((List&lt;Object&gt;) message.getHeaders().get(EventHubsHeaders.BATCH_CONVERTED_PARTITION_KEY)).get(i),
+                        ((List&lt;Object&gt;) message.getHeaders().get(EventHubsHeaders.BATCH_CONVERTED_SEQUENCE_NUMBER)).get(i),
+                        ((List&lt;Object&gt;) message.getHeaders().get(EventHubsHeaders.BATCH_CONVERTED_OFFSET)).get(i),
+                        ((List&lt;Object&gt;) message.getHeaders().get(EventHubsHeaders.BATCH_CONVERTED_ENQUEUED_TIME)).get(i));
+            }
+
+        };
+}
+
+@Bean
+public Supplier&lt;Message&lt;String&gt;&gt; supply() {
+    return () -&gt; {
+        LOGGER.info("Sending message, sequence " + i);
+        return MessageBuilder.withPayload("\"test"+ i++ +"\"").build();
+    };
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For checkpointing mode as <code>MANUAL</code>, you can use the following code to send messages and consume/checkpoint in batches.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public Consumer&lt;Message&lt;List&lt;String&gt;&gt;&gt; consume() {
+    return message -&gt; {
+        for (int i = 0; i &lt; message.getPayload().size(); i++) {
+            LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
+                message.getPayload().get(i),
+                ((List&lt;Object&gt;) message.getHeaders().get(EventHubHeaders.BATCH_CONVERTED_PARTITION_KEY)).get(i),
+                ((List&lt;Object&gt;) message.getHeaders().get(EventHubHeaders.BATCH_CONVERTED_SEQUENCE_NUMBER)).get(i),
+                ((List&lt;Object&gt;) message.getHeaders().get(EventHubHeaders.BATCH_CONVERTED_OFFSET)).get(i),
+                ((List&lt;Object&gt;) message.getHeaders().get(EventHubHeaders.BATCH_CONVERTED_ENQUEUED_TIME)).get(i));
+        }
+
+        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        checkpointer.success()
+                    .doOnSuccess(success -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
+                    .doOnError(error -&gt; LOGGER.error("Exception found", error))
+                    .block();
+    };
+}
+
+@Bean
+public Supplier&lt;Message&lt;String&gt;&gt; supply() {
+    return () -&gt; {
+        LOGGER.info("Sending message, sequence " + i);
+        return MessageBuilder.withPayload("\"test"+ i++ +"\"").build();
+    };
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In the batch-consuming mode, the default content type of Spring Cloud Stream binder is <code>application/json</code>, so make sure the message payload is aligned with the content type. For example, when using the default content type of <code>application/json</code> to receive messages with <code>String</code> payload, the payload should be JSON String, surrounded with double quotes for the original String text. While for <code>text/plain</code> content type, it can be a <code>String</code> object directly. For more details, see the official doc of <a href="https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#content-type-management">Spring Cloud Stream Content Type Negotiation</a>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_error_channels"><a class="link" href="#_error_channels">Error Channels</a></h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Consumer error channel</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This channel is open by default, you can handle the error message in this way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">// Replace destination with spring.cloud.stream.bindings.input.destination
+// Replace group with spring.cloud.stream.bindings.input.group
+@ServiceActivator(inputChannel = "{destination}.{group}.errors")
+public void consumerError(Message&lt;?&gt; message) {
+    LOGGER.error("Handling customer ERROR: " + message);
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Producer error channel</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This channel is not open by default. You need to add a configuration in your application.properties to enable it, like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.stream.default.producer.errorChannelEnabled=true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can handle the error message in this way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">// Replace destination with spring.cloud.stream.bindings.output.destination
+@ServiceActivator(inputChannel = "{destination}.errors")
+public void producerError(Message&lt;?&gt; message) {
+    LOGGER.error("Handling Producer ERROR: " + message);
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Global default error channel</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A global error channel called "errorChannel" is created by default Spring Integration, which allows users to subscribe many endpoints to it.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel = "errorChannel")
+public void producerError(Message&lt;?&gt; message) {
+    LOGGER.error("Handling ERROR: " + message);
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="scs-eh-headers"><a class="link" href="#scs-eh-headers">Event Hubs Message Headers</a></h5>
+<div class="paragraph">
+<p>See the <a href="#si-eh-headers">Event Hubs message headers</a> for the basic message headers supported.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_multiple_binder_support"><a class="link" href="#_multiple_binder_support">Multiple Binder Support</a></h5>
+<div class="paragraph">
+<p>Connection to multiple Event Hubs namespaces is also supported by using multiple binders.This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
+</div>
+<div class="paragraph">
+<p>Step 1. To use multiple binders of EventHubs, we need to configure the following properties in application.yml</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    stream:
+      function:
+        definition: consume1;supply1;consume2;supply2
+      bindings:
+        consume1-in-0:
+          destination: ${EVENTHUB_NAME_01}
+          group: ${CONSUMER_GROUP_01}
+        supply1-out-0:
+          destination: ${THE_SAME_EVENTHUB_NAME_01_AS_ABOVE}
+        consume2-in-0:
+          binder: eventhub-2
+          destination: ${EVENTHUB_NAME_02}
+          group: ${CONSUMER_GROUP_02}
+        supply2-out-0:
+          binder: eventhub-2
+          destination: ${THE_SAME_EVENTHUB_NAME_02_AS_ABOVE}
+      binders:
+        eventhub-1:
+          type: eventhubs
+          default-candidate: true
+          environment:
+            spring:
+              cloud:
+                azure:
+                  eventhubs:
+                    connection-string: ${EVENTHUB_NAMESPACE_01_CONNECTION_STRING}
+                    processor:
+                      checkpoint-store:
+                        container-name: ${CHECKPOINT_CONTAINER_01}
+                        account-name: ${CHECKPOINT_STORAGE_ACCOUNT}
+                        account-key: ${CHECKPOINT_ACCESS_KEY}
+        eventhub-2:
+          type: eventhubs
+          default-candidate: false
+          environment:
+            spring:
+              cloud:
+                azure:
+                  eventhubs:
+                    connection-string: ${EVENTHUB_NAMESPACE_02_CONNECTION_STRING}
+                    processor:
+                      checkpoint-store:
+                        container-name: ${CHECKPOINT_CONTAINER_02}
+                        account-name: ${CHECKPOINT_STORAGE_ACCOUNT}
+                        account-key: ${CHECKPOINT_ACCESS_KEY}
+      eventhubs:
+        bindings:
+          consume1-in-0:
+            consumer:
+              checkpoint:
+                mode: MANUAL
+          consume2-in-0:
+            consumer:
+              checkpoint:
+                mode: MANUAL
+      poller:
+        initial-delay: 0
+        fixed-delay: 1000</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step 2. we need define two suppliers and two consumers</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public Supplier&lt;Message&lt;String&gt;&gt; supply1() {
+    return () -&gt; {
+        LOGGER.info("Sending message1, sequence1 " + i);
+        return MessageBuilder.withPayload("Hello world1, " + i++).build();
+    };
+}
+
+@Bean
+public Supplier&lt;Message&lt;String&gt;&gt; supply2() {
+    return () -&gt; {
+        LOGGER.info("Sending message2, sequence2 " + j);
+        return MessageBuilder.withPayload("Hello world2, " + j++).build();
+    };
+}
+
+@Bean
+public Consumer&lt;Message&lt;String&gt;&gt; consume1() {
+    return message -&gt; {
+        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        LOGGER.info("New message1 received: '{}'", message);
+        checkpointer.success()
+                .doOnSuccess(success -&gt; LOGGER.info("Message1 '{}' successfully checkpointed", message))
+                .doOnError(error -&gt; LOGGER.error("Exception found", error))
+                .block();
+    };
+}
+
+@Bean
+public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
+    return message -&gt; {
+        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        LOGGER.info("New message2 received: '{}'", message);
+        checkpointer.success()
+                .doOnSuccess(success -&gt; LOGGER.info("Message2 '{}' successfully checkpointed", message))
+                .doOnError(error -&gt; LOGGER.error("Exception found", error))
+                .block();
+    };
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_resource_provision"><a class="link" href="#_resource_provision">Resource Provision</a></h5>
+<div class="paragraph">
+<p>Event Hubs binder supports provisioning of event hub and consumer group, users could use the following properties to enable provisioning.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      credential:
+        tenant-id: ${AZURE_TENANT_ID}
+      profile:
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
+      eventhubs:
+        resource:
+          resource-group: ${AZURE_EVENTHUBS_RESOURECE_GROUP}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_samples"><a class="link" href="#_samples">Samples</a></h4>
+<div class="paragraph">
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.2.0/eventhubs/spring-cloud-azure-stream-binder-eventhubs">azure-spring-boot-samples</a> for more details.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_spring_cloud_stream_binder_for_azure_service_bus"><a class="link" href="#_spring_cloud_stream_binder_for_azure_service_bus">Spring Cloud Stream Binder for Azure Service Bus</a></h3>
+<div class="sect3">
+<h4 id="_key_concepts_2"><a class="link" href="#_key_concepts_2">Key Concepts</a></h4>
+<div class="paragraph">
+<p>The Spring Cloud Stream Binder for Azure Service Bus provides the binding implementation for the Spring Cloud Stream Framework.
+This implementation uses Spring Integration Service Bus Channel Adapters at its foundation.</p>
+</div>
+<div class="sect4">
+<h5 id="_scheduled_message"><a class="link" href="#_scheduled_message">Scheduled Message</a></h5>
+<div class="paragraph">
+<p>This binder supports submitting messages to a topic for delayed processing. Users can send scheduled messages with header <code>x-delay</code>
+expressing in milliseconds a delay time for the message. The message will be delivered to the respective topics after <code>x-delay</code> milliseconds.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_consumer_group_2"><a class="link" href="#_consumer_group_2">Consumer Group</a></h5>
+<div class="paragraph">
+<p>Service Bus Topic provides similar support of consumer group as Apache Kafka, but with slight different logic.
+This binder relies on <code>Subscription</code> of a topic to act as a consumer group.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_dependency_setup_2"><a class="link" href="#_dependency_setup_2">Dependency Setup</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-cloud-azure-stream-binder-servicebus&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, you can also use the Spring Cloud Azure Stream Service Bus Starter, as shown in the following example for Maven:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-cloud-azure-starter-stream-servicebus&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configuration_2"><a class="link" href="#_configuration_2">Configuration</a></h4>
+<div class="paragraph">
+<p>The binder provides the following 2 parts of configuration options:</p>
+</div>
+<div class="sect4">
+<h5 id="servicebus-connection-configuration"><a class="link" href="#servicebus-connection-configuration">Connection Configuration Properties</a></h5>
+<div class="paragraph">
+<p>This section contains the configuration options used for connecting to Azure Service Bus.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, see <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. Connection configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether an Azure Service Bus is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.connection-string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service Bus Namespace connection string value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.namespace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service Bus Namespace value, which is the prefix of the FQDN. A FQDN should be composed of &lt;NamespaceName&gt;.&lt;DomainName&gt;</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.domain-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Domain name of an Azure Service Bus Namespace value.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Common Azure Service SDK configuration options are configurable for the Spring Cloud Azure Stream Service Bus binder as well. The supported configuration options are introduced in <a href="configuration.html">the Configuration page</a>, and could be configured with either the unified prefix <code>spring.cloud.azure.</code> or the prefix of <code>spring.cloud.azure.servicebus.</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The binder also supports <a href="index.html#spring-cloud-azure-resourcemanager">Spring Could Azure Resource Manager</a> by default. To learn about how to retrieve the connection string with security principals that are not granted with <code>Data</code> related roles, see the <a href="index.html#resource-manager-basic-usage">resource manager example</a> for details.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_azure_service_bus_binding_configuration_properties"><a class="link" href="#_azure_service_bus_binding_configuration_properties">Azure Service Bus Binding Configuration Properties</a></h5>
+<div class="paragraph">
+<p>The following options are divided into four sections: Consumer Properties, Advanced Consumer
+Configurations, Producer Properties and Advanced Producer Configurations.</p>
+</div>
+<div class="sect5">
+<h6 id="_consumer_properties"><a class="link" href="#_consumer_properties">Consumer Properties</a></h6>
+<div class="paragraph">
+<p>These properties are exposed via <code>ServiceBusConsumerProperties</code>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. Consumer configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.requeue-rejected</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If the failed messages are routed to the DLQ.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.max-concurrent-calls</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Max concurrent messages that the Service Bus processor client should process.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.max-concurrent-sessions</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum number of concurrent sessions to process at any given time.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.session-enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether session is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.prefetch-count</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The prefetch count of the Service Bus processor client.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.sub-queue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SubQueue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type of the sub queue to connect to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.max-auto-lock-renew-duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5m</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The amount of time to continue auto-renewing the lock.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.receive-mode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusReceiveMode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">peek_lock</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The receive mode of the Service Bus processor client.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer</strong>.auto-complete</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to settle messages automatically. If set as false, a message header of <code>Checkpointer</code> will be added
+to enable developers to settle messages manually.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect5">
+<h6 id="_advanced_consumer_configuration_2"><a class="link" href="#_advanced_consumer_configuration_2">Advanced Consumer Configuration</a></h6>
+<div class="paragraph">
+<p>The above <a href="#servicebus-connection-configuration">connection</a> and <a href="configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder consumer, which can be configured with the prefix <code>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer.</code>.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_producer_properties_2"><a class="link" href="#_producer_properties_2">Producer Properties</a></h6>
+<div class="paragraph">
+<p>These properties are exposed via <code>ServiceBusProducerProperties</code>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. Producer configurable properties of spring-cloud-azure-stream-binder-servicebus</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.producer</strong>.sync</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Switch flag
+for sync of producer.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.producer</strong>.send-timeout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Timeout
+value for sending of producer.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.producer</strong>.entity-type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusEntityType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service Bus entity type of the producer, required for the binding producer.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When using the binding producer, property of <code>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.producer.entity-type</code> is required to be configured.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_advanced_producer_configuration_2"><a class="link" href="#_advanced_producer_configuration_2">Advanced Producer Configuration</a></h6>
+<div class="paragraph">
+<p>The above <a href="#servicebus-connection-configuration">connection</a> and <a href="configuration.html#configuration">common Azure SDK client</a> configuration are supported to be customized for each binder producer, which can be configured with the prefix <code>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.producer.</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_basic_usage_2"><a class="link" href="#_basic_usage_2">Basic Usage</a></h4>
+<div class="sect4">
+<h5 id="_sending_and_receiving_messages_fromto_service_bus"><a class="link" href="#_sending_and_receiving_messages_fromto_service_bus">Sending and Receiving Messages from/to Service Bus</a></h5>
+<div class="paragraph">
+<p>Step 1. Fill the configuration options with credential information.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as connection string, configure the following properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      servicebus:
+        connection-string: ${SERVICEBUS_NAMESPACE_CONNECTION_STRING}
+    stream:
+      function:
+        definition: consume;supply
+      bindings:
+        consume-in-0:
+          destination: ${SERVICEBUS_ENTITY_NAME}
+          # If you use Service Bus Topic, please add the following configuration
+          # group: ${SUBSCRIPTION_NAME}
+        supply-out-0:
+          destination: ${SERVICEBUS_ENTITY_NAME_SAME_AS_ABOVE}
+      servicebus:
+        bindings:
+          consume-in-0:
+            consumer:
+              auto-complete: false
+          supply-out-0:
+            producer:
+              entity-type: queue # set as "topic" if you use Service Bus Topic</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as service principal, configure the following properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+      servicebus:
+        namespace: ${SERVICEBUS_NAMESPACE}
+    stream:
+      function:
+        definition: consume;supply
+      bindings:
+        consume-in-0:
+          destination: ${SERVICEBUS_ENTITY_NAME}
+          # If you use Service Bus Topic, please add the following configuration
+          # group: ${SUBSCRIPTION_NAME}
+        supply-out-0:
+          destination: ${SERVICEBUS_ENTITY_NAME_SAME_AS_ABOVE}
+      servicebus:
+        bindings:
+          consume-in-0:
+            consumer:
+              auto-complete: false
+          supply-out-0:
+            producer:
+              entity-type: queue # set as "topic" if you use Service Bus Topic</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as managed identities, configure the following properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      credential:
+        managed-identity-enabled: true
+        client-id: ${MANAGED_IDENTITY_CLIENT_ID} # Only needed when using a user-assigned managed identity
+      servicebus:
+        namespace: ${SERVICEBUS_NAMESPACE}
+    stream:
+      function:
+        definition: consume;supply
+      bindings:
+        consume-in-0:
+          destination: ${SERVICEBUS_ENTITY_NAME}
+          # If you use Service Bus Topic, please add the following configuration
+          # group: ${SUBSCRIPTION_NAME}
+        supply-out-0:
+          destination: ${SERVICEBUS_ENTITY_NAME_SAME_AS_ABOVE}
+      servicebus:
+        bindings:
+          consume-in-0:
+            consumer:
+              auto-complete: false
+          supply-out-0:
+            producer:
+              entity-type: queue # set as "topic" if you use Service Bus Topic</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step 2. Define supplier and consumer.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public Consumer&lt;Message&lt;String&gt;&gt; consume() {
+    return message -&gt; {
+        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
+                message.getPayload(),
+                message.getHeaders().get(EventHubsHeaders.PARTITION_KEY),
+                message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER),
+                message.getHeaders().get(EventHubsHeaders.OFFSET),
+                message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)
+        );
+
+        checkpointer.success()
+                .doOnSuccess(success -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
+                .doOnError(error -&gt; LOGGER.error("Exception found", error))
+                .block();
+    };
+}
+
+@Bean
+public Supplier&lt;Message&lt;String&gt;&gt; supply() {
+    return () -&gt; {
+        LOGGER.info("Sending message, sequence " + i);
+        return MessageBuilder.withPayload("Hello world, " + i++).build();
+    };
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_partition_key_support"><a class="link" href="#_partition_key_support">Partition Key Support</a></h5>
+<div class="paragraph">
+<p>The binder supports <a href="https://docs.microsoft.com/azure/service-bus-messaging/service-bus-partitioning">Service Bus partitioning</a> by allowing setting partition key and session id in the message header. This section introduces how to set partition key for messages.</p>
+</div>
+<div class="paragraph">
+<p>Spring Cloud Stream provides a partition key SpEL expression property <code>spring.cloud.stream.bindings.&lt;binding-name&gt;.producer.partition-key-expression</code>. For example, setting this property as <code>&quot;&#39;partitionKey-&#39; + headers[&lt;message-header-key&gt;]&quot;</code> and add a header called &lt;message-header-key&gt;. Spring Cloud Stream will use the value for this header when evaluating the above expression to assign a partition key. Here is an example producer code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public Supplier&lt;Message&lt;String&gt;&gt; generate() {
+    return () -&gt; {
+        String value = “random payload”;
+    	return MessageBuilder.withPayload(value)
+            .setHeader("&lt;message-header-key&gt;", value.length() % 4)
+            .build();
+    };
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_session_support"><a class="link" href="#_session_support">Session Support</a></h5>
+<div class="paragraph">
+<p>The binder supports <a href="https://docs.microsoft.com/azure/service-bus-messaging/message-sessions">message sessions</a> of Service Bus. Session id of a message could be set via the message header.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public Supplier&lt;Message&lt;String&gt;&gt; generate() {
+    return () -&gt; {
+        String value = “random payload”;
+    	return MessageBuilder.withPayload(value)
+            .setHeader(ServiceBusMessageHeaders.SESSION_ID, "Customize session id")
+            .build();
+    };
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+According to <a href="https://docs.microsoft.com/azure/service-bus-messaging/service-bus-partitioning">Service Bus partitioning</a>, session id has higher priority than partition key. So when both of <code>ServiceBusMessageHeaders#SESSION_ID</code> and <code>ServiceBusMessageHeaders#PARTITION_KEY</code> (or <code>AzureHeaders#PARTITION_KEY</code>) headers are set,
+the value of the session id will eventually be used to overwrite the value of the partition key.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_error_channels_2"><a class="link" href="#_error_channels_2">Error Channels</a></h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Consumer error channel</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This channel is open by default, and a default consumer error channel handler is used to send failed messages to the dead-letter queue when <code>spring.cloud.stream.servicebus.bindings.&lt;binding-name&gt;.consumer.requeue-rejected</code> is enabled, otherwise the failed messages will be abandoned.</p>
+</div>
+<div class="paragraph">
+<p>To customize the consumer error channel handler, you can register you own error handler to the related consumer error channel in this way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">// Replace destination with spring.cloud.stream.bindings.input.destination
+// Replace group with spring.cloud.stream.bindings.input.group
+@ServiceActivator(inputChannel = "{destination}.{group}.errors")
+public void consumerError(Message&lt;?&gt; message) {
+    LOGGER.error("Handling customer ERROR: " + message);
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Producer error channel</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This channel is not open by default. You need to add a configuration in your application.properties to enable it, like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.stream.default.producer.errorChannelEnabled=true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can handle the error message in this way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">// Replace destination with spring.cloud.stream.bindings.output.destination
+@ServiceActivator(inputChannel = "{destination}.errors")
+public void producerError(Message&lt;?&gt; message) {
+    LOGGER.error("Handling Producer ERROR: " + message);
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Global default error channel</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A global error channel called "errorChannel" is created by default Spring Integration, which allows users to subscribe many endpoints to it.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel = "errorChannel")
+public void producerError(Message&lt;?&gt; message) {
+    LOGGER.error("Handling ERROR: " + message);
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="scs-sb-headers"><a class="link" href="#scs-sb-headers">Service Bus Message Headers</a></h5>
+<div class="paragraph">
+<p>See the <a href="#si-sb-headers">Service Bus message headers</a> for the basic message headers supported.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When setting the partiton key, the priority of message header is higher than Spring Cloud Stream property. So <code>spring.cloud.stream.bindings.&lt;binding-name&gt;.producer.partition-key-expression</code> will take effect only when none of the headers of <code>ServiceBusMessageHeaders#SESSION_ID</code>, <code>ServiceBusMessageHeaders#PARTITION_KEY</code>, <code>AzureHeaders#PARTITION_KEY</code> is configured.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_multiple_binder_support_2"><a class="link" href="#_multiple_binder_support_2">Multiple Binder Support</a></h5>
+<div class="paragraph">
+<p>Connection to multiple Service Bus namespaces is also supported by using multiple binders. This sample takes connection string as example. Credentials of service principals and managed identities are also supported, users can set related properties in each binder&#8217;s environment settings.</p>
+</div>
+<div class="paragraph">
+<p>Step 1. To use multiple binders of ServiceBus, we need to configure the following properties in application.yml</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    stream:
+      function:
+        definition: consume1;supply1;consume2;supply2
+      bindings:
+        consume1-in-0:
+          destination: ${SERVICEBUS_TOPIC_NAME}
+          group: ${SUBSCRIPTION_NAME}
+        supply1-out-0:
+          destination: ${SERVICEBUS_TOPIC_NAME_SAME_AS_ABOVE}
+        consume2-in-0:
+          binder: servicebus-2
+          destination: ${SERVICEBUS_QUEUE_NAME}
+        supply2-out-0:
+          binder: servicebus-2
+          destination: ${SERVICEBUS_QUEUE_NAME_SAME_AS_ABOVE}
+      binders:
+        servicebus-1:
+          type: servicebus
+          default-candidate: true
+          environment:
+            spring:
+              cloud:
+                azure:
+                  servicebus:
+                    connection-string: ${SERVICEBUS_NAMESPACE_01_CONNECTION_STRING}
+        servicebus-2:
+          type: servicebus
+          default-candidate: false
+          environment:
+            spring:
+              cloud:
+                azure:
+                  servicebus:
+                    connection-string: ${SERVICEBUS_NAMESPACE_02_CONNECTION_STRING}
+      servicebus:
+        bindings:
+          consume1-in-0:
+            consumer:
+              auto-complete: false
+          supply1-out-0:
+            producer:
+              entity-type: topic
+          consume2-in-0:
+            consumer:
+              auto-complete: false
+          supply2-out-0:
+            producer:
+              entity-type: queue
+      poller:
+        initial-delay: 0
+        fixed-delay: 1000</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step 2. we need define two suppliers and two consumers</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+public Supplier&lt;Message&lt;String&gt;&gt; supply1() {
+    return () -&gt; {
+        LOGGER.info("Sending message1, sequence1 " + i);
+        return MessageBuilder.withPayload("Hello world1, " + i++).build();
+    };
+}
+
+@Bean
+public Supplier&lt;Message&lt;String&gt;&gt; supply2() {
+    return () -&gt; {
+        LOGGER.info("Sending message2, sequence2 " + j);
+        return MessageBuilder.withPayload("Hello world2, " + j++).build();
+    };
+}
+
+@Bean
+public Consumer&lt;Message&lt;String&gt;&gt; consume1() {
+    return message -&gt; {
+        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        LOGGER.info("New message1 received: '{}'", message);
+        checkpointer.success()
+                .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
+                .doOnError(e -&gt; LOGGER.error("Error found", e))
+                .block();
+    };
+}
+
+@Bean
+public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
+    return message -&gt; {
+        Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
+        LOGGER.info("New message2 received: '{}'", message);
+        checkpointer.success()
+                .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
+                .doOnError(e -&gt; LOGGER.error("Error found", e))
+                .block();
+    };
+
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_resource_provision_2"><a class="link" href="#_resource_provision_2">Resource Provision</a></h5>
+<div class="paragraph">
+<p>Service bus binder supports provisioning of queue, topic and subscription, users could use the following properties to enable provisioning.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      credential:
+        tenant-id: ${AZURE_TENANT_ID}
+      profile:
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
+      servicebus:
+        resource:
+          resource-group: ${AZURE_SERVICEBUS_RESOURECE_GROUP}
+    stream:
+      servicebus:
+        bindings:
+          &lt;binding-name&gt;:
+            consumer:
+              entity-type: ${SERVICEBUS_CONSUMER_ENTITY_TYPE}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_samples_2"><a class="link" href="#_samples_2">Samples</a></h4>
+<div class="paragraph">
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.2.0/servicebus/spring-cloud-azure-stream-binder-servicebus">azure-spring-boot-samples</a> for more details.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>
