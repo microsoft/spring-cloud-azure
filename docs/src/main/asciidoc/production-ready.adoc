@@ -30,6 +30,10 @@ Add the Spring Cloud Azure Actuator Starter dependency. This dependency will als
 
 IMPORTANT: Calling the health endpoint of Azure services may cause extra charge. For example, calling `http://HOST_NAME:{port}/actuator/health/cosmos` to get the Cosmos DB health info, it will calculate https://docs.microsoft.com/azure/cosmos-db/request-units[RUs].
 
+NOTE: For calling the health endpoint of `Cosmos`, the option `spring.cloud.azure.cosmos.database` should be configured; Otherwise, the health status of `unknown` will be returned.
+
+NOTE: For calling the health endpoint of `Storage Queue`, role of `Storage Account Contributor` is required if `Azure AD` is used for authorizing.
+
 === Enable Sleuth
 
 Add the Spring Cloud Azure Trace Sleuth dependency when you want to trace Azure SDK activities with using Spring Cloud Sleuth.

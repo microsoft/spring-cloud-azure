@@ -28,7 +28,7 @@ Adding the following dependencies if you want to migrate your Spring JMS applica
 |Azure Service Bus connection string. Should be provided when want to provide the connection string directly.
 
 |*spring.jms.servicebus*.topic-client-id
-|JMS clientID. Only works for the bean of topicJmsListenerContainerFactory.
+|JMS client ID. Only works for the bean of topicJmsListenerContainerFactory.
 
 |*spring.jms.servicebus*.idle-timeout
 | The duration for idle.
