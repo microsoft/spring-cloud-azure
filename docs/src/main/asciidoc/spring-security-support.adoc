@@ -8,7 +8,7 @@ Azure offers a great platform to democratize your application development journe
 
 Spring Security has made it easy to secure your Spring based applications with powerful abstractions and extensible interfaces. However, as powerful as the Spring framework can be, it is not tailored to a specific identity provider.
 
-The `spring-cloud-azure-starter-active-directory` (`aad-starter` for short) provides the most optimal way to connect your `web application` to an Azure Active Directory (AAD for short) tenant and protect `resource server` with AAD. It uses the Oauth 2.0 protocol to protect `web applications` and `resource servers`.
+The `spring-cloud-azure-starter-active-directory` provides the most optimal way to connect your web application to an Azure Active Directory (Azure AD for short) tenant and protect your resource server with Azure AD. It uses the Oauth 2.0 protocol to protect web applications and resource servers.
 
 ==== Accessing a Web Application
 
@@ -759,7 +759,7 @@ For full configurations, check link:appendix.html#migration-guide-for-4-0[the Ap
 
 ==== Basic Usage
 
-A `web application` is any web based application that allows user to login Azure AD, whereas a `resource server` will either accept or deny access after validating access_token obtained from Azure AD. We will cover 4 scenarios in this guide:
+A `web application` is any web based application that allows user to login with Azure AD, whereas a `resource server` will either accept or deny access after validating access_token obtained from Azure AD. We will cover 4 scenarios in this guide:
 
 . Accessing a web application.
 . Web application accessing resource servers.
