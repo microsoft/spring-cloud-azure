@@ -227,6 +227,8 @@ public final class Main {
 			try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
 				writer.write("---");
 				writer.newLine();
+				writer.write("author: KarlErickson");
+				writer.newLine();
 				writer.write("ms.author: v-yonghuiye");
 				writer.newLine();
 				writer.write("ms.date: " + date);
