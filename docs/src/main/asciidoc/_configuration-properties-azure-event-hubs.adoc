@@ -10,9 +10,9 @@
 |spring.cloud.azure.eventhubs.consumer.consumer-group |  | Name of the consumer group this consumer is associated with.
 |spring.cloud.azure.eventhubs.consumer.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.eventhubs.consumer.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
-|spring.cloud.azure.eventhubs.consumer.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
+|spring.cloud.azure.eventhubs.consumer.credential.client-id |  | Client ID to use when performing service principal authentication with Azure.
 |spring.cloud.azure.eventhubs.consumer.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.eventhubs.consumer.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client id as user assigned managed identity client id.
+|spring.cloud.azure.eventhubs.consumer.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client ID as user assigned managed identity client ID.
 |spring.cloud.azure.eventhubs.consumer.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.consumer.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.consumer.custom-endpoint-address |  | A custom endpoint address when connecting to the Event Hubs service. This can be useful when your network does not allow connecting to the standard Azure Event Hubs endpoint address, but does allow connecting through an intermediary. For example: https://my.custom.endpoint.com:55300.
@@ -25,7 +25,7 @@
 |spring.cloud.azure.eventhubs.consumer.profile.environment.active-directory-endpoint |  | The Azure Active Directory endpoint to connect to.
 |spring.cloud.azure.eventhubs.consumer.profile.environment.active-directory-graph-api-version |  | The Azure Active Directory Graph API version.
 |spring.cloud.azure.eventhubs.consumer.profile.environment.active-directory-graph-endpoint |  | The Azure Active Directory Graph endpoint.
-|spring.cloud.azure.eventhubs.consumer.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource id.
+|spring.cloud.azure.eventhubs.consumer.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource ID.
 |spring.cloud.azure.eventhubs.consumer.profile.environment.azure-application-insights-endpoint |  | The Azure Application Insights endpoint.
 |spring.cloud.azure.eventhubs.consumer.profile.environment.azure-data-lake-analytics-catalog-and-job-endpoint-suffix |  | The Data Lake analytics catalog and job endpoint suffix.
 |spring.cloud.azure.eventhubs.consumer.profile.environment.azure-data-lake-store-file-system-endpoint-suffix |  | The Data Lake storage file system endpoint suffix.
@@ -41,8 +41,8 @@
 |spring.cloud.azure.eventhubs.consumer.profile.environment.sql-management-endpoint |  | The SQL management endpoint.
 |spring.cloud.azure.eventhubs.consumer.profile.environment.sql-server-hostname-suffix |  | The SQL Server hostname suffix.
 |spring.cloud.azure.eventhubs.consumer.profile.environment.storage-endpoint-suffix |  | The Storage endpoint suffix.
-|spring.cloud.azure.eventhubs.consumer.profile.subscription-id |  | Subscription id to use when connecting to Azure resources.
-|spring.cloud.azure.eventhubs.consumer.profile.tenant-id |  | Tenant id for Azure resources.
+|spring.cloud.azure.eventhubs.consumer.profile.subscription-id |  | Subscription ID to use when connecting to Azure resources.
+|spring.cloud.azure.eventhubs.consumer.profile.tenant-id |  | Tenant ID for Azure resources.
 |spring.cloud.azure.eventhubs.consumer.proxy.authentication-type |  | Authentication type used against the proxy.
 |spring.cloud.azure.eventhubs.consumer.proxy.hostname |  | The host of the proxy.
 |spring.cloud.azure.eventhubs.consumer.proxy.password |  | Password used to authenticate with the proxy.
@@ -61,9 +61,9 @@
 |spring.cloud.azure.eventhubs.consumer.retry.try-timeout |  | Amount of time to wait until a timeout.
 |spring.cloud.azure.eventhubs.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.eventhubs.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
-|spring.cloud.azure.eventhubs.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
+|spring.cloud.azure.eventhubs.credential.client-id |  | Client ID to use when performing service principal authentication with Azure.
 |spring.cloud.azure.eventhubs.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.eventhubs.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client id as user assigned managed identity client id.
+|spring.cloud.azure.eventhubs.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client ID as user assigned managed identity client ID.
 |spring.cloud.azure.eventhubs.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.custom-endpoint-address |  | A custom endpoint address when connecting to the Event Hubs service. This can be useful when your network does not allow connecting to the standard Azure Event Hubs endpoint address, but does allow connecting through an intermediary. For example: https://my.custom.endpoint.com:55300.
@@ -79,11 +79,11 @@
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.client.connection-idle-timeout |  | Amount of time before an idle connection.
-|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.headers |  | List of headers applied to each request sent with client.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.client.headers[0].name |  | The name of the header.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.client.headers[0].values |  | List of values of the header.
-|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.logging.allowed-header-names |  | Comma-delimited list of whitelisted headers that should be logged.
-|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.logging.allowed-query-param-names |  | Comma-delimited list of whitelisted query parameters.
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.logging.allowed-header-names |  | Comma-delimited list of allowlist headers that should be logged.
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.client.logging.allowed-query-param-names |  | Comma-delimited list of allowlist query parameters.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.client.logging.level |  | The level of detail to log on HTTP messages.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.client.logging.pretty-print-body |  | Whether to pretty print the message bodies.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.client.maximum-connection-pool-size |  | Maximum connection pool size used by the underlying HTTP client.
@@ -95,9 +95,9 @@
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.create-container-if-not-exists | `false` | Whether to create the container if it does not exist.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
-|spring.cloud.azure.eventhubs.processor.checkpoint-store.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.credential.client-id |  | Client ID to use when performing service principal authentication with Azure.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.eventhubs.processor.checkpoint-store.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client id as user assigned managed identity client id.
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client ID as user assigned managed identity client ID.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.customer-provided-key |  | Customer provided key used to encrypt blob contents on the server.
@@ -108,7 +108,7 @@
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.profile.environment.active-directory-endpoint |  | The Azure Active Directory endpoint to connect to.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.profile.environment.active-directory-graph-api-version |  | The Azure Active Directory Graph API version.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.profile.environment.active-directory-graph-endpoint |  | The Azure Active Directory Graph endpoint.
-|spring.cloud.azure.eventhubs.processor.checkpoint-store.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource id.
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource ID.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.profile.environment.azure-application-insights-endpoint |  | The Azure Application Insights endpoint.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.profile.environment.azure-data-lake-analytics-catalog-and-job-endpoint-suffix |  | The Data Lake analytics catalog and job endpoint suffix.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.profile.environment.azure-data-lake-store-file-system-endpoint-suffix |  | The Data Lake storage file system endpoint suffix.
@@ -124,8 +124,8 @@
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.profile.environment.sql-management-endpoint |  | The SQL management endpoint.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.profile.environment.sql-server-hostname-suffix |  | The SQL Server hostname suffix.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.profile.environment.storage-endpoint-suffix |  | The Storage endpoint suffix.
-|spring.cloud.azure.eventhubs.processor.checkpoint-store.profile.subscription-id |  | Subscription id to use when connecting to Azure resources.
-|spring.cloud.azure.eventhubs.processor.checkpoint-store.profile.tenant-id |  | Tenant id for Azure resources.
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.profile.subscription-id |  | Subscription ID to use when connecting to Azure resources.
+|spring.cloud.azure.eventhubs.processor.checkpoint-store.profile.tenant-id |  | Tenant ID for Azure resources.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.proxy.hostname |  | The host of the proxy.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.proxy.non-proxy-hosts |  | A list of hosts or CIDR to not use proxy HTTP/HTTPS connections through.
 |spring.cloud.azure.eventhubs.processor.checkpoint-store.proxy.password |  | Password used to authenticate with the proxy.
@@ -151,9 +151,9 @@
 |spring.cloud.azure.eventhubs.processor.consumer-group |  | Name of the consumer group this consumer is associated with.
 |spring.cloud.azure.eventhubs.processor.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.eventhubs.processor.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
-|spring.cloud.azure.eventhubs.processor.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
+|spring.cloud.azure.eventhubs.processor.credential.client-id |  | Client ID to use when performing service principal authentication with Azure.
 |spring.cloud.azure.eventhubs.processor.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.eventhubs.processor.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client id as user assigned managed identity client id.
+|spring.cloud.azure.eventhubs.processor.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client ID as user assigned managed identity client ID.
 |spring.cloud.azure.eventhubs.processor.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.processor.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.processor.custom-endpoint-address |  | A custom endpoint address when connecting to the Event Hubs service. This can be useful when your network does not allow connecting to the standard Azure Event Hubs endpoint address, but does allow connecting through an intermediary. For example: https://my.custom.endpoint.com:55300.
@@ -170,7 +170,7 @@
 |spring.cloud.azure.eventhubs.processor.profile.environment.active-directory-endpoint |  | The Azure Active Directory endpoint to connect to.
 |spring.cloud.azure.eventhubs.processor.profile.environment.active-directory-graph-api-version |  | The Azure Active Directory Graph API version.
 |spring.cloud.azure.eventhubs.processor.profile.environment.active-directory-graph-endpoint |  | The Azure Active Directory Graph endpoint.
-|spring.cloud.azure.eventhubs.processor.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource id.
+|spring.cloud.azure.eventhubs.processor.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource ID.
 |spring.cloud.azure.eventhubs.processor.profile.environment.azure-application-insights-endpoint |  | The Azure Application Insights endpoint.
 |spring.cloud.azure.eventhubs.processor.profile.environment.azure-data-lake-analytics-catalog-and-job-endpoint-suffix |  | The Data Lake analytics catalog and job endpoint suffix.
 |spring.cloud.azure.eventhubs.processor.profile.environment.azure-data-lake-store-file-system-endpoint-suffix |  | The Data Lake storage file system endpoint suffix.
@@ -186,8 +186,8 @@
 |spring.cloud.azure.eventhubs.processor.profile.environment.sql-management-endpoint |  | The SQL management endpoint.
 |spring.cloud.azure.eventhubs.processor.profile.environment.sql-server-hostname-suffix |  | The SQL Server hostname suffix.
 |spring.cloud.azure.eventhubs.processor.profile.environment.storage-endpoint-suffix |  | The Storage endpoint suffix.
-|spring.cloud.azure.eventhubs.processor.profile.subscription-id |  | Subscription id to use when connecting to Azure resources.
-|spring.cloud.azure.eventhubs.processor.profile.tenant-id |  | Tenant id for Azure resources.
+|spring.cloud.azure.eventhubs.processor.profile.subscription-id |  | Subscription ID to use when connecting to Azure resources.
+|spring.cloud.azure.eventhubs.processor.profile.tenant-id |  | Tenant ID for Azure resources.
 |spring.cloud.azure.eventhubs.processor.proxy.authentication-type |  | Authentication type used against the proxy.
 |spring.cloud.azure.eventhubs.processor.proxy.hostname |  | The host of the proxy.
 |spring.cloud.azure.eventhubs.processor.proxy.password |  | Password used to authenticate with the proxy.
@@ -210,9 +210,9 @@
 |spring.cloud.azure.eventhubs.producer.connection-string |  | Connection string to connect to an event hub.
 |spring.cloud.azure.eventhubs.producer.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.eventhubs.producer.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
-|spring.cloud.azure.eventhubs.producer.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
+|spring.cloud.azure.eventhubs.producer.credential.client-id |  | Client ID to use when performing service principal authentication with Azure.
 |spring.cloud.azure.eventhubs.producer.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.eventhubs.producer.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client id as user assigned managed identity client id.
+|spring.cloud.azure.eventhubs.producer.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client ID as user assigned managed identity client ID.
 |spring.cloud.azure.eventhubs.producer.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.producer.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.producer.custom-endpoint-address |  | A custom endpoint address when connecting to the Event Hubs service. This can be useful when your network does not allow connecting to the standard Azure Event Hubs endpoint address, but does allow connecting through an intermediary. For example: https://my.custom.endpoint.com:55300.
@@ -224,7 +224,7 @@
 |spring.cloud.azure.eventhubs.producer.profile.environment.active-directory-endpoint |  | The Azure Active Directory endpoint to connect to.
 |spring.cloud.azure.eventhubs.producer.profile.environment.active-directory-graph-api-version |  | The Azure Active Directory Graph API version.
 |spring.cloud.azure.eventhubs.producer.profile.environment.active-directory-graph-endpoint |  | The Azure Active Directory Graph endpoint.
-|spring.cloud.azure.eventhubs.producer.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource id.
+|spring.cloud.azure.eventhubs.producer.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource ID.
 |spring.cloud.azure.eventhubs.producer.profile.environment.azure-application-insights-endpoint |  | The Azure Application Insights endpoint.
 |spring.cloud.azure.eventhubs.producer.profile.environment.azure-data-lake-analytics-catalog-and-job-endpoint-suffix |  | The Data Lake analytics catalog and job endpoint suffix.
 |spring.cloud.azure.eventhubs.producer.profile.environment.azure-data-lake-store-file-system-endpoint-suffix |  | The Data Lake storage file system endpoint suffix.
@@ -240,8 +240,8 @@
 |spring.cloud.azure.eventhubs.producer.profile.environment.sql-management-endpoint |  | The SQL management endpoint.
 |spring.cloud.azure.eventhubs.producer.profile.environment.sql-server-hostname-suffix |  | The SQL Server hostname suffix.
 |spring.cloud.azure.eventhubs.producer.profile.environment.storage-endpoint-suffix |  | The Storage endpoint suffix.
-|spring.cloud.azure.eventhubs.producer.profile.subscription-id |  | Subscription id to use when connecting to Azure resources.
-|spring.cloud.azure.eventhubs.producer.profile.tenant-id |  | Tenant id for Azure resources.
+|spring.cloud.azure.eventhubs.producer.profile.subscription-id |  | Subscription ID to use when connecting to Azure resources.
+|spring.cloud.azure.eventhubs.producer.profile.tenant-id |  | Tenant ID for Azure resources.
 |spring.cloud.azure.eventhubs.producer.proxy.authentication-type |  | Authentication type used against the proxy.
 |spring.cloud.azure.eventhubs.producer.proxy.hostname |  | The host of the proxy.
 |spring.cloud.azure.eventhubs.producer.proxy.password |  | Password used to authenticate with the proxy.
@@ -262,7 +262,7 @@
 |spring.cloud.azure.eventhubs.profile.environment.active-directory-endpoint |  | The Azure Active Directory endpoint to connect to.
 |spring.cloud.azure.eventhubs.profile.environment.active-directory-graph-api-version |  | The Azure Active Directory Graph API version.
 |spring.cloud.azure.eventhubs.profile.environment.active-directory-graph-endpoint |  | The Azure Active Directory Graph endpoint.
-|spring.cloud.azure.eventhubs.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource id.
+|spring.cloud.azure.eventhubs.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource ID.
 |spring.cloud.azure.eventhubs.profile.environment.azure-application-insights-endpoint |  | The Azure Application Insights endpoint.
 |spring.cloud.azure.eventhubs.profile.environment.azure-data-lake-analytics-catalog-and-job-endpoint-suffix |  | The Data Lake analytics catalog and job endpoint suffix.
 |spring.cloud.azure.eventhubs.profile.environment.azure-data-lake-store-file-system-endpoint-suffix |  | The Data Lake storage file system endpoint suffix.
@@ -278,8 +278,8 @@
 |spring.cloud.azure.eventhubs.profile.environment.sql-management-endpoint |  | The SQL management endpoint.
 |spring.cloud.azure.eventhubs.profile.environment.sql-server-hostname-suffix |  | The SQL Server hostname suffix.
 |spring.cloud.azure.eventhubs.profile.environment.storage-endpoint-suffix |  | The Storage endpoint suffix.
-|spring.cloud.azure.eventhubs.profile.subscription-id |  | Subscription id to use when connecting to Azure resources.
-|spring.cloud.azure.eventhubs.profile.tenant-id |  | Tenant id for Azure resources.
+|spring.cloud.azure.eventhubs.profile.subscription-id |  | Subscription ID to use when connecting to Azure resources.
+|spring.cloud.azure.eventhubs.profile.tenant-id |  | Tenant ID for Azure resources.
 |spring.cloud.azure.eventhubs.proxy.authentication-type |  | Authentication type used against the proxy.
 |spring.cloud.azure.eventhubs.proxy.hostname |  | The host of the proxy.
 |spring.cloud.azure.eventhubs.proxy.password |  | Password used to authenticate with the proxy.
