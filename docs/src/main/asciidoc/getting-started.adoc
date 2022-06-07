@@ -4,21 +4,20 @@
 
 ==== Bill of Material (BOM)
 
-[source,xml,indent=0]
+[source,xml,indent=0,subs="attributes,verbatim"]
 ----
 <dependencyManagement>
   <dependencies>
     <dependency>
       <groupId>com.azure.spring</groupId>
       <artifactId>spring-cloud-azure-dependencies</artifactId>
-      <version>${spring.cloud.azure.version}</version> <!--1-->
+      <version>{project-version}</version>
       <type>pom</type>
       <scope>import</scope>
     </dependency>
   </dependencies>
 </dependencyManagement>
 ----
-<1> The version for spring-cloud-azure-dependencies is {project-version}.
 
 [#starter-dependencies]
 ==== Starter Dependencies

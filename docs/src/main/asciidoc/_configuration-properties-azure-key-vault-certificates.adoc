@@ -4,11 +4,11 @@
 |spring.cloud.azure.keyvault.certificate.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
 |spring.cloud.azure.keyvault.certificate.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
 |spring.cloud.azure.keyvault.certificate.client.connection-idle-timeout |  | Amount of time before an idle connection.
-|spring.cloud.azure.keyvault.certificate.client.headers |  | Comma-delimited list of headers applied to each request sent with client.
+|spring.cloud.azure.keyvault.certificate.client.headers |  | List of headers applied to each request sent with client.
 |spring.cloud.azure.keyvault.certificate.client.headers[0].name |  | The name of the header.
 |spring.cloud.azure.keyvault.certificate.client.headers[0].values |  | List of values of the header.
-|spring.cloud.azure.keyvault.certificate.client.logging.allowed-header-names |  | Comma-delimited list of whitelisted headers that should be logged.
-|spring.cloud.azure.keyvault.certificate.client.logging.allowed-query-param-names |  | Comma-delimited list of whitelisted query parameters.
+|spring.cloud.azure.keyvault.certificate.client.logging.allowed-header-names |  | Comma-delimited list of allowlist headers that should be logged.
+|spring.cloud.azure.keyvault.certificate.client.logging.allowed-query-param-names |  | Comma-delimited list of allowlist query parameters.
 |spring.cloud.azure.keyvault.certificate.client.logging.level |  | The level of detail to log on HTTP messages.
 |spring.cloud.azure.keyvault.certificate.client.logging.pretty-print-body |  | Whether to pretty print the message bodies.
 |spring.cloud.azure.keyvault.certificate.client.maximum-connection-pool-size |  | Maximum connection pool size used by the underlying HTTP client.
@@ -17,9 +17,9 @@
 |spring.cloud.azure.keyvault.certificate.client.write-timeout |  | Amount of time each request being sent over the wire.
 |spring.cloud.azure.keyvault.certificate.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.keyvault.certificate.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
-|spring.cloud.azure.keyvault.certificate.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
+|spring.cloud.azure.keyvault.certificate.credential.client-id |  | Client ID to use when performing service principal authentication with Azure.
 |spring.cloud.azure.keyvault.certificate.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.keyvault.certificate.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client id as user assigned managed identity client id.
+|spring.cloud.azure.keyvault.certificate.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client ID as user assigned managed identity client ID.
 |spring.cloud.azure.keyvault.certificate.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.keyvault.certificate.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.keyvault.certificate.enabled | `true` | Whether an Azure Service is enabled.
@@ -28,7 +28,7 @@
 |spring.cloud.azure.keyvault.certificate.profile.environment.active-directory-endpoint |  | The Azure Active Directory endpoint to connect to.
 |spring.cloud.azure.keyvault.certificate.profile.environment.active-directory-graph-api-version |  | The Azure Active Directory Graph API version.
 |spring.cloud.azure.keyvault.certificate.profile.environment.active-directory-graph-endpoint |  | The Azure Active Directory Graph endpoint.
-|spring.cloud.azure.keyvault.certificate.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource id.
+|spring.cloud.azure.keyvault.certificate.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource ID.
 |spring.cloud.azure.keyvault.certificate.profile.environment.azure-application-insights-endpoint |  | The Azure Application Insights endpoint.
 |spring.cloud.azure.keyvault.certificate.profile.environment.azure-data-lake-analytics-catalog-and-job-endpoint-suffix |  | The Data Lake analytics catalog and job endpoint suffix.
 |spring.cloud.azure.keyvault.certificate.profile.environment.azure-data-lake-store-file-system-endpoint-suffix |  | The Data Lake storage file system endpoint suffix.
@@ -44,8 +44,8 @@
 |spring.cloud.azure.keyvault.certificate.profile.environment.sql-management-endpoint |  | The SQL management endpoint.
 |spring.cloud.azure.keyvault.certificate.profile.environment.sql-server-hostname-suffix |  | The SQL Server hostname suffix.
 |spring.cloud.azure.keyvault.certificate.profile.environment.storage-endpoint-suffix |  | The Storage endpoint suffix.
-|spring.cloud.azure.keyvault.certificate.profile.subscription-id |  | Subscription id to use when connecting to Azure resources.
-|spring.cloud.azure.keyvault.certificate.profile.tenant-id |  | Tenant id for Azure resources.
+|spring.cloud.azure.keyvault.certificate.profile.subscription-id |  | Subscription ID to use when connecting to Azure resources.
+|spring.cloud.azure.keyvault.certificate.profile.tenant-id |  | Tenant ID for Azure resources.
 |spring.cloud.azure.keyvault.certificate.proxy.hostname |  | The host of the proxy.
 |spring.cloud.azure.keyvault.certificate.proxy.non-proxy-hosts |  | A list of hosts or CIDR to not use proxy HTTP/HTTPS connections through.
 |spring.cloud.azure.keyvault.certificate.proxy.password |  | Password used to authenticate with the proxy.

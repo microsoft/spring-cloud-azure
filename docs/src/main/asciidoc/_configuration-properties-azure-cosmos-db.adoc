@@ -9,9 +9,9 @@
 |spring.cloud.azure.cosmos.content-response-on-write-enabled |  | Whether to only return the headers and status code in Cosmos DB response in case of Create, Update and Delete operations on CosmosItem.  If set to false, service doesn't return payload in the response.
 |spring.cloud.azure.cosmos.credential.client-certificate-password |  | Password of the certificate file.
 |spring.cloud.azure.cosmos.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
-|spring.cloud.azure.cosmos.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
+|spring.cloud.azure.cosmos.credential.client-id |  | Client ID to use when performing service principal authentication with Azure.
 |spring.cloud.azure.cosmos.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.cosmos.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client id as user assigned managed identity client id.
+|spring.cloud.azure.cosmos.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client ID as user assigned managed identity client ID.
 |spring.cloud.azure.cosmos.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.cosmos.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.cosmos.database |  | Database name of the cosmos db.
@@ -35,7 +35,7 @@
 |spring.cloud.azure.cosmos.profile.environment.active-directory-endpoint |  | The Azure Active Directory endpoint to connect to.
 |spring.cloud.azure.cosmos.profile.environment.active-directory-graph-api-version |  | The Azure Active Directory Graph API version.
 |spring.cloud.azure.cosmos.profile.environment.active-directory-graph-endpoint |  | The Azure Active Directory Graph endpoint.
-|spring.cloud.azure.cosmos.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource id.
+|spring.cloud.azure.cosmos.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource ID.
 |spring.cloud.azure.cosmos.profile.environment.azure-application-insights-endpoint |  | The Azure Application Insights endpoint.
 |spring.cloud.azure.cosmos.profile.environment.azure-data-lake-analytics-catalog-and-job-endpoint-suffix |  | The Data Lake analytics catalog and job endpoint suffix.
 |spring.cloud.azure.cosmos.profile.environment.azure-data-lake-store-file-system-endpoint-suffix |  | The Data Lake storage file system endpoint suffix.
@@ -51,8 +51,8 @@
 |spring.cloud.azure.cosmos.profile.environment.sql-management-endpoint |  | The SQL management endpoint.
 |spring.cloud.azure.cosmos.profile.environment.sql-server-hostname-suffix |  | The SQL Server hostname suffix.
 |spring.cloud.azure.cosmos.profile.environment.storage-endpoint-suffix |  | The Storage endpoint suffix.
-|spring.cloud.azure.cosmos.profile.subscription-id |  | Subscription id to use when connecting to Azure resources.
-|spring.cloud.azure.cosmos.profile.tenant-id |  | Tenant id for Azure resources.
+|spring.cloud.azure.cosmos.profile.subscription-id |  | Subscription ID to use when connecting to Azure resources.
+|spring.cloud.azure.cosmos.profile.tenant-id |  | Tenant ID for Azure resources.
 |spring.cloud.azure.cosmos.proxy.hostname |  | The host of the proxy.
 |spring.cloud.azure.cosmos.proxy.non-proxy-hosts |  | A list of hosts or CIDR to not use proxy HTTP/HTTPS connections through.
 |spring.cloud.azure.cosmos.proxy.password |  | Password used to authenticate with the proxy.

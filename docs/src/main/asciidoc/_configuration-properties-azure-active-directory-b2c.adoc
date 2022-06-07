@@ -4,8 +4,8 @@
 |spring.cloud.azure.active-directory.b2c.app-id-uri |  | App ID URI which might be used in the "aud" claim of a token.
 |spring.cloud.azure.active-directory.b2c.authenticate-additional-parameters |  | Additional parameters for authentication.
 |spring.cloud.azure.active-directory.b2c.authorization-clients |  | Specify client configuration.
-|spring.cloud.azure.active-directory.b2c.base-uri |  | AAD B2C endpoint base uri.
-|spring.cloud.azure.active-directory.b2c.credential.client-id |  | Client id to use when performing service principal authentication with Azure.
+|spring.cloud.azure.active-directory.b2c.base-uri |  | Azure AD B2C endpoint base uri.
+|spring.cloud.azure.active-directory.b2c.credential.client-id |  | Client ID to use when performing service principal authentication with Azure.
 |spring.cloud.azure.active-directory.b2c.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
 |spring.cloud.azure.active-directory.b2c.enabled | `false` | Whether to enable Azure Active Directory B2C related auto-configuration.
 |spring.cloud.azure.active-directory.b2c.jwt-connect-timeout |  | Connection Timeout for the JWKSet Remote URL call.
