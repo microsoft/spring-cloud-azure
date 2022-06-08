@@ -137,7 +137,7 @@
 |spring.cloud.azure.cosmos.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client ID as user assigned managed identity client ID.
 |spring.cloud.azure.cosmos.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.cosmos.credential.username |  | Username to use when performing username/password authentication with Azure.
-|spring.cloud.azure.cosmos.database |  | Database name of the cosmos db.
+|spring.cloud.azure.cosmos.database |  | Database name of the Cosmos db.
 |spring.cloud.azure.cosmos.direct-connection.connect-timeout |  | Connect timeout for direct client, represents timeout for establishing connections with an endpoint.
 |spring.cloud.azure.cosmos.direct-connection.connection-endpoint-rediscovery-enabled |  | Whether to enable the direct TCP connection endpoint rediscovery.
 |spring.cloud.azure.cosmos.direct-connection.idle-connection-timeout |  | Idle connection timeout for the direct client. Direct client doesn't close a single connection to an endpoint by default unless specified.
@@ -146,11 +146,11 @@
 |spring.cloud.azure.cosmos.direct-connection.max-requests-per-connection |  | Max requests per connection, represents the number of requests that will be queued on a single connection for a specific endpoint.
 |spring.cloud.azure.cosmos.direct-connection.network-request-timeout |  | Network request timeout interval (time to wait for response from network peer).
 |spring.cloud.azure.cosmos.enabled | `true` | Whether an Azure Service is enabled.
-|spring.cloud.azure.cosmos.endpoint |  | Endpoint of the cosmos db.
+|spring.cloud.azure.cosmos.endpoint |  | Endpoint of the Cosmos db.
 |spring.cloud.azure.cosmos.endpoint-discovery-enabled |  | Whether to enable endpoint discovery for geo-replicated database accounts.
 |spring.cloud.azure.cosmos.gateway-connection.idle-connection-timeout |  | Timeout for an idle connection. After that time, the connection will be automatically closed.
 |spring.cloud.azure.cosmos.gateway-connection.max-connection-pool-size |  | Size of the connection pool.
-|spring.cloud.azure.cosmos.key |  | Key to authenticate for accessing the cosmos db.
+|spring.cloud.azure.cosmos.key |  | Key to authenticate for accessing the Cosmos db.
 |spring.cloud.azure.cosmos.multiple-write-regions-enabled |  | Whether to enable writes on any regions for geo-replicated database accounts in the Azure Cosmos DB service.
 |spring.cloud.azure.cosmos.populate-query-metrics | `false` | Whether to populate diagnostics strings and query metrics.
 |spring.cloud.azure.cosmos.preferred-regions |  | Preferred regions for geo-replicated database accounts. For example, "East US" as the preferred region.
@@ -183,7 +183,7 @@
 |spring.cloud.azure.cosmos.proxy.type |  | Type of the proxy.
 |spring.cloud.azure.cosmos.proxy.username |  | Username used to authenticate with the proxy.
 |spring.cloud.azure.cosmos.read-requests-fallback-enabled |  | Whether to allow for reads to go to multiple regions configured on an account of Azure Cosmos DB service.
-|spring.cloud.azure.cosmos.resource-token |  | Resource token to authenticate for accessing the cosmos db.
+|spring.cloud.azure.cosmos.resource-token |  | Resource token to authenticate for accessing the Cosmos db.
 |spring.cloud.azure.cosmos.resource.region |  | The region of an Azure resource.
 |spring.cloud.azure.cosmos.resource.resource-group |  | The resource group holds an Azure resource.
 |spring.cloud.azure.cosmos.resource.resource-id |  | ID of an Azure resource.
