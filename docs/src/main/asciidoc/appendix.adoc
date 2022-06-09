@@ -13,6 +13,8 @@ include::_configuration-properties-azure-app-configuration.adoc[]
 include::_configuration-properties-azure-cosmos-db.adoc[]
 === Azure Event Hubs Properties
 include::_configuration-properties-azure-event-hubs.adoc[]
+=== Azure Key Vault Properties
+include::_configuration-properties-azure-key-vault.adoc[]
 === Azure Key Vault Secrets Properties
 include::_configuration-properties-azure-key-vault-secrets.adoc[]
 === Azure Key Vault Certificates Properties
@@ -21,6 +23,8 @@ include::_configuration-properties-azure-key-vault-certificates.adoc[]
 include::_configuration-properties-azure-service-bus.adoc[]
 === Azure Service Bus JMS Properties
 include::_configuration-properties-azure-service-bus-jms.adoc[]
+=== Azure Storage Properties
+include::_configuration-properties-azure-storage.adoc[]
 === Azure Storage Blob Properties
 include::_configuration-properties-azure-storage-blob.adoc[]
 === Azure Storage File Share Properties

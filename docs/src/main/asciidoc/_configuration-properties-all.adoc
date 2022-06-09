@@ -137,7 +137,7 @@
 |spring.cloud.azure.cosmos.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client ID as user assigned managed identity client ID.
 |spring.cloud.azure.cosmos.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.cosmos.credential.username |  | Username to use when performing username/password authentication with Azure.
-|spring.cloud.azure.cosmos.database |  | Database name of the Cosmos db.
+|spring.cloud.azure.cosmos.database |  | Database name of the Cosmos DB.
 |spring.cloud.azure.cosmos.direct-connection.connect-timeout |  | Connect timeout for direct client, represents timeout for establishing connections with an endpoint.
 |spring.cloud.azure.cosmos.direct-connection.connection-endpoint-rediscovery-enabled |  | Whether to enable the direct TCP connection endpoint rediscovery.
 |spring.cloud.azure.cosmos.direct-connection.idle-connection-timeout |  | Idle connection timeout for the direct client. Direct client doesn't close a single connection to an endpoint by default unless specified.
@@ -146,11 +146,11 @@
 |spring.cloud.azure.cosmos.direct-connection.max-requests-per-connection |  | Max requests per connection, represents the number of requests that will be queued on a single connection for a specific endpoint.
 |spring.cloud.azure.cosmos.direct-connection.network-request-timeout |  | Network request timeout interval (time to wait for response from network peer).
 |spring.cloud.azure.cosmos.enabled | `true` | Whether an Azure Service is enabled.
-|spring.cloud.azure.cosmos.endpoint |  | Endpoint of the Cosmos db.
+|spring.cloud.azure.cosmos.endpoint |  | Endpoint of the Cosmos DB.
 |spring.cloud.azure.cosmos.endpoint-discovery-enabled |  | Whether to enable endpoint discovery for geo-replicated database accounts.
 |spring.cloud.azure.cosmos.gateway-connection.idle-connection-timeout |  | Timeout for an idle connection. After that time, the connection will be automatically closed.
 |spring.cloud.azure.cosmos.gateway-connection.max-connection-pool-size |  | Size of the connection pool.
-|spring.cloud.azure.cosmos.key |  | Key to authenticate for accessing the Cosmos db.
+|spring.cloud.azure.cosmos.key |  | Key to authenticate for accessing the Cosmos DB.
 |spring.cloud.azure.cosmos.multiple-write-regions-enabled |  | Whether to enable writes on any regions for geo-replicated database accounts in the Azure Cosmos DB service.
 |spring.cloud.azure.cosmos.populate-query-metrics | `false` | Whether to populate diagnostics strings and query metrics.
 |spring.cloud.azure.cosmos.preferred-regions |  | Preferred regions for geo-replicated database accounts. For example, "East US" as the preferred region.
@@ -183,7 +183,7 @@
 |spring.cloud.azure.cosmos.proxy.type |  | Type of the proxy.
 |spring.cloud.azure.cosmos.proxy.username |  | Username used to authenticate with the proxy.
 |spring.cloud.azure.cosmos.read-requests-fallback-enabled |  | Whether to allow for reads to go to multiple regions configured on an account of Azure Cosmos DB service.
-|spring.cloud.azure.cosmos.resource-token |  | Resource token to authenticate for accessing the Cosmos db.
+|spring.cloud.azure.cosmos.resource-token |  | Resource token to authenticate for accessing the Cosmos DB.
 |spring.cloud.azure.cosmos.resource.region |  | The region of an Azure resource.
 |spring.cloud.azure.cosmos.resource.resource-group |  | The resource group holds an Azure resource.
 |spring.cloud.azure.cosmos.resource.resource-id |  | ID of an Azure resource.
@@ -561,6 +561,64 @@
 |spring.cloud.azure.keyvault.certificate.retry.fixed.max-retries |  | The maximum number of attempts.
 |spring.cloud.azure.keyvault.certificate.retry.mode |  | Retry backoff mode.
 |spring.cloud.azure.keyvault.certificate.service-version |  | The version of Azure Key Vault Certificate Service.
+|spring.cloud.azure.keyvault.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
+|spring.cloud.azure.keyvault.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
+|spring.cloud.azure.keyvault.client.connection-idle-timeout |  | Amount of time before an idle connection.
+|spring.cloud.azure.keyvault.client.headers |  | List of headers applied to each request sent with client.
+|spring.cloud.azure.keyvault.client.logging.allowed-header-names |  | Comma-delimited list of allowlist headers that should be logged.
+|spring.cloud.azure.keyvault.client.logging.allowed-query-param-names |  | Comma-delimited list of allowlist query parameters.
+|spring.cloud.azure.keyvault.client.logging.level |  | The level of detail to log on HTTP messages.
+|spring.cloud.azure.keyvault.client.logging.pretty-print-body |  | Whether to pretty print the message bodies.
+|spring.cloud.azure.keyvault.client.maximum-connection-pool-size |  | Maximum connection pool size used by the underlying HTTP client.
+|spring.cloud.azure.keyvault.client.read-timeout |  | Amount of time used when reading the server response.
+|spring.cloud.azure.keyvault.client.response-timeout |  | Amount of time used when waiting for a server to reply.
+|spring.cloud.azure.keyvault.client.write-timeout |  | Amount of time each request being sent over the wire.
+|spring.cloud.azure.keyvault.credential.client-certificate-password |  | Password of the certificate file.
+|spring.cloud.azure.keyvault.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
+|spring.cloud.azure.keyvault.credential.client-id |  | Client ID to use when performing service principal authentication with Azure.
+|spring.cloud.azure.keyvault.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
+|spring.cloud.azure.keyvault.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client ID as user assigned managed identity client ID.
+|spring.cloud.azure.keyvault.credential.password |  | Password to use when performing username/password authentication with Azure.
+|spring.cloud.azure.keyvault.credential.username |  | Username to use when performing username/password authentication with Azure.
+|spring.cloud.azure.keyvault.enabled | `true` | Whether an Azure Service is enabled.
+|spring.cloud.azure.keyvault.endpoint |  | Azure Key Vault endpoint.
+|spring.cloud.azure.keyvault.profile.cloud-type |  | Name of the Azure cloud to connect to.
+|spring.cloud.azure.keyvault.profile.environment.active-directory-endpoint |  | The Azure Active Directory endpoint to connect to.
+|spring.cloud.azure.keyvault.profile.environment.active-directory-graph-api-version |  | The Azure Active Directory Graph API version.
+|spring.cloud.azure.keyvault.profile.environment.active-directory-graph-endpoint |  | The Azure Active Directory Graph endpoint.
+|spring.cloud.azure.keyvault.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource ID.
+|spring.cloud.azure.keyvault.profile.environment.azure-application-insights-endpoint |  | The Azure Application Insights endpoint.
+|spring.cloud.azure.keyvault.profile.environment.azure-data-lake-analytics-catalog-and-job-endpoint-suffix |  | The Data Lake analytics catalog and job endpoint suffix.
+|spring.cloud.azure.keyvault.profile.environment.azure-data-lake-store-file-system-endpoint-suffix |  | The Data Lake storage file system endpoint suffix.
+|spring.cloud.azure.keyvault.profile.environment.azure-log-analytics-endpoint |  | The Azure Log Analytics endpoint.
+|spring.cloud.azure.keyvault.profile.environment.data-lake-endpoint-resource-id |  | The Data Lake endpoint.
+|spring.cloud.azure.keyvault.profile.environment.gallery-endpoint |  | The gallery endpoint.
+|spring.cloud.azure.keyvault.profile.environment.key-vault-dns-suffix |  | The Key Vault DNS suffix.
+|spring.cloud.azure.keyvault.profile.environment.management-endpoint |  | The management service endpoint.
+|spring.cloud.azure.keyvault.profile.environment.microsoft-graph-endpoint |  | The Microsoft Graph endpoint.
+|spring.cloud.azure.keyvault.profile.environment.portal |  | The management portal URL.
+|spring.cloud.azure.keyvault.profile.environment.publishing-profile |  | The publishing settings file URL.
+|spring.cloud.azure.keyvault.profile.environment.resource-manager-endpoint |  | The resource management endpoint.
+|spring.cloud.azure.keyvault.profile.environment.sql-management-endpoint |  | The SQL management endpoint.
+|spring.cloud.azure.keyvault.profile.environment.sql-server-hostname-suffix |  | The SQL Server hostname suffix.
+|spring.cloud.azure.keyvault.profile.environment.storage-endpoint-suffix |  | The Storage endpoint suffix.
+|spring.cloud.azure.keyvault.profile.subscription-id |  | Subscription ID to use when connecting to Azure resources.
+|spring.cloud.azure.keyvault.profile.tenant-id |  | Tenant ID for Azure resources.
+|spring.cloud.azure.keyvault.proxy.hostname |  | The host of the proxy.
+|spring.cloud.azure.keyvault.proxy.non-proxy-hosts |  | A list of hosts or CIDR to not use proxy HTTP/HTTPS connections through.
+|spring.cloud.azure.keyvault.proxy.password |  | Password used to authenticate with the proxy.
+|spring.cloud.azure.keyvault.proxy.port |  | The port of the proxy.
+|spring.cloud.azure.keyvault.proxy.type |  | Type of the proxy.
+|spring.cloud.azure.keyvault.proxy.username |  | Username used to authenticate with the proxy.
+|spring.cloud.azure.keyvault.resource.region |  | The region of an Azure resource.
+|spring.cloud.azure.keyvault.resource.resource-group |  | The resource group holds an Azure resource.
+|spring.cloud.azure.keyvault.resource.resource-id |  | ID of an Azure resource.
+|spring.cloud.azure.keyvault.retry.exponential.base-delay |  | Amount of time to wait between retry attempts.
+|spring.cloud.azure.keyvault.retry.exponential.max-delay |  | Maximum permissible amount of time between retry attempts.
+|spring.cloud.azure.keyvault.retry.exponential.max-retries |  | The maximum number of attempts.
+|spring.cloud.azure.keyvault.retry.fixed.delay |  | Amount of time to wait between retry attempts.
+|spring.cloud.azure.keyvault.retry.fixed.max-retries |  | The maximum number of attempts.
+|spring.cloud.azure.keyvault.retry.mode |  | Retry backoff mode.
 |spring.cloud.azure.keyvault.secret.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
 |spring.cloud.azure.keyvault.secret.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
 |spring.cloud.azure.keyvault.secret.client.connection-idle-timeout |  | Amount of time before an idle connection.
@@ -968,6 +1026,8 @@
 |spring.cloud.azure.servicebus.transport-type |  | Transport type for AMQP-based client. This is a legacy property.
 |spring.cloud.azure.storage.access-key |  | Storage account access key. This is a legacy property.
 |spring.cloud.azure.storage.account |  | Name for the storage account. This is a legacy property.
+|spring.cloud.azure.storage.account-key |  | Storage account access key.
+|spring.cloud.azure.storage.account-name |  | Name for the storage account.
 |spring.cloud.azure.storage.blob.account-key |  | Storage account access key.
 |spring.cloud.azure.storage.blob.account-name |  | Name for the storage account.
 |spring.cloud.azure.storage.blob.blob-name |  | Name of the blob.
@@ -1039,6 +1099,28 @@
 |spring.cloud.azure.storage.blob.retry.try-timeout |  | Amount of time to wait until a timeout.
 |spring.cloud.azure.storage.blob.sas-token |  | Shared access signatures (SAS) token used to authorize requests sent to the service.
 |spring.cloud.azure.storage.blob.service-version |  | Blob service version used when making API requests.
+|spring.cloud.azure.storage.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
+|spring.cloud.azure.storage.client.connect-timeout |  | Amount of time the request attempts to connect to the remote host and the connection is resolved.
+|spring.cloud.azure.storage.client.connection-idle-timeout |  | Amount of time before an idle connection.
+|spring.cloud.azure.storage.client.headers |  | List of headers applied to each request sent with client.
+|spring.cloud.azure.storage.client.logging.allowed-header-names |  | Comma-delimited list of allowlist headers that should be logged.
+|spring.cloud.azure.storage.client.logging.allowed-query-param-names |  | Comma-delimited list of allowlist query parameters.
+|spring.cloud.azure.storage.client.logging.level |  | The level of detail to log on HTTP messages.
+|spring.cloud.azure.storage.client.logging.pretty-print-body |  | Whether to pretty print the message bodies.
+|spring.cloud.azure.storage.client.maximum-connection-pool-size |  | Maximum connection pool size used by the underlying HTTP client.
+|spring.cloud.azure.storage.client.read-timeout |  | Amount of time used when reading the server response.
+|spring.cloud.azure.storage.client.response-timeout |  | Amount of time used when waiting for a server to reply.
+|spring.cloud.azure.storage.client.write-timeout |  | Amount of time each request being sent over the wire.
+|spring.cloud.azure.storage.connection-string |  | Connection string to connect to the service.
+|spring.cloud.azure.storage.credential.client-certificate-password |  | Password of the certificate file.
+|spring.cloud.azure.storage.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
+|spring.cloud.azure.storage.credential.client-id |  | Client ID to use when performing service principal authentication with Azure.
+|spring.cloud.azure.storage.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
+|spring.cloud.azure.storage.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client ID as user assigned managed identity client ID.
+|spring.cloud.azure.storage.credential.password |  | Password to use when performing username/password authentication with Azure.
+|spring.cloud.azure.storage.credential.username |  | Username to use when performing username/password authentication with Azure.
+|spring.cloud.azure.storage.enabled | `true` | Whether an Azure Service is enabled.
+|spring.cloud.azure.storage.endpoint |  | Endpoint for Azure Storage service.
 |spring.cloud.azure.storage.fileshare.account-key |  | Storage account access key.
 |spring.cloud.azure.storage.fileshare.account-name |  | Name for the storage account.
 |spring.cloud.azure.storage.fileshare.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
@@ -1109,6 +1191,34 @@
 |spring.cloud.azure.storage.fileshare.sas-token |  | Shared access signatures (SAS) token used to authorize requests sent to the service.
 |spring.cloud.azure.storage.fileshare.service-version |  | Share service version used when making API requests
 |spring.cloud.azure.storage.fileshare.share-name |  | Name of the share.
+|spring.cloud.azure.storage.profile.cloud-type |  | Name of the Azure cloud to connect to.
+|spring.cloud.azure.storage.profile.environment.active-directory-endpoint |  | The Azure Active Directory endpoint to connect to.
+|spring.cloud.azure.storage.profile.environment.active-directory-graph-api-version |  | The Azure Active Directory Graph API version.
+|spring.cloud.azure.storage.profile.environment.active-directory-graph-endpoint |  | The Azure Active Directory Graph endpoint.
+|spring.cloud.azure.storage.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource ID.
+|spring.cloud.azure.storage.profile.environment.azure-application-insights-endpoint |  | The Azure Application Insights endpoint.
+|spring.cloud.azure.storage.profile.environment.azure-data-lake-analytics-catalog-and-job-endpoint-suffix |  | The Data Lake analytics catalog and job endpoint suffix.
+|spring.cloud.azure.storage.profile.environment.azure-data-lake-store-file-system-endpoint-suffix |  | The Data Lake storage file system endpoint suffix.
+|spring.cloud.azure.storage.profile.environment.azure-log-analytics-endpoint |  | The Azure Log Analytics endpoint.
+|spring.cloud.azure.storage.profile.environment.data-lake-endpoint-resource-id |  | The Data Lake endpoint.
+|spring.cloud.azure.storage.profile.environment.gallery-endpoint |  | The gallery endpoint.
+|spring.cloud.azure.storage.profile.environment.key-vault-dns-suffix |  | The Key Vault DNS suffix.
+|spring.cloud.azure.storage.profile.environment.management-endpoint |  | The management service endpoint.
+|spring.cloud.azure.storage.profile.environment.microsoft-graph-endpoint |  | The Microsoft Graph endpoint.
+|spring.cloud.azure.storage.profile.environment.portal |  | The management portal URL.
+|spring.cloud.azure.storage.profile.environment.publishing-profile |  | The publishing settings file URL.
+|spring.cloud.azure.storage.profile.environment.resource-manager-endpoint |  | The resource management endpoint.
+|spring.cloud.azure.storage.profile.environment.sql-management-endpoint |  | The SQL management endpoint.
+|spring.cloud.azure.storage.profile.environment.sql-server-hostname-suffix |  | The SQL Server hostname suffix.
+|spring.cloud.azure.storage.profile.environment.storage-endpoint-suffix |  | The Storage endpoint suffix.
+|spring.cloud.azure.storage.profile.subscription-id |  | Subscription ID to use when connecting to Azure resources.
+|spring.cloud.azure.storage.profile.tenant-id |  | Tenant ID for Azure resources.
+|spring.cloud.azure.storage.proxy.hostname |  | The host of the proxy.
+|spring.cloud.azure.storage.proxy.non-proxy-hosts |  | A list of hosts or CIDR to not use proxy HTTP/HTTPS connections through.
+|spring.cloud.azure.storage.proxy.password |  | Password used to authenticate with the proxy.
+|spring.cloud.azure.storage.proxy.port |  | The port of the proxy.
+|spring.cloud.azure.storage.proxy.type |  | Type of the proxy.
+|spring.cloud.azure.storage.proxy.username |  | Username used to authenticate with the proxy.
 |spring.cloud.azure.storage.queue.account-key |  | Storage account access key.
 |spring.cloud.azure.storage.queue.account-name |  | Name for the storage account.
 |spring.cloud.azure.storage.queue.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
@@ -1180,6 +1290,18 @@
 |spring.cloud.azure.storage.queue.sas-token |  | Shared access signatures (SAS) token used to authorize requests sent to the service.
 |spring.cloud.azure.storage.queue.service-version |  | Queue service version used when making API requests.
 |spring.cloud.azure.storage.resource-group |  | Resource group the storage account belongs to. This is a legacy property.
+|spring.cloud.azure.storage.resource.region |  | The region of an Azure resource.
+|spring.cloud.azure.storage.resource.resource-group |  | The resource group holds an Azure resource.
+|spring.cloud.azure.storage.resource.resource-id |  | ID of an Azure resource.
+|spring.cloud.azure.storage.retry.exponential.base-delay |  | Amount of time to wait between retry attempts.
+|spring.cloud.azure.storage.retry.exponential.max-delay |  | Maximum permissible amount of time between retry attempts.
+|spring.cloud.azure.storage.retry.exponential.max-retries |  | The maximum number of attempts.
+|spring.cloud.azure.storage.retry.fixed.delay |  | Amount of time to wait between retry attempts.
+|spring.cloud.azure.storage.retry.fixed.max-retries |  | The maximum number of attempts.
+|spring.cloud.azure.storage.retry.mode |  | Retry backoff mode.
+|spring.cloud.azure.storage.retry.secondary-host |  | Secondary Storage account to retry requests against.
+|spring.cloud.azure.storage.retry.try-timeout |  | Amount of time to wait until a timeout.
+|spring.cloud.azure.storage.sas-token |  | Shared access signatures (SAS) token used to authorize requests sent to the service.
 |spring.cloud.azure.subscription-id |  | Subscription ID to use when connecting to Azure resources. This is a legacy property.
 |spring.cloud.azure.tenant-id |  | Tenant ID for Azure resources. This is a legacy property.
 |spring.jms.servicebus.connection-string |  | Connection string to connect to a Service Bus namespace.
