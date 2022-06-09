@@ -206,6 +206,19 @@
                             </configuration>
                         </execution>
                         <execution>
+                            <id>generate-kv-configprops</id>
+                            <phase>prepare-package</phase>
+                            <goals>
+                                <goal>java</goal>
+                            </goals>
+                            <configuration>
+                                <arguments>
+                                    <argument>${project.basedir}/src/main/asciidoc/_configuration-properties-azure-key-vault.adoc</argument>
+                                    <argument>(?!spring.cloud.azure.keyvault.(secret|certificate).*)(spring.cloud.azure.keyvault.*)</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                        <execution>
                             <id>generate-kv-secret-configprops</id>
                             <phase>prepare-package</phase>
                             <goals>
@@ -254,6 +267,19 @@
                                 <arguments>
                                     <argument>${project.basedir}/src/main/asciidoc/_configuration-properties-azure-service-bus-jms.adoc</argument>
                                     <argument>spring.jms.servicebus.*</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>generate-storage-configprops</id>
+                            <phase>prepare-package</phase>
+                            <goals>
+                                <goal>java</goal>
+                            </goals>
+                            <configuration>
+                                <arguments>
+                                    <argument>${project.basedir}/src/main/asciidoc/_configuration-properties-azure-storage.adoc</argument>
+                                    <argument>(?!spring.cloud.azure.storage.(blob|fileshare|queue).*)(spring.cloud.azure.storage.*)</argument>
                                 </arguments>
                             </configuration>
                         </execution>
