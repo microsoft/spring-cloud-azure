@@ -50,6 +50,12 @@ Spring Cloud Azure provides the following starters under the `com.azure.spring` 
 |spring-cloud-azure-starter-eventhubs
 |Starter for using Azure Event Hubs
 
+|spring-cloud-azure-starter-keyvault
+|Starter for using Azure Key Vault
+
+|spring-cloud-azure-starter-keyvault-certificates
+|Starter for using Azure Key Vault Certificates
+
 |spring-cloud-azure-starter-keyvault-secrets
 |Starter for using Azure Key Vault Secrets
 
@@ -58,6 +64,9 @@ Spring Cloud Azure provides the following starters under the `com.azure.spring` 
 
 |spring-cloud-azure-starter-servicebus-jms
 |Starter for using Azure Service Bus and JMS
+
+|spring-cloud-azure-starter-storage
+|Starter for using Azure Storage
 
 |spring-cloud-azure-starter-storage-blob
 |Starter for using Azure Storage Blob
