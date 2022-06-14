@@ -62,11 +62,16 @@ feature-management:
 * `feature-t` is set to false, this setting will always return the Feature Flag's value. 
 * `feature-u` is used in conjunction with Feature Filters. These Filters will be defined under the `enabled-for` property.  In this case, `feature-u` has one Feature Filter called `Random`, which does not require any configuration, so only the name property is required. 
 * `feature-v` specifies a Feature Filter named `TimeWindowFilter`. This Feature Filter can be passed parameters to use as configuration. In this case, for a `TimeWindowFilter`, pass in the start and end times for which the feature will be active.
-* `feature-w` is used for the `AlwaysOnFilter`, which will always evaluate to `true`. The `evaluate` field is used to stop the evaluation of the Feature Filters, and results in the Feature Filter always return `false`.
+* `feature-w` is used for the `AlwaysOnFilter`, which will always evaluate to `true`. The `evaluate` field is used to stop the evaluation of the Feature Filters, and results in the Feature Filter always return `false`.
 
 ==== Feature Variants
 
-Feature Variants are multiple instance of a object that differ in property value. A Feature Variant is define by four values: name, default, configuration-reference, and assignment-parameters. The Feature Variant name is an identifier for the variant. Default identifies which of the variants to return when no valid match is found. Configuration-reference is a pointer to which `@ConfigurationProperties` are used for that variant. Assignment-parameters are the set of properties used by an assigner to say when this variant should/shouldn't be used.
+Feature Variants are multiple options of a feature that can be targeted at different groups of users. A Feature Variant is defined by four values:
+
+* name - Identifier for the varieant.
+* default - Indicates which variant should be used if no variant is assigned. In each set, only one can be marked as default.
+* configuration-reference - A pointer to which `@ConfigurationProperties` are used for that variant.
+* assignment-parameters - A set of properties used by an assigner to say when this variant should/shouldn't be used.
 
 === Evaluating Feature Flags
 
@@ -254,7 +259,7 @@ The following steps demonstrate an example of a progressive rollout for a new 'B
 5. Five percent of the user base is included in the beta.
 6. The rollout percentage is bumped up to 100 percent and the feature is completely rolled out.
 
-This strategy for rolling out a feature is built into the library through the included `TargetingFilter` Feature Filter.
+This strategy for rolling out a feature is built into the library through the included `TargetingEvaluator` and the `TargetingFilter` Feature Filter.
 
 ==== Targeting in an Application
 
@@ -291,3 +296,116 @@ Options are available to customize how targeting evaluation is performed across 
     }
 ----
 
+=== Evaluating Dynamic Features
+
+Dynamic Features are enabled through the creation <<Feature Variants, feature variants>>, where each variant describes who is assigned that variant, and a reference to the configurations that make that variant. DynamicFeatures are accessed through the `DynamicFeatureManager`.
+
+The dynamic feature manager performs a resolution process that takes the name of a feature along with its class and returns a strongly typed value to represent the variant's value.
+
+The following steps are performed during the retrieval of a dynamic feature's variant.
+
+1. Look up the configuration of the specified dynamic feature to find the registered variants.
+2. Assign one of the registered variants to be used.
+3. Resolve typed value based off of the assigned variant.
+
+The Dynamic Feature Manager is made available by using `@Autowired` on `DynamicFeatureManager` and calling its `getVariantAsync` method. In addition, any required feature variant assigners need to be generated as `@Component`, such as the <<Rargeting Evaluator,TargetingEvaluator>>.
+
+NOTE: `TargetingEvaluator` extends `TargetingFilter` so it can be used for both at the same time.
+
+=== Build-In Feature Evaluators
+
+Feature Evaluators differ from Feature Filters as they implement `IFeatureVariantAssigner`, this enables them to provide a `assignVariantAsync` method.
+
+==== Targeting Evaluator
+
+The targeting evaluator is an extended implementation of `Microsoft.Targeting`, so it is also compatible with the <<TargetingFilter, targeting filter>>. Like the targeting filter, the targeting evaluator targets based on users and groups. An in-depth explanation of targeting is explained in the <<Targeting, targeting section above>>.
+
+The evaluator parameters includes a set of audience objects that describes users, groups, and a default percentage of the user base that should have access to the feature variant. For each group object that is listed in the target audience, a percentage is required, which defines the percentage of that group's members that have access to the feature. If a user is specified in the users section directly, or if the user is in the included percentage of any of the group rollouts, or if the user falls into the default rollout percentage, then that user will have the feature enabled.
+
+[source,yaml,indent=0]
+----
+feature-management:
+   dynamic-features:
+     ShoppingCart:
+       assigner: Microsoft.Targeting
+       variants:
+       - default: true
+         name: Big
+         configuration-reference: ShoppingCart.Big
+         assignment-parameters:
+           audience:
+             users:
+             - Alec
+             groups: []
+       - name: Small
+         configuration-reference: ShoppingCart.Small
+         assignment-parameters:
+           audience:
+             users: []
+             groups:
+             - name: Ring1
+               rollout-percentage: 50
+             default-rollout-percentage: 30
+----
+
+In this example, we have a dynamic feature called "ShoppingCart." It uses the `Microsoft.Targeting` assigner, which is implemented by `TargetingEvaluator` and it has two variants; Big and Small. Big is the default vairant. Only the user Alec is assigned to the Big variant. The Small variant is assigned to 50 percent of a group called Ring1, along with 30 percent of all other users. Users who are not part of the 50% of Ring1 or the 30% overall assigned to Small are assigned the default variant, Big.
+
+Configuration references are pointers to sets of configurations, in the case above, ShoppingCart.Big and ShoppingCart.Small. These references work similarly to placeholder values. To make a configuration-reference, you need to setup an `@ConfigurationProperties` to use as the configuration holder of the variants. For example:
+
+[source,java,indent=0]
+----
+@ConfigurationProperties(prefix = "feature-variants")
+public class ApplicationProperties implements IDynamicFeatureProperties {
+    private Map<String, ShoppingCart> shoppingCart;
+
+    public Map<String, ShoppingCart> getShoppingCart() {
+        return shoppingCart;
+    }
+
+    public void setShoppingCart(Map<String, ShoppingCart> shoppingCart) {
+        this.shoppingCart = shoppingCart;
+    }
+}
+----
+
+In this example, there is a class called `ApplicationProperties` that uses the `@ConfigurationProperties` annotation with the prefix `feature-variants`. In addition, the class implements `IDynamicFeatureProperties`. `IDynamicFeatureProperties` enables the `@ConfigurationProperties` to be found by `DynamicFeatureManagement` for the resolving of feature variants. `IDynamicFeatureProperties` can be implemented on one or more classes. The naming of the configuration references needs to match the Spring style, shown above, in order to be used by `DynamicFeatureManagement`. The configurations for references this class then match those typical of Spring.
+
+[source,yaml,indent=0]
+----
+feature-variants:
+   ShoppingCart:
+     Big:
+       Size: 400
+       Color: green
+     Small:
+       Size: 150
+       Color: gray
+----
+
+The `TargetingEvaluator` needs to be enabled, which can be done by creating it as a `@Bean`.
+
+[source,java,indent=0]
+----
+@Bean(name = "Microsoft.Targeting")
+@Scope("request")
+public TargetingEvaluator targettingFilter(TargetingContextImpl context) {
+  return new TargetingEvaluator(context, new TargetingEvaluationOptions().setIgnoreCase(true));
+}
+----
+
+The name of the `@Bean` needs to match the value of the assinger in the dynamic feature. It also needs to be in the request scope in order to access the current request info for evaluating the current context. Setting up the targeting context can be seen in the <<Targeting in an Application,targeting in an application>> section. It can also optionally use <<Targeting Evaluation Options,TargetingEvaluationOptions>>.
+
+`DynamicFeatureManager` can then be used to access feature varaints.
+
+[source,java,indent=0]
+----
+@Autowired
+private DynamicFeatureManager dynamicFeatureManager;
+
+@GetMapping("/")
+public String home() {
+  ...
+  ShoppingCart shoppingCart = dynamicFeatureManager.getVariantAsync("ShoppingCart", ShoppingCart.class).block());
+  ...
+}
+----
