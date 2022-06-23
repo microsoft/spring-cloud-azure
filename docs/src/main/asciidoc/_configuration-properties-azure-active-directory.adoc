@@ -5,6 +5,8 @@
 |spring.cloud.azure.active-directory.application-type |  | Type of the Azure AD application.
 |spring.cloud.azure.active-directory.authenticate-additional-parameters |  | Add additional parameters to the Authorization URL.
 |spring.cloud.azure.active-directory.authorization-clients |  | The OAuth2 authorization clients.
+|spring.cloud.azure.active-directory.credential.client-certificate-password |  | Password of the certificate file.
+|spring.cloud.azure.active-directory.credential.client-certificate-path |  | Path of a PFX or P12 certificate file to use when performing service principal authentication with Azure.
 |spring.cloud.azure.active-directory.credential.client-id |  | Client ID to use when performing service principal authentication with Azure.
 |spring.cloud.azure.active-directory.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
 |spring.cloud.azure.active-directory.enabled | `false` | Whether to enable Azure Active Directory related auto-configuration.
