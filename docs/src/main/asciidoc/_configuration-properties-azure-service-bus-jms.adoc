@@ -2,6 +2,7 @@
 |Name | Default | Description
 
 |spring.jms.servicebus.connection-string |  | Connection string to connect to a Service Bus namespace.
+|spring.jms.servicebus.enabled | `true` | Whether to enable Servive Bus JMS autoconfiguration.
 |spring.jms.servicebus.idle-timeout | `30m` | Connection idle timeout duration.
 |spring.jms.servicebus.listener.phase |  | The phase in which this container should be started and stopped.
 |spring.jms.servicebus.listener.reply-pub-sub-domain |  | Whether the reply destination type is topic. Only works for the bean of topicJmsListenerContainerFactory.
