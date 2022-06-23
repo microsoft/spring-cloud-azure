@@ -1,0 +1,163 @@
+[#spring-native-support]
+
+include::_attributes.adoc[]
+
+== Spring Native Support
+
+=== Spring Native
+
+Spring Native provides support for compiling Spring Boot applications to native executables using the {graalvm}[GraalVM] {graalvm-native-docs}[native-image] compiler. The native images will bring many advantages, such as instant startup, instant peak performance, and reduced memory consumption. Some Spring Cloud Azure features can also benefit from the Spring Native support, the goal is that Spring Cloud Azure applications can be built as native images without any code modification. For more information, see the link:https://docs.spring.io/spring-native/docs/{spring-native-version}/reference/htmlsingle/#overview[Spring Native documentation].
+
+=== Support
+
+Spring Cloud Azure has been validated against GraalVM and Spring Native, and provides the beta version support. You can try it on your projects if they are using those supported dependencies, and {azure-sdk-java-issues}[raise bugs] or {spring-cloud-azure-native-configuration}[contribute pull requests] if something goes wrong on Spring Cloud Azure. For more information, see the link:https://docs.spring.io/spring-native/docs/{spring-native-version}/reference/htmlsingle/#support[Spring Native Support] for more details.
+
+==== Spring Native
+
+Spring Cloud Azure **{project-version}** has been tested against Spring Native `{spring-native-version}` and GraalVM `{graalvm-version}`.
+
+==== Spring Cloud Azure Native
+
+NOTE: Spring Native `{spring-native-version}` has been tested against Spring Cloud Azure Native Configuration `{spring-cloud-azure-native-configuration-version}`.
+
+Spring Cloud Azure provides a dependency `spring-cloud-azure-native-configuration` that is an extension of Spring Native configuration for Spring Cloud Azure libraries. The Spring Native AOT plugin will combine the `spring-native-configuration` and `spring-cloud-azure-native-configuration` to build applications into native executables. You don't need any extra modifications to the code that uses Spring Cloud Azure libraries apart from adding the dependency, which only applies to the code in the Spring Cloud Azure libraries.
+
+The following features are supported:
+
+* `Azure App Configuration clients auto-configuration`
+* `Azure Event Hubs clients auto-configuration`
+* `Azure Key Vault Certificates clients auto-configuration`
+* `Azure Key Vault Secrets clients auto-configuration`
+* `Azure Storage Blob clients auto-configuration`
+* `Azure Storage File Share clients auto-configuration`
+* `Azure Storage Queue clients auto-configuration`
+* `Spring Integration for Azure Event Hubs`
+* `Spring Integration for Azure Storage Queue`
+
+==== Limitations
+
+The Spring Cloud Azure support for Spring Native is still in the early stages and continues to be updated. The following features are not yet supported:
+
+* `Azure Cosmos clients auto-configuration`
+* `Azure Service Bus clients auto-configuration`
+* `Spring Data for Azure Cache for Redis`
+* `Spring Data for Azure Cosmos`
+* `Spring Cloud Stream for Azure Event Hubs`
+* `Spring Cloud Stream for Azure Service Bus`
+* `Spring Kafka for Azure Event Hubs`
+* `Spring Integration for Azure Service Bus`
+
+NOTE: Not all the native image options are supported by Spring Native. For more information, see the link:https://docs.spring.io/spring-native/docs/{spring-native-version}/reference/htmlsingle/#native-image-options[Native image options] section of the Spring Native documentation.
+
+WARNING: Spring Cloud Azure **{project-version}** is not validated for building native executables based on Gradle Kotlin.
+
+=== Project Setup
+
+The Spring Cloud Azure applications can enable Spring Native support by following the instructions in the  link:https://docs.spring.io/spring-native/docs/{spring-native-version}/reference/htmlsingle/#getting-started[Getting started], section of the Spring Native documentation. The only additional processing required is to add the following dependency to the POM file.
+
+TIP:  The dependency `com.azure.spring:spring-cloud-azure-native-configuration` is not managed in `com.azure.spring:spring-cloud-azure-dependencies`.
+
+[source,xml,indent=2,subs="attributes,verbatim",role="primary"]
+.Maven
+----
+<dependency>
+  <groupId>com.azure.spring</groupId>
+  <artifactId>spring-cloud-azure-native-configuration</artifactId>
+  <version>{spring-cloud-azure-native-configuration-version}</version>
+</dependency>
+----
+[source,groovy,subs="attributes,verbatim",role="secondary"]
+.Gradle Groovy
+----
+dependencies {
+    implementation "com.azure.spring:spring-cloud-azure-native-configuration:{spring-cloud-azure-native-configuration-version}"
+}
+----
+
+=== Build the native application
+
+The following sections describe the two main ways to build a Spring Boot native application with Spring Cloud Azure libraries.
+
+==== Build with Buildpacks
+
+The native application can be built as follows:
+
+[source,bash,role="primary"]
+.Maven
+----
+mvn spring-boot:build-image
+----
+[source,bash,role="secondary"]
+.Gradle Groovy
+----
+gradle bootBuildImage
+----
+
+For more information, see the link:https://docs.spring.io/spring-native/docs/{spring-native-version}/reference/htmlsingle/#getting-started-buildpacks[Getting started with Buildpacks] section in the Spring Native documentation.
+
+==== Build with Native Build Tools
+
+You can build the native application by using the following command:
+
+[source,bash,role="primary"]
+.Maven
+----
+mvn -Pnative -DskipTests package
+----
+[source,bash,role="secondary"]
+.Gradle Groovy
+----
+gradle nativeCompile
+----
+
+For more information, see the link:https://docs.spring.io/spring-native/docs/{spring-native-version}/reference/htmlsingle/#getting-started-native-build-tools[Getting started with Native Build Tools] section of the Spring Native documentation.
+
+=== Run the native application
+
+The following sections describe the two main ways to run a native executable.
+
+TIP: Assuming the project artifact ID is `spring-cloud-azure-sample` and the project version is `0.0.1-SNAPSHOT`, you can specify the custom image name in one of the following ways:  If you're using link:https://docs.spring.io/spring-boot/docs/{spring-boot-version}/reference/html/container-images.html#container-images.buildpacks[Cloud Native Buildpacks], use the `image`->`name`->`custom-image-name` configuration element in the Spring Boot plugin. If you're using link:{graalvm-native-buildtools}[GraalVM Native Build Tools], use the `imageName`->`custom-image-name` configuration element in the Spring Boot plugin.
+
+==== Run with Buildpacks
+
+To run the application, you can use `docker` the usual way as shown in the following example:
+
+[source,bash,subs="attributes,verbatim"]
+----
+docker run --rm -p 8080:8080 spring-cloud-azure-sample:0.0.1-SNAPSHOT
+----
+
+==== Run with Native Build Tools
+
+To run your application, use the following command:
+
+[source,bash,role="primary"]
+.Build with Maven
+----
+target\spring-cloud-azure-sample
+----
+[source,bash,role="secondary"]
+.Build with Gradle
+----
+build\native\nativeCompile\spring-cloud-azure-sample
+----
+
+=== Samples
+
+For more information, see link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/spring-native/storage-blob-native[storage-blob-native] on GitHub.
+
+Here are other verified samples that support Spring Native. For more information, see link:https://github.com/Azure-Samples/azure-spring-boot-samples#run-samples-based-on-spring-native[Spring Cloud Azure Samples] on GitHub.
+
+.Supported Spring Cloud Azure Samples
+[cols="2", options="header"]
+|===
+|Library Artifact ID                                     |Supported Example Projects
+|spring-cloud-azure-starter-appconfiguration             |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/appconfiguration/spring-cloud-azure-starter-appconfiguration/appconfiguration-client[appconfiguration-client]
+|spring-cloud-azure-starter-eventhubs                    |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/eventhubs/spring-cloud-azure-starter-eventhubs/eventhubs-client[eventhubs-client]
+|spring-cloud-azure-starter-integration-eventhubs        |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/eventhubs/spring-cloud-azure-starter-integration-eventhubs/eventhubs-integration[eventhubs-integration]
+|spring-cloud-azure-starter-integration-storage-queue    |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-integration-storage-queue/storage-queue-integration[storage-queue-integration], link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-integration-storage-queue/storage-queue-operation[storage-queue-operation]
+|spring-cloud-azure-starter-keyvault-secrets             |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/keyvault/spring-cloud-azure-starter-keyvault-secrets/property-source[property-source], link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/keyvault/spring-cloud-azure-starter-keyvault-secrets/secret-client[secret-client]
+|spring-cloud-azure-starter-storage-blob                 |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-storage-blob/storage-blob-sample[storage-blob-sample]
+|spring-cloud-azure-starter-storage-file-share           |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-storage-file-share/storage-file-sample[storage-file-sample]
+|spring-cloud-azure-starter-storage-queue                |link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-storage-queue/storage-queue-client[storage-queue-client]
+|===

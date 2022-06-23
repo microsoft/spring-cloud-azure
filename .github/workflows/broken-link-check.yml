@@ -1,0 +1,72 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Broken Link Checker
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  check_html_links_job:
+    runs-on: ubuntu-latest
+    name: Check-Links-Action
+    steps:
+      - uses: snow-actions/sparse-checkout@v1.1.0
+        name: Checkout Azure/azure-sdk-for-java
+        with:
+          patterns: |
+            sdk/spring eng sdk/keyvault sdk/boms sdk/aot
+          repository: Azure/azure-sdk-for-java
+          ref: main
+          path: azure-sdk-for-java
+
+      - name: Build latest azure-sdk-for-java repository
+        run: |
+          cd azure-sdk-for-java
+          mvn clean install -Dmaven.javadoc.skip=true -DskipTests \
+            -Dcheckstyle.skip=true \
+            -ntp \
+            -Dspotbugs.skip=true \
+            -Drevapi.skip=true -Djacoco.skip=true \
+            -Dparallel-test-playback \
+            -Pdev \
+            -f sdk/spring/pom.xml
+
+      - uses: actions/checkout@v2
+
+      - name: Build Docs
+        run: |
+          ./mvnw clean install -P docs -pl docs -DskipTests
+
+      - name: Check link in generated html files
+        id: html-link-report
+        uses: peter-evans/link-checker@v1
+        with:
+          args: -d --document-root ./docs/target/generated-docs -r -x "https://my.custom.endpoint.com:55300|localhost"
+
+      - name: Replace bata to main in html-link-report result
+        run: |
+          if [ -d "link-checker/" ] ; then
+             cd link-checker
+             sudo sed -i 's/spring-cloud-azure_*.*.*-beta.[0-9]/main/g' *
+             sudo sed -i 's/```/ /g' *
+             sudo mv out.md ../
+          fi
+
+      - name: Remove files generated at build-time.
+        run: |
+          ./mvnw clean
+
+      - name: Check link in all markdown files
+        uses: gaurav-nelson/github-action-markdown-link-check@1.0.13
+        with:
+          use-quiet-mode: 'yes'
+          use-verbose-mode: 'yes'
+          config-file: '.github/workflows/markdown-link-check-config.json'

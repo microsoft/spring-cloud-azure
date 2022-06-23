@@ -1,0 +1,170 @@
+:azure-built-in-roles: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles
+:app-configuration-data-owner: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#app-configuration-data-owner
+:app-configuration-data-reader: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#app-configuration-data-reader
+:azure-event-hubs-data-owner: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-event-hubs-data-owner
+:azure-event-hubs-data-receiver: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-event-hubs-data-receiver
+:azure-event-hubs-data-sender: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-event-hubs-data-send
+:azure-service-bus-data-owner: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-service-bus-data-owner
+:azure-service-bus-data-receiver: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-service-bus-data-receiver
+:azure-service-bus-data-sender: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#azure-service-bus-data-sender
+:azure-storage-blob-data-owner: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#storage-blob-data-owner
+:azure-storage-blob-data-reader: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#storage-blob-data-reader
+:azure-storage-queue-data-reader: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#storage-queue-data-reader
+:azure-redis-cache-contributor: https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#redis-cache-contributor
+:key-vault-access-policy: https://docs.microsoft.com/azure/key-vault/general/assign-access-policy
+:cosmos-db-rbac: https://docs.microsoft.com/azure/cosmos-db/how-to-setup-rbac
+:managed-identity: https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview
+[#authentication]
+== Authentication
+
+=== DefaultAzureCredential
+
+The `DefaultAzureCredential` is appropriate for most scenarios where the application is intended to be run in the Azure Cloud. This is because the DefaultAzureCredential combines credentials commonly used to authenticate when deployed, with credentials used to authenticate in a development environment.
+
+NOTE: DefaultAzureCredential is intended to simplify getting started with the SDK by handling common scenarios with reasonable default behaviors. Developers who want more control or whose scenario isn't served by the default settings should use other credential types.
+
+The `DefaultAzureCredential` will attempt to authenticate via the following mechanisms in order.
+
+image::https://user-images.githubusercontent.com/13167207/143148654-f3a37180-85e2-4360-a47d-c1af2da8fada.png[DefaultAzureCredential]
+
+- Environment - The `DefaultAzureCredential` will read account information specified via environment variables and use it to authenticate.
+- Managed Identity - If the application is deployed to an Azure host with Managed Identity enabled, the `DefaultAzureCredential` will authenticate with that account.
+- IntelliJ - If the developer has authenticated via Azure Toolkit for IntelliJ, the `DefaultAzureCredential` will authenticate with that account.
+- Visual Studio Code - If the developer has authenticated via the Visual Studio Code Azure Account plugin, the `DefaultAzureCredential` will authenticate with that account.
+- Azure CLI - If the developer has authenticated an account via the Azure CLI az login command, the `DefaultAzureCredential` will authenticate with that account.
+
+
+TIP: Please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+
+NOTE: Since Spring Cloud Azure AutoConfigure 4.1.0, a `ThreadPoolTaskExecutor` bean named `springCloudAzureCredentialTaskExecutor` will be automatically registered by default and will manage all threads created by Azure Identity. The name of each thread managed by this thread pool is prefixed with `az-identity-`. This `ThreadPoolTaskExecutor` bean is independent of the `Executor` bean provided by Spring Boot.
+
+=== Managed Identities
+
+A common challenge for developers is the management of secrets and credentials used to secure communication between different components making up a solution. Managed identities eliminate the need for developers to manage credentials. Managed identities provide an identity for applications to use when connecting to resources that support Azure Active Directory (Azure AD) authentication. Applications may use the managed identity to obtain Azure AD tokens. For example, an application may use a managed identity to access resources like Azure Key Vault where developers can store credentials in a secure manner or to access storage accounts.
+
+We encourage using managed identity instead of using connection string or key in your application for it's more secure and will save the trouble of managing secrets and credentials. In this case, `DefaultAzureCredential` could better serve the scenario of developing locally using account information stored locally and deploying the application to Azure Cloud and using Managed Identity.
+
+==== Managed Identity Types
+There are two types of managed identities:
+
+- *System-assigned* Some Azure services allow you to enable a managed identity directly on a service instance. When you enable a system-assigned managed identity an identity is created in Azure AD that's tied to the lifecycle of that service instance. So when the resource is deleted, Azure automatically deletes the identity for you. By design, only that Azure resource can use this identity to request tokens from Azure AD.
+- *User-assigned* You may also create a managed identity as a standalone Azure resource. You can create a user-assigned managed identity and assign it to one or more instances of an Azure service. In the case of user-assigned managed identities, the identity is managed separately from the resources that use it.
+
+NOTE: When using a user-assigned managed identity, you can specify the client ID by `spring.cloud.azure.credential.client-id` or `spring.cloud.azure.<azure-service>.credential.client-id`.
+
+TIP: Please refer to link:index.html#authorize-access-with-azure-active-directory[Authorize access with Azure AD] to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+
+TIP: Please refer to link:{managed-identity}[What are managed identities for Azure resources?] for more details about managed identity.
+
+=== Other Credential Types
+
+Developers who want more control or whose scenario isn't served by the `DefaultAzureCredential` or whose scenario isn't served by the default settings should use other credential types.
+
+==== Authentication and Authorization with Azure Active Directory
+With Azure AD, you can use Azure role-based access control (Azure RBAC) to grant permissions to a security principal, which may be a user or an application service principal. When a security principal (a user, or an application) attempts to access an Azure resource, for example, an Event Hubs resource, the request must be authorized. With Azure AD, access to a resource is a two-step process.
+
+1. First, the security principal's identity is authenticated, and an OAuth 2.0 token is returned.
+2. Next, the token is passed as part of a request to the Azure service to authorize access to the specified resource.
+
+===== Authenticate with Azure Active Directory
+For applications want to connect to resources that support Azure AD authentication, below configurations could be set with prefix `spring.cloud.azure.credential` or `spring.cloud.azure.<azure-service>.credential`.
+
+.Authentication properties
+[cols="1,3", options="header"]
+|===
+|Property |Description
+
+|client-id
+|Client id to use when performing service principal authentication with Azure.
+
+|client-secret
+|Client secret to use when performing service principal authentication with Azure.
+
+|client-certificate-path
+|Path of a PEM certificate file to use when performing service principal authentication with Azure.
+
+|client-certificate-password
+|Password of the certificate file.
+
+|username
+|Username to use when performing username/password authentication with Azure.
+
+|password
+|Password to use when performing username/password authentication with Azure.
+
+|managed-identity-enabled
+|Whether to enable managed identity.
+|===
+
+TIP: To see the list of all Spring Cloud Azure related configuration properties please check link:appendix.html[the Appendix page].
+
+[#authorize-access-with-azure-active-directory]
+===== Authorize Access with Azure Active Directory
+
+The authorization step requires that one or more Azure roles be assigned to the security principal. The roles that are assigned to a security principal decide the permissions that the principal will have.
+
+TIP: To see the list of all Azure built-in roles please check {azure-built-in-roles}[Azure built-in roles].
+
+Following are the Azure built-in roles for authorizing access to Azure services supported in Spring Cloud Azure:
+
+.Azure built-in roles
+[cols="<50,<50",options="header"]
+|===
+|Role |Description
+
+|link:{app-configuration-data-owner}[App Configuration Data Owner]
+|Allows full access to App Configuration data.
+
+|link:{app-configuration-data-reader}[App Configuration Data Reader]
+|Allows read access to App Configuration data.
+
+|link:{azure-event-hubs-data-owner}[Azure Event Hubs Data Owner]
+|Allows for full access to Azure Event Hubs resources.
+
+|link:{azure-event-hubs-data-receiver}[Azure Event Hubs Data Receiver]
+|Allows receive access to Azure Event Hubs resources.
+
+|link:{azure-event-hubs-data-sender}[Azure Event Hubs Data Sender]
+|Allows send access to Azure Event Hubs resources.
+
+|link:{azure-service-bus-data-owner}[Azure Service Bus Data Owner]
+|Allows for full access to Azure Service Bus resources.
+
+|link:{azure-service-bus-data-receiver}[Azure Service Bus Data Receiver]
+|Allows for receive access to Azure Service Bus resources.
+
+|link:{azure-service-bus-data-sender}[Azure Service Bus Data Sender]
+|Allows for send access to Azure Service Bus resources.
+
+|link:{azure-storage-blob-data-owner}[Storage Blob Data Owner]
+|Provides full access to Azure Storage blob containers and data, including assigning POSIX access control.
+
+|link:{azure-storage-blob-data-reader}[Storage Blob Data Reader]
+|Read and list Azure Storage containers and blobs.
+
+|link:{azure-storage-queue-data-reader}[Storage Queue Data Reader]
+|Read and list Azure Storage queues and queue messages.
+
+|link:{azure-redis-cache-contributor}[Redis Cache Contributor]
+|Manage Redis caches.
+
+|===
+
+NOTE: When using Spring Cloud Azure Resource Manager to get the connection strings of Event Hubs, Service Bus, and Storage Queue, or properties of Cache for Redis, assign the Azure built-in role `Contributor`. Azure Cache for Redis is special, and you can also assign the `Redis Cache Contributor` role to get the Redis properties.
+
+NOTE: A Key Vault access policy determines whether a given security principal, namely a user, application or user group, can perform different operations on Key Vault secrets, keys, and certificates. You can assign access policies using the Azure portal, the Azure CLI, or Azure PowerShell. Check {key-vault-access-policy}[here] for more details.
+
+IMPORTANT: Azure Cosmos DB exposes 2 built-in role definitions: `Cosmos DB Built-in Data Reader` and `Cosmos DB Built-in Data Contributor`. However, Azure portal support for role management isn't available yet. Check {cosmos-db-rbac}[here] for more details about the permission model, role definitions, and role assignment.
+
+==== SAS tokens
+It's also configurable for services support authenticating with Shared Access Signature (SAS). `spring.cloud.azure.<azure-service>.sas-token` is the property to configure. For example, using `spring.cloud.azure.storage.blob.sas-token` to authenticate to Storage Blob service.
+
+
+==== Connection Strings
+
+Connection strings are supported by some Azure services to provide connection information as well as credentials. To connect to those Azure services using a connection string, just configure `spring.cloud.azure.<azure-service>.connection-string` will do. For example, `spring.cloud.azure.eventhubs.connection-string` to connect to Event Hubs service.
+
+
+
+
+

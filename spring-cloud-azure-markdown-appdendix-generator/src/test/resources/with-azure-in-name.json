@@ -1,0 +1,27 @@
+{
+  "properties": [
+    {
+      "defaultValue": "false",
+      "name": "spring.cloud.azure.first-property",
+      "description": "First Description.",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "defaultValue": "true",
+      "name": "spring.cloud.azure.second-property",
+      "description": "Second Description.",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "defaultValue": "true",
+      "name": "spring.cloud.third-property",
+      "description": "Third Description.",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "name": "spring.cloud.azure.fourth-property",
+      "description": "Fourth Description.",
+      "type": "java.lang.Boolean"
+    }
+  ]
+}
