@@ -925,6 +925,111 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
 </ul>
 </div>
 </div>
+<div class="sect5">
+<h6 id="_use_jwt_client_authentication"><a class="link" href="#_use_jwt_client_authentication">Use JWT Client Authentication</a></h6>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Read <a href="https://docs.microsoft.com/azure/active-directory/develop/active-directory-certificate-credentials#register-your-certificate-with-microsoft-identity-platform">MS docs about Register your certificate with Microsoft identity platform</a>.</p>
+</li>
+<li>
+<p>Upload a <strong>.pem</strong> certificate to application registered in Azure Portal.</p>
+</li>
+<li>
+<p>Configure certificate path and password of a <strong>.PFX* or </strong>.P12* certificate.</p>
+</li>
+<li>
+<p>Add property <code>spring.cloud.azure.active-directory.authorization-clients.azure.client-authentication-method=private_key_jwt</code> configuration to client that wants to be authenticated through JWT Client Authentication.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Below is an example configuration file for a Web Application scenario, certificate information is configured in global properties:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${AZURE_CLIENT_ID}
+        client-certificate-path: ${AZURE_CERTIFICATE_PATH}
+        client-certificate-password: ${AZURE_CERTIFICATE_PASSWORD}
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+      active-directory:
+        enabled: true
+        user-group:
+          allowed-group-names: group1,group2
+          allowed-group-ids: &lt;group1-id&gt;,&lt;group2-id&gt;
+        post-logout-redirect-uri: http://localhost:8080
+        authorization-clients:
+          azure:
+            client-authentication-method: private_key_jwt
+          arm:
+            client-authentication-method: private_key_jwt
+            on-demand: true
+            scopes: https://management.core.windows.net/user_impersonation
+          graph:
+            client-authentication-method: private_key_jwt
+            scopes:
+              - https://graph.microsoft.com/User.Read
+              - https://graph.microsoft.com/Directory.Read.All
+          webapiA:
+            client-authentication-method: private_key_jwt
+            scopes:
+              - ${WEB_API_A_APP_ID_URL}/Obo.WebApiA.ExampleScope
+          webapiB:
+            client-authentication-method: private_key_jwt
+            scopes:
+              - ${WEB_API_B_APP_ID_URL}/.default
+            authorization-grant-type: client_credentials</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The certificate information can also be configured in <code>active-directory</code> service properties:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        enabled: true
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-certificate-path: ${AZURE_CERTIFICATE_PATH}
+          client-certificate-password: ${AZURE_CERTIFICATE_PASSWORD}
+        profile:
+          tenant-id: ${AZURE_TENANT_ID}
+        user-group:
+          allowed-group-names: group1,group2
+          allowed-group-ids: &lt;group1-id&gt;,&lt;group2-id&gt;
+        post-logout-redirect-uri: http://localhost:8080
+        authorization-clients:
+          azure:
+            client-authentication-method: private_key_jwt
+          arm:
+            client-authentication-method: private_key_jwt
+            on-demand: true
+            scopes: https://management.core.windows.net/user_impersonation
+          graph:
+            client-authentication-method: private_key_jwt
+            scopes:
+              - https://graph.microsoft.com/User.Read
+              - https://graph.microsoft.com/Directory.Read.All
+          webapiA:
+            client-authentication-method: private_key_jwt
+            scopes:
+              - ${WEB_API_A_APP_ID_URL}/Obo.WebApiA.ExampleScope
+          webapiB:
+            client-authentication-method: private_key_jwt
+            scopes:
+              - ${WEB_API_B_APP_ID_URL}/.default
+            authorization-grant-type: client_credentials</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_samples_3"><a class="link" href="#_samples_3">Samples</a></h5>
@@ -1164,6 +1269,16 @@ public class AadWebApplicationAndResourceServerConfig {
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.credential.client-secret</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.credential.client-certificate-path</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.credential.client-certificate-password</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.jwk-set-cache-lifespan</p></td>
