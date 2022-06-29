@@ -21,6 +21,8 @@
 |spring.cloud.azure.active-directory.b2c.reply-url | `{baseUrl}/login/oauth2/code/` | Reply url after get authorization code.
 |spring.cloud.azure.active-directory.b2c.user-flows |  | User flows.
 |spring.cloud.azure.active-directory.b2c.user-name-attribute-name |  | User name attribute name.
+|spring.cloud.azure.active-directory.credential.client-certificate-password |  | Password of the certificate file.
+|spring.cloud.azure.active-directory.credential.client-certificate-path |  | Path of a PFX or P12 certificate file to use when performing service principal authentication with Azure.
 |spring.cloud.azure.active-directory.credential.client-id |  | Client ID to use when performing service principal authentication with Azure.
 |spring.cloud.azure.active-directory.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
 |spring.cloud.azure.active-directory.enabled | `false` | Whether to enable Azure Active Directory related auto-configuration.
