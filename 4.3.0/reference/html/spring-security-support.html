@@ -1,0 +1,2168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Spring Security Support</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript"> (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "b9g1q6wz23"); </script>
+
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_spring_security_support">Spring Security Support</a>
+<ul class="sectlevel2">
+<li><a href="#_spring_security_with_azure_active_directory">Spring Security With Azure Active Directory</a></li>
+<li><a href="#_spring_security_with_azure_active_directory_b2c">Spring Security With Azure Active Directory B2C</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_spring_security_support"><a class="link" href="#_spring_security_support">Spring Security Support</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_spring_security_with_azure_active_directory"><a class="link" href="#_spring_security_with_azure_active_directory">Spring Security With Azure Active Directory</a></h3>
+<div class="paragraph">
+<p>When you are building a web application, identity and access management will always be foundational pieces.</p>
+</div>
+<div class="paragraph">
+<p>Azure offers a great platform to democratize your application development journey, as it not only offers a cloud-base identity service, but also deep integration with the rest of the Azure ecosystem.</p>
+</div>
+<div class="paragraph">
+<p>Spring Security has made it easy to secure your Spring based applications with powerful abstractions and extensible interfaces. However, as powerful as the Spring framework can be, it is not tailored to a specific identity provider.</p>
+</div>
+<div class="paragraph">
+<p>The <code>spring-cloud-azure-starter-active-directory</code> provides the most optimal way to connect your web application to an Azure Active Directory (Azure AD for short) tenant and protect your resource server with Azure AD. It uses the Oauth 2.0 protocol to protect web applications and resource servers.</p>
+</div>
+<div class="sect3">
+<h4 id="_accessing_a_web_application"><a class="link" href="#_accessing_a_web_application">Accessing a Web Application</a></h4>
+<div class="paragraph">
+<p>This scenario uses <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">The OAuth 2.0 authorization code grant</a> flow to log in a user with a Microsoft account.</p>
+</div>
+<div class="sect4">
+<h5 id="_system_diagram"><a class="link" href="#_system_diagram">System Diagram</a></h5>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142617664-f1704adb-db64-49e0-b1b6-078c62b6945b.png" alt="Standalone Web Application"></span></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_create_required_resources_in_azure"><a class="link" href="#_create_required_resources_in_azure">Create Required Resources in Azure</a></h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Read <a href="https://docs.microsoft.com/azure/active-directory/develop/quickstart-register-app">MS docs about register an application with the Microsoft identity platform</a>.</p>
+</li>
+<li>
+<p>Create app registration. Get <code>AZURE_TENANT_ID</code>, <code>AZURE_CLIENT_ID</code> and <code>AZURE_CLIENT_SECRET</code>.</p>
+</li>
+<li>
+<p>Set <code>redirect URI</code> to <code>APPLICATION_BASE_URI/login/oauth2/code/</code>, for example <code><a href="http://localhost:8080/login/oauth2/code/" class="bare">http://localhost:8080/login/oauth2/code/</a></code>. The tailing <code>/</code> is required.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_add_required_dependencies"><a class="link" href="#_add_required_dependencies">Add Required Dependencies</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-oauth2-client&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_add_required_properties"><a class="link" href="#_add_required_properties">Add Required Properties</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        profile:
+          tenant-id: ${AZURE_TENANT_ID}
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-secret: ${AZURE_CLIENT_SECRET}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now start you application and access your application by browser, then you will be redirected into Microsoft login page.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_advanced_usages"><a class="link" href="#_advanced_usages">Advanced Usages</a></h5>
+<div class="sect5">
+<h6 id="_add_extra_security_configurations"><a class="link" href="#_add_extra_security_configurations">Add Extra Security Configurations</a></h6>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">    @EnableWebSecurity
+    @EnableGlobalMethodSecurity(prePostEnabled = true)
+    public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
+
+        /**
+         * Add configuration logic as needed.
+         */
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            super.configure(http);
+            http.authorizeRequests()
+                    .anyRequest().authenticated();
+            // Do some custom configuration
+        }
+    }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_authorize_access_by_app_roles"><a class="link" href="#_authorize_access_by_app_roles">Authorize Access by App Roles</a></h6>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 1: Create Required Resources in Azure</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Read <a href="https://docs.microsoft.com/azure/active-directory/develop/howto-add-app-roles-in-azure-ad-apps">MS docs about Add app roles to your application and receive them in the token</a>.</p>
+</li>
+<li>
+<p>Create an app role with the following parameters:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Display name: Admin</p>
+</li>
+<li>
+<p>Allowed member types: Users/Groups</p>
+</li>
+<li>
+<p>Value: Admin</p>
+</li>
+<li>
+<p>Do you want to enable this app role: yes</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you want to use app role based access control, you can&#8217;t put group names in <code>role</code> claim . Refs: <a href="https://docs.microsoft.com/azure/active-directory/develop/active-directory-optional-claims#configuring-groups-optional-claims">Configuring groups optional claims</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 2: Protect specific method.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>class Demo {
+    @GetMapping("Admin")
+    @ResponseBody
+    @PreAuthorize("hasAuthority('APPROLE_Admin')")
+    public String admin() {
+        return "Admin message";
+    }
+}</pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_authorize_access_by_group_name_or_group_id"><a class="link" href="#_authorize_access_by_group_name_or_group_id">Authorize Access by Group Name Or Group ID</a></h6>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 1: Add related configuration properties.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      active-directory:
+        user-group:
+          allowed-group-names: group1_name_1, group2_name_2
+          # 1. If allowed-group-ids == all, then all group id will take effect.
+          # 2. If "all" is used, we should not configure other group ids.
+          # 3. "all" is only supported for allowed-group-ids, not supported for allowed-group-names.
+          allowed-group-ids: group_id_1, group_id_2</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 2: Protect specific method.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@Controller
+public class RoleController {
+    @GetMapping("group1")
+    @ResponseBody
+    @PreAuthorize("hasRole('ROLE_group1')")
+    public String group1() {
+        return "group1 message";
+    }
+
+    @GetMapping("group2")
+    @ResponseBody
+    @PreAuthorize("hasRole('ROLE_group2')")
+    public String group2() {
+        return "group2 message";
+    }
+
+    @GetMapping("group1Id")
+    @ResponseBody
+    @PreAuthorize("hasRole('ROLE_&lt;group1-id&gt;')")
+    public String group1Id() {
+        return "group1Id message";
+    }
+
+    @GetMapping("group2Id")
+    @ResponseBody
+    @PreAuthorize("hasRole('ROLE_&lt;group2-id&gt;')")
+    public String group2Id() {
+        return "group2Id message";
+    }
+}</pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_use_national_azure_instead_of_global_azure"><a class="link" href="#_use_national_azure_instead_of_global_azure">Use National Azure Instead of Global Azure</a></h6>
+<div class="paragraph">
+<p>Now except global Azure cloud, Azure Active Directory is deployed in the following national clouds:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Azure Government</p>
+</li>
+<li>
+<p>Azure China 21Vianet</p>
+</li>
+<li>
+<p>Azure Germany</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Here is a sample of you want to use Azure China 21Vianet.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        base-uri: https://login.partner.microsoftonline.cn
+        graph-base-uri: https://microsoftgraph.chinacloudapi.cn</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can refer to these MS doc to get more information from <a href="https://docs.microsoft.com/en-us/graph/deployments">MS docs about National cloud deployments</a>.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_configure_redirect_uri_template"><a class="link" href="#_configure_redirect_uri_template">Configure Redirect URI Template</a></h6>
+<div class="paragraph">
+<p>Developers can customize the redirect-uri.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/149295662-072ca3d5-f9e1-4f25-bb0e-be7bb751e9af.png" alt="redirect-uri"></span></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 1: Add <code>redirect-uri-template</code> properties in application.yml.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      active-directory:
+        redirect-uri-template: ${REDIRECT-URI-TEMPLATE}</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 2: Update redirect-uri in Azure portal.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/149296913-a4259df9-e0c3-4e38-8d4e-77ee845de4ad.png" alt="web-application-config-redirect-uri"></span></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 3: Update WebSecurityConfigurerAdapter</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>After we set redirect-uri-template, we need to update <code>WebSecurityConfigurerAdapter</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
+    /**
+     * Add configuration logic as needed.
+     */
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        super.configure(http);
+        http.oauth2Login()
+                .loginProcessingUrl("${REDIRECT-URI-TEMPLATE}")
+                .and()
+            .authorizeRequests()
+                .anyRequest().authenticated();
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_samples"><a class="link" href="#_samples">Samples</a></h5>
+<div class="paragraph">
+<p>Sample project: <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.3.0/aad/spring-cloud-azure-starter-active-directory/web-client-access-resource-server/aad-web-application">aad-web-application</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_web_application_accessing_resource_servers"><a class="link" href="#_web_application_accessing_resource_servers">Web Application Accessing Resource Servers</a></h4>
+<div class="sect4">
+<h5 id="_system_diagram_2"><a class="link" href="#_system_diagram_2">System Diagram</a></h5>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142617853-0526205f-fdef-47f9-ac01-77963f8c34be.png" alt="web-application-visiting-resource-servers.png"></span></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_create_required_resources_in_azure_2"><a class="link" href="#_create_required_resources_in_azure_2">Create Required Resources in Azure</a></h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Read <a href="https://docs.microsoft.com/azure/active-directory/develop/quickstart-register-app">MS docs about register an application with the Microsoft identity platform</a>.</p>
+</li>
+<li>
+<p>Create app registration. Get <code>AZURE_TENANT_ID</code>, <code>AZURE_CLIENT_ID</code> and <code>AZURE_CLIENT_SECRET</code>.</p>
+</li>
+<li>
+<p>Set <code>redirect URI</code> to <code>APPLICATION_BASE_URI/login/oauth2/code/</code>, for example <code><a href="http://localhost:8080/login/oauth2/code/" class="bare">http://localhost:8080/login/oauth2/code/</a></code>. The tailing <code>/</code> is required.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_add_required_dependencies_2"><a class="link" href="#_add_required_dependencies_2">Add Required Dependencies</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-oauth2-client&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_add_required_properties_2"><a class="link" href="#_add_required_properties_2">Add Required Properties</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        profile:
+          tenant-id: ${AZURE_TENANT_ID}
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-secret: ${AZURE_CLIENT_SECRET}
+        authorization-clients:
+          graph:
+            scopes: https://graph.microsoft.com/Analytics.Read, email</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here, <code>graph</code> is the name of <code>OAuth2AuthorizedClient</code>, <code>scopes</code> means the scopes need to consent when login.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_use_oauth2authorizedclient_in_your_application"><a class="link" href="#_use_oauth2authorizedclient_in_your_application">Use OAuth2AuthorizedClient in Your Application</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class Demo {
+    @GetMapping("/graph")
+    @ResponseBody
+    public String graph(
+    @RegisteredOAuth2AuthorizedClient("graph") OAuth2AuthorizedClient graphClient) {
+        // toJsonString() is just a demo.
+        // oAuth2AuthorizedClient contains access_token. We can use this access_token to access resource server.
+        return toJsonString(graphClient);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now start you application and access your application by browser, then you will be redirected into Microsoft login page.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_advanced_usages_2"><a class="link" href="#_advanced_usages_2">Advanced Usages</a></h5>
+<div class="sect5">
+<h6 id="_client_credential_flow"><a class="link" href="#_client_credential_flow">Client Credential Flow</a></h6>
+<div class="paragraph">
+<p>The default flow is <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">authorization code flow</a>, if you want to use <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow">client credentials flow</a>, you can configure like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        profile:
+          tenant-id: ${AZURE_TENANT_ID}
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-secret: ${AZURE_CLIENT_SECRET}
+        authorization-clients:
+          graph:
+            authorization-grant-type: client_credentials # Change type to client_credentials
+            scopes: https://graph.microsoft.com/Analytics.Read, email</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_access_multiple_resource_servers"><a class="link" href="#_access_multiple_resource_servers">Access Multiple Resource Servers</a></h6>
+<div class="paragraph">
+<p>In one web application, you can access multiple resource server by configuring like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        profile:
+          tenant-id: ${AZURE_TENANT_ID}
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-secret: ${AZURE_CLIENT_SECRET}
+        authorization-clients:
+          resource-server-1:
+            scopes: # Scopes for resource-server-1
+          resource-server-2:
+            scopes: # Scopes for resource-server-2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then you can use OAuth2AuthorizedClient in application like this</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class Demo {
+    @GetMapping("/resource-server-1")
+    @ResponseBody
+    public String graph(
+    @RegisteredOAuth2AuthorizedClient("resource-server-1") OAuth2AuthorizedClient client) {
+        return callResourceServer1(client);
+    }
+
+    @GetMapping("/resource-server-2")
+    @ResponseBody
+    public String graph(
+    @RegisteredOAuth2AuthorizedClient("resource-server-2") OAuth2AuthorizedClient client) {
+        return callResourceServer2(client);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_incremental_consent"><a class="link" href="#_incremental_consent">Incremental Consent</a></h6>
+<div class="paragraph">
+<p>In previous sample, all scopes will be consented when customer first login, no matter it&#8217;s belong to resource-server-1 or resource-server-2. If you don&#8217;t want to let customer consent all scopes, you can do like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        profile:
+          tenant-id: ${AZURE_TENANT_ID}
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-secret: ${AZURE_CLIENT_SECRET}
+        authorization-clients:
+          resource-server-1:
+            scopes: # Scopes for resource-server-1
+          resource-server-2:
+            on-demand: true  # means incremental consent
+            scopes: # Scopes for resource-server-2</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_samples_2"><a class="link" href="#_samples_2">Samples</a></h5>
+<div class="paragraph">
+<p>Sample project: <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.3.0/aad/spring-cloud-azure-starter-active-directory/web-client-access-resource-server/aad-web-application">aad-web-application</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_accessing_a_resource_server"><a class="link" href="#_accessing_a_resource_server">Accessing a Resource Server</a></h4>
+<div class="paragraph">
+<p>This scenario doesn&#8217;t support login, just protect the server by validating the access token. If the access token is valid, the server serves the request.</p>
+</div>
+<div class="sect4">
+<h5 id="_system_diagram_3"><a class="link" href="#_system_diagram_3">System Diagram</a></h5>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142617910-1ee3eb6a-ddc7-4b85-af4e-71344c91b248.png" alt="Standalone resource server usage"></span></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_create_required_resources_in_azure_3"><a class="link" href="#_create_required_resources_in_azure_3">Create Required Resources in Azure</a></h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Read <a href="https://docs.microsoft.com/azure/active-directory/develop/quickstart-register-app">MS docs about register an application with the Microsoft identity platform</a>.</p>
+</li>
+<li>
+<p>Create app registration. Get <code>AZURE_CLIENT_ID</code>.</p>
+</li>
+<li>
+<p>Read <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-configure-app-expose-web-apis">MS docs about configure an application to expose a web API</a>.</p>
+</li>
+<li>
+<p>Expose a web API with a scope named <code>Scope-1</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_add_required_dependencies_3"><a class="link" href="#_add_required_dependencies_3">Add Required Dependencies</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-oauth2-resource-server&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_add_required_properties_3"><a class="link" href="#_add_required_properties_3">Add Required Properties</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        credential:
+          client-id: ${AZURE_CLIENT_ID}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now start your application and access your application&#8217;s web api.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>You will get 401 without an access token.</p>
+</li>
+<li>
+<p>Access your application with an access token, the following claims in access token will be validated:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>iss</code>: The access token must be issued by Azure AD.</p>
+</li>
+<li>
+<p><code>nbf</code>: Current time can not before <code>nbf</code>.</p>
+</li>
+<li>
+<p><code>exp</code>: Current time can not after <code>exp</code>.</p>
+</li>
+<li>
+<p><code>aud</code>: If <code>spring.cloud.azure.active-directory.credential.client-id</code> or <code>spring.cloud.azure.active-directory.credential.app-id-uri</code> configured, the audience must equal to the configured <code>client-id</code> or <code>app-id-uri</code>. If the 2 properties are not configured, this claim will not be validated.</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Refer to <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/access-tokens">MS docs about Microsoft identity platform access tokens</a> to get more information about access token.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_advanced_usages_3"><a class="link" href="#_advanced_usages_3">Advanced Usages</a></h5>
+<div class="sect5">
+<h6 id="_add_extra_security_configurations_2"><a class="link" href="#_add_extra_security_configurations_2">Add Extra Security Configurations</a></h6>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebSecurityConfigurerAdapter {
+    /**
+     * Add configuration logic as needed.
+     */
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        super.configure(http);
+        http.authorizeRequests((requests) -&gt; requests.anyRequest().authenticated());
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_validate_permission_by_scopes"><a class="link" href="#_validate_permission_by_scopes">Validate Permission by Scopes</a></h6>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 1: : Create Required Resources in Azure</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Read <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-configure-app-expose-web-apis">MS docs about configure an application to expose a web API</a>.</p>
+</li>
+<li>
+<p>Expose a web API with a scope named <code>Scope1</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Step 2: Protect specific method.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>class Demo {
+    @GetMapping("scope1")
+    @ResponseBody
+    @PreAuthorize("hasAuthority('SCOPE_Scope1')")
+    public String scope1() {
+        return "Congratulations, you can access `scope1` endpoint.";
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By doing this, when access <code>/scope1</code> endpoint, the following claims in access token will be validated:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>scp</code>: The value must contains <code>Scope1</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_validate_permission_by_app_roles"><a class="link" href="#_validate_permission_by_app_roles">Validate Permission by App Roles</a></h6>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 1: Create Required Resources in Azure</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Read <a href="https://docs.microsoft.com/azure/active-directory/develop/howto-add-app-roles-in-azure-ad-apps">MS docs about Add app roles to your application and receive them in the token</a>.</p>
+</li>
+<li>
+<p>Create an app role with the following parameters:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Display name: AppRole1</p>
+</li>
+<li>
+<p>Allowed member types: Users/Groups</p>
+</li>
+<li>
+<p>Value: AppRole1</p>
+</li>
+<li>
+<p>Do you want to enable this app role: yes</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Step 2: Protect specific method.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>class Demo {
+    @GetMapping("app-role1")
+    @ResponseBody
+    @PreAuthorize("hasAuthority('APPROLE_AppRole1')")
+    public String appRole1() {
+        return "Congratulations, you can access `app-role1` endpoint.";
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By doing this, when access <code>/app-role1</code> endpoint, the following claims in access token will be validated:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>roles</code>: The value must contains <code>AppRole1</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_use_jwt_client_authentication"><a class="link" href="#_use_jwt_client_authentication">Use JWT Client Authentication</a></h6>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Read <a href="https://docs.microsoft.com/azure/active-directory/develop/active-directory-certificate-credentials#register-your-certificate-with-microsoft-identity-platform">MS docs about Register your certificate with Microsoft identity platform</a>.</p>
+</li>
+<li>
+<p>Upload a <strong>.pem</strong> certificate to application registered in Azure Portal.</p>
+</li>
+<li>
+<p>Configure certificate path and password of a <strong>.PFX* or </strong>.P12* certificate.</p>
+</li>
+<li>
+<p>Add property <code>spring.cloud.azure.active-directory.authorization-clients.azure.client-authentication-method=private_key_jwt</code> configuration to client that wants to be authenticated through JWT Client Authentication.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Below is an example configuration file for a Web Application scenario, certificate information is configured in global properties:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${AZURE_CLIENT_ID}
+        client-certificate-path: ${AZURE_CERTIFICATE_PATH}
+        client-certificate-password: ${AZURE_CERTIFICATE_PASSWORD}
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+      active-directory:
+        enabled: true
+        user-group:
+          allowed-group-names: group1,group2
+          allowed-group-ids: &lt;group1-id&gt;,&lt;group2-id&gt;
+        post-logout-redirect-uri: http://localhost:8080
+        authorization-clients:
+          azure:
+            client-authentication-method: private_key_jwt
+          arm:
+            client-authentication-method: private_key_jwt
+            on-demand: true
+            scopes: https://management.core.windows.net/user_impersonation
+          graph:
+            client-authentication-method: private_key_jwt
+            scopes:
+              - https://graph.microsoft.com/User.Read
+              - https://graph.microsoft.com/Directory.Read.All
+          webapiA:
+            client-authentication-method: private_key_jwt
+            scopes:
+              - ${WEB_API_A_APP_ID_URL}/Obo.WebApiA.ExampleScope
+          webapiB:
+            client-authentication-method: private_key_jwt
+            scopes:
+              - ${WEB_API_B_APP_ID_URL}/.default
+            authorization-grant-type: client_credentials</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The certificate information can also be configured in <code>active-directory</code> service properties:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        enabled: true
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-certificate-path: ${AZURE_CERTIFICATE_PATH}
+          client-certificate-password: ${AZURE_CERTIFICATE_PASSWORD}
+        profile:
+          tenant-id: ${AZURE_TENANT_ID}
+        user-group:
+          allowed-group-names: group1,group2
+          allowed-group-ids: &lt;group1-id&gt;,&lt;group2-id&gt;
+        post-logout-redirect-uri: http://localhost:8080
+        authorization-clients:
+          azure:
+            client-authentication-method: private_key_jwt
+          arm:
+            client-authentication-method: private_key_jwt
+            on-demand: true
+            scopes: https://management.core.windows.net/user_impersonation
+          graph:
+            client-authentication-method: private_key_jwt
+            scopes:
+              - https://graph.microsoft.com/User.Read
+              - https://graph.microsoft.com/Directory.Read.All
+          webapiA:
+            client-authentication-method: private_key_jwt
+            scopes:
+              - ${WEB_API_A_APP_ID_URL}/Obo.WebApiA.ExampleScope
+          webapiB:
+            client-authentication-method: private_key_jwt
+            scopes:
+              - ${WEB_API_B_APP_ID_URL}/.default
+            authorization-grant-type: client_credentials</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_samples_3"><a class="link" href="#_samples_3">Samples</a></h5>
+<div class="paragraph">
+<p>Sample project: <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.3.0/aad/spring-cloud-azure-starter-active-directory/web-client-access-resource-server/aad-resource-server">aad-resource-server</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_resource_server_visiting_other_resource_servers"><a class="link" href="#_resource_server_visiting_other_resource_servers">Resource Server Visiting Other Resource Servers</a></h4>
+<div class="sect4">
+<h5 id="_system_diagram_4"><a class="link" href="#_system_diagram_4">System Diagram</a></h5>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142618294-aa546ced-d241-4fbd-97ac-fb06881503b1.png" alt="resource-server-visiting-other-resource-servers.png"></span></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_create_required_resources_in_azure_4"><a class="link" href="#_create_required_resources_in_azure_4">Create Required Resources in Azure</a></h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Read <a href="https://docs.microsoft.com/azure/active-directory/develop/quickstart-register-app">MS docs about register an application with the Microsoft identity platform</a>.</p>
+</li>
+<li>
+<p>Create app registration. Get <code>AZURE_TENANT_ID</code>, <code>AZURE_CLIENT_ID</code> and <code>AZURE_CLIENT_SECRET</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_add_required_dependencies_4"><a class="link" href="#_add_required_dependencies_4">Add Required Dependencies</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-oauth2-resource-server&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-oauth2-client&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_add_required_properties_4"><a class="link" href="#_add_required_properties_4">Add Required Properties</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        profile:
+          tenant-id: ${AZURE_TENANT_ID}
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-secret: ${AZURE_CLIENT_SECRET}
+        authorization-clients:
+          graph:
+            scopes:
+              - https://graph.microsoft.com/User.Read</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_use_oauth2authorizedclient_in_your_application_2"><a class="link" href="#_use_oauth2authorizedclient_in_your_application_2">Use OAuth2AuthorizedClient in Your Application</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
+    @GetMapping("call-graph")
+    public String callGraph(@RegisteredOAuth2AuthorizedClient("graph") OAuth2AuthorizedClient graph) {
+        return callMicrosoftGraphMeEndpoint(graph);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_samples_4"><a class="link" href="#_samples_4">Samples</a></h5>
+<div class="paragraph">
+<p>Sample project: <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.3.0/aad/spring-cloud-azure-starter-active-directory/web-client-access-resource-server/aad-resource-server-obo">aad-resource-server-obo</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_web_application_and_resource_server_in_one_application"><a class="link" href="#_web_application_and_resource_server_in_one_application">Web Application and Resource Server in One Application</a></h4>
+<div class="sect4">
+<h5 id="_create_required_resources_in_azure_5"><a class="link" href="#_create_required_resources_in_azure_5">Create Required Resources in Azure</a></h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Read <a href="https://docs.microsoft.com/azure/active-directory/develop/quickstart-register-app">MS docs about register an application with the Microsoft identity platform</a>.</p>
+</li>
+<li>
+<p>Create app registration. Get <code>AZURE_TENANT_ID</code>, <code>AZURE_CLIENT_ID</code> and <code>AZURE_CLIENT_SECRET</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_add_required_dependencies_5"><a class="link" href="#_add_required_dependencies_5">Add Required Dependencies</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-oauth2-resource-server&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-oauth2-client&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_add_required_properties_5"><a class="link" href="#_add_required_properties_5">Add Required Properties</a></h5>
+<div class="paragraph">
+<p>Set property <code>spring.cloud.azure.active-directory.application-type</code> to <code>web_application_and_resource_server</code>, and specify the authorization type for each authorization client.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        profile:
+          tenant-id: ${AZURE_TENANT_ID}
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-secret: ${AZURE_CLIENT_SECRET}
+        app-id-uri: ${WEB_API_ID_URI}
+        application-type: web_application_and_resource_server  # This is required.
+        authorization-clients:
+          graph:
+            authorizationGrantType: authorization_code # This is required.
+            scopes:
+              - https://graph.microsoft.com/User.Read
+              - https://graph.microsoft.com/Directory.Read.All</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_define_securityconfigurationadapter"><a class="link" href="#_define_securityconfigurationadapter">Define SecurityConfigurationAdapter</a></h5>
+<div class="paragraph">
+<p>Configure multiple HttpSecurity instances, <code>AadWebApplicationAndResourceServerConfig</code> contain two security configurations for resource server and web application.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class AadWebApplicationAndResourceServerConfig {
+
+    @Order(1)
+    @Configuration
+    public static class ApiWebSecurityConfigurationAdapter extends AadResourceServerWebSecurityConfigurerAdapter {
+        protected void configure(HttpSecurity http) throws Exception {
+            super.configure(http);
+            // All the paths that match `/api/**`(configurable) work as `Resource Server`, other paths work as `Web application`.
+            http.antMatcher("/api/**")
+                .authorizeRequests().anyRequest().authenticated();
+        }
+    }
+
+    @Configuration
+    public static class HtmlWebSecurityConfigurerAdapter extends AadWebSecurityConfigurerAdapter {
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            super.configure(http);
+            // @formatter:off
+            http.authorizeRequests()
+                    .antMatchers("/login").permitAll()
+                    .anyRequest().authenticated();
+            // @formatter:on
+        }
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Configurable properties of spring-cloud-azure-starter-active-directory</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.app-id-uri</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">App ID URI which might be used in the "aud" claim of an id_token.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.application-type</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of the AAD application.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authenticate-additional-parameters</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add additional parameters to the Authorization URL.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.authorization-clients</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The OAuth2 authorization clients.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.credential.client-id</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.credential.client-secret</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.credential.client-certificate-path</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.credential.client-certificate-password</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.jwk-set-cache-lifespan</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The lifespan of the cached JWK set before it expires, default is 5 minutes.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.jwk-set-cache-refresh-time</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>5</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The refresh time of the cached JWK set before it expires, default is 5 minutes.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.jwt-connect-timeout</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Connection Timeout for the JWKSet Remote URL call.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.jwt-read-timeout</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Read Timeout for the JWKSet Remote URL call.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.jwt-size-limit</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Size limit in Bytes of the JWKSet Remote URL call.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.post-logout-redirect-uri</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The redirect uri after logout.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.profile.cloud-type</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the Azure cloud to connect to. Supported types are: AZURE, AZURE_CHINA, AZURE_GERMANY, AZURE_US_GOVERNMENT, OTHER.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.profile.environment</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Properties to Azure Active Directory endpoints.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.profile.tenant-id</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Tenant ID.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.redirect-uri-template</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{baseUrl}/login/oauth2/code/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Redirection Endpoint: Used by the authorization server to return responses containing authorization credentials to the client via the resource owner user-agent.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.resource-server.claim-to-authority-prefix-map</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configure which claim will be used to build GrantedAuthority, and prefix of the GrantedAuthority&#8217;s string value. Default value is: "scp" &#8594; "SCOPE_", "roles" &#8594; "APPROLE_".</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.resource-server.principal-claim-name</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configure which claim in access token be returned in AuthenticatedPrincipal#getName. Default value is "sub".</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.session-stateless</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If true activates the stateless auth filter AadAppRoleStatelessAuthenticationFilter. The default is false which activates AadAuthenticationFilter.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.user-group.allowed-group-ids</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The group ids can be used to construct GrantedAuthority.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.user-group.allowed-group-names</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The group names can be used to construct GrantedAuthority.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.user-group.use-transitive-members</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If "true", use "v1.0/me/transitiveMemberOf" to get members. Otherwise, use "v1.0/me/memberOf".</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory</strong>.user-name-attribute</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Decide which claim to be principal&#8217;s name.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Here are some examples about how to use these properties:</p>
+</div>
+<div class="sect4">
+<h5 id="_application_type"><a class="link" href="#_application_type">Application Type</a></h5>
+<div class="paragraph">
+<p>THe application type can be inferred from the dependencies: spring-security-oauth2-client or spring-security-oauth2-resource-server. If the inferred value is not the value you want, you can specify the application type. Here is the table about valid values and inferred value:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Application type of spring-cloud-azure-starter-active-directory</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Has dependency: spring-security-oauth2-client</th>
+<th class="tableblock halign-left valign-top">Has dependency: spring-security-oauth2-resource-server</th>
+<th class="tableblock halign-left valign-top">Valid values of application type</th>
+<th class="tableblock halign-left valign-top">Inferred value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>web_application</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>web_application</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>resource_server</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>resource_server</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>web_application</code>, <code>resource_server</code>, <code>resource_server_with_obo</code>, <code>web_application_and_resource_server</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>resource_server_with_obo</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_spring_security_with_azure_active_directory_b2c"><a class="link" href="#_spring_security_with_azure_active_directory_b2c">Spring Security With Azure Active Directory B2C</a></h3>
+<div class="paragraph">
+<p>Azure Active Directory (Azure AD) B2C is an identity management service that enables you to customize and control how customers sign up, sign in, and manage their profiles when using your applications. Azure AD B2C enables these actions while protecting the identities of your customers at the same time.</p>
+</div>
+<div class="sect3">
+<h4 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-azure-starter-active-directory-b2c&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configuration_2"><a class="link" href="#_configuration_2">Configuration</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Configurable properties of spring-cloud-azure-starter-active-directory-b2c</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.app-id-uri</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">App ID URI which might be used in the "aud" claim of a token.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.authenticate-additional-parameters</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additional parameters for authentication.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.authorization-clients</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify client configuration.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.base-uri</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AAD B2C endpoint base uri.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.credential</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AAD B2C credential information.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.jwt-connect-timeout</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Connection Timeout for the JWKSet Remote URL call.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.jwt-read-timeout</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Read Timeout for the JWKSet Remote URL call.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.jwt-size-limit</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Size limit in Bytes of the JWKSet Remote URL call.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.login-flow</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sign-up-or-sign-in</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the primary sign-in flow key.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.logout-success-url</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="http://localhost:8080/login" class="bare">http://localhost:8080/login</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Redirect url after logout.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.profile</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AAD B2C profile information.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.reply-url</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{baseUrl}/login/oauth2/code/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reply url after get authorization code.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.user-flows</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User flows.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.active-directory.b2c</strong>.user-name-attribute-name</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User name attribute name.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>For full configurations, check <a href="appendix.html#migration-guide-for-4-0">the Appendix page</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_basic_usage"><a class="link" href="#_basic_usage">Basic Usage</a></h4>
+<div class="paragraph">
+<p>A <code>web application</code> is any web based application that allows user to login with Azure AD, whereas a <code>resource server</code> will either accept or deny access after validating access_token obtained from Azure AD. We will cover 4 scenarios in this guide:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Accessing a web application.</p>
+</li>
+<li>
+<p>Web application accessing resource servers.</p>
+</li>
+<li>
+<p>Accessing a resource server.</p>
+</li>
+<li>
+<p>Resource server accessing other resource servers.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142620440-f970b572-2646-4f50-9f77-db62d6e965f1.png" alt="B2C Web application &amp; Web Api Overall"></span></p>
+</div>
+<div class="sect4">
+<h5 id="_usage_1_accessing_a_web_application"><a class="link" href="#_usage_1_accessing_a_web_application">Usage 1: Accessing a Web Application</a></h5>
+<div class="paragraph">
+<p>This scenario uses <a href="https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-auth-code-flow">The OAuth 2.0 authorization code grant</a> flow to log in a user with your Azure AD B2C user.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 1: Select <strong>Azure AD B2C</strong> from the portal menu, click <strong>Applications</strong>, and then click <strong>Add</strong>.</p>
+</li>
+<li>
+<p>Step 2: Specify your application <strong>Name</strong>, we call it <code>webapp</code>, add <code><a href="http://localhost:8080/login/oauth2/code/" class="bare">http://localhost:8080/login/oauth2/code/</a></code> for the <strong>Reply URL</strong>, record the
+<strong>Application ID</strong> as your <code>WEB_APP_AZURE_CLIENT_ID</code> and then click <strong>Save</strong>.</p>
+</li>
+<li>
+<p>Step 3: Select <strong>Keys</strong> from your application, click <strong>Generate key</strong> to generate <code>WEB_APP_AZURE_CLIENT_SECRET</code> and then <strong>Save</strong>.</p>
+</li>
+<li>
+<p>Step 4: Select <strong>User flows</strong> on your left, and then Click <strong>New user flow</strong>.</p>
+</li>
+<li>
+<p>Step 5: Choose <strong>Sign up or in</strong>, <strong>Profile editing</strong> and <strong>Password reset</strong> to create user flows
+respectively. Specify your user flow <strong>Name</strong> and <strong>User attributes and claims</strong>, click <strong>Create</strong>.</p>
+</li>
+<li>
+<p>Step 6: Select <strong>API permissions</strong> &gt; <strong>Add a permission</strong> &gt; <strong>Microsoft APIs</strong>, select <strong><em>Microsoft Graph</em></strong>,
+select <strong>Delegated permissions</strong>, check <strong>offline_access</strong> and <strong>openid</strong> permissions, select <strong>Add permission</strong> to complete the process.</p>
+</li>
+<li>
+<p>Step 7: Grant admin consent for <strong><em>Graph</em></strong> permissions.
+<span class="image"><img src="https://user-images.githubusercontent.com/13167207/142620491-8c8a82ea-c920-43a8-aa0a-dd028f1b8553.png" alt="Add Graph permissions"></span></p>
+</li>
+<li>
+<p>Step 8: Add the following dependencies in your <em>pom.xml</em>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+        &lt;artifactId&gt;azure-spring-boot-starter-active-directory-b2c&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.thymeleaf.extras&lt;/groupId&gt;
+        &lt;artifactId&gt;thymeleaf-extras-springsecurity5&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 9: Add properties in <em>application.yml</em> using the values you created earlier, for example:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      active-directory:
+        b2c:
+          authenticate-additional-parameters:
+            domain_hint: xxxxxxxxx         # optional
+            login_hint: xxxxxxxxx          # optional
+            prompt: [login,none,consent]   # optional
+          base-uri: ${BASE_URI}
+          credential:
+            client-id: ${WEBAPP_AZURE_CLIENT_ID}
+            client-secret: ${WEBAPP_AZURE_CLIENT_SECRET}
+          login-flow: ${LOGIN_USER_FLOW_KEY}               # default to sign-up-or-sign-in, will look up the user-flows map with provided key.
+          logout-success-url: ${LOGOUT_SUCCESS_URL}
+          user-flows:
+            ${YOUR_USER_FLOW_KEY}: ${USER_FLOW_NAME}
+          user-name-attribute-name: ${USER_NAME_ATTRIBUTE_NAME}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 10: Write your Java code.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Controller code can refer to the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Controller
+public class WebController {
+
+    private void initializeModel(Model model, OAuth2AuthenticationToken token) {
+        if (token != null) {
+            final OAuth2User user = token.getPrincipal();
+            model.addAllAttributes(user.getAttributes());
+            model.addAttribute("grant_type", user.getAuthorities());
+            model.addAttribute("name", user.getName());
+        }
+    }
+
+    @GetMapping(value = { "/", "/home" })
+    public String index(Model model, OAuth2AuthenticationToken token) {
+        initializeModel(model, token);
+        return "home";
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Security configuration code can refer to the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
+public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    private final AadB2cOidcLoginConfigurer configurer;
+
+    public WebSecurityConfiguration(AadB2cOidcLoginConfigurer configurer) {
+        this.configurer == configurer;
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        // @formatter:off
+        http.authorizeRequests()
+                .anyRequest().authenticated()
+                .and()
+            .apply(configurer);
+        // @formatter:off
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Copy the <em>home.html</em> from <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/blob/spring-cloud-azure_4.3.0/aad/spring-cloud-azure-starter-active-directory-b2c/aad-b2c-web-application/src/main/resources/templates/home.html">aad-b2c-web-application sample</a>, and replace the <code>PROFILE_EDIT_USER_FLOW</code> and <code>PASSWORD_RESET_USER_FLOW</code> with your user flow name respectively that completed earlier.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 11: Build and test your app</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let <code>Webapp</code> run on port <em>8080</em>.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>After your application is built and started by Maven, open <code><a href="http://localhost:8080/" class="bare">http://localhost:8080/</a></code> in a web browser; you should be redirected to login page.</p>
+</li>
+<li>
+<p>Click link with the login user flow, you should be redirected Azure AD B2C to start the authentication process.</p>
+</li>
+<li>
+<p>After you have logged in successfully, you should see the sample <code>home page</code> from the browser.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_usage_2_web_application_accessing_resource_servers"><a class="link" href="#_usage_2_web_application_accessing_resource_servers">Usage 2: Web Application Accessing Resource Servers</a></h5>
+<div class="paragraph">
+<p>This scenario is based on <strong>Accessing a web application</strong> scenario to allow application to access other resources, that is [The OAuth 2.0 client credentials grant] flow.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 1: Select <strong>Azure AD B2C</strong> from the portal menu, click <strong>Applications</strong>, and then click <strong>Add</strong>.</p>
+</li>
+<li>
+<p>Step 2: Specify your application <strong>Name</strong>, we call it <code>webApiA</code>, record the <strong>Application ID</strong> as your <code>WEB_API_A_AZURE_CLIENT_ID</code> and then click <strong>Save</strong>.</p>
+</li>
+<li>
+<p>Step 3: Select <strong>Keys</strong> from your application, click <strong>Generate key</strong> to generate <code>WEB_API_A_AZURE_CLIENT_SECRET</code> and then <strong>Save</strong>.</p>
+</li>
+<li>
+<p>Step 4: Select <strong>Expose an API</strong> on your left, and then Click the <strong>Set</strong> link,
+record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_URL</code>, then <strong>Save</strong>.</p>
+</li>
+<li>
+<p>Step 5: Select <strong>Manifest</strong> on your left, and then paste the following json segment into <code>appRoles</code> array,
+record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_URL</code>, record the value of the app role as your <code>WEB_API_A_ROLE_VALUE</code>, then <strong>save</strong>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  "allowedMemberTypes": [
+    "Application"
+  ],
+  "description": "WebApiA.SampleScope",
+  "displayName": "WebApiA.SampleScope",
+  "id": "04989db0-3efe-4db6-b716-ae378517d2b7",
+  "isEnabled": true,
+  "value": "WebApiA.SampleScope"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142620567-59a91df7-7a97-4027-b525-1f422f25fb22.png" alt="Configure WebApiA appRoles"></span></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 6: Select <strong>API permissions</strong> &gt; <strong>Add a permission</strong> &gt; <strong>My APIs</strong>, select <strong><em>WebApiA</em></strong> application name, select <strong>Application Permissions</strong>, select <strong>WebApiA.SampleScope</strong> permission, select <strong>Add permission</strong> to complete the process.</p>
+</li>
+<li>
+<p>Step 7: Grant admin consent for <strong><em>WebApiA</em></strong> permissions.
+<span class="image"><img src="https://user-images.githubusercontent.com/13167207/142620601-660400fa-7cff-4989-9d7f-2b32a9aa1244.png" alt="Add WebApiA permission"></span></p>
+</li>
+<li>
+<p>Step 8: Add the following dependency on the basis of <strong>Accessing a web application</strong> scenario.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-boot-starter-webflux&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 9: Add the following configuration on the basis of <strong>Accessing a web application</strong> scenario.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      active-directory:
+        b2c:
+          base-uri: ${BASE_URI}             # Such as: https://xxxxb2c.b2clogin.com
+          profile:
+            tenant-id: ${AZURE_TENANT_ID}
+          authorization-clients:
+            ${RESOURCE_SERVER_A_NAME}:
+              authorization-grant-type: client_credentials
+              scopes: ${WEB_API_A_APP_ID_URL}/.default</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 10: Write your <code>Webapp</code> Java code.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Controller code can refer to the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+    /**
+     * Access to protected data from Webapp to WebApiA through client credential flow. The access token is obtained by webclient, or
+     * &lt;p&gt;@RegisteredOAuth2AuthorizedClient("webApiA")&lt;/p&gt;. In the end, these two approaches will be executed to
+     * DefaultOAuth2AuthorizedClientManager#authorize method, get the access token.
+     *
+     * @return Respond to protected data from WebApi A.
+     */
+    @GetMapping("/webapp/webApiA")
+    public String callWebApiA() {
+        String body = webClient
+            .get()
+            .uri(LOCAL_WEB_API_A_SAMPLE_ENDPOINT)
+            .attributes(clientRegistrationId("webApiA"))
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+        LOGGER.info("Call callWebApiA(), request '/webApiA/sample' returned: {}", body);
+        return "Request '/webApiA/sample'(WebApi A) returned a " + (body != null ? "success." : "failure.");
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Security configuration code is the same with <strong>Accessing a web application</strong> scenario, another bean <code>webClient</code> is added as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class SampleConfiguration {
+    @Bean
+    public WebClient webClient(OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager) {
+        ServletOAuth2AuthorizedClientExchangeFilterFunction function =
+            new ServletOAuth2AuthorizedClientExchangeFilterFunction(oAuth2AuthorizedClientManager);
+        return WebClient.builder()
+                        .apply(function.oauth2Configuration())
+                        .build();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 11: See <strong>Accessing a resource server</strong> section to write your <code>WebApiA</code> Java code.</p>
+</li>
+<li>
+<p>Step 12: Build and test your app</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let <code>Webapp</code> and <code>WebApiA</code> run on port <em>8080</em> and <em>8081</em> respectively.
+ Start <code>Webapp</code> and <code>WebApiA</code> application, return to the home page after logging successfully, you can access <code><a href="http://localhost:8080/webapp/webApiA" class="bare">http://localhost:8080/webapp/webApiA</a></code> to get <strong>WebApiA</strong> resource response.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_usage_3_accessing_a_resource_server"><a class="link" href="#_usage_3_accessing_a_resource_server">Usage 3: Accessing a Resource Server</a></h5>
+<div class="paragraph">
+<p>This scenario not support login. Just protect the server by validating the access token, and if valid, serves the request.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 1: Refer to <a href="#usage-2-web-application-accessing-resource-servers">Usage 2: Web Application Accessing Resource Servers</a> to build your <code>WebApiA</code> permission.</p>
+</li>
+<li>
+<p>Step 2: Add <code>WebApiA</code> permission and grant admin consent for your web application.</p>
+</li>
+<li>
+<p>Step 3: Add the following dependencies in your <em>pom.xml</em>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+        &lt;artifactId&gt;azure-spring-boot-starter-active-directory-b2c&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 4: Add the following configuration.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      active-directory:
+        b2c:
+          base-uri: ${BASE_URI}             # Such as: https://xxxxb2c.b2clogin.com
+          profile:
+            tenant-id: ${AZURE_TENANT_ID}
+          app-id-uri: ${APP_ID_URI}         # If you are using v1.0 token, please configure app-id-uri for `aud` verification
+          credential:
+            client-id: ${AZURE_CLIENT_ID}           # If you are using v2.0 token, please configure client-id for `aud` verification</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 5: Write your Java code.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Controller code can refer to the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+    /**
+     * webApiA resource api for web app
+     * @return test content
+     */
+    @PreAuthorize("hasAuthority('APPROLE_WebApiA.SampleScope')")
+    @GetMapping("/webApiA/sample")
+    public String webApiASample() {
+        LOGGER.info("Call webApiASample()");
+        return "Request '/webApiA/sample'(WebApi A) returned successfully.";
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Security configuration code can refer to the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests((requests) -&gt; requests.anyRequest().authenticated())
+            .oauth2ResourceServer()
+            .jwt()
+            .jwtAuthenticationConverter(new AadJwtBearerTokenAuthenticationConverter());
+    }
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 6: Build and test your app</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let <code>WebApiA</code> run on port <em>8081</em>.
+ Get the access token for <code>webApiA</code> resource and access <code><a href="http://localhost:8081/webApiA/sample" class="bare">http://localhost:8081/webApiA/sample</a></code>
+ as the Bearer authorization header.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_usage_4_resource_server_accessing_other_resource_servers"><a class="link" href="#_usage_4_resource_server_accessing_other_resource_servers">Usage 4: Resource Server Accessing Other Resource Servers</a></h5>
+<div class="paragraph">
+<p>This scenario is an upgrade of <strong>Accessing a resource server</strong>, supports access to other application resources, based on OAuth2 client credentials flow.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 1: Referring to the previous steps, we create a <code>WebApiB</code> application and expose an application permission <code>WebApiB.SampleScope</code>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+    "allowedMemberTypes": [
+        "Application"
+    ],
+    "description": "WebApiB.SampleScope",
+    "displayName": "WebApiB.SampleScope",
+    "id": "04989db0-3efe-4db6-b716-ae378517d2b7",
+    "isEnabled": true,
+    "lang": null,
+    "origin": "Application",
+    "value": "WebApiB.SampleScope"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/13167207/142620648-cfbf5220-9736-4050-a3ef-1370c522e672.png" alt="Configure WebApiB appRoles"></span></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 2: Grant admin consent for <strong><em>WebApiB</em></strong> permissions.
+<span class="image"><img src="https://user-images.githubusercontent.com/13167207/142620691-b1a7fcda-fc92-41af-9515-812139f26ee0.png" alt="Add WebApiB permission"></span></p>
+</li>
+<li>
+<p>Step 3: On the basis of <strong>Accessing a resource server</strong>, add a dependency in your <em>pom.xml</em>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+ &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+ &lt;artifactId&gt;spring-boot-starter-webflux&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 4: Add the following configuration on the basis of <strong>Accessing a resource server</strong> scenario configuration.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      active-directory:
+        b2c:
+          credential:
+            client-secret: ${WEB_API_A_AZURE_CLIENT_SECRET}
+          authorization-clients:
+            ${RESOURCE_SERVER_B_NAME}:
+              authorization-grant-type: client_credentials
+              scopes: ${WEB_API_B_APP_ID_URL}/.default</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 5: Write your Java code.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>WebApiA controller code can refer to the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
+    /**
+     * Access to protected data from WebApiA to WebApiB through client credential flow. The access token is obtained by webclient, or
+     * &lt;p&gt;@RegisteredOAuth2AuthorizedClient("webApiA")&lt;/p&gt;. In the end, these two approaches will be executed to
+     * DefaultOAuth2AuthorizedClientManager#authorize method, get the access token.
+     *
+     * @return Respond to protected data from WebApi B.
+     */
+    @GetMapping("/webApiA/webApiB/sample")
+    @PreAuthorize("hasAuthority('APPROLE_WebApiA.SampleScope')")
+    public String callWebApiB() {
+        String body = webClient
+            .get()
+            .uri(LOCAL_WEB_API_B_SAMPLE_ENDPOINT)
+            .attributes(clientRegistrationId("webApiB"))
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+        LOGGER.info("Call callWebApiB(), request '/webApiB/sample' returned: {}", body);
+        return "Request 'webApiA/webApiB/sample'(WebApi A) returned a " + (body != null ? "success." : "failure.");
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>WebApiB controller code can refer to the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
+    /**
+     * webApiB resource api for other web application
+     * @return test content
+     */
+    @PreAuthorize("hasAuthority('APPROLE_WebApiB.SampleScope')")
+    @GetMapping("/webApiB/sample")
+    public String webApiBSample() {
+        LOGGER.info("Call webApiBSample()");
+        return "Request '/webApiB/sample'(WebApi B) returned successfully.";
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Security configuration code is the same with <strong>Accessing a resource server</strong> scenario, another bean <code>webClient</code> is added as follows</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class SampleConfiguration {
+    @Bean
+    public WebClient webClient(OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager) {
+        ServletOAuth2AuthorizedClientExchangeFilterFunction function =
+            new ServletOAuth2AuthorizedClientExchangeFilterFunction(oAuth2AuthorizedClientManager);
+        return WebClient.builder()
+                        .apply(function.oauth2Configuration())
+                        .build();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Step 6: Build and test your app</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let <code>WebApiA</code> and <code>WebApiB</code> run on port <em>8081</em> and <em>8082</em> respectively.
+ Start <code>WebApiA</code> and <code>WebApiB</code> application, get the access token for <code>webApiA</code> resource and access <code><a href="http://localhost:8081/webApiA/webApiB/sample" class="bare">http://localhost:8081/webApiA/webApiB/sample</a></code>
+ as the Bearer authorization header.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_samples_5"><a class="link" href="#_samples_5">Samples</a></h4>
+<div class="paragraph">
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.3.0/aad/spring-cloud-azure-starter-active-directory-b2c">spring-cloud-azure-starter-active-directory-b2c samples</a> for more details.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>
