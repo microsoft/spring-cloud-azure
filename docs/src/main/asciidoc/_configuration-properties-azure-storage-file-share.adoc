@@ -18,13 +18,6 @@
 |spring.cloud.azure.storage.fileshare.client.response-timeout |  | Amount of time used when waiting for a server to reply.
 |spring.cloud.azure.storage.fileshare.client.write-timeout |  | Amount of time each request being sent over the wire.
 |spring.cloud.azure.storage.fileshare.connection-string |  | Connection string to connect to the service.
-|spring.cloud.azure.storage.fileshare.credential.client-certificate-password |  | Password of the certificate file.
-|spring.cloud.azure.storage.fileshare.credential.client-certificate-path |  | Path of a PEM certificate file to use when performing service principal authentication with Azure.
-|spring.cloud.azure.storage.fileshare.credential.client-id |  | Client ID to use when performing service principal authentication with Azure.
-|spring.cloud.azure.storage.fileshare.credential.client-secret |  | Client secret to use when performing service principal authentication with Azure.
-|spring.cloud.azure.storage.fileshare.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client ID as user assigned managed identity client ID.
-|spring.cloud.azure.storage.fileshare.credential.password |  | Password to use when performing username/password authentication with Azure.
-|spring.cloud.azure.storage.fileshare.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.storage.fileshare.directory-path |  | Path to the directory. For instance, 'directory1/directory2'.
 |spring.cloud.azure.storage.fileshare.enabled | `true` | Whether an Azure Service is enabled.
 |spring.cloud.azure.storage.fileshare.endpoint |  | Endpoint for Azure Storage service.
