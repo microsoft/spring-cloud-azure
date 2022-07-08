@@ -123,7 +123,7 @@
                             <configuration>
                                 <arguments>
                                     <argument>${project.basedir}/src/main/asciidoc/_configuration-properties-all.adoc</argument>
-                                    <argument>spring.jms.servicebus.*|spring.cloud.azure.*</argument>
+                                    <argument>(?!spring.cloud.azure.storage.fileshare.(credential).*)(spring.jms.servicebus.*|spring.cloud.azure.*)</argument>
                                 </arguments>
                             </configuration>
                         </execution>
@@ -305,7 +305,7 @@
                             <configuration>
                                 <arguments>
                                     <argument>${project.basedir}/src/main/asciidoc/_configuration-properties-azure-storage-file-share.adoc</argument>
-                                    <argument>spring.cloud.azure.storage.fileshare.*</argument>
+                                    <argument>(?!spring.cloud.azure.storage.fileshare.(credential).*)(spring.cloud.azure.storage.fileshare.*)</argument>
                                 </arguments>
                             </configuration>
                         </execution>
