@@ -1,7 +1,7 @@
 
 ==== How to create and configure a managed identity on Azure hosting services
 
-There are two types of managed identities: `system-assigned` and `user-assigned`.
+There are two types of managed identities: **system-assigned** and **user-assigned**.
 
 Refer to link:https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/[Azure AD-managed identities for Azure resources] if you are unfamiliar to Azure managed identities.
 

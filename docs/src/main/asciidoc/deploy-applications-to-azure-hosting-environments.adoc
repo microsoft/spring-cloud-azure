@@ -1,27 +1,27 @@
 ==== Deploy application to Azure hosting services
 
-The following lists the references on how to deploy applications to various Azure hosting services.
+The following sections provide references on how to deploy applications to various Azure hosting services.
 
-===== Azure VMs
+===== Azure Virtual Machines (VMs)
 
-Refer to link:https://docs.microsoft.com/azure/virtual-machines/linux/tutorial-manage-vm#connect-to-vm[Connect to VM]. After you connect to VM, you have to install and configure your applications yourself.
+For more information, see the link:https://docs.microsoft.com/azure/virtual-machines/linux/tutorial-manage-vm#connect-to-vm[Connect to VM] section of link:https://docs.microsoft.com/azure/virtual-machines/linux/tutorial-manage-vm[Tutorial: Create and Manage Linux VMs with the Azure CLI]. After you connect to the VM, you have to install and configure your applications yourself.
 
 ===== Azure App Service
 
-Refer to link:https://docs.microsoft.com/azure/app-service/deploy-best-practices[Azure App Service deployment].
+For more information, see link:https://docs.microsoft.com/azure/app-service/deploy-best-practices[Azure App Service deployment].
 
 ===== Azure Functions
 
-Refer to link:https://docs.microsoft.com/azure/azure-functions/functions-deployment-technologies[Azure Functions deployment].
+For more information, see link:https://docs.microsoft.com/azure/azure-functions/functions-deployment-technologies[Deployment technologies in Azure Functions].
 
 ===== Azure Containers Instances
 
-Refer to link:https://docs.microsoft.com/azure/container-instances/container-instances-quickstart[Azure Container Instance deployment].
+For more information, see link:https://docs.microsoft.com/azure/container-instances/container-instances-quickstart[Quickstart: Deploy a container instance in Azure using the Azure CLI].
 
-===== Azure Kubernetes Service(AKS)
+===== Azure Kubernetes Service (AKS)
 
-Refer to link:https://docs.microsoft.com/azure/developer/java/spring-framework/deploy-spring-boot-java-app-on-kubernetes[Azure Kubernetes Service deployment].
+For more information, see link:https://docs.microsoft.com/azure/developer/java/spring-framework/deploy-spring-boot-java-app-on-kubernetes[Deploy Spring Boot Application to the Azure Kubernetes Service].
 
 ===== Azure Spring Apps
 
-Refer to link:https://docs.microsoft.com/azure/spring-cloud/quickstart-deploy-apps?tabs=Azure-CLI&pivots=programming-language-java[Azure Spring Apps deployment].
+For more information, see link:https://docs.microsoft.com/azure/spring-cloud/quickstart-deploy-apps?tabs=Azure-CLI&pivots=programming-language-java[Quickstart: Build and deploy apps to Azure Spring Apps].
