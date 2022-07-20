@@ -22,7 +22,7 @@ IMPORTANT: Spring Boot version 2.5 or 2.6 is required to complete the steps in t
 
 3. Select **Create**.
 +
-image::https://review.docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-cloud-stream-binder-java-app-kafka-azure-event-hub/create-kafka-event-hub-01.png[create-kafka-event-hub-01]
+image::https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-cloud-stream-binder-java-app-kafka-azure-event-hub/create-kafka-event-hub-01.png[create-kafka-event-hub-01]
 
 4. On the **Create Namespace** page, enter the following information:
 
@@ -33,7 +33,7 @@ image::https://review.docs.microsoft.com/en-us/azure/developer/java/spring-frame
 * Specify the **Pricing tier**, which will limit your usage scenarios.
 * You can also specify the **Throughput units** for the namespace.
 +
-image::https://github.com/MicrosoftDocs/azure-dev-docs-pr/blob/ec384a549021ad5fd858ee0e57f0d65ec86f3be4/articles/java/spring-framework/media/configure-spring-cloud-stream-binder-java-app-kafka-azure-event-hub/create-kafka-event-hub-02.png[create-kafka-event-hub-02]
+image::https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-cloud-stream-binder-java-app-kafka-azure-event-hub/create-kafka-event-hub-02.png[create-kafka-event-hub-02]
 
 5. When you have specified the options listed above, select **Review + Create**.
 
@@ -51,7 +51,7 @@ After your namespace is deployed, you can create an event hub in the namespace.
 
 4. Select **Create**.
 
-image::https://github.com/MicrosoftDocs/azure-dev-docs-pr/blob/ec384a549021ad5fd858ee0e57f0d65ec86f3be4/articles/java/spring-framework/media/configure-spring-cloud-stream-binder-java-app-kafka-azure-event-hub/create-kafka-event-hub-05.png[create-kafka-event-hub-05]
+image::https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/configure-spring-cloud-stream-binder-java-app-kafka-azure-event-hub/create-kafka-event-hub-05.png[create-kafka-event-hub-05]
 
 ===== Grant permissions
 
@@ -128,7 +128,7 @@ For details about granting access roles, refer to link:https://docs.microsoft.co
 * Select **8** or **11** for the Java version.
 * Add the **Web**, **Azure Support**, **Cloud Stream**, **Spring for Apache Kafka** dependency.
 +
-image::https://github.com/MicrosoftDocs/azure-dev-docs-pr/blob/ec384a549021ad5fd858ee0e57f0d65ec86f3be4/articles/java/spring-framework/media/spring-initializer/2.7.0/mvn-java8-azure-web-cloud-stream-kafka.png[mvn-java8-azure-web-cloud-stream-kafka]
+image::https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/media/spring-initializer/2.7.0/mvn-java8-azure-web-cloud-stream-kafka.png[mvn-java8-azure-web-cloud-stream-kafka]
 
 +
 NOTE: The Spring Initializr uses the **Group** and **Artifact** names to create the package name; for example: *com.wingtiptoys.kafka*.
@@ -143,11 +143,17 @@ NOTE: The Spring Initializr uses the **Group** and **Artifact** names to create 
 
 1. Add an *application.yaml* in the *resources* directory of your app; for example:
 +
-   *C:\SpringBoot\kafka\src\main\resources\application.yaml*
+[source,shell script]
+----
+   C:\SpringBoot\kafka\src\main\resources\application.yaml
+----
 +
 -or-
 +
-   */users/example/home/kafka/src/main/resources/application.yaml*
+[source,shell script]
+----
+   /users/example/home/kafka/src/main/resources/application.yaml
+----
 
 2. Open the *application.yaml* file in a text editor, add the following lines, and then replace the sample values with the appropriate properties for your event hub:
 +
@@ -188,7 +194,7 @@ NOTE: That the property `spring.cloud.stream.binders.kafka.environment.spring.ma
 | `spring.cloud.stream.bindings.consume-in-0.destination`  | Specifies the input destination Azure Event Hubs, which for this tutorial is the hub you created earlier in this tutorial.
 | `spring.cloud.stream.bindings.consume-in-0.group`       | Specifies a Consumer Group from Azure Event Hubs, which can be set to '$Default' in order to use the basic consumer group that was created when you created your Azure Event Hubs.
 | `spring.cloud.stream.bindings.supply-out-0:.destination` | Specifies the output destination Azure Event Hubs, which for this tutorial will be the same as the input destination.
-| `spring.cloud.stream.binders.kafka.environment.spring.main.sources` | Specifies additional configurations for the particular binder.
+| `spring.cloud.stream.binders.kafka.environment.spring.main.sources` | Specifies additional configurations for the particular binder. The value should be `com.azure.spring.cloud.autoconfigure.kafka.AzureKafkaSpringCloudStreamConfiguration` to enable the whole OAuth authentication workflow.
 |===
 +
 NOTE: If you enable automatic topic creation, be sure to add the configuration item `spring.cloud.stream.kafka.binder.replicationFactor`, with the value set to at least 1. For more information, see link:https://docs.spring.io/spring-cloud-stream-binder-kafka/docs/3.1.2/reference/html/spring-cloud-stream-binder-kafka.html[Spring Cloud Stream Kafka Binder Reference Guide].
@@ -203,11 +209,17 @@ In this section, you create the necessary Java classes for sending events to you
 
 1. Locate the main application Java file in the package directory of your app; for example:
 +
-   *C:\SpringBoot\kafka\src\main\java\com\wingtiptoys\kafka\EventhubApplication.java*
+[source,shell script]
+----
+   C:\SpringBoot\kafka\src\main\java\com\wingtiptoys\kafka\EventhubApplication.java
+----
 +
 -or-
 +
-   */users/example/home/kafka/src/main/java/com/wingtiptoys/kafka/EventhubApplication.java*
+[source,shell script]
+----
+   /users/example/home/kafka/src/main/java/com/wingtiptoys/kafka/EventhubApplication.java
+----
 
 2. Open the main application Java file in a text editor, and add the following lines to the file:
 +
