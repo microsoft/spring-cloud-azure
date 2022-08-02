@@ -1,38 +1,30 @@
-
-==== How to create and configure a managed identity on Azure hosting services
+[#create-and-configure-a-managed-identity-on-azure-hosting-services]
+== Create and configure a managed identity on Azure hosting services
 
 There are two types of managed identities: **system-assigned** and **user-assigned**.
 
-Refer to link:https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/[Azure AD-managed identities for Azure resources] if you are unfamiliar to Azure managed identities.
+For more information about Azure managed identities, see link:https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/[Azure AD-managed identities for Azure resources].
 
-Refer to link:https://docs.microsoft.com/azure/active-directory/fundamentals/active-directory-whatis[What is Azure Active Directory] if you are unfamiliar to Azure Active Directory.
+For more information about Azure Active Directory, see link:https://docs.microsoft.com/azure/active-directory/fundamentals/active-directory-whatis[What is Azure Active Directory].
 
-===== System-assigned managed identity
+=== Create and configure a system-assigned managed identity
 
-The following lists the references on how to create and configure system-assigned managed identity on various Azure hosting services.
+The following list provides references on how to create and configure system-assigned managed identity on various Azure hosting services.
 
-- Azure VM. Refer to link:https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/qs-configure-portal-windows-vm#system-assigned-managed-identity[Configure a system-assigned managed identity on a VM].
-- Azure App Service. Refer to link:https://docs.microsoft.com/azure/app-service/overview-managed-identity#adding-a-system-assigned-identity[Configure a system-assigned identity on Azure App Service].
-- Azure Functions. Refer to link:https://docs.microsoft.com/azure/app-service/overview-managed-identity#adding-a-system-assigned-identity[Configure a system-assigned managed identity on Azure Functions].
-- Azure Containers Instances. Refer to link:https://docs.microsoft.com/azure/container-instances/container-instances-managed-identity[Configure a system-assigned managed identity on Azure Containers Instances].
-- Azure Kubernetes Service(AKS). Refer to link:https://docs.microsoft.com/azure/aks/use-managed-identity#update-an-aks-cluster-to-managed-identities[Configure a system-assigned managed identity on AKS].
-- Azure Spring Apps. Refer to link:https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/qs-configure-portal-windows-vm#user-assigned-managed-identity[Configure an system-assigned managed identity on an Azure Spring Apps app].
+- Azure VM. For more information, see link:https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/qs-configure-portal-windows-vm[Configure managed identities for Azure resources on a VM using the Azure portal].
+- Azure App Service and Azure Functions. For more information, see link:https://docs.microsoft.com/azure/app-service/overview-managed-identity[How to use managed identities for App Service and Azure Functions].
+- Azure Containers Instances. For more information, see link:https://docs.microsoft.com/azure/container-instances/container-instances-managed-identity[How to use managed identities with Azure Container Instances].
+- Azure Kubernetes Service(AKS). For more information, see link:https://docs.microsoft.com/azure/aks/use-managed-identity[Use a managed identity in Azure Kubernetes Service].
+- Azure Spring Apps. For more information, see link:https://docs.microsoft.com/azure/spring-cloud/how-to-enable-system-assigned-managed-identity?tabs=azure-portal&pivots=sc-standard-tier[Enable system-assigned managed identity for an application in Azure Spring Apps].
 
-===== User-assigned managed identity
+=== Create and configure a user-assigned managed identity
 
-This section describes how to create and configure user-assigned managed identity on various Azure hosting services.
+For instructions on how to create a user-assigned managed identity, see link:https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/how-manage-user-assigned-managed-identities?pivots=identity-mi-methods-azp[Manage user-assigned managed identities].
 
-====== Create a user-assigned managed identity
+The following list provides references on how to configure a user-assigned managed identity on various Azure hosting services.
 
-Refer to link:https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/how-manage-user-assigned-managed-identities?pivots=identity-mi-methods-azp#create-a-user-assigned-managed-identity[Create a user-assigned managed identity].
-
-====== Configure a user-assigned managed identity
-
-The following lists the references on how to configure user-assigned managed identity on various Azure hosting services.
-
-- Azure VM. Refer to link:https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/qs-configure-portal-windows-vm#user-assigned-managed-identity[Configure a user-assigned managed identity on a VM].
-- Azure App Service. Refer to link:https://docs.microsoft.com/azure/app-service/overview-managed-identity#adding-a-user-assigned-identity[Configure a user-assigned identity on Azure App Service].
-- Azure Functions. Refer to link:https://docs.microsoft.com/azure/app-service/overview-managed-identity#adding-a-user-assigned-identity[Configure a user-assigned managed identity on Azure Functions].
-- Azure Containers instances. Refer to link:https://docs.microsoft.com/azure/container-instances/container-instances-managed-identity[Configure a user-assigned managed identity on Azure Containers Instances].
-- Azure Kubernetes Service(AKS). Refer to link:https://docs.microsoft.com/azure/aks/use-managed-identity#bring-your-own-control-plane-mi[Configure a user-assigned managed identity on AKS].
-- Azure Spring Apps. Refer to link:https://docs.microsoft.com/azure/spring-cloud/how-to-manage-user-assigned-managed-identities?tabs=azure-portal&pivots=sc-standard-tier[Configure an user-assigned managed identity on an Azure Spring Apps app].
+- Azure VM. For more information, see link:https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/qs-configure-portal-windows-vm[Configure managed identities for Azure resources on a VM using the Azure portal].
+- Azure App Service and Azure Functions. For more information, see link:https://docs.microsoft.com/azure/app-service/overview-managed-identity[How to use managed identities for App Service and Azure Functions].
+- Azure Containers instances. For more information, see link:https://docs.microsoft.com/azure/container-instances/container-instances-managed-identity[How to use managed identities with Azure Container Instances].
+- Azure Kubernetes Service(AKS). For more information, see link:https://docs.microsoft.com/azure/aks/use-managed-identity#bring-your-own-control-plane-mi[Use a managed identity in Azure Kubernetes Service].
+- Azure Spring Apps. For more information, see link:https://docs.microsoft.com/azure/spring-cloud/how-to-manage-user-assigned-managed-identities?tabs=azure-portal&pivots=sc-standard-tier[Manage user-assigned managed identities for an application in Azure Spring Apps].
