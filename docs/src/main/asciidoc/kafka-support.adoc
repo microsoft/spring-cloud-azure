@@ -130,7 +130,7 @@ The configuration options in different levels apply the following rules. The mor
 ==== Configurable properties when using Kafka support with plain connection string authentication
 
 
-.Spring Boot Kafka common configuration options
+.Spring Boot Event Hubs for Kafka common configuration options
 [cols="2*", options="header"]
 |===
 |Property
@@ -240,7 +240,7 @@ NOTE: Set `com.azure.spring.cloud.autoconfigure.kafka.AzureKafkaSpringCloudStrea
 See the link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}[azure-spring-boot-samples] repository on GitHub.
 
 [#basic-usage-connection-string]
-==== Using connection string authentication
+==== Use connection string authentication
 
 You can use connection string authentication directly or use the Azure Resource Manager to retrieve the connection string.
 
@@ -265,7 +265,7 @@ If you want to retrieve the connection string using Azure Resource Manager, add 
 <dependency>
   <groupId>com.azure.spring</groupId>
   <artifactId>spring-cloud-azure-resourcemanager</artifactId>
-  </dependency>
+</dependency>
 ----
 
 ===== Configuration
