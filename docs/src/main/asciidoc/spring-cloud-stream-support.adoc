@@ -909,13 +909,7 @@ Step 2. Define supplier and consumer.
 public Consumer<Message<String>> consume() {
     return message -> {
         Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
-        LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
-                message.getPayload(),
-                message.getHeaders().get(EventHubsHeaders.PARTITION_KEY),
-                message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER),
-                message.getHeaders().get(EventHubsHeaders.OFFSET),
-                message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)
-        );
+        LOGGER.info("New message received: '{}'", message.getPayload());
 
         checkpointer.success()
                 .doOnSuccess(success -> LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
