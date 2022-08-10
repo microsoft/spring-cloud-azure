@@ -1,34 +1,44 @@
 
 [appendix]
 == Configuration Properties
+[#global_proeprties]
 === Global Properties
 include::_configuration-properties-global.adoc[]
 === Azure Active Directory Properties
 include::_configuration-properties-azure-active-directory.adoc[]
 === Azure Active Directory B2C Properties
 include::_configuration-properties-azure-active-directory-b2c.adoc[]
+[#azure_app_configuration_proeprties]
 === Azure App Configuration Properties
 include::_configuration-properties-azure-app-configuration.adoc[]
+[#azure_cosmos_proeprties]
 === Azure Cosmos Properties
 include::_configuration-properties-azure-cosmos-db.adoc[]
+[#azure_event_hubs_proeprties]
 === Azure Event Hubs Properties
 include::_configuration-properties-azure-event-hubs.adoc[]
 === Azure Key Vault Properties
 include::_configuration-properties-azure-key-vault.adoc[]
+[#azure_key_vault_secrets_proeprties]
 === Azure Key Vault Secrets Properties
 include::_configuration-properties-azure-key-vault-secrets.adoc[]
+[#azure_key_vault_certificates_proeprties]
 === Azure Key Vault Certificates Properties
 include::_configuration-properties-azure-key-vault-certificates.adoc[]
+[#azure_service_bus_proeprties]
 === Azure Service Bus Properties
 include::_configuration-properties-azure-service-bus.adoc[]
 === Azure Service Bus JMS Properties
 include::_configuration-properties-azure-service-bus-jms.adoc[]
 === Azure Storage Properties
 include::_configuration-properties-azure-storage.adoc[]
+[#azure_storage_blob_proeprties]
 === Azure Storage Blob Properties
 include::_configuration-properties-azure-storage-blob.adoc[]
+[#azure_storage_file_share_proeprties]
 === Azure Storage File Share Properties
 include::_configuration-properties-azure-storage-file-share.adoc[]
+[#azure_storage_queue_proeprties]
 === Azure Storage Queue Properties
 include::_configuration-properties-azure-storage-queue.adoc[]
 === All Configuration Properties
@@ -36,6 +46,12 @@ include::_configuration-properties-all.adoc[]
 
 [appendix]
 include::_migration-guide-for-4.0.adoc[]
+
+[appendix]
+include::create-and-configure-managed-identity.adoc[]
+
+[appendix]
+include::deploy-applications-to-azure-hosting-environments.adoc[]
 
 [appendix]
 include::_known-issues.adoc[]

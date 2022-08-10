@@ -60,37 +60,37 @@ Spring Cloud Azure unifies configuration properties' prefixes to `spring.cloud.a
 
 |Azure App Configuration 
 |spring.cloud.azure.*appconfiguration*
-|link:appendix.html#_azure_app_configuration_proeprties[App Configuration Properties]
+|link:appendix.html#azure_app_configuration_proeprties[App Configuration Properties]
 
 |Azure Cosmos DB 
 |spring.cloud.azure.*cosmos*
-|link:appendix.html#_azure_cosmos_proeprties[Cosmos Properties]
+|link:appendix.html#azure_cosmos_proeprties[Cosmos Properties]
 
 |Azure Event Hubs 
 |spring.cloud.azure.*eventhubs*
-|link:appendix.html#_azure_event_hubs_proeprties[Event Hubs Properties]
+|link:appendix.html#azure_event_hubs_proeprties[Event Hubs Properties]
 
 |Azure Key Vault Certificates
 |spring.cloud.azure.*keyvault.certificate*
-|link:appendix.html#_azure_key_vault_certificates_proeprties[Key Vault Certificates Properties]
+|link:appendix.html#azure_key_vault_certificates_proeprties[Key Vault Certificates Properties]
 
 |Azure Key Vault Secrets 
 |spring.cloud.azure.*keyvault.secret*
-|link:appendix.html#_azure_key_vault_secrets_proeprties[Key Vault Secrets Properties]
+|link:appendix.html#azure_key_vault_secrets_proeprties[Key Vault Secrets Properties]
 
 |Azure Service Bus 
 |spring.cloud.azure.*servicebus*
-|link:appendix.html#_azure_service_bus_proeprties[Service Bus Properties]
+|link:appendix.html#azure_service_bus_proeprties[Service Bus Properties]
 
 |Azure Storage Blob
 |spring.cloud.azure.*storage.blob*
-|link:appendix.html#_azure_storage_blob_proeprties[Storage Blob Properties]
+|link:appendix.html#azure_storage_blob_proeprties[Storage Blob Properties]
 
 |Azure Storage File Share 
 |spring.cloud.azure.*storage.fileshare*
-|link:appendix.html#_azure_storage_file_share_proeprties[Storage File Share Properties]
+|link:appendix.html#azure_storage_file_share_proeprties[Storage File Share Properties]
 
 |Azure Storage Queue
 |spring.cloud.azure.*storage.queue*
-|link:appendix.html#_azure_storage_queue_proeprties[Storage Queue Properties]
+|link:appendix.html#azure_storage_queue_proeprties[Storage Queue Properties]
 |===

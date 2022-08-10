@@ -30,4 +30,5 @@ include::configuration-properties.adoc[]
 === link:appendix.html##configuration-properties[Configuration properties]
 === link:appendix.html#migration-guide-for-4-0[Migration guide for 4.0]
 === link:appendix.html#known-issues[Known issues]
-
+=== link:appendix.html#create-and-configure-a-managed-identity-on-azure-hosting-services[Create and configure a managed identity on Azure hosting services]
+=== link:appendix.html#deploy-application-to-azure-hosting-services[Deploy application to Azure hosting services]

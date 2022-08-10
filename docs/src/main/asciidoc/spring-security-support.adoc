@@ -511,9 +511,9 @@ By doing this, when access `/app-role1` endpoint, the following claims in access
 ====== Use JWT Client Authentication
 
 1. Read link:https://docs.microsoft.com/azure/active-directory/develop/active-directory-certificate-credentials#register-your-certificate-with-microsoft-identity-platform[MS docs about Register your certificate with Microsoft identity platform].
-1. Upload a *.pem* certificate to application registered in Azure Portal.
-2. Configure certificate path and password of a **.PFX* or **.P12* certificate.
-3. Add property `spring.cloud.azure.active-directory.authorization-clients.azure.client-authentication-method=private_key_jwt` configuration to client that wants to be authenticated through JWT Client Authentication.
+2. Upload a *.pem* certificate to application registered in Azure Portal.
+3. Configure certificate path and password of a **.PFX* or **.P12* certificate.
+4. Add property `spring.cloud.azure.active-directory.authorization-clients.azure.client-authentication-method=private_key_jwt` configuration to client that wants to be authenticated through JWT Client Authentication.
 
 Below is an example configuration file for a Web Application scenario, certificate information is configured in global properties:
 
