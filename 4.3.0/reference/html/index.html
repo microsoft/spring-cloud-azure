@@ -7165,13 +7165,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
 public Consumer&lt;Message&lt;String&gt;&gt; consume() {
     return message -&gt; {
         Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
-        LOGGER.info("New message received: '{}', partition key: {}, sequence number: {}, offset: {}, enqueued time: {}",
-                message.getPayload(),
-                message.getHeaders().get(EventHubsHeaders.PARTITION_KEY),
-                message.getHeaders().get(EventHubsHeaders.SEQUENCE_NUMBER),
-                message.getHeaders().get(EventHubsHeaders.OFFSET),
-                message.getHeaders().get(EventHubsHeaders.ENQUEUED_TIME)
-        );
+        LOGGER.info("New message received: '{}'", message.getPayload());
 
         checkpointer.success()
                 .doOnSuccess(success -&gt; LOGGER.info("Message '{}' successfully checkpointed", message.getPayload()))
