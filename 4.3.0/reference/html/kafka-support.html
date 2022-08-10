@@ -167,10 +167,14 @@ window.onload = function() {
 <ul class="sectlevel1">
 <li><a href="#kafka-support">Kafka Support</a>
 <ul class="sectlevel2">
-<li><a href="#_dependency_setup">Dependency Setup</a></li>
+<li><a href="#_supported_kafka_version">Supported Kafka version</a></li>
+<li><a href="#_supported_authentication_types">Supported authentication types</a></li>
+<li><a href="#_how_it_works">How it works</a></li>
 <li><a href="#_configuration">Configuration</a></li>
-<li><a href="#_basic_usage">Basic Usage</a></li>
-<li><a href="#_samples">Samples</a></li>
+<li><a href="#_dependency_setup">Dependency Setup</a></li>
+<li><a href="#_basic_usage">Basic usage</a></li>
+<li><a href="#_samples_2">Samples</a></li>
+<li><a href="#_remove_credentials_from_spring_kafka_applications">Remove credentials from Spring Kafka applications</a></li>
 </ul>
 </li>
 </ul>
@@ -181,35 +185,91 @@ window.onload = function() {
 <h2 id="kafka-support"><a class="link" href="#kafka-support">Kafka Support</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Connect to Azure Event Hubs (<a href="https://azure.microsoft.com/pricing/details/event-hubs/#explore-pricing-options">Basic pricing tier is not supported</a>) using Spring Kafka libraries. There are two approaches to connect to Azure Event Hubs for Kafka, the first one is to provide the Azure Event Hubs connection string directly, the other is to use Azure Resource Manager to retrieve the connection string.</p>
+<p>From version 4.3.0, Spring Cloud Azure for Kafka supports various types of credentials to authenticate and connect to Azure Event Hubs.</p>
 </div>
 <div class="sect2">
-<h3 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h3>
+<h3 id="_supported_kafka_version"><a class="link" href="#_supported_kafka_version">Supported Kafka version</a></h3>
 <div class="paragraph">
-<p>Add the following dependencies if you want to migrate your Apache Kafka application to use Azure Event Hubs for Kafka.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
-  &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
-  &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>If you want to retrieve the connection string using Azure Resource Manager, please also add below dependency</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
-  &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
-  &lt;artifactId&gt;spring-cloud-azure-resourcemanager&lt;/artifactId&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
+<p>The current version of the starter should be compatible with Apache Kafka Clients 2.0.0 using Java 8 or above.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
+<h3 id="_supported_authentication_types"><a class="link" href="#_supported_authentication_types">Supported authentication types</a></h3>
+<div class="paragraph">
+<p>The following authentication types are supported:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Plain connection string authentication</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Direct connection string authentication</p>
+</li>
+<li>
+<p>ARM-based connection string authentication</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>OAuth credential authentication</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Managed identity authentication</p>
+</li>
+<li>
+<p>Username/password authentication</p>
+</li>
+<li>
+<p>Service principal authentication</p>
+</li>
+<li>
+<p><code>DefautlAzureCredential</code> authentication</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_it_works"><a class="link" href="#_how_it_works">How it works</a></h3>
+<div class="sect3">
+<h4 id="_oauth_credential_authentication"><a class="link" href="#_oauth_credential_authentication">OAuth credential authentication</a></h4>
+<div class="paragraph">
+<p>This section describes the overall workflow of Spring Cloud Azure OAuth authentication.</p>
+</div>
+<div class="paragraph">
+<p>Spring Cloud Azure will first build one of the following types of credentials depending on the application authentication configuration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ClientSecretCredential</code></p>
+</li>
+<li>
+<p><code>ClientCertificateCredential</code></p>
+</li>
+<li>
+<p><code>UsernamePasswordCredential</code></p>
+</li>
+<li>
+<p><code>ManagedIdentityCredential</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If none of these types of credentials are found, the credential chain via <code>DefaultAzureTokenCredential</code> will be used to obtain credentials from application properties, environment variables, managed identity, or IDEs. For detailed information, see the <a href="index.html#authentication">Authentication</a> section.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_plain_connection_string_authentication"><a class="link" href="#_plain_connection_string_authentication">Plain connection string authentication</a></h4>
+<div class="paragraph">
+<p>For the connection string authentication mode, you can use connection string authentication directly or use the Azure Resource Manager to retrieve the connection string. For more information about the usage, see the <a href="#basic-usage-connection-string">Basic usage for connection string authentication</a> section.</p>
+</div>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -217,13 +277,250 @@ window.onload = function() {
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+Since version of 4.3.0, connection string authentication is deprecated in favor of OAuth authentications.
 </td>
 </tr>
 </table>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
+<div class="sect3">
+<h4 id="_configurable_properties_when_using_kafka_support_with_oauth_authentication"><a class="link" href="#_configurable_properties_when_using_kafka_support_with_oauth_authentication">Configurable properties when using Kafka support with OAuth authentication</a></h4>
+<div class="paragraph">
+<p>Spring Cloud Azure for Kafka supports the following two levels of configuration options:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The global authentication configuration options of <code>credential</code> and <code>profile</code> with prefixes of <code>spring.cloud.azure</code>.</p>
+</li>
+<li>
+<p>Kafka-specific level configurations. The Kafka-level configurations are also available for Spring Boot and Spring Cloud Stream binders for <code>common</code>, <code>consumer</code>, <code>producer</code>, or <code>admin</code> scopes, which have different prefixes.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The global properties are exposed via <code>com.azure.spring.cloud.autoconfigure.context.AzureGlobalProperties</code>. The Kafka-specific properties are exposed via <code>org.springframework.boot.autoconfigure.kafka.KafkaProperties</code> (Spring Boot) and <code>org.springframework.cloud.stream.binder.kafka.properties.KafkaBinderConfigurationProperties</code> (Spring Cloud Stream binder).</p>
+</div>
+<div class="paragraph">
+<p>The following list shows all supported configuration options.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The Spring Cloud Azure global authentication configuration options</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Prefix: <code>spring.cloud.azure</code></p>
+</li>
+<li>
+<p>Supported options: <code>spring.cloud.azure.credential.<strong></code>, <code>spring.cloud.azure.profile.</strong></code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For the full list of global configuration options, see the <a href="appendix.html#global_proeprties">Global properties</a> section.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Spring Boot Kafka common configuration</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Prefix: <code>spring.kafka.properties.azure</code></p>
+</li>
+<li>
+<p>Example: <code>spring.kafka.properties.azure</code>.credential.*</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Spring Kafka consumer configuration options</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Prefix: <code>spring.kafka.consumer.properties.azure</code></p>
+</li>
+<li>
+<p>Example: <code>spring.kafka.consumer.properties.azure</code>.credential.*</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Spring Kafka producer configuration options</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Prefix: <code>spring.kafka.producer.properties.azure</code></p>
+</li>
+<li>
+<p>Example: <code>spring.kafka.producer.properties.azure</code>.credential.*</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Spring Kafka admin configuration options</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Prefix: <code>spring.kafka.admin.properties.azure</code></p>
+</li>
+<li>
+<p>Example: <code>spring.kafka.admin.properties.azure</code>.credential.*</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Spring Cloud Stream Kafka Binder common configuration</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Prefix: <code>spring.cloud.stream.kafka.binder.configuration.azure</code></p>
+</li>
+<li>
+<p>Example: <code>spring.cloud.stream.kafka.binder.configuration.azure</code>.credential.*</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Spring Cloud Stream Kafka Binder consumer configuration</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Prefix: <code>spring.cloud.stream.kafka.binder.consumer-properties.azure</code></p>
+</li>
+<li>
+<p>Example: <code>spring.cloud.stream.kafka.binder.consumer-properties.azure</code>.credential.*</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Spring Cloud Stream Kafka Binder producer configuration</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Prefix: <code>spring.cloud.stream.kafka.binder.producer-properties.azure</code></p>
+</li>
+<li>
+<p>Example: <code>spring.cloud.stream.kafka.binder.producer-properties.azure</code>.credential.*</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Spring Cloud Stream Kafka Binder admin configuration</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Prefix: Not supported, should use Spring Boot Kafka common or admin configuration.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. Configurable properties when using Kafka support</caption>
+<caption class="title">Table 1. Spring Boot Kafka common configuration options</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.kafka.properties.azure.credential.client-certificate-password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.kafka.properties.azure.credential.client-certificate-path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path of a PEM certificate file to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.kafka.properties.azure.credential.client-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client ID to use when performing service principal authentication with Azure. This is a legacy property.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.kafka.properties.azure.credential.client-secret</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure. This is a legacy property.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.kafka.properties.azure.credential.managed-identity-enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable managed identity to authenticate with Azure. If <strong>true</strong> and the <code>client-id</code> is set, will use the client ID as user assigned managed identity client ID. The default value is <strong>false</strong>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.kafka.properties.azure.credential.password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.kafka.properties.azure.credential.username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.kafka.properties.azure.profile.environment.active-directory-endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Azure Active Directory endpoint to connect to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.kafka.properties.azure.profile.tenant-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tenant ID for Azure resources.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The configuration options in different levels apply the following rules. The more specific configuration options have higher priority than the common ones. For example:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Spring Kafka common configuration options supersede the global options.</p>
+</li>
+<li>
+<p>Spring Kafka consumer configuration options supersede the common options.</p>
+</li>
+<li>
+<p>Spring Kafka producer configuration options supersede the common options.</p>
+</li>
+<li>
+<p>Spring Kafka admin configuration options supersede the common options.</p>
+</li>
+<li>
+<p>The Spring Cloud Stream Kafka Binder options are just like the above.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configurable_properties_when_using_kafka_support_with_plain_connection_string_authentication"><a class="link" href="#_configurable_properties_when_using_kafka_support_with_plain_connection_string_authentication">Configurable properties when using Kafka support with plain connection string authentication</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Spring Boot Event Hubs for Kafka common configuration options</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -237,26 +534,41 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.kafka.enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable the Azure Event Hubs Kafka support, default to true.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable the Azure Event Hubs Kafka support. The default value is <strong>true</strong>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.connection-string</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Event Hubs connection string. Should be provided when want to provide the connection string directly.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Event Hubs connection string. Provide this value when you want to provide the connection string directly.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.namespace</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Event Hubs namespace. Should be provided when want to retrieve the connection information through Azure Resource Manager.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Event Hubs namespace. Provide this value when you want to retrieve the connection information through Azure Resource Manager.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.resource.resource-group</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The resource group of Azure Event Hubs namespace. Should be provided when want to retrieve the connection information through Azure Resource Manager.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The resource group of Azure Event Hubs namespace. Provide this value when you want to retrieve the connection information through Azure Resource Manager.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure</strong>.profile.subscription-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The subscription id. Should be provided when want to retrieve the connection information through Azure Resource Manager.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The subscription ID. Provide this value when you want to retrieve the connection information through Azure Resource Manager.</p></td>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h3>
+<div class="paragraph">
+<p>Add the following dependency to your project. This will automatically include the <code>spring-boot-starter</code> dependency in your project transitively.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -264,39 +576,204 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Authentication information is also required for authenticating for Azure Resource Manager. The credential related configurations of Resource Manager should be configured under prefix <code>spring.cloud.azure</code>. For more information, see the <a href="index.html#authentication">Authentication</a> section.
+Remember to add the BOM <code>spring-cloud-azure-dependencies</code> along with the above dependency. For details, see the <a href="index.html#starter-dependencies">Getting started</a> section.
 </td>
 </tr>
 </table>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_basic_usage"><a class="link" href="#_basic_usage">Basic Usage</a></h3>
-<div class="sect3">
-<h4 id="_use_event_hubs_connection_string"><a class="link" href="#_use_event_hubs_connection_string">Use Event Hubs Connection String</a></h4>
+<h3 id="_basic_usage"><a class="link" href="#_basic_usage">Basic usage</a></h3>
 <div class="paragraph">
-<p>The simplest way to connect to Event Hubs for Kafka is with the connection string.</p>
+<p>The following sections show the classic Spring Boot application usage scenarios.</p>
+</div>
+<div class="sect3">
+<h4 id="_use_oauth_authentication"><a class="link" href="#_use_oauth_authentication">Use OAuth authentication</a></h4>
+<div class="paragraph">
+<p>When you use the OAuth authentication provided by Spring Cloud Azure for Kafka, you can configure the specific credentials using the above configurations. Alternatively, you can choose to configure nothing about credentials, in which case Spring Cloud Azure will load the credentials from the environment. This section describes the usages that load the credentials from the Azure CLI environment or the Azure Spring Apps hosting environment.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, see the <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure Active Directory</a> section to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>Add the following properties and you are good to go.</p>
+<p>The following section describes the scenarios using different Spring ecosystem libraries with OAuth authentication.</p>
+</div>
+<div class="sect4">
+<h5 id="_spring_kafka_application_support"><a class="link" href="#_spring_kafka_application_support">Spring Kafka application support</a></h5>
+<div class="paragraph">
+<p>This section describes the usage scenario for Spring Boot application using Spring Kafka or Spring Integration Kafka library.</p>
+</div>
+<div class="sect5">
+<h6 id="_dependency_setup_2"><a class="link" href="#_dependency_setup_2">Dependency setup</a></h6>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;!-- Using Spring Kafka library only--&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.kafka&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-kafka&lt;/artifactId&gt;
+    &lt;version&gt;{version}&lt;/version&gt;&lt;!--Need to be set, for example:2.8.6--&gt;
+&lt;/dependency&gt;
+&lt;!-- Using Spring Integration library only --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.integration&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-integration-kafka&lt;/artifactId&gt;
+    &lt;version&gt;{version}&lt;/version&gt;&lt;!--Need to be set, for example:5.5.12--&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="spring-kafka-configuraiton-setup"><a class="link" href="#spring-kafka-configuraiton-setup">Configuration update</a></h6>
+<div class="paragraph">
+<p>To use the OAuth authentication, just specify the Event Hubs endpoint, as shown in the following example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
-  cloud:
-    azure:
-      eventhubs:
-        connection-string: ${AZURE_EVENTHUBS_CONNECTION_STRING}</code></pre>
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.kafka.bootstrap-servers=&lt;NAMESPACENAME&gt;.servicebus.windows.net:9093</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_spring_cloud_stream_binder_kafka_application_support"><a class="link" href="#_spring_cloud_stream_binder_kafka_application_support">Spring Cloud Stream binder Kafka application support</a></h5>
+<div class="paragraph">
+<p>This section describes the usage scenario for Spring Boot applications using the Spring Cloud Stream binder Kafka library.</p>
+</div>
+<div class="sect5">
+<h6 id="_dependency_setup_3"><a class="link" href="#_dependency_setup_3">Dependency setup</a></h6>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-stream-kafka&lt;/artifactId&gt;
+    &lt;version&gt;{version}&lt;/version&gt;&lt;!--Need to be set, for example:3.2.3--&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_configuration_2"><a class="link" href="#_configuration_2">Configuration</a></h6>
+<div class="paragraph">
+<p>To use the OAuth authentication, just specify the Event Hubs endpoint and <code>com.azure.spring.cloud.autoconfigure.kafka.AzureKafkaSpringCloudStreamConfiguration</code>, as shown in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.stream.kafka.binder.brokers=&lt;NAMESPACENAME&gt;.servicebus.windows.net:9093
+spring.cloud.stream.binders.kafka.environment.spring.main.sources=com.azure.spring.cloud.autoconfigure.kafka.AzureKafkaSpringCloudStreamConfiguration</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Set <code>com.azure.spring.cloud.autoconfigure.kafka.AzureKafkaSpringCloudStreamConfiguration</code> to enable the whole OAuth authentication workflow.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_samples"><a class="link" href="#_samples">Samples</a></h6>
+<div class="paragraph">
+<p>See the <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.3.0">azure-spring-boot-samples</a> repository on GitHub.</p>
+</div>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_use_azure_resource_manager_to_retrieve_connection_string"><a class="link" href="#_use_azure_resource_manager_to_retrieve_connection_string">Use Azure Resource Manager to Retrieve Connection String</a></h4>
+<h4 id="basic-usage-connection-string"><a class="link" href="#basic-usage-connection-string">Use connection string authentication</a></h4>
 <div class="paragraph">
-<p>If you don&#8217;t want to configure connection string in your application, it&#8217;s also possible to use Azure Resource Manager to retrieve the connection string. And you could use credentials stored in Azure CLI or other local development tool, like Visual Studio Code or Intellij IDEA to authenticate with Azure Resource Manager. Or Managed Identity if your application is deployed to Azure Cloud. Just make sure the principal have sufficient permission to read resource metadata.</p>
+<p>You can use connection string authentication directly or use the Azure Resource Manager to retrieve the connection string.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Since version of 4.3.0, connection string authentication is deprecated in favor of OAuth authentications.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_dependency_setup_4"><a class="link" href="#_dependency_setup_4">Dependency setup</a></h5>
+<div class="paragraph">
+<p>Add the following dependencies if you want to migrate your Apache Kafka application to use Azure Event Hubs for Kafka.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Add the following properties and you are good to go.</p>
+<p>If you want to retrieve the connection string using Azure Resource Manager, add the following dependency:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-cloud-azure-resourcemanager&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_configuration_3"><a class="link" href="#_configuration_3">Configuration</a></h5>
+<div class="sect5">
+<h6 id="_use_event_hubs_connection_string_directly"><a class="link" href="#_use_event_hubs_connection_string_directly">Use Event Hubs connection string directly</a></h6>
+<div class="paragraph">
+<p>The simplest way to connect to Event Hubs for Kafka is with the connection string. Just add the following property.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.eventhubs.connection-string=${AZURE_EVENTHUBS_CONNECTION_STRING}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_use_azure_resource_manager_to_retrieve_connection_string"><a class="link" href="#_use_azure_resource_manager_to_retrieve_connection_string">Use Azure Resource Manager to retrieve connection string</a></h6>
+<div class="paragraph">
+<p>If you don&#8217;t want to configure the connection string in your application, you can use Azure Resource Manager to retrieve the connection string. To authenticate with Azure Resource Manager, you can also use credentials stored in Azure CLI or another local development tool such as Visual Studio Code or Intellij IDEA. Alternately, you can use Managed Identity if your application is deployed to Azure Cloud. Just be sure the principal has sufficient permission to read resource metadata.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, see the <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure Active Directory</a> section to be sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To use Azure Resource Manager to retrieve the connection string, just add the following property.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -313,10 +790,213 @@ Authentication information is also required for authenticating for Azure Resourc
 </div>
 </div>
 </div>
+</div>
+</div>
 <div class="sect2">
-<h3 id="_samples"><a class="link" href="#_samples">Samples</a></h3>
+<h3 id="_samples_2"><a class="link" href="#_samples_2">Samples</a></h3>
 <div class="paragraph">
-<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.3.0">azure-spring-boot-samples</a> for more details.</p>
+<p>See the <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.3.0">azure-spring-boot-samples</a> repository on GitHub.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_remove_credentials_from_spring_kafka_applications"><a class="link" href="#_remove_credentials_from_spring_kafka_applications">Remove credentials from Spring Kafka applications</a></h3>
+<div class="sect3">
+<h4 id="_overview"><a class="link" href="#_overview">Overview</a></h4>
+<div class="paragraph">
+<p>You can use the Event Hubs Kafka endpoint in your Spring Kafka application. From Spring Cloud Azure 4.3.0, you can configure and run your application without credentials. This article is a migration guide for removing credentials from Spring Kafka applications.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_update_dependencies"><a class="link" href="#_update_dependencies">Update dependencies</a></h4>
+<div class="paragraph">
+<p>First, add the <code>spring-cloud-azure-dependencies</code> BOM, as shown in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencyManagement&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-cloud-azure-dependencies&lt;/artifactId&gt;
+      &lt;version&gt;${version.spring.cloud.azure}&lt;/version&gt;&lt;!--	The version for spring-cloud-azure-dependencies is 4.3.0+.--&gt;
+      &lt;type&gt;pom&lt;/type&gt;
+      &lt;scope&gt;import&lt;/scope&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+&lt;/dependencyManagement&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, add the Spring Cloud Azure starter, as shown in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_update_configuration"><a class="link" href="#_update_configuration">Update configuration</a></h4>
+<div class="paragraph">
+<p>If you&#8217;re using Spring Kafka, remove the following options if you have customized values:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>spring.kafka.security.protocol</code></p>
+</li>
+<li>
+<p><code>spring.kafka.security.properties.sasl.mechanism</code></p>
+</li>
+<li>
+<p><code>spring.kafka.security.properties.sasl.jaas.config</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The final configuration should look like the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.kafka.bootstrap-servers=&lt;NAMESPACENAME&gt;.servicebus.windows.net:9093</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re using Spring Cloud Stream Binder Kafka, remove the following options if you have customized values:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>spring.kafka.security.protocol</code></p>
+</li>
+<li>
+<p><code>spring.kafka.security.properties.sasl.mechanism</code></p>
+</li>
+<li>
+<p><code>spring.kafka.security.properties.sasl.jaas.config</code></p>
+</li>
+<li>
+<p><code>spring.cloud.stream.kafka.configuration.security.protocol</code></p>
+</li>
+<li>
+<p><code>spring.cloud.stream.kafka.configuration.sasl.mechanism</code></p>
+</li>
+<li>
+<p><code>spring.cloud.stream.kafka.configuration.sasl.jaas.config</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Then, add the following option:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>spring.cloud.stream.binders.kafka.environment.spring.main.sources</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The final configuration should look like the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.stream.kafka.binder.brokers=&lt;NAMESPACENAME&gt;.servicebus.windows.net:9093
+spring.cloud.stream.binders.kafka.environment.spring.main.sources=com.azure.spring.cloud.autoconfigure.kafka.AzureKafkaSpringCloudStreamConfiguration</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>spring.cloud.stream.binders.kafka.environment.spring.main.sources</code> option is used to specify the additional configuration of <code>KafkaBinderConfigurationPropertiesBeanPostProcessor</code> specifying the OAuth security parameters for the particular binder.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_run_locally"><a class="link" href="#_run_locally">Run locally</a></h4>
+<div class="sect4">
+<h5 id="_grant_permissions"><a class="link" href="#_grant_permissions">Grant permissions</a></h5>
+<div class="paragraph">
+<p>With Azure AD, you can use Azure role-based access control (Azure RBAC) to grant permissions to a security principal, which may be a user or an application service principal.</p>
+</div>
+<div class="paragraph">
+<p>Because Azure Event Hubs supports Azure role-based access control, you need to assign the corresponding data plane roles to the security principal you use when you want to read or write data to it. In this article, you&#8217;ll use an Azure CLI credential to connect to Azure Event Hubs, so you need to assign roles to an Azure CLI account. For more information about assigning access roles, see <a href="https://docs.microsoft.com/azure/event-hubs/authorize-access-azure-active-directory">Authorize access to Event Hubs resources using Azure Active Directory</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+For data access, set the data plane access role: Azure Event Hubs Data Sender and Azure Event Hubs Data Receiver.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_sign_in_to_your_azure_account"><a class="link" href="#_sign_in_to_your_azure_account">Sign in to your Azure account</a></h5>
+<div class="paragraph">
+<p>To use the Azure CLI credential, first use the Azure CLI command <code>az login</code> to sign in. Then, build and test your application.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you want to use other local environment credentials, for example with IntelliJ, see <a href="index.html#authentication">Authentication</a> for details.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_deploy_to_azure_spring_apps"><a class="link" href="#_deploy_to_azure_spring_apps">Deploy to Azure Spring Apps</a></h4>
+<div class="paragraph">
+<p>This section describes how to run the application locally. In production, you can deploy the application to Azure hosting environments like Azure Spring Apps.</p>
+</div>
+<div class="sect4">
+<h5 id="_create_and_configure_managed_identity"><a class="link" href="#_create_and_configure_managed_identity">Create and configure managed identity</a></h5>
+<div class="paragraph">
+<p>To connect with managed identities, enable the managed identity on Azure Spring Apps and grant the access permissions. For more information, see <a href="appendix.html#create-and-configure-a-managed-identity-on-azure-hosting-services">Create and configure a managed identity on Azure hosting services</a>.</p>
+</div>
+<div class="paragraph">
+<p>For information on how to assign roles to the managed identity, see <a href="https://docs.microsoft.com/azure/role-based-access-control/role-assignments-portal">Assign Azure roles using the Azure portal</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+For data access, set the data plane access role: Azure Event Hubs Data Sender and Azure Event Hubs Data Receiver.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_deploy_to_azure_spring_apps_2"><a class="link" href="#_deploy_to_azure_spring_apps_2">Deploy to Azure Spring Apps</a></h5>
+<div class="paragraph">
+<p>For more information, see <a href="appendix.html#deploy-application-to-azure-hosting-services">Deploy application to Azure hosting services</a>.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
