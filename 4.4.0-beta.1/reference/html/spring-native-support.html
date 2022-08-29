@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Spring Native Support</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript"> (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "b9g1q6wz23"); </script>
+
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#spring-native-support">1. Spring Native Support</a>
+<ul class="sectlevel2">
+<li><a href="#spring-native">1.1. Spring Native</a></li>
+<li><a href="#support">1.2. Support</a>
+<ul class="sectlevel3">
+<li><a href="#spring-native-2">1.2.1. Spring Native</a></li>
+<li><a href="#spring-cloud-azure-native">1.2.2. Spring Cloud Azure Native</a></li>
+<li><a href="#limitations">1.2.3. Limitations</a></li>
+</ul>
+</li>
+<li><a href="#project-setup">1.3. Project Setup</a></li>
+<li><a href="#build-the-native-application">1.4. Build the native application</a>
+<ul class="sectlevel3">
+<li><a href="#build-with-buildpacks">1.4.1. Build with Buildpacks</a></li>
+<li><a href="#build-with-native-build-tools">1.4.2. Build with Native Build Tools</a></li>
+</ul>
+</li>
+<li><a href="#run-the-native-application">1.5. Run the native application</a>
+<ul class="sectlevel3">
+<li><a href="#run-with-buildpacks">1.5.1. Run with Buildpacks</a></li>
+<li><a href="#run-with-native-build-tools">1.5.2. Run with Native Build Tools</a></li>
+</ul>
+</li>
+<li><a href="#samples">1.6. Samples</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="spring-native-support"><a class="anchor" href="#spring-native-support"></a><a class="link" href="#spring-native-support">1. Spring Native Support</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="spring-native"><a class="anchor" href="#spring-native"></a><a class="link" href="#spring-native">1.1. Spring Native</a></h3>
+<div class="paragraph">
+<p>Spring Native provides support for compiling Spring Boot applications to native executables using the <a href="https://www.graalvm.org/">GraalVM</a> <a href="https://www.graalvm.org//reference-manual/native-image">native-image</a> compiler. The native images will bring many advantages, such as instant startup, instant peak performance, and reduced memory consumption. Some Spring Cloud Azure features can also benefit from the Spring Native support, the goal is that Spring Cloud Azure applications can be built as native images without any code modification. For more information, see the <a href="https://docs.spring.io/spring-native/docs/0.11.4/reference/htmlsingle/#overview">Spring Native documentation</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="support"><a class="anchor" href="#support"></a><a class="link" href="#support">1.2. Support</a></h3>
+<div class="paragraph">
+<p>Spring Cloud Azure has been validated against GraalVM and Spring Native, and provides the beta version support. You can try it on your projects if they are using those supported dependencies, and <a href="https://github.com/Azure/azure-sdk-for-java/issues">raise bugs</a> or <a href="https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/spring-experimental/spring-cloud-azure-native-configuration">contribute pull requests</a> if something goes wrong on Spring Cloud Azure. For more information, see the <a href="https://docs.spring.io/spring-native/docs/0.11.4/reference/htmlsingle/#support">Spring Native Support</a> for more details.</p>
+</div>
+<div class="sect3">
+<h4 id="spring-native-2"><a class="anchor" href="#spring-native-2"></a><a class="link" href="#spring-native-2">1.2.1. Spring Native</a></h4>
+<div class="paragraph">
+<p>Spring Cloud Azure <strong>4.4.0-beta.1</strong> has been tested against Spring Native <code>0.11.4</code> and GraalVM <code>22.0.0</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="spring-cloud-azure-native"><a class="anchor" href="#spring-cloud-azure-native"></a><a class="link" href="#spring-cloud-azure-native">1.2.2. Spring Cloud Azure Native</a></h4>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Spring Native <code>0.11.4</code> has been tested against Spring Cloud Azure Native Configuration <code>4.0.0-beta.1</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Spring Cloud Azure provides a dependency <code>spring-cloud-azure-native-configuration</code> that is an extension of Spring Native configuration for Spring Cloud Azure libraries. The Spring Native AOT plugin will combine the <code>spring-native-configuration</code> and <code>spring-cloud-azure-native-configuration</code> to build applications into native executables. You don&#8217;t need any extra modifications to the code that uses Spring Cloud Azure libraries apart from adding the dependency, which only applies to the code in the Spring Cloud Azure libraries.</p>
+</div>
+<div class="paragraph">
+<p>The following features are supported:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Azure App Configuration clients auto-configuration</code></p>
+</li>
+<li>
+<p><code>Azure Event Hubs clients auto-configuration</code></p>
+</li>
+<li>
+<p><code>Azure Key Vault Certificates clients auto-configuration</code></p>
+</li>
+<li>
+<p><code>Azure Key Vault Secrets clients auto-configuration</code></p>
+</li>
+<li>
+<p><code>Azure Storage Blob clients auto-configuration</code></p>
+</li>
+<li>
+<p><code>Azure Storage File Share clients auto-configuration</code></p>
+</li>
+<li>
+<p><code>Azure Storage Queue clients auto-configuration</code></p>
+</li>
+<li>
+<p><code>Spring Integration for Azure Event Hubs</code></p>
+</li>
+<li>
+<p><code>Spring Integration for Azure Storage Queue</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="limitations"><a class="anchor" href="#limitations"></a><a class="link" href="#limitations">1.2.3. Limitations</a></h4>
+<div class="paragraph">
+<p>The Spring Cloud Azure support for Spring Native is still in the early stages and continues to be updated. The following features are not yet supported:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Azure Cosmos clients auto-configuration</code></p>
+</li>
+<li>
+<p><code>Azure Service Bus clients auto-configuration</code></p>
+</li>
+<li>
+<p><code>Spring Data for Azure Cache for Redis</code></p>
+</li>
+<li>
+<p><code>Spring Data for Azure Cosmos</code></p>
+</li>
+<li>
+<p><code>Spring Cloud Stream for Azure Event Hubs</code></p>
+</li>
+<li>
+<p><code>Spring Cloud Stream for Azure Service Bus</code></p>
+</li>
+<li>
+<p><code>Spring Kafka for Azure Event Hubs</code></p>
+</li>
+<li>
+<p><code>Spring Integration for Azure Service Bus</code></p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Not all the native image options are supported by Spring Native. For more information, see the <a href="https://docs.spring.io/spring-native/docs/0.11.4/reference/htmlsingle/#native-image-options">Native image options</a> section of the Spring Native documentation.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Spring Cloud Azure <strong>4.4.0-beta.1</strong> is not validated for building native executables based on Gradle Kotlin.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="project-setup"><a class="anchor" href="#project-setup"></a><a class="link" href="#project-setup">1.3. Project Setup</a></h3>
+<div class="paragraph">
+<p>The Spring Cloud Azure applications can enable Spring Native support by following the instructions in the  <a href="https://docs.spring.io/spring-native/docs/0.11.4/reference/htmlsingle/#getting-started">Getting started</a>, section of the Spring Native documentation. The only additional processing required is to add the following dependency to the POM file.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The dependency <code>com.azure.spring:spring-cloud-azure-native-configuration</code> is not managed in <code>com.azure.spring:spring-cloud-azure-dependencies</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock primary">
+<div class="title">Maven</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">  &lt;dependency&gt;
+    &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-azure-native-configuration&lt;/artifactId&gt;
+    &lt;version&gt;4.0.0-beta.1&lt;/version&gt;
+  &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock secondary">
+<div class="title">Gradle Groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+    implementation "com.azure.spring:spring-cloud-azure-native-configuration:4.0.0-beta.1"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="build-the-native-application"><a class="anchor" href="#build-the-native-application"></a><a class="link" href="#build-the-native-application">1.4. Build the native application</a></h3>
+<div class="paragraph">
+<p>The following sections describe the two main ways to build a Spring Boot native application with Spring Cloud Azure libraries.</p>
+</div>
+<div class="sect3">
+<h4 id="build-with-buildpacks"><a class="anchor" href="#build-with-buildpacks"></a><a class="link" href="#build-with-buildpacks">1.4.1. Build with Buildpacks</a></h4>
+<div class="paragraph">
+<p>The native application can be built as follows:</p>
+</div>
+<div class="listingblock primary">
+<div class="title">Maven</div>
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">mvn spring-boot:build-image</code></pre>
+</div>
+</div>
+<div class="listingblock secondary">
+<div class="title">Gradle Groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">gradle bootBuildImage</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For more information, see the <a href="https://docs.spring.io/spring-native/docs/0.11.4/reference/htmlsingle/#getting-started-buildpacks">Getting started with Buildpacks</a> section in the Spring Native documentation.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="build-with-native-build-tools"><a class="anchor" href="#build-with-native-build-tools"></a><a class="link" href="#build-with-native-build-tools">1.4.2. Build with Native Build Tools</a></h4>
+<div class="paragraph">
+<p>You can build the native application by using the following command:</p>
+</div>
+<div class="listingblock primary">
+<div class="title">Maven</div>
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">mvn -Pnative -DskipTests package</code></pre>
+</div>
+</div>
+<div class="listingblock secondary">
+<div class="title">Gradle Groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">gradle nativeCompile</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For more information, see the <a href="https://docs.spring.io/spring-native/docs/0.11.4/reference/htmlsingle/#getting-started-native-build-tools">Getting started with Native Build Tools</a> section of the Spring Native documentation.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="run-the-native-application"><a class="anchor" href="#run-the-native-application"></a><a class="link" href="#run-the-native-application">1.5. Run the native application</a></h3>
+<div class="paragraph">
+<p>The following sections describe the two main ways to run a native executable.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Assuming the project artifact ID is <code>spring-cloud-azure-sample</code> and the project version is <code>0.0.1-SNAPSHOT</code>, you can specify the custom image name in one of the following ways:  If you&#8217;re using <a href="https://docs.spring.io/spring-boot/docs/2.6.8/reference/html/container-images.html#container-images.buildpacks">Cloud Native Buildpacks</a>, use the <code>image</code>&#8594;`name`&#8594;`custom-image-name` configuration element in the Spring Boot plugin. If you&#8217;re using <a href="https://github.com/graalvm/native-build-tools">GraalVM Native Build Tools</a>, use the <code>imageName</code>&#8594;`custom-image-name` configuration element in the Spring Boot plugin.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="run-with-buildpacks"><a class="anchor" href="#run-with-buildpacks"></a><a class="link" href="#run-with-buildpacks">1.5.1. Run with Buildpacks</a></h4>
+<div class="paragraph">
+<p>To run the application, you can use <code>docker</code> the usual way as shown in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">docker run --rm -p 8080:8080 spring-cloud-azure-sample:0.0.1-SNAPSHOT</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="run-with-native-build-tools"><a class="anchor" href="#run-with-native-build-tools"></a><a class="link" href="#run-with-native-build-tools">1.5.2. Run with Native Build Tools</a></h4>
+<div class="paragraph">
+<p>To run your application, use the following command:</p>
+</div>
+<div class="listingblock primary">
+<div class="title">Build with Maven</div>
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">target\spring-cloud-azure-sample</code></pre>
+</div>
+</div>
+<div class="listingblock secondary">
+<div class="title">Build with Gradle</div>
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">build\native\nativeCompile\spring-cloud-azure-sample</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="samples"><a class="anchor" href="#samples"></a><a class="link" href="#samples">1.6. Samples</a></h3>
+<div class="paragraph">
+<p>For more information, see <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/spring-native/storage-blob-native">storage-blob-native</a> on GitHub.</p>
+</div>
+<div class="paragraph">
+<p>Here are other verified samples that support Spring Native. For more information, see <a href="https://github.com/Azure-Samples/azure-spring-boot-samples#run-samples-based-on-spring-native">Spring Cloud Azure Samples</a> on GitHub.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Supported Spring Cloud Azure Samples</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Library Artifact ID</th>
+<th class="tableblock halign-left valign-top">Supported Example Projects</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-cloud-azure-starter-appconfiguration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/appconfiguration/spring-cloud-azure-starter-appconfiguration/appconfiguration-client">appconfiguration-client</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-cloud-azure-starter-eventhubs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/eventhubs/spring-cloud-azure-starter-eventhubs/eventhubs-client">eventhubs-client</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-cloud-azure-starter-integration-eventhubs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/eventhubs/spring-cloud-azure-starter-integration-eventhubs/eventhubs-integration">eventhubs-integration</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-cloud-azure-starter-integration-storage-queue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-integration-storage-queue/storage-queue-integration">storage-queue-integration</a>, <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-integration-storage-queue/storage-queue-operation">storage-queue-operation</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-cloud-azure-starter-keyvault-secrets</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/keyvault/spring-cloud-azure-starter-keyvault-secrets/property-source">property-source</a>, <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/keyvault/spring-cloud-azure-starter-keyvault-secrets/secret-client">secret-client</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-cloud-azure-starter-storage-blob</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-storage-blob/storage-blob-sample">storage-blob-sample</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-cloud-azure-starter-storage-file-share</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-storage-file-share/storage-file-sample">storage-file-sample</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-cloud-azure-starter-storage-queue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/storage/spring-cloud-azure-starter-storage-queue/storage-queue-client">storage-queue-client</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>
