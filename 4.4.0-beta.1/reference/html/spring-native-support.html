@@ -346,7 +346,7 @@ The dependency <code>com.azure.spring:spring-cloud-azure-native-configuration</c
 <div class="listingblock primary">
 <div class="title">Maven</div>
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">  &lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">  &lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-azure-native-configuration&lt;/artifactId&gt;
     &lt;version&gt;4.0.0-beta.1&lt;/version&gt;
@@ -356,7 +356,7 @@ The dependency <code>com.azure.spring:spring-cloud-azure-native-configuration</c
 <div class="listingblock secondary">
 <div class="title">Gradle Groovy</div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+<pre class="highlightjs highlight"><code data-lang="groovy" class="language-groovy hljs">dependencies {
     implementation "com.azure.spring:spring-cloud-azure-native-configuration:4.0.0-beta.1"
 }</code></pre>
 </div>
@@ -375,13 +375,13 @@ The dependency <code>com.azure.spring:spring-cloud-azure-native-configuration</c
 <div class="listingblock primary">
 <div class="title">Maven</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">mvn spring-boot:build-image</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">mvn spring-boot:build-image</code></pre>
 </div>
 </div>
 <div class="listingblock secondary">
 <div class="title">Gradle Groovy</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">gradle bootBuildImage</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">gradle bootBuildImage</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -396,13 +396,13 @@ The dependency <code>com.azure.spring:spring-cloud-azure-native-configuration</c
 <div class="listingblock primary">
 <div class="title">Maven</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">mvn -Pnative -DskipTests package</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">mvn -Pnative -DskipTests package</code></pre>
 </div>
 </div>
 <div class="listingblock secondary">
 <div class="title">Gradle Groovy</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">gradle nativeCompile</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">gradle nativeCompile</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -422,7 +422,7 @@ The dependency <code>com.azure.spring:spring-cloud-azure-native-configuration</c
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-Assuming the project artifact ID is <code>spring-cloud-azure-sample</code> and the project version is <code>0.0.1-SNAPSHOT</code>, you can specify the custom image name in one of the following ways:  If you&#8217;re using <a href="https://docs.spring.io/spring-boot/docs/2.6.8/reference/html/container-images.html#container-images.buildpacks">Cloud Native Buildpacks</a>, use the <code>image</code>&#8594;`name`&#8594;`custom-image-name` configuration element in the Spring Boot plugin. If you&#8217;re using <a href="https://github.com/graalvm/native-build-tools">GraalVM Native Build Tools</a>, use the <code>imageName</code>&#8594;`custom-image-name` configuration element in the Spring Boot plugin.
+Assuming the project artifact ID is <code>spring-cloud-azure-sample</code> and the project version is <code>0.0.1-SNAPSHOT</code>, you can specify the custom image name in one of the following ways:  If you&#8217;re using <a href="https://docs.spring.io/spring-boot/docs/2.6.11/reference/html/container-images.html#container-images.buildpacks">Cloud Native Buildpacks</a>, use the <code>image</code>&#8594;`name`&#8594;`custom-image-name` configuration element in the Spring Boot plugin. If you&#8217;re using <a href="https://github.com/graalvm/native-build-tools">GraalVM Native Build Tools</a>, use the <code>imageName</code>&#8594;`custom-image-name` configuration element in the Spring Boot plugin.
 </td>
 </tr>
 </table>
@@ -434,7 +434,7 @@ Assuming the project artifact ID is <code>spring-cloud-azure-sample</code> and t
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">docker run --rm -p 8080:8080 spring-cloud-azure-sample:0.0.1-SNAPSHOT</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">docker run --rm -p 8080:8080 spring-cloud-azure-sample:0.0.1-SNAPSHOT</code></pre>
 </div>
 </div>
 </div>
@@ -446,13 +446,13 @@ Assuming the project artifact ID is <code>spring-cloud-azure-sample</code> and t
 <div class="listingblock primary">
 <div class="title">Build with Maven</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">target\spring-cloud-azure-sample</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">target\spring-cloud-azure-sample</code></pre>
 </div>
 </div>
 <div class="listingblock secondary">
 <div class="title">Build with Gradle</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">build\native\nativeCompile\spring-cloud-azure-sample</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">build\native\nativeCompile\spring-cloud-azure-sample</code></pre>
 </div>
 </div>
 </div>
@@ -516,6 +516,9 @@ Assuming the project artifact ID is <code>spring-cloud-azure-sample</code> and t
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

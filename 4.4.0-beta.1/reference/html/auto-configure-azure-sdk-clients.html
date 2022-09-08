@@ -185,7 +185,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       profile:
@@ -213,7 +213,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
 	&lt;groupId&gt;com.azure&lt;/groupId&gt;
 	&lt;artifactId&gt;azure-cosmos&lt;/artifactId&gt;
 &lt;/dependency&gt;
@@ -228,7 +228,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
 	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
 	&lt;artifactId&gt;spring-cloud-azure-starter-cosmos&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -284,7 +284,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       cosmos:
@@ -296,7 +296,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     @Autowired
     private CosmosClient cosmosClient;
 
@@ -319,6 +319,9 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

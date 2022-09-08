@@ -435,7 +435,7 @@ To learn how to migrate to 4.0, please check <a href="appendix.html#migration-gu
 <h4 id="bill-of-material-bom"><a class="anchor" href="#bill-of-material-bom"></a><a class="link" href="#bill-of-material-bom">4.1.1. Bill of Material (BOM)</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencyManagement&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencyManagement&gt;
   &lt;dependencies&gt;
     &lt;dependency&gt;
       &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
@@ -1006,7 +1006,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring.cloud.azure:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring.cloud.azure:
   credential:
     managed-identity-enabled: true</code></pre>
 </div>
@@ -1016,7 +1016,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring.cloud.azure:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring.cloud.azure:
   credential:
     managed-identity-enabled: true
     client-id: ${AZURE_CLIENT_ID}</code></pre>
@@ -1027,7 +1027,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring.cloud.azure:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring.cloud.azure:
   credential:
     client-id: ${AZURE_CLIENT_ID}
     client-secret: ${AZURE_CLIENT_SECRET}
@@ -1040,7 +1040,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring.cloud.azure:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring.cloud.azure:
   credential:
     client-id: ${AZURE_CLIENT_ID}
     client-certificate-path: ${AZURE_CLIENT_CERTIFICATE_PATH}
@@ -1054,7 +1054,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring.cloud.azure:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring.cloud.azure:
   credential:
     client-id: ${AZURE_CLIENT_ID}
     client-certificate-path: ${AZURE_CLIENT_CERTIFICATE_PATH}
@@ -1067,7 +1067,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring.cloud.azure:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring.cloud.azure:
   credential:
     client-id: ${AZURE_CLIENT_ID}
     username: ${AZURE_USER_USERNAME}
@@ -1079,7 +1079,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring.cloud.azure:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring.cloud.azure:
   credential:
     managed-identity-enabled: true
   keyvault.secret:
@@ -1240,7 +1240,7 @@ Azure Cosmos DB exposes 2 built-in role definitions: <code>Cosmos DB Built-in Da
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-azure-starter-actuator&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -1337,7 +1337,7 @@ For calling the health endpoint of <code>Storage Queue</code>, role of <code>Sto
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-azure-trace-sleuth&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -1366,7 +1366,7 @@ Only HTTP-based Azure SDK clients are supported now, for example, Eventhub and S
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       profile:
@@ -1394,7 +1394,7 @@ Only HTTP-based Azure SDK clients are supported now, for example, Eventhub and S
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.azure&lt;/groupId&gt;
     &lt;artifactId&gt;azure-cosmos&lt;/artifactId&gt;
 &lt;/dependency&gt;
@@ -1409,7 +1409,7 @@ Only HTTP-based Azure SDK clients are supported now, for example, Eventhub and S
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-azure-starter-cosmos&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -1465,7 +1465,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       cosmos:
@@ -1477,7 +1477,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     @Autowired
     private CosmosClient cosmosClient;
 
@@ -1536,7 +1536,7 @@ To see the list of all Spring Cloud Azure related configuration properties pleas
 <h3 id="dependency-setup-2"><a class="anchor" href="#dependency-setup-2"></a><a class="link" href="#dependency-setup-2">9.1. Dependency Setup</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
         &lt;artifactId&gt;spring-cloud-azure-starter-storage-blob&lt;/artifactId&gt; <i class="conum" data-value="1"></i><b>(1)</b>
@@ -1669,7 +1669,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       storage:
@@ -1692,7 +1692,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Value("azure-blob://[your-container-name]/[your-blob-name]")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Value("azure-blob://[your-container-name]/[your-blob-name]")
 private Resource storageBlobResource;</code></pre>
 </div>
 </div>
@@ -1701,7 +1701,7 @@ private Resource storageBlobResource;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Value("azure-file://[your-fileshare-name]/[your-file-name]")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Value("azure-file://[your-fileshare-name]/[your-file-name]")
 private Resource storageFileResource;</code></pre>
 </div>
 </div>
@@ -1710,7 +1710,7 @@ private Resource storageFileResource;</code></pre>
 <h5 id="get-a-resource-with-resourceloader"><a class="anchor" href="#get-a-resource-with-resourceloader"></a><a class="link" href="#get-a-resource-with-resourceloader">Get a resource with ResourceLoader</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
 private ResourceLoader resourceLoader;
 ...
 // get a BlobResource
@@ -1737,7 +1737,7 @@ Resource storageFileResource = resourceLoader.getResource("azure-file://[your-fi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
 private AzureStorageBlobProtocolResolver azureStorageBlobProtocolResolver;
 
 @Autowired
@@ -1760,7 +1760,7 @@ Resource[] fileTextResources = azureStorageFileProtocolResolver.getResources("az
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Value("azure-blob://[your-container-name]/[your-blob-name]")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Value("azure-blob://[your-container-name]/[your-blob-name]")
 private Resource storageBlobResource;
 
 @Value("azure-file://[your-fileshare-name]/[your-file-name]")
@@ -1782,7 +1782,7 @@ InputStream inputfileStream = storageFileResource.getInputStream();</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Value("azure-blob://[your-container-name]/[your-blob-name]")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Value("azure-blob://[your-container-name]/[your-blob-name]")
 private Resource storageBlobResource;
 
 @Value("azure-file://[your-fileshare-name]/[your-file-name]")
@@ -1827,7 +1827,7 @@ try (OutputStream fileos = ((WritableResource) this.storageFileResource).getOutp
 <h3 id="dependency-setup-3"><a class="anchor" href="#dependency-setup-3"></a><a class="link" href="#dependency-setup-3">10.1. Dependency Setup</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-azure-starter-keyvault-secrets&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -1855,7 +1855,7 @@ We also provide <code>spring-cloud-azure-starter-keyvault</code> to support all 
 <h4 id="configuration-properties"><a class="anchor" href="#configuration-properties"></a><a class="link" href="#configuration-properties">10.2.1. Configuration Properties</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yml" data-lang="yml">spring:
+<pre class="highlightjs highlight"><code data-lang="yml" class="language-yml hljs">spring:
   cloud:
     azure:
       keyvault:
@@ -1872,7 +1872,7 @@ We also provide <code>spring-cloud-azure-starter-keyvault</code> to support all 
 <h4 id="java-code"><a class="anchor" href="#java-code"></a><a class="link" href="#java-code">10.2.2. Java Code</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@SpringBootApplication
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@SpringBootApplication
 public class SampleApplication implements CommandLineRunner {
 
     @Value("${sampleProperty1}")
@@ -2083,7 +2083,7 @@ This method can not satisfy requirement like <code>spring.datasource-url</code>.
 <h3 id="dependency-setup-4"><a class="anchor" href="#dependency-setup-4"></a><a class="link" href="#dependency-setup-4">11.2. Dependency Setup</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
    &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
    &lt;artifactId&gt;spring-cloud-azure-starter-data-cosmos&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -2259,7 +2259,7 @@ By default, collection name will be class name of user domain class. To customiz
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       cosmos:
@@ -2487,7 +2487,7 @@ public class CosmosSampleApplication implements CommandLineRunner {
 <h5 id="add-required-dependencies"><a class="anchor" href="#add-required-dependencies"></a><a class="link" href="#add-required-dependencies">Add Required Dependencies</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
         &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
@@ -2504,7 +2504,7 @@ public class CosmosSampleApplication implements CommandLineRunner {
 <h5 id="add-required-properties"><a class="anchor" href="#add-required-properties"></a><a class="link" href="#add-required-properties">Add Required Properties</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -2525,7 +2525,7 @@ public class CosmosSampleApplication implements CommandLineRunner {
 <h6 id="add-extra-security-configurations"><a class="anchor" href="#add-extra-security-configurations"></a><a class="link" href="#add-extra-security-configurations">Add Extra Security Configurations</a></h6>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">    @EnableWebSecurity
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">    @EnableWebSecurity
     @EnableGlobalMethodSecurity(prePostEnabled = true)
     public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
 
@@ -2698,7 +2698,7 @@ public class RoleController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -2756,7 +2756,7 @@ public class RoleController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
     /**
@@ -2811,7 +2811,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 <h5 id="add-required-dependencies-2"><a class="anchor" href="#add-required-dependencies-2"></a><a class="link" href="#add-required-dependencies-2">Add Required Dependencies</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
         &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
@@ -2828,7 +2828,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 <h5 id="add-required-properties-2"><a class="anchor" href="#add-required-properties-2"></a><a class="link" href="#add-required-properties-2">Add Required Properties</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -2850,7 +2850,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 <h5 id="use-oauth2authorizedclient-in-your-application"><a class="anchor" href="#use-oauth2authorizedclient-in-your-application"></a><a class="link" href="#use-oauth2authorizedclient-in-your-application">Use OAuth2AuthorizedClient in Your Application</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class Demo {
     @GetMapping("/graph")
     @ResponseBody
     public String graph(
@@ -2875,7 +2875,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -2898,7 +2898,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -2919,7 +2919,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class Demo {
     @GetMapping("/resource-server-1")
     @ResponseBody
     public String graph(
@@ -2944,7 +2944,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -3004,7 +3004,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 <h5 id="add-required-dependencies-3"><a class="anchor" href="#add-required-dependencies-3"></a><a class="link" href="#add-required-dependencies-3">Add Required Dependencies</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
         &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
@@ -3021,7 +3021,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 <h5 id="add-required-properties-3"><a class="anchor" href="#add-required-properties-3"></a><a class="link" href="#add-required-properties-3">Add Required Properties</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -3068,7 +3068,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 <h6 id="add-extra-security-configurations-2"><a class="anchor" href="#add-extra-security-configurations-2"></a><a class="link" href="#add-extra-security-configurations-2">Add Extra Security Configurations</a></h6>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebSecurityConfigurerAdapter {
     /**
@@ -3212,7 +3212,7 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       credential:
@@ -3255,7 +3255,7 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -3327,7 +3327,7 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
 <h5 id="add-required-dependencies-4"><a class="anchor" href="#add-required-dependencies-4"></a><a class="link" href="#add-required-dependencies-4">Add Required Dependencies</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
         &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
@@ -3348,7 +3348,7 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
 <h5 id="add-required-properties-4"><a class="anchor" href="#add-required-properties-4"></a><a class="link" href="#add-required-properties-4">Add Required Properties</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -3368,7 +3368,7 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
 <h5 id="use-oauth2authorizedclient-in-your-application-2"><a class="anchor" href="#use-oauth2authorizedclient-in-your-application-2"></a><a class="link" href="#use-oauth2authorizedclient-in-your-application-2">Use OAuth2AuthorizedClient in Your Application</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class SampleController {
     @GetMapping("call-graph")
     public String callGraph(@RegisteredOAuth2AuthorizedClient("graph") OAuth2AuthorizedClient graph) {
         return callMicrosoftGraphMeEndpoint(graph);
@@ -3403,7 +3403,7 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
 <h5 id="add-required-dependencies-5"><a class="anchor" href="#add-required-dependencies-5"></a><a class="link" href="#add-required-dependencies-5">Add Required Dependencies</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
         &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
@@ -3427,7 +3427,7 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -3454,7 +3454,7 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AadWebApplicationAndResourceServerConfig {
 
@@ -3688,7 +3688,7 @@ public class AadWebApplicationAndResourceServerConfig {
 <h4 id="dependency-setup-5"><a class="anchor" href="#dependency-setup-5"></a><a class="link" href="#dependency-setup-5">12.2.1. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
         &lt;artifactId&gt;spring-cloud-azure-starter-active-directory-b2c&lt;/artifactId&gt;
@@ -3853,7 +3853,7 @@ select <strong>Delegated permissions</strong>, check <strong>offline_access</str
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
         &lt;artifactId&gt;azure-spring-boot-starter-active-directory-b2c&lt;/artifactId&gt;
@@ -3886,7 +3886,7 @@ select <strong>Delegated permissions</strong>, check <strong>offline_access</str
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -3918,7 +3918,7 @@ select <strong>Delegated permissions</strong>, check <strong>offline_access</str
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Controller
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Controller
 public class WebController {
 
     private void initializeModel(Model model, OAuth2AuthenticationToken token) {
@@ -3943,7 +3943,7 @@ public class WebController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final AadB2cOidcLoginConfigurer configurer;
@@ -4019,7 +4019,7 @@ record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_UR
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-json" data-lang="json">{
+<pre class="highlightjs highlight"><code data-lang="json" class="language-json hljs">{
   "allowedMemberTypes": [
     "Application"
   ],
@@ -4050,7 +4050,7 @@ record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_UR
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
   &lt;artifactId&gt;spring-boot-starter-webflux&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -4091,7 +4091,7 @@ record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_UR
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     /**
      * Access to protected data from Webapp to WebApiA through client credential flow. The access token is obtained by webclient, or
      * &lt;p&gt;@RegisteredOAuth2AuthorizedClient("webApiA")&lt;/p&gt;. In the end, these two approaches will be executed to
@@ -4119,7 +4119,7 @@ record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_UR
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class SampleConfiguration {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class SampleConfiguration {
     @Bean
     public WebClient webClient(OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager) {
         ServletOAuth2AuthorizedClientExchangeFilterFunction function =
@@ -4166,7 +4166,7 @@ record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_UR
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
         &lt;artifactId&gt;azure-spring-boot-starter-active-directory-b2c&lt;/artifactId&gt;
@@ -4212,7 +4212,7 @@ record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_UR
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     /**
      * webApiA resource api for web app
      * @return test content
@@ -4231,7 +4231,7 @@ record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_UR
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 
@@ -4272,7 +4272,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-json" data-lang="json">{
+<pre class="highlightjs highlight"><code data-lang="json" class="language-json hljs">{
     "allowedMemberTypes": [
         "Application"
     ],
@@ -4302,7 +4302,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
  &lt;artifactId&gt;spring-boot-starter-webflux&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -4342,7 +4342,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class SampleController {
     /**
      * Access to protected data from WebApiA to WebApiB through client credential flow. The access token is obtained by webclient, or
      * &lt;p&gt;@RegisteredOAuth2AuthorizedClient("webApiA")&lt;/p&gt;. In the end, these two approaches will be executed to
@@ -4371,7 +4371,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class SampleController {
     /**
      * webApiB resource api for other web application
      * @return test content
@@ -4390,7 +4390,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class SampleConfiguration {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class SampleConfiguration {
     @Bean
     public WebClient webClient(OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager) {
         ServletOAuth2AuthorizedClientExchangeFilterFunction function =
@@ -4517,7 +4517,7 @@ To specify the batch consuming strategy, developers can use <code>EventHubsConta
 <h4 id="dependency-setup-6"><a class="anchor" href="#dependency-setup-6"></a><a class="link" href="#dependency-setup-6">13.1.2. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-azure-starter-integration-eventhubs&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -4742,7 +4742,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     private static final String OUTPUT_CHANNEL = "output";
     private static final String EVENTHUB_NAME = "eh1";
 
@@ -4770,7 +4770,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     @Autowired
     EventHubOutboundGateway messagingGateway;
 
@@ -4786,7 +4786,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     public void demo() {
         this.messagingGateway.send(message);
     }
@@ -4804,7 +4804,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
 class Demo {
     @Bean
     public MessageChannel input() {
@@ -4818,7 +4818,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
 class Demo {
     private static final String INPUT_CHANNEL = "input";
     private static final String EVENTHUB_NAME = "eh1";
@@ -4849,7 +4849,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     @ServiceActivator(inputChannel = INPUT_CHANNEL)
     public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
         String message = new String(payload);
@@ -4879,7 +4879,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
 class Demo {
     private static final String INPUT_CHANNEL = "input";
     private static final String EVENTHUB_NAME = "eh1";
@@ -5095,7 +5095,7 @@ See Javadoc for details.
 <h4 id="dependency-setup-7"><a class="anchor" href="#dependency-setup-7"></a><a class="link" href="#dependency-setup-7">13.2.2. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-azure-starter-integration-servicebus&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -5241,7 +5241,7 @@ set the entity type for the ServiceBusTemplate. This sample takes Service Bus Qu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     private static final String OUTPUT_CHANNEL = "queue.output";
 
     @Bean
@@ -5271,7 +5271,7 @@ set the entity type for the ServiceBusTemplate. This sample takes Service Bus Qu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     @Autowired
     QueueOutboundGateway messagingGateway;
 
@@ -5287,7 +5287,7 @@ set the entity type for the ServiceBusTemplate. This sample takes Service Bus Qu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     public void demo() {
         this.messagingGateway.send(message);
     }
@@ -5305,7 +5305,7 @@ set the entity type for the ServiceBusTemplate. This sample takes Service Bus Qu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
 class Demo {
     private static final String INPUT_CHANNEL = "input";
 
@@ -5321,7 +5321,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
 class Demo {
     private static final String QUEUE_NAME = "queue1";
 
@@ -5349,7 +5349,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     @ServiceActivator(inputChannel = INPUT_CHANNEL)
     public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
         String message = new String(payload);
@@ -5574,7 +5574,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class SampleController {
     @PostMapping("/messages")
     public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
         LOGGER.info("Going to add message {} to Sinks.Many.", message);
@@ -5591,7 +5591,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class SampleController {
     @PostMapping("/messages")
     public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
         LOGGER.info("Going to add message {} to Sinks.Many.", message);
@@ -5624,7 +5624,7 @@ When both <code>ServiceBusMessageHeaders.PARTITION_KEY</code> and <code>AzureHea
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class SampleController {
     @PostMapping("/messages")
     public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
         LOGGER.info("Going to add message {} to Sinks.Many.", message);
@@ -5670,7 +5670,7 @@ the value of the session id will eventually be used to overwrite the value of th
 <h4 id="dependency-setup-8"><a class="anchor" href="#dependency-setup-8"></a><a class="link" href="#dependency-setup-8">13.3.2. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-azure-starter-integration-storage-queue&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -5831,7 +5831,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     private static final String STORAGE_QUEUE_NAME = "example";
     private static final String OUTPUT_CHANNEL = "output";
 
@@ -5860,7 +5860,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     @Autowired
     StorageQueueOutboundGateway storageQueueOutboundGateway;
 
@@ -5876,7 +5876,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     public void demo() {
         this.storageQueueOutboundGateway.send(message);
     }
@@ -5894,7 +5894,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     private static final String INPUT_CHANNEL = "input";
 
     @Bean
@@ -5909,7 +5909,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     private static final String STORAGE_QUEUE_NAME = "example";
 
     @Bean
@@ -5925,7 +5925,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     @ServiceActivator(inputChannel = INPUT_CHANNEL)
     public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
         String message = new String(payload);
@@ -6032,7 +6032,7 @@ The checkpoint header only exists when <strong>MANUAL</strong> checkpoint mode i
 <h4 id="dependency-setup-9"><a class="anchor" href="#dependency-setup-9"></a><a class="link" href="#dependency-setup-9">14.1.2. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-azure-stream-binder-eventhubs&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -6043,7 +6043,7 @@ The checkpoint header only exists when <strong>MANUAL</strong> checkpoint mode i
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-azure-starter-stream-eventhubs&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -6294,7 +6294,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     stream:
       eventhubs:
@@ -6376,7 +6376,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       eventhubs:
@@ -6412,7 +6412,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       credential:
@@ -6452,7 +6452,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       credential:
@@ -6487,7 +6487,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public Consumer&lt;Message&lt;String&gt;&gt; consume() {
     return message -&gt; {
         Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
@@ -6532,7 +6532,7 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     stream:
       function:
@@ -6562,7 +6562,7 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public Consumer&lt;Message&lt;List&lt;String&gt;&gt;&gt; consume() {
     return message -&gt; {
             for (int i = 0; i &lt; message.getPayload().size(); i++) {
@@ -6591,7 +6591,7 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public Consumer&lt;Message&lt;List&lt;String&gt;&gt;&gt; consume() {
     return message -&gt; {
         for (int i = 0; i &lt; message.getPayload().size(); i++) {
@@ -6647,7 +6647,7 @@ In the batch-consuming mode, the default content type of Spring Cloud Stream bin
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">// Replace destination with spring.cloud.stream.bindings.input.destination
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// Replace destination with spring.cloud.stream.bindings.input.destination
 // Replace group with spring.cloud.stream.bindings.input.group
 @ServiceActivator(inputChannel = "{destination}.{group}.errors")
 public void consumerError(Message&lt;?&gt; message) {
@@ -6667,7 +6667,7 @@ public void consumerError(Message&lt;?&gt; message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.stream.default.producer.errorChannelEnabled=true</code></pre>
+<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">spring.cloud.stream.default.producer.errorChannelEnabled=true</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6675,7 +6675,7 @@ public void consumerError(Message&lt;?&gt; message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">// Replace destination with spring.cloud.stream.bindings.output.destination
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// Replace destination with spring.cloud.stream.bindings.output.destination
 @ServiceActivator(inputChannel = "{destination}.errors")
 public void producerError(Message&lt;?&gt; message) {
     LOGGER.error("Handling Producer ERROR: " + message);
@@ -6694,7 +6694,7 @@ public void producerError(Message&lt;?&gt; message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel = "errorChannel")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@ServiceActivator(inputChannel = "errorChannel")
 public void producerError(Message&lt;?&gt; message) {
     LOGGER.error("Handling ERROR: " + message);
 }</code></pre>
@@ -6717,7 +6717,7 @@ public void producerError(Message&lt;?&gt; message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     stream:
       function:
@@ -6784,7 +6784,7 @@ public void producerError(Message&lt;?&gt; message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public Supplier&lt;Message&lt;String&gt;&gt; supply1() {
     return () -&gt; {
         LOGGER.info("Sending message1, sequence1 " + i);
@@ -6833,7 +6833,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       credential:
@@ -6881,7 +6881,7 @@ This binder relies on <code>Subscription</code> of a topic to act as a consumer 
 <h4 id="dependency-setup-10"><a class="anchor" href="#dependency-setup-10"></a><a class="link" href="#dependency-setup-10">14.2.2. Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-azure-stream-binder-servicebus&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -6892,7 +6892,7 @@ This binder relies on <code>Subscription</code> of a topic to act as a consumer 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-azure-starter-stream-servicebus&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -7253,7 +7253,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public Consumer&lt;Message&lt;String&gt;&gt; consume() {
     return message -&gt; {
         Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
@@ -7286,7 +7286,7 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public Supplier&lt;Message&lt;String&gt;&gt; generate() {
     return () -&gt; {
         String value = “random payload”;
@@ -7305,7 +7305,7 @@ public Supplier&lt;Message&lt;String&gt;&gt; generate() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public Supplier&lt;Message&lt;String&gt;&gt; generate() {
     return () -&gt; {
         String value = “random payload”;
@@ -7347,7 +7347,7 @@ the value of the session id will eventually be used to overwrite the value of th
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">// Replace destination with spring.cloud.stream.bindings.input.destination
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// Replace destination with spring.cloud.stream.bindings.input.destination
 // Replace group with spring.cloud.stream.bindings.input.group
 @ServiceActivator(inputChannel = "{destination}.{group}.errors")
 public void consumerError(Message&lt;?&gt; message) {
@@ -7367,7 +7367,7 @@ public void consumerError(Message&lt;?&gt; message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.stream.default.producer.errorChannelEnabled=true</code></pre>
+<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">spring.cloud.stream.default.producer.errorChannelEnabled=true</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7375,7 +7375,7 @@ public void consumerError(Message&lt;?&gt; message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">// Replace destination with spring.cloud.stream.bindings.output.destination
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// Replace destination with spring.cloud.stream.bindings.output.destination
 @ServiceActivator(inputChannel = "{destination}.errors")
 public void producerError(Message&lt;?&gt; message) {
     LOGGER.error("Handling Producer ERROR: " + message);
@@ -7394,7 +7394,7 @@ public void producerError(Message&lt;?&gt; message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel = "errorChannel")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@ServiceActivator(inputChannel = "errorChannel")
 public void producerError(Message&lt;?&gt; message) {
     LOGGER.error("Handling ERROR: " + message);
 }</code></pre>
@@ -7429,7 +7429,7 @@ When setting the partiton key, the priority of message header is higher than Spr
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     stream:
       function:
@@ -7489,7 +7489,7 @@ When setting the partiton key, the priority of message header is higher than Spr
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public Supplier&lt;Message&lt;String&gt;&gt; supply1() {
     return () -&gt; {
         LOGGER.info("Sending message1, sequence1 " + i);
@@ -7539,7 +7539,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       credential:
@@ -7582,7 +7582,7 @@ Azure Service Bus connection string have to be provided which is to be parsed in
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-azure-starter-servicebus-jms&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -7732,7 +7732,7 @@ See <a href="https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   jms:
     servicebus:
       connection-string: ${AZURE_SERVICEBUS_CONNECTION_STRING}
@@ -7913,7 +7913,7 @@ The dependency <code>com.azure.spring:spring-cloud-azure-native-configuration</c
 <div class="listingblock primary">
 <div class="title">Maven</div>
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">  &lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">  &lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-azure-native-configuration&lt;/artifactId&gt;
     &lt;version&gt;4.0.0-beta.1&lt;/version&gt;
@@ -7923,7 +7923,7 @@ The dependency <code>com.azure.spring:spring-cloud-azure-native-configuration</c
 <div class="listingblock secondary">
 <div class="title">Gradle Groovy</div>
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+<pre class="highlightjs highlight"><code data-lang="groovy" class="language-groovy hljs">dependencies {
     implementation "com.azure.spring:spring-cloud-azure-native-configuration:4.0.0-beta.1"
 }</code></pre>
 </div>
@@ -7942,13 +7942,13 @@ The dependency <code>com.azure.spring:spring-cloud-azure-native-configuration</c
 <div class="listingblock primary">
 <div class="title">Maven</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">mvn spring-boot:build-image</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">mvn spring-boot:build-image</code></pre>
 </div>
 </div>
 <div class="listingblock secondary">
 <div class="title">Gradle Groovy</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">gradle bootBuildImage</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">gradle bootBuildImage</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7963,13 +7963,13 @@ The dependency <code>com.azure.spring:spring-cloud-azure-native-configuration</c
 <div class="listingblock primary">
 <div class="title">Maven</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">mvn -Pnative -DskipTests package</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">mvn -Pnative -DskipTests package</code></pre>
 </div>
 </div>
 <div class="listingblock secondary">
 <div class="title">Gradle Groovy</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">gradle nativeCompile</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">gradle nativeCompile</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7989,7 +7989,7 @@ The dependency <code>com.azure.spring:spring-cloud-azure-native-configuration</c
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-Assuming the project artifact ID is <code>spring-cloud-azure-sample</code> and the project version is <code>0.0.1-SNAPSHOT</code>, you can specify the custom image name in one of the following ways:  If you&#8217;re using <a href="https://docs.spring.io/spring-boot/docs/2.6.8/reference/html/container-images.html#container-images.buildpacks">Cloud Native Buildpacks</a>, use the <code>image</code>&#8594;`name`&#8594;`custom-image-name` configuration element in the Spring Boot plugin. If you&#8217;re using <a href="https://github.com/graalvm/native-build-tools">GraalVM Native Build Tools</a>, use the <code>imageName</code>&#8594;`custom-image-name` configuration element in the Spring Boot plugin.
+Assuming the project artifact ID is <code>spring-cloud-azure-sample</code> and the project version is <code>0.0.1-SNAPSHOT</code>, you can specify the custom image name in one of the following ways:  If you&#8217;re using <a href="https://docs.spring.io/spring-boot/docs/2.6.11/reference/html/container-images.html#container-images.buildpacks">Cloud Native Buildpacks</a>, use the <code>image</code>&#8594;`name`&#8594;`custom-image-name` configuration element in the Spring Boot plugin. If you&#8217;re using <a href="https://github.com/graalvm/native-build-tools">GraalVM Native Build Tools</a>, use the <code>imageName</code>&#8594;`custom-image-name` configuration element in the Spring Boot plugin.
 </td>
 </tr>
 </table>
@@ -8001,7 +8001,7 @@ Assuming the project artifact ID is <code>spring-cloud-azure-sample</code> and t
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">docker run --rm -p 8080:8080 spring-cloud-azure-sample:0.0.1-SNAPSHOT</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">docker run --rm -p 8080:8080 spring-cloud-azure-sample:0.0.1-SNAPSHOT</code></pre>
 </div>
 </div>
 </div>
@@ -8013,13 +8013,13 @@ Assuming the project artifact ID is <code>spring-cloud-azure-sample</code> and t
 <div class="listingblock primary">
 <div class="title">Build with Maven</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">target\spring-cloud-azure-sample</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">target\spring-cloud-azure-sample</code></pre>
 </div>
 </div>
 <div class="listingblock secondary">
 <div class="title">Build with Gradle</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">build\native\nativeCompile\spring-cloud-azure-sample</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">build\native\nativeCompile\spring-cloud-azure-sample</code></pre>
 </div>
 </div>
 </div>
@@ -8464,7 +8464,7 @@ Since version of 4.3.0, connection string authentication is deprecated in favor 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
   &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -8517,7 +8517,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <h6 id="dependency-setup-13"><a class="anchor" href="#dependency-setup-13"></a><a class="link" href="#dependency-setup-13">Dependency setup</a></h6>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
 &lt;/dependency&gt;
@@ -8543,7 +8543,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">spring.kafka.bootstrap-servers=&lt;NAMESPACENAME&gt;.servicebus.windows.net:9093</code></pre>
+<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">spring.kafka.bootstrap-servers=&lt;NAMESPACENAME&gt;.servicebus.windows.net:9093</code></pre>
 </div>
 </div>
 </div>
@@ -8557,7 +8557,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <h6 id="dependency-setup-14"><a class="anchor" href="#dependency-setup-14"></a><a class="link" href="#dependency-setup-14">Dependency setup</a></h6>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
 &lt;/dependency&gt;
@@ -8576,7 +8576,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.stream.kafka.binder.brokers=&lt;NAMESPACENAME&gt;.servicebus.windows.net:9093
+<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">spring.cloud.stream.kafka.binder.brokers=&lt;NAMESPACENAME&gt;.servicebus.windows.net:9093
 spring.cloud.stream.binders.kafka.environment.spring.main.sources=com.azure.spring.cloud.autoconfigure.kafka.AzureKafkaSpringCloudStreamConfiguration</code></pre>
 </div>
 </div>
@@ -8625,7 +8625,7 @@ Since version of 4.3.0, connection string authentication is deprecated in favor 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
   &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -8636,7 +8636,7 @@ Since version of 4.3.0, connection string authentication is deprecated in favor 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
   &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-azure-resourcemanager&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -8652,7 +8652,7 @@ Since version of 4.3.0, connection string authentication is deprecated in favor 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.eventhubs.connection-string=${AZURE_EVENTHUBS_CONNECTION_STRING}</code></pre>
+<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">spring.cloud.azure.eventhubs.connection-string=${AZURE_EVENTHUBS_CONNECTION_STRING}</code></pre>
 </div>
 </div>
 </div>
@@ -8678,7 +8678,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       profile:
@@ -8714,7 +8714,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencyManagement&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencyManagement&gt;
   &lt;dependencies&gt;
     &lt;dependency&gt;
       &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
@@ -8732,7 +8732,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
   &lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
@@ -8764,7 +8764,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">spring.kafka.bootstrap-servers=&lt;NAMESPACENAME&gt;.servicebus.windows.net:9093</code></pre>
+<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">spring.kafka.bootstrap-servers=&lt;NAMESPACENAME&gt;.servicebus.windows.net:9093</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8807,7 +8807,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.stream.kafka.binder.brokers=&lt;NAMESPACENAME&gt;.servicebus.windows.net:9093
+<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">spring.cloud.stream.kafka.binder.brokers=&lt;NAMESPACENAME&gt;.servicebus.windows.net:9093
 spring.cloud.stream.binders.kafka.environment.spring.main.sources=com.azure.spring.cloud.autoconfigure.kafka.AzureKafkaSpringCloudStreamConfiguration</code></pre>
 </div>
 </div>
@@ -8915,7 +8915,7 @@ For data access, set the data plane access role: Azure Event Hubs Data Sender an
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
     &lt;dependency&gt;
       &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
       &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
@@ -9005,7 +9005,7 @@ Authentication information is also required for authenticating for Azure Resourc
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.redis.name=${AZURE_CACHE_REDIS_NAME}
+<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">spring.cloud.azure.redis.name=${AZURE_CACHE_REDIS_NAME}
 spring.cloud.azure.redis.resource.resource-group=${AZURE_CACHE_REDIS_RESOURCE_GROUP}</code></pre>
 </div>
 </div>
@@ -9028,7 +9028,7 @@ spring.cloud.azure.redis.resource.resource-group=${AZURE_CACHE_REDIS_RESOURCE_GR
 <h3 id="dependency-setup-17"><a class="anchor" href="#dependency-setup-17"></a><a class="link" href="#dependency-setup-17">19.1. Dependency Setup</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
   &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
   &lt;artifactId&gt;spring-cloud-azure-resourcemanager&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -9132,7 +9132,7 @@ be assigned a role of <code>Contributor</code> of the associated namespace at le
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       credential:
@@ -9190,6 +9190,9 @@ be assigned a role of <code>Contributor</code> of the associated namespace at le
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

@@ -223,7 +223,7 @@ window.onload = function() {
 <h5 id="_add_required_dependencies"><a class="link" href="#_add_required_dependencies">Add Required Dependencies</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
         &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
@@ -240,7 +240,7 @@ window.onload = function() {
 <h5 id="_add_required_properties"><a class="link" href="#_add_required_properties">Add Required Properties</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -261,7 +261,7 @@ window.onload = function() {
 <h6 id="_add_extra_security_configurations"><a class="link" href="#_add_extra_security_configurations">Add Extra Security Configurations</a></h6>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">    @EnableWebSecurity
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">    @EnableWebSecurity
     @EnableGlobalMethodSecurity(prePostEnabled = true)
     public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
 
@@ -434,7 +434,7 @@ public class RoleController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -492,7 +492,7 @@ public class RoleController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapter {
     /**
@@ -547,7 +547,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 <h5 id="_add_required_dependencies_2"><a class="link" href="#_add_required_dependencies_2">Add Required Dependencies</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
         &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
@@ -564,7 +564,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 <h5 id="_add_required_properties_2"><a class="link" href="#_add_required_properties_2">Add Required Properties</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -586,7 +586,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 <h5 id="_use_oauth2authorizedclient_in_your_application"><a class="link" href="#_use_oauth2authorizedclient_in_your_application">Use OAuth2AuthorizedClient in Your Application</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class Demo {
     @GetMapping("/graph")
     @ResponseBody
     public String graph(
@@ -611,7 +611,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -634,7 +634,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -655,7 +655,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class Demo {
     @GetMapping("/resource-server-1")
     @ResponseBody
     public String graph(
@@ -680,7 +680,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -740,7 +740,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 <h5 id="_add_required_dependencies_3"><a class="link" href="#_add_required_dependencies_3">Add Required Dependencies</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
         &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
@@ -757,7 +757,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 <h5 id="_add_required_properties_3"><a class="link" href="#_add_required_properties_3">Add Required Properties</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -804,7 +804,7 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 <h6 id="_add_extra_security_configurations_2"><a class="link" href="#_add_extra_security_configurations_2">Add Extra Security Configurations</a></h6>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebSecurityConfigurerAdapter {
     /**
@@ -948,7 +948,7 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       credential:
@@ -991,7 +991,7 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -1063,7 +1063,7 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
 <h5 id="_add_required_dependencies_4"><a class="link" href="#_add_required_dependencies_4">Add Required Dependencies</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
         &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
@@ -1084,7 +1084,7 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
 <h5 id="_add_required_properties_4"><a class="link" href="#_add_required_properties_4">Add Required Properties</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -1104,7 +1104,7 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
 <h5 id="_use_oauth2authorizedclient_in_your_application_2"><a class="link" href="#_use_oauth2authorizedclient_in_your_application_2">Use OAuth2AuthorizedClient in Your Application</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class SampleController {
     @GetMapping("call-graph")
     public String callGraph(@RegisteredOAuth2AuthorizedClient("graph") OAuth2AuthorizedClient graph) {
         return callMicrosoftGraphMeEndpoint(graph);
@@ -1139,7 +1139,7 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
 <h5 id="_add_required_dependencies_5"><a class="link" href="#_add_required_dependencies_5">Add Required Dependencies</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
         &lt;artifactId&gt;spring-cloud-azure-starter-active-directory&lt;/artifactId&gt;
@@ -1163,7 +1163,7 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -1190,7 +1190,7 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AadWebApplicationAndResourceServerConfig {
 
@@ -1424,7 +1424,7 @@ public class AadWebApplicationAndResourceServerConfig {
 <h4 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
         &lt;artifactId&gt;spring-cloud-azure-starter-active-directory-b2c&lt;/artifactId&gt;
@@ -1589,7 +1589,7 @@ select <strong>Delegated permissions</strong>, check <strong>offline_access</str
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
         &lt;artifactId&gt;azure-spring-boot-starter-active-directory-b2c&lt;/artifactId&gt;
@@ -1622,7 +1622,7 @@ select <strong>Delegated permissions</strong>, check <strong>offline_access</str
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       active-directory:
@@ -1654,7 +1654,7 @@ select <strong>Delegated permissions</strong>, check <strong>offline_access</str
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Controller
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Controller
 public class WebController {
 
     private void initializeModel(Model model, OAuth2AuthenticationToken token) {
@@ -1679,7 +1679,7 @@ public class WebController {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final AadB2cOidcLoginConfigurer configurer;
@@ -1755,7 +1755,7 @@ record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_UR
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-json" data-lang="json">{
+<pre class="highlightjs highlight"><code data-lang="json" class="language-json hljs">{
   "allowedMemberTypes": [
     "Application"
   ],
@@ -1786,7 +1786,7 @@ record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_UR
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
   &lt;artifactId&gt;spring-boot-starter-webflux&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -1827,7 +1827,7 @@ record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_UR
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     /**
      * Access to protected data from Webapp to WebApiA through client credential flow. The access token is obtained by webclient, or
      * &lt;p&gt;@RegisteredOAuth2AuthorizedClient("webApiA")&lt;/p&gt;. In the end, these two approaches will be executed to
@@ -1855,7 +1855,7 @@ record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_UR
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class SampleConfiguration {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class SampleConfiguration {
     @Bean
     public WebClient webClient(OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager) {
         ServletOAuth2AuthorizedClientExchangeFilterFunction function =
@@ -1902,7 +1902,7 @@ record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_UR
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
         &lt;artifactId&gt;azure-spring-boot-starter-active-directory-b2c&lt;/artifactId&gt;
@@ -1948,7 +1948,7 @@ record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_UR
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     /**
      * webApiA resource api for web app
      * @return test content
@@ -1967,7 +1967,7 @@ record the <strong>Application ID URI</strong> as your <code>WEB_API_A_APP_ID_UR
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@EnableWebSecurity
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 
@@ -2008,7 +2008,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-json" data-lang="json">{
+<pre class="highlightjs highlight"><code data-lang="json" class="language-json hljs">{
     "allowedMemberTypes": [
         "Application"
     ],
@@ -2038,7 +2038,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
  &lt;artifactId&gt;spring-boot-starter-webflux&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -2078,7 +2078,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class SampleController {
     /**
      * Access to protected data from WebApiA to WebApiB through client credential flow. The access token is obtained by webclient, or
      * &lt;p&gt;@RegisteredOAuth2AuthorizedClient("webApiA")&lt;/p&gt;. In the end, these two approaches will be executed to
@@ -2107,7 +2107,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class SampleController {
     /**
      * webApiB resource api for other web application
      * @return test content
@@ -2126,7 +2126,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class SampleConfiguration {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class SampleConfiguration {
     @Bean
     public WebClient webClient(OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager) {
         ServletOAuth2AuthorizedClientExchangeFilterFunction function =
@@ -2162,6 +2162,9 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

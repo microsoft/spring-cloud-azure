@@ -191,7 +191,7 @@ Azure Service Bus connection string have to be provided which is to be parsed in
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
     &lt;artifactId&gt;spring-cloud-azure-starter-servicebus-jms&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -341,7 +341,7 @@ See <a href="https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   jms:
     servicebus:
       connection-string: ${AZURE_SERVICEBUS_CONNECTION_STRING}
@@ -372,6 +372,9 @@ The default enabled <code>ConnectionFactory</code> is the <code>CachingConnectio
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

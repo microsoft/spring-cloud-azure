@@ -258,7 +258,7 @@ The checkpoint header only exists when <strong>MANUAL</strong> checkpoint mode i
 <h4 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
 	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
 	&lt;artifactId&gt;spring-cloud-azure-stream-binder-eventhubs&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -269,7 +269,7 @@ The checkpoint header only exists when <strong>MANUAL</strong> checkpoint mode i
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
 	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
 	&lt;artifactId&gt;spring-cloud-azure-starter-stream-eventhubs&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -520,7 +520,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     stream:
       eventhubs:
@@ -602,7 +602,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       eventhubs:
@@ -638,7 +638,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       credential:
@@ -678,7 +678,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       credential:
@@ -713,7 +713,7 @@ The <code>initial-partition-event-position</code> configuration accepts a <code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public Consumer&lt;Message&lt;String&gt;&gt; consume() {
     return message -&gt; {
         Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
@@ -758,7 +758,7 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     stream:
       function:
@@ -788,7 +788,7 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public Consumer&lt;Message&lt;List&lt;String&gt;&gt;&gt; consume() {
     return message -&gt; {
             for (int i = 0; i &lt; message.getPayload().size(); i++) {
@@ -817,7 +817,7 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public Consumer&lt;Message&lt;List&lt;String&gt;&gt;&gt; consume() {
     return message -&gt; {
         for (int i = 0; i &lt; message.getPayload().size(); i++) {
@@ -873,7 +873,7 @@ In the batch-consuming mode, the default content type of Spring Cloud Stream bin
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">// Replace destination with spring.cloud.stream.bindings.input.destination
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// Replace destination with spring.cloud.stream.bindings.input.destination
 // Replace group with spring.cloud.stream.bindings.input.group
 @ServiceActivator(inputChannel = "{destination}.{group}.errors")
 public void consumerError(Message&lt;?&gt; message) {
@@ -893,7 +893,7 @@ public void consumerError(Message&lt;?&gt; message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.stream.default.producer.errorChannelEnabled=true</code></pre>
+<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">spring.cloud.stream.default.producer.errorChannelEnabled=true</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -901,7 +901,7 @@ public void consumerError(Message&lt;?&gt; message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">// Replace destination with spring.cloud.stream.bindings.output.destination
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// Replace destination with spring.cloud.stream.bindings.output.destination
 @ServiceActivator(inputChannel = "{destination}.errors")
 public void producerError(Message&lt;?&gt; message) {
     LOGGER.error("Handling Producer ERROR: " + message);
@@ -920,7 +920,7 @@ public void producerError(Message&lt;?&gt; message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel = "errorChannel")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@ServiceActivator(inputChannel = "errorChannel")
 public void producerError(Message&lt;?&gt; message) {
     LOGGER.error("Handling ERROR: " + message);
 }</code></pre>
@@ -943,7 +943,7 @@ public void producerError(Message&lt;?&gt; message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     stream:
       function:
@@ -1010,7 +1010,7 @@ public void producerError(Message&lt;?&gt; message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public Supplier&lt;Message&lt;String&gt;&gt; supply1() {
     return () -&gt; {
         LOGGER.info("Sending message1, sequence1 " + i);
@@ -1059,7 +1059,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       credential:
@@ -1107,7 +1107,7 @@ This binder relies on <code>Subscription</code> of a topic to act as a consumer 
 <h4 id="_dependency_setup_2"><a class="link" href="#_dependency_setup_2">Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
 	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
 	&lt;artifactId&gt;spring-cloud-azure-stream-binder-servicebus&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -1118,7 +1118,7 @@ This binder relies on <code>Subscription</code> of a topic to act as a consumer 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
 	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
 	&lt;artifactId&gt;spring-cloud-azure-starter-stream-servicebus&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -1479,7 +1479,7 @@ When using the binding producer, property of <code>spring.cloud.stream.servicebu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public Consumer&lt;Message&lt;String&gt;&gt; consume() {
     return message -&gt; {
         Checkpointer checkpointer = (Checkpointer) message.getHeaders().get(CHECKPOINTER);
@@ -1512,7 +1512,7 @@ public Supplier&lt;Message&lt;String&gt;&gt; supply() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public Supplier&lt;Message&lt;String&gt;&gt; generate() {
     return () -&gt; {
         String value = “random payload”;
@@ -1531,7 +1531,7 @@ public Supplier&lt;Message&lt;String&gt;&gt; generate() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public Supplier&lt;Message&lt;String&gt;&gt; generate() {
     return () -&gt; {
         String value = “random payload”;
@@ -1573,7 +1573,7 @@ the value of the session id will eventually be used to overwrite the value of th
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">// Replace destination with spring.cloud.stream.bindings.input.destination
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// Replace destination with spring.cloud.stream.bindings.input.destination
 // Replace group with spring.cloud.stream.bindings.input.group
 @ServiceActivator(inputChannel = "{destination}.{group}.errors")
 public void consumerError(Message&lt;?&gt; message) {
@@ -1593,7 +1593,7 @@ public void consumerError(Message&lt;?&gt; message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.stream.default.producer.errorChannelEnabled=true</code></pre>
+<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">spring.cloud.stream.default.producer.errorChannelEnabled=true</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1601,7 +1601,7 @@ public void consumerError(Message&lt;?&gt; message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">// Replace destination with spring.cloud.stream.bindings.output.destination
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// Replace destination with spring.cloud.stream.bindings.output.destination
 @ServiceActivator(inputChannel = "{destination}.errors")
 public void producerError(Message&lt;?&gt; message) {
     LOGGER.error("Handling Producer ERROR: " + message);
@@ -1620,7 +1620,7 @@ public void producerError(Message&lt;?&gt; message) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@ServiceActivator(inputChannel = "errorChannel")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@ServiceActivator(inputChannel = "errorChannel")
 public void producerError(Message&lt;?&gt; message) {
     LOGGER.error("Handling ERROR: " + message);
 }</code></pre>
@@ -1655,7 +1655,7 @@ When setting the partiton key, the priority of message header is higher than Spr
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     stream:
       function:
@@ -1715,7 +1715,7 @@ When setting the partiton key, the priority of message header is higher than Spr
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Bean
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Bean
 public Supplier&lt;Message&lt;String&gt;&gt; supply1() {
     return () -&gt; {
         LOGGER.info("Sending message1, sequence1 " + i);
@@ -1765,7 +1765,7 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       credential:
@@ -1795,6 +1795,9 @@ public Consumer&lt;Message&lt;String&gt;&gt; consume2() {
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

@@ -13781,7 +13781,7 @@ dependencyManagement of your project to benefit from the dependency management.<
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencyManagement&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencyManagement&gt;
     &lt;dependencies&gt;
         &lt;dependency&gt;
             &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
@@ -14100,7 +14100,7 @@ When assign roles to the security principals to interact with Azure messaging se
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
     &lt;artifactId&gt;spring-boot-properties-migrator&lt;/artifactId&gt;
     &lt;scope&gt;runtime&lt;/scope&gt;
@@ -14112,7 +14112,7 @@ When assign roles to the security principals to interact with Azure messaging se
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">runtime("org.springframework.boot:spring-boot-properties-migrator")</code></pre>
+<pre class="highlightjs highlight"><code data-lang="groovy" class="language-groovy hljs">runtime("org.springframework.boot:spring-boot-properties-migrator")</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -15454,7 +15454,7 @@ Configuration prefix has been changed from <code>spring.cloud.azure.eventhub</co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       eventhub:
@@ -15469,7 +15469,7 @@ Configuration prefix has been changed from <code>spring.cloud.azure.eventhub</co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       eventhubs:
@@ -15610,7 +15610,7 @@ Event Hubs.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class Demo {
     @Bean
     public EventHubInboundChannelAdapter messageChannelAdapter(
         @Qualifier("INPUT_CHANNEL") MessageChannel inputChannel, EventHubOperation eventhubOperation) {
@@ -15628,7 +15628,7 @@ Event Hubs.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class Demo {
     @Bean
     public EventHubsMessageListenerContainer messageListenerContainer(EventHubsProcessorFactory processorFactory) {
         EventHubsContainerProperties containerProperties = new EventHubsContainerProperties();
@@ -15657,7 +15657,7 @@ Event Hubs.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class Demo {
     @Bean
     @ServiceActivator(inputChannel = "OUTPUT_CHANNEL")
     public MessageHandler messageSender(EventHubOperation eventhubOperation) {
@@ -15683,7 +15683,7 @@ Event Hubs.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class Demo {
     @Bean
     @ServiceActivator(inputChannel = "OUTPUT_CHANNEL")
     public MessageHandler messageSender(EventHubsTemplate eventhubOperation) {
@@ -16006,7 +16006,7 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class Demo {
     @Bean
     public ServiceBusQueueInboundChannelAdapter queueMessageChannelAdapter(
         @Qualifier("INPUT_CHANNEL_NAME") MessageChannel inputChannel, ServiceBusQueueOperation queueOperation) {
@@ -16035,7 +16035,7 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class Demo {
     @Bean("queue-listener-container")
     public ServiceBusMessageListenerContainer messageListenerContainer(ServiceBusProcessorFactory processorFactory) {
         ServiceBusContainerProperties containerProperties = new ServiceBusContainerProperties();
@@ -16081,7 +16081,7 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class Demo {
     @Bean
     @ServiceActivator(inputChannel = "OUTPUT_CHANNEL_NAME")
     public MessageHandler queueMessageSender(ServiceBusQueueOperation queueOperation) {
@@ -16106,7 +16106,7 @@ the prefix remains to be as <code>spring.cloud.azure.servicebus</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class Demo {
 
     @Bean
     @ServiceActivator(inputChannel = "OUTPUT_CHANNEL_NAME")
@@ -16558,7 +16558,7 @@ The value type of the <code>start-position</code> configuration is also changed 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       eventhub:
@@ -16584,7 +16584,7 @@ The value type of the <code>start-position</code> configuration is also changed 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       eventhubs:
@@ -16635,7 +16635,7 @@ while other <code>Data</code> related roles are required for messaging operation
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       client-id: ${AZURE_CLIENT_ID}
@@ -16651,7 +16651,7 @@ while other <code>Data</code> related roles are required for messaging operation
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       credential:
@@ -16678,7 +16678,7 @@ while other <code>Data</code> related roles are required for messaging operation
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       credential:
@@ -16699,7 +16699,7 @@ while other <code>Data</code> related roles are required for messaging operation
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       credential:
@@ -16916,7 +16916,7 @@ Enabling auto-complete is equal to <code>RECORD</code> checkpoint mode, and oppo
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       servicebus:
@@ -16942,7 +16942,7 @@ Enabling auto-complete is equal to <code>RECORD</code> checkpoint mode, and oppo
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       servicebus:
@@ -16983,7 +16983,7 @@ while other <code>Data</code> related roles are required for messaging operation
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       client-id: ${AZURE_CLIENT_ID}
@@ -16999,7 +16999,7 @@ while other <code>Data</code> related roles are required for messaging operation
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       credential:
@@ -17026,7 +17026,7 @@ while other <code>Data</code> related roles are required for messaging operation
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       credential:
@@ -17047,7 +17047,7 @@ while other <code>Data</code> related roles are required for messaging operation
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       credential:
@@ -17211,6 +17211,9 @@ so annotations of <code>@AzureMessageListener</code>, <code>@AzureMessageListene
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

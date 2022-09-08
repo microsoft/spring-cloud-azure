@@ -214,7 +214,7 @@ window.onload = function() {
 <h3 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
     &lt;dependency&gt;
         &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
         &lt;artifactId&gt;spring-cloud-azure-starter-storage-blob&lt;/artifactId&gt; <i class="conum" data-value="1"></i><b>(1)</b>
@@ -347,7 +347,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   cloud:
     azure:
       storage:
@@ -370,7 +370,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Value("azure-blob://[your-container-name]/[your-blob-name]")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Value("azure-blob://[your-container-name]/[your-blob-name]")
 private Resource storageBlobResource;</code></pre>
 </div>
 </div>
@@ -379,7 +379,7 @@ private Resource storageBlobResource;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Value("azure-file://[your-fileshare-name]/[your-file-name]")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Value("azure-file://[your-fileshare-name]/[your-file-name]")
 private Resource storageFileResource;</code></pre>
 </div>
 </div>
@@ -388,7 +388,7 @@ private Resource storageFileResource;</code></pre>
 <h5 id="_get_a_resource_with_resourceloader"><a class="link" href="#_get_a_resource_with_resourceloader">Get a resource with ResourceLoader</a></h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
 private ResourceLoader resourceLoader;
 ...
 // get a BlobResource
@@ -415,7 +415,7 @@ Resource storageFileResource = resourceLoader.getResource("azure-file://[your-fi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Autowired
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Autowired
 private AzureStorageBlobProtocolResolver azureStorageBlobProtocolResolver;
 
 @Autowired
@@ -438,7 +438,7 @@ Resource[] fileTextResources = azureStorageFileProtocolResolver.getResources("az
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Value("azure-blob://[your-container-name]/[your-blob-name]")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Value("azure-blob://[your-container-name]/[your-blob-name]")
 private Resource storageBlobResource;
 
 @Value("azure-file://[your-fileshare-name]/[your-file-name]")
@@ -460,7 +460,7 @@ InputStream inputfileStream = storageFileResource.getInputStream();</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Value("azure-blob://[your-container-name]/[your-blob-name]")
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Value("azure-blob://[your-container-name]/[your-blob-name]")
 private Resource storageBlobResource;
 
 @Value("azure-file://[your-fileshare-name]/[your-file-name]")
@@ -496,6 +496,9 @@ try (OutputStream fileos = ((WritableResource) this.storageFileResource).getOutp
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

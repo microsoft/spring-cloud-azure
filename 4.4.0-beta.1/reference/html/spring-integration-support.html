@@ -268,7 +268,7 @@ To specify the batch consuming strategy, developers can use <code>EventHubsConta
 <h4 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
 	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
 	&lt;artifactId&gt;spring-cloud-azure-starter-integration-eventhubs&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -493,7 +493,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     private static final String OUTPUT_CHANNEL = "output";
     private static final String EVENTHUB_NAME = "eh1";
 
@@ -521,7 +521,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     @Autowired
     EventHubOutboundGateway messagingGateway;
 
@@ -537,7 +537,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     public void demo() {
         this.messagingGateway.send(message);
     }
@@ -555,7 +555,7 @@ developers can use <code>EventHubsContainerProperties</code> for the configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
 class Demo {
     @Bean
     public MessageChannel input() {
@@ -569,7 +569,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
 class Demo {
     private static final String INPUT_CHANNEL = "input";
     private static final String EVENTHUB_NAME = "eh1";
@@ -600,7 +600,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     @ServiceActivator(inputChannel = INPUT_CHANNEL)
     public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
         String message = new String(payload);
@@ -630,7 +630,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
 class Demo {
     private static final String INPUT_CHANNEL = "input";
     private static final String EVENTHUB_NAME = "eh1";
@@ -846,7 +846,7 @@ See Javadoc for details.
 <h4 id="_dependency_setup_2"><a class="link" href="#_dependency_setup_2">Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
 	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
 	&lt;artifactId&gt;spring-cloud-azure-starter-integration-servicebus&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -992,7 +992,7 @@ set the entity type for the ServiceBusTemplate. This sample takes Service Bus Qu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     private static final String OUTPUT_CHANNEL = "queue.output";
 
     @Bean
@@ -1022,7 +1022,7 @@ set the entity type for the ServiceBusTemplate. This sample takes Service Bus Qu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     @Autowired
     QueueOutboundGateway messagingGateway;
 
@@ -1038,7 +1038,7 @@ set the entity type for the ServiceBusTemplate. This sample takes Service Bus Qu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     public void demo() {
         this.messagingGateway.send(message);
     }
@@ -1056,7 +1056,7 @@ set the entity type for the ServiceBusTemplate. This sample takes Service Bus Qu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
 class Demo {
     private static final String INPUT_CHANNEL = "input";
 
@@ -1072,7 +1072,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
 class Demo {
     private static final String QUEUE_NAME = "queue1";
 
@@ -1100,7 +1100,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     @ServiceActivator(inputChannel = INPUT_CHANNEL)
     public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
         String message = new String(payload);
@@ -1325,7 +1325,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class SampleController {
     @PostMapping("/messages")
     public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
         LOGGER.info("Going to add message {} to Sinks.Many.", message);
@@ -1342,7 +1342,7 @@ class Demo {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class SampleController {
     @PostMapping("/messages")
     public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
         LOGGER.info("Going to add message {} to Sinks.Many.", message);
@@ -1375,7 +1375,7 @@ When both <code>ServiceBusMessageHeaders.PARTITION_KEY</code> and <code>AzureHea
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class SampleController {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class SampleController {
     @PostMapping("/messages")
     public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
         LOGGER.info("Going to add message {} to Sinks.Many.", message);
@@ -1421,7 +1421,7 @@ the value of the session id will eventually be used to overwrite the value of th
 <h4 id="_dependency_setup_3"><a class="link" href="#_dependency_setup_3">Dependency Setup</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
 	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
 	&lt;artifactId&gt;spring-cloud-azure-starter-integration-storage-queue&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
@@ -1582,7 +1582,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     private static final String STORAGE_QUEUE_NAME = "example";
     private static final String OUTPUT_CHANNEL = "output";
 
@@ -1611,7 +1611,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     @Autowired
     StorageQueueOutboundGateway storageQueueOutboundGateway;
 
@@ -1627,7 +1627,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     public void demo() {
         this.storageQueueOutboundGateway.send(message);
     }
@@ -1645,7 +1645,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     private static final String INPUT_CHANNEL = "input";
 
     @Bean
@@ -1660,7 +1660,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     private static final String STORAGE_QUEUE_NAME = "example";
 
     @Bean
@@ -1676,7 +1676,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
     @ServiceActivator(inputChannel = INPUT_CHANNEL)
     public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
         String message = new String(payload);
@@ -1701,6 +1701,9 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>

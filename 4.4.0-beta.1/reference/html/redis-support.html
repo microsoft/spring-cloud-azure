@@ -190,7 +190,7 @@ window.onload = function() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependencies&gt;
     &lt;dependency&gt;
       &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
       &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
@@ -280,7 +280,7 @@ Authentication information is also required for authenticating for Azure Resourc
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.redis.name=${AZURE_CACHE_REDIS_NAME}
+<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">spring.cloud.azure.redis.name=${AZURE_CACHE_REDIS_NAME}
 spring.cloud.azure.redis.resource.resource-group=${AZURE_CACHE_REDIS_RESOURCE_GROUP}</code></pre>
 </div>
 </div>
@@ -294,6 +294,9 @@ spring.cloud.azure.redis.resource.resource-group=${AZURE_CACHE_REDIS_RESOURCE_GR
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 <script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
 <script type="text/javascript" src="js/toc.js"></script>
 </body>
