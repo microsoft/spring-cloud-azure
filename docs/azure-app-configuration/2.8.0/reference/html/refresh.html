@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Configuration Refresh</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_configuration_refresh">Configuration Refresh</a>
+<ul class="sectlevel2">
+<li><a href="#_pull_based_refresh">Pull Based Refresh</a></li>
+<li><a href="#_push_based_refresh">Push Based Refresh</a></li>
+<li><a href="#_forced_client_refresh">Forced Client Refresh</a></li>
+<li><a href="#_feature_flag_refresh">Feature Flag Refresh</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_configuration_refresh"><a class="link" href="#_configuration_refresh">Configuration Refresh</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Enabling config refresh for your configurations lets you pull their latest values from your App Configuration store(s) without having to restart the application.</p>
+</div>
+<div class="paragraph">
+<p>To enable refresh, monitoring needs to be enabled along with monitoring triggers. A monitoring trigger is a key with an optional label that are checked for value change for triggering updates. The value of the monitoring trigger can be any value, as long as it changes when it a refresh is needed.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Any operation that changes the etag of a monitoring trigger will cause a refresh, such as a content-type change.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].monitoring.enabled=true
+spring.cloud.azure.appconfiguration.stores[0].monitoring.triggers[0].key=[my-watched-key]
+spring.cloud.azure.appconfiguration.stores[0].monitoring.triggers[0].label=[my-watched-label]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To trigger a configuration refresh, change the value of a key in your configuration store. Then update one of watch keys to a new value. This will trigger the creation of a log. For example, changing the value of <code>/application/config.message</code> triggers the log message below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console">INFO 17496 --- [TaskScheduler-1] o.s.c.e.event.RefreshEventListener       : Refresh keys changed: [config.message]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After generating the log, the application will refresh all <code>@Bean</code>'s in the refresh scope.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+By default, <code>@ConfiugrationProperties</code> annotated beans will be included in this scope.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_pull_based_refresh"><a class="link" href="#_pull_based_refresh">Pull Based Refresh</a></h3>
+<div class="paragraph">
+<p>The App Configuration Spring libraries support the ability to periodically check on a refresh interval for changes made to the monitoring triggers. By default the refresh-interval is set to 30 seconds. Once the refresh interval has passed, all triggers will be checked in the given store for changes. Any change to the key will cause a refresh to trigger. Because the libraries integrate with the Spring refresh system, any refresh will reload all configurations from all stores. The refresh-interval can be set to any interval longer than 1 second. The supported units for the refresh-interval are s, m, h, d for seconds, minutes, hours, and days respectively.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].monitoring.refresh-interval= 5m</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_automated"><a class="link" href="#_automated">Automated</a></h4>
+<div class="paragraph">
+<p>When using the <code>azure-spring-cloud-appconfiguration-config-web</code> library, the application will automatically check for refresh whenever a servlet request occurs, specifically <code>ServletRequestHandledEvent</code>. The most common way this event is sent is by connections to endpoints in a <code>@RestController</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_manual"><a class="link" href="#_manual">Manual</a></h4>
+<div class="paragraph">
+<p>In applications that only use <code>azure-spring-cloud-appconfiguration-config</code>, such as console applications, refresh can be manually triggered. This can be done by calling <code>AppConfigurationRefresh&#8217;s refreshConfiguration method. `AppConfigurationRefresh</code> is a <code>@Bean</code> that can be injected into any <code>@Component</code>.</p>
+</div>
+<div class="paragraph">
+<p>Also, because the library uses Spring&#8217;s configuration system, triggering a refresh will also cause a refresh of all of your configurations, not just reloading the ones from your Azure App Configuration store.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_push_based_refresh"><a class="link" href="#_push_based_refresh">Push Based Refresh</a></h3>
+<div class="paragraph">
+<p>The <code>azure-spring-cloud-appconfiguration-config-web</code> library can be setup to receive push notifications from your Azure App Configuration store to refresh your configuration values. This is done via an Azure Event Grid Web Hook, which can be configured to send notifications of changes to specified keys. By adding the Spring Actuator library as a dependency you can expose App Configuration&#8217;s refresh endpoint(s). There are two different endpoints, <code>appconfiguration-refresh</code> and <code>appconfiguration-refresh-bus</code> these endpoints work sort of similarly to their counterparts <code>refresh</code> and <code>refresh-bus</code>, where the app configuration endpoints expire the refresh interval instead of forcing a refresh upon receiving. The <code>refresh</code> and <code>refresh-bus</code> can still be used, but can&#8217;t be directly connected to Azure Event Grid with a Web Hook as they require a response in setup.</p>
+</div>
+<div class="paragraph">
+<p><code>appconfiguration-refresh</code> expires the refresh interval, so the remaining refresh interval isn&#8217;t waited on before the next refresh check. <code>appconfiguration-refresh-bus</code> will send a notification to a connected messaging service, such as Azure Service Bus to notify all instances of an application to refresh. In both cases it doesn&#8217;t completely expire the refresh interval, but almost does by a small jitter amount. This makes sure not every instance of your application doesn&#8217;t try to refresh at the same time.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">management.endpoints.web.exposure.include= appconfiguration-refresh, appconfiguration-refresh-bus</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In addition to exposing the refresh endpoints a required query parameter has been added for security. No token name or value is set by default, but setting one is required in order to use the endpoints.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].monitoring.push-notification.primary-token.name=[primary-token-name]
+spring.cloud.azure.appconfiguration.stores[0].monitoring.push-notification.primary-token.secret=[primary-token-secret]
+spring.cloud.azure.appconfiguration.stores[0].monitoring.push-notification.secondary-token.name=[secondary-token-name]
+spring.cloud.azure.appconfiguration.stores[0].monitoring.push-notification.secondary-token.secret=[secondary-token-secret]</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_setting_up_web_hooks"><a class="link" href="#_setting_up_web_hooks">Setting Up Web Hooks</a></h4>
+<div class="paragraph">
+<p>To setup a Web Hook open your Azure App Configuration store and select the events tab. Select "+ Event Subscription". Set the name of your Event and select the Endpoint type to be Web Hook. Selecting Web Hook will cause an Endpoint option to appear, select "Select an endpoint". Your endpoint will look like the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>https://www.myaplication.com/actuator/appconfiguration-refresh?myTokenName=mySecret</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In order to "Confirm Selection" will send a setup notification to the given URI and it expects a response. If no response is returned it will fail. The <code>azure-spring-cloud-appconfiguration-web</code> library if setup for endpoints will return the correct response if the Azure App Configuration store is configured for the application. This confirmation can be sent in other ways see <a href="https://docs.microsoft.com/azure/event-grid/webhook-event-delivery">Event Grid Web Hook Delivery</a> for more information on Web Hook validation.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This validation only happens on the creation/modification of the endpoint.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>It is highly recommended that filters are set up as otherwise a refresh will be triggered after every key creation and modification.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_forced_client_refresh"><a class="link" href="#_forced_client_refresh">Forced Client Refresh</a></h3>
+<div class="paragraph">
+<p>The library can be configured to force a refresh of all configurations at a refresh interval.</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content stretch">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Required</th>
+<th class="tableblock halign-left valign-top">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.cloud.azure.appconfiguration.refresh-interval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amount of time, of type Duration, configurations are stored before a check can occur.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Refreshing with <code>spring.cloud.azure.appconfiguration.refresh-interval</code> doesn&#8217;t check any configured watch keys. This is mainly used to make sure Key Vault Secrets are kept up to date, as Azure App Configuration can&#8217;t tell when they are updated.</p>
+</div>
+<div class="paragraph">
+<p>Since Azure Key Vault stores the public and private key pair of a certificate as a secret, your application can retrieve any certificate as a <a href="#Key Vault References">Key Vault Reference</a> in App Configuration. Because certificates need to be rotated periodically, client applications need to update just as frequently, which can be done by using the client refresh interval.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_feature_flag_refresh"><a class="link" href="#_feature_flag_refresh">Feature Flag Refresh</a></h3>
+<div class="paragraph">
+<p>If Feature Flags and Monitoring are both enabled, then by default the refresh interval for feature flags is set to 30s. Once the refresh interval has passed, all feature flags will be checked in the given store for changes. Any change to the key will cause a refresh to trigger. Because the libraries integrate with the Spring refresh system, any refresh will reload all configurations from all stores. The refresh-interval can be set to any interval longer than 1 second. The supported units for the refresh-interval are s, m, h, d for seconds, minutes, hours, and days respectively.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">spring.cloud.azure.appconfiguration.stores[0].monitoring.feature-flag-refresh-interval= 5m</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>
