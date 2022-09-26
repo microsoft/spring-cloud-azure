@@ -3,7 +3,7 @@
 
 link:https://azure.microsoft.com/services/postgresql/[Azure Database for PostgreSQL] is a relational database service based on the open-source Postgres database engine. It's a fully managed database-as-a-service that can handle mission-critical workloads with predictable performance, security, high availability, and dynamic scalability.
 
-From version 4.4.0, Spring Cloud Azure supports various types of credentials for authentication to `Azure Database for PostgreSQL single server`.
+From version 4.4.0, Spring Cloud Azure supports various types of credentials for authentication to *Azure Database for PostgreSQL single server*.
 
 === Supported PostgreSQL version
 
@@ -19,17 +19,17 @@ Passwordless connection is to connect to Azure services without storing any cred
 
 Spring Cloud Azure will first build one of the following types of credentials depending on the application authentication configuration:
 
-- ClientSecretCredential
-- ClientCertificateCredential
-- UsernamePasswordCredential
-- ManagedIdentityCredential
-- DefaultAzureCredential
+- `ClientSecretCredential`
+- `ClientCertificateCredential`
+- `UsernamePasswordCredential`
+- `ManagedIdentityCredential`
+- `DefaultAzureCredential`
 
 If none of these types of credentials are found, the `DefaultAzureCredential` credentials will be obtained from application properties, environment variables, managed identities, or the IDE. For detailed information, see the link:index.html#authentication[Authentication] section.
 
 The following high-level diagram summarizes how authentication works using OAuth credential authentication with Azure Database for PostgreSQL. The arrows indicate communication pathways.
 
-image:https://review.learn.microsoft.com/en-us/azure/developer/java/spring-framework/media/spring-cloud-azure/authentication-postgresql-azure-active-directory.png[Authentication PostgreSQL Azure Active Directory]
+image:https://user-images.githubusercontent.com/58474919/192259091-ba4b102e-9be5-4d4c-b320-a3c77d405426.png[Authentication PostgreSQL Azure Active Directory]
 
 === Configuration
 
@@ -45,7 +45,7 @@ The following table shows the Spring Cloud Azure for PostgreSQL common configura
 [cols="2*", options="header"]
 |===
 | Name                                                                                                   | Description
-| spring.datasource.azure.passwordless-enabled                                                           | Whether to enable supporting azure identity token credentials. The default value is `false`.
+| spring.datasource.azure.passwordless-enabled                                                           | Whether to enable supporting Azure identity token credentials. The default value is *false*.
 | spring.datasource.azure.credential.client-certificate-password                                         | Password of the certificate file.
 | spring.datasource.azure.credential.client-certificate-path                                             | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 | spring.datasource.azure.credential.client-id                                                           | Client ID to use when performing service principal authentication with Azure. This is a legacy property.
@@ -70,18 +70,18 @@ Add the following dependency to your project. This will automatically include th
 </dependency>
 ----
 
-NOTE: Remember to add the BOM `spring-cloud-azure-dependencies` along with the above dependency. For details, see the link:index.html#getting-started[Getting started] section.
+NOTE: Remember to add the BOM `spring-cloud-azure-dependencies` along with the above dependency. For more information, see the link:index.html#getting-started[Getting started] section.
 
 === Basic usage
 
 The following sections show the classic Spring Boot application usage scenarios.
 
-IMPORTANT: Passwordless connection using Azure AD authentication. To use Azure AD authentication, we should set the Azure AD admin user first. Only an Azure AD Admin user can create/enable users for Azure AD-based authentication. Before starting to use the following usage scenarios, you need link:https://learn.microsoft.com/azure/developer/java/spring-framework/configure-spring-data-jdbc-with-azure-postgresql?branch=release-cred-free-java&tabs=passwordless#create-a-postgresql-server-and-set-up-admin-user[create a PostgreSQL server and set up admin user].
+IMPORTANT: Passwordless connection using Azure AD authentication. To use Azure AD authentication, we should set the Azure AD admin user first. Only an Azure AD Admin user can create and enable users for Azure AD-based authentication. Before starting to use the following usage scenarios, you need link:https://review.learn.microsoft.com/azure/developer/java/spring-framework/configure-spring-data-jdbc-with-azure-postgresql?branch=release-cred-free-java&tabs=passwordless#create-a-postgresql-non-admin-user-and-grant-permission[create a PostgreSQL server and set up admin user].
 
 ==== Connect to Azure PostgreSQL locally without password
 
-1. link:https://learn.microsoft.com/azure/developer/java/spring-framework/configure-spring-data-jdbc-with-azure-postgresql?branch=release-cred-free-java&tabs=passwordless#create-a-postgresql-non-admin-user-and-grant-permission[Create a PostgreSQL non-admin user and grant permission]
-2. configure the following properties in `application.yml`:
+1. To create users and grant permission, see the link:https://review.learn.microsoft.com/azure/developer/java/spring-framework/configure-spring-data-jdbc-with-azure-postgresql?branch=release-cred-free-java&tabs=passwordless#create-a-postgresql-non-admin-user-and-grant-permission[Create a PostgreSQL non-admin user and grant permission]
+2. Configure the following properties in your *application.yml* file:
 
 [source,yaml]
 ----
@@ -95,9 +95,9 @@ spring:
 
 ==== Connect to Azure PostgreSQL using a service principal
 
-1. Assign role to service principal:
+1. Create an Azure AD user for service principal and grant permission.
 +
-Save the sql script of creating an Azure AD service principal user to local with the following command:
+Create a SQL script called *create_ad_user_sp.sql* for creating a non-admin user. Add the following contents and save it locally:
 +
 IMPORTANT: Make sure `<service-principal-name>` already exit in your Azure AD tenant, or link:/azure/postgresql/single-server/how-to-configure-sign-in-azure-ad-authentication#creating-azure-ad-users-in-azure-database-for-postgresql[create Azure AD user]  will be failed.
 +
@@ -112,21 +112,21 @@ GRANT ALL PRIVILEGES ON DATABASE $AZ_DATABASE_NAME TO "$AZ_POSTGRESQL_AD_SP_USER
 EOF
 ----
 +
-Run the sql script to create the Azure AD service principal user:
+Use the following command to run the SQL script to create the Azure AD non-admin user:
 +
 [source,bash]
 ----
 psql "host=$AZ_DATABASE_NAME.postgres.database.azure.com user=$CURRENT_USERNAME@$AZ_DATABASE_NAME dbname=demo port=5432 password=`az account get-access-token --resource-type oss-rdbms --output tsv --query accessToken` sslmode=require" < create_ad_user_sp.sql
 ----
 +
-Remove the temporary sql script file:
+Now use the following command to remove the temporary SQL script file:
 +
 [source,bash]
 ----
 rm create_ad_user_sp.sql
 ----
 
-2. configure the following properties in `application.yml`:
+2. Configure the following properties in your *application.yml* file:
 
 [source,yaml]
 ----
@@ -147,11 +147,11 @@ spring:
 
 ==== Connect to Azure PostgreSQL with Managed Identity in Azure Spring Apps
 
-1. link:/azure/developer/java/spring-framework/migrate-postgresql-to-passwordless-connection?branch=release-cred-free-java&tabs=sign-in-azure-cli%2Cjava%2Cazure-portal%2Cspring-apps%2Cspring-apps-identity#create-the-managed-identity-using-the-azure-portal[Create the managed identity using the Azure Portal]
+1. To enable managed identity, see the link:https://review.learn.microsoft.com/azure/developer/java/spring-framework/migrate-postgresql-to-passwordless-connection?branch=release-cred-free-java&tabs=sign-in-azure-cli%2Cjava%2Cazure-portal%2Cspring-apps%2Cspring-apps-identity#create-the-managed-identity-using-the-azure-portal[Create the managed identity using the Azure Portal]
 
-2. link:/azure/developer/java/spring-framework/migrate-postgresql-to-passwordless-connection?branch=release-cred-free-java&tabs=sign-in-azure-cli%2Cjava%2Cazure-portal%2Cspring-apps%2Cspring-apps-identity#assign-roles-to-the-managed-identity[Assign role to managed identity]
+2. To grant permissions, see the link:https://review.learn.microsoft.com/azure/developer/java/spring-framework/migrate-postgresql-to-passwordless-connection?branch=release-cred-free-java&tabs=sign-in-azure-cli%2Cjava%2Cazure-portal%2Cspring-apps%2Cspring-apps-identity#assign-roles-to-the-managed-identity[Assign role to managed identity]
 
-3. configure the following properties in `application.yml`:
+3. Configure the following properties in your *application.yml* file:
 
 [source,yaml]
 ----
@@ -168,6 +168,6 @@ spring:
       passwordless-enabled: true
 ----
 
-NOTE: Get more information about [Deploying Spring Application Connected to Azure Database Passwordlessly to Azure Spring Apps](/azure/developer/java/spring-framework/deploy-passwordless-spring-database-app?branch=pr-en-us-3511&tabs=postgresql)
+NOTE: Get more information about link:https://review.learn.microsoft.com/azure/developer/java/spring-framework/deploy-passwordless-spring-database-app?branch=pr-en-us-3511&tabs=postgresql[Deploying Spring Application Connected to Azure Database Passwordlessly to Azure Spring Apps]
 
 include::migrate-postgresql-to-passwordless-connection.adoc[]
