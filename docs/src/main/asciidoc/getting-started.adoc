@@ -81,16 +81,6 @@ Spring Cloud Azure provides the following starters under the `com.azure.spring` 
 |Starter for using Spring Boot’s Actuator which provides production ready features
 |===
 
-Below are starters for **Spring Data** support:
-
-.Spring Data related starters
-[cols="<50,<50", options="header"]
-|===
-|Name |Description
-|spring-cloud-azure-starter-data-cosmos
-|Starter for using Azure Cosmos DB and Spring Data Cosmos DB
-|===
-
 Below are starters for **Spring Integration** support:
 
 .Spring Integration related starters

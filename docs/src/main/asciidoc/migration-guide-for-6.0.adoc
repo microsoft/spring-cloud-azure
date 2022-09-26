@@ -1,0 +1,5 @@
+
+== Migration Guide for 6.0
+
+To learn how to migrate to 6.0, please check link:appendix.html#migration-guide-for-6-0[the Appendix page].
+

@@ -1,0 +1,145 @@
+
+[#migration-guide-for-6-0]
+== Migration Guide for 6.0
+
+[#migration-guide-introduction]
+=== Introduction
+
+This guide assists in the migration to *Spring Cloud Azure 6.0* from legacy Azure Spring libraries.
+
+This guide will call libraries whose version matching `6.x` the *modern* libraries,
+and those with version `4.x` the *legacy* ones.
+
+This guide will focus the side-by-side comparisons for similar configurations between the modern and legacy libraries.
+
+For those new to the Spring Cloud Azure 6.0 libraries, please refer to the link:index.html[Spring Cloud Azure 6.0 Reference Doc] rather than this guide.
+
+[#migration-guide-benefits]
+=== Migration Benefits
+
+A natural question to ask when considering whether to adopt a new version or library is its benefits. As Azure has
+matured and been embraced by a more diverse group of developers, we've been focused on learning the patterns and
+practices to best support developer productivity and to understand the gaps that the Spring Cloud Azure libraries have.
+
+The *Spring Cloud Azure 6.0* will benefit from the below aspects:
+
+* Java 17 language features.
+* Lots of dependencies upgrades, like Jakarta EE 9.
+* Initial AOT support since Spring Framework 6.
+
+=== Overview
+
+This migration guide will consist following sections:
+
+* Artifact changes: renamed / added / deleted
+* Dependency changes
+* API breaking changes
+* Library changes
+
+=== Artifact Changes: Renamed / Added / Deleted
+
+Group Ids and artifact Ids are the same for modern and legacy Spring Cloud Azure libraries.
+In order to launch the first version to support Spring Boot 3, the Spring Cloud Azure 6.0 will exclude some components that are not ready to support.
+
+.Deleted artifact Id
+[cols="<,<,<", options="header"]
+|===
+|Legacy Artifact ID |Modern Artifact ID |Description
+|spring-cloud-azure-starter-data-cosmos |N/A |Delete this artifact because the Spring Data 3 adaptation has not been completed.
+|===
+
+=== Dependency Changes
+
+The modern Spring Cloud Azure 6.0 libraries are based on Jakarta EE 9, which uses a new top-level jakarta package, it's required to replace EE 8’s javax top-level package.
+Please make sure to correct the `javax` package to `jakarta` package in your application.
+
+Libraries that have dependency changes include:
+
+- <<dependency-spring-cloud-azure-starter-active-directory, spring-cloud-azure-starter-active-directory>>
+- <<dependency-spring-cloud-azure-starter-active-directory-b2c, spring-cloud-azure-starter-active-directory-b2c>>
+- <<dependency-spring-cloud-azure-starter-servicebus-jms, spring-cloud-azure-starter-servicebus-jms>>
+
+=== API breaking changes
+
+For API breaking changes in each libraries, please refer to below links for details.
+
+- <<api-spring-cloud-azure-starter-data-cosmos, spring-cloud-azure-starter-data-cosmos>>
+
+=== Library Changes
+
+Breaking changes in each library are introduced as follows.
+
+==== spring-cloud-azure-starter-active-directory
+
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 6.0.
+
+[#dependency-spring-cloud-azure-starter-active-directory]
+===== Dependency Changes
+
+Some dependencies in the legacy artifact have been upgraded since the modern Spring Cloud Azure 6.0 library. Please update these changes to your project to fix compilation errors.
+
+.Upgrade Dependencies
+[cols="<,<,<", options="header"]
+|===
+|Legacy dependency |Modern dependency |Description
+|javax.servlet:javax.servlet-api
+|jakarta.servlet:jakarta.servlet-api
+|Required.
+|===
+
+==== spring-cloud-azure-starter-active-directory-b2c
+
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 6.0.
+
+[#dependency-spring-cloud-azure-starter-active-directory-b2c]
+===== Dependency Changes
+
+Some dependencies in the legacy artifact have been upgraded since the modern Spring Cloud Azure 6.0 library.
+Please update these changes to your project to fix compilation errors.
+
+.Upgrade Dependencies
+[cols="<,<,<", options="header"]
+|===
+|Legacy dependency |Modern dependency |Description
+|javax.servlet:javax.servlet-api
+|jakarta.servlet:jakarta.servlet-api
+|Required.
+|===
+
+==== spring-cloud-azure-starter-data-cosmos
+
+The adaptation of Spring Data 3 has not been completed, Spring Cloud Azure 6.0 will not include the Spring Data Cosmos part,
+and the related API has been deleted.
+
+[#api-spring-cloud-azure-starter-data-cosmos]
+===== API Changes
+
+This section lists the removed classes from spring-cloud-azure-starter-data-cosmos +
+
+.Removed legacy class
+* com.azure.spring.cloud.autoconfigure.data.cosmos.CosmosDataAutoConfiguration
+* com.azure.spring.cloud.autoconfigure.data.cosmos.CosmosReactiveRepositoriesAutoConfiguration
+* com.azure.spring.cloud.autoconfigure.data.cosmos.CosmosReactiveRepositoriesAutoConfigureRegistrar
+* com.azure.spring.cloud.autoconfigure.data.cosmos.CosmosRepositoriesAutoConfiguration
+* com.azure.spring.cloud.autoconfigure.data.cosmos.CosmosRepositoriesAutoConfigureRegistrar
+
+==== spring-cloud-azure-starter-servicebus-jms
+
+* Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 6.0.
+
+[#dependency-spring-cloud-azure-starter-servicebus-jms]
+===== Dependency Changes
+
+Some dependencies in the legacy artifact have been upgraded since the modern Spring Cloud Azure 6.0 library.
+Please update these changes to your project to fix compilation errors.
+
+.Upgrade Dependencies
+[cols="<,<,<", options="header"]
+|===
+|Legacy dependency |Modern dependency |Description
+|org.apache.geronimo.specs:geronimo-jms_2.0_spec
+|jakarta.jms:jakarta.jms-api
+|Transitively depends on this artifact.
+
+|===
+
