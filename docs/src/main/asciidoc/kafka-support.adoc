@@ -1,11 +1,11 @@
 [#kafka-support]
 == Kafka Support
 
-From version 4.3.0, Spring Cloud Azure for Kafka supports various types of credentials to authenticate and connect to Azure Event Hubs.
+From version **4.3.0**, Spring Cloud Azure for Kafka supports various types of credentials to authenticate and connect to Azure Event Hubs.
 
 === Supported Kafka version
 
-The current version of the starter should be compatible with Apache Kafka Clients 2.0.0 using Java 8 or above.
+The current version of the starter should be compatible with Apache Kafka Clients **2.0.0** using Java **8** or above.
 
 === Supported authentication types
 
@@ -39,7 +39,7 @@ If none of these types of credentials are found, the credential chain via `Defau
 
 For the connection string authentication mode, you can use connection string authentication directly or use the Azure Resource Manager to retrieve the connection string. For more information about the usage, see the link:#basic-usage-connection-string[Basic usage for connection string authentication] section.
 
-NOTE: Since version of 4.3.0, connection string authentication is deprecated in favor of OAuth authentications.
+NOTE: Since version of **4.3.0**, connection string authentication is deprecated in favor of OAuth authentications.
 
 === Configuration
 
@@ -236,7 +236,7 @@ spring.cloud.stream.kafka.binder.brokers=<NAMESPACENAME>.servicebus.windows.net:
 spring.cloud.stream.binders.kafka.environment.spring.main.sources=com.azure.spring.cloud.autoconfigure.kafka.AzureKafkaSpringCloudStreamConfiguration
 ----
 
-NOTE: If you're using version `4.3.0`, don't forget to set the `spring.cloud.stream.binders.<kafka-binder-name>.environment.spring.main.sources=com.azure.spring.cloud.autoconfigure.kafka.AzureKafkaSpringCloudStreamConfiguration` property to enable the whole OAuth authentication workflow, where `kafka-binder-name` is `kafka` by default in a single Kafka binder application. The configuration `AzureKafkaSpringCloudStreamConfiguration` specifies the OAuth security parameters for `KafkaBinderConfigurationProperties`, which is used in `KafkaOAuth2AuthenticateCallbackHandler` to enable Azure Identity. For version after `4.4.0`, this property will be added automatically for each Kafka binder environment, so there's no need for you to add it manually.
+NOTE: If you're using version **4.3.0**, don't forget to set the `spring.cloud.stream.binders.<kafka-binder-name>.environment.spring.main.sources=com.azure.spring.cloud.autoconfigure.kafka.AzureKafkaSpringCloudStreamConfiguration` property to enable the whole OAuth authentication workflow, where `kafka-binder-name` is `kafka` by default in a single Kafka binder application. The configuration `AzureKafkaSpringCloudStreamConfiguration` specifies the OAuth security parameters for `KafkaBinderConfigurationProperties`, which is used in `KafkaOAuth2AuthenticateCallbackHandler` to enable Azure Identity. For version after `4.4.0`, this property will be added automatically for each Kafka binder environment, so there's no need for you to add it manually.
 
 ====== Samples
 
@@ -247,7 +247,7 @@ See the link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spr
 
 You can use connection string authentication directly or use the Azure Resource Manager to retrieve the connection string.
 
-NOTE: Since version of 4.3.0, connection string authentication is deprecated in favor of OAuth authentications.
+NOTE: Since version of **4.3.0**, connection string authentication is deprecated in favor of OAuth authentications.
 
 ===== Dependency setup
 
@@ -306,5 +306,3 @@ spring:
 === Samples
 
 See the link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}[azure-spring-boot-samples] repository on GitHub.
-
-include::migrate-kafka-to-passwordless-connection.adoc[]
