@@ -1,0 +1,177 @@
+[#mysql-support]
+== MySQL support
+
+link:https://azure.microsoft.com/services/mysql/[Azure Database for MySQL] is a relational database service powered by the MySQL community edition. You can use either Single Server or Flexible Server to host a MySQL database in Azure. It's a fully managed database-as-a-service offering that can handle mission-critical workloads with predictable performance and dynamic scalability.
+
+From version 4.4.0, Spring Cloud Azure supports various types of credentials for authentication to `Azure Database for MySQL single server`.
+
+=== Supported MySQL version
+
+The current version of the starter should use Azure Database for MySQL Single Server version `5.7` or `8.0`.
+
+=== Core Features
+
+==== Passwordless connection
+
+Passwordless connection is to connect to Azure services without storing any credentials in the application, no matter stored in the applications' configuration files or in the environment variables, and it uses Azure AD authentication. Azure AD authentication is a mechanism of connecting to Azure Database for MySQL using identities defined in Azure AD. With Azure AD authentication, you can manage database user identities and other Microsoft services in a central location, which simplifies permission management.
+
+=== How it works
+
+Spring Cloud Azure will first build one of the following types of credentials depending on the application authentication configuration:
+
+- `ClientSecretCredential`
+- `ClientCertificateCredential`
+- `UsernamePasswordCredential`
+- `ManagedIdentityCredential`
+- `DefaultAzureCredential`
+
+If none of these types of credentials are found, the `DefaultAzureCredential` credentials will be obtained from application properties, environment variables, managed identities, or the IDE. For detailed information, see the link:index.html#authentication[Spring Cloud Azure authentication] section.
+
+The following high-level diagram summarizes how authentication works using OAuth credential authentication with Azure Database for MySQL. The arrows indicate communication pathways.
+
+image:https://user-images.githubusercontent.com/58474919/192254109-22341bfc-20a9-4fe5-bc62-92ed7b253343.png[Diagram showing Azure Active Directory authentication for MySQL]
+
+=== Configuration
+
+Spring Cloud Azure for MySQL supports the following two levels of configuration options:
+
+1. The global authentication configuration options of `credential` and `profile` with prefixes of `spring.cloud.azure`.
+
+2. Spring Cloud Azure for MySQL common configuration options.
+
+The following table shows the Spring Cloud Azure for MySQL common configuration options:
+
+.Spring Cloud Azure for MySQL common configuration options
+[cols="2*", options="header"]
+|===
+| Name                                                                                                   | Description
+| spring.datasource.azure.passwordless-enabled                                                           | Whether to enable supporting Azure identity token credentials. The default value is *false*.
+| spring.datasource.azure.credential.client-certificate-password                                         | Password of the certificate file.
+| spring.datasource.azure.credential.client-certificate-path                                             | Path of a PEM certificate file to use when performing service principal authentication with Azure.
+| spring.datasource.azure.credential.client-id                                                           | Client ID to use when performing service principal authentication with Azure. This is a legacy property.
+| spring.datasource.azure.credential.client-secret                                                       | Client secret to use when performing service principal authentication with Azure. This is a legacy property.
+| spring.datasource.azure.credential.managed-identity-enabled                                            | Whether to enable managed identity to authenticate with Azure. If *true* and the `client-id` is set, will use the client ID as user assigned managed identity client ID. The default value is *false*.
+| spring.datasource.azure.credential.password                                                            | Password to use when performing username/password authentication with Azure.
+| spring.datasource.azure.credential.username                                                            | Username to use when performing username/password authentication with Azure.
+| spring.datasource.azure.profile.cloud-type                                                             | Name of the Azure cloud to connect to.
+| spring.datasource.azure.profile.environment.active-directory-endpoint                                  | The Azure Active Directory endpoint to connect to.
+| spring.datasource.azure.profile.tenant-id                                                              | Tenant ID for Azure resources.
+|===
+
+=== Dependency setup
+
+Add the following dependency to your project. This will automatically include the `spring-boot-starter` dependency in your project transitively.
+
+[source,xml]
+----
+<dependency>
+    <groupId>com.azure.spring</groupId>
+    <artifactId>spring-cloud-azure-starter-jdbc-mysql</artifactId>
+</dependency>
+----
+
+NOTE: Remember to add the BOM `spring-cloud-azure-dependencies` along with the above dependency. For more information, see the [Getting started](#getting-started) section.
+
+=== Basic usage
+
+The following sections show the classic Spring Boot application usage scenarios.
+
+
+IMPORTANT: Passwordless connection uses Azure AD authentication. To use Azure AD authentication, you should set the Azure AD admin user first. Only an Azure AD Admin user can create you enable users for Azure AD-based authentication. See the link:https://learn.microsoft.com/azure/developer/java/spring-framework/configure-spring-data-jdbc-with-azure-mysql?branch=release-cred-free-java&tabs=passwordless#create-a-mysql-server-and-set-up-admin-user[Create a MySQL server and set up admin user] section.
+
+==== Connect to Azure MySQL locally without password
+
+1. To create users and grant permission, see the link:https://learn.microsoft.com/azure/developer/java/spring-framework/configure-spring-data-jdbc-with-azure-mysql?branch=release-cred-free-java&tabs=passwordless#create-a-mysql-non-admin-user-and-grant-permission[Create a MySQL non-admin user and grant permission] section to create users and grant permission.
+
+2. Configure the following properties in your *application.yml*:
+
+[source,yaml]
+----
+spring:
+  datasource:
+    url: jdbc:mysql://${AZURE_MYSQL_SERVER_NAME}.mysql.database.azure.com:3306/${AZURE_MYSQL_DATABASE_NAME}
+    username: ${AZURE_MYSQL_AD_NON_ADMIN_USERNAME}@${AZURE_MYSQL_SERVER_NAME}
+    azure:
+      passwordless-enabled: true
+----
+
+==== Connect to Azure MySQL using a service principal
+
+1. Create an Azure AD user for service principal and grant permission.
++
+First, use the following commands to set up some environment variables.
++
+[source,bash]
+----
+export AZURE_MYSQL_AZURE_AD_SP_USERID=`az ad sp list --display-name <service_principal-name> --query '[0].appId' -otsv`
+export AZURE_MYSQL_AZURE_AD_SP_USERNAME=<YOUR_MYSQL_AZURE_AD_USERNAME>
+export AZURE_MYSQL_SERVER_NAME=<YOUR_MYSQL_SERVER_NAME>
+export AZURE_MYSQL_DATABASE_NAME=<YOUR_MYSQL_DATABASE_NAME>
+export CURRENT_USERNAME=$(az ad signed-in-user show --query userPrincipalName -o tsv)
+----
++
+Then, create a SQL script called *create_ad_user_sp.sql* for creating a non-admin user. Add the following contents and save it locally:
++
+[source,bash]
+----
+cat << EOF > create_ad_user_sp.sql
+SET aad_auth_validate_oids_in_tenant = OFF;
+CREATE AADUSER '$AZURE_MYSQL_AZURE_AD_SP_USERNAME' IDENTIFIED BY '$AZURE_MYSQL_AZURE_AD_SP_USERID';
+GRANT ALL PRIVILEGES ON $AZURE_MYSQL_DATABASE_NAME.* TO '$AZURE_MYSQL_AZURE_AD_SP_USERNAME'@'%';
+FLUSH privileges;
+EOF
+----
++
+Use the following command to run the SQL script to create the Azure AD non-admin user:
++
+[source,bash]
+----
+mysql -h $AZURE_MYSQL_SERVER_NAME.mysql.database.azure.com --user $CURRENT_USERNAME@$AZURE_MYSQL_SERVER_NAME --enable-cleartext-plugin --password=`az account get-access-token --resource-type oss-rdbms --output tsv --query accessToken` < create_ad_user_sp.sql
+----
++
+Now use the following command to remove the temporary SQL script file:
++
+[source,bash]
+----
+rm create_ad_user_sp.sql
+----
+
+2. Configure the following properties in your *application.yml* file:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+  datasource:
+    url: jdbc:mysql://${AZURE_MYSQL_SERVER_NAME}.mysql.database.azure.com:3306/${AZURE_MYSQL_DATABASE_NAME}
+    username: ${AZURE_MYSQL_AD_SP_USERNAME}@${AZURE_MYSQL_SERVER_NAME}
+    azure:
+      passwordless-enabled: true
+----
+
+==== Connect to Azure MySQL with Managed Identity in Azure Spring Apps
+
+1. To enable managed identity, see the link:https://review.learn.microsoft.com/azure/developer/java/spring-framework/migrate-mysql-to-passwordless-connection?branch=release-cred-free-java&tabs=sign-in-azure-cli%2Cjava%2Capp-service%2Capp-service-identity#create-the-managed-identity-using-the-azure-portal[Create the managed identity using the Azure Portal] section to enable managed identity.
+
+2. To grant permissions, see the link:https://review.learn.microsoft.com/azure/developer/java/spring-framework/migrate-mysql-to-passwordless-connection?branch=release-cred-free-java&tabs=sign-in-azure-cli%2Cjava%2Capp-service%2Capp-service-identity#assign-roles-to-the-managed-identity[Assign roles to the managed identity] section to grant permissions.
+
+3. Configure the following properties in `application.yml`:
+
+[source,yaml]
+----
+spring:
+  datasource:
+    url: jdbc:mysql://${AZURE_MYSQL_SERVER_NAME}.mysql.database.azure.com:3306/${AZURE_MYSQL_DATABASE_NAME}
+    username: ${AZURE_MYSQL_AD_MI_USERNAME}@${AZURE_MYSQL_SERVER_NAME}
+    azure:
+      passwordless-enabled: true
+----
+
+include::migrate-mysql-to-passwordless-connection.adoc[]
+
