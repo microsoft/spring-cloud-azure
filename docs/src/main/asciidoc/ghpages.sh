@@ -154,17 +154,17 @@ function copy_docs_for_current_version() {
             fi
         done
         COMMIT_CHANGES="yes"
-    elif [[ "${BETA_RELEASE_BRANCHES_VALUE}" == "feature/spring-cloud-azure-passwordless-connection" ]] ; then
-      echo -e "Current branch is '${BETA_RELEASE_BRANCHES_VALUE}' - will copy the current docs only to the root folder"
-              for f in docs/target/generated-docs/*; do
-                  file=${f#docs/target/generated-docs/*}
-                  if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
-                      # Not ignored...
-                      cp -rf $f ${ROOT_FOLDER}/
-                      git add -A ${ROOT_FOLDER}/$file
-                  fi
-              done
-              COMMIT_CHANGES="yes"
+    elif [[ ",${BETA_RELEASE_BRANCHES_VALUE}," = *",${CURRENT_BRANCH},"* ]] ; then
+        echo -e "Branch [${CURRENT_BRANCH}] is a whitelisted beta release branch! Will copy the current docs to the root folder"
+        for f in docs/target/generated-docs/*; do
+            file=${f#docs/target/generated-docs/*}
+            if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
+                # Not ignored...
+                cp -rf $f ${ROOT_FOLDER}/
+                git add -A ${ROOT_FOLDER}/$file
+            fi
+        done
+        COMMIT_CHANGES="yes"
     else
         echo -e "Current branch is [${CURRENT_BRANCH}]"
         # https://stackoverflow.com/questions/29300806/a-bash-script-to-check-if-a-string-is-present-in-a-comma-separated-list-of-strin
