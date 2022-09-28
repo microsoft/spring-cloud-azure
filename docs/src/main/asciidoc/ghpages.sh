@@ -67,31 +67,23 @@ function build_docs_if_applicable() {
 # Get the name of the `docs.main` property
 # Get whitelisted branches - assumes that a `docs` module is available under `docs` profile
 function retrieve_doc_properties() {
-    MAIN_ADOC_VALUE=$("${MAVEN_PATH}"mvn -q \
+    RELEASE_TO_GH_PAGES_ENABLED_PROPERTY=${RELEASE_TO_GH_PAGES_ENABLED_PROPERTY:-"release.to.gh.pages.enabled"}
+    RELEASE_TO_GH_PAGES_ENABLED_VALUE=$("${MAVEN_PATH}"mvn -q \
         -Dexec.executable="echo" \
-        -Dexec.args='${docs.main}' \
-        --non-recursive \
-        org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
-    echo "Extracted 'main.adoc' from Maven build [${MAIN_ADOC_VALUE}]"
-
-
-    WHITELIST_PROPERTY=${WHITELIST_PROPERTY:-"docs.whitelisted.branches"}
-    WHITELISTED_BRANCHES_VALUE=$("${MAVEN_PATH}"mvn -q \
-        -Dexec.executable="echo" \
-        -Dexec.args="\${${WHITELIST_PROPERTY}}" \
+        -Dexec.args="\${${RELEASE_TO_GH_PAGES_ENABLED_PROPERTY}}" \
         org.codehaus.mojo:exec-maven-plugin:1.3.1:exec \
         -P docs \
         -pl docs)
-    echo "Extracted '${WHITELIST_PROPERTY}' from Maven build [${WHITELISTED_BRANCHES_VALUE}]"
+    echo "Extracted '${RELEASE_TO_GH_PAGES_ENABLED_PROPERTY}' from Maven build [${RELEASE_TO_GH_PAGES_ENABLED_VALUE}]"
 
-    BETA_RELEASE_BRANCHES_PROPERTY=${BETA_RELEASE_BRANCHES_PROPERTY:-"docs.beta.release.branches"}
-    BETA_RELEASE_BRANCHES_VALUE=$("${MAVEN_PATH}"mvn -q \
+    RELEASE_TO_GH_PAGES_TARGET_FLODER_PROPERTY=${RELEASE_TO_GH_PAGES_TARGET_FLODER_PROPERTY:-"release.to.gh.pages.target.floder"}
+    RELEASE_TO_GH_PAGES_TARGET_FLODER_VALUE=$("${MAVEN_PATH}"mvn -q \
         -Dexec.executable="echo" \
-        -Dexec.args="\${${BETA_RELEASE_BRANCHES_PROPERTY}}" \
+        -Dexec.args="\${${RELEASE_TO_GH_PAGES_TARGET_FLODER_PROPERTY}}" \
         org.codehaus.mojo:exec-maven-plugin:1.3.1:exec \
         -P docs \
         -pl docs)
-    echo "Extracted '${BETA_RELEASE_BRANCHES_PROPERTY}' from Maven build [${BETA_RELEASE_BRANCHES_VALUE}]"
+    echo "Extracted '${RELEASE_TO_GH_PAGES_TARGET_FLODER_PROPERTY}' from Maven build [${RELEASE_TO_GH_PAGES_TARGET_FLODER_VALUE}]"
 }
 
 # Stash any outstanding changes
@@ -143,55 +135,17 @@ function add_docs_from_target() {
 
 # Copies the docs by using the retrieved properties from Maven build
 function copy_docs_for_current_version() {
-    if [[ "${CURRENT_BRANCH}" == "main" ]] ; then
-        echo -e "Current branch is main - will copy the current docs only to the root folder"
+    if [[ "${RELEASE_TO_GH_PAGES_ENABLED_VALUE}" == "true" ]] ; then
+        echo -e "Need to release - will copy the current docs only to the root folder"
         for f in docs/target/generated-docs/*; do
             file=${f#docs/target/generated-docs/*}
             if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
                 # Not ignored...
-                cp -rf $f ${ROOT_FOLDER}/
-                git add -A ${ROOT_FOLDER}/$file
+                cp -rf $f ${ROOT_FOLDER}${RELEASE_TO_GH_PAGES_TARGET_FLODER_VALUE}
+                git add -A ${ROOT_FOLDER}${RELEASE_TO_GH_PAGES_TARGET_FLODER_VALUE}$file
             fi
         done
         COMMIT_CHANGES="yes"
-    elif [[ ",${BETA_RELEASE_BRANCHES_VALUE}," = *",${CURRENT_BRANCH},"* ]] ; then
-        echo -e "Branch [${CURRENT_BRANCH}] is a whitelisted beta release branch! Will copy the current docs to the root folder"
-        for f in docs/target/generated-docs/*; do
-            file=${f#docs/target/generated-docs/*}
-            if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
-                # Not ignored...
-                cp -rf $f ${ROOT_FOLDER}/
-                git add -A ${ROOT_FOLDER}/$file
-            fi
-        done
-        COMMIT_CHANGES="yes"
-    else
-        echo -e "Current branch is [${CURRENT_BRANCH}]"
-        # https://stackoverflow.com/questions/29300806/a-bash-script-to-check-if-a-string-is-present-in-a-comma-separated-list-of-strin
-        if [[ ",${WHITELISTED_BRANCHES_VALUE}," = *",${CURRENT_BRANCH},"* ]] ; then
-            mkdir -p ${ROOT_FOLDER}/${CURRENT_BRANCH}
-            echo -e "Branch [${CURRENT_BRANCH}] is whitelisted! Will copy the current docs to the [${CURRENT_BRANCH}] folder"
-            for f in docs/target/generated-docs/*; do
-                file=${f#docs/target/generated-docs/*}
-                if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
-                    # Not ignored...
-                    # We want users to access 1.0.0.RELEASE/ instead of 1.0.0.RELEASE/spring-cloud.sleuth.html
-                    if [[ "${file}" == "${MAIN_ADOC_VALUE}.html" ]] ; then
-                        # We don't want to copy the spring-cloud-sleuth.html
-                        # we want it to be converted to index.html
-                        cp -rf $f ${ROOT_FOLDER}/${CURRENT_BRANCH}/index.html
-                        git add -A ${ROOT_FOLDER}/${CURRENT_BRANCH}/index.html
-                    else
-                        cp -rf $f ${ROOT_FOLDER}/${CURRENT_BRANCH}
-                        git add -A ${ROOT_FOLDER}/${CURRENT_BRANCH}/$file
-                    fi
-                fi
-            done
-            COMMIT_CHANGES="yes"
-        else
-            echo -e "Branch [${CURRENT_BRANCH}] is not on the white list! Check out the Maven [${WHITELIST_PROPERTY}] property in
-             [docs] module available under [docs] profile. Won't commit any changes to gh-pages for this branch."
-        fi
     fi
 }
 
