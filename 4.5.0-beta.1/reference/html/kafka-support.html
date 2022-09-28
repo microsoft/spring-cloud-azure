@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Kafka Support</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript"> (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "b9g1q6wz23"); </script>
+
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#kafka-support">Kafka Support</a>
+<ul class="sectlevel2">
+<li><a href="#_supported_kafka_version">Supported Kafka version</a></li>
+<li><a href="#_supported_authentication_types">Supported authentication types</a></li>
+<li><a href="#_how_it_works">How it works</a></li>
+<li><a href="#_configuration">Configuration</a></li>
+<li><a href="#_dependency_setup">Dependency Setup</a></li>
+<li><a href="#_basic_usage">Basic usage</a></li>
+<li><a href="#_samples_2">Samples</a></li>
+<li><a href="#_migrate_an_application_to_use_passwordless_connections_with_azure_event_hubs_for_kafka">Migrate an application to use passwordless connections with Azure Event Hubs for Kafka</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="kafka-support"><a class="link" href="#kafka-support">Kafka Support</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>From version 4.3.0, Spring Cloud Azure for Kafka supports various types of credentials to authenticate and connect to Azure Event Hubs.</p>
+</div>
+<div class="sect2">
+<h3 id="_supported_kafka_version"><a class="link" href="#_supported_kafka_version">Supported Kafka version</a></h3>
+<div class="paragraph">
+<p>The current version of the starter should be compatible with Apache Kafka Clients 2.0.0 using Java 8 or above.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_supported_authentication_types"><a class="link" href="#_supported_authentication_types">Supported authentication types</a></h3>
+<div class="paragraph">
+<p>The following authentication types are supported:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Plain connection string authentication</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Direct connection string authentication</p>
+</li>
+<li>
+<p>ARM-based connection string authentication</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>OAuth credential authentication</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Managed identity authentication</p>
+</li>
+<li>
+<p>Username/password authentication</p>
+</li>
+<li>
+<p>Service principal authentication</p>
+</li>
+<li>
+<p>DefautlAzureCredential authentication</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_it_works"><a class="link" href="#_how_it_works">How it works</a></h3>
+<div class="sect3">
+<h4 id="_oauth_credential_authentication"><a class="link" href="#_oauth_credential_authentication">OAuth credential authentication</a></h4>
+<div class="paragraph">
+<p>This section describes the overall workflow of Spring Cloud Azure OAuth authentication.</p>
+</div>
+<div class="paragraph">
+<p>Spring Cloud Azure will first build one of the following types of credentials depending on the application authentication configuration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ClientSecretCredential</code></p>
+</li>
+<li>
+<p><code>ClientCertificateCredential</code></p>
+</li>
+<li>
+<p><code>UsernamePasswordCredential</code></p>
+</li>
+<li>
+<p><code>ManagedIdentityCredential</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If none of these types of credentials are found, the credential chain via <code>DefaultAzureTokenCredential</code> will be used to obtain credentials from application properties, environment variables, managed identity, or IDEs. For detailed information, see the <a href="index.html#authentication">Authentication</a> section.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_plain_connection_string_authentication"><a class="link" href="#_plain_connection_string_authentication">Plain connection string authentication</a></h4>
+<div class="paragraph">
+<p>For the connection string authentication mode, you can use connection string authentication directly or use the Azure Resource Manager to retrieve the connection string. For more information about the usage, see the <a href="#basic-usage-connection-string">Basic usage for connection string authentication</a> section.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Since version of 4.3.0, connection string authentication is deprecated in favor of OAuth authentications.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
+<div class="sect3">
+<h4 id="_configurable_properties_when_using_kafka_support_with_oauth_authentication"><a class="link" href="#_configurable_properties_when_using_kafka_support_with_oauth_authentication">Configurable properties when using Kafka support with OAuth authentication</a></h4>
+<div class="paragraph">
+<p>Spring Cloud Azure for Kafka supports the following two levels of configuration options:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Spring Cloud Azure for Event Hubs Kafka properties.</p>
+</li>
+<li>
+<p>The global authentication configuration options of <code>credential</code> and <code>profile</code> with prefixes of <code>spring.cloud.azure</code>.</p>
+</li>
+<li>
+<p>Kafka-specific level configurations. The Kafka-level configurations are also available for Spring Boot and Spring Cloud Stream binders for <code>common</code>, <code>consumer</code>, <code>producer</code>, or <code>admin</code> scopes, which have different prefixes.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The global properties are exposed via <code>com.azure.spring.cloud.autoconfigure.context.AzureGlobalProperties</code>. The Kafka-specific properties are exposed via <code>org.springframework.boot.autoconfigure.kafka.KafkaProperties</code> (Spring Boot) and <code>org.springframework.cloud.stream.binder.kafka.properties.KafkaBinderConfigurationProperties</code> (Spring Cloud Stream binder).</p>
+</div>
+<div class="paragraph">
+<p>The following list shows all supported configuration options.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The Spring Cloud Azure global authentication configuration options</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Prefix: <code>spring.cloud.azure</code></p>
+</li>
+<li>
+<p>Supported options: <code>spring.cloud.azure.credential.<strong></code>, <code>spring.cloud.azure.profile.</strong></code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For the full list of global configuration options, see the <a href="appendix.html#global_proeprties">Global properties</a> section.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Spring Boot Kafka common configuration</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Prefix: <code>spring.kafka.properties.azure</code></p>
+</li>
+<li>
+<p>Example: <code>spring.kafka.properties.azure</code>.credential.*</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Spring Kafka consumer configuration options</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Prefix: <code>spring.kafka.consumer.properties.azure</code></p>
+</li>
+<li>
+<p>Example: <code>spring.kafka.consumer.properties.azure</code>.credential.*</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Spring Kafka producer configuration options</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Prefix: <code>spring.kafka.producer.properties.azure</code></p>
+</li>
+<li>
+<p>Example: <code>spring.kafka.producer.properties.azure</code>.credential.*</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Spring Kafka admin configuration options</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Prefix: <code>spring.kafka.admin.properties.azure</code></p>
+</li>
+<li>
+<p>Example: <code>spring.kafka.admin.properties.azure</code>.credential.*</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Spring Cloud Stream Kafka Binder common configuration</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Prefix: <code>spring.cloud.stream.kafka.binder.configuration.azure</code></p>
+</li>
+<li>
+<p>Example: <code>spring.cloud.stream.kafka.binder.configuration.azure</code>.credential.*</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Spring Cloud Stream Kafka Binder consumer configuration</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Prefix: <code>spring.cloud.stream.kafka.binder.consumer-properties.azure</code></p>
+</li>
+<li>
+<p>Example: <code>spring.cloud.stream.kafka.binder.consumer-properties.azure</code>.credential.*</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Spring Cloud Stream Kafka Binder producer configuration</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Prefix: <code>spring.cloud.stream.kafka.binder.producer-properties.azure</code></p>
+</li>
+<li>
+<p>Example: <code>spring.cloud.stream.kafka.binder.producer-properties.azure</code>.credential.*</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Spring Cloud Stream Kafka Binder admin configuration</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Prefix: Not supported, should use Spring Boot Kafka common or admin configuration.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Spring Boot Kafka common configuration options</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.kafka.properties.azure.credential.client-certificate-password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.kafka.properties.azure.credential.client-certificate-path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path of a PEM certificate file to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.kafka.properties.azure.credential.client-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client ID to use when performing service principal authentication with Azure. This is a legacy property.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.kafka.properties.azure.credential.client-secret</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure. This is a legacy property.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.kafka.properties.azure.credential.managed-identity-enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable managed identity to authenticate with Azure. If <strong>true</strong> and the <code>client-id</code> is set, will use the client ID as user assigned managed identity client ID. The default value is <strong>false</strong>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.kafka.properties.azure.credential.password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.kafka.properties.azure.credential.username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.kafka.properties.azure.profile.environment.active-directory-endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Azure Active Directory endpoint to connect to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.kafka.properties.azure.profile.tenant-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tenant ID for Azure resources.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The configuration options in different levels apply the following rules. The more specific configuration options have higher priority than the common ones. For example:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Spring Kafka common configuration options supersede the global options.</p>
+</li>
+<li>
+<p>Spring Kafka consumer configuration options supersede the common options.</p>
+</li>
+<li>
+<p>Spring Kafka producer configuration options supersede the common options.</p>
+</li>
+<li>
+<p>Spring Kafka admin configuration options supersede the common options.</p>
+</li>
+<li>
+<p>The Spring Cloud Stream Kafka Binder options are just like the above.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configurable_properties_when_using_kafka_support_with_plain_connection_string_authentication"><a class="link" href="#_configurable_properties_when_using_kafka_support_with_plain_connection_string_authentication">Configurable properties when using Kafka support with plain connection string authentication</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Spring Boot Event Hubs for Kafka common configuration options</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.kafka.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable the Azure Event Hubs Kafka support. The default value is <strong>true</strong>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.connection-string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Event Hubs connection string. Provide this value when you want to provide the connection string directly.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.namespace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Azure Event Hubs namespace. Provide this value when you want to retrieve the connection information through Azure Resource Manager.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.resource.resource-group</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The resource group of Azure Event Hubs namespace. Provide this value when you want to retrieve the connection information through Azure Resource Manager.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure</strong>.profile.subscription-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The subscription ID. Provide this value when you want to retrieve the connection information through Azure Resource Manager.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h3>
+<div class="paragraph">
+<p>Add the following dependency to your project. This will automatically include the <code>spring-boot-starter</code> dependency in your project transitively.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+  &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Remember to add the BOM <code>spring-cloud-azure-dependencies</code> along with the above dependency. For details, see the <a href="index.html#starter-dependencies">Getting started</a> section.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_basic_usage"><a class="link" href="#_basic_usage">Basic usage</a></h3>
+<div class="paragraph">
+<p>The following sections show the classic Spring Boot application usage scenarios.</p>
+</div>
+<div class="sect3">
+<h4 id="_use_oauth_authentication"><a class="link" href="#_use_oauth_authentication">Use OAuth authentication</a></h4>
+<div class="paragraph">
+<p>When you use the OAuth authentication provided by Spring Cloud Azure for Kafka, you can configure the specific credentials using the above configurations. Alternatively, you can choose to configure nothing about credentials, in which case Spring Cloud Azure will load the credentials from the environment. This section describes the usages that load the credentials from the Azure CLI environment or the Azure Spring Apps hosting environment.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, see the <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure Active Directory</a> section to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following section describes the scenarios using different Spring ecosystem libraries with OAuth authentication.</p>
+</div>
+<div class="sect4">
+<h5 id="_spring_kafka_application_support"><a class="link" href="#_spring_kafka_application_support">Spring Kafka application support</a></h5>
+<div class="paragraph">
+<p>This section describes the usage scenario for Spring Boot application using Spring Kafka or Spring Integration Kafka library.</p>
+</div>
+<div class="sect5">
+<h6 id="_dependency_setup_2"><a class="link" href="#_dependency_setup_2">Dependency setup</a></h6>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+    &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;!-- Using Spring Kafka library only--&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.kafka&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-kafka&lt;/artifactId&gt;
+    &lt;version&gt;{version}&lt;/version&gt;&lt;!--Need to be set, for example:2.8.6--&gt;
+&lt;/dependency&gt;
+&lt;!-- Using Spring Integration library only --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.integration&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-integration-kafka&lt;/artifactId&gt;
+    &lt;version&gt;{version}&lt;/version&gt;&lt;!--Need to be set, for example:5.5.12--&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="spring-kafka-configuraiton-setup"><a class="link" href="#spring-kafka-configuraiton-setup">Configuration update</a></h6>
+<div class="paragraph">
+<p>To use the OAuth authentication, just specify the Event Hubs endpoint, as shown in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">spring.kafka.bootstrap-servers=&lt;NAMESPACENAME&gt;.servicebus.windows.net:9093</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_spring_cloud_stream_binder_kafka_application_support"><a class="link" href="#_spring_cloud_stream_binder_kafka_application_support">Spring Cloud Stream binder Kafka application support</a></h5>
+<div class="paragraph">
+<p>This section describes the usage scenario for Spring Boot applications using the Spring Cloud Stream binder Kafka library.</p>
+</div>
+<div class="sect5">
+<h6 id="_dependency_setup_3"><a class="link" href="#_dependency_setup_3">Dependency setup</a></h6>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+    &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-stream-kafka&lt;/artifactId&gt;
+    &lt;version&gt;{version}&lt;/version&gt;&lt;!--Need to be set, for example:3.2.3--&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_configuration_2"><a class="link" href="#_configuration_2">Configuration</a></h6>
+<div class="paragraph">
+<p>To use the OAuth authentication, just specify the Event Hubs endpoint and <code>com.azure.spring.cloud.autoconfigure.kafka.AzureKafkaSpringCloudStreamConfiguration</code>, as shown in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">spring.cloud.stream.kafka.binder.brokers=&lt;NAMESPACENAME&gt;.servicebus.windows.net:9093
+spring.cloud.stream.binders.kafka.environment.spring.main.sources=com.azure.spring.cloud.autoconfigure.kafka.AzureKafkaSpringCloudStreamConfiguration</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you&#8217;re using version <code>4.3.0</code>, don&#8217;t forget to set the <code>spring.cloud.stream.binders.&lt;kafka-binder-name&gt;.environment.spring.main.sources=com.azure.spring.cloud.autoconfigure.kafka.AzureKafkaSpringCloudStreamConfiguration</code> property to enable the whole OAuth authentication workflow, where <code>kafka-binder-name</code> is <code>kafka</code> by default in a single Kafka binder application. The configuration <code>AzureKafkaSpringCloudStreamConfiguration</code> specifies the OAuth security parameters for <code>KafkaBinderConfigurationProperties</code>, which is used in <code>KafkaOAuth2AuthenticateCallbackHandler</code> to enable Azure Identity. For version after <code>4.4.0</code>, this property will be added automatically for each Kafka binder environment, so there&#8217;s no need for you to add it manually.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_samples"><a class="link" href="#_samples">Samples</a></h6>
+<div class="paragraph">
+<p>See the <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.5.0-beta.1">azure-spring-boot-samples</a> repository on GitHub.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="basic-usage-connection-string"><a class="link" href="#basic-usage-connection-string">Use connection string authentication</a></h4>
+<div class="paragraph">
+<p>You can use connection string authentication directly or use the Azure Resource Manager to retrieve the connection string.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Since version of 4.3.0, connection string authentication is deprecated in favor of OAuth authentications.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_dependency_setup_4"><a class="link" href="#_dependency_setup_4">Dependency setup</a></h5>
+<div class="paragraph">
+<p>Add the following dependencies if you want to migrate your Apache Kafka application to use Azure Event Hubs for Kafka.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+  &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you want to retrieve the connection string using Azure Resource Manager, add the following dependency:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+  &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-cloud-azure-resourcemanager&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_configuration_3"><a class="link" href="#_configuration_3">Configuration</a></h5>
+<div class="sect5">
+<h6 id="_use_event_hubs_connection_string_directly"><a class="link" href="#_use_event_hubs_connection_string_directly">Use Event Hubs connection string directly</a></h6>
+<div class="paragraph">
+<p>The simplest way to connect to Event Hubs for Kafka is with the connection string. Just add the following property.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">spring.cloud.azure.eventhubs.connection-string=${AZURE_EVENTHUBS_CONNECTION_STRING}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_use_azure_resource_manager_to_retrieve_connection_string"><a class="link" href="#_use_azure_resource_manager_to_retrieve_connection_string">Use Azure Resource Manager to retrieve connection string</a></h6>
+<div class="paragraph">
+<p>If you don&#8217;t want to configure the connection string in your application, you can use Azure Resource Manager to retrieve the connection string. To authenticate with Azure Resource Manager, you can also use credentials stored in Azure CLI or another local development tool such as Visual Studio Code or Intellij IDEA. Alternately, you can use Managed Identity if your application is deployed to Azure Cloud. Just be sure the principal has sufficient permission to read resource metadata.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, see the <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure Active Directory</a> section to be sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To use Azure Resource Manager to retrieve the connection string, just add the following property.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
+  cloud:
+    azure:
+      profile:
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
+      eventhubs:
+        namespace: ${AZURE_EVENTHUBS_NAMESPACE}
+        resource:
+          resource-group: ${AZURE_EVENTHUBS_RESOURCE_GROUP}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_samples_2"><a class="link" href="#_samples_2">Samples</a></h3>
+<div class="paragraph">
+<p>See the <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.5.0-beta.1">azure-spring-boot-samples</a> repository on GitHub.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_migrate_an_application_to_use_passwordless_connections_with_azure_event_hubs_for_kafka"><a class="link" href="#_migrate_an_application_to_use_passwordless_connections_with_azure_event_hubs_for_kafka">Migrate an application to use passwordless connections with Azure Event Hubs for Kafka</a></h3>
+<div class="paragraph">
+<p>This tutorial explains how to migrate from traditional authentication methods to more secure, passwordless connections.</p>
+</div>
+<div class="paragraph">
+<p>Application requests to Azure Event Hubs for Kafka must be authenticated. Azure Event Hubs for Kafka provides different ways for apps to connect securely. One of them is to use the connection string. However, you should prioritize passwordless connections in your applications when possible.</p>
+</div>
+<div class="paragraph">
+<p>The support for passwordless connections is enabled after Spring Cloud Azure 4.3.0. This article is a migration guide for removing credentials from Spring Cloud Stream Kafka applications.</p>
+</div>
+<div class="sect3">
+<h4 id="_compare_authentication_options"><a class="link" href="#_compare_authentication_options">Compare authentication options</a></h4>
+<div class="paragraph">
+<p>When authenticating with Azure Event Hubs for Kafka, the application provides an authorized entity to connect the Event Hubs namespace. Apache Kafka protocols provide multiple Simple Authentication and Security Layer (SASL) mechanisms for authentication. According to the SASL mechanisms, there are two authentication options that you can use to authorize access to your secure resources: Azure Active Directory (Azure AD) authentication and Shared Access Signature (SAS) authentication.</p>
+</div>
+<div class="sect4">
+<h5 id="_azure_ad_authentication"><a class="link" href="#_azure_ad_authentication">Azure AD Authentication</a></h5>
+<div class="paragraph">
+<p>Microsoft Azure AD authentication is a mechanism for connecting to Azure Event Hubs for Kafka using identities defined in Azure AD. With Azure AD authentication, you can manage service principal identities and other Microsoft services in a central location, which simplifies permission management.</p>
+</div>
+<div class="paragraph">
+<p>The benefits of using Azure AD include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Authentication of users across Azure services in a uniform way.</p>
+</li>
+<li>
+<p>Management of password policies and password rotation in a single place.</p>
+</li>
+<li>
+<p>Multiple forms of authentication supported by Azure AD, which can eliminate the need to store passwords.</p>
+</li>
+<li>
+<p>Customers can manage Event Hubs permissions using external (Azure AD) groups.</p>
+</li>
+<li>
+<p>Support for token-based authentication for applications connecting to Azure Event Hubs for Kafka.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_sas_authentication"><a class="link" href="#_sas_authentication">SAS Authentication</a></h5>
+<div class="paragraph">
+<p>Event Hubs also provides the Shared Access Signatures (SAS) for delegated access to Event Hubs for Kafka resources.</p>
+</div>
+<div class="paragraph">
+<p>Although it&#8217;s possible to connect to Azure Event Hubs for Kafka with SAS, they should be used with caution. Developers must be diligent to never expose the connection strings in an unsecure location. Anyone who gains access to the connection strings is able to authenticate. For example, if a connection string is accidentally checked into source control, sent through an unsecure email, pasted into the wrong chat, or viewed by someone who shouldn&#8217;t have permission, there&#8217;s risk of a malicious user accessing the application. Instead, authorizing access using the OAuth 2.0 token-based mechanism provides superior security and ease of use over SAS. Consider updating your application to use passwordless connections.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_introducing_passwordless_connections"><a class="link" href="#_introducing_passwordless_connections">Introducing passwordless connections</a></h4>
+<div class="paragraph">
+<p>With a passwordless connection, you can connect to Azure services without storing any credentials in the application, its configuration files, or in environment variables. Many Azure services support passwordless connections, such as Azure Managed Identity and Role Based Access Control (RBAC). These techniques provide robust security features that you can implement using <code>DefaultAzureCredential</code> from the Azure Identity client libraries. In this tutorial, you&#8217;ll learn how to update an existing application to use <code>DefaultAzureCredential</code> instead of alternatives such as connection strings.</p>
+</div>
+<div class="paragraph">
+<p><code>DefaultAzureCredential</code> supports multiple authentication methods and automatically determines which should be used at runtime. This approach enables your app to use different authentication methods in different environments (local dev vs. production) without implementing environment-specific code.</p>
+</div>
+<div class="paragraph">
+<p>The order and locations in which <code>DefaultAzureCredential</code> searches for credentials can be found in the <a href="https://learn.microsoft.com/dotnet/api/overview/azure/Identity-readme">Azure Identity library overview</a>. For example, when working locally, <code>DefaultAzureCredential</code> will generally authenticate using the account the developer used to sign in to Visual Studio. When the app is deployed to Azure, <code>DefaultAzureCredential</code> will automatically switch to use a [managed identity](/azure/active-directory/managed-identities-azure-resources/overview). No code changes are required for this transition.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+A managed identity provides a security identity to represent an app or service. The identity is managed by the Azure platform and does not require you to provision or rotate any secrets. You can read more about managed identities in the <a href="https://learn.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview">overview</a> documentation.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To ensure that connections are passwordless, you must take into consideration both local development and the production environment. If a connection string is required in either place, then the application isn&#8217;t passwordless.</p>
+</div>
+<div class="paragraph">
+<p>In your local development environment, you can authenticate with Azure CLI, Azure PowerShell, Visual Studio, or Azure plugins for Visual Studio Code or IntelliJ. In this case, you can use that credential in your application instead of configuring properties.</p>
+</div>
+<div class="paragraph">
+<p>When you deploy applications to an Azure hosting environment, such as a virtual machine, you can enable managed identity in that environment. Then, you won&#8217;t need to provide credentials to connect to Azure services.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_migrate_an_existing_application_to_use_passwordless_connections"><a class="link" href="#_migrate_an_existing_application_to_use_passwordless_connections">Migrate an existing application to use passwordless connections</a></h4>
+<div class="paragraph">
+<p>The following steps explain how to migrate an existing application to use passwordless connections instead of a SAS solution.</p>
+</div>
+<div class="sect4">
+<h5 id="_prepare_the_working_environment_for_local_development_authentication"><a class="link" href="#_prepare_the_working_environment_for_local_development_authentication">Prepare the working environment for local development authentication</a></h5>
+<div class="paragraph">
+<p>First, use the following command to set up some environment variables.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">export AZ_RESOURCE_GROUP=&lt;YOUR_RESOURCE_GROUP&gt;
+export AZ_EVENTHUBS_NAMESPACE_NAME=&lt;YOUR_EVENTHUBS_NAMESPACE_NAME&gt;
+export AZ_EVENTHUB_NAME=&lt;YOUR_EVENTHUB_NAME&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Replace the placeholders with the following values, which are used throughout this article:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>&lt;YOUR_RESOURCE_GROUP&gt;</code>: The name of the resource group you&#8217;ll use.</p>
+</li>
+<li>
+<p><code>&lt;YOUR_EVENTHUBS_NAMESPACE_NAME&gt;</code>: The name of the Azure Event Hubs namespace you&#8217;ll use.</p>
+</li>
+<li>
+<p><code>&lt;YOUR_EVENTHUB_NAME&gt;</code>: The name of the event hub you&#8217;ll use.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_grant_permission_for_azure_event_hubs"><a class="link" href="#_grant_permission_for_azure_event_hubs">Grant permission for Azure Event Hubs</a></h5>
+<div class="paragraph">
+<p>If you want to run this sample locally with Azure AD authentication, be sure your user account has authenticated via Azure Toolkit for IntelliJ, Visual Studio Code Azure Account plugin, or Azure CLI. Also, be sure the account has been granted sufficient permissions.</p>
+</div>
+<div class="paragraph">
+<p><strong>Azure portal</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In the Azure portal, locate your Event Hubs namespace using the main search bar or left navigation.</p>
+</li>
+<li>
+<p>On the Event Hubs overview page, select <strong>Access control (IAM)</strong> from the left-hand menu.</p>
+</li>
+<li>
+<p>On the <strong>Access control (IAM)</strong> page, select the <strong>Role assignments</strong> tab.</p>
+</li>
+<li>
+<p>Select <strong>+ Add</strong> from the top menu and then <strong>Add role assignment</strong> from the resulting drop-down menu.</p>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/58474919/192250682-10d372f6-de86-4f05-8a97-ee08b74f1c74.png" alt="Screenshot of Azure portal Access Control (IAM) page of Event Hubs Namespace resource with Add role assignment highlighted"></span></p>
+</div>
+</li>
+<li>
+<p>Use the search box to filter the results to the desired role. For this example, search for <strong>Azure Event Hubs Data Sender</strong> and <strong>Azure Event Hubs Data Receiver</strong> and select the matching result and then choose <strong>Next</strong>.</p>
+</li>
+<li>
+<p>Under <strong>Assign access to</strong>, select <strong>User, group, or service principal</strong>, and then choose <strong>+ Select members</strong>.</p>
+</li>
+<li>
+<p>In the dialog, search for your Azure AD username (usually your <strong>user@domain</strong> email address) and then choose <strong>Select</strong> at the bottom of the dialog.</p>
+</li>
+<li>
+<p>Select <strong>Review + assign</strong> to go to the final page, and then <strong>Review + assign</strong> again to complete the process.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>Azure CLI</strong></p>
+</div>
+<div class="paragraph">
+<p>To authenticate using the Azure CLI, use the following steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Use the following command to sign to your Azure account:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">   az login</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Use the following command to set your current subscription context. Replace <code>ssssssss-ssss-ssss-ssss-ssssssssssss</code> with the GUID for the subscription you want to use with Azure:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">   az account set --subscription ssssssss-ssss-ssss-ssss-ssssssssssss</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Use the following command to get the resource ID for your Azure Event Hubs namespace:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">   export AZURE_EVENTHUBS_RESOURCE_ID=$(az resource show \
+       --resource-group $AZ_RESOURCE_GROUP \
+       --name $AZ_EVENTHUBS_NAMESPACE_NAME \
+       --resource-type Microsoft.EventHub/Namespaces \
+       --query "id" \
+       --output tsv)</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Use the following command to get your user object ID of your Azure CLI user account:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">   export AZURE_AD_ACCOUNT_ID=$(az ad signed-in-user show \
+       --query "id" --output tsv)</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Use the following commands to assign <strong>Azure Event Hubs Data Sender</strong> and <strong>Azure Event Hubs Data Receiver</strong> roles to your account.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">   az role assignment create \
+       --assignee $AZURE_AD_ACCOUNT_ID \
+       --role "Azure Event Hubs Data Receiver" \
+       --scope $AZURE_EVENTHUBS_RESOURCE_ID
+   az role assignment create \
+       --assignee $AZURE_AD_ACCOUNT_ID \
+       --role "Azure Event Hubs Data Sender" \
+       --scope $AZURE_EVENTHUBS_RESOURCE_ID</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>For more information about granting access roles, see <a href="https://learn.microsoft.com/azure/event-hubs/authorize-access-azure-active-directory">Authorize access to Event Hubs resources using Azure Active Directory</a>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_sign_in_and_migrate_the_app_code_to_use_passwordless_connections"><a class="link" href="#_sign_in_and_migrate_the_app_code_to_use_passwordless_connections">Sign-in and migrate the app code to use passwordless connections</a></h5>
+<div class="paragraph">
+<p>For local development, make sure you&#8217;re authenticated with the same Azure AD account you assigned the role to on your Event Hubs. You can authenticate via the Azure CLI, Visual Studio, Azure PowerShell, or other tools such as IntelliJ.</p>
+</div>
+<div class="paragraph">
+<p><strong>Azure CLI</strong></p>
+</div>
+<div class="paragraph">
+<p>Sign in to Azure through the Azure CLI by using the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">az login</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Visual Studio</strong></p>
+</div>
+<div class="paragraph">
+<p>Select the <strong>Sign in</strong> button in the top right corner of Visual Studio.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/58474919/192250987-7b5feaa1-47eb-4044-80bf-66a5829051d1.png" alt="visual-studio"></span></p>
+</div>
+<div class="paragraph">
+<p>Sign in using the Azure AD account you assigned a role to previously.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/58474919/192251181-bb14b8a3-087e-4d43-82f7-53efe5c62e5b.png" alt="visual-studio-sgin"></span></p>
+</div>
+<div class="paragraph">
+<p><strong>Visual Studio Code</strong></p>
+</div>
+<div class="paragraph">
+<p>Make sure you have the <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.azure-account">Azure Account</a> extension installed.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/58474919/192251290-fb62fc4b-1031-45ce-90c9-bfb514da9b3a.png" alt="Screenshot showing the Azure extension"></span></p>
+</div>
+<div class="paragraph">
+<p>Use the <strong>CTRL + Shift + P</strong> shortcut to open the command palette. Search for the <strong>Azure: Sign In</strong> command and follow the prompts to authenticate. Make sure to use the Azure AD account you assigned a role to previously from your Blob Storage account.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/58474919/192251369-f1def1b4-331d-47ee-b142-9b852641025d.png" alt="Screenshot showing the Azure sign-in command"></span></p>
+</div>
+<div class="paragraph">
+<p><strong>PowerShell</strong></p>
+</div>
+<div class="paragraph">
+<p>Sign in to Azure using PowerShell by using the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">Connect-AzAccount</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Next, use the following steps to update your Spring Kafka application to use passwordless connections. Although conceptually similar, each framework uses different implementation details.</p>
+</div>
+<div class="paragraph">
+<p><strong>Java</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Add the following configuration when you create your Kafka producer or consumer to support the <a href="https://kafka.apache.org/documentation/#security_sasl_oauthbearer">SASL/OAUTHBEARER</a> mechanism. Replace the <code>&lt;eventhubs-namesapce&gt;</code> placeholder with the name of your Event Hubs namespace.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">   Properties config = new Properties();
+   config.put("bootstrap.servers", "&lt;eventhubs-namesapce&gt;.servicebus.windows.net:9093");
+   config.put("security.protocol", "SASL_SSL");
+   config.put("sasl.mechanism", "OAUTHBEARER");
+   config.put("sasl.jaas.config", "org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required");
+   config.put("sasl.login.callback.handler.class", "CustomAuthenticateCallbackHandler");
+   new KafkaProducer&lt;K, V&gt;(config);</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Implement a callback handler similar to <a href="https://github.com/Azure/azure-event-hubs-for-kafka/blob/master/tutorials/oauth/java/managedidentity/producer/src/main/java/CustomAuthenticateCallbackHandler.java">CustomAuthenticateCallbackHandler</a> in the <a href="https://github.com/Azure/azure-event-hubs-for-kafka">azure-event-hubs-for-kafka</a> sample on GitHub.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>Spring Kafka</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Inside your project, add the following reference to the <code>com.azure.spring:spring-cloud-azure-starter</code> package. This library contains all of the necessary entities to implement passwordless connections.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">   &lt;dependency&gt;
+       &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+       &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
+   &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Then, add the following property to configure the Kafka bootstrap server with your Azure Event Hubs namespace:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">   spring.kafka.bootstrap-servers=$AZ_EVENTHUBS_NAMESPACE_NAME.servicebus.windows.net:9093</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Spring Cloud Stream Kafka Binder</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Inside your project, add the following reference to the <code>com.azure.spring:spring-cloud-azure-starter</code> package. This library contains all of the necessary entities to implement passwordless connections.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">   &lt;dependency&gt;
+       &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+       &lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
+   &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Then, add the following property to configure the Kafka bootstrap server with your Azure Event Hubs namespace:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">   spring.cloud.stream.kafka.binder.brokers=$AZ_EVENTHUBS_NAMESPACE_NAME.servicebus.windows.net:9093</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you&#8217;re using version <code>4.3.0</code>, don&#8217;t forget to set the <code>spring.cloud.stream.binders.&lt;kafka-binder-name&gt;.environment.spring.main.sources</code> property to <code>com.azure.spring.cloud.autoconfigure.kafka.AzureKafkaSpringCloudStreamConfiguration</code>. By default <code>&lt;kafka-binder-name&gt;</code> is <code>kafka</code> in a single kafka binder application. This property setting enables the whole OAuth authentication workflow. This setting is also used to specify the additional configuration <code>KafkaBinderConfigurationPropertiesBeanPostProcessor</code>, which specifies the OAuth security parameters for the particular binder to enable Azure Identity. For version after <code>4.4.0</code>, this property will be added automatically for each Kafka binder environment, so there&#8217;s no need for you to add it manually.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="_run_the_app_locally"><a class="link" href="#_run_the_app_locally">Run the app locally</a></h6>
+<div class="paragraph">
+<p>After making these code changes, run your application locally. The new configuration should pick up your local credentials, assuming you&#8217;re logged into a compatible IDE or command line tool, such as the Azure CLI, Visual Studio, or IntelliJ. The roles you assigned to your local dev user in Azure will allow your app to connect to the Azure service locally.</p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_configure_the_azure_hosting_environment"><a class="link" href="#_configure_the_azure_hosting_environment">Configure the Azure hosting environment</a></h5>
+<div class="paragraph">
+<p>After your application is configured to use passwordless connections and runs locally, the same code can authenticate to Azure services after it&#8217;s deployed to Azure. For example, an application deployed to an Azure Spring Apps instance that has a managed identity enabled can connect to Azure Event Hubs for Kafka.</p>
+</div>
+<div class="paragraph">
+<p>In this section, you&#8217;ll execute two steps to enable your application to run in an Azure hosting environment in a passwordless way:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Create the managed identity for your Azure hosting environment.</p>
+</li>
+<li>
+<p>Assign roles to the managed identity.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Azure also provides the <a href="https://learn.microsoft.com/azure/service-connector/overview">Service Connector</a> service, which can help you connect your hosting service with Event Hubs.With Service Connector to configure your hosting environment, you can omit the step of assigning roles to your managed identity because Service Connector will do it for you.The following section describes how to configure your Azure hosting environment in two ways: one via Service Connector and the other by configuring each hosting environment directly.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="create-the-managed-identity-for-your-azure-hosting-environment"><a class="link" href="#create-the-managed-identity-for-your-azure-hosting-environment">Create the managed identity for your Azure hosting environment</a></h5>
+<div class="paragraph">
+<p>The following steps show you how to create a system-assigned managed identity for various web hosting services. The managed identity can securely connect to other Azure Services using the app configurations you set up previously.</p>
+</div>
+<div class="paragraph">
+<p><strong>Service Connector</strong></p>
+</div>
+<div class="paragraph">
+<p>When using Service Connector, it can help to create the system-assigned managed identity to your Azure hosting environment, and then configure the <strong>Azure Event Hubs Data Sender</strong> and <strong>Azure Event Hubs Data Receiver</strong> roles for the managed identity.</p>
+</div>
+<div class="paragraph">
+<p>The following compute services are currently supported:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Azure App Service</p>
+</li>
+<li>
+<p>Azure Spring Cloud</p>
+</li>
+<li>
+<p>Azure Container Apps (preview)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For this migration guide, you&#8217;ll use App Service, but the steps are similar for Azure Spring Apps and Azure Container Apps.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Azure Spring Apps currently only supports Service Connector using connection strings.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In the Azure portal, on the main overview page of your App Service instance, select <strong>Service Connector</strong> from the navigation pane.</p>
+</li>
+<li>
+<p>Select <strong>+ Create</strong> from the main menu and the <strong>Create connection</strong> panel will open. Enter the following values:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Service type</strong>: Choose <strong>Event Hubs</strong>.</p>
+</li>
+<li>
+<p><strong>Subscription</strong>: Select the subscription you&#8217;d like to use.</p>
+</li>
+<li>
+<p><strong>Connection Name</strong>: Enter a name for your connection, such as <strong>connector_appservice_eventhub</strong>.</p>
+</li>
+<li>
+<p><strong>Namespace</strong>: Select the Event Hubs namespace you&#8217;d like to use.</p>
+</li>
+<li>
+<p><strong>Client type</strong>: Leave the default value selected or choose the specific client you&#8217;d like to use.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Select <strong>Next: Authentication</strong>.</p>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/58474919/192251708-5ce73d0d-852b-4987-ab38-80cf8b63f561.png" alt="Screenshot of Azure portal Service Connector page of App Service resource with Create connection pane showing and Service type field with Event Hubs value highlighted"></span></p>
+</div>
+</li>
+<li>
+<p>Make sure <strong>System assigned managed identity (Recommended)</strong> is selected, and then select <strong>Next: Networking</strong>.</p>
+</li>
+<li>
+<p>Leave the default values selected, and then select <strong>Next: Review + Create</strong>.</p>
+</li>
+<li>
+<p>After Azure validates your settings, select <strong>Create</strong>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The Service Connector will automatically create a system-assigned managed identity for the app service. The connector will also assign the managed identity roles of <strong>Azure Event Hubs Data Sender</strong> and <strong>Azure Event Hubs Data Receiver</strong> for the Event Hubs instance you selected.</p>
+</div>
+<div class="paragraph">
+<p>You can create a Service Connection between an Azure compute hosting environment and a target service by using the Azure CLI. The Azure CLI automatically handles creating a managed identity and assigns the proper role, as explained in the <a href="#create-the-managed-identity-for-your-azure-hosting-environment">Create the managed identity for your Azure hosting environment</a> section.</p>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re using an Azure App Service, use the <code>az webapp connection</code> command, as shown in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">az webapp connection create eventhub \
+    --resource-group $AZ_RESOURCE_GROUP \
+    --name &lt;app-service-name&gt;
+    --target-id $AZURE_EVENTHUBS_RESOURCE_ID \
+    --client-type kafka-springBoot \
+    --system-identity</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re using Azure Spring Apps, use <code>the az spring connection</code> command, as shown in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">az spring connection create eventhub \
+    --app &lt;spring-app-name&gt; \
+    --service &lt;azure-spring-service-name&gt; \
+    --resource-group $AZ_RESOURCE_GROUP \
+    --deployment &lt;spring-app-deployoment-name&gt; \
+    --target-id $AZURE_EVENTHUBS_RESOURCE_ID \
+    --client-type kafka-springBoot \
+    --system-identity</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re using Azure Container Apps, use the <code>az containerapp connection</code> command, as shown in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">az containerapp connection create eventhub \
+    --resource-group $AZ_RESOURCE_GROUP \
+    --name &lt;container-app-name&gt;
+    --target-id $AZURE_EVENTHUBS_RESOURCE_ID \
+    --client-type kafka-springBoot \
+    --system-identity</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>App Service</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>On the main overview page of your App Service, select <strong>Identity</strong> from the navigation pane.</p>
+</li>
+<li>
+<p>Under the <strong>System assigned</strong> tab, make sure to set the <strong>Status</strong> field to <strong>on</strong>. A system assigned identity is managed by Azure internally and handles administrative tasks for you. The details and IDs of the identity are never exposed in your code.</p>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/58474919/192251837-0c7b3bba-d82e-486b-ac92-371f8623a119.png" alt="Screenshot of Azure portal Identity page of App Service resource with System assigned tab showing and Status field highlighted"></span></p>
+</div>
+</li>
+<li>
+<p>Copy the object (principal) ID.</p>
+</li>
+<li>
+<p>You can assign a managed identity to an Azure App Service with the <a href="https://learn.microsoft.com/cli/azure/webapp/identity">az webapp identity assign</a> command, as shown in the following example.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">export AZURE_MANAGED_IDENTITY_ID=$(az webapp identity assign \
+    --resource-group $AZ_RESOURCE_GROUP \
+    --name &lt;app-service-name&gt; \
+    --query principalId \
+    --output tsv)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Container Apps</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>On the main overview page of your Azure Container App, select <strong>Identity</strong> from the navigation pane.</p>
+</li>
+<li>
+<p>Under the <strong>System assigned</strong> tab, make sure to set the <strong>Status</strong> field to <strong>on</strong>. A system assigned identity is managed by Azure internally and handles administrative tasks for you. The details and IDs of the identity are never exposed in your code.</p>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/58474919/192251946-1b060983-d1c9-4163-b621-275ee6d10e92.png" alt="Screenshot of Azure portal Identity page of Container App resource showing System assigned tab with Status field highlighted"></span></p>
+</div>
+</li>
+<li>
+<p>Copy the object (principal) ID.</p>
+</li>
+<li>
+<p>You can assign a managed identity to an Azure Container App with the <a href="https://learn.microsoft.com/cli/azure/containerapp/identity">az containerapp identity assign</a> command, as shown in the following example:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">export AZURE_MANAGED_IDENTITY_ID=$(az containerapp identity assign \
+    --resource-group $AZ_RESOURCE_GROUP \
+    --name &lt;container-app-name&gt; \
+    --system-assigned \
+    --query principalId \
+    --output tsv)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Spring Apps</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>On the main overview page of your Azure Spring App, select <strong>Identity</strong> from the navigation pane.</p>
+</li>
+<li>
+<p>Under the <strong>System assigned</strong> tab, make sure to set the <strong>Status</strong> field to <strong>on</strong>. A system assigned identity is managed by Azure internally and handles administrative tasks for you. The details and IDs of the identity are never exposed in your code.</p>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/58474919/192252066-8bf9327e-1b43-49bf-ae7c-0d81c93da800.png" alt="Screenshot of Azure portal Identity page of App resource with System assigned tab showing and Status field highlighted"></span></p>
+</div>
+</li>
+<li>
+<p>Copy the object (principal) ID.</p>
+</li>
+<li>
+<p>You can assign a managed identity to an Azure Spring App with the <a href="https://learn.microsoft.com/cli/azure/spring/app/identity">az spring app identity assign</a> command, as shown in the following example:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">export AZURE_MANAGED_IDENTITY_ID=$(az spring app identity assign \
+    --resource-group $AZ_RESOURCE_GROUP \
+    --name &lt;spring-app-name&gt; \
+    --service &lt;spring-apps-service-name&gt; \
+    --system-assigned \
+    --query identity.principalId \
+    --output tsv)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Virtual Machines</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>On the main overview page of your Azure Spring App, select <strong>Identity</strong> from the navigation pane.</p>
+</li>
+<li>
+<p>Under the <strong>System assigned</strong> tab, make sure to set the <strong>Status</strong> field to <strong>on</strong>. A system assigned identity is managed by Azure internally and handles administrative tasks for you. The details and IDs of the identity are never exposed in your code.</p>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/58474919/192252177-268acda0-cea1-42d0-872d-8e3dd8163896.png" alt="Screenshot of Azure portal Identity page of Virtual machine resource with System assigned tab showing and Status field highlighted"></span></p>
+</div>
+</li>
+<li>
+<p>Copy the object (principal) ID.</p>
+</li>
+<li>
+<p>You can assign a managed identity to a Virtual Machine with the <a href="https://learn.microsoft.com/cli/azure/vm/identity">az vm identity assign</a> command, as shown in the following example:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">export AZURE_MANAGED_IDENTITY_ID=$(az vm identity assign \
+    --resource-group $AZ_RESOURCE_GROUP \
+    --name &lt;vm-name&gt; \
+    --query principalId \
+    --output tsv)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>AKS</strong></p>
+</div>
+<div class="paragraph">
+<p>You can assign a managed identity to an Azure Kubernetes Service with the <a href="https://learn.microsoft.com/cli/azure/aks">az aks update</a> command, as shown in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">export AZURE_MANAGED_IDENTITY_ID=$(az aks update \
+    --resource-group $AZ_RESOURCE_GROUP \
+    --name &lt;AKS-cluster-name&gt; \
+    --enable-managed-identity \
+    --query identityProfile.kubeletidentity.clientId \
+    --output tsv)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_assign_roles_to_the_managed_identity"><a class="link" href="#_assign_roles_to_the_managed_identity">Assign roles to the managed identity</a></h5>
+<div class="paragraph">
+<p>Next, you need to grant permissions to the managed identity you created to access your Event Hubs namespace. You can do this by assigning a role to the managed identity, just like you did with your local development user.</p>
+</div>
+<div class="paragraph">
+<p><strong>Service Connector</strong></p>
+</div>
+<div class="paragraph">
+<p>If you connected your services using the Service Connector, you don&#8217;t need to complete this step. The following necessary configurations were handled for you:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If you selected a managed identity while creating the connection, a system-assigned managed identity was created for your app and assigned the <strong>Azure Event Hubs Data Sender</strong> and <strong>Azure Event Hubs Data Receiver</strong> roles on the Event Hubs.</p>
+</li>
+<li>
+<p>If you chose to use a connection string, the connection string was added as an app environment variable.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Azure portal</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In the Azure portal, locate your Event Hubs namespace using the main search bar or the navigation pane.</p>
+</li>
+<li>
+<p>On the Event Hubs overview page, select <strong>Access control (IAM)</strong> from the navigation menu.</p>
+</li>
+<li>
+<p>On the <strong>Access control (IAM)</strong> page, select the <strong>Role assignments</strong> tab.</p>
+</li>
+<li>
+<p>Select <strong>+ Add</strong> from the main menu and then <strong>Add role assignment</strong> from the drop-down menu.</p>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/58474919/192252332-c674a41e-9cc8-4eef-8e92-47ca31b42844.png" alt="Screenshot of Azure portal Access control (IAM) page of Event Hubs Namespace resource with Add role assignment menu option highlighted"></span></p>
+</div>
+</li>
+<li>
+<p>Use the search box to filter the results to the desired role. For this example, search for <strong>Azure Event Hubs Data Sender</strong> and <strong>Azure Event Hubs Data Receiver</strong>, select the matching result, and then select <strong>Next</strong>.</p>
+</li>
+<li>
+<p>Under <strong>Assign access to</strong>, select <strong>Managed identity</strong>, and then select <strong>+ Select members</strong>.</p>
+</li>
+<li>
+<p>In the flyout, search for the subscription where hosting service is located. Then, select <strong>All system-assigned managed identities</strong>, and select the managed identity of your hosting service. Select the system assigned identity, and then select <strong>Select</strong> to close the flyout menu.</p>
+</li>
+<li>
+<p>Select <strong>Next</strong> a couple of times until you&#8217;re able to select <strong>Review + assign</strong> to finish the role assignment.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>Azure CLI</strong></p>
+</div>
+<div class="paragraph">
+<p>To assign a role at the resource level using the Azure CLI, you can use the following commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">az role assignment create \
+    --assignee $AZURE_MANAGED_IDENTITY_ID \
+    --role "Azure Event Hubs Data Receiver" \
+    --scope $AZURE_EVENTHUBS_RESOURCE_ID
+az role assignment create \
+    --assignee $AZURE_MANAGED_IDENTITY_ID \
+    --role "Azure Event Hubs Data Sender" \
+    --scope $AZURE_EVENTHUBS_RESOURCE_ID</code></pre>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_test_the_app"><a class="link" href="#_test_the_app">Test the app</a></h6>
+<div class="paragraph">
+<p>After making these code changes, browse to your hosted application in the browser. Your app should be able to connect to the Azure Event Hubs for Kafka successfully. Keep in mind that it may take several minutes for the role assignments to propagate through your Azure environment. Your application is now configured to run both locally and in a production environment without the developers having to manage secrets in the application itself.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>
