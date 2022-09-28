@@ -8,9 +8,11 @@ on:
   push:
     branches:
       - main
+      - feature/spring-cloud-azure-passwordless-connection
   pull_request:
     branches:
       - main
+      - feature/spring-cloud-azure-passwordless-connection
   workflow_dispatch:
 
 jobs:
