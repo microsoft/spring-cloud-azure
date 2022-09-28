@@ -3,7 +3,7 @@
 
 link:https://azure.microsoft.com/services/postgresql/[Azure Database for PostgreSQL] is a relational database service based on the open-source Postgres database engine. It's a fully managed database-as-a-service that can handle mission-critical workloads with predictable performance, security, high availability, and dynamic scalability.
 
-From version **{project-version}**, Spring Cloud Azure supports various types of credentials for authentication to *Azure Database for PostgreSQL single server*.
+From version **4.5.0-beta.1**, Spring Cloud Azure supports various types of credentials for authentication to *Azure Database for PostgreSQL single server*.
 
 === Supported PostgreSQL version
 
