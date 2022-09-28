@@ -10,7 +10,7 @@ on:
     # - 'docs/**'
   # release:
   #   types: [published] # includes pre-release and regular releases, but does not include draft releases.
-  workflow_dispatch:
+  # workflow_dispatch:
   #   inputs:
   #     committish:
   #       description: Tag or branch of the docs to be created or updated. Using `main` will update the landing page. Using anything else will create or update a versioned copy of the docs.
