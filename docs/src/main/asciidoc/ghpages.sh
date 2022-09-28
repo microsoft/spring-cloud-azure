@@ -136,7 +136,7 @@ function add_docs_from_target() {
 # Copies the docs by using the retrieved properties from Maven build
 function copy_docs_for_current_version() {
     if [[ "${RELEASE_TO_GH_PAGES_ENABLED_VALUE}" == "true" ]] ; then
-        echo -e "Need to release - will copy the current docs only to the root folder"
+        echo -e "Need to release - Will copy the all files from docs/target/generated-docs/ to ${ROOT_FOLDER}${RELEASE_TO_GH_PAGES_TARGET_FLODER_VALUE}"
         for f in docs/target/generated-docs/*; do
             file=${f#docs/target/generated-docs/*}
             if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
