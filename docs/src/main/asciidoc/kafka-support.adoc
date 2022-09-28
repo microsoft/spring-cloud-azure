@@ -306,5 +306,3 @@ spring:
 === Samples
 
 See the link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_{project-version}[azure-spring-boot-samples] repository on GitHub.
-
-include::migrate-kafka-to-passwordless-connection.adoc[]

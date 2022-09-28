@@ -83,6 +83,15 @@ function retrieve_doc_properties() {
         -P docs \
         -pl docs)
     echo "Extracted '${WHITELIST_PROPERTY}' from Maven build [${WHITELISTED_BRANCHES_VALUE}]"
+
+    BETA_RELEASE_BRANCHES_PROPERTY=${BETA_RELEASE_BRANCHES_PROPERTY:-"docs.beta.release.branches"}
+    BETA_RELEASE_BRANCHES_VALUE=$("${MAVEN_PATH}"mvn -q \
+        -Dexec.executable="echo" \
+        -Dexec.args="\${${BETA_RELEASE_BRANCHES_PROPERTY}}" \
+        org.codehaus.mojo:exec-maven-plugin:1.3.1:exec \
+        -P docs \
+        -pl docs)
+    echo "Extracted '${BETA_RELEASE_BRANCHES_PROPERTY}' from Maven build [${BETA_RELEASE_BRANCHES_VALUE}]"
 }
 
 # Stash any outstanding changes
@@ -136,6 +145,17 @@ function add_docs_from_target() {
 function copy_docs_for_current_version() {
     if [[ "${CURRENT_BRANCH}" == "main" ]] ; then
         echo -e "Current branch is main - will copy the current docs only to the root folder"
+        for f in docs/target/generated-docs/*; do
+            file=${f#docs/target/generated-docs/*}
+            if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
+                # Not ignored...
+                cp -rf $f ${ROOT_FOLDER}/
+                git add -A ${ROOT_FOLDER}/$file
+            fi
+        done
+        COMMIT_CHANGES="yes"
+    elif [[ ",${BETA_RELEASE_BRANCHES_VALUE}," = *",${CURRENT_BRANCH},"* ]] ; then
+        echo -e "Branch [${CURRENT_BRANCH}] is a whitelisted beta release branch! Will copy the current docs to the root folder"
         for f in docs/target/generated-docs/*; do
             file=${f#docs/target/generated-docs/*}
             if ! git ls-files -i -o --exclude-standard --directory | grep -q ^$file$; then
