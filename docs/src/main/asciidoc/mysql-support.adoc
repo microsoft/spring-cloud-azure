@@ -3,11 +3,11 @@
 
 link:https://azure.microsoft.com/services/mysql/[Azure Database for MySQL] is a relational database service powered by the MySQL community edition. You can use either Single Server or Flexible Server to host a MySQL database in Azure. It's a fully managed database-as-a-service offering that can handle mission-critical workloads with predictable performance and dynamic scalability.
 
-From version 4.4.0, Spring Cloud Azure supports various types of credentials for authentication to `Azure Database for MySQL single server`.
+From version **4.5.0-beta.1**, Spring Cloud Azure supports various types of credentials for authentication to `Azure Database for MySQL single server`.
 
 === Supported MySQL version
 
-The current version of the starter should use Azure Database for MySQL Single Server version `5.7` or `8.0`.
+The current version of the starter should use Azure Database for MySQL Single Server version **5.7** or **8.0**.
 
 === Core Features
 
@@ -70,7 +70,7 @@ Add the following dependency to your project. This will automatically include th
 </dependency>
 ----
 
-NOTE: Remember to add the BOM `spring-cloud-azure-dependencies` along with the above dependency. For more information, see the [Getting started](#getting-started) section.
+NOTE: Remember to add the BOM `spring-cloud-azure-dependencies` along with the above dependency. For more information, see the link:index.html#getting-started[Getting started] section.
 
 === Basic usage
 
@@ -157,9 +157,9 @@ spring:
 
 ==== Connect to Azure MySQL with Managed Identity in Azure Spring Apps
 
-1. To enable managed identity, see the link:https://review.learn.microsoft.com/azure/developer/java/spring-framework/migrate-mysql-to-passwordless-connection?branch=release-cred-free-java&tabs=sign-in-azure-cli%2Cjava%2Capp-service%2Capp-service-identity#create-the-managed-identity-using-the-azure-portal[Create the managed identity using the Azure Portal] section to enable managed identity.
+1. To enable managed identity, see the link:https://learn.microsoft.com/azure/developer/java/spring-framework/migrate-mysql-to-passwordless-connection?branch=release-cred-free-java&tabs=sign-in-azure-cli%2Cjava%2Capp-service%2Capp-service-identity#create-the-managed-identity-using-the-azure-portal[Create the managed identity using the Azure Portal] section to enable managed identity.
 
-2. To grant permissions, see the link:https://review.learn.microsoft.com/azure/developer/java/spring-framework/migrate-mysql-to-passwordless-connection?branch=release-cred-free-java&tabs=sign-in-azure-cli%2Cjava%2Capp-service%2Capp-service-identity#assign-roles-to-the-managed-identity[Assign roles to the managed identity] section to grant permissions.
+2. To grant permissions, see the link:https://learn.microsoft.com/azure/developer/java/spring-framework/migrate-mysql-to-passwordless-connection?branch=release-cred-free-java&tabs=sign-in-azure-cli%2Cjava%2Capp-service%2Capp-service-identity#assign-roles-to-the-managed-identity[Assign roles to the managed identity] section to grant permissions.
 
 3. Configure the following properties in `application.yml`:
 
@@ -172,6 +172,3 @@ spring:
     azure:
       passwordless-enabled: true
 ----
-
-include::migrate-mysql-to-passwordless-connection.adoc[]
-
