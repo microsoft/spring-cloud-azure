@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Spring Data Support</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript"> (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "b9g1q6wz23"); </script>
+
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_spring_data_support">Spring Data Support</a>
+<ul class="sectlevel2">
+<li><a href="#_spring_data_cosmosdb_support">Spring Data CosmosDB Support</a></li>
+<li><a href="#_dependency_setup">Dependency Setup</a></li>
+<li><a href="#_configuration">Configuration</a></li>
+<li><a href="#_key_concepts">Key Concepts</a></li>
+<li><a href="#_basic_usage">Basic Usage</a></li>
+<li><a href="#_samples">Samples</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_spring_data_support"><a class="link" href="#_spring_data_support">Spring Data Support</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_spring_data_cosmosdb_support"><a class="link" href="#_spring_data_cosmosdb_support">Spring Data CosmosDB Support</a></h3>
+<div class="paragraph">
+<p><a href="https://azure.microsoft.com/services/cosmos-db/">Azure Cosmos DB</a> is a globally-distributed database service that allows developers to work with data using a variety of standard APIs, such as SQL, MongoDB, Graph, and Azure Table storage.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+   &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-cloud-azure-starter-data-cosmos&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Configurable properties of spring-cloud-azure-starter-data-cosmos</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 16.6666%;">
+<col style="width: 50.0001%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether Azure Cosmos Service is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.database</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Cosmos DB database id.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.endpoint</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Uri to connect Cosmos DB.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.key</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Private key to connect Cosmos DB.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.credential.client-certificate-password</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.credential.client-certificate-path</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path of a PEM certificate file to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.credential.client-id</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client id to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.credential.client-secret</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.credential.managed-identity-enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable managed identity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.credential.password</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.credential.username</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.populate-query-metrics</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Populate Diagnostics Strings and Query metrics.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.cosmos</strong>.consistency-level</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.microsoft.com/azure/cosmos-db/consistency-levels">Consistency levels</a> in Azure Cosmos DB.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_key_concepts"><a class="link" href="#_key_concepts">Key Concepts</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Spring Data CrudRepository and ReactiveCrudRepository basic CRUD functionality</p>
+<div class="ulist">
+<ul>
+<li>
+<p>save</p>
+</li>
+<li>
+<p>findAll</p>
+</li>
+<li>
+<p>findOne by Id</p>
+</li>
+<li>
+<p>deleteAll</p>
+</li>
+<li>
+<p>delete by Id</p>
+</li>
+<li>
+<p>delete entity</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Spring Data <a href="https://github.com/spring-projects/spring-data-commons/blob/db62390de90c93a78743c97cc2cc9ccd964994a5/src/main/java/org/springframework/data/annotation/Id.java">@Id</a> annotation.
+There&#8217;re 2 ways to map a field in domain class to <code>id</code> of Azure Cosmos DB document.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>annotate a field in domain class with @Id, this field will be mapped to document <code>id</code> in Cosmos DB.</p>
+</li>
+<li>
+<p>set name of this field to <code>id</code>, this field will be mapped to document <code>id</code> in Cosmos DB.
+[Note] if both way applied,</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Custom collection Name.
+By default, collection name will be class name of user domain class. To customize it, add annotation <code>@Document(collection="myCustomCollectionName")</code> to your domain class, that&#8217;s all.</p>
+</li>
+<li>
+<p>Supports <a href="https://docs.microsoft.com/azure/cosmos-db/partitioning-overview">Azure Cosmos DB partition</a>. To specify a field of your domain class to be partition key field, just annotate it with <code>@PartitionKey</code>. When you do CRUD operation, please specify your partition value. For more sample on partition CRUD, please refer to <a href="https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/cosmos/azure-spring-data-cosmos-test/src/test/java/com/azure/spring/data/cosmos/repository/integration/AddressRepositoryIT.java">test here</a></p>
+</li>
+<li>
+<p>Supports <a href="https://docs.spring.io/spring-data/commons/docs/current/reference/html/#repositories.query-methods.details">Spring Data custom query</a> find operation.</p>
+</li>
+<li>
+<p>Supports <a href="https://spring.io/projects/spring-data-rest">spring-boot-starter-data-rest</a>.</p>
+</li>
+<li>
+<p>Supports List and nested type in domain class.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_basic_usage"><a class="link" href="#_basic_usage">Basic Usage</a></h3>
+<div class="sect3">
+<h4 id="_use_private_key_to_access_cosmosdb"><a class="link" href="#_use_private_key_to_access_cosmosdb">Use Private Key to Access CosmosDB</a></h4>
+<div class="paragraph">
+<p>The simplest way to connect CosmosDB with <code>spring-cloud-azure-starter-data-cosmos</code> is primary key, add below properties, and you are good to go.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
+  cloud:
+    azure:
+      cosmos:
+        key: ${AZURE_COSMOS_KEY}
+        endpoint: ${AZURE_COSMOS_ENDPOINT}
+        database: ${AZURE_COSMOS_DATABASE}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_define_an_entity"><a class="link" href="#_define_an_entity">Define an Entity</a></h4>
+<div class="paragraph">
+<p>Define a simple entity as Document in Cosmos DB.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@Container(containerName = "mycollection")
+public class User {
+    @Id
+    private String id;
+    private String firstName;
+    @PartitionKey
+    private String lastName;
+    private String address;
+
+    public User() {
+    }
+
+    public User(String id, String firstName, String lastName, String address) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s, %s", firstName, lastName, address);
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>id</code> field will be used as document <code>id</code> in Azure Cosmos DB. Or you can annotate any field with <code>@Id</code> to map it to document <code>id</code>.</p>
+</div>
+<div class="paragraph">
+<p>Annotation <code>@Container(containerName = "mycollection")</code> is used to specify the collection name of your document in Azure Cosmos DB.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_create_repositories"><a class="link" href="#_create_repositories">Create Repositories</a></h4>
+<div class="paragraph">
+<p>Extends ReactiveCosmosRepository interface, which provides Spring Data repository support.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@Repository
+public interface UserRepository extends ReactiveCosmosRepository&lt;User, String&gt; {
+
+    Flux&lt;User&gt; findByFirstName(String firstName);
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>So far ReactiveCosmosRepository provides basic save, delete and find operations. More operations will be supported later.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_create_an_application_class"><a class="link" href="#_create_an_application_class">Create an Application Class</a></h4>
+<div class="paragraph">
+<p>Here create an application class with all the components</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@SpringBootApplication
+public class CosmosSampleApplication implements CommandLineRunner {
+
+   private static final Logger LOGGER = LoggerFactory.getLogger(CosmosSampleApplication.class);
+
+	@Autowired
+	private UserRepository repository;
+
+	@Autowired
+	private CosmosProperties properties;
+
+	public static void main(String[] args) {
+		SpringApplication.run(CosmosSampleApplication.class, args);
+	}
+
+	public void run(String... var1) {
+		final User testUser = new User("testId", "testFirstName",
+				"testLastName", "test address line one");
+
+		// Save the User class to Azure Cosmos DB database.
+		final Mono&lt;User&gt; saveUserMono = repository.save(testUser);
+
+		final Flux&lt;User&gt; firstNameUserFlux = repository.findByFirstName("testFirstName");
+
+		//  Nothing happens until we subscribe to these Monos.
+		//  findById will not return the user as user is not present.
+		final Mono&lt;User&gt; findByIdMono = repository.findById(testUser.getId());
+		final User findByIdUser = findByIdMono.block();
+		Assert.isNull(findByIdUser, "User must be null");
+
+		final User savedUser = saveUserMono.block();
+		Assert.state(savedUser != null, "Saved user must not be null");
+		Assert.state(savedUser.getFirstName().equals(testUser.getFirstName()),
+				"Saved user first name doesn't match");
+
+		firstNameUserFlux.collectList().block();
+
+		final Optional&lt;User&gt; optionalUserResult = repository.findById(testUser.getId()).blockOptional();
+		Assert.isTrue(optionalUserResult.isPresent(), "Cannot find user.");
+
+		final User result = optionalUserResult.get();
+		Assert.state(result.getFirstName().equals(testUser.getFirstName()),
+				"query result firstName doesn't match!");
+		Assert.state(result.getLastName().equals(testUser.getLastName()),
+				"query result lastName doesn't match!");
+		LOGGER.info("findOne in User collection get result: {}", result.toString());
+
+	}
+
+	@PostConstruct
+	public void setup() {
+		// For this example, remove all of the existing records.
+		this.repository.deleteAll().block();
+	}
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Autowired UserRepository interface, then can do save, delete and find operations.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_samples"><a class="link" href="#_samples">Samples</a></h3>
+<div class="paragraph">
+<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.4.0/cosmos">azure-spring-boot-samples</a> for more details.</p>
+</div>
+<div class="paragraph">
+<p>Apart from using the <code>spring-cloud-azure-starter-data-cosmos</code> library, you can directly use <code>azure-spring-data-cosmos</code> library for more complex scenarios. Please refer to <a href="https://github.com/Azure/azure-sdk-for-java/tree/spring-cloud-azure-dependencies_4.4.0/sdk/cosmos/azure-spring-data-cosmos">Spring Data for Azure Cosmos DB</a> for more details.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>

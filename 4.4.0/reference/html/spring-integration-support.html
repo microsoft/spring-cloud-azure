@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Spring Integration Support</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript"> (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "b9g1q6wz23"); </script>
+
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_spring_integration_support">Spring Integration Support</a>
+<ul class="sectlevel2">
+<li><a href="#_spring_integration_with_azure_event_hubs">Spring Integration with Azure Event Hubs</a></li>
+<li><a href="#_spring_integration_with_azure_service_bus">Spring Integration with Azure Service Bus</a></li>
+<li><a href="#_spring_integration_with_azure_storage_queue">Spring Integration with Azure Storage Queue</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_spring_integration_support"><a class="link" href="#_spring_integration_support">Spring Integration Support</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Spring Integration Extension for Azure provides Spring Integration adapters for the various services provided by the <a href="https://github.com/Azure/azure-sdk-for-java/">Azure SDK for Java</a>. We provide Spring Integration support for these Azure services: Event Hubs, Service Bus, Storage Queue. The following is a list of supported adapters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>spring-cloud-azure-starter-integration-eventhubs</p>
+</li>
+<li>
+<p>spring-cloud-azure-starter-integration-servicebus</p>
+</li>
+<li>
+<p>spring-cloud-azure-starter-integration-storage-queue</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_spring_integration_with_azure_event_hubs"><a class="link" href="#_spring_integration_with_azure_event_hubs">Spring Integration with Azure Event Hubs</a></h3>
+<div class="sect3">
+<h4 id="_key_concepts"><a class="link" href="#_key_concepts">Key Concepts</a></h4>
+<div class="paragraph">
+<p>Azure Event Hubs is a big data streaming platform and event ingestion service. It can receive and process millions of events per second. Data sent to an event hub can be transformed and stored by using any real-time analytics provider or batching/storage adapters.</p>
+</div>
+<div class="paragraph">
+<p>Spring Integration enables lightweight messaging within Spring-based applications and supports integration with external systems via declarative adapters. Those adapters provide a higher-level of abstraction over Spring’s support for remoting, messaging, and scheduling. The <strong>Spring Integration for Event Hubs</strong> extension project provides inbound and outbound channel adapters and gateways for Azure Event Hubs.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+RxJava support APIs are dropped from version 4.0.0.
+See Javadoc for details.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_consumer_group"><a class="link" href="#_consumer_group">Consumer Group</a></h5>
+<div class="paragraph">
+<p>Event Hubs provides similar support of consumer group as Apache Kafka, but with slight different logic. While Kafka
+stores all committed offsets in the broker, you have to store offsets of Event Hubs messages
+being processed manually. Event Hubs SDK provides the function to store such offsets inside Azure Storage.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_partitioning_support"><a class="link" href="#_partitioning_support">Partitioning Support</a></h5>
+<div class="paragraph">
+<p>Event Hubs provides a similar concept of physical partition as Kafka. But unlike Kafka&#8217;s auto re-balancing between consumers and partitions, Event Hubs provides a kind of preemptive mode. The storage account acts as a lease to determine which partition is owned by which consumer. When a new consumer starts, it will try to steal some partitions
+from most heavy-loaded consumers to achieve the workload balancing.</p>
+</div>
+<div class="paragraph">
+<p>To specify the load balancing strategy, developers can use <code>EventHubsContainerProperties</code> for the configuration. See <a href="#receive-from-eh">the following section</a> for an example of how to configure <code>EventHubsContainerProperties</code>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_batch_consumer_support"><a class="link" href="#_batch_consumer_support">Batch Consumer Support</a></h5>
+<div class="paragraph">
+<p>The <code>EventHubsInboundChannelAdapter</code> supports the batch-consuming mode. To enable it, users can specify the listener mode as <code>ListenerMode.BATCH</code> when constructing an <code>EventHubsInboundChannelAdapter</code> instance.
+When enabled, an <strong>Message</strong> of which the payload is a list of batched events will be received and passed to the downstream channel. Each message header is also converted as a list, of which the content is the associated header value parsed from each event. For the communal headers of partition id, checkpointer and last enqueued properties, they are presented as a single value for the entire batch of events shares the same one. See <a href="#si-eh-headers">Event Hubs Message Headers</a> for more details.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The checkpoint header only exists when <strong>MANUAL</strong> checkpoint mode is used.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Checkpointing of batch consumer supports two modes: <code>BATCH</code> and <code>MANUAL</code>. <code>BATCH</code> mode is an auto checkpointing mode to checkpoint the entire batch of events together once they are received. <code>MANUAL</code> mode is to checkpoint the events by users. When used, the
+<strong>Checkpointer</strong> will be passed into the message header, and users could use it to do checkpointing.</p>
+</div>
+<div class="paragraph">
+<p>The batch consuming policy can be specified by properties of <code>max-size</code> and <code>max-wait-time</code>, where <code>max-size</code> is a necessary property while <code>max-wait-time</code> is optional.
+To specify the batch consuming strategy, developers can use <code>EventHubsContainerProperties</code> for the configuration. See <a href="#receive-from-eh">the following section</a> for an example of how to configure <code>EventHubsContainerProperties</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-cloud-azure-starter-integration-eventhubs&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h4>
+<div class="paragraph">
+<p>This starter provides the following 3 parts of configuration options:</p>
+</div>
+<div class="sect4">
+<h5 id="_connection_configuration_properties"><a class="link" href="#_connection_configuration_properties">Connection Configuration Properties</a></h5>
+<div class="paragraph">
+<p>This section contains the configuration options used for connecting to Azure Event Hubs.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, see <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Connection configurable properties of spring-cloud-azure-starter-integration-eventhubs</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether an Azure Event Hubs is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.connection-string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Event Hubs Namespace connection string value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.namespace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Event Hubs Namespace value, which is the prefix of the FQDN. A FQDN should be composed of &lt;NamespaceName&gt;.&lt;DomainName&gt;</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.domain-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Domain name of an Azure Event Hubs Namespace value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.custom-endpoint-address</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Custom Endpoint address.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs</strong>.shared-connection</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether the underlying EventProcessorClient and EventHubProducerAsyncClient use the same connection. By
+default, a new connection is constructed and used created for each Event Hub client created.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_checkpoint_configuration_properties"><a class="link" href="#_checkpoint_configuration_properties">Checkpoint Configuration Properties</a></h5>
+<div class="paragraph">
+<p>This section contains the configuration options for the Storage Blobs service, which is used for persisting partition ownership and checkpoint information.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+From version 4.0.0, when the property of <strong>spring.cloud.azure.eventhubs.processor.checkpoint-store.create-container-if-not-exists</strong> is not enabled manually, no Storage container will be created automatically.
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Checkpointing configurable properties of spring-cloud-azure-starter-integration-eventhubs</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs.processor.checkpoint-store</strong>.create-container-if-not-exists</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to allow creating containers if not exists.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs.processor.checkpoint-store</strong>.account-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name for the storage account.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs.processor.checkpoint-store</strong>.account-key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage account access key.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.eventhubs.processor.checkpoint-store</strong>.container-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage container name.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Common Azure Service SDK configuration options are configurable for Storage Blob checkpoint store as well. The supported configuration options are introduced in <a href="configuration.html">the Configuration page</a>, and could be configured with either the unified prefix <code>spring.cloud.azure.</code> or the prefix of <code>spring.cloud.azure.eventhubs.processor.checkpoint-store</code>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_event_hub_processor_configuration_properties"><a class="link" href="#_event_hub_processor_configuration_properties">Event Hub Processor Configuration Properties</a></h5>
+<div class="paragraph">
+<p>The <code>EventHubsInboundChannelAdapter</code> uses the <code>EventProcessorClient</code> to consume messages from an event hub, to configure the overall properties of an <code>EventProcessorClient</code>,
+developers can use <code>EventHubsContainerProperties</code> for the configuration. See <a href="#receive-from-eh">the following section</a> about how to work with <code>EventHubsInboundChannelAdapter</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_basic_usage"><a class="link" href="#_basic_usage">Basic Usage</a></h4>
+<div class="sect4">
+<h5 id="_send_messages_to_azure_event_hubs"><a class="link" href="#_send_messages_to_azure_event_hubs">Send messages to Azure Event Hubs</a></h5>
+<div class="paragraph">
+<p>Step 1. Fill the credential configuration options.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as connection string, configure the following properties in <code>application.yml</code>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      eventhubs:
+        connection-string: ${AZURE_SERVICE_BUS_CONNECTION_STRING}
+        processor:
+          checkpoint-store:
+            container-name: ${CHECKPOINT-CONTAINER}
+            account-name: ${CHECKPOINT-STORAGE-ACCOUNT}
+            account-key: ${CHECKPOINT-ACCESS-KEY}</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as managed identities, configure the following properties in <code>application.yml</code>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      credential:
+        managed-identity-enabled: true
+        client-id: ${AZURE_CLIENT_ID}
+      eventhubs:
+        namespace: ${AZURE_SERVICE_BUS_NAMESPACE}
+        processor:
+          checkpoint-store:
+            container-name: ${CONTAINER_NAME}
+            account-name: ${ACCOUNT_NAME}</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as service principal, configure the following properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+      eventhubs:
+        namespace: ${AZURE_SERVICE_BUS_NAMESPACE}
+        processor:
+          checkpoint-store:
+            container-name: ${CONTAINER_NAME}
+            account-name: ${ACCOUNT_NAME}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step 2. Create <code>DefaultMessageHandler</code> with the bean of <code>EventHubsTemplate</code> to send messages to Event Hubs.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
+    private static final String OUTPUT_CHANNEL = "output";
+    private static final String EVENTHUB_NAME = "eh1";
+
+    @Bean
+    @ServiceActivator(inputChannel = OUTPUT_CHANNEL)
+    public MessageHandler messageSender(EventHubsTemplate eventHubsTemplate) {
+        DefaultMessageHandler handler = new DefaultMessageHandler(EVENTHUB_NAME, eventHubsTemplate);
+        handler.setSendCallback(new ListenableFutureCallback&lt;Void&gt;() {
+            @Override
+            public void onSuccess(Void result) {
+                LOGGER.info("Message was sent successfully.");
+            }
+            @Override
+            public void onFailure(Throwable ex) {
+                LOGGER.error("There was an error sending the message.", ex);
+            }
+        });
+        return handler;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step 3. Create a message gateway binding with the above message handler via a message channel.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
+    @Autowired
+    EventHubOutboundGateway messagingGateway;
+
+    @MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL)
+    public interface EventHubOutboundGateway {
+        void send(String text);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step 4. Send messages using the gateway.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
+    public void demo() {
+        this.messagingGateway.send(message);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="receive-from-eh"><a class="link" href="#receive-from-eh">Receive Messages from Azure Event Hubs</a></h5>
+<div class="paragraph">
+<p>Step 1. Fill the credential configuration options.</p>
+</div>
+<div class="paragraph">
+<p>Step 2. Create a bean of message channel as the input channel.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
+class Demo {
+    @Bean
+    public MessageChannel input() {
+        return new DirectChannel();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step 3. Create <code>EventHubsInboundChannelAdapter</code> with the bean of <code>EventHubsMessageListenerContainer</code> to receive messages from Event Hubs.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
+class Demo {
+    private static final String INPUT_CHANNEL = "input";
+    private static final String EVENTHUB_NAME = "eh1";
+    private static final String CONSUMER_GROUP = "$Default";
+
+    @Bean
+    public EventHubsInboundChannelAdapter messageChannelAdapter(
+            @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel,
+            EventHubsMessageListenerContainer listenerContainer) {
+        EventHubsInboundChannelAdapter adapter = new EventHubsInboundChannelAdapter(processorContainer);
+        adapter.setOutputChannel(inputChannel);
+        return adapter;
+    }
+
+    @Bean
+    public EventHubsMessageListenerContainer messageListenerContainer(EventHubsProcessorFactory processorFactory) {
+        EventHubsContainerProperties containerProperties = new EventHubsContainerProperties();
+        containerProperties.setEventHubName(EVENTHUB_NAME);
+        containerProperties.setConsumerGroup(CONSUMER_GROUP);
+        containerProperties.setCheckpointConfig(new CheckpointConfig(CheckpointMode.MANUAL));
+        return new EventHubsMessageListenerContainer(processorFactory, containerProperties);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step 4. Create a message receiver binding with EventHubsInboundChannelAdapter via the message channel created before.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
+    @ServiceActivator(inputChannel = INPUT_CHANNEL)
+    public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
+        String message = new String(payload);
+        LOGGER.info("New message received: '{}'", message);
+        checkpointer.success()
+                .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
+                .doOnError(e -&gt; LOGGER.error("Error found", e))
+                .block();
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_configure_eventhubsmessageconverter_to_customize_objectmapper"><a class="link" href="#_configure_eventhubsmessageconverter_to_customize_objectmapper">Configure EventHubsMessageConverter to Customize ObjectMapper</a></h5>
+<div class="paragraph">
+<p><code>EventHubsMessageConverter</code> is made as a configurable bean to allow users to customize ObjectMapper.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="si-eh-batch"><a class="link" href="#si-eh-batch">Batch Consumer Support</a></h5>
+<div class="paragraph">
+<p>To consume messages from Event Hubs in batches is similar with the above sample, besides users should set the batch-consuming related configuration options for <code>EventHubsInboundChannelAdapter</code>.</p>
+</div>
+<div class="paragraph">
+<p>When create <code>EventHubsInboundChannelAdapter</code>, the listener mode should be set as <code>BATCH</code>. When create bean of <code>EventHubsMessageListenerContainer</code>, set the checkpoint mode as either <code>MANUAL</code> or <code>BATCH</code>, and the batch options can be configured as needed.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
+class Demo {
+    private static final String INPUT_CHANNEL = "input";
+    private static final String EVENTHUB_NAME = "eh1";
+    private static final String CONSUMER_GROUP = "$Default";
+
+    @Bean
+    public EventHubsInboundChannelAdapter messageChannelAdapter(
+            @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel,
+            EventHubsMessageListenerContainer listenerContainer) {
+        EventHubsInboundChannelAdapter adapter = new EventHubsInboundChannelAdapter(processorContainer, ListenerMode.BATCH);
+        adapter.setOutputChannel(inputChannel);
+        return adapter;
+    }
+
+    @Bean
+    public EventHubsMessageListenerContainer messageListenerContainer(EventHubsProcessorFactory processorFactory) {
+        EventHubsContainerProperties containerProperties = new EventHubsContainerProperties();
+        containerProperties.setEventHubName(EVENTHUB_NAME);
+        containerProperties.setConsumerGroup(CONSUMER_GROUP);
+        containerProperties.getBatch().setMaxSize(100);
+        containerProperties.setCheckpointConfig(new CheckpointConfig(CheckpointMode.MANUAL));
+        return new EventHubsMessageListenerContainer(processorFactory, containerProperties);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="si-eh-headers"><a class="link" href="#si-eh-headers">Event Hubs Message Headers</a></h5>
+<div class="paragraph">
+<p>The following table illustrates how Event Hubs message properties are mapped to Spring message headers. For Azure Event Hubs, message is called as <code>event</code>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Mapping between Event Hubs Message / Event Properties and Spring Message Headers in Record Listener Mode</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Event Hubs Event Properties</th>
+<th class="tableblock halign-left valign-top">Spring Message Header Constants</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enqueued time</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EventHubsHeaders#ENQUEUED_TIME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Instant</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The instant, in UTC, of when the event was enqueued in the Event Hub partition.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Offset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EventHubsHeaders#OFFSET</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The offset of the event when it was received from the associated Event Hub partition.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Partition key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AzureHeaders#PARTITION_KEY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The partition hashing key if it was set when originally publishing the event.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Partition id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AzureHeaders#RAW_PARTITION_ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The partition id of the Event Hub.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sequence number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EventHubsHeaders#SEQUENCE_NUMBER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The sequence number assigned to the event when it was enqueued in the associated Event Hub partition.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Last enqueued event properties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EventHubsHeaders#LAST_ENQUEUED_EVENT_PROPERTIES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LastEnqueuedEventProperties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The properties of the last enqueued event in this partition.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AzureHeaders#CHECKPOINTER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Checkpointer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The header for checkpoint the specific message.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Users can parse the message headers for the related information of each event. To set a message header for the event, all customized headers will be put as an application property of an event, where the header is set as the property key. When events are received from Event Hubs, all application properties will be converted to the message header.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Message headers of partition key, enqueued time, offset and sequence number is not supported to be set manually.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When the batch-consumer mode is enabled, the specific headers of batched messages are listed the following, which contains a list of values from each single Event Hubs event.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. Mapping between Event Hubs Message / Event Properties and Spring Message Headers in Batch Listener Mode</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Event Hubs Event Properties</th>
+<th class="tableblock halign-left valign-top">Spring Batch Message Header Constants</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enqueued time</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EventHubsHeaders#ENQUEUED_TIME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of Instant</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of the instant, in UTC, of when each event was enqueued in the Event Hub partition.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Offset</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EventHubsHeaders#OFFSET</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of Long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of the offset of each event when it was received from the associated Event Hub partition.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Partition key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AzureHeaders#PARTITION_KEY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of the partition hashing key if it was set when originally publishing each event.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sequence number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EventHubsHeaders#SEQUENCE_NUMBER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of Long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of the sequence number assigned to each event when it was enqueued in the associated Event Hub partition.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">System properties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EventHubsHeaders#BATCH_CONVERTED_SYSTEM_PROPERTIES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of Map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of the system properties of each event.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Application properties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EventHubsHeaders#BATCH_CONVERTED_APPLICATION_PROPERTIES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of Map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of the application properties of each event, where all customized message headers or event properties are placed.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When publish messages, all the above batch headers will be removed from the messages if exist.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_samples"><a class="link" href="#_samples">Samples</a></h4>
+<div class="paragraph">
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.4.0/eventhubs/spring-cloud-azure-starter-integration-eventhubs/eventhubs-integration">azure-spring-boot-samples</a> for more details.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_spring_integration_with_azure_service_bus"><a class="link" href="#_spring_integration_with_azure_service_bus">Spring Integration with Azure Service Bus</a></h3>
+<div class="sect3">
+<h4 id="_key_concepts_2"><a class="link" href="#_key_concepts_2">Key Concepts</a></h4>
+<div class="paragraph">
+<p>Spring Integration enables lightweight messaging within Spring-based applications and supports integration with external systems via declarative adapters.</p>
+</div>
+<div class="paragraph">
+<p>The Spring Integration for Azure Service Bus extension project provides inbound and outbound channel adapters for Azure Service Bus.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+CompletableFuture support APIs have been deprecated from version 2.10.0, and is replaced by Reactor Core from version 4.0.0.
+See Javadoc for details.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_dependency_setup_2"><a class="link" href="#_dependency_setup_2">Dependency Setup</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-cloud-azure-starter-integration-servicebus&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configuration_2"><a class="link" href="#_configuration_2">Configuration</a></h4>
+<div class="paragraph">
+<p>This starter provides the following 2 parts of configuration options:</p>
+</div>
+<div class="sect4">
+<h5 id="_connection_configuration_properties_2"><a class="link" href="#_connection_configuration_properties_2">Connection Configuration Properties</a></h5>
+<div class="paragraph">
+<p>This section contains the configuration options used for connecting to Azure Service Bus.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, see <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. Connection configurable properties of spring-cloud-azure-starter-integration-servicebus</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether an Azure Service Bus is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.connection-string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service Bus Namespace connection string value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.namespace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service Bus Namespace value, which is the prefix of the FQDN. A FQDN should be composed of &lt;NamespaceName&gt;.&lt;DomainName&gt;</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.servicebus</strong>.domain-name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Domain name of an Azure Service Bus Namespace value.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_service_bus_processor_configuration_properties"><a class="link" href="#_service_bus_processor_configuration_properties">Service Bus Processor Configuration Properties</a></h5>
+<div class="paragraph">
+<p>The <code>ServiceBusInboundChannelAdapter</code> uses the <code>ServiceBusProcessorClient</code> to consume messages, to configure the overall properties of an <code>ServiceBusProcessorClient</code>,
+developers can use <code>ServiceBusContainerProperties</code> for the configuration. See <a href="#receive-from-sb">the following section</a> about how to work with <code>ServiceBusInboundChannelAdapter</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_basic_usage_2"><a class="link" href="#_basic_usage_2">Basic Usage</a></h4>
+<div class="sect4">
+<h5 id="_send_messages_to_azure_service_bus"><a class="link" href="#_send_messages_to_azure_service_bus">Send Messages to Azure Service Bus</a></h5>
+<div class="paragraph">
+<p>Step 1. Fill the credential configuration options.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as connection string, configure the following properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      servicebus:
+        connection-string: ${AZURE_SERVICE_BUS_CONNECTION_STRING}</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as managed identities, configure the following properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      credential:
+        managed-identity-enabled: true
+        client-id: ${AZURE_CLIENT_ID}
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+      servicebus:
+        namespace: ${AZURE_SERVICE_BUS_NAMESPACE}</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as service principal, configure the following properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+      servicebus:
+        namespace: ${AZURE_SERVICE_BUS_NAMESPACE}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step 2. Create <code>DefaultMessageHandler</code> with the bean of <code>ServiceBusTemplate</code> to send messages to Service Bus,
+set the entity type for the ServiceBusTemplate. This sample takes Service Bus Queue as example.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
+    private static final String OUTPUT_CHANNEL = "queue.output";
+
+    @Bean
+    @ServiceActivator(inputChannel = OUTPUT_CHANNEL)
+    public MessageHandler queueMessageSender(ServiceBusTemplate serviceBusTemplate) {
+        serviceBusTemplate.setDefaultEntityType(ServiceBusEntityType.QUEUE);
+        DefaultMessageHandler handler = new DefaultMessageHandler(QUEUE_NAME, serviceBusTemplate);
+        handler.setSendCallback(new ListenableFutureCallback&lt;Void&gt;() {
+            @Override
+            public void onSuccess(Void result) {
+                LOGGER.info("Message was sent successfully.");
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                LOGGER.info("There was an error sending the message.");
+            }
+        });
+
+        return handler;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step 3. Create a message gateway binding with the above message handler via a message channel.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
+    @Autowired
+    QueueOutboundGateway messagingGateway;
+
+    @MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL)
+    public interface QueueOutboundGateway {
+        void send(String text);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step 4. Send messages using the gateway.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
+    public void demo() {
+        this.messagingGateway.send(message);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="receive-from-sb"><a class="link" href="#receive-from-sb">Receive Messages from Azure Service Bus</a></h5>
+<div class="paragraph">
+<p>Step 1. Fill the credential configuration options.</p>
+</div>
+<div class="paragraph">
+<p>Step 2. Create a bean of message channel as the input channel.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
+class Demo {
+    private static final String INPUT_CHANNEL = "input";
+
+    @Bean
+    public MessageChannel input() {
+        return new DirectChannel();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step 3. Create <code>ServiceBusInboundChannelAdapter</code> with the bean of <code>ServiceBusMessageListenerContainer</code> to receive messages to Service Bus. This sample takes Service Bus Queue as example.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
+class Demo {
+    private static final String QUEUE_NAME = "queue1";
+
+    @Bean
+    public ServiceBusMessageListenerContainer messageListenerContainer(ServiceBusProcessorFactory processorFactory) {
+        ServiceBusContainerProperties containerProperties = new ServiceBusContainerProperties();
+        containerProperties.setEntityName(QUEUE_NAME);
+        containerProperties.setAutoComplete(false);
+        return new ServiceBusMessageListenerContainer(processorFactory, containerProperties);
+    }
+
+    @Bean
+    public ServiceBusInboundChannelAdapter queueMessageChannelAdapter(
+        @Qualifier(INPUT_CHANNEL) MessageChannel inputChannel,
+        ServiceBusMessageListenerContainer listenerContainer) {
+        ServiceBusInboundChannelAdapter adapter = new ServiceBusInboundChannelAdapter(listenerContainer);
+        adapter.setOutputChannel(inputChannel);
+        return adapter;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step 4. Create a message receiver binding with ServiceBusInboundChannelAdapter via the message channel we created before.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
+    @ServiceActivator(inputChannel = INPUT_CHANNEL)
+    public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
+        String message = new String(payload);
+        LOGGER.info("New message received: '{}'", message);
+        checkpointer.success()
+                .doOnSuccess(s -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
+                .doOnError(e -&gt; LOGGER.error("Error found", e))
+                .block();
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_configure_servicebusmessageconverter_to_customize_objectmapper"><a class="link" href="#_configure_servicebusmessageconverter_to_customize_objectmapper">Configure ServiceBusMessageConverter to Customize ObjectMapper</a></h5>
+<div class="paragraph">
+<p><code>ServiceBusMessageConverter</code> is made as a configurable bean to allow users to customize ObjectMapper.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="si-sb-headers"><a class="link" href="#si-sb-headers">Service Bus Message Headers</a></h5>
+<div class="paragraph">
+<p>For some Service Bus headers that can be mapped to multiple Spring header constants, the priority of different Spring headers is listed.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. Mapping between Service Bus Headers and Spring Headers</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Service Bus Message Headers and Properties</th>
+<th class="tableblock halign-left valign-top">Spring Message Header Constants</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Configurable</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Content type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MessageHeaders#CONTENT_TYPE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The RFC2045 Content-Type descriptor of the message.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Correlation id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#CORRELATION_ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The correlation id of the message</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Message id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#MESSAGE_ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The message id of the message, this header has higher priority than <code>MessageHeaders#ID</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Message id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MessageHeaders#ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UUID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The message id of the message, this header has lower priority than <code>ServiceBusMessageHeaders#MESSAGE_ID</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Partition key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#PARTITION_KEY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The partition key for sending the message to a partitioned entity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reply to</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MessageHeaders#REPLY_CHANNEL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The address of an entity to send replies to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reply to session id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#REPLY_TO_SESSION_ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ReplyToGroupId property value of the message.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scheduled enqueue time utc</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#SCHEDULED_ENQUEUE_TIME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OffsetDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The datetime at which the message should be enqueued in Service Bus, this header has higher priority than <code>AzureHeaders#SCHEDULED_ENQUEUE_MESSAGE</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scheduled enqueue time utc</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AzureHeaders#SCHEDULED_ENQUEUE_MESSAGE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The datetime at which the message should be enqueued in Service Bus, this header has lower priority than <code>ServiceBusMessageHeaders#SCHEDULED_ENQUEUE_TIME</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Session id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#SESSION_ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The session identifier for a session-aware entity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time to live</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#TIME_TO_LIVE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The duration of time before this message expires.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#TO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The "to" address of the message, reserved for future use in routing scenarios and presently ignored by the broker itself.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Subject</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#SUBJECT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The subject for the message.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dead letter error description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#DEAD_LETTER_ERROR_DESCRIPTION</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The description for a message that has been dead-lettered.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dead letter reason</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#DEAD_LETTER_REASON</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The reason a message was dead-lettered.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dead letter source</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#DEAD_LETTER_SOURCE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The entity in which the message was dead-lettered.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Delivery count</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#DELIVERY_COUNT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of the times this message was delivered to clients.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enqueued sequence number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#ENQUEUED_SEQUENCE_NUMBER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The enqueued sequence number assigned to a message by Service Bus.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enqueued time</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#ENQUEUED_TIME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OffsetDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The datetime at which this message was enqueued in Service Bus.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Expires at</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#EXPIRES_AT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OffsetDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The datetime at which this message will expire.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lock token</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#LOCK_TOKEN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The lock token for the current message.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Locked until</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#LOCKED_UNTIL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OffsetDateTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The datetime at which the lock of this message expires.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sequence number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#SEQUENCE_NUMBER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">long</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The unique number assigned to a message by Service Bus.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">State</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageHeaders#STATE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServiceBusMessageState</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The state of the message, which can be Active, Deferred, or Scheduled.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_partition_key_support"><a class="link" href="#_partition_key_support">Partition Key Support</a></h5>
+<div class="paragraph">
+<p>This starter supports <a href="https://docs.microsoft.com/azure/service-bus-messaging/service-bus-partitioning">Service Bus partitioning</a> by allowing setting partition key and session id in the message header. This section introduces how to set partition key for messages.</p>
+</div>
+<div class="paragraph">
+<p><em>Recommended:</em> Use <code>ServiceBusMessageHeaders.PARTITION_KEY</code> as the key of the header.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class SampleController {
+    @PostMapping("/messages")
+    public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
+        LOGGER.info("Going to add message {} to Sinks.Many.", message);
+        many.emitNext(MessageBuilder.withPayload(message)
+                                    .setHeader(ServiceBusMessageHeaders.PARTITION_KEY, "Customize partition key")
+                                    .build(), Sinks.EmitFailureHandler.FAIL_FAST);
+        return ResponseEntity.ok("Sent!");
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Not recommended but currently supported:</em> <code>AzureHeaders.PARTITION_KEY</code> as the key of the header.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class SampleController {
+    @PostMapping("/messages")
+    public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
+        LOGGER.info("Going to add message {} to Sinks.Many.", message);
+        many.emitNext(MessageBuilder.withPayload(message)
+                                    .setHeader(AzureHeaders.PARTITION_KEY, "Customize partition key")
+                                    .build(), Sinks.EmitFailureHandler.FAIL_FAST);
+        return ResponseEntity.ok("Sent!");
+    }
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When both <code>ServiceBusMessageHeaders.PARTITION_KEY</code> and <code>AzureHeaders.PARTITION_KEY</code> are set in the message headers,
+<code>ServiceBusMessageHeaders.PARTITION_KEY</code> is preferred.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_session_support"><a class="link" href="#_session_support">Session Support</a></h5>
+<div class="paragraph">
+<p>This example demonstrates how to manually set the session id of a message in the application.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class SampleController {
+    @PostMapping("/messages")
+    public ResponseEntity&lt;String&gt; sendMessage(@RequestParam String message) {
+        LOGGER.info("Going to add message {} to Sinks.Many.", message);
+        many.emitNext(MessageBuilder.withPayload(message)
+                                    .setHeader(ServiceBusMessageHeaders.SESSION_ID, "Customize session id")
+                                    .build(), Sinks.EmitFailureHandler.FAIL_FAST);
+        return ResponseEntity.ok("Sent!");
+    }
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When the <code>ServiceBusMessageHeaders.SESSION_ID</code> is set in the message headers, and a different <code>ServiceBusMessageHeaders.PARTITION_KEY</code> (or <code>AzureHeaders.PARTITION_KEY</code>) header is also set,
+the value of the session id will eventually be used to overwrite the value of the partition key.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_samples_2"><a class="link" href="#_samples_2">Samples</a></h4>
+<div class="paragraph">
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.4.0/servicebus/spring-cloud-azure-starter-integration-servicebus">azure-spring-boot-samples</a> for more details.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_spring_integration_with_azure_storage_queue"><a class="link" href="#_spring_integration_with_azure_storage_queue">Spring Integration with Azure Storage Queue</a></h3>
+<div class="sect3">
+<h4 id="_key_concepts_3"><a class="link" href="#_key_concepts_3">Key Concepts</a></h4>
+<div class="paragraph">
+<p>Azure Queue Storage is a service for storing large numbers of messages. You access messages from anywhere in the world via authenticated calls using HTTP or HTTPS. A queue message can be up to 64 KB in size. A queue may contain millions of messages, up to the total capacity limit of a storage account. Queues are commonly used to create a backlog of work to process asynchronously.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_dependency_setup_3"><a class="link" href="#_dependency_setup_3">Dependency Setup</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-cloud-azure-starter-integration-storage-queue&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_configuration_3"><a class="link" href="#_configuration_3">Configuration</a></h4>
+<div class="paragraph">
+<p>This starter provides the following configuration options:</p>
+</div>
+<div class="sect4">
+<h5 id="_connection_configuration_properties_3"><a class="link" href="#_connection_configuration_properties_3">Connection Configuration Properties</a></h5>
+<div class="paragraph">
+<p>This section contains the configuration options used for connecting to Azure Storage Queue.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, see <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. Connection configurable properties of spring-cloud-azure-starter-integration-storage-queue</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether an Azure Storage Queue is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.connection-string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage Queue Namespace connection string value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.accountName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage Queue account name.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.accountKey</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage Queue account key.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage Queue service endpoint.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.sasToken</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sas token credential</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.serviceVersion</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">QueueServiceVersion</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">QueueServiceVersion that is used when making API requests.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>spring.cloud.azure.storage.queue</strong>.messageEncoding</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Queue message encoding.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_basic_usage_3"><a class="link" href="#_basic_usage_3">Basic Usage</a></h4>
+<div class="sect4">
+<h5 id="_send_messages_to_azure_storage_queue"><a class="link" href="#_send_messages_to_azure_storage_queue">Send messages to Azure Storage Queue</a></h5>
+<div class="paragraph">
+<p>Step 1. Fill the credential configuration options.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as connection string, configure the following properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      storage:
+        queue:
+          connection-string: ${AZURE_SERVICE_BUS_CONNECTION_STRING}</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as managed identities, configure the following properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      credential:
+        managed-identity-enabled: true
+        client-id: ${AZURE_CLIENT_ID}
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+      storage:
+        queue:
+          namespace: ${AZURE_SERVICE_BUS_NAMESPACE}</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For credentials as service principal, configure the following properties in application.yml:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+      storage:
+        queue:
+          namespace: ${AZURE_SERVICE_BUS_NAMESPACE}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step 2. Create <code>DefaultMessageHandler</code> with the bean of <code>StorageQueueTemplate</code> to send messages to Storage Queue.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
+    private static final String STORAGE_QUEUE_NAME = "example";
+    private static final String OUTPUT_CHANNEL = "output";
+
+    @Bean
+    @ServiceActivator(inputChannel = OUTPUT_CHANNEL)
+    public MessageHandler messageSender(StorageQueueTemplate storageQueueTemplate) {
+        DefaultMessageHandler handler = new DefaultMessageHandler(STORAGE_QUEUE_NAME, storageQueueTemplate);
+        handler.setSendCallback(new ListenableFutureCallback&lt;Void&gt;() {
+            @Override
+            public void onSuccess(Void result) {
+                LOGGER.info("Message was sent successfully.");
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                LOGGER.info("There was an error sending the message.");
+            }
+        });
+        return handler;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step 3. Create a Message gateway binding with the above message handler via a message channel.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
+    @Autowired
+    StorageQueueOutboundGateway storageQueueOutboundGateway;
+
+    @MessagingGateway(defaultRequestChannel = OUTPUT_CHANNEL)
+    public interface StorageQueueOutboundGateway {
+        void send(String text);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step 4. Send messages using the gateway.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
+    public void demo() {
+        this.storageQueueOutboundGateway.send(message);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_receive_messages_from_azure_storage_queue"><a class="link" href="#_receive_messages_from_azure_storage_queue">Receive Messages from Azure Storage Queue</a></h5>
+<div class="paragraph">
+<p>Step 1. Fill the credential configuration options.</p>
+</div>
+<div class="paragraph">
+<p>Step 2. Create a bean of message channel as the input channel.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
+    private static final String INPUT_CHANNEL = "input";
+
+    @Bean
+    public MessageChannel input() {
+        return new DirectChannel();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step 3. Create <code>StorageQueueMessageSource</code> with the bean of <code>StorageQueueTemplate</code> to receive messages to Storage Queue.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
+    private static final String STORAGE_QUEUE_NAME = "example";
+
+    @Bean
+    @InboundChannelAdapter(channel = INPUT_CHANNEL, poller = @Poller(fixedDelay = "1000"))
+    public StorageQueueMessageSource storageQueueMessageSource(StorageQueueTemplate storageQueueTemplate) {
+        return new StorageQueueMessageSource(STORAGE_QUEUE_NAME, storageQueueTemplate);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Step 4. Create a message receiver binding with StorageQueueMessageSource created in the last step via the message channel we created before.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">class Demo {
+    @ServiceActivator(inputChannel = INPUT_CHANNEL)
+    public void messageReceiver(byte[] payload, @Header(AzureHeaders.CHECKPOINTER) Checkpointer checkpointer) {
+        String message = new String(payload);
+        LOGGER.info("New message received: '{}'", message);
+        checkpointer.success()
+            .doOnError(Throwable::printStackTrace)
+            .doOnSuccess(t -&gt; LOGGER.info("Message '{}' successfully checkpointed", message))
+            .block();
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_samples_3"><a class="link" href="#_samples_3">Samples</a></h4>
+<div class="paragraph">
+<p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.4.0/storage/spring-cloud-azure-starter-integration-storage-queue">azure-spring-boot-samples</a> for more details.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<link rel="stylesheet" href="js/highlight/styles/github.min.css">
+<script src="js/highlight/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>
