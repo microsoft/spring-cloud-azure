@@ -511,6 +511,28 @@ public class AadOAuth2LoginSecurityConfig extends AadWebSecurityConfigurerAdapte
 </div>
 </div>
 </div>
+<div class="sect5">
+<h6 id="connecting-to-azure-ad-via-proxy"><a class="link" href="#connecting-to-azure-ad-via-proxy">Connecting to Azure AD via proxy</a></h6>
+<div class="paragraph">
+<p>To connect Azure AD via proxy, just provide a <code>RestTemplateCustomizer</code> bean like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Configuration
+class DemoConfiguration {
+    @Bean
+    public RestTemplateCustomizer proxyRestTemplateCustomizer() {
+        return (RestTemplate restTemplate) -&gt; {
+            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(PROXY_SERVER_HOST, PROXY_SERVER_PORT));
+            SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+            requestFactory.setProxy(proxy);
+            restTemplate.setRequestFactory(requestFactory);
+        };
+    }
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_samples"><a class="link" href="#_samples">Samples</a></h5>
@@ -1028,6 +1050,12 @@ public class AadOAuth2ResourceServerSecurityConfig extends AadResourceServerWebS
               - ${WEB_API_B_APP_ID_URL}/.default
             authorization-grant-type: client_credentials</code></pre>
 </div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_connecting_to_azure_ad_via_proxy"><a class="link" href="#_connecting_to_azure_ad_via_proxy">Connecting to Azure AD via proxy</a></h6>
+<div class="paragraph">
+<p>To connect Azure AD via proxy, you need provide a <code>RestTemplateCustomizer</code> bean. For more information, see the <a href="index.html#connecting-to-azure-ad-via-proxy">Web application connecting to Azure AD via proxy</a> section.</p>
 </div>
 </div>
 </div>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>MySQL support</title>
+<title>PostgreSQL support</title>
 <link rel="stylesheet" href="css/spring.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script type="text/javascript"> (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "b9g1q6wz23"); </script>
@@ -165,9 +165,9 @@ window.onload = function() {
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#mysql-support">MySQL support</a>
+<li><a href="#postgresql-support">PostgreSQL support</a>
 <ul class="sectlevel2">
-<li><a href="#_supported_mysql_version">Supported MySQL version</a></li>
+<li><a href="#_supported_postgresql_version">Supported PostgreSQL version</a></li>
 <li><a href="#_core_features">Core Features</a></li>
 <li><a href="#_how_it_works">How it works</a></li>
 <li><a href="#_configuration">Configuration</a></li>
@@ -180,18 +180,18 @@ window.onload = function() {
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="mysql-support"><a class="link" href="#mysql-support">MySQL support</a></h2>
+<h2 id="postgresql-support"><a class="link" href="#postgresql-support">PostgreSQL support</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a href="https://azure.microsoft.com/services/mysql/">Azure Database for MySQL</a> is a relational database service powered by the MySQL community edition. You can use either Single Server or Flexible Server to host a MySQL database in Azure. It&#8217;s a fully managed database-as-a-service offering that can handle mission-critical workloads with predictable performance and dynamic scalability.</p>
+<p><a href="https://azure.microsoft.com/services/postgresql/">Azure Database for PostgreSQL</a> is a relational database service based on the open-source Postgres database engine. It&#8217;s a fully managed database-as-a-service that can handle mission-critical workloads with predictable performance, security, high availability, and dynamic scalability.</p>
 </div>
 <div class="paragraph">
-<p>From version <strong>4.5.0-beta.1</strong>, Spring Cloud Azure supports various types of credentials for authentication to <code>Azure Database for MySQL single server</code>.</p>
+<p>From version <strong>4.5.0-beta.1</strong>, Spring Cloud Azure supports various types of credentials for authentication to <strong>Azure Database for PostgreSQL single server</strong>.</p>
 </div>
 <div class="sect2">
-<h3 id="_supported_mysql_version"><a class="link" href="#_supported_mysql_version">Supported MySQL version</a></h3>
+<h3 id="_supported_postgresql_version"><a class="link" href="#_supported_postgresql_version">Supported PostgreSQL version</a></h3>
 <div class="paragraph">
-<p>The current version of the starter should use Azure Database for MySQL Single Server version <strong>5.7</strong> or <strong>8.0</strong>.</p>
+<p>The current version of the starter should use Azure Database for PostgreSQL Single Server version <strong>10</strong> or <strong>11</strong>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -199,7 +199,7 @@ window.onload = function() {
 <div class="sect3">
 <h4 id="_passwordless_connection"><a class="link" href="#_passwordless_connection">Passwordless connection</a></h4>
 <div class="paragraph">
-<p>Passwordless connection is to connect to Azure services without storing any credentials in the application, no matter stored in the applications' configuration files or in the environment variables, and it uses Azure AD authentication. Azure AD authentication is a mechanism of connecting to Azure Database for MySQL using identities defined in Azure AD. With Azure AD authentication, you can manage database user identities and other Microsoft services in a central location, which simplifies permission management.</p>
+<p>Passwordless connection is to connect to Azure services without storing any credentials in the application, no matter stored in the applications' configuration files or in the environment variables, and it uses Azure AD authentication. Azure AD authentication is a mechanism of connecting to Azure Database for PostSQL using identities defined in Azure AD. With Azure AD authentication, you can manage database user identities and other Microsoft services in a central location, which simplifies permission management.</p>
 </div>
 </div>
 </div>
@@ -228,19 +228,19 @@ window.onload = function() {
 </ul>
 </div>
 <div class="paragraph">
-<p>If none of these types of credentials are found, the <code>DefaultAzureCredential</code> credentials will be obtained from application properties, environment variables, managed identities, or the IDE. For detailed information, see the <a href="index.html#authentication">Spring Cloud Azure authentication</a> section.</p>
+<p>If none of these types of credentials are found, the <code>DefaultAzureCredential</code> credentials will be obtained from application properties, environment variables, managed identities, or the IDE. For detailed information, see the <a href="index.html#authentication">Authentication</a> section.</p>
 </div>
 <div class="paragraph">
-<p>The following high-level diagram summarizes how authentication works using OAuth credential authentication with Azure Database for MySQL. The arrows indicate communication pathways.</p>
+<p>The following high-level diagram summarizes how authentication works using OAuth credential authentication with Azure Database for PostgreSQL. The arrows indicate communication pathways.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="https://user-images.githubusercontent.com/58474919/192254109-22341bfc-20a9-4fe5-bc62-92ed7b253343.png" alt="Diagram showing Azure Active Directory authentication for MySQL"></span></p>
+<p><span class="image"><img src="https://user-images.githubusercontent.com/58474919/192259091-ba4b102e-9be5-4d4c-b320-a3c77d405426.png" alt="Authentication PostgreSQL Azure Active Directory"></span></p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
 <div class="paragraph">
-<p>Spring Cloud Azure for MySQL supports the following two levels of configuration options:</p>
+<p>Spring Cloud Azure for PostgreSQL supports the following two levels of configuration options:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -248,15 +248,15 @@ window.onload = function() {
 <p>The global authentication configuration options of <code>credential</code> and <code>profile</code> with prefixes of <code>spring.cloud.azure</code>.</p>
 </li>
 <li>
-<p>Spring Cloud Azure for MySQL common configuration options.</p>
+<p>Spring Cloud Azure for PostgreSQL common configuration options.</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>The following table shows the Spring Cloud Azure for MySQL common configuration options:</p>
+<p>The following table shows the Spring Cloud Azure for PostgreSQL common configuration options:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. Spring Cloud Azure for MySQL common configuration options</caption>
+<caption class="title">Table 1. Spring Cloud Azure for PostgreSQL common configuration options</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -318,13 +318,13 @@ window.onload = function() {
 <div class="sect2">
 <h3 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency setup</a></h3>
 <div class="paragraph">
-<p>Add the following dependency to your project. This will automatically include the <code>spring-boot-starter</code> dependency in your project transitively.</p>
+<p>Add the following dependency to your project. This will automatically include the spring-boot-starter dependency in your project transitively.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
     &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-cloud-azure-starter-jdbc-mysql&lt;/artifactId&gt;
+    &lt;artifactId&gt;spring-cloud-azure-starter-jdbc-postgresql&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -353,20 +353,20 @@ Remember to add the BOM <code>spring-cloud-azure-dependencies</code> along with 
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-Passwordless connection uses Azure AD authentication. To use Azure AD authentication, you should set the Azure AD admin user first. Only an Azure AD Admin user can create you enable users for Azure AD-based authentication. See the <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/configure-spring-data-jdbc-with-azure-mysql?branch=release-cred-free-java&amp;tabs=passwordless#create-a-mysql-server-and-set-up-admin-user">Create a MySQL server and set up admin user</a> section.
+Passwordless connection using Azure AD authentication. To use Azure AD authentication, we should set the Azure AD admin user first. Only an Azure AD Admin user can create and enable users for Azure AD-based authentication. Before starting to use the following usage scenarios, you need <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/configure-spring-data-jdbc-with-azure-postgresql?branch=release-cred-free-java&amp;tabs=passwordless#create-a-postgresql-server-and-set-up-admin-user">create a PostgreSQL server and set up admin user</a>.
 </td>
 </tr>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_connect_to_azure_mysql_locally_without_password"><a class="link" href="#_connect_to_azure_mysql_locally_without_password">Connect to Azure MySQL locally without password</a></h4>
+<h4 id="_connect_to_azure_postgresql_locally_without_password"><a class="link" href="#_connect_to_azure_postgresql_locally_without_password">Connect to Azure PostgreSQL locally without password</a></h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>To create users and grant permission, see the <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/configure-spring-data-jdbc-with-azure-mysql?branch=release-cred-free-java&amp;tabs=passwordless#create-a-mysql-non-admin-user-and-grant-permission">Create a MySQL non-admin user and grant permission</a> section to create users and grant permission.</p>
+<p>To create users and grant permission, see the <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/configure-spring-data-jdbc-with-azure-postgresql?branch=release-cred-free-java&amp;tabs=passwordless#create-a-postgresql-non-admin-user-and-grant-permission">Create a PostgreSQL non-admin user and grant permission</a></p>
 </li>
 <li>
-<p>Configure the following properties in your <strong>application.yml</strong>:</p>
+<p>Configure the following properties in your <strong>application.yml</strong> file:</p>
 </li>
 </ol>
 </div>
@@ -374,41 +374,42 @@ Passwordless connection uses Azure AD authentication. To use Azure AD authentica
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   datasource:
-    url: jdbc:mysql://${AZURE_MYSQL_SERVER_NAME}.mysql.database.azure.com:3306/${AZURE_MYSQL_DATABASE_NAME}
-    username: ${AZURE_MYSQL_AD_NON_ADMIN_USERNAME}@${AZURE_MYSQL_SERVER_NAME}
+    url: jdbc:postgresql://${AZ_DATABASE_NAME}.postgres.database.azure.com:5432/demo?sslmode=require
+    username: ${AZ_POSTGRESQL_AD_NON_ADMIN_USERNAME}@${AZ_DATABASE_NAME}
     azure:
       passwordless-enabled: true</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_connect_to_azure_mysql_using_a_service_principal"><a class="link" href="#_connect_to_azure_mysql_using_a_service_principal">Connect to Azure MySQL using a service principal</a></h4>
+<h4 id="_connect_to_azure_postgresql_using_a_service_principal"><a class="link" href="#_connect_to_azure_postgresql_using_a_service_principal">Connect to Azure PostgreSQL using a service principal</a></h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>Create an Azure AD user for service principal and grant permission.</p>
 <div class="paragraph">
-<p>First, use the following commands to set up some environment variables.</p>
+<p>Create a SQL script called <strong>create_ad_user_sp.sql</strong> for creating a non-admin user. Add the following contents and save it locally:</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Make sure <code>&lt;service-principal-name&gt;</code> already exit in your Azure AD tenant, or <a href="/azure/postgresql/single-server/how-to-configure-sign-in-azure-ad-authentication#creating-azure-ad-users-in-azure-database-for-postgresql">create Azure AD user</a>  will be failed.
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">export AZURE_MYSQL_AZURE_AD_SP_USERID=`az ad sp list --display-name &lt;service_principal-name&gt; --query '[0].appId' -otsv`
-export AZURE_MYSQL_AZURE_AD_SP_USERNAME=&lt;YOUR_MYSQL_AZURE_AD_USERNAME&gt;
-export AZURE_MYSQL_SERVER_NAME=&lt;YOUR_MYSQL_SERVER_NAME&gt;
-export AZURE_MYSQL_DATABASE_NAME=&lt;YOUR_MYSQL_DATABASE_NAME&gt;
-export CURRENT_USERNAME=$(az ad signed-in-user show --query userPrincipalName -o tsv)</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then, create a SQL script called <strong>create_ad_user_sp.sql</strong> for creating a non-admin user. Add the following contents and save it locally:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">cat &lt;&lt; EOF &gt; create_ad_user_sp.sql
-SET aad_auth_validate_oids_in_tenant = OFF;
-CREATE AADUSER '$AZURE_MYSQL_AZURE_AD_SP_USERNAME' IDENTIFIED BY '$AZURE_MYSQL_AZURE_AD_SP_USERID';
-GRANT ALL PRIVILEGES ON $AZURE_MYSQL_DATABASE_NAME.* TO '$AZURE_MYSQL_AZURE_AD_SP_USERNAME'@'%';
-FLUSH privileges;
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">export AZ_POSTGRESQL_AD_SP_USERNAME=&lt;service-principal-name&gt;
+
+cat &lt;&lt; EOF &gt; create_ad_user_mi.sql
+SET aad_validate_oids_in_tenant = off;
+CREATE ROLE "$AZ_POSTGRESQL_AD_SP_USERNAME" WITH LOGIN IN ROLE azure_ad_user;
+GRANT ALL PRIVILEGES ON DATABASE $AZ_DATABASE_NAME TO "$AZ_POSTGRESQL_AD_SP_USERNAME";
 EOF</code></pre>
 </div>
 </div>
@@ -417,7 +418,7 @@ EOF</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">mysql -h $AZURE_MYSQL_SERVER_NAME.mysql.database.azure.com --user $CURRENT_USERNAME@$AZURE_MYSQL_SERVER_NAME --enable-cleartext-plugin --password=`az account get-access-token --resource-type oss-rdbms --output tsv --query accessToken` &lt; create_ad_user_sp.sql</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">psql "host=$AZ_DATABASE_NAME.postgres.database.azure.com user=$CURRENT_USERNAME@$AZ_DATABASE_NAME dbname=demo port=5432 password=`az account get-access-token --resource-type oss-rdbms --output tsv --query accessToken` sslmode=require" &lt; create_ad_user_sp.sql</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -445,37 +446,54 @@ EOF</code></pre>
       profile:
         tenant-id: ${AZURE_TENANT_ID}
   datasource:
-    url: jdbc:mysql://${AZURE_MYSQL_SERVER_NAME}.mysql.database.azure.com:3306/${AZURE_MYSQL_DATABASE_NAME}
-    username: ${AZURE_MYSQL_AD_SP_USERNAME}@${AZURE_MYSQL_SERVER_NAME}
+    url: jdbc:postgresql://${AZ_DATABASE_NAME}.postgres.database.azure.com:5432/demo?sslmode=require
+    username: ${AZ_POSTGRESQL_AD_SP_USERNAME}@${AZ_DATABASE_NAME}
     azure:
       passwordless-enabled: true</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_connect_to_azure_mysql_with_managed_identity_in_azure_spring_apps"><a class="link" href="#_connect_to_azure_mysql_with_managed_identity_in_azure_spring_apps">Connect to Azure MySQL with Managed Identity in Azure Spring Apps</a></h4>
+<h4 id="_connect_to_azure_postgresql_with_managed_identity_in_azure_spring_apps"><a class="link" href="#_connect_to_azure_postgresql_with_managed_identity_in_azure_spring_apps">Connect to Azure PostgreSQL with Managed Identity in Azure Spring Apps</a></h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>To enable managed identity, see the <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/migrate-mysql-to-passwordless-connection?branch=release-cred-free-java&amp;tabs=sign-in-azure-cli%2Cjava%2Capp-service%2Capp-service-identity#create-the-managed-identity-using-the-azure-portal">Create the managed identity using the Azure Portal</a> section to enable managed identity.</p>
+<p>To enable managed identity, see the <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/migrate-postgresql-to-passwordless-connection?branch=release-cred-free-java&amp;tabs=sign-in-azure-cli%2Cjava%2Cservice-connector%2Cservice-connector-identity%2Cassign-role-service-connector#create-the-managed-identity-using-the-azure-portal">Create the managed identity using the Azure Portal</a></p>
 </li>
 <li>
-<p>To grant permissions, see the <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/migrate-mysql-to-passwordless-connection?branch=release-cred-free-java&amp;tabs=sign-in-azure-cli%2Cjava%2Capp-service%2Capp-service-identity#assign-roles-to-the-managed-identity">Assign roles to the managed identity</a> section to grant permissions.</p>
+<p>To grant permissions, see the <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/migrate-postgresql-to-passwordless-connection?branch=release-cred-free-java&amp;tabs=sign-in-azure-cli%2Cjava%2Cservice-connector%2Cservice-connector-identity%2Cassign-role-service-connector#assign-roles-to-the-managed-identity">Assign role to managed identity</a></p>
 </li>
 <li>
-<p>Configure the following properties in <code>application.yml</code>:</p>
+<p>Configure the following properties in your <strong>application.yml</strong> file:</p>
 </li>
 </ol>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
+  cloud:
+    azure:
+      credential:
+        managed-identity-enabled: true
+        client-id: ${AZURE_CLIENT_ID}
   datasource:
-    url: jdbc:mysql://${AZURE_MYSQL_SERVER_NAME}.mysql.database.azure.com:3306/${AZURE_MYSQL_DATABASE_NAME}
-    username: ${AZURE_MYSQL_AD_MI_USERNAME}@${AZURE_MYSQL_SERVER_NAME}
+    url: jdbc:postgresql://${AZ_DATABASE_SERVER_NAME}.postgres.database.azure.com:5432/demo?sslmode=require
+    username: ${AZ_POSTGRESQL_AD_MI_USERNAME}@${AZ_DATABASE_SERVER_NAME}
     azure:
       passwordless-enabled: true</code></pre>
 </div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Get more information about <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/deploy-passwordless-spring-database-app?tabs=postgresql">Deploying Spring Application Connected to Azure Database Passwordlessly to Azure Spring Apps</a>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
