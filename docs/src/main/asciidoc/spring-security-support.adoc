@@ -230,7 +230,7 @@ To connect Azure AD via proxy, just provide a `RestTemplateCustomizer` bean like
 
 [source,java]
 ----
-@Confifuration
+@Configuration
 class DemoConfiguration {
     @Bean
     public RestTemplateCustomizer proxyRestTemplateCustomizer() {
@@ -622,7 +622,7 @@ spring:
 
 ====== Connecting to Azure AD via proxy
 
-To connect Azure AD via proxy, you need provide a `RestTemplateCustomizer` bean. Please refer to link:index.html#connecting-to-azure-ad-via-proxy[Web application connecting to Azure AD via proxy] to get more information.
+To connect Azure AD via proxy, you need provide a `RestTemplateCustomizer` bean. For more information, see the link:index.html#connecting-to-azure-ad-via-proxy[Web application connecting to Azure AD via proxy] section.
 
 ===== Samples
 
