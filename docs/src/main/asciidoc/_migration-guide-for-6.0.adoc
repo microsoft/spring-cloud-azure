@@ -69,9 +69,7 @@ Breaking changes in each library are introduced as follows.
 [#dependency-spring-cloud-azure-starter-active-directory]
 ===== Dependency Changes
 
-Some dependencies in the legacy artifact have been upgraded since the modern Spring Cloud Azure 6.0 library. Please update these changes to your project to fix compilation errors.
-
-.Upgrade Dependencies
+.Dependency Changes
 [cols="<,<,<", options="header"]
 |===
 |Legacy dependency |Modern dependency |Description
@@ -87,10 +85,7 @@ Some dependencies in the legacy artifact have been upgraded since the modern Spr
 [#dependency-spring-cloud-azure-starter-active-directory-b2c]
 ===== Dependency Changes
 
-Some dependencies in the legacy artifact have been upgraded since the modern Spring Cloud Azure 6.0 library.
-Please update these changes to your project to fix compilation errors.
-
-.Upgrade Dependencies
+.Dependency Changes
 [cols="<,<,<", options="header"]
 |===
 |Legacy dependency |Modern dependency |Description
@@ -106,16 +101,13 @@ Please update these changes to your project to fix compilation errors.
 [#dependency-spring-cloud-azure-starter-servicebus-jms]
 ===== Dependency Changes
 
-Some dependencies in the legacy artifact have been upgraded since the modern Spring Cloud Azure 6.0 library.
-Please update these changes to your project to fix compilation errors.
-
-.Upgrade Dependencies
+.Dependency Changes
 [cols="<,<,<", options="header"]
 |===
 |Legacy dependency |Modern dependency |Description
 |org.apache.geronimo.specs:geronimo-jms_2.0_spec
 |jakarta.jms:jakarta.jms-api
-|Transitively depends on this artifact, which means the relevant classpath modification is required.
+|Since Spring Boot 3.0, `qpid-jms-client` and `pooled-jms` have changed dependency from `geronimo-jms_2.0_spec` to `jakarta.jms-api`, so we should update `imports` in our code.
 
 |===
 
