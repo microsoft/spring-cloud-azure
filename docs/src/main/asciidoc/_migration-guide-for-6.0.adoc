@@ -33,19 +33,18 @@ This migration guide will consist following sections:
 
 * Artifact changes: renamed / added / deleted
 * Dependency changes
-* API breaking changes
 * Library changes
 
 === Artifact Changes: Renamed / Added / Deleted
 
-Group Ids and artifact Ids are the same for modern and legacy Spring Cloud Azure libraries.
-In order to launch the first version to support Spring Boot 3, the Spring Cloud Azure 6.0 will exclude some components that are not ready to support.
+In order to launch the first version to support Spring Boot 3, the Spring Cloud Azure 6.0 excluded some components that are not ready to support.
 
 .Deleted artifact Id
 [cols="<,<,<", options="header"]
 |===
 |Legacy Artifact ID |Modern Artifact ID |Description
-|spring-cloud-azure-starter-data-cosmos |N/A |Delete this artifact because the Spring Data 3 adaptation has not been completed.
+|spring-cloud-azure-native-configuration |N/A |Deleted this artifact because the Spring Native support will use the new API based on Spring Framework 6, the adaptation work has not been completed.
+|spring-cloud-azure-starter-data-cosmos |N/A |Deleted this artifact because the Spring Data 3 adaptation has not been completed.
 |===
 
 === Dependency Changes
@@ -58,12 +57,6 @@ Libraries that have dependency changes include:
 - <<dependency-spring-cloud-azure-starter-active-directory, spring-cloud-azure-starter-active-directory>>
 - <<dependency-spring-cloud-azure-starter-active-directory-b2c, spring-cloud-azure-starter-active-directory-b2c>>
 - <<dependency-spring-cloud-azure-starter-servicebus-jms, spring-cloud-azure-starter-servicebus-jms>>
-
-=== API breaking changes
-
-For API breaking changes in each libraries, please refer to below links for details.
-
-- <<api-spring-cloud-azure-starter-data-cosmos, spring-cloud-azure-starter-data-cosmos>>
 
 === Library Changes
 
@@ -106,23 +99,6 @@ Please update these changes to your project to fix compilation errors.
 |Required.
 |===
 
-==== spring-cloud-azure-starter-data-cosmos
-
-The adaptation of Spring Data 3 has not been completed, Spring Cloud Azure 6.0 will not include the Spring Data Cosmos part,
-and the related API has been deleted.
-
-[#api-spring-cloud-azure-starter-data-cosmos]
-===== API Changes
-
-This section lists the removed classes from spring-cloud-azure-starter-data-cosmos +
-
-.Removed legacy class
-* com.azure.spring.cloud.autoconfigure.data.cosmos.CosmosDataAutoConfiguration
-* com.azure.spring.cloud.autoconfigure.data.cosmos.CosmosReactiveRepositoriesAutoConfiguration
-* com.azure.spring.cloud.autoconfigure.data.cosmos.CosmosReactiveRepositoriesAutoConfigureRegistrar
-* com.azure.spring.cloud.autoconfigure.data.cosmos.CosmosRepositoriesAutoConfiguration
-* com.azure.spring.cloud.autoconfigure.data.cosmos.CosmosRepositoriesAutoConfigureRegistrar
-
 ==== spring-cloud-azure-starter-servicebus-jms
 
 * Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 6.0.
@@ -139,7 +115,7 @@ Please update these changes to your project to fix compilation errors.
 |Legacy dependency |Modern dependency |Description
 |org.apache.geronimo.specs:geronimo-jms_2.0_spec
 |jakarta.jms:jakarta.jms-api
-|Transitively depends on this artifact.
+|Transitively depends on this artifact, which means the relevant classpath modification is required.
 
 |===
 

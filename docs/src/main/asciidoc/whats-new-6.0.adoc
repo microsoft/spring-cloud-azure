@@ -1,6 +1,6 @@
-== What Is New in 6.0 Since 4.3.x
+== What Is New in 6.0 Since 4.x
 
-This page covers changes made in 6.0 since 4.3. With this major release, we aim to bring new Spring features and Java 17 language features, and more.
+This page covers changes made in 6.0 since 4.x. With this major release, we aim to bring new Spring features and Java 17 language features, and more.
 
 TIP: To learn how to migrate to 6.0, please check link:appendix.html#migration-guide-for-6-0[the Appendix page].
 
