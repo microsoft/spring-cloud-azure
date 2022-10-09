@@ -6,6 +6,7 @@ on:
     - main
     - docs
     - 4.*
+    - feature/spring-boot-3
   # paths:
     # - 'docs/**'
   # release:
