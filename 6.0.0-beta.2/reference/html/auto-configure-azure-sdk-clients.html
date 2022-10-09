@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>Autoconfigure Azure SDK Clients</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript"> (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "b9g1q6wz23"); </script>
+
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_autoconfigure_azure_sdk_clients">Autoconfigure Azure SDK Clients</a>
+<ul class="sectlevel2">
+<li><a href="#_dependency_setup">Dependency Setup</a></li>
+<li><a href="#_configuration">Configuration</a></li>
+<li><a href="#_basic_usage">Basic Usage</a></li>
+<li><a href="#_samples">Samples</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_autoconfigure_azure_sdk_clients"><a class="link" href="#_autoconfigure_azure_sdk_clients">Autoconfigure Azure SDK Clients</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Spring Boot simplifies the Spring Cloud Azure development experience. Spring Cloud Azure starters are a set of convenient dependency descriptors to include in your application. They handle the object instantiation and configuration logic, so you don’t have to. Every starter depends on the <code>spring-cloud-azure-starter</code> to provide critical bits of configuration, like the Azure cloud environment and authentication information. You can configure these as properties in, for example, a yaml file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+        cloud-type: Azure <i class="conum" data-value="1"></i><b>(1)</b>
+      credential:
+        client-id: ${AZURE_CLIENT_ID}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>cloud-type</code> is optional for it has default value set to <code>Azure</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>These properties are optional and, if not specified, Spring Boot will try to automatically find them for you. For details on how Spring Boot finds these properties, refer to the documentation.</p>
+</div>
+<div class="sect2">
+<h3 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency Setup</a></h3>
+<div class="paragraph">
+<p>There are two ways to use Spring Cloud Azure starters. One is using Azure SDKs with this <code>spring-cloud-azure-starter</code> dependency. For example with Cosmos DB:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+	&lt;groupId&gt;com.azure&lt;/groupId&gt;
+	&lt;artifactId&gt;azure-cosmos&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-cloud-azure-starter&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or including the Spring Cloud Azure starter directly without adding Azure SDK dependencies. For example with Cosmos DB:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+	&lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-cloud-azure-starter-cosmos&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Please refer to <a href="index.html#starter-dependencies">Starter Dependencies</a> for the list of starters Spring Cloud Azure supports.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you choose to use a security principal to authenticate and authorize with Azure Active Directory for accessing an Azure resource, please refer to <a href="index.html#authorize-access-with-azure-active-directory">Authorize access with Azure AD</a> to make sure the security principal has been granted the sufficient permission to access the Azure resource.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Configuration properties for each Azure service are under prefix <code>spring.cloud.azure.&lt;azure-service&gt;</code>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+To see the list of all Spring Cloud Azure related configuration properties please check <a href="appendix.html">the Appendix page</a>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_basic_usage"><a class="link" href="#_basic_usage">Basic Usage</a></h3>
+<div class="paragraph">
+<p>Adding below properties to your <code>application.yaml</code> will autoconfigure the Cosmos clients for you, both <code>CosmosClient</code> and <code>CosmosAsyncClient</code> are available in the context and could be autowired.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      cosmos:
+        database: ${AZURE_COSMOS_DATABASE_NAME}
+        endpoint: ${AZURE_COSMOS_ENDPOINT}
+        consistency-level: eventual
+        connection-mode: direct</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">class Demo {
+    @Autowired
+    private CosmosClient cosmosClient;
+
+    @Override
+    public void run() {
+        User item = User.randomUser();
+        CosmosContainer container = cosmosClient.getDatabase(databaseName).getContainer(containerName);
+        container.createItem(item);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_samples"><a class="link" href="#_samples">Samples</a></h3>
+<div class="paragraph">
+<p>Please refer to <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_6.0.0-beta.2">azure-spring-boot-samples</a> for more details.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>
