@@ -4,9 +4,6 @@ on:
   push:
     branches:
     - main
-    - docs
-    - 4.*
-    - feature/spring-cloud-azure-passwordless-connection
   # paths:
     # - 'docs/**'
   # release:
