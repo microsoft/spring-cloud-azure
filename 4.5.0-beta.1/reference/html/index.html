@@ -8626,8 +8626,8 @@ Passwordless connection using Azure AD authentication. To use Azure AD authentic
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring:
   datasource:
-    url: jdbc:postgresql://${AZ_DATABASE_NAME}.postgres.database.azure.com:5432/demo?sslmode=require
-    username: ${AZ_POSTGRESQL_AD_NON_ADMIN_USERNAME}@${AZ_DATABASE_NAME}
+    url: jdbc:postgresql://${AZ_DATABASE_SERVER_NAME}.postgres.database.azure.com:5432/${AZ_DATABASE_NAME}?sslmode=require
+    username: ${AZ_POSTGRESQL_AD_NON_ADMIN_USERNAME}@${AZ_DATABASE_SERVER_NAME}
     azure:
       passwordless-enabled: true</code></pre>
 </div>
@@ -8658,7 +8658,7 @@ Make sure <code>&lt;service-principal-name&gt;</code> already exit in your Azure
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">export AZ_POSTGRESQL_AD_SP_USERNAME=&lt;service-principal-name&gt;
 
-cat &lt;&lt; EOF &gt; create_ad_user_mi.sql
+cat &lt;&lt; EOF &gt; create_ad_user_sp.sql
 SET aad_validate_oids_in_tenant = off;
 CREATE ROLE "$AZ_POSTGRESQL_AD_SP_USERNAME" WITH LOGIN IN ROLE azure_ad_user;
 GRANT ALL PRIVILEGES ON DATABASE $AZ_DATABASE_NAME TO "$AZ_POSTGRESQL_AD_SP_USERNAME";
@@ -8670,7 +8670,7 @@ EOF</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">psql "host=$AZ_DATABASE_NAME.postgres.database.azure.com user=$CURRENT_USERNAME@$AZ_DATABASE_NAME dbname=demo port=5432 password=`az account get-access-token --resource-type oss-rdbms --output tsv --query accessToken` sslmode=require" &lt; create_ad_user_sp.sql</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">psql "host=$AZ_DATABASE_SERVER_NAME.postgres.database.azure.com user=$CURRENT_USERNAME@$AZ_DATABASE_SERVER_NAME dbname=$AZ_DATABASE_NAME port=5432 password=`az account get-access-token --resource-type oss-rdbms --output tsv --query accessToken` sslmode=require" &lt; create_ad_user_sp.sql</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8698,8 +8698,8 @@ EOF</code></pre>
       profile:
         tenant-id: ${AZURE_TENANT_ID}
   datasource:
-    url: jdbc:postgresql://${AZ_DATABASE_NAME}.postgres.database.azure.com:5432/demo?sslmode=require
-    username: ${AZ_POSTGRESQL_AD_SP_USERNAME}@${AZ_DATABASE_NAME}
+    url: jdbc:postgresql://${AZ_DATABASE_SERVER_NAME}.postgres.database.azure.com:5432/${AZ_DATABASE_NAME}?sslmode=require
+    username: ${AZ_POSTGRESQL_AD_SP_USERNAME}@${AZ_DATABASE_SERVER_NAME}
     azure:
       passwordless-enabled: true</code></pre>
 </div>
@@ -8729,7 +8729,7 @@ EOF</code></pre>
         managed-identity-enabled: true
         client-id: ${AZURE_CLIENT_ID}
   datasource:
-    url: jdbc:postgresql://${AZ_DATABASE_SERVER_NAME}.postgres.database.azure.com:5432/demo?sslmode=require
+    url: jdbc:postgresql://${AZ_DATABASE_SERVER_NAME}.postgres.database.azure.com:5432/${AZ_DATABASE_NAME}?sslmode=require
     username: ${AZ_POSTGRESQL_AD_MI_USERNAME}@${AZ_DATABASE_SERVER_NAME}
     azure:
       passwordless-enabled: true</code></pre>
