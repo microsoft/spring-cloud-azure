@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - feature/spring-boot-3
   workflow_dispatch:
 
 jobs:

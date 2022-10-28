@@ -43,9 +43,16 @@ In order to launch the first version to support Spring Boot 3, the Spring Cloud 
 [cols="<,<,<", options="header"]
 |===
 |Legacy Artifact ID |Modern Artifact ID |Description
+|spring-cloud-azure-trace-sleuth |N/A |Deleted this artifact because Spring Cloud Sleuth does not have the latest compatible version based on Spring Boot 3, Spring Boot started to move towards Micrometer support.
 |spring-cloud-azure-native-configuration |N/A |Deleted this artifact because the Spring Native support will use the new API based on Spring Framework 6, the adaptation work has not been completed.
 |spring-cloud-azure-starter-data-cosmos |N/A |Deleted this artifact because the Spring Data 3 adaptation has not been completed.
 |===
+
+=== API Breaking Changes
+
+For API breaking changes in each library, please refer to the below links for details.
+
+- <<api-spring-cloud-azure-starter-active-directory, From spring-cloud-azure-starter-active-directory>>
 
 === Dependency Changes
 
@@ -78,6 +85,125 @@ Breaking changes in each library are introduced as follows.
 |Required.
 |===
 
+[#api-spring-cloud-azure-starter-active-directory]
+===== API Changes
+
+.Class mapping for spring-cloud-azure-starter-active-directory
+[cols="<~,<~", options="header"]
+|===
+|Legacy class |Modern class
+
+|com.azure.spring.cloud.autoconfigure.aad.AadWebSecurityConfigurerAdapter
+|com.azure.spring.cloud.autoconfigure.aad.AadWebApplicationHttpSecurityConfigurer
+
+|com.azure.spring.cloud.autoconfigure.aad.AadResourceServerWebSecurityConfigurerAdapter
+|com.azure.spring.cloud.autoconfigure.aad.AadResourceServerHttpSecurityConfigurer
+|===
+
+This section lists the removed classes for spring-cloud-azure-starter-active-directory +
+
+.Removed legacy class
+* com.azure.spring.cloud.autoconfigure.aad.implementation.oauth2.AadOAuth2AuthenticatedPrincipal
+* com.azure.spring.cloud.autoconfigure.aad.implementation.webapi.AadOboOAuth2AuthorizedClientProvider
+* com.azure.spring.cloud.autoconfigure.aad.properties.AadAuthorizationGrantType
+* com.azure.spring.cloud.autoconfigure.aad.AadJwtBearerTokenAuthenticationConverter
+
+
+====== Sample Code Snippet
+
+1.`AadWebSecurityConfigurerAdapter` sample code:
+
+Legacy code:
+
+[source,java]
+----
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class AadWebApplicationConfig extends AadWebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        super.configure(http);
+        // @formatter:off
+        http.authorizeRequests()
+            .antMatchers("/login").permitAll()
+            .anyRequest().authenticated();
+        // @formatter:on
+    }
+
+    /**
+     * This method is only used for AAD conditional access support and can be removed if this feature is not used.
+     * @return the conditional access filter
+     */
+    @Override
+    protected Filter conditionalAccessFilter() {
+        return new AadConditionalAccessFilter();
+    }
+}
+----
+
+Modern code:
+
+[source,java]
+----
+@Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class AadWebApplicationConfig {
+
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        // @formatter:off
+        http
+            .apply(AadWebApplicationHttpSecurityConfigurer.aadWebApplication())
+                .conditionalAccessFilter(new AadConditionalAccessFilter())
+                .and()
+            .authorizeRequests()
+                .antMatchers("/login").permitAll()
+                .anyRequest().authenticated();
+        // @formatter:on
+        return http.build();
+    }
+}
+----
+
+2.`AadResourceServerWebSecurityConfigurerAdapter` sample code:
+
+Legacy code:
+
+[source,java]
+----
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public static class ApiWebSecurityConfigurationAdapter extends AadResourceServerWebSecurityConfigurerAdapter {
+    protected void configure(HttpSecurity http) throws Exception {
+        super.configure(http);
+        http.antMatcher("/api/**")
+            .authorizeRequests().anyRequest().authenticated();
+    }
+}
+----
+
+Modern code:
+
+[source,java]
+----
+@Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public static class ApiHttpSecurityConfigurationAdapter {
+    @Bean
+    public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
+        http
+            .apply(AadResourceServerHttpSecurityConfigurer.aadResourceServer())
+                .and()
+            .antMatcher("/api/**")
+            .authorizeRequests().anyRequest().authenticated();
+        return http.build();
+    }
+}
+----
+
 ==== spring-cloud-azure-starter-active-directory-b2c
 
 * Please refer to <<migration-guide-introduction, introduction>> and <<migration-guide-benefits, migration benefits>> to get a whole picture of the changes in 6.0.
@@ -93,6 +219,62 @@ Breaking changes in each library are introduced as follows.
 |jakarta.servlet:jakarta.servlet-api
 |Required.
 |===
+
+====== Sample Code Snippet
+
+1.`AadWebSecurityConfigurerAdapter` sample code:
+
+Legacy code:
+
+[source,java]
+----
+@EnableWebSecurity
+public class AadB2cWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    private final AadB2cOidcLoginConfigurer configurer;
+
+    public WebSecurityConfiguration(AadB2cOidcLoginConfigurer configurer) {
+        this.configurer = configurer;
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        // @formatter:off
+        http.authorizeRequests()
+                .anyRequest().authenticated()
+                .and()
+            .apply(configurer);
+        // @formatter:on
+    }
+}
+----
+
+Modern code:
+
+[source,java]
+----
+@Configuration
+@EnableWebSecurity
+public class AadB2cWebSecurityConfiguration {
+
+    private final AadB2cOidcLoginConfigurer configurer;
+
+    public WebSecurityConfiguration(AadB2cOidcLoginConfigurer configurer) {
+        this.configurer = configurer;
+    }
+
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        // @formatter:off
+        http.authorizeRequests()
+                .anyRequest().authenticated()
+                .and()
+            .apply(configurer);
+        // @formatter:on
+        return http.build();
+    }
+}
+----
 
 ==== spring-cloud-azure-starter-servicebus-jms
 
