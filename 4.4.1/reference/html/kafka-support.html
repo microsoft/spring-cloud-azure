@@ -714,19 +714,7 @@ If you&#8217;re using version <code>4.3.0</code>, don&#8217;t forget to set the 
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Since version of 4.3.0, connection string authentication is deprecated in favor of OAuth authentications.
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Since version of 4.4.1, when using connection string authentication with Spring Cloud Stream framework, another property is required to ensure connection string can take effects: <code>spring.cloud.stream.binders.&lt;kafka-binder-name&gt;.environment.spring.main.sources=com.azure.spring.cloud.autoconfigure.eventhubs.kafka.AzureEventHubsKafkaAutoConfiguration</code>, where the <code>kafka-binder-name</code> value by default is <code>kafka</code>.
+Since version of 4.3.0, connection string authentication is deprecated in favor of OAuth authentications. Since version of 4.4.1, when using connection string authentication with Spring Cloud Stream framework, the following property is required to ensure that the connection string can take effect, where the <strong><code>&lt;kafka-binder-name&gt;</code></strong> placeholder has a value of <code>kafka</code> by default. <code>spring.cloud.stream.binders.&lt;kafka-binder-name&gt;.environment.spring.main.sources=com.azure.spring.cloud.autoconfigure.eventhubs.kafka.AzureEventHubsKafkaAutoConfiguration</code>
 </td>
 </tr>
 </table>
