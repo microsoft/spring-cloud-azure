@@ -233,7 +233,7 @@ spring.cloud.stream.kafka.binder.brokers=<NAMESPACENAME>.servicebus.windows.net:
 spring.cloud.stream.binders.kafka.environment.spring.main.sources=com.azure.spring.cloud.autoconfigure.kafka.AzureKafkaSpringCloudStreamConfiguration
 ----
 
-NOTE: Set `com.azure.spring.cloud.autoconfigure.kafka.AzureKafkaSpringCloudStreamConfiguration` to enable the whole OAuth authentication workflow.
+NOTE: If you're using version `4.3.0`, don't forget to set the `spring.cloud.stream.binders.<kafka-binder-name>.environment.spring.main.sources=com.azure.spring.cloud.autoconfigure.kafka.AzureKafkaSpringCloudStreamConfiguration` property to enable the whole OAuth authentication workflow, where `kafka-binder-name` is `kafka` by default in a single Kafka binder application. The configuration `AzureKafkaSpringCloudStreamConfiguration` specifies the OAuth security parameters for `KafkaBinderConfigurationProperties`, which is used in `KafkaOAuth2AuthenticateCallbackHandler` to enable Azure Identity. For version after `4.4.0`, this property will be added automatically for each Kafka binder environment, so there's no need for you to add it manually.
 
 ====== Samples
 
@@ -244,7 +244,7 @@ See the link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spr
 
 You can use connection string authentication directly or use the Azure Resource Manager to retrieve the connection string.
 
-NOTE: Since version of 4.3.0, connection string authentication is deprecated in favor of OAuth authentications.
+NOTE: Since version of 4.3.0, connection string authentication is deprecated in favor of OAuth authentications. Since version of 6.0.0-beta.3, when using connection string authentication with Spring Cloud Stream framework, the following property is required to ensure that the connection string can take effect, where the *`<kafka-binder-name>`* placeholder has a value of `kafka` by default `spring.cloud.stream.binders.<kafka-binder-name>.environment.spring.main.sources=com.azure.spring.cloud.autoconfigure.eventhubs.kafka.AzureEventHubsKafkaAutoConfiguration`.
 
 ===== Dependency setup
 
