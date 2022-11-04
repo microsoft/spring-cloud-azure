@@ -15,7 +15,7 @@
 |spring.cloud.azure.servicebus.consumer.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client ID as user assigned managed identity client ID.
 |spring.cloud.azure.servicebus.consumer.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.servicebus.consumer.credential.username |  | Username to use when performing username/password authentication with Azure.
-|spring.cloud.azure.servicebus.consumer.domain-name | `servicebus.windows.net` | The domain name of a Service Bus namespace.
+|spring.cloud.azure.servicebus.consumer.domain-name |  | The domain name of a Service Bus namespace.
 |spring.cloud.azure.servicebus.consumer.enabled | `true` | Whether an Azure Service is enabled.
 |spring.cloud.azure.servicebus.consumer.entity-name |  | The name of a Service Bus Queue or Topic.
 |spring.cloud.azure.servicebus.consumer.entity-type |  | The type of Service Bus entity, which is a Queue or a Topic.
@@ -72,12 +72,13 @@
 |spring.cloud.azure.servicebus.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.servicebus.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.servicebus.cross-entity-transactions |  | Whether to enable cross entity transaction on the connection to Service bus.
-|spring.cloud.azure.servicebus.domain-name | `servicebus.windows.net` | The domain name of a Service Bus namespace.
+|spring.cloud.azure.servicebus.domain-name |  | The domain name of a Service Bus namespace.
 |spring.cloud.azure.servicebus.enabled | `true` | Whether an Azure Service is enabled.
 |spring.cloud.azure.servicebus.entity-name |  | The name of a Service Bus Queue or Topic.
 |spring.cloud.azure.servicebus.entity-type |  | The type of Service Bus entity, which is a Queue or a Topic.
 |spring.cloud.azure.servicebus.namespace |  | The namespace of a service bus, which is the prefix of the FQDN. A FQDN should be composed of &lt;NamespaceName&gt;.&lt;DomainName&gt;
 |spring.cloud.azure.servicebus.processor.auto-complete | `true` | Whether to enable auto-complete.
+|spring.cloud.azure.servicebus.processor.auto-startup | `true` | Whether to automatically start the processor after initialization.
 |spring.cloud.azure.servicebus.processor.client.application-id |  | Represents current application and is used for telemetry/monitoring purposes.
 |spring.cloud.azure.servicebus.processor.client.transport-type |  | Transport type for AMQP-based client.
 |spring.cloud.azure.servicebus.processor.connection-string |  | Connection string to connect to a service bus.
@@ -88,7 +89,7 @@
 |spring.cloud.azure.servicebus.processor.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client ID as user assigned managed identity client ID.
 |spring.cloud.azure.servicebus.processor.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.servicebus.processor.credential.username |  | Username to use when performing username/password authentication with Azure.
-|spring.cloud.azure.servicebus.processor.domain-name | `servicebus.windows.net` | The domain name of a Service Bus namespace.
+|spring.cloud.azure.servicebus.processor.domain-name |  | The domain name of a Service Bus namespace.
 |spring.cloud.azure.servicebus.processor.enabled | `true` | Whether an Azure Service is enabled.
 |spring.cloud.azure.servicebus.processor.entity-name |  | The name of a Service Bus Queue or Topic.
 |spring.cloud.azure.servicebus.processor.entity-type |  | The type of Service Bus entity, which is a Queue or a Topic.
@@ -149,7 +150,7 @@
 |spring.cloud.azure.servicebus.producer.credential.managed-identity-enabled | `false` | Whether to enable managed identity to authenticate with Azure. If true and the client-id is set, will use the client ID as user assigned managed identity client ID.
 |spring.cloud.azure.servicebus.producer.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.servicebus.producer.credential.username |  | Username to use when performing username/password authentication with Azure.
-|spring.cloud.azure.servicebus.producer.domain-name | `servicebus.windows.net` | The domain name of a Service Bus namespace.
+|spring.cloud.azure.servicebus.producer.domain-name |  | The domain name of a Service Bus namespace.
 |spring.cloud.azure.servicebus.producer.enabled | `true` | Whether an Azure Service is enabled.
 |spring.cloud.azure.servicebus.producer.entity-name |  | The name of a Service Bus Queue or Topic.
 |spring.cloud.azure.servicebus.producer.entity-type |  | The type of Service Bus entity, which is a Queue or a Topic.

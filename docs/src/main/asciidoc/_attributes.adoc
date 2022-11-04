@@ -16,7 +16,7 @@
 :all: {asterisk}{asterisk}
 
 :azure-sdk-java-issues: https://github.com/Azure/azure-sdk-for-java/issues
-:spring-boot-version: 3.0.0-M4
+:spring-boot-version: 3.0.0-RC1
 
 // Start for Spring Native Support
 :graalvm-version: 22.0.0

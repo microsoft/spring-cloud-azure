@@ -16,7 +16,7 @@
 |spring.cloud.azure.eventhubs.consumer.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.consumer.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.consumer.custom-endpoint-address |  | A custom endpoint address when connecting to the Event Hubs service. This can be useful when your network does not allow connecting to the standard Azure Event Hubs endpoint address, but does allow connecting through an intermediary. For example: https://my.custom.endpoint.com:55300.
-|spring.cloud.azure.eventhubs.consumer.domain-name | `servicebus.windows.net` | The domain name of an Event Hub namespace.
+|spring.cloud.azure.eventhubs.consumer.domain-name |  | The domain name of an Event Hub namespace.
 |spring.cloud.azure.eventhubs.consumer.enabled | `true` | Whether an Azure Service is enabled.
 |spring.cloud.azure.eventhubs.consumer.event-hub-name |  | The name of an event hub.
 |spring.cloud.azure.eventhubs.consumer.namespace |  | The namespace of an event hub, which is the prefix of the FQDN. A FQDN should be composed of &lt;NamespaceName&gt;.&lt;DomainName&gt;
@@ -67,7 +67,7 @@
 |spring.cloud.azure.eventhubs.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.custom-endpoint-address |  | A custom endpoint address when connecting to the Event Hubs service. This can be useful when your network does not allow connecting to the standard Azure Event Hubs endpoint address, but does allow connecting through an intermediary. For example: https://my.custom.endpoint.com:55300.
-|spring.cloud.azure.eventhubs.domain-name | `servicebus.windows.net` | The domain name of an Event Hub namespace.
+|spring.cloud.azure.eventhubs.domain-name |  | The domain name of an Event Hub namespace.
 |spring.cloud.azure.eventhubs.enabled | `true` | Whether an Azure Service is enabled.
 |spring.cloud.azure.eventhubs.event-hub-name |  | The name of an event hub.
 |spring.cloud.azure.eventhubs.namespace |  | The namespace of an event hub, which is the prefix of the FQDN. A FQDN should be composed of &lt;NamespaceName&gt;.&lt;DomainName&gt;
@@ -157,7 +157,7 @@
 |spring.cloud.azure.eventhubs.processor.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.processor.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.processor.custom-endpoint-address |  | A custom endpoint address when connecting to the Event Hubs service. This can be useful when your network does not allow connecting to the standard Azure Event Hubs endpoint address, but does allow connecting through an intermediary. For example: https://my.custom.endpoint.com:55300.
-|spring.cloud.azure.eventhubs.processor.domain-name | `servicebus.windows.net` | The domain name of an Event Hub namespace.
+|spring.cloud.azure.eventhubs.processor.domain-name |  | The domain name of an Event Hub namespace.
 |spring.cloud.azure.eventhubs.processor.enabled | `true` | Whether an Azure Service is enabled.
 |spring.cloud.azure.eventhubs.processor.event-hub-name |  | The name of an event hub.
 |spring.cloud.azure.eventhubs.processor.initial-partition-event-position |  | Map event position to use for each partition if a checkpoint for the partition does not exist in CheckpointStore.
@@ -216,7 +216,7 @@
 |spring.cloud.azure.eventhubs.producer.credential.password |  | Password to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.producer.credential.username |  | Username to use when performing username/password authentication with Azure.
 |spring.cloud.azure.eventhubs.producer.custom-endpoint-address |  | A custom endpoint address when connecting to the Event Hubs service. This can be useful when your network does not allow connecting to the standard Azure Event Hubs endpoint address, but does allow connecting through an intermediary. For example: https://my.custom.endpoint.com:55300.
-|spring.cloud.azure.eventhubs.producer.domain-name | `servicebus.windows.net` | The domain name of an Event Hub namespace.
+|spring.cloud.azure.eventhubs.producer.domain-name |  | The domain name of an Event Hub namespace.
 |spring.cloud.azure.eventhubs.producer.enabled | `true` | Whether an Azure Service is enabled.
 |spring.cloud.azure.eventhubs.producer.event-hub-name |  | The name of an event hub.
 |spring.cloud.azure.eventhubs.producer.namespace |  | The namespace of an event hub, which is the prefix of the FQDN. A FQDN should be composed of &lt;NamespaceName&gt;.&lt;DomainName&gt;

@@ -1,6 +1,6 @@
 == Production Ready
 
-Spring Cloud Azure 4.0 supports health indicators for App Configuration, Event Hubs, Cosmos, Key Vault Certificate, Key Vault Secret, Storage Blob, Storage Queue, and Storage File Share. It also provides integrations with Spring Cloud Sleuth for all HTTP-based Azure SDKs. As an example, you now can prob if storage blob is up or down via Spring Boot actuator endpoint, as well as track dependencies and latencies going from your application to Key Vault.
+Spring Cloud Azure supports health indicators for App Configuration, Event Hubs, Cosmos, Key Vault Certificate, Key Vault Secret, Storage Blob, Storage Queue, and Storage File Share. It also provides integrations with Spring Cloud Sleuth for all HTTP-based Azure SDKs. As an example, you now can prob if storage blob is up or down via Spring Boot actuator endpoint, as well as track dependencies and latencies going from your application to Key Vault.
 
 === Enable Health Indicator
 
@@ -33,19 +33,3 @@ IMPORTANT: Calling the health endpoint of Azure services may cause extra charge.
 NOTE: For calling the health endpoint of `Cosmos`, the option `spring.cloud.azure.cosmos.database` should be configured; Otherwise, the health status of `unknown` will be returned.
 
 NOTE: For calling the health endpoint of `Storage Queue`, role of `Storage Account Contributor` is required if `Azure AD` is used for authorizing.
-
-=== Enable Sleuth
-
-Add the Spring Cloud Azure Trace Sleuth dependency when you want to trace Azure SDK activities with using Spring Cloud Sleuth.
-
-[source,xml]
-----
-<dependency>
-	<groupId>com.azure.spring</groupId>
-	<artifactId>spring-cloud-azure-trace-sleuth</artifactId>
-</dependency>
-----
-
-NOTE: Only HTTP-based Azure SDK clients are supported now, for example, Eventhub and ServiceBus with AMQP transport are currently not supported, we recommend to use https://docs.microsoft.com/azure/azure-monitor/app/app-insights-overview[Azure Application Insights] for such requirement.
-
-
