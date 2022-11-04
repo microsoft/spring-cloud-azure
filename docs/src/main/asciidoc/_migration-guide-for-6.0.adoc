@@ -148,7 +148,7 @@ Modern code:
 ----
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 public class AadWebApplicationConfig {
 
     @Bean
@@ -158,8 +158,8 @@ public class AadWebApplicationConfig {
             .apply(AadWebApplicationHttpSecurityConfigurer.aadWebApplication())
                 .conditionalAccessFilter(new AadConditionalAccessFilter())
                 .and()
-            .authorizeRequests()
-                .antMatchers("/login").permitAll()
+            .authorizeHttpRequests()
+                .requestMatchers("/login").permitAll()
                 .anyRequest().authenticated();
         // @formatter:on
         return http.build();
@@ -190,15 +190,16 @@ Modern code:
 ----
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 public static class ApiHttpSecurityConfigurationAdapter {
     @Bean
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
         http
-            .apply(AadResourceServerHttpSecurityConfigurer.aadResourceServer())
+            .apply(aadResourceServer())
                 .and()
-            .antMatcher("/api/**")
-            .authorizeRequests().anyRequest().authenticated();
+            .securityMatcher("/api/**")
+            .authorizeHttpRequests()
+                .anyRequest().authenticated();
         return http.build();
     }
 }
@@ -240,7 +241,7 @@ public class AadB2cWebSecurityConfiguration extends WebSecurityConfigurerAdapter
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
-        http.authorizeRequests()
+        http.authorizeHttpRequests()
                 .anyRequest().authenticated()
                 .and()
             .apply(configurer);
@@ -266,7 +267,7 @@ public class AadB2cWebSecurityConfiguration {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // @formatter:off
-        http.authorizeRequests()
+        http.authorizeHttpRequests()
                 .anyRequest().authenticated()
                 .and()
             .apply(configurer);

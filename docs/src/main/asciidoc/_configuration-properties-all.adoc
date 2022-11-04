@@ -749,7 +749,25 @@
 |spring.cloud.azure.keyvault.secret.service-version |  | Secret service version used when making API requests.
 |spring.cloud.azure.msi-enabled | `false` | Whether managed identity is enabled. This is a legacy property.
 |spring.cloud.azure.profile.cloud-type |  | Name of the Azure cloud to connect to.
-|spring.cloud.azure.profile.environment.azure-environment |  | 
+|spring.cloud.azure.profile.environment.active-directory-endpoint |  | The Azure Active Directory endpoint to connect to.
+|spring.cloud.azure.profile.environment.active-directory-graph-api-version |  | The Azure Active Directory Graph API version.
+|spring.cloud.azure.profile.environment.active-directory-graph-endpoint |  | The Azure Active Directory Graph endpoint.
+|spring.cloud.azure.profile.environment.active-directory-resource-id |  | The Azure Active Directory resource ID.
+|spring.cloud.azure.profile.environment.azure-application-insights-endpoint |  | The Azure Application Insights endpoint.
+|spring.cloud.azure.profile.environment.azure-data-lake-analytics-catalog-and-job-endpoint-suffix |  | The Data Lake analytics catalog and job endpoint suffix.
+|spring.cloud.azure.profile.environment.azure-data-lake-store-file-system-endpoint-suffix |  | The Data Lake storage file system endpoint suffix.
+|spring.cloud.azure.profile.environment.azure-log-analytics-endpoint |  | The Azure Log Analytics endpoint.
+|spring.cloud.azure.profile.environment.data-lake-endpoint-resource-id |  | The Data Lake endpoint.
+|spring.cloud.azure.profile.environment.gallery-endpoint |  | The gallery endpoint.
+|spring.cloud.azure.profile.environment.key-vault-dns-suffix |  | The Key Vault DNS suffix.
+|spring.cloud.azure.profile.environment.management-endpoint |  | The management service endpoint.
+|spring.cloud.azure.profile.environment.microsoft-graph-endpoint |  | The Microsoft Graph endpoint.
+|spring.cloud.azure.profile.environment.portal |  | The management portal URL.
+|spring.cloud.azure.profile.environment.publishing-profile |  | The publishing settings file URL.
+|spring.cloud.azure.profile.environment.resource-manager-endpoint |  | The resource management endpoint.
+|spring.cloud.azure.profile.environment.sql-management-endpoint |  | The SQL management endpoint.
+|spring.cloud.azure.profile.environment.sql-server-hostname-suffix |  | The SQL Server hostname suffix.
+|spring.cloud.azure.profile.environment.storage-endpoint-suffix |  | The Storage endpoint suffix.
 |spring.cloud.azure.profile.subscription-id |  | Subscription ID to use when connecting to Azure resources.
 |spring.cloud.azure.profile.tenant-id |  | Tenant ID for Azure resources.
 |spring.cloud.azure.proxy.amqp.authentication-type |  | Authentication type used against the proxy.
