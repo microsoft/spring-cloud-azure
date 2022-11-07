@@ -24,11 +24,16 @@ jobs:
         name: Checkout Azure/azure-sdk-for-java
         with:
           patterns: |
-            sdk/spring eng sdk/keyvault sdk/boms sdk/aot sdk/jdbc
+            sdk/spring eng sdk/keyvault sdk/boms sdk/aot sdk/jdbc sdk/parents
           repository: Azure/azure-sdk-for-java
-          ref: main
+          ref: feature/spring-boot-3
           path: azure-sdk-for-java
-
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+          cache: maven
       - name: Build latest azure-sdk-for-java repository
         run: |
           cd azure-sdk-for-java
