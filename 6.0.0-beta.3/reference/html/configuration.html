@@ -165,7 +165,13 @@ window.onload = function() {
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#configuration">Configuration</a></li>
+<li><a href="#configuration">Configuration</a>
+<ul class="sectlevel2">
+<li><a href="#_configuration_for_each_azure_service_sdk">Configuration for each Azure Service SDK</a></li>
+<li><a href="#_global_configuration_for_azure_service_sdks">Global configuration for Azure Service SDKs</a></li>
+<li><a href="#_configuration_examples">Configuration examples</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -173,6 +179,8 @@ window.onload = function() {
 <div class="sect1">
 <h2 id="configuration"><a class="link" href="#configuration">Configuration</a></h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_configuration_for_each_azure_service_sdk"><a class="link" href="#_configuration_for_each_azure_service_sdk">Configuration for each Azure Service SDK</a></h3>
 <div class="paragraph">
 <p>Most of Azure SDKs could be divided into two categories by transport type, HTTP-based and AMQP-based. There are properties that are common to all SDKs such as authentication principals and Azure environment settings. Or common to HTTP-based clients, such as logging level to log HTTP requests and responses. Spring Cloud Azure provides five common categories of configuration properties, which could be specified to each Azure service.</p>
 </div>
@@ -261,6 +269,9 @@ Properties configured under each Azure service will override the global configur
 </tr>
 </table>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_global_configuration_for_azure_service_sdks"><a class="link" href="#_global_configuration_for_azure_service_sdks">Global configuration for Azure Service SDKs</a></h3>
 <div class="paragraph">
 <p>Spring Cloud Azure unifies configuration properties' prefixes to <code>spring.cloud.azure</code> since 4.0, which will make configuration properties more consistent and more intuitive. Here&#8217;s a quick review of the serivce specific properties.</p>
 </div>
@@ -326,6 +337,51 @@ Properties configured under each Azure service will override the global configur
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect2">
+<h3 id="_configuration_examples"><a class="link" href="#_configuration_examples">Configuration examples</a></h3>
+<div class="sect3">
+<h4 id="_global_retry_configuration_for_azure_service_sdks"><a class="link" href="#_global_retry_configuration_for_azure_service_sdks">Global retry configuration for Azure Service SDKs</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring.cloud.azure:
+  retry:
+    mode: exponential
+    exponential:
+      max-retries: 4
+      base-delay: PT0.0801S
+      max-delay: PT9S</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_retry_configuration_for_key_vault_property_source"><a class="link" href="#_retry_configuration_for_key_vault_property_source">Retry configuration for Key Vault property source</a></h4>
+<div class="paragraph">
+<p>The following configuration example shows you how to configure the retry behavior for the Azure Key Vault Secret client:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring.cloud.azure:
+  keyvault:
+    secret:
+      credential:
+        client-id: &lt;your-client-ID&gt;
+        client-secret: &lt;your client key&gt;
+      profile:
+        tenant-id: &lt;your-tenant-ID&gt;
+      property-source-enabled: true
+      property-sources:
+        - endpoint: &lt;your-Azure-Key-Vault-endpoint&gt;
+          retry:
+            mode: exponential
+            exponential:
+              max-retries: 4
+              base-delay: PT0.0801S
+              max-delay: PT9S</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
