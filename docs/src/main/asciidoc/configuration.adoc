@@ -1,6 +1,8 @@
 [#configuration]
 == Configuration
 
+=== Configuration for each Azure Service SDK
+
 Most of Azure SDKs could be divided into two categories by transport type, HTTP-based and AMQP-based. There are properties that are common to all SDKs such as authentication principals and Azure environment settings. Or common to HTTP-based clients, such as logging level to log HTTP requests and responses. Spring Cloud Azure 4.0 provides five common categories of configuration properties, which could be specified to each Azure service.
 
 .Service common properties
@@ -51,6 +53,8 @@ There are some properties that could be shared among different Azure services, f
 
 NOTE: Properties configured under each Azure service will override the global configurations.
 
+=== Global configuration for Azure Service SDKs
+
 Spring Cloud Azure unifies configuration properties' prefixes to `spring.cloud.azure` since 4.0, which will make configuration properties more consistent and more intuitive. Here's a quick review of the serivce specific properties.
 
 .Service specific properties
@@ -94,3 +98,43 @@ Spring Cloud Azure unifies configuration properties' prefixes to `spring.cloud.a
 |spring.cloud.azure.*storage.queue*
 |link:appendix.html#azure_storage_queue_proeprties[Storage Queue Properties]
 |===
+
+=== Configuration examples
+
+==== Global retry configuration for Azure Service SDKs
+
+[source,yaml]
+----
+spring.cloud.azure:
+  retry:
+    mode: exponential
+    exponential:
+      max-retries: 4
+      base-delay: PT0.0801S
+      max-delay: PT9S
+----
+
+==== Retry configuration for Key Vault property source
+
+The following configuration example shows you how to configure the retry behavior for the Azure Key Vault Secret client:
+
+[source,yaml]
+----
+spring.cloud.azure:
+  keyvault:
+    secret:
+      credential:
+        client-id: <your-client-ID>
+        client-secret: <your client key>
+      profile:
+        tenant-id: <your-tenant-ID>
+      property-source-enabled: true
+      property-sources:
+        - endpoint: <your-Azure-Key-Vault-endpoint>
+          retry:
+            mode: exponential
+            exponential:
+              max-retries: 4
+              base-delay: PT0.0801S
+              max-delay: PT9S
+----
