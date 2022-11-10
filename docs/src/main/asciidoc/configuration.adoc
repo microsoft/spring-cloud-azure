@@ -114,7 +114,7 @@ spring.cloud.azure:
       max-delay: PT9S
 ----
 
-==== Retry configuration for Key Vault Secret client
+==== Retry configuration for Key Vault property source
 
 The following configuration example shows you how to configure the retry behavior for the Azure Key Vault Secret client:
 
