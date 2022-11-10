@@ -103,6 +103,19 @@ Spring Cloud Azure unifies configuration properties' prefixes to `spring.cloud.a
 
 ==== Global retry configuration for Azure Service SDKs
 
+[source,yaml]
+----
+spring.cloud.azure:
+  retry:
+    mode: exponential
+    exponential:
+      max-retries: 4
+      base-delay: PT0.0801S
+      max-delay: PT9S
+----
+
+==== Retry configuration for Key Vault Secret client
+
 The following configuration example shows you how to configure the retry behavior for the Azure Key Vault Secret client:
 
 [source,yaml]
