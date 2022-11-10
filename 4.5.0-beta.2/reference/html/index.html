@@ -175,7 +175,13 @@ window.onload = function() {
 <li><a href="#learning-spring-cloud-azure">4.2. Learning Spring Cloud Azure</a></li>
 </ul>
 </li>
-<li><a href="#configuration">5. Configuration</a></li>
+<li><a href="#configuration">5. Configuration</a>
+<ul class="sectlevel2">
+<li><a href="#configuration-for-each-azure-service-sdk">5.1. Configuration for each Azure Service SDK</a></li>
+<li><a href="#global-configuration-for-azure-service-sdks">5.2. Global configuration for Azure Service SDKs</a></li>
+<li><a href="#configuration-examples">5.3. Configuration examples</a></li>
+</ul>
+</li>
 <li><a href="#authentication">6. Authentication</a>
 <ul class="sectlevel2">
 <li><a href="#defaultazurecredential">6.1. DefaultAzureCredential</a></li>
@@ -629,6 +635,8 @@ To learn how to migrate to 4.0, please check <a href="appendix.html#migration-gu
 <div class="sect1">
 <h2 id="configuration"><a class="anchor" href="#configuration"></a><a class="link" href="#configuration">5. Configuration</a></h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="configuration-for-each-azure-service-sdk"><a class="anchor" href="#configuration-for-each-azure-service-sdk"></a><a class="link" href="#configuration-for-each-azure-service-sdk">5.1. Configuration for each Azure Service SDK</a></h3>
 <div class="paragraph">
 <p>Most of Azure SDKs could be divided into two categories by transport type, HTTP-based and AMQP-based. There are properties that are common to all SDKs such as authentication principals and Azure environment settings. Or common to HTTP-based clients, such as logging level to log HTTP requests and responses. Spring Cloud Azure 4.0 provides five common categories of configuration properties, which could be specified to each Azure service.</p>
 </div>
@@ -717,6 +725,9 @@ Properties configured under each Azure service will override the global configur
 </tr>
 </table>
 </div>
+</div>
+<div class="sect2">
+<h3 id="global-configuration-for-azure-service-sdks"><a class="anchor" href="#global-configuration-for-azure-service-sdks"></a><a class="link" href="#global-configuration-for-azure-service-sdks">5.2. Global configuration for Azure Service SDKs</a></h3>
 <div class="paragraph">
 <p>Spring Cloud Azure unifies configuration properties' prefixes to <code>spring.cloud.azure</code> since 4.0, which will make configuration properties more consistent and more intuitive. Here&#8217;s a quick review of the serivce specific properties.</p>
 </div>
@@ -782,6 +793,51 @@ Properties configured under each Azure service will override the global configur
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect2">
+<h3 id="configuration-examples"><a class="anchor" href="#configuration-examples"></a><a class="link" href="#configuration-examples">5.3. Configuration examples</a></h3>
+<div class="sect3">
+<h4 id="global-retry-configuration-for-azure-service-sdks"><a class="anchor" href="#global-retry-configuration-for-azure-service-sdks"></a><a class="link" href="#global-retry-configuration-for-azure-service-sdks">5.3.1. Global retry configuration for Azure Service SDKs</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring.cloud.azure:
+  retry:
+    mode: exponential
+    exponential:
+      max-retries: 4
+      base-delay: PT0.0801S
+      max-delay: PT9S</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="retry-configuration-for-key-vault-property-source"><a class="anchor" href="#retry-configuration-for-key-vault-property-source"></a><a class="link" href="#retry-configuration-for-key-vault-property-source">5.3.2. Retry configuration for Key Vault property source</a></h4>
+<div class="paragraph">
+<p>The following configuration example shows you how to configure the retry behavior for the Azure Key Vault Secret client:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring.cloud.azure:
+  keyvault:
+    secret:
+      credential:
+        client-id: &lt;your-client-ID&gt;
+        client-secret: &lt;your client key&gt;
+      profile:
+        tenant-id: &lt;your-tenant-ID&gt;
+      property-source-enabled: true
+      property-sources:
+        - endpoint: &lt;your-Azure-Key-Vault-endpoint&gt;
+          retry:
+            mode: exponential
+            exponential:
+              max-retries: 4
+              base-delay: PT0.0801S
+              max-delay: PT9S</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
