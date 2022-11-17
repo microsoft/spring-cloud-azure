@@ -241,42 +241,62 @@ window.onload = function() {
 <li><a href="#samples-14">13.4. Samples</a></li>
 </ul>
 </li>
-<li><a href="#kafka-support">14. Kafka Support</a>
+<li><a href="#mysql-support">14. MySQL support</a>
 <ul class="sectlevel2">
-<li><a href="#supported-kafka-version">14.1. Supported Kafka version</a></li>
-<li><a href="#supported-authentication-types">14.2. Supported authentication types</a></li>
+<li><a href="#supported-mysql-version">14.1. Supported MySQL version</a></li>
+<li><a href="#core-features">14.2. Core Features</a></li>
 <li><a href="#how-it-works">14.3. How it works</a></li>
 <li><a href="#configuration-12">14.4. Configuration</a></li>
-<li><a href="#dependency-setup-11">14.5. Dependency Setup</a></li>
+<li><a href="#dependency-setup-11">14.5. Dependency setup</a></li>
 <li><a href="#basic-usage-11">14.6. Basic usage</a></li>
-<li><a href="#samples-16">14.7. Samples</a></li>
-<li><a href="#remove-credentials-from-spring-kafka-applications">14.8. Remove credentials from Spring Kafka applications</a></li>
 </ul>
 </li>
-<li><a href="#redis-support">15. Redis Support</a>
+<li><a href="#postgresql-support">15. PostgreSQL support</a>
 <ul class="sectlevel2">
-<li><a href="#dependency-setup-15">15.1. Dependency Setup</a></li>
-<li><a href="#configuration-15">15.2. Configuration</a></li>
-<li><a href="#basic-usage-12">15.3. Basic Usage</a></li>
-<li><a href="#samples-17">15.4. Samples</a></li>
+<li><a href="#supported-postgresql-version">15.1. Supported PostgreSQL version</a></li>
+<li><a href="#core-features-2">15.2. Core Features</a></li>
+<li><a href="#how-it-works-2">15.3. How it works</a></li>
+<li><a href="#configuration-13">15.4. Configuration</a></li>
+<li><a href="#dependency-setup-12">15.5. Dependency setup</a></li>
+<li><a href="#basic-usage-12">15.6. Basic usage</a></li>
 </ul>
 </li>
-<li><a href="#spring-cloud-azure-resourcemanager">16. Azure Resource Manager</a>
+<li><a href="#kafka-support">16. Kafka Support</a>
 <ul class="sectlevel2">
-<li><a href="#dependency-setup-16">16.1. Dependency Setup</a></li>
-<li><a href="#configuration-16">16.2. Configuration</a></li>
-<li><a href="#resource-manager-basic-usage">16.3. Basic Usage</a></li>
-<li><a href="#samples-18">16.4. Samples</a></li>
+<li><a href="#supported-kafka-version">16.1. Supported Kafka version</a></li>
+<li><a href="#supported-authentication-types">16.2. Supported authentication types</a></li>
+<li><a href="#how-it-works-3">16.3. How it works</a></li>
+<li><a href="#configuration-14">16.4. Configuration</a></li>
+<li><a href="#dependency-setup-13">16.5. Dependency Setup</a></li>
+<li><a href="#basic-usage-13">16.6. Basic usage</a></li>
+<li><a href="#samples-16">16.7. Samples</a></li>
+<li><a href="#remove-credentials-from-spring-kafka-applications">16.8. Remove credentials from Spring Kafka applications</a></li>
 </ul>
 </li>
-<li><a href="#configuration-properties-2">17. Configuration Properties</a></li>
-<li><a href="#appendix">18. Appendix</a>
+<li><a href="#redis-support">17. Redis Support</a>
 <ul class="sectlevel2">
-<li><a href="#configuration-properties-3">18.1. Configuration properties</a></li>
-<li><a href="#migration-guide-for-6-0-2">18.2. Migration guide for 6.0</a></li>
-<li><a href="#known-issues">18.3. Known issues</a></li>
-<li><a href="#create-and-configure-a-managed-identity-on-azure-hosting-services">18.4. Create and configure a managed identity on Azure hosting services</a></li>
-<li><a href="#deploy-application-to-azure-hosting-services">18.5. Deploy application to Azure hosting services</a></li>
+<li><a href="#dependency-setup-17">17.1. Dependency Setup</a></li>
+<li><a href="#configuration-17">17.2. Configuration</a></li>
+<li><a href="#basic-usage-14">17.3. Basic Usage</a></li>
+<li><a href="#samples-17">17.4. Samples</a></li>
+</ul>
+</li>
+<li><a href="#spring-cloud-azure-resourcemanager">18. Azure Resource Manager</a>
+<ul class="sectlevel2">
+<li><a href="#dependency-setup-18">18.1. Dependency Setup</a></li>
+<li><a href="#configuration-18">18.2. Configuration</a></li>
+<li><a href="#resource-manager-basic-usage">18.3. Basic Usage</a></li>
+<li><a href="#samples-18">18.4. Samples</a></li>
+</ul>
+</li>
+<li><a href="#configuration-properties-2">19. Configuration Properties</a></li>
+<li><a href="#appendix">20. Appendix</a>
+<ul class="sectlevel2">
+<li><a href="#configuration-properties-3">20.1. Configuration properties</a></li>
+<li><a href="#migration-guide-for-6-0-2">20.2. Migration guide for 6.0</a></li>
+<li><a href="#known-issues">20.3. Known issues</a></li>
+<li><a href="#create-and-configure-a-managed-identity-on-azure-hosting-services">20.4. Create and configure a managed identity on Azure hosting services</a></li>
+<li><a href="#deploy-application-to-azure-hosting-services">20.5. Deploy application to Azure hosting services</a></li>
 </ul>
 </li>
 </ul>
@@ -7248,19 +7268,641 @@ The default enabled <code>ConnectionFactory</code> is the <code>CachingConnectio
 </div>
 </div>
 <div class="sect1">
-<h2 id="kafka-support"><a class="anchor" href="#kafka-support"></a><a class="link" href="#kafka-support">14. Kafka Support</a></h2>
+<h2 id="mysql-support"><a class="anchor" href="#mysql-support"></a><a class="link" href="#mysql-support">14. MySQL support</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://azure.microsoft.com/services/mysql/">Azure Database for MySQL</a> is a relational database service powered by the MySQL community edition. You can use either Single Server or Flexible Server to host a MySQL database in Azure. It&#8217;s a fully managed database-as-a-service offering that can handle mission-critical workloads with predictable performance and dynamic scalability.</p>
+</div>
+<div class="paragraph">
+<p>From version <strong>4.5.0-beta.1</strong>, Spring Cloud Azure supports various types of credentials for authentication to <code>Azure Database for MySQL single server</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="supported-mysql-version"><a class="anchor" href="#supported-mysql-version"></a><a class="link" href="#supported-mysql-version">14.1. Supported MySQL version</a></h3>
+<div class="paragraph">
+<p>The current version of the starter should use Azure Database for MySQL Single Server version <strong>5.7</strong> or <strong>8.0</strong>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="core-features"><a class="anchor" href="#core-features"></a><a class="link" href="#core-features">14.2. Core Features</a></h3>
+<div class="sect3">
+<h4 id="passwordless-connection"><a class="anchor" href="#passwordless-connection"></a><a class="link" href="#passwordless-connection">14.2.1. Passwordless connection</a></h4>
+<div class="paragraph">
+<p>Passwordless connection is to connect to Azure services without storing any credentials in the application, no matter stored in the applications' configuration files or in the environment variables, and it uses Azure AD authentication. Azure AD authentication is a mechanism of connecting to Azure Database for MySQL using identities defined in Azure AD. With Azure AD authentication, you can manage database user identities and other Microsoft services in a central location, which simplifies permission management.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="how-it-works"><a class="anchor" href="#how-it-works"></a><a class="link" href="#how-it-works">14.3. How it works</a></h3>
+<div class="paragraph">
+<p>Spring Cloud Azure will first build one of the following types of credentials depending on the application authentication configuration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ClientSecretCredential</code></p>
+</li>
+<li>
+<p><code>ClientCertificateCredential</code></p>
+</li>
+<li>
+<p><code>UsernamePasswordCredential</code></p>
+</li>
+<li>
+<p><code>ManagedIdentityCredential</code></p>
+</li>
+<li>
+<p><code>DefaultAzureCredential</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If none of these types of credentials are found, the <code>DefaultAzureCredential</code> credentials will be obtained from application properties, environment variables, managed identities, or the IDE. For detailed information, see the <a href="index.html#authentication">Spring Cloud Azure authentication</a> section.</p>
+</div>
+<div class="paragraph">
+<p>The following high-level diagram summarizes how authentication works using OAuth credential authentication with Azure Database for MySQL. The arrows indicate communication pathways.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/58474919/192254109-22341bfc-20a9-4fe5-bc62-92ed7b253343.png" alt="Diagram showing Azure Active Directory authentication for MySQL"></span></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configuration-12"><a class="anchor" href="#configuration-12"></a><a class="link" href="#configuration-12">14.4. Configuration</a></h3>
+<div class="paragraph">
+<p>Spring Cloud Azure for MySQL supports the following two levels of configuration options:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The global authentication configuration options of <code>credential</code> and <code>profile</code> with prefixes of <code>spring.cloud.azure</code>.</p>
+</li>
+<li>
+<p>Spring Cloud Azure for MySQL common configuration options.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The following table shows the Spring Cloud Azure for MySQL common configuration options:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 33. Spring Cloud Azure for MySQL common configuration options</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.passwordless-enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable supporting Azure identity token credentials. The default value is <strong>false</strong>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.client-certificate-password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.client-certificate-path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path of a PEM certificate file to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.client-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client ID to use when performing service principal authentication with Azure. This is a legacy property.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.client-secret</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure. This is a legacy property.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.managed-identity-enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable managed identity to authenticate with Azure. If <strong>true</strong> and the <code>client-id</code> is set, will use the client ID as user assigned managed identity client ID. The default value is <strong>false</strong>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.profile.cloud-type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the Azure cloud to connect to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.profile.environment.active-directory-endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Azure Active Directory endpoint to connect to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.profile.tenant-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tenant ID for Azure resources.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="dependency-setup-11"><a class="anchor" href="#dependency-setup-11"></a><a class="link" href="#dependency-setup-11">14.5. Dependency setup</a></h3>
+<div class="paragraph">
+<p>Add the following dependency to your project. This will automatically include the <code>spring-boot-starter</code> dependency in your project transitively.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-azure-starter-jdbc-mysql&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Remember to add the BOM <code>spring-cloud-azure-dependencies</code> along with the above dependency. For more information, see the <a href="index.html#getting-started">Getting started</a> section.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="basic-usage-11"><a class="anchor" href="#basic-usage-11"></a><a class="link" href="#basic-usage-11">14.6. Basic usage</a></h3>
+<div class="paragraph">
+<p>The following sections show the classic Spring Boot application usage scenarios.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Passwordless connection uses Azure AD authentication. To use Azure AD authentication, you should set the Azure AD admin user first. Only an Azure AD Admin user can create you enable users for Azure AD-based authentication. See the <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/configure-spring-data-jdbc-with-azure-mysql?branch=release-cred-free-java&amp;tabs=passwordless#create-a-mysql-server-and-set-up-admin-user">Create a MySQL server and set up admin user</a> section.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="connect-to-azure-mysql-locally-without-password"><a class="anchor" href="#connect-to-azure-mysql-locally-without-password"></a><a class="link" href="#connect-to-azure-mysql-locally-without-password">14.6.1. Connect to Azure MySQL locally without password</a></h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>To create users and grant permission, see the <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/configure-spring-data-jdbc-with-azure-mysql?branch=release-cred-free-java&amp;tabs=passwordless#create-a-mysql-non-admin-user-and-grant-permission">Create a MySQL non-admin user and grant permission</a> section to create users and grant permission.</p>
+</li>
+<li>
+<p>Configure the following properties in your <strong>application.yml</strong>:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  datasource:
+    url: jdbc:mysql://${AZURE_MYSQL_SERVER_NAME}.mysql.database.azure.com:3306/${AZURE_MYSQL_DATABASE_NAME}
+    username: ${AZURE_MYSQL_AD_NON_ADMIN_USERNAME}@${AZURE_MYSQL_SERVER_NAME}
+    azure:
+      passwordless-enabled: true</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="connect-to-azure-mysql-using-a-service-principal"><a class="anchor" href="#connect-to-azure-mysql-using-a-service-principal"></a><a class="link" href="#connect-to-azure-mysql-using-a-service-principal">14.6.2. Connect to Azure MySQL using a service principal</a></h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create an Azure AD user for service principal and grant permission.</p>
+<div class="paragraph">
+<p>First, use the following commands to set up some environment variables.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">export AZURE_MYSQL_AZURE_AD_SP_USERID=`az ad sp list --display-name &lt;service_principal-name&gt; --query '[0].appId' -otsv`
+export AZURE_MYSQL_AZURE_AD_SP_USERNAME=&lt;YOUR_MYSQL_AZURE_AD_USERNAME&gt;
+export AZURE_MYSQL_SERVER_NAME=&lt;YOUR_MYSQL_SERVER_NAME&gt;
+export AZURE_MYSQL_DATABASE_NAME=&lt;YOUR_MYSQL_DATABASE_NAME&gt;
+export CURRENT_USERNAME=$(az ad signed-in-user show --query userPrincipalName -o tsv)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, create a SQL script called <strong>create_ad_user_sp.sql</strong> for creating a non-admin user. Add the following contents and save it locally:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">cat &lt;&lt; EOF &gt; create_ad_user_sp.sql
+SET aad_auth_validate_oids_in_tenant = OFF;
+CREATE AADUSER '$AZURE_MYSQL_AZURE_AD_SP_USERNAME' IDENTIFIED BY '$AZURE_MYSQL_AZURE_AD_SP_USERID';
+GRANT ALL PRIVILEGES ON $AZURE_MYSQL_DATABASE_NAME.* TO '$AZURE_MYSQL_AZURE_AD_SP_USERNAME'@'%';
+FLUSH privileges;
+EOF</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use the following command to run the SQL script to create the Azure AD non-admin user:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">mysql -h $AZURE_MYSQL_SERVER_NAME.mysql.database.azure.com --user $CURRENT_USERNAME@$AZURE_MYSQL_SERVER_NAME --enable-cleartext-plugin --password=`az account get-access-token --resource-type oss-rdbms --output tsv --query accessToken` &lt; create_ad_user_sp.sql</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now use the following command to remove the temporary SQL script file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">rm create_ad_user_sp.sql</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configure the following properties in your <strong>application.yml</strong> file:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+  datasource:
+    url: jdbc:mysql://${AZURE_MYSQL_SERVER_NAME}.mysql.database.azure.com:3306/${AZURE_MYSQL_DATABASE_NAME}
+    username: ${AZURE_MYSQL_AD_SP_USERNAME}@${AZURE_MYSQL_SERVER_NAME}
+    azure:
+      passwordless-enabled: true</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="connect-to-azure-mysql-with-managed-identity-in-azure-spring-apps"><a class="anchor" href="#connect-to-azure-mysql-with-managed-identity-in-azure-spring-apps"></a><a class="link" href="#connect-to-azure-mysql-with-managed-identity-in-azure-spring-apps">14.6.3. Connect to Azure MySQL with Managed Identity in Azure Spring Apps</a></h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>To enable managed identity, see the <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/migrate-mysql-to-passwordless-connection?branch=release-cred-free-java&amp;tabs=sign-in-azure-cli%2Cjava%2Capp-service%2Capp-service-identity#create-the-managed-identity-using-the-azure-portal">Create the managed identity using the Azure Portal</a> section to enable managed identity.</p>
+</li>
+<li>
+<p>To grant permissions, see the <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/migrate-mysql-to-passwordless-connection?branch=release-cred-free-java&amp;tabs=sign-in-azure-cli%2Cjava%2Capp-service%2Capp-service-identity#assign-roles-to-the-managed-identity">Assign roles to the managed identity</a> section to grant permissions.</p>
+</li>
+<li>
+<p>Configure the following properties in <code>application.yml</code>:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  datasource:
+    url: jdbc:mysql://${AZURE_MYSQL_SERVER_NAME}.mysql.database.azure.com:3306/${AZURE_MYSQL_DATABASE_NAME}
+    username: ${AZURE_MYSQL_AD_MI_USERNAME}@${AZURE_MYSQL_SERVER_NAME}
+    azure:
+      passwordless-enabled: true</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="postgresql-support"><a class="anchor" href="#postgresql-support"></a><a class="link" href="#postgresql-support">15. PostgreSQL support</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://azure.microsoft.com/services/postgresql/">Azure Database for PostgreSQL</a> is a relational database service based on the open-source Postgres database engine. It&#8217;s a fully managed database-as-a-service that can handle mission-critical workloads with predictable performance, security, high availability, and dynamic scalability.</p>
+</div>
+<div class="paragraph">
+<p>From version <strong>4.5.0-beta.1</strong>, Spring Cloud Azure supports various types of credentials for authentication to <strong>Azure Database for PostgreSQL single server</strong>.</p>
+</div>
+<div class="sect2">
+<h3 id="supported-postgresql-version"><a class="anchor" href="#supported-postgresql-version"></a><a class="link" href="#supported-postgresql-version">15.1. Supported PostgreSQL version</a></h3>
+<div class="paragraph">
+<p>The current version of the starter should use Azure Database for PostgreSQL Single Server version <strong>10</strong> or <strong>11</strong>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="core-features-2"><a class="anchor" href="#core-features-2"></a><a class="link" href="#core-features-2">15.2. Core Features</a></h3>
+<div class="sect3">
+<h4 id="passwordless-connection-2"><a class="anchor" href="#passwordless-connection-2"></a><a class="link" href="#passwordless-connection-2">15.2.1. Passwordless connection</a></h4>
+<div class="paragraph">
+<p>Passwordless connection is to connect to Azure services without storing any credentials in the application, no matter stored in the applications' configuration files or in the environment variables, and it uses Azure AD authentication. Azure AD authentication is a mechanism of connecting to Azure Database for PostSQL using identities defined in Azure AD. With Azure AD authentication, you can manage database user identities and other Microsoft services in a central location, which simplifies permission management.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="how-it-works-2"><a class="anchor" href="#how-it-works-2"></a><a class="link" href="#how-it-works-2">15.3. How it works</a></h3>
+<div class="paragraph">
+<p>Spring Cloud Azure will first build one of the following types of credentials depending on the application authentication configuration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ClientSecretCredential</code></p>
+</li>
+<li>
+<p><code>ClientCertificateCredential</code></p>
+</li>
+<li>
+<p><code>UsernamePasswordCredential</code></p>
+</li>
+<li>
+<p><code>ManagedIdentityCredential</code></p>
+</li>
+<li>
+<p><code>DefaultAzureCredential</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If none of these types of credentials are found, the <code>DefaultAzureCredential</code> credentials will be obtained from application properties, environment variables, managed identities, or the IDE. For detailed information, see the <a href="index.html#authentication">Authentication</a> section.</p>
+</div>
+<div class="paragraph">
+<p>The following high-level diagram summarizes how authentication works using OAuth credential authentication with Azure Database for PostgreSQL. The arrows indicate communication pathways.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/58474919/192259091-ba4b102e-9be5-4d4c-b320-a3c77d405426.png" alt="Authentication PostgreSQL Azure Active Directory"></span></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="configuration-13"><a class="anchor" href="#configuration-13"></a><a class="link" href="#configuration-13">15.4. Configuration</a></h3>
+<div class="paragraph">
+<p>Spring Cloud Azure for PostgreSQL supports the following two levels of configuration options:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The global authentication configuration options of <code>credential</code> and <code>profile</code> with prefixes of <code>spring.cloud.azure</code>.</p>
+</li>
+<li>
+<p>Spring Cloud Azure for PostgreSQL common configuration options.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The following table shows the Spring Cloud Azure for PostgreSQL common configuration options:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 34. Spring Cloud Azure for PostgreSQL common configuration options</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.passwordless-enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable supporting Azure identity token credentials. The default value is <strong>false</strong>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.client-certificate-password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.client-certificate-path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path of a PEM certificate file to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.client-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client ID to use when performing service principal authentication with Azure. This is a legacy property.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.client-secret</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure. This is a legacy property.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.managed-identity-enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable managed identity to authenticate with Azure. If <strong>true</strong> and the <code>client-id</code> is set, will use the client ID as user assigned managed identity client ID. The default value is <strong>false</strong>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.profile.cloud-type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the Azure cloud to connect to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.profile.environment.active-directory-endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Azure Active Directory endpoint to connect to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.profile.tenant-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tenant ID for Azure resources.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="dependency-setup-12"><a class="anchor" href="#dependency-setup-12"></a><a class="link" href="#dependency-setup-12">15.5. Dependency setup</a></h3>
+<div class="paragraph">
+<p>Add the following dependency to your project. This will automatically include the spring-boot-starter dependency in your project transitively.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-azure-starter-jdbc-postgresql&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Remember to add the BOM <code>spring-cloud-azure-dependencies</code> along with the above dependency. For more information, see the <a href="index.html#getting-started">Getting started</a> section.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="basic-usage-12"><a class="anchor" href="#basic-usage-12"></a><a class="link" href="#basic-usage-12">15.6. Basic usage</a></h3>
+<div class="paragraph">
+<p>The following sections show the classic Spring Boot application usage scenarios.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Passwordless connection using Azure AD authentication. To use Azure AD authentication, we should set the Azure AD admin user first. Only an Azure AD Admin user can create and enable users for Azure AD-based authentication. Before starting to use the following usage scenarios, you need <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/configure-spring-data-jdbc-with-azure-postgresql?branch=release-cred-free-java&amp;tabs=passwordless#create-a-postgresql-server-and-set-up-admin-user">create a PostgreSQL server and set up admin user</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="connect-to-azure-postgresql-locally-without-password"><a class="anchor" href="#connect-to-azure-postgresql-locally-without-password"></a><a class="link" href="#connect-to-azure-postgresql-locally-without-password">15.6.1. Connect to Azure PostgreSQL locally without password</a></h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>To create users and grant permission, see the <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/configure-spring-data-jdbc-with-azure-postgresql?branch=release-cred-free-java&amp;tabs=passwordless#create-a-postgresql-non-admin-user-and-grant-permission">Create a PostgreSQL non-admin user and grant permission</a></p>
+</li>
+<li>
+<p>Configure the following properties in your <strong>application.yml</strong> file:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  datasource:
+    url: jdbc:postgresql://${AZ_DATABASE_SERVER_NAME}.postgres.database.azure.com:5432/${AZ_DATABASE_NAME}?sslmode=require
+    username: ${AZ_POSTGRESQL_AD_NON_ADMIN_USERNAME}@${AZ_DATABASE_SERVER_NAME}
+    azure:
+      passwordless-enabled: true</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="connect-to-azure-postgresql-using-a-service-principal"><a class="anchor" href="#connect-to-azure-postgresql-using-a-service-principal"></a><a class="link" href="#connect-to-azure-postgresql-using-a-service-principal">15.6.2. Connect to Azure PostgreSQL using a service principal</a></h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create an Azure AD user for service principal and grant permission.</p>
+<div class="paragraph">
+<p>Create a SQL script called <strong>create_ad_user_sp.sql</strong> for creating a non-admin user. Add the following contents and save it locally:</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Make sure <code>&lt;service-principal-name&gt;</code> already exit in your Azure AD tenant, or <a href="/azure/postgresql/single-server/how-to-configure-sign-in-azure-ad-authentication#creating-azure-ad-users-in-azure-database-for-postgresql">create Azure AD user</a>  will be failed.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">export AZ_POSTGRESQL_AD_SP_USERNAME=&lt;service-principal-name&gt;
+
+cat &lt;&lt; EOF &gt; create_ad_user_sp.sql
+SET aad_validate_oids_in_tenant = off;
+CREATE ROLE "$AZ_POSTGRESQL_AD_SP_USERNAME" WITH LOGIN IN ROLE azure_ad_user;
+GRANT ALL PRIVILEGES ON DATABASE $AZ_DATABASE_NAME TO "$AZ_POSTGRESQL_AD_SP_USERNAME";
+EOF</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use the following command to run the SQL script to create the Azure AD non-admin user:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">psql "host=$AZ_DATABASE_SERVER_NAME.postgres.database.azure.com user=$CURRENT_USERNAME@$AZ_DATABASE_SERVER_NAME dbname=$AZ_DATABASE_NAME port=5432 password=`az account get-access-token --resource-type oss-rdbms --output tsv --query accessToken` sslmode=require" &lt; create_ad_user_sp.sql</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now use the following command to remove the temporary SQL script file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">rm create_ad_user_sp.sql</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configure the following properties in your <strong>application.yml</strong> file:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+  datasource:
+    url: jdbc:postgresql://${AZ_DATABASE_SERVER_NAME}.postgres.database.azure.com:5432/${AZ_DATABASE_NAME}?sslmode=require
+    username: ${AZ_POSTGRESQL_AD_SP_USERNAME}@${AZ_DATABASE_SERVER_NAME}
+    azure:
+      passwordless-enabled: true</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="connect-to-azure-postgresql-with-managed-identity-in-azure-spring-apps"><a class="anchor" href="#connect-to-azure-postgresql-with-managed-identity-in-azure-spring-apps"></a><a class="link" href="#connect-to-azure-postgresql-with-managed-identity-in-azure-spring-apps">15.6.3. Connect to Azure PostgreSQL with Managed Identity in Azure Spring Apps</a></h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>To enable managed identity, see the <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/migrate-postgresql-to-passwordless-connection?branch=release-cred-free-java&amp;tabs=sign-in-azure-cli%2Cjava%2Cservice-connector%2Cservice-connector-identity%2Cassign-role-service-connector#create-the-managed-identity-using-the-azure-portal">Create the managed identity using the Azure Portal</a></p>
+</li>
+<li>
+<p>To grant permissions, see the <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/migrate-postgresql-to-passwordless-connection?branch=release-cred-free-java&amp;tabs=sign-in-azure-cli%2Cjava%2Cservice-connector%2Cservice-connector-identity%2Cassign-role-service-connector#assign-roles-to-the-managed-identity">Assign role to managed identity</a></p>
+</li>
+<li>
+<p>Configure the following properties in your <strong>application.yml</strong> file:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      credential:
+        managed-identity-enabled: true
+        client-id: ${AZURE_CLIENT_ID}
+  datasource:
+    url: jdbc:postgresql://${AZ_DATABASE_SERVER_NAME}.postgres.database.azure.com:5432/${AZ_DATABASE_NAME}?sslmode=require
+    username: ${AZ_POSTGRESQL_AD_MI_USERNAME}@${AZ_DATABASE_SERVER_NAME}
+    azure:
+      passwordless-enabled: true</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Get more information about <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/deploy-passwordless-spring-database-app?tabs=postgresql">Deploying Spring Application Connected to Azure Database Passwordlessly to Azure Spring Apps</a>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="kafka-support"><a class="anchor" href="#kafka-support"></a><a class="link" href="#kafka-support">16. Kafka Support</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>From version 4.3.0, Spring Cloud Azure for Kafka supports various types of credentials to authenticate and connect to Azure Event Hubs.</p>
 </div>
 <div class="sect2">
-<h3 id="supported-kafka-version"><a class="anchor" href="#supported-kafka-version"></a><a class="link" href="#supported-kafka-version">14.1. Supported Kafka version</a></h3>
+<h3 id="supported-kafka-version"><a class="anchor" href="#supported-kafka-version"></a><a class="link" href="#supported-kafka-version">16.1. Supported Kafka version</a></h3>
 <div class="paragraph">
 <p>The current version of the starter should be compatible with Apache Kafka Clients 2.0.0 using Java 8 or above.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="supported-authentication-types"><a class="anchor" href="#supported-authentication-types"></a><a class="link" href="#supported-authentication-types">14.2. Supported authentication types</a></h3>
+<h3 id="supported-authentication-types"><a class="anchor" href="#supported-authentication-types"></a><a class="link" href="#supported-authentication-types">16.2. Supported authentication types</a></h3>
 <div class="paragraph">
 <p>The following authentication types are supported:</p>
 </div>
@@ -7302,9 +7944,9 @@ The default enabled <code>ConnectionFactory</code> is the <code>CachingConnectio
 </div>
 </div>
 <div class="sect2">
-<h3 id="how-it-works"><a class="anchor" href="#how-it-works"></a><a class="link" href="#how-it-works">14.3. How it works</a></h3>
+<h3 id="how-it-works-3"><a class="anchor" href="#how-it-works-3"></a><a class="link" href="#how-it-works-3">16.3. How it works</a></h3>
 <div class="sect3">
-<h4 id="oauth-credential-authentication"><a class="anchor" href="#oauth-credential-authentication"></a><a class="link" href="#oauth-credential-authentication">14.3.1. OAuth credential authentication</a></h4>
+<h4 id="oauth-credential-authentication"><a class="anchor" href="#oauth-credential-authentication"></a><a class="link" href="#oauth-credential-authentication">16.3.1. OAuth credential authentication</a></h4>
 <div class="paragraph">
 <p>This section describes the overall workflow of Spring Cloud Azure OAuth authentication.</p>
 </div>
@@ -7332,7 +7974,7 @@ The default enabled <code>ConnectionFactory</code> is the <code>CachingConnectio
 </div>
 </div>
 <div class="sect3">
-<h4 id="plain-connection-string-authentication"><a class="anchor" href="#plain-connection-string-authentication"></a><a class="link" href="#plain-connection-string-authentication">14.3.2. Plain connection string authentication</a></h4>
+<h4 id="plain-connection-string-authentication"><a class="anchor" href="#plain-connection-string-authentication"></a><a class="link" href="#plain-connection-string-authentication">16.3.2. Plain connection string authentication</a></h4>
 <div class="paragraph">
 <p>For the connection string authentication mode, you can use connection string authentication directly or use the Azure Resource Manager to retrieve the connection string. For more information about the usage, see the <a href="#basic-usage-connection-string">Basic usage for connection string authentication</a> section.</p>
 </div>
@@ -7351,9 +7993,9 @@ Since version of 4.3.0, connection string authentication is deprecated in favor 
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-12"><a class="anchor" href="#configuration-12"></a><a class="link" href="#configuration-12">14.4. Configuration</a></h3>
+<h3 id="configuration-14"><a class="anchor" href="#configuration-14"></a><a class="link" href="#configuration-14">16.4. Configuration</a></h3>
 <div class="sect3">
-<h4 id="configurable-properties-when-using-kafka-support-with-oauth-authentication"><a class="anchor" href="#configurable-properties-when-using-kafka-support-with-oauth-authentication"></a><a class="link" href="#configurable-properties-when-using-kafka-support-with-oauth-authentication">14.4.1. Configurable properties when using Kafka support with OAuth authentication</a></h4>
+<h4 id="configurable-properties-when-using-kafka-support-with-oauth-authentication"><a class="anchor" href="#configurable-properties-when-using-kafka-support-with-oauth-authentication"></a><a class="link" href="#configurable-properties-when-using-kafka-support-with-oauth-authentication">16.4.1. Configurable properties when using Kafka support with OAuth authentication</a></h4>
 <div class="paragraph">
 <p>Spring Cloud Azure for Kafka supports the following two levels of configuration options:</p>
 </div>
@@ -7499,7 +8141,7 @@ Since version of 4.3.0, connection string authentication is deprecated in favor 
 </ul>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 33. Spring Boot Kafka common configuration options</caption>
+<caption class="title">Table 35. Spring Boot Kafka common configuration options</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7584,9 +8226,9 @@ Since version of 4.3.0, connection string authentication is deprecated in favor 
 </div>
 </div>
 <div class="sect3">
-<h4 id="configurable-properties-when-using-kafka-support-with-plain-connection-string-authentication"><a class="anchor" href="#configurable-properties-when-using-kafka-support-with-plain-connection-string-authentication"></a><a class="link" href="#configurable-properties-when-using-kafka-support-with-plain-connection-string-authentication">14.4.2. Configurable properties when using Kafka support with plain connection string authentication</a></h4>
+<h4 id="configurable-properties-when-using-kafka-support-with-plain-connection-string-authentication"><a class="anchor" href="#configurable-properties-when-using-kafka-support-with-plain-connection-string-authentication"></a><a class="link" href="#configurable-properties-when-using-kafka-support-with-plain-connection-string-authentication">16.4.2. Configurable properties when using Kafka support with plain connection string authentication</a></h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 34. Spring Boot Event Hubs for Kafka common configuration options</caption>
+<caption class="title">Table 36. Spring Boot Event Hubs for Kafka common configuration options</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7623,7 +8265,7 @@ Since version of 4.3.0, connection string authentication is deprecated in favor 
 </div>
 </div>
 <div class="sect2">
-<h3 id="dependency-setup-11"><a class="anchor" href="#dependency-setup-11"></a><a class="link" href="#dependency-setup-11">14.5. Dependency Setup</a></h3>
+<h3 id="dependency-setup-13"><a class="anchor" href="#dependency-setup-13"></a><a class="link" href="#dependency-setup-13">16.5. Dependency Setup</a></h3>
 <div class="paragraph">
 <p>Add the following dependency to your project. This will automatically include the <code>spring-boot-starter</code> dependency in your project transitively.</p>
 </div>
@@ -7649,12 +8291,12 @@ Remember to add the BOM <code>spring-cloud-azure-dependencies</code> along with 
 </div>
 </div>
 <div class="sect2">
-<h3 id="basic-usage-11"><a class="anchor" href="#basic-usage-11"></a><a class="link" href="#basic-usage-11">14.6. Basic usage</a></h3>
+<h3 id="basic-usage-13"><a class="anchor" href="#basic-usage-13"></a><a class="link" href="#basic-usage-13">16.6. Basic usage</a></h3>
 <div class="paragraph">
 <p>The following sections show the classic Spring Boot application usage scenarios.</p>
 </div>
 <div class="sect3">
-<h4 id="use-oauth-authentication"><a class="anchor" href="#use-oauth-authentication"></a><a class="link" href="#use-oauth-authentication">14.6.1. Use OAuth authentication</a></h4>
+<h4 id="use-oauth-authentication"><a class="anchor" href="#use-oauth-authentication"></a><a class="link" href="#use-oauth-authentication">16.6.1. Use OAuth authentication</a></h4>
 <div class="paragraph">
 <p>When you use the OAuth authentication provided by Spring Cloud Azure for Kafka, you can configure the specific credentials using the above configurations. Alternatively, you can choose to configure nothing about credentials, in which case Spring Cloud Azure will load the credentials from the environment. This section describes the usages that load the credentials from the Azure CLI environment or the Azure Spring Apps hosting environment.</p>
 </div>
@@ -7679,7 +8321,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <p>This section describes the usage scenario for Spring Boot application using Spring Kafka or Spring Integration Kafka library.</p>
 </div>
 <div class="sect5">
-<h6 id="dependency-setup-12"><a class="anchor" href="#dependency-setup-12"></a><a class="link" href="#dependency-setup-12">Dependency setup</a></h6>
+<h6 id="dependency-setup-14"><a class="anchor" href="#dependency-setup-14"></a><a class="link" href="#dependency-setup-14">Dependency setup</a></h6>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -7719,7 +8361,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 <p>This section describes the usage scenario for Spring Boot applications using the Spring Cloud Stream binder Kafka library.</p>
 </div>
 <div class="sect5">
-<h6 id="dependency-setup-13"><a class="anchor" href="#dependency-setup-13"></a><a class="link" href="#dependency-setup-13">Dependency setup</a></h6>
+<h6 id="dependency-setup-15"><a class="anchor" href="#dependency-setup-15"></a><a class="link" href="#dependency-setup-15">Dependency setup</a></h6>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -7735,7 +8377,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 </div>
 <div class="sect5">
-<h6 id="configuration-13"><a class="anchor" href="#configuration-13"></a><a class="link" href="#configuration-13">Configuration</a></h6>
+<h6 id="configuration-15"><a class="anchor" href="#configuration-15"></a><a class="link" href="#configuration-15">Configuration</a></h6>
 <div class="paragraph">
 <p>To use the OAuth authentication, just specify the Event Hubs endpoint and <code>com.azure.spring.cloud.autoconfigure.kafka.AzureKafkaSpringCloudStreamConfiguration</code>, as shown in the following example:</p>
 </div>
@@ -7767,7 +8409,7 @@ If you&#8217;re using version <code>4.3.0</code>, don&#8217;t forget to set the 
 </div>
 </div>
 <div class="sect3">
-<h4 id="basic-usage-connection-string"><a class="anchor" href="#basic-usage-connection-string"></a><a class="link" href="#basic-usage-connection-string">14.6.2. Use connection string authentication</a></h4>
+<h4 id="basic-usage-connection-string"><a class="anchor" href="#basic-usage-connection-string"></a><a class="link" href="#basic-usage-connection-string">16.6.2. Use connection string authentication</a></h4>
 <div class="paragraph">
 <p>You can use connection string authentication directly or use the Azure Resource Manager to retrieve the connection string.</p>
 </div>
@@ -7784,7 +8426,7 @@ Since version of 4.3.0, connection string authentication is deprecated in favor 
 </table>
 </div>
 <div class="sect4">
-<h5 id="dependency-setup-14"><a class="anchor" href="#dependency-setup-14"></a><a class="link" href="#dependency-setup-14">Dependency setup</a></h5>
+<h5 id="dependency-setup-16"><a class="anchor" href="#dependency-setup-16"></a><a class="link" href="#dependency-setup-16">Dependency setup</a></h5>
 <div class="paragraph">
 <p>Add the following dependencies if you want to migrate your Apache Kafka application to use Azure Event Hubs for Kafka.</p>
 </div>
@@ -7809,7 +8451,7 @@ Since version of 4.3.0, connection string authentication is deprecated in favor 
 </div>
 </div>
 <div class="sect4">
-<h5 id="configuration-14"><a class="anchor" href="#configuration-14"></a><a class="link" href="#configuration-14">Configuration</a></h5>
+<h5 id="configuration-16"><a class="anchor" href="#configuration-16"></a><a class="link" href="#configuration-16">Configuration</a></h5>
 <div class="sect5">
 <h6 id="use-event-hubs-connection-string-directly"><a class="anchor" href="#use-event-hubs-connection-string-directly"></a><a class="link" href="#use-event-hubs-connection-string-directly">Use Event Hubs connection string directly</a></h6>
 <div class="paragraph">
@@ -7859,21 +8501,21 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 </div>
 <div class="sect2">
-<h3 id="samples-16"><a class="anchor" href="#samples-16"></a><a class="link" href="#samples-16">14.7. Samples</a></h3>
+<h3 id="samples-16"><a class="anchor" href="#samples-16"></a><a class="link" href="#samples-16">16.7. Samples</a></h3>
 <div class="paragraph">
 <p>See the <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_6.0.0-beta.3">azure-spring-boot-samples</a> repository on GitHub.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="remove-credentials-from-spring-kafka-applications"><a class="anchor" href="#remove-credentials-from-spring-kafka-applications"></a><a class="link" href="#remove-credentials-from-spring-kafka-applications">14.8. Remove credentials from Spring Kafka applications</a></h3>
+<h3 id="remove-credentials-from-spring-kafka-applications"><a class="anchor" href="#remove-credentials-from-spring-kafka-applications"></a><a class="link" href="#remove-credentials-from-spring-kafka-applications">16.8. Remove credentials from Spring Kafka applications</a></h3>
 <div class="sect3">
-<h4 id="overview"><a class="anchor" href="#overview"></a><a class="link" href="#overview">14.8.1. Overview</a></h4>
+<h4 id="overview"><a class="anchor" href="#overview"></a><a class="link" href="#overview">16.8.1. Overview</a></h4>
 <div class="paragraph">
 <p>You can use the Event Hubs Kafka endpoint in your Spring Kafka application. From Spring Cloud Azure 4.3.0, you can configure and run your application without credentials. This article is a migration guide for removing credentials from Spring Kafka applications.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="update-dependencies"><a class="anchor" href="#update-dependencies"></a><a class="link" href="#update-dependencies">14.8.2. Update dependencies</a></h4>
+<h4 id="update-dependencies"><a class="anchor" href="#update-dependencies"></a><a class="link" href="#update-dependencies">16.8.2. Update dependencies</a></h4>
 <div class="paragraph">
 <p>First, add the <code>spring-cloud-azure-dependencies</code> BOM, as shown in the following example:</p>
 </div>
@@ -7907,7 +8549,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </div>
 </div>
 <div class="sect3">
-<h4 id="update-configuration"><a class="anchor" href="#update-configuration"></a><a class="link" href="#update-configuration">14.8.3. Update configuration</a></h4>
+<h4 id="update-configuration"><a class="anchor" href="#update-configuration"></a><a class="link" href="#update-configuration">16.8.3. Update configuration</a></h4>
 <div class="paragraph">
 <p>If you&#8217;re using Spring Kafka, remove the following options if you have customized values:</p>
 </div>
@@ -7990,7 +8632,7 @@ The <code>spring.cloud.stream.binders.kafka.environment.spring.main.sources</cod
 </div>
 </div>
 <div class="sect3">
-<h4 id="run-locally"><a class="anchor" href="#run-locally"></a><a class="link" href="#run-locally">14.8.4. Run locally</a></h4>
+<h4 id="run-locally"><a class="anchor" href="#run-locally"></a><a class="link" href="#run-locally">16.8.4. Run locally</a></h4>
 <div class="sect4">
 <h5 id="grant-permissions"><a class="anchor" href="#grant-permissions"></a><a class="link" href="#grant-permissions">Grant permissions</a></h5>
 <div class="paragraph">
@@ -8032,7 +8674,7 @@ If you want to use other local environment credentials, for example with Intelli
 </div>
 </div>
 <div class="sect3">
-<h4 id="deploy-to-azure-spring-apps"><a class="anchor" href="#deploy-to-azure-spring-apps"></a><a class="link" href="#deploy-to-azure-spring-apps">14.8.5. Deploy to Azure Spring Apps</a></h4>
+<h4 id="deploy-to-azure-spring-apps"><a class="anchor" href="#deploy-to-azure-spring-apps"></a><a class="link" href="#deploy-to-azure-spring-apps">16.8.5. Deploy to Azure Spring Apps</a></h4>
 <div class="paragraph">
 <p>This section describes how to run the application locally. In production, you can deploy the application to Azure hosting environments like Azure Spring Apps.</p>
 </div>
@@ -8068,13 +8710,13 @@ For data access, set the data plane access role: Azure Event Hubs Data Sender an
 </div>
 </div>
 <div class="sect1">
-<h2 id="redis-support"><a class="anchor" href="#redis-support"></a><a class="link" href="#redis-support">15. Redis Support</a></h2>
+<h2 id="redis-support"><a class="anchor" href="#redis-support"></a><a class="link" href="#redis-support">17. Redis Support</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Connect to Azure Cache for Redis using Spring Redis libraries. With adding <code>spring-cloud-azure-starter</code> and <code>spring-cloud-azure-resourcemanager</code> to your application, it&#8217;s possible to read the Azure Cache for Redis connection information through Azure Resource Manager and auto-configure the Redis properties.</p>
 </div>
 <div class="sect2">
-<h3 id="dependency-setup-15"><a class="anchor" href="#dependency-setup-15"></a><a class="link" href="#dependency-setup-15">15.1. Dependency Setup</a></h3>
+<h3 id="dependency-setup-17"><a class="anchor" href="#dependency-setup-17"></a><a class="link" href="#dependency-setup-17">17.1. Dependency Setup</a></h3>
 <div class="paragraph">
 <p>Add the following dependencies if you want to use the Spring Cloud Azure Redis support to your Spring Boot application using Redis.</p>
 </div>
@@ -8094,7 +8736,7 @@ For data access, set the data plane access role: Azure Event Hubs Data Sender an
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-15"><a class="anchor" href="#configuration-15"></a><a class="link" href="#configuration-15">15.2. Configuration</a></h3>
+<h3 id="configuration-17"><a class="anchor" href="#configuration-17"></a><a class="link" href="#configuration-17">17.2. Configuration</a></h3>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -8108,7 +8750,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 35. Configurable properties when using Redis support</caption>
+<caption class="title">Table 37. Configurable properties when using Redis support</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -8164,7 +8806,7 @@ Authentication information is also required for authenticating for Azure Resourc
 </div>
 </div>
 <div class="sect2">
-<h3 id="basic-usage-12"><a class="anchor" href="#basic-usage-12"></a><a class="link" href="#basic-usage-12">15.3. Basic Usage</a></h3>
+<h3 id="basic-usage-14"><a class="anchor" href="#basic-usage-14"></a><a class="link" href="#basic-usage-14">17.3. Basic Usage</a></h3>
 <div class="paragraph">
 <p>Add the following properties and you are good to go.</p>
 </div>
@@ -8176,7 +8818,7 @@ spring.cloud.azure.redis.resource.resource-group=${AZURE_CACHE_REDIS_RESOURCE_GR
 </div>
 </div>
 <div class="sect2">
-<h3 id="samples-17"><a class="anchor" href="#samples-17"></a><a class="link" href="#samples-17">15.4. Samples</a></h3>
+<h3 id="samples-17"><a class="anchor" href="#samples-17"></a><a class="link" href="#samples-17">17.4. Samples</a></h3>
 <div class="paragraph">
 <p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_6.0.0-beta.3">azure-spring-boot-samples</a> for more details.</p>
 </div>
@@ -8184,13 +8826,13 @@ spring.cloud.azure.redis.resource.resource-group=${AZURE_CACHE_REDIS_RESOURCE_GR
 </div>
 </div>
 <div class="sect1">
-<h2 id="spring-cloud-azure-resourcemanager"><a class="anchor" href="#spring-cloud-azure-resourcemanager"></a><a class="link" href="#spring-cloud-azure-resourcemanager">16. Azure Resource Manager</a></h2>
+<h2 id="spring-cloud-azure-resourcemanager"><a class="anchor" href="#spring-cloud-azure-resourcemanager"></a><a class="link" href="#spring-cloud-azure-resourcemanager">18. Azure Resource Manager</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Azure Resource Manager (ARM) is the deployment and management service for Azure. It provides a management layer that enables you to create, update, and delete resources in your Azure account. Spring Cloud Azure Resource Manager can help provision resources or retrieve resource metadata.</p>
 </div>
 <div class="sect2">
-<h3 id="dependency-setup-16"><a class="anchor" href="#dependency-setup-16"></a><a class="link" href="#dependency-setup-16">16.1. Dependency Setup</a></h3>
+<h3 id="dependency-setup-18"><a class="anchor" href="#dependency-setup-18"></a><a class="link" href="#dependency-setup-18">18.1. Dependency Setup</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
@@ -8201,7 +8843,7 @@ spring.cloud.azure.redis.resource.resource-group=${AZURE_CACHE_REDIS_RESOURCE_GR
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-16"><a class="anchor" href="#configuration-16"></a><a class="link" href="#configuration-16">16.2. Configuration</a></h3>
+<h3 id="configuration-18"><a class="anchor" href="#configuration-18"></a><a class="link" href="#configuration-18">18.2. Configuration</a></h3>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -8215,7 +8857,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 36. Configurable properties of spring-cloud-azure-resourcemanager</caption>
+<caption class="title">Table 38. Configurable properties of spring-cloud-azure-resourcemanager</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8287,7 +8929,7 @@ If you choose to use a security principal to authenticate and authorize with Azu
 </table>
 </div>
 <div class="sect2">
-<h3 id="resource-manager-basic-usage"><a class="anchor" href="#resource-manager-basic-usage"></a><a class="link" href="#resource-manager-basic-usage">16.3. Basic Usage</a></h3>
+<h3 id="resource-manager-basic-usage"><a class="anchor" href="#resource-manager-basic-usage"></a><a class="link" href="#resource-manager-basic-usage">18.3. Basic Usage</a></h3>
 <div class="paragraph">
 <p>Spring Cloud Azure Resource Manager can work together with specific Spring Cloud Azure starters to retrieve connection information, such as connection strings, to connect to Azure services. It can also work together with <code>spring-cloud-azure-starter</code> and third-party libraries to retrieve metadata like username/password, and to complete authentication, For more information, see the <a href="#kafka-support">Kafka Support</a> and <a href="#redis-support">Redis Support</a> sections.</p>
 </div>
@@ -8314,7 +8956,7 @@ be assigned a role of <code>Contributor</code> of the associated namespace at le
 </div>
 </div>
 <div class="sect2">
-<h3 id="samples-18"><a class="anchor" href="#samples-18"></a><a class="link" href="#samples-18">16.4. Samples</a></h3>
+<h3 id="samples-18"><a class="anchor" href="#samples-18"></a><a class="link" href="#samples-18">18.4. Samples</a></h3>
 <div class="paragraph">
 <p>See <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_6.0.0-beta.3">azure-spring-boot-samples</a> for more details.</p>
 </div>
@@ -8322,7 +8964,7 @@ be assigned a role of <code>Contributor</code> of the associated namespace at le
 </div>
 </div>
 <div class="sect1">
-<h2 id="configuration-properties-2"><a class="anchor" href="#configuration-properties-2"></a><a class="link" href="#configuration-properties-2">17. Configuration Properties</a></h2>
+<h2 id="configuration-properties-2"><a class="anchor" href="#configuration-properties-2"></a><a class="link" href="#configuration-properties-2">19. Configuration Properties</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>To see the list of all Spring Cloud Azure related configuration properties please check <a href="appendix.html">the Appendix page</a>.</p>
@@ -8330,26 +8972,26 @@ be assigned a role of <code>Contributor</code> of the associated namespace at le
 </div>
 </div>
 <div class="sect1">
-<h2 id="appendix"><a class="anchor" href="#appendix"></a><a class="link" href="#appendix">18. Appendix</a></h2>
+<h2 id="appendix"><a class="anchor" href="#appendix"></a><a class="link" href="#appendix">20. Appendix</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="configuration-properties-3"><a class="anchor" href="#configuration-properties-3"></a><a class="link" href="#configuration-properties-3">18.1. <a href="appendix.html##configuration-properties">Configuration properties</a></a></h3>
+<h3 id="configuration-properties-3"><a class="anchor" href="#configuration-properties-3"></a><a class="link" href="#configuration-properties-3">20.1. <a href="appendix.html##configuration-properties">Configuration properties</a></a></h3>
 
 </div>
 <div class="sect2">
-<h3 id="migration-guide-for-6-0-2"><a class="anchor" href="#migration-guide-for-6-0-2"></a><a class="link" href="#migration-guide-for-6-0-2">18.2. <a href="appendix.html#migration-guide-for-6-0">Migration guide for 6.0</a></a></h3>
+<h3 id="migration-guide-for-6-0-2"><a class="anchor" href="#migration-guide-for-6-0-2"></a><a class="link" href="#migration-guide-for-6-0-2">20.2. <a href="appendix.html#migration-guide-for-6-0">Migration guide for 6.0</a></a></h3>
 
 </div>
 <div class="sect2">
-<h3 id="known-issues"><a class="anchor" href="#known-issues"></a><a class="link" href="#known-issues">18.3. <a href="appendix.html#known-issues">Known issues</a></a></h3>
+<h3 id="known-issues"><a class="anchor" href="#known-issues"></a><a class="link" href="#known-issues">20.3. <a href="appendix.html#known-issues">Known issues</a></a></h3>
 
 </div>
 <div class="sect2">
-<h3 id="create-and-configure-a-managed-identity-on-azure-hosting-services"><a class="anchor" href="#create-and-configure-a-managed-identity-on-azure-hosting-services"></a><a class="link" href="#create-and-configure-a-managed-identity-on-azure-hosting-services">18.4. <a href="appendix.html#create-and-configure-a-managed-identity-on-azure-hosting-services">Create and configure a managed identity on Azure hosting services</a></a></h3>
+<h3 id="create-and-configure-a-managed-identity-on-azure-hosting-services"><a class="anchor" href="#create-and-configure-a-managed-identity-on-azure-hosting-services"></a><a class="link" href="#create-and-configure-a-managed-identity-on-azure-hosting-services">20.4. <a href="appendix.html#create-and-configure-a-managed-identity-on-azure-hosting-services">Create and configure a managed identity on Azure hosting services</a></a></h3>
 
 </div>
 <div class="sect2">
-<h3 id="deploy-application-to-azure-hosting-services"><a class="anchor" href="#deploy-application-to-azure-hosting-services"></a><a class="link" href="#deploy-application-to-azure-hosting-services">18.5. <a href="appendix.html#deploy-application-to-azure-hosting-services">Deploy application to Azure hosting services</a></a></h3>
+<h3 id="deploy-application-to-azure-hosting-services"><a class="anchor" href="#deploy-application-to-azure-hosting-services"></a><a class="link" href="#deploy-application-to-azure-hosting-services">20.5. <a href="appendix.html#deploy-application-to-azure-hosting-services">Deploy application to Azure hosting services</a></a></h3>
 
 </div>
 </div>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>MySQL support</title>
+<link rel="stylesheet" href="css/spring.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript"> (function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)}; t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i; y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y); })(window, document, "clarity", "script", "b9g1q6wz23"); </script>
+
+<style>
+.hidden {
+	display: none;
+}
+
+.switch {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+	display: inline-block;
+}
+
+.switch--item {
+	padding: 10px;
+	background-color: #ffffff;
+	color: #7a2518;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.switch--item:not(:first-child) {
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #7a2518;
+}
+
+.switch--item.selected {
+	background-color: #7a2519;
+	color: #ffffff;
+}
+
+</style>
+<script type="text/javascript">
+function addBlockSwitches() {
+	for (var primary of document.querySelectorAll('.primary')) {
+		var switchItem = createSwitchItem(primary, createBlockSwitch(primary));
+		switchItem.item.classList.add("selected");
+		var title = primary.querySelector('.title')
+		title.remove();
+	}
+	for (var secondary of document.querySelectorAll('.secondary')) {
+		var primary = findPrimary(secondary);
+		if (primary === null) {
+			console.error("Found secondary block with no primary sibling");
+		}
+		else {
+			var switchItem = createSwitchItem(secondary, primary.querySelector('.switch'));
+			switchItem.content.classList.add("hidden");
+			primary.append(switchItem.content);
+			secondary.remove();
+		}
+	}
+}
+
+function createElementFromHtml(html) {
+	var template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+function createBlockSwitch(primary) {
+    var blockSwitch = createElementFromHtml('<div class="switch"></div>');
+    primary.prepend(blockSwitch)
+	return blockSwitch;
+}
+
+function findPrimary(secondary) {
+	var candidate = secondary.previousElementSibling;
+	while (candidate != null && !candidate.classList.contains('primary')) {
+		candidate = candidate.previousElementSibling;
+	}
+	return candidate;
+}
+
+function createSwitchItem(block, blockSwitch) {
+	var blockName = block.querySelector('.title').textContent;
+	var content = block.querySelectorAll('.content').item(0);
+	var colist = nextSibling(block, '.colist');
+	if (colist != null) {
+		content.append(colist);
+	}
+	var item = createElementFromHtml('<div class="switch--item">' + blockName + '</div>');
+	item.dataset.blockName = blockName;
+	content.dataset.blockName = blockName;
+	blockSwitch.append(item);
+	return {'item': item, 'content': content};
+}
+
+function nextSibling(element, selector) {
+	var sibling = element.nextElementSibling;
+	while (sibling) {
+		if (sibling.matches(selector)) {
+			return sibling;
+		}
+		sibling = sibling.nextElementSibling;
+	}
+}
+
+function globalSwitch() {
+	document.querySelectorAll(".switch--item").forEach(function(item) {
+		var blockId = blockIdForSwitchItem(item);
+		var handler = function(event) {
+			selectedText = event.target.textContent;
+			window.localStorage.setItem(blockId, selectedText);
+			for (var switchItem of document.querySelectorAll(".switch--item")) {
+				if (blockIdForSwitchItem(switchItem) === blockId && switchItem.textContent === selectedText) {
+					select(switchItem);
+				}
+			}
+		}
+		item.addEventListener("click", handler);
+		if (item.textContent === window.localStorage.getItem(blockId)) {
+			select(item);
+		}
+	});
+}
+
+function select(selected) {
+	for (var child of selected.parentNode.children) {
+		child.classList.remove("selected");
+	}
+	selected.classList.add("selected");
+	for (var child of selected.parentNode.parentNode.children) {
+		if (child.classList.contains("content")) {
+			if (selected.dataset.blockName === child.dataset.blockName) {
+				child.classList.remove("hidden");
+			}
+			else {
+				child.classList.add("hidden");
+			}
+		}
+	}	
+}
+
+function blockIdForSwitchItem(item) {
+	idComponents = []
+	for (var switchItem of item.parentNode.querySelectorAll(".switch--item")) {
+		idComponents.push(switchItem.textContent.toLowerCase());
+	}
+	return idComponents.sort().join("-")
+}
+
+window.onload = function() {
+	addBlockSwitches();
+	globalSwitch();
+};
+
+</script>
+
+</head>
+<body class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#mysql-support">MySQL support</a>
+<ul class="sectlevel2">
+<li><a href="#_supported_mysql_version">Supported MySQL version</a></li>
+<li><a href="#_core_features">Core Features</a></li>
+<li><a href="#_how_it_works">How it works</a></li>
+<li><a href="#_configuration">Configuration</a></li>
+<li><a href="#_dependency_setup">Dependency setup</a></li>
+<li><a href="#_basic_usage">Basic usage</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="mysql-support"><a class="link" href="#mysql-support">MySQL support</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://azure.microsoft.com/services/mysql/">Azure Database for MySQL</a> is a relational database service powered by the MySQL community edition. You can use either Single Server or Flexible Server to host a MySQL database in Azure. It&#8217;s a fully managed database-as-a-service offering that can handle mission-critical workloads with predictable performance and dynamic scalability.</p>
+</div>
+<div class="paragraph">
+<p>From version <strong>4.5.0-beta.1</strong>, Spring Cloud Azure supports various types of credentials for authentication to <code>Azure Database for MySQL single server</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="_supported_mysql_version"><a class="link" href="#_supported_mysql_version">Supported MySQL version</a></h3>
+<div class="paragraph">
+<p>The current version of the starter should use Azure Database for MySQL Single Server version <strong>5.7</strong> or <strong>8.0</strong>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_core_features"><a class="link" href="#_core_features">Core Features</a></h3>
+<div class="sect3">
+<h4 id="_passwordless_connection"><a class="link" href="#_passwordless_connection">Passwordless connection</a></h4>
+<div class="paragraph">
+<p>Passwordless connection is to connect to Azure services without storing any credentials in the application, no matter stored in the applications' configuration files or in the environment variables, and it uses Azure AD authentication. Azure AD authentication is a mechanism of connecting to Azure Database for MySQL using identities defined in Azure AD. With Azure AD authentication, you can manage database user identities and other Microsoft services in a central location, which simplifies permission management.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_it_works"><a class="link" href="#_how_it_works">How it works</a></h3>
+<div class="paragraph">
+<p>Spring Cloud Azure will first build one of the following types of credentials depending on the application authentication configuration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ClientSecretCredential</code></p>
+</li>
+<li>
+<p><code>ClientCertificateCredential</code></p>
+</li>
+<li>
+<p><code>UsernamePasswordCredential</code></p>
+</li>
+<li>
+<p><code>ManagedIdentityCredential</code></p>
+</li>
+<li>
+<p><code>DefaultAzureCredential</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If none of these types of credentials are found, the <code>DefaultAzureCredential</code> credentials will be obtained from application properties, environment variables, managed identities, or the IDE. For detailed information, see the <a href="index.html#authentication">Spring Cloud Azure authentication</a> section.</p>
+</div>
+<div class="paragraph">
+<p>The following high-level diagram summarizes how authentication works using OAuth credential authentication with Azure Database for MySQL. The arrows indicate communication pathways.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://user-images.githubusercontent.com/58474919/192254109-22341bfc-20a9-4fe5-bc62-92ed7b253343.png" alt="Diagram showing Azure Active Directory authentication for MySQL"></span></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration"><a class="link" href="#_configuration">Configuration</a></h3>
+<div class="paragraph">
+<p>Spring Cloud Azure for MySQL supports the following two levels of configuration options:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The global authentication configuration options of <code>credential</code> and <code>profile</code> with prefixes of <code>spring.cloud.azure</code>.</p>
+</li>
+<li>
+<p>Spring Cloud Azure for MySQL common configuration options.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The following table shows the Spring Cloud Azure for MySQL common configuration options:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Spring Cloud Azure for MySQL common configuration options</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.passwordless-enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable supporting Azure identity token credentials. The default value is <strong>false</strong>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.client-certificate-password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password of the certificate file.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.client-certificate-path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Path of a PEM certificate file to use when performing service principal authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.client-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client ID to use when performing service principal authentication with Azure. This is a legacy property.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.client-secret</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when performing service principal authentication with Azure. This is a legacy property.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.managed-identity-enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable managed identity to authenticate with Azure. If <strong>true</strong> and the <code>client-id</code> is set, will use the client ID as user assigned managed identity client ID. The default value is <strong>false</strong>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.credential.username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username to use when performing username/password authentication with Azure.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.profile.cloud-type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the Azure cloud to connect to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.profile.environment.active-directory-endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Azure Active Directory endpoint to connect to.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring.datasource.azure.profile.tenant-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tenant ID for Azure resources.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_dependency_setup"><a class="link" href="#_dependency_setup">Dependency setup</a></h3>
+<div class="paragraph">
+<p>Add the following dependency to your project. This will automatically include the <code>spring-boot-starter</code> dependency in your project transitively.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.azure.spring&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-azure-starter-jdbc-mysql&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Remember to add the BOM <code>spring-cloud-azure-dependencies</code> along with the above dependency. For more information, see the <a href="index.html#getting-started">Getting started</a> section.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_basic_usage"><a class="link" href="#_basic_usage">Basic usage</a></h3>
+<div class="paragraph">
+<p>The following sections show the classic Spring Boot application usage scenarios.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Passwordless connection uses Azure AD authentication. To use Azure AD authentication, you should set the Azure AD admin user first. Only an Azure AD Admin user can create you enable users for Azure AD-based authentication. See the <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/configure-spring-data-jdbc-with-azure-mysql?branch=release-cred-free-java&amp;tabs=passwordless#create-a-mysql-server-and-set-up-admin-user">Create a MySQL server and set up admin user</a> section.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_connect_to_azure_mysql_locally_without_password"><a class="link" href="#_connect_to_azure_mysql_locally_without_password">Connect to Azure MySQL locally without password</a></h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>To create users and grant permission, see the <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/configure-spring-data-jdbc-with-azure-mysql?branch=release-cred-free-java&amp;tabs=passwordless#create-a-mysql-non-admin-user-and-grant-permission">Create a MySQL non-admin user and grant permission</a> section to create users and grant permission.</p>
+</li>
+<li>
+<p>Configure the following properties in your <strong>application.yml</strong>:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  datasource:
+    url: jdbc:mysql://${AZURE_MYSQL_SERVER_NAME}.mysql.database.azure.com:3306/${AZURE_MYSQL_DATABASE_NAME}
+    username: ${AZURE_MYSQL_AD_NON_ADMIN_USERNAME}@${AZURE_MYSQL_SERVER_NAME}
+    azure:
+      passwordless-enabled: true</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_connect_to_azure_mysql_using_a_service_principal"><a class="link" href="#_connect_to_azure_mysql_using_a_service_principal">Connect to Azure MySQL using a service principal</a></h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create an Azure AD user for service principal and grant permission.</p>
+<div class="paragraph">
+<p>First, use the following commands to set up some environment variables.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">export AZURE_MYSQL_AZURE_AD_SP_USERID=`az ad sp list --display-name &lt;service_principal-name&gt; --query '[0].appId' -otsv`
+export AZURE_MYSQL_AZURE_AD_SP_USERNAME=&lt;YOUR_MYSQL_AZURE_AD_USERNAME&gt;
+export AZURE_MYSQL_SERVER_NAME=&lt;YOUR_MYSQL_SERVER_NAME&gt;
+export AZURE_MYSQL_DATABASE_NAME=&lt;YOUR_MYSQL_DATABASE_NAME&gt;
+export CURRENT_USERNAME=$(az ad signed-in-user show --query userPrincipalName -o tsv)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, create a SQL script called <strong>create_ad_user_sp.sql</strong> for creating a non-admin user. Add the following contents and save it locally:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">cat &lt;&lt; EOF &gt; create_ad_user_sp.sql
+SET aad_auth_validate_oids_in_tenant = OFF;
+CREATE AADUSER '$AZURE_MYSQL_AZURE_AD_SP_USERNAME' IDENTIFIED BY '$AZURE_MYSQL_AZURE_AD_SP_USERID';
+GRANT ALL PRIVILEGES ON $AZURE_MYSQL_DATABASE_NAME.* TO '$AZURE_MYSQL_AZURE_AD_SP_USERNAME'@'%';
+FLUSH privileges;
+EOF</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use the following command to run the SQL script to create the Azure AD non-admin user:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">mysql -h $AZURE_MYSQL_SERVER_NAME.mysql.database.azure.com --user $CURRENT_USERNAME@$AZURE_MYSQL_SERVER_NAME --enable-cleartext-plugin --password=`az account get-access-token --resource-type oss-rdbms --output tsv --query accessToken` &lt; create_ad_user_sp.sql</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now use the following command to remove the temporary SQL script file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">rm create_ad_user_sp.sql</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configure the following properties in your <strong>application.yml</strong> file:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  cloud:
+    azure:
+      credential:
+        client-id: ${AZURE_CLIENT_ID}
+        client-secret: ${AZURE_CLIENT_SECRET}
+      profile:
+        tenant-id: ${AZURE_TENANT_ID}
+  datasource:
+    url: jdbc:mysql://${AZURE_MYSQL_SERVER_NAME}.mysql.database.azure.com:3306/${AZURE_MYSQL_DATABASE_NAME}
+    username: ${AZURE_MYSQL_AD_SP_USERNAME}@${AZURE_MYSQL_SERVER_NAME}
+    azure:
+      passwordless-enabled: true</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_connect_to_azure_mysql_with_managed_identity_in_azure_spring_apps"><a class="link" href="#_connect_to_azure_mysql_with_managed_identity_in_azure_spring_apps">Connect to Azure MySQL with Managed Identity in Azure Spring Apps</a></h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>To enable managed identity, see the <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/migrate-mysql-to-passwordless-connection?branch=release-cred-free-java&amp;tabs=sign-in-azure-cli%2Cjava%2Capp-service%2Capp-service-identity#create-the-managed-identity-using-the-azure-portal">Create the managed identity using the Azure Portal</a> section to enable managed identity.</p>
+</li>
+<li>
+<p>To grant permissions, see the <a href="https://learn.microsoft.com/azure/developer/java/spring-framework/migrate-mysql-to-passwordless-connection?branch=release-cred-free-java&amp;tabs=sign-in-azure-cli%2Cjava%2Capp-service%2Capp-service-identity#assign-roles-to-the-managed-identity">Assign roles to the managed identity</a> section to grant permissions.</p>
+</li>
+<li>
+<p>Configure the following properties in <code>application.yml</code>:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">spring:
+  datasource:
+    url: jdbc:mysql://${AZURE_MYSQL_SERVER_NAME}.mysql.database.azure.com:3306/${AZURE_MYSQL_DATABASE_NAME}
+    username: ${AZURE_MYSQL_AD_MI_USERNAME}@${AZURE_MYSQL_SERVER_NAME}
+    azure:
+      passwordless-enabled: true</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript" src="js/tocbot/tocbot.min.js"></script>
+<script type="text/javascript" src="js/toc.js"></script>
+</body>
+</html>
