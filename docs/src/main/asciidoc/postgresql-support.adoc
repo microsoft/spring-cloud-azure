@@ -45,7 +45,7 @@ The following table shows the Spring Cloud Azure for PostgreSQL common configura
 [cols="2*", options="header"]
 |===
 | Name                                                                                                   | Description
-| spring.datasource.azure.passwordless-enabled                                                           | Whether to enable supporting Azure identity token credentials. The default value is *false*.
+| spring.datasource.azure.passwordless-enabled                                                           | Whether to enable passwordless connections to Azure databases by using OAuth2 Azure Active Directory token credentials.
 | spring.datasource.azure.credential.client-certificate-password                                         | Password of the certificate file.
 | spring.datasource.azure.credential.client-certificate-path                                             | Path of a PEM certificate file to use when performing service principal authentication with Azure.
 | spring.datasource.azure.credential.client-id                                                           | Client ID to use when performing service principal authentication with Azure. This is a legacy property.
