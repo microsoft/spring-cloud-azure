@@ -16,7 +16,7 @@ NOTE: Azure App Configuration settings can be used link any other Spring Configu
 
 Configurations are loaded by their key and label. By default, the configurations that start with the key `/application/` are loaded. The default label is `${spring.profiles.active}`. If `${spring.profiles.active}` is not set then configuration with the null label seen as `(No Label)` in the portal are loaded.
 
-The configurations that are loaded can be configured by selecting different key and label filters.
+The configurations that are loaded can be changed by selecting different key and label filters.
 
 [source,properties,indent=0]
 ----
@@ -24,17 +24,9 @@ spring.cloud.azure.appconfiguration.stores[0].selects[0].key-filter=[my-key]
 spring.cloud.azure.appconfiguration.stores[0].selects[0].label-filter=[my-label]
 ----
 
-`key-filter` supports the following filters:
+`key-filter` allows for any key prefix to be set. * isn't supported in the key filter and is automatically added to the end of any key filter. The key filter is limited to 5 CSVs.
 
-.Key Filters
-[options="header"]
-|===
-|Key Filter |Effect
-|`*`|Matches **any** key
-|`abc`|Matches a key named  **abc**
-|`abc*`|Matches key names that start with **abc**
-|`abc,xyz`|Matches key names **abc** or **xyz** (limited to 5 CSV)
-|===
+NOTE: If you want to load all configurations then key-filter needs to be set to an empty value. In properties this is done by setting `key-filter=` and in yaml this is done by setting `key-filter: ""`.
 
 `label-filter` supports the following filters:
 
@@ -42,7 +34,6 @@ spring.cloud.azure.appconfiguration.stores[0].selects[0].label-filter=[my-label]
 [options="header"]
 |===
 |Label |Description
-|`*` |Matches **any** label, which includes `\0`
 |`\0` |Matches `null` labels, seen as `(No Label)` in the portal
 |`1.0.0` |Matches label **1.0.0** exactly
 |`1.0.*` |Matches labels that start with **1.0.**
