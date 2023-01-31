@@ -1,2 +1,4 @@
 
 This document is only for Spring Cloud Azure: **{project-version}**. See https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Versions-Mapping[Spring Versions Mapping] to get more information about supported versions.
+
+IMPORTANT: The support for Spring Boot 3 has not been stopped, `6.0.0-beta.4` is the last beta support version, and our team has decided to switch to 5 as the major version instead of 6. This reference document will be suspended for updates. See https://github.com/Azure/azure-sdk-for-java/issues/31895[5.0.0 release] for version information and https://aka.ms/spring/msdocs/developer-guide[Spring Cloud Azure developer guide] for the developer guide.
