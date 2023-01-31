@@ -144,7 +144,7 @@ build\native\nativeCompile\spring-cloud-azure-sample
 
 === Samples
 
-For more information, see link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/spring-native/storage-blob-native[storage-blob-native] on GitHub.
+For more information, see link:https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.4.1/spring-native/storage-blob-native[storage-blob-native] on GitHub.
 
 Here are other verified samples that support Spring Native. For more information, see link:https://github.com/Azure-Samples/azure-spring-boot-samples#run-samples-based-on-spring-native[Spring Cloud Azure Samples] on GitHub.
 
