@@ -175,7 +175,13 @@ window.onload = function() {
 <li><a href="#learning-spring-cloud-azure">4.2. Learning Spring Cloud Azure</a></li>
 </ul>
 </li>
-<li><a href="#configuration">5. Configuration</a></li>
+<li><a href="#configuration">5. Configuration</a>
+<ul class="sectlevel2">
+<li><a href="#configuration-for-each-azure-service-sdk">5.1. Configuration for each Azure Service SDK</a></li>
+<li><a href="#global-configuration-for-azure-service-sdks">5.2. Global configuration for Azure Service SDKs</a></li>
+<li><a href="#configuration-examples">5.3. Configuration examples</a></li>
+</ul>
+</li>
 <li><a href="#authentication">6. Authentication</a>
 <ul class="sectlevel2">
 <li><a href="#defaultazurecredential">6.1. DefaultAzureCredential</a></li>
@@ -305,6 +311,18 @@ window.onload = function() {
 <div class="sectionbody">
 <div class="paragraph">
 <p>This document is only for Spring Cloud Azure: <strong>4.4.1</strong>. See <a href="https://github.com/Azure/azure-sdk-for-java/wiki/Spring-Versions-Mapping">Spring Versions Mapping</a> to get more information about supported versions.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+For the latest reference document, see <a href="https://aka.ms/spring/msdocs/developer-guide">Spring Cloud Azure developer guide</a> for the developer guide.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>&#169; 2016-2022 the original authors.</p>
@@ -629,6 +647,8 @@ To learn how to migrate to 4.0, please check <a href="appendix.html#migration-gu
 <div class="sect1">
 <h2 id="configuration"><a class="anchor" href="#configuration"></a><a class="link" href="#configuration">5. Configuration</a></h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="configuration-for-each-azure-service-sdk"><a class="anchor" href="#configuration-for-each-azure-service-sdk"></a><a class="link" href="#configuration-for-each-azure-service-sdk">5.1. Configuration for each Azure Service SDK</a></h3>
 <div class="paragraph">
 <p>Most of Azure SDKs could be divided into two categories by transport type, HTTP-based and AMQP-based. There are properties that are common to all SDKs such as authentication principals and Azure environment settings. Or common to HTTP-based clients, such as logging level to log HTTP requests and responses. Spring Cloud Azure 4.0 provides five common categories of configuration properties, which could be specified to each Azure service.</p>
 </div>
@@ -717,6 +737,9 @@ Properties configured under each Azure service will override the global configur
 </tr>
 </table>
 </div>
+</div>
+<div class="sect2">
+<h3 id="global-configuration-for-azure-service-sdks"><a class="anchor" href="#global-configuration-for-azure-service-sdks"></a><a class="link" href="#global-configuration-for-azure-service-sdks">5.2. Global configuration for Azure Service SDKs</a></h3>
 <div class="paragraph">
 <p>Spring Cloud Azure unifies configuration properties' prefixes to <code>spring.cloud.azure</code> since 4.0, which will make configuration properties more consistent and more intuitive. Here&#8217;s a quick review of the serivce specific properties.</p>
 </div>
@@ -782,6 +805,51 @@ Properties configured under each Azure service will override the global configur
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect2">
+<h3 id="configuration-examples"><a class="anchor" href="#configuration-examples"></a><a class="link" href="#configuration-examples">5.3. Configuration examples</a></h3>
+<div class="sect3">
+<h4 id="global-retry-configuration-for-azure-service-sdks"><a class="anchor" href="#global-retry-configuration-for-azure-service-sdks"></a><a class="link" href="#global-retry-configuration-for-azure-service-sdks">5.3.1. Global retry configuration for Azure Service SDKs</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring.cloud.azure:
+  retry:
+    mode: exponential
+    exponential:
+      max-retries: 4
+      base-delay: PT0.0801S
+      max-delay: PT9S</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="retry-configuration-for-key-vault-property-source"><a class="anchor" href="#retry-configuration-for-key-vault-property-source"></a><a class="link" href="#retry-configuration-for-key-vault-property-source">5.3.2. Retry configuration for Key Vault property source</a></h4>
+<div class="paragraph">
+<p>The following configuration example shows you how to configure the retry behavior for the Azure Key Vault Secret client:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">spring.cloud.azure:
+  keyvault:
+    secret:
+      credential:
+        client-id: &lt;your-client-ID&gt;
+        client-secret: &lt;your client key&gt;
+      profile:
+        tenant-id: &lt;your-tenant-ID&gt;
+      property-source-enabled: true
+      property-sources:
+        - endpoint: &lt;your-Azure-Key-Vault-endpoint&gt;
+          retry:
+            mode: exponential
+            exponential:
+              max-retries: 4
+              base-delay: PT0.0801S
+              max-delay: PT9S</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -7801,7 +7869,7 @@ The default enabled <code>ConnectionFactory</code> is the <code>CachingConnectio
 <div class="sect2">
 <h3 id="support"><a class="anchor" href="#support"></a><a class="link" href="#support">16.2. Support</a></h3>
 <div class="paragraph">
-<p>Spring Cloud Azure has been validated against GraalVM and Spring Native, and provides the beta version support. You can try it on your projects if they are using those supported dependencies, and <a href="https://github.com/Azure/azure-sdk-for-java/issues">raise bugs</a> or <a href="https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/spring-experimental/spring-cloud-azure-native-configuration">contribute pull requests</a> if something goes wrong on Spring Cloud Azure. For more information, see the <a href="https://docs.spring.io/spring-native/docs/0.11.4/reference/htmlsingle/#support">Spring Native Support</a> for more details.</p>
+<p>Spring Cloud Azure has been validated against GraalVM and Spring Native, and provides the beta version support. You can try it on your projects if they are using those supported dependencies, and <a href="https://github.com/Azure/azure-sdk-for-java/issues">raise bugs</a> or <a href="https://github.com/Azure/azure-sdk-for-java/tree/spring-cloud-azure_4.4.1/sdk/spring-experimental/spring-cloud-azure-native-configuration">contribute pull requests</a> if something goes wrong on Spring Cloud Azure. For more information, see the <a href="https://docs.spring.io/spring-native/docs/0.11.4/reference/htmlsingle/#support">Spring Native Support</a> for more details.</p>
 </div>
 <div class="sect3">
 <h4 id="spring-native-2"><a class="anchor" href="#spring-native-2"></a><a class="link" href="#spring-native-2">16.2.1. Spring Native</a></h4>
@@ -8054,7 +8122,7 @@ Assuming the project artifact ID is <code>spring-cloud-azure-sample</code> and t
 <div class="sect2">
 <h3 id="samples-16"><a class="anchor" href="#samples-16"></a><a class="link" href="#samples-16">16.6. Samples</a></h3>
 <div class="paragraph">
-<p>For more information, see <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/spring-native/storage-blob-native">storage-blob-native</a> on GitHub.</p>
+<p>For more information, see <a href="https://github.com/Azure-Samples/azure-spring-boot-samples/tree/spring-cloud-azure_4.4.1/spring-native/storage-blob-native">storage-blob-native</a> on GitHub.</p>
 </div>
 <div class="paragraph">
 <p>Here are other verified samples that support Spring Native. For more information, see <a href="https://github.com/Azure-Samples/azure-spring-boot-samples#run-samples-based-on-spring-native">Spring Cloud Azure Samples</a> on GitHub.</p>
@@ -8643,7 +8711,7 @@ If you&#8217;re using version <code>4.3.0</code>, don&#8217;t forget to set the 
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Since version of 4.3.0, connection string authentication is deprecated in favor of OAuth authentications. Since version of 4.4.1, when using connection string authentication with Spring Cloud Stream framework, the following property is required to ensure that the connection string can take effect, where the <strong><code>&lt;kafka-binder-name&gt;</code></strong> placeholder has a value of <code>kafka</code> by default. <code>spring.cloud.stream.binders.&lt;kafka-binder-name&gt;.environment.spring.main.sources=com.azure.spring.cloud.autoconfigure.eventhubs.kafka.AzureEventHubsKafkaAutoConfiguration</code>
+Since version of 4.3.0, connection string authentication is deprecated in favor of OAuth authentications.
 </td>
 </tr>
 </table>
