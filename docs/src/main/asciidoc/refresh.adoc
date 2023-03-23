@@ -35,17 +35,17 @@ spring.cloud.azure.appconfiguration.stores[0].monitoring.refresh-interval= 5m
 
 ==== Automated
 
-When using the `azure-spring-cloud-appconfiguration-config-web` library, the application will automatically check for refresh whenever a servlet request occurs, specifically `ServletRequestHandledEvent`. The most common way this event is sent is by connections to endpoints in a `@RestController`.
+When using the `spring-cloud-azure-appconfiguration-config-web` library, the application will automatically check for refresh whenever a servlet request occurs, specifically `ServletRequestHandledEvent`. The most common way this event is sent is by connections to endpoints in a `@RestController`.
 
 ==== Manual
 
-In applications that only use `azure-spring-cloud-appconfiguration-config`, such as console applications, refresh can be manually triggered. This can be done by calling `AppConfigurationRefresh`'s refreshConfiguration method. `AppConfigurationRefresh` is a `@Bean` that can be injected into any `@Component`.
+In applications that only use `spring-cloud-azure-appconfiguration-config`, such as console applications, refresh can be manually triggered. This can be done by calling `AppConfigurationRefresh`'s refreshConfiguration method. `AppConfigurationRefresh` is a `@Bean` that can be injected into any `@Component`.
 
 Also, because the library uses Spring's configuration system, triggering a refresh will also cause a refresh of all of your configurations, not just reloading the ones from your Azure App Configuration store.
 
 === Push Based Refresh
 
-The `azure-spring-cloud-appconfiguration-config-web` library can be setup to receive push notifications from your Azure App Configuration store to refresh your configuration values. This is done via an Azure Event Grid Web Hook, which can be configured to send notifications of changes to specified keys. By adding the Spring Actuator library as a dependency you can expose App Configuration's refresh endpoint(s). There are two different endpoints, `appconfiguration-refresh` and `appconfiguration-refresh-bus` these endpoints work sort of similarly to their counterparts `refresh` and `refresh-bus`, where the app configuration endpoints expire the refresh interval instead of forcing a refresh upon receiving. The `refresh` and `refresh-bus` can still be used, but can't be directly connected to Azure Event Grid with a Web Hook as they require a response in setup.
+The `spring-cloud-azure-appconfiguration-config-web` library can be setup to receive push notifications from your Azure App Configuration store to refresh your configuration values. This is done via an Azure Event Grid Web Hook, which can be configured to send notifications of changes to specified keys. By adding the Spring Actuator library as a dependency you can expose App Configuration's refresh endpoint(s). There are two different endpoints, `appconfiguration-refresh` and `appconfiguration-refresh-bus` these endpoints work sort of similarly to their counterparts `refresh` and `refresh-bus`, where the app configuration endpoints expire the refresh interval instead of forcing a refresh upon receiving. The `refresh` and `refresh-bus` can still be used, but can't be directly connected to Azure Event Grid with a Web Hook as they require a response in setup.
 
 `appconfiguration-refresh` expires the refresh interval, so the remaining refresh interval isn't waited on before the next refresh check. `appconfiguration-refresh-bus` will send a notification to a connected messaging service, such as Azure Service Bus to notify all instances of an application to refresh. In both cases it doesn't completely expire the refresh interval, but almost does by a small jitter amount. This makes sure not every instance of your application doesn't try to refresh at the same time.
 

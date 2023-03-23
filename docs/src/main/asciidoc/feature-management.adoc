@@ -9,7 +9,7 @@ To use feature flags, they can be enabled through configuration:
 spring.cloud.azure.appconfiguration.stores[0].feature-flags.enabled= true
 ----
 
-With Feature Flags enabled, they will be loaded into the Spring Configuration system with the prefix `feature-management`. Feature Flags can also be registered in the local configuration file, see <<Feature Flag Declaration>>. The easiest way to use Feature Management is by using the `azure-spring-cloud-feature-management` and `azure-spring-cloud-feature-management-web` libraries. The difference between the two libraries is that `azure-spring-cloud-feature-management-web` takes a dependency on the `spring-web` and `spring-webmvc` libraries to add additional features, such as <<Routing, Feature Gates>>.
+With Feature Flags enabled, they will be loaded into the Spring Configuration system with the prefix `feature-management`. Feature Flags can also be registered in the local configuration file, see <<Feature Flag Declaration>>. The easiest way to use Feature Management is by using the `spring-cloud-azure-feature-management` and `spring-cloud-azure-feature-management-web` libraries. The difference between the two libraries is that `spring-cloud-azure-feature-management-web` takes a dependency on the `spring-web` and `spring-webmvc` libraries to add additional features, such as <<Routing, Feature Gates>>.
 
 Feature Flags can also be loaded by key label filters. By default, a null label, seen as `(No Label)` is assigned. The Feature Flags that are loaded can be configured by setting a label filter:
 
@@ -32,7 +32,6 @@ Feature Filters define a scenario for when a feature should be enabled. Feature 
 The Feature Management library comes with 4 pre-defined filters: <<AlwaysOnFilter>>, <<PercentageFilter>>, <<TimeWindowFilter>>, <<TargetingFilter>>.
 
 Custom Feature Filters be made. For example, a Feature Filter could be used to provide a custom experience for only the customers who are using a Microsoft Edge browser. The features in this Feature Filter can be customized, for example to show a specific header for the Edge browser audience.
-
 
 ==== Feature Flag Declaration
 
@@ -116,12 +115,12 @@ The `featureT` endpoint can only be accessed if "feature-t" is enabled.
 
 ===== Disabled Action Handling
 
-When an endpoint is blocked because the feature it specifies is disabled, `IDisabledFeaturesHandler` will be invoked. By default, an HTTP 404 is returned. This can be overridden by implementing `IDisabledFeaturesHandler`.
+When an endpoint is blocked because the feature it specifies is disabled, `DisabledFeaturesHandler` will be invoked. By default, an HTTP 404 is returned. This can be overridden by implementing `DisabledFeaturesHandler`.
 
 [source,java,indent=0]
 ----
 @Component
-public class DisabledFeaturesHandler implements IDisabledFeaturesHandler{
+public class MyDisabledFeaturesHandler implements DisabledFeaturesHandler {
 
     @Override
     public HttpServletResponse handleDisabledFeatures(HttpServletRequest request, HttpServletResponse response) {
@@ -257,9 +256,9 @@ This strategy for rolling out a feature is built into the library through the in
 
 ==== Targeting in an Application
 
-An example web application that uses the targeting Feature Filter is available in the https://github.com/Azure-Samples/azure-spring-boot-samples/tree/tag_azure-spring-boot_3.6.0/appconfiguration/feature-management-web-sample[Example Project].
+An example web application that uses the targeting Feature Filter is available in the https://github.com/Azure-Samples/azure-spring-boot-samples/tree/main/appconfiguration[Example Project].
 
-To begin using the `TargetingFilter` in an application, it must be added as a `@Bean` like any other Feature Filter. `TargetingFilter` relies on another `@Bean` to be added to the application, `ITargetingContextAccessor`. The `ITargetingContextAccessor` allows for defining the current `TargetingContext` to be used for defining the current user id and groups. An example of this is:
+To begin using the `TargetingFilter` in an application, it must be added as a `@Bean` like any other Feature Filter. `TargetingFilter` relies on another `@Bean` to be added to the application, `TargetingContextAccessor`. The `TargetingContextAccessor` allows for defining the current `TargetingContext` to be used for defining the current user id and groups. An example of this is:
 
 [source,java,indent=0]
 ----

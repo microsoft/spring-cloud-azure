@@ -62,27 +62,7 @@ Though the CLI any secret-identifier with the format of `{vault}/{collection}/{n
 
 ==== Using Key Vault References
 
-If you are using a User Assigned or System Assigned Identity all you need to do is make sure that identity also has access to the Key Vault and reading secrets.
-
-Otherwise, you need to provide a Token Credential for the client library to use to connect to your Key Vault with.
-
-[source,java,indent=0]
-----
-public class MyCredentials implements KeyVaultCredentialProvider {
-
-    @Override
-    public TokenCredential getKeyVaultCredential(String uri) {
-            return buildCredential();
-    }
-
-    TokenCredential buildCredential() {
-            return new DefaultAzureCredentialBuilder().build();
-    }
-
-}
-----
-
-Using the KeyVaultCredentialProvider you can provide any TokenCredential type supported by the link:https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/identity/azure-identity#credential-classes[Azure Identity Library].
+https://learn.microsoft.com/azure/developer/java/spring-framework/configuration[Spring Cloud Azure configuration] can be used to configure the client library. The same credential use to connect to App Configuration can be used to connect to Azure Key Vault.
 
 ==== Resolve Non Key Vault Secrets
 

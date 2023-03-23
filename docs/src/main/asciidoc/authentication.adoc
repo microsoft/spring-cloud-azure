@@ -1,6 +1,6 @@
 == Authentication
 
-The client library supports all forms of Identity supported by the link:https://github.com/Azure/azure-sdk-for-java/tree/azure-identity_1.3.6/sdk/identity/azure-identity[Azure Identity Library]. Authentication can be done through configuration for Connection Strings and Managed Identity. All other forms of Identity can be done by using the `TokenCredentialProvider`.
+The client library supports all forms of Identity supported by the link:https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/identity/azure-identity[Azure Identity Library]. Authentication can be done through configuration for Connection Strings and Managed Identity. All other forms of Identity can be done by using the `TokenCredentialProvider`.
 
 === Connection String
 
@@ -38,4 +38,4 @@ You will then need to assign the System Assigned Identity to read configurations
 az role assignment  create --role "App Configuration Data Reader" --assignee <your client id> --scope /subscriptions/<your subscription>/resourceGroups/<your stores resource group>/providers/Microsoft.AppConfiguration/configurationStores/<name of your Configuration Store>
 ----
 
-Note: Only 1 authentication method can be defined per endpoint; Connection String, User Assigned Identity, Token Credential. If you need to mix and match you can have `AppConfigurationCredentialProvider` return `null` for stores that use a different method.
+Note: Only 1 authentication method can be defined per endpoint; Connection String, User Assigned Identity, Token Credential. If you need to mix and match you can have use `ConfigurationClientCustomizer` to modify stores that use a different method.

@@ -1,6 +1,6 @@
 == Client Usage
 
-To use the feature in an application, you can build it as a Spring Boot application. The most convenient way to add the dependency is with our Spring Boot starter `com.azure.spring:azure-spring-cloud-starter-appconfiguration-config`. The following example `pom.xml` file uses Azure App Configuration:
+To use the feature in an application, you can build it as a Spring Boot application. The most convenient way to add the dependency is with our Spring Boot starter `com.azure.spring:spring-cloud-azure-starter-appconfiguration-config`. The following example `pom.xml` file uses Azure App Configuration:
 
 [source,xml,indent=0]
 ----
