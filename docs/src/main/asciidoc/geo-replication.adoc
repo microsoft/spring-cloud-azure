@@ -23,7 +23,7 @@ To create a replica of your configuration store, you can use the Azure CLI or th
 
 Once you have created a replica, you can use it in your application. Like the primary store you can connect to your replica using AAD or a connection string.
 
-==== Using AAD
+*Using AAD*
 
 To use AAD to connect to your replica you need to list the `endpoints` instead of `endpoint` of your configuration store.
 
@@ -35,7 +35,7 @@ spring.cloud.azure.appconfiguration.stores[0].endpoints[1]=[your replica store e
 
 You can list as many endpoints as you have replicas. The library will try to connect to the endpoints in the order they are listed. If the library is unable to connect to a replica, it will try the next one in the list. After a period of time has passed, the library will attempt to reconnect to the prefered endpoints.
 
-==== Using a Connection String
+*Using a Connection String*
 
 To use a connection string to connect to your replica you need to list the `connectionStrings` instead of `connectionString` of your configuration store.
 

@@ -17,9 +17,9 @@ include::client-usage.adoc[]
 
 include::loading-configurations.adoc[]
 
-include::geo-replication.adoc[]
-
 include::authentication.adoc[]
+
+include::geo-replication.adoc[]
 
 include::key-values.adoc[]
 
