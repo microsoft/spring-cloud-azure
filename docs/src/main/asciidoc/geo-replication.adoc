@@ -1,0 +1,48 @@
+== Geo Replication
+
+The library supprts the Geo Replication feature of Azure App Configuration. This feature allows you to replicate your data to a additional location(s). This feature is useful for high availability and disaster recovery.
+
+Each replica you create has its dedicated endpoint. If your application resides in multiple geolocations, you can update each deployment of your application in a location to connect to the replica closer to that location, which helps minimize the network latency between your application and App Configuration. Since each replica has its separate request quota, this setup also helps the scalability of your application while it grows to a multi-region distributed service.
+
+The failover may occur if the library obers the following conditions:
+
+* Receives responses with service unavailable status code (HTTP 500 or above) from an endpoint.
+* Experiences with network connectivity issues.
+* Requests are throttled (HTTP status code 429)
+
+=== Creating a Configuration Store with Geo Replication
+
+To create a replica of your configuration store, you can use the Azure CLI or the Azure Portal. The following example uses the Azure CLI to create a replica in the East US 2 region.
+
+[source,shell]
+----
+
+----
+
+=== Using the Configuration Store Replica
+
+Once you have created a replica, you can use it in your application. Like the primary store you can connect to your replica using AAD or a connection string.
+
+==== Using AAD
+
+To use AAD to connect to your replica you need to list the `endpoints` instead of `endpoint` of your configuration store.
+
+[source,properties,indent=0]
+----
+spring.cloud.azure.appconfiguration.stores[0].endpoints[0]=[your primary store endpoint]
+spring.cloud.azure.appconfiguration.stores[0].endpoints[1]=[your replica store endpoint]
+----
+
+You can list as many endpoints as you have replicas. The library will try to connect to the endpoints in the order they are listed. If the library is unable to connect to a replica, it will try the next one in the list. After a period of time has passed, the library will attempt to reconnect to the prefered endpoints.
+
+==== Using a Connection String
+
+To use a connection string to connect to your replica you need to list the `connectionStrings` instead of `connectionString` of your configuration store.
+
+[source,properties,indent=0]
+----
+spring.cloud.azure.appconfiguration.stores[0].connectionStrings[0]=[your primary store connection string]
+spring.cloud.azure.appconfiguration.stores[0].connectionStrings[1]=[your replica store connection string]
+----
+
+You can list as many connection strings as you have replicas. The library will try to connect to the connection strings in the order they are listed. If the library is unable to connect to a replica, it will try the next one in the list. After a period of time has passed, the library will attempt to reconnect to the prefered connection strings.
