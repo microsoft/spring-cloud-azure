@@ -34,7 +34,7 @@ To use the feature in an application, you can build it as a Spring Boot applicat
     </dependency>
     <dependency>
         <groupId>com.azure.spring</groupId>
-        <artifactId>azure-spring-cloud-starter-appconfiguration-config</artifactId>
+        <artifactId>spring-cloud-azure-starter-appconfiguration-config</artifactId>
         <version>{azure-appconfiguration-version}</version>
     </dependency>
 </dependencies>

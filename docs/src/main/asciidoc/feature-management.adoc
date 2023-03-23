@@ -11,11 +11,12 @@ spring.cloud.azure.appconfiguration.stores[0].feature-flags.enabled= true
 
 With Feature Flags enabled, they will be loaded into the Spring Configuration system with the prefix `feature-management`. Feature Flags can also be registered in the local configuration file, see <<Feature Flag Declaration>>. The easiest way to use Feature Management is by using the `azure-spring-cloud-feature-management` and `azure-spring-cloud-feature-management-web` libraries. The difference between the two libraries is that `azure-spring-cloud-feature-management-web` takes a dependency on the `spring-web` and `spring-webmvc` libraries to add additional features, such as <<Routing, Feature Gates>>.
 
-Feature Flags can also be loaded by label. By default, a null label, seen as `(No Label)` is assigned. The Feature Flags that are loaded can be configured by setting a label filter:
+Feature Flags can also be loaded by key label filters. By default, a null label, seen as `(No Label)` is assigned. The Feature Flags that are loaded can be configured by setting a label filter:
 
 [source,properties,indent=0]
 ----
-spring.cloud.azure.appconfiguration.stores[0].feature-flags.label-filter= dev
+spring.cloud.azure.appconfiguration.stores[0].feature-flags.selects[0].key-filter=A*
+spring.cloud.azure.appconfiguration.stores[0].feature-flags.selects[0].label-filter= dev
 ----
 
 === Feature Management Basics
@@ -66,25 +67,27 @@ feature-management:
 
 === Evaluating Feature Flags
 
-`azure-spring-cloud-feature-management` library provides `FeatureManager` to check if a Feature Flag is enabled. It provides an asynchronous way to check the state of the flag.
+`spring-cloud-azure-feature-management` library provides `FeatureManager` to check if a Feature Flag is enabled. It provides an asynchronous way to check the state of the flag.
 
-`azure-spring-cloud-feature-management-web` along with providing `FeatureManager` has `FeatureManagerSnapshot` which caches the state of previously evaluated Feature Flags in the `@RequestScope` to guarantee all requests return the same value. In addition, the web library provides `@FeatureGate` which can either block or redirect web requests to different endpoints.
+`spring-cloud-azure-feature-management-web` along with providing `FeatureManager` has `FeatureManagerSnapshot` which caches the state of previously evaluated Feature Flags in the `@RequestScope` to guarantee all requests return the same value. In addition, the web library provides `@FeatureGate` which can either block or redirect web requests to different endpoints.
 
 ==== Feature Flag Check
 
-`FeatureManager` is a `@Bean` that can be `@Autowired` or injected into `@Component` type objects. `FeatureManager` has a method `isEnabledAsync` that, when passed the name of a Feature Flag, returns its state.
+`FeatureManager` is a `@Bean` that can be `@Autowired` or injected into `@Component` type objects. `FeatureManager` has a method `isEnabled` that, when passed the name of a Feature Flag, returns its state.
 
 [source,java,indent=0]
 ----
 @Autowired
 FeatureManager featureManager;
 
-if(featureManager.isEnabledAsync("feature-t").block()) {
+if(featureManager.isEnabled("feature-t")) {
     // Do Something
 }
 ----
 
-If Feature Management has not been configured or the Feature Flag doesn't exist, `isEnabledAsync` will always return false. If an existing Feature Flag is configured with an unknown Feature Filter, then a `FilterNotFoundException` is thrown. This can be changed to return false by configuring `fail-fast` to false.
+NOTE: `FeatureManger` also has an asynchronous version of `isEnabled` called `isEnabledAsync`.
+
+If Feature Management has not been configured or the Feature Flag doesn't exist, `isEnabled` will always return false. If an existing Feature Flag is configured with an unknown Feature Filter, then a `FilterNotFoundException` is thrown. This can be changed to return false by configuring `fail-fast` to false.
 
 [%autowidth.stretch]
 [options="header"]
@@ -151,7 +154,7 @@ public String oldEndpoint() {
 
 === Built-In Feature Filters
 
-There are a few Feature Filters that come with the `azure-spring-cloud-feature-management` package. These Feature Filters are not added automatically, but can be setup in an `@Configuration` for use.
+There are a few Feature Filters that come with the `spring-cloud-azure-feature-management` package. These Feature Filters are not added automatically, but can be setup in an `@Configuration` for use.
 
 ==== AlwaysOnFilter
 
@@ -260,16 +263,14 @@ To begin using the `TargetingFilter` in an application, it must be added as a `@
 
 [source,java,indent=0]
 ----
-public class TargetingContextAccessor implements ITargetingContextAccessor {
+public class MyTargetingContextAccessor implements TargetingContextAccessor {
 
     @Override
-    public Mono<TargetingContext> getContextAsync() {
-        TargetingContext context = new TargetingContext();
+    public void getContextAsync(TargetingContext context) {
         context.setUserId("Jeff");
         ArrayList<String> groups = new ArrayList<String>();
         groups.add("Ring0");
         context.setGroups(groups);
-        return Mono.just(context);
     }
 
 }
@@ -282,7 +283,7 @@ Options are available to customize how targeting evaluation is performed across 
 [source,java,indent=0]
 ----
     @Bean
-    public TargetingFilter targetingFilter(ITargetingContextAccessor contextAccessor) {
+    public TargetingFilter targetingFilter(MyTargetingContextAccessor contextAccessor) {
         return new TargetingFilter(contextAccessor, new TargetingEvaluationOptions().setIgnoreCase(true));
     }
 ----

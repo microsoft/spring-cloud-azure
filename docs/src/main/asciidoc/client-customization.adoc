@@ -4,12 +4,12 @@ The App Configuration library uses the https://github.com/Azure/azure-sdk-for-ja
 
 [source,java,indent=0]
 ----
-public interface ConfigurationClientBuilderSetup {
+public interface ConfigurationClientCustomizer {
     public void setup(ConfigurationClientBuilder builder, String endpoint);
 }
 
-public interface SecretClientBuilderSetup {
-    public void setup(SecretClientBuilder builder, String uri);
+public interface SecretClientCustomizer {
+    public void setup(SecretClientBuilder builder, String endpoint);
 }
 ----
 
@@ -17,17 +17,19 @@ These interfaces allow for customization of the http client and its configuratio
 
 NOTE: The `ConfigurationClientBuilder` and `SecretClientBuilder` are already setup for use when passed into `setup`. Any changes to the clients, including the credentials and retry policy will override those already in place.
 
+NOTE: This can also be done by using https://learn.microsoft.com/en-us/azure/developer/java/spring-framework/configuration[Spring Cloud Azure configuration].
+
 [source,java,indent=0]
 ----
-public class CustomClient implements ConfigurationClientBuilderSetup, SecretClientBuilderSetup {
+public class CustomClient implements ConfigurationClientCustomizer, SecretClientCustomizer {
 
     @Override
-    public void setup(ConfigurationClientBuilder builder, String endpoint) {
+    public void customize(ConfigurationClientBuilder builder, String endpoint) {
         builder.httpClient(buildHttpClient());
     }
 
     @Override
-    public void setup(SecretClientBuilder builder, String uri) {
+    public void customize(SecretClientBuilder builder, String uri) {
         builder.httpClient(buildHttpClient());
     }
 

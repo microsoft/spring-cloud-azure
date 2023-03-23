@@ -13,82 +13,29 @@ az appconfig credential list --name <name-of-your-store>
 
 The connection string can be then set to the property `spring.cloud.azure.appconfiguration.stores[0].connection-string`. It is highly recommended that the connection string in the local configuration file should be a placeholder value, which should map to an Environment Variable to avoid having it added to source control.
 
-=== User Assigned Identity
+=== Spring Cloud Azure configuration
 
-If you already don't have one, you can create a new Managed Identity using:
-
-[source,azurecli,indent=0]
-----
-az identity create -g myResourceGroup -n myUserAssignedIdentity
-----
-
-Connecting to Azure app configuration with any authentication method other connection string requires three steps to setup.
-
-1. Adding the Identity to the resource connecting to your App Configuration store
-2. Adding the required information to your client application.
-3. Authorizing the Identity to use App Configuration.
-
-For user assigned, the identity needs to be added to the azure resource. How the user assigned identity is added varies between resources so you will need to check the specific docs of that resource.
-
-Configuration of the client application just needs two values to be set.
-
-[source,properties,indent=0]
-----
-spring.cloud.azure.appconfiguration.managed-identity.client-id= <your client id>
-spring.cloud.azure.appconfiguration.stores[0].endpoint= <URI of your Configuration Store>
-----
-
-The first property tells us which of the configured User Assigned identities to use. The second is which configuration store we are connecting to. With this method, all configuration stores need to use the same User Assigned Identity.
-
-Next, the User Assigned Identity needs to be setup in your configuration store. Setup can be done through IAM in the Azure Portal or using the cli:
-
-[source,azurecli,indent=0]
-----
-az role assignment  create --role "App Configuration Data Reader" --assignee <your client id> --scope /subscriptions/<your subscription>/resourceGroups/<your stores resource group>/providers/Microsoft.AppConfiguration/configurationStores/<name of your Configuration Store>
-----
-
-=== System Assigned Identity
-
-Setting up System Assigned Identity involves enabling it on the azure resource. How the identity is enabled depends on the resource, so you will need to check the documentation for that resource. Once it is enabled, you need to configure your client application to use it.
+https://learn.microsoft.com/azure/developer/java/spring-framework/configuration[Spring Cloud Azure configuration] can be used to configure the client library. The following properties can be used to configure the client library:
 
 [source,properties,indent=0]
 ----
 spring.cloud.azure.appconfiguration.stores[0].endpoint= <URI of your Configuration Store>
 ----
+
+When only the endpoint is set, the client library will use the https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/identity/azure-identity#credential-classes[`DefaultAzureCredential`] to authenticate. The `DefaultAzureCredential` will use the following methods to authenticate:
+
+* Environment Credential
+* Managed Identity Credential
+* Azure Developer CLI Credential
+* IntelliJ Credential
+* Azure CLI Credential
+* Azure Powershell Credential
 
 You will then need to assign the System Assigned Identity to read configurations.
 
 [source,azurecli,indent=0]
 ----
 az role assignment  create --role "App Configuration Data Reader" --assignee <your client id> --scope /subscriptions/<your subscription>/resourceGroups/<your stores resource group>/providers/Microsoft.AppConfiguration/configurationStores/<name of your Configuration Store>
-----
-
-=== Token Credential
-
-To authenticate with any other method supported by the https://github.com/Azure/azure-sdk-for-java/tree/azure-identity_1.3.6/sdk/identity/azure-identity[Azure Identity Library], you can use `AppConfigurationCredentialProvider`. `AppConfigurationCredentialProvider` allows you to dynamically return any `TokenCredential` for any given URI to connect to your Configuration stores.
-
-[source,java,indent=0]
-----
-@Bean
-public AppConfigurationCredentialProvider appConfigurationCredentialProvider() {
-    return new AppConfigurationCredentialProvider() {
-        
-        @Override
-        public TokenCredential getAppConfigCredential(String uri) {
-            
-            ...
-            
-            return myTokenCredential;
-        }
-    };
-}
-----
-
-You will also need to configure the endpoints that you will be connecting too.
-
-[source,properties,indent=0]
-----
-spring.cloud.azure.appconfiguration.stores[0].endpoint= <URI of your Configuration Store>
 ----
 
 Note: Only 1 authentication method can be defined per endpoint; Connection String, User Assigned Identity, Token Credential. If you need to mix and match you can have `AppConfigurationCredentialProvider` return `null` for stores that use a different method.
