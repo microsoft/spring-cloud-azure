@@ -2303,7 +2303,7 @@ There&#8217;re 2 ways to map a field in domain class to <code>id</code> of Azure
 By default, collection name will be class name of user domain class. To customize it, add annotation <code>@Document(collection="myCustomCollectionName")</code> to your domain class, that&#8217;s all.</p>
 </li>
 <li>
-<p>Supports <a href="https://docs.microsoft.com/azure/cosmos-db/partitioning-overview">Azure Cosmos DB partition</a>. To specify a field of your domain class to be partition key field, just annotate it with <code>@PartitionKey</code>. When you do CRUD operation, please specify your partition value. For more sample on partition CRUD, please refer to <a href="https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/cosmos/azure-spring-data-cosmos-test/src/test/java/com/azure/spring/data/cosmos/repository/integration/AddressRepositoryIT.java">test here</a></p>
+<p>Supports <a href="https://docs.microsoft.com/azure/cosmos-db/partitioning-overview">Azure Cosmos DB partition</a>. To specify a field of your domain class to be partition key field, just annotate it with <code>@PartitionKey</code>. When you do CRUD operation, please specify your partition value. For more sample on partition CRUD, please refer to <a href="https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/spring/azure-spring-data-cosmos/src/test/java/com/azure/spring/data/cosmos/repository/integration/AddressRepositoryIT.java">test here</a></p>
 </li>
 <li>
 <p>Supports <a href="https://docs.spring.io/spring-data/commons/docs/current/reference/html/#repositories.query-methods.details">Spring Data custom query</a> find operation.</p>
