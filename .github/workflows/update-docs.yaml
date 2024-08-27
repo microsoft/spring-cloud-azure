@@ -61,7 +61,7 @@ jobs:
         java-version: 17
         distribution: 'temurin'
 
-    - uses: actions/cache@v2
+    - uses: actions/cache@v3
       id: mvn-cache
       with:
         path: ~/.m2/repository
@@ -95,5 +95,5 @@ jobs:
         elif [[ -n "${{ github.event.inputs.committish }}" ]] && [[ "${{ github.event.inputs.committish }}" != "main" ]] ; then
             ./docs/src/main/asciidoc/ghpages.sh --version ${{ github.event.inputs.committish }} --destination . --build
         else
-          ./docs/src/main/asciidoc/ghpages.sh --build
+          ./mvnw install -P docs -P '!CI' -pl docs -DskipTests # Simplified PR check
         fi
