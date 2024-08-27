@@ -285,4 +285,4 @@ spring.cloud.azure.appconfiguration.stores[0].endpoint= <URI of your Configurati
 
 ## For more information
 
-See [Starter Readme](https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/appconfiguration/azure-spring-cloud-starter-appconfiguration-config) for more details and compete documentation of all settings.
+See [Starter Readme](https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/spring/spring-cloud-azure-starter-appconfiguration-config) for more details and compete documentation of all settings.

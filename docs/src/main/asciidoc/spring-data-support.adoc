@@ -94,7 +94,7 @@ NOTE: If you choose to use a security principal to authenticate and authorize wi
     [Note] if both way applied,    
 * Custom collection Name.
    By default, collection name will be class name of user domain class. To customize it, add annotation `@Document(collection="myCustomCollectionName")` to your domain class, that's all.
-* Supports link:https://docs.microsoft.com/azure/cosmos-db/partitioning-overview[Azure Cosmos DB partition]. To specify a field of your domain class to be partition key field, just annotate it with `@PartitionKey`. When you do CRUD operation, please specify your partition value. For more sample on partition CRUD, please refer to link:https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/cosmos/azure-spring-data-cosmos-test/src/test/java/com/azure/spring/data/cosmos/repository/integration/AddressRepositoryIT.java[test here]
+* Supports link:https://docs.microsoft.com/azure/cosmos-db/partitioning-overview[Azure Cosmos DB partition]. To specify a field of your domain class to be partition key field, just annotate it with `@PartitionKey`. When you do CRUD operation, please specify your partition value. For more sample on partition CRUD, please refer to link:https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/spring/azure-spring-data-cosmos/src/test/java/com/azure/spring/data/cosmos/repository/integration/AddressRepositoryIT.java[test here]
 * Supports link:https://docs.spring.io/spring-data/commons/docs/current/reference/html/#repositories.query-methods.details[Spring Data custom query] find operation.
 * Supports link:https://spring.io/projects/spring-data-rest[spring-boot-starter-data-rest].
 * Supports List and nested type in domain class.
