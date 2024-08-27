@@ -18,28 +18,36 @@ jobs:
     runs-on: ubuntu-latest
     name: Check-Links-Action
     steps:
-      - uses: snow-actions/sparse-checkout@v1.1.0
+      - uses: actions/checkout@v4
         name: Checkout Azure/azure-sdk-for-java
         with:
-          patterns: |
-            sdk/spring eng sdk/keyvault sdk/boms sdk/aot sdk/jdbc
-          repository: Azure/azure-sdk-for-java
+          repository: 'Azure/azure-sdk-for-java'
+          path: 'azure-sdk-for-java'
           ref: main
-          path: azure-sdk-for-java
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4.2.2
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
 
       - name: Build latest azure-sdk-for-java repository
         run: |
           cd azure-sdk-for-java
-          mvn clean install -Dmaven.javadoc.skip=true -DskipTests \
+          mvn clean install \
             -Dcheckstyle.skip=true \
-            -ntp \
+            -Dcodesnippet.skip \
+            -Denforcer.skip \
+            -Djacoco.skip=true \
+            -Dmaven.javadoc.skip=true \
+            -Drevapi.skip=true \
+            -DskipTests \
             -Dspotbugs.skip=true \
-            -Drevapi.skip=true -Djacoco.skip=true \
-            -Dparallel-test-playback \
-            -Pdev \
-            -f sdk/spring/pom.xml
+            -Pdev -T 4 -ntp -f sdk/spring/pom.xml
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Build Docs
         run: |
