@@ -1,5 +1,5 @@
 > [!IMPORTANT]  
-> [microsoft/spring-cloud-azure](https://github.com/microsoft/spring-cloud-azure) is deprecated. To get the latest docs of Spring Cloud Azure, please refer to [Documentation in Microsoft docs](https://docs.microsoft.com/azure/developer/java/spring-framework/). For new issues, please report to [Azure Java SDK repo](https://github.com/Azure/azure-sdk-for-java/).
+> [microsoft/spring-cloud-azure](https://github.com/microsoft/spring-cloud-azure) is deprecated. To get the latest docs of Spring Cloud Azure, please refer to [Documentation in Microsoft docs](https://docs.microsoft.com/azure/developer/java/spring-framework/). For new issues, please report to [Azure SDK for Java repo](https://github.com/Azure/azure-sdk-for-java/).
 
 # Spring Cloud Azure 
 
