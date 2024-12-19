@@ -112,7 +112,7 @@ public final class Main {
 						if (!pattern.matcher(name).matches()) {
 							return;
 						}
-						String description = String.valueOf(propertyItem.get("description"));
+						String description = String.valueOf(propertyItem.get("description")).replace("'", "`");
 						String defaultValue = String.valueOf(propertyItem.get("defaultValue"));
 						descriptions.put(name, defaultValue == null || defaultValue.equals("null") ? description
 								: description + " The default value is " + "`" + defaultValue + "`" + ".");
