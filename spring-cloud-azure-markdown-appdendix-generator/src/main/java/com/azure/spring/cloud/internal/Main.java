@@ -112,7 +112,7 @@ public final class Main {
 						if (!pattern.matcher(name).matches()) {
 							return;
 						}
-						String description = String.valueOf(propertyItem.get("description")).replace("'", "`");
+						String description = replaceQuotes(String.valueOf(propertyItem.get("description")));
 						String defaultValue = String.valueOf(propertyItem.get("defaultValue"));
 						descriptions.put(name, defaultValue == null || defaultValue.equals("null") ? description
 								: description + " The default value is " + "`" + defaultValue + "`" + ".");
@@ -152,6 +152,62 @@ public final class Main {
 				}
 				return false;
 			}).collect(Collectors.toList());
+		}
+
+		/**
+		 * Replace single/double quotes with backticks, ignoring possessive and nested
+		 * cases.
+		 */
+		private String replaceQuotes(String description) {
+			StringBuilder result = new StringBuilder();
+			int n = description.length();
+			boolean insideSingleQuote = false;
+			boolean insideDoubleQuote = false;
+			boolean insideBacktick = false;
+
+			for (int i = 0; i < n; i++) {
+				char currentChar = description.charAt(i);
+				if (currentChar == '`') {
+					insideBacktick = !insideBacktick;
+					result.append(currentChar);
+					continue;
+				}
+				if (!insideBacktick) {
+					// skip 's
+					if (i + 1 < n && currentChar == '\'' && description.charAt(i + 1) == 's' && i > 0
+							&& Character.isLetter(description.charAt(i - 1))) {
+						result.append(currentChar);
+						continue;
+					}
+					if (currentChar == '\'' && !insideDoubleQuote) {
+						if (insideSingleQuote) {
+							result.append('`');
+							insideSingleQuote = false;
+						}
+						else {
+							result.append('`');
+							insideSingleQuote = true;
+						}
+					}
+					else if (currentChar == '"' && !insideSingleQuote) {
+						if (insideDoubleQuote) {
+							result.append('`');
+							insideDoubleQuote = false;
+						}
+						else {
+							result.append('`');
+							insideDoubleQuote = true;
+						}
+					}
+					else {
+						result.append(currentChar);
+					}
+				}
+				else {
+					result.append(currentChar);
+				}
+			}
+			return result.toString();
 		}
 
 		/**
