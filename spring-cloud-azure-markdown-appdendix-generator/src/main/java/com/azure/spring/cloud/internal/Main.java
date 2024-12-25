@@ -112,7 +112,7 @@ public final class Main {
 						if (!pattern.matcher(name).matches()) {
 							return;
 						}
-						String description = replaceQuotes(String.valueOf(propertyItem.get("description")));
+						String description = formatDescription(String.valueOf(propertyItem.get("description")));
 						String defaultValue = String.valueOf(propertyItem.get("defaultValue"));
 						descriptions.put(name, defaultValue == null || defaultValue.equals("null") ? description
 								: description + " The default value is " + "`" + defaultValue + "`" + ".");
@@ -154,6 +154,16 @@ public final class Main {
 			}).collect(Collectors.toList());
 		}
 
+		private String formatDescription(String description) {
+			return formatURL(replaceQuotes(description)).replace("GrantedAuthority's", "`GrantedAuthority`'s")
+					.replace("access_token's", "`access_token`'s");
+		}
+
+		private String formatURL(String description) {
+			String regex = "(\\b\\w+\\b)\\s?:\\s*https?://learn.microsoft.com([^\\s]+)";
+			return description.replaceAll(regex, "[$1]($2)");
+		}
+
 		/**
 		 * Replace single/double quotes with backticks, ignoring possessive and nested
 		 * cases.
@@ -176,6 +186,12 @@ public final class Main {
 					// skip 's
 					if (i + 1 < n && currentChar == '\'' && description.charAt(i + 1) == 's' && i > 0
 							&& Character.isLetter(description.charAt(i - 1))) {
+						result.append(currentChar);
+						continue;
+					}
+					// skip n't
+					if (i + 1 < n && currentChar == '\'' && description.charAt(i + 1) == 't' && i > 0
+							&& description.charAt(i - 1) == 'n') {
 						result.append(currentChar);
 						continue;
 					}
