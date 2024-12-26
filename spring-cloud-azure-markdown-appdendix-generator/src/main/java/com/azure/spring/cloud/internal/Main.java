@@ -160,8 +160,9 @@ public final class Main {
 		}
 
 		private String formatURL(String description) {
-			String regex = "(\\b\\w+\\b)\\s?:\\s*https?://learn.microsoft.com([^\\s]+)";
-			return description.replaceAll(regex, "[$1]($2)");
+			String regex1 = "(\\b\\w+\\b)\\s?:\\s*https?://learn.microsoft.com([^\\s]+)";
+			String regex2 = "(@see <a href=\")https?://learn.microsoft.com([^\\s]+)";
+			return description.replaceAll(regex1, "[$1]($2).").replaceAll(regex2, "$1$2");
 		}
 
 		/**
@@ -174,46 +175,40 @@ public final class Main {
 			boolean insideSingleQuote = false;
 			boolean insideDoubleQuote = false;
 			boolean insideBacktick = false;
+			boolean insideSeeTag = false;
 
 			for (int i = 0; i < n; i++) {
 				char currentChar = description.charAt(i);
+				if (!insideSeeTag && i >= 5 && description.startsWith("@see <", i - 5)) {
+					insideSeeTag = true;
+				}
+				if (insideSeeTag) {
+					result.append(currentChar);
+					if (currentChar == '>') {
+						insideSeeTag = false;
+					}
+					continue;
+				}
 				if (currentChar == '`') {
 					insideBacktick = !insideBacktick;
 					result.append(currentChar);
 					continue;
 				}
 				if (!insideBacktick) {
-					// skip 's
-					if (i + 1 < n && currentChar == '\'' && description.charAt(i + 1) == 's' && i > 0
-							&& Character.isLetter(description.charAt(i - 1))) {
-						result.append(currentChar);
-						continue;
-					}
-					// skip n't
-					if (i + 1 < n && currentChar == '\'' && description.charAt(i + 1) == 't' && i > 0
-							&& description.charAt(i - 1) == 'n') {
+					// skip 's, n't
+					if (i + 1 < n && currentChar == '\''
+							&& (description.charAt(i + 1) == 's' || description.charAt(i + 1) == 't') && i > 0
+							&& (Character.isLetter(description.charAt(i - 1)) || description.charAt(i - 1) == 'n')) {
 						result.append(currentChar);
 						continue;
 					}
 					if (currentChar == '\'' && !insideDoubleQuote) {
-						if (insideSingleQuote) {
-							result.append('`');
-							insideSingleQuote = false;
-						}
-						else {
-							result.append('`');
-							insideSingleQuote = true;
-						}
+						result.append('`');
+						insideSingleQuote = !insideSingleQuote;
 					}
 					else if (currentChar == '"' && !insideSingleQuote) {
-						if (insideDoubleQuote) {
-							result.append('`');
-							insideDoubleQuote = false;
-						}
-						else {
-							result.append('`');
-							insideDoubleQuote = true;
-						}
+						result.append('`');
+						insideDoubleQuote = !insideDoubleQuote;
 					}
 					else {
 						result.append(currentChar);
