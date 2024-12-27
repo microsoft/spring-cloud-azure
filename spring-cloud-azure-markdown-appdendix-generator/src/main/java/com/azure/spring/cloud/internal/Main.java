@@ -281,6 +281,9 @@ public final class Main {
 			return stringStream.map(String::trim).mapToInt(String::length).max().orElse(0);
 		}
 
+		/**
+		 * To reduce variance, use the same description width as the current document.
+		 */
 		private int getDescriptionColumnWidth(String outputFile, Stream<String> stringStream) {
 			Map<String, Integer> DES_WIDTH = new HashMap<>();
 			DES_WIDTH.put("configuration-properties-azure-active-directory.md", 641);
