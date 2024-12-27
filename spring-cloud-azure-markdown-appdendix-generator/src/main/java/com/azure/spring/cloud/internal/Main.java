@@ -282,7 +282,7 @@ public final class Main {
 		}
 
 		private int getDescriptionColumnWidth(String outputFile, Stream<String> stringStream) {
-			HashMap<String, Integer> DES_WIDTH = new HashMap<>();
+			Map<String, Integer> DES_WIDTH = new HashMap<>();
 			DES_WIDTH.put("configuration-properties-azure-active-directory.md", 641);
 			DES_WIDTH.put("configuration-properties-azure-active-directory-b2c.md", 470);
 			DES_WIDTH.put("configuration-properties-azure-service-bus.md", 194);
