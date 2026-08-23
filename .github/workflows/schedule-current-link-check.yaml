@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Check for broken links
         id: link-report
-        uses: ScholliYT/Broken-Links-Crawler-Action@v3
+        uses: ScholliYT/Broken-Links-Crawler-Action@21eab52f98097989d343116dbbd46dc4541b849b # v3.3.2
         with:
           website_url: 'https://microsoft.github.io/spring-cloud-azure/'
           exclude_url_prefix: 'http://localhost:,http://HOST_NAME:,https://my.custom.endpoint.com:55300'
