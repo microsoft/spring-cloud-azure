@@ -97,7 +97,7 @@ jobs:
 
       - name: Create Pull Request
         if: ${{ steps.check-whether-topic-branch-exist.outputs.topic_branch_exists == '0' && steps.commit_files_changes_to_topic_branch.outputs.added_a_commit_in_topic_branch == 'true' }}
-        uses: vsoch/pull-request-action@master
+        uses: vsoch/pull-request-action@882391869b75196e039a732df05085312c456995 # 1.1.1
         env:
           PULL_REQUEST_TOKEN: ${{ secrets.UPDATE_PROPERTIES_TABLE_IN_MS_DOCS_GITHUB_ACCESS_TOKEN }}
           PULL_REQUEST_REPOSITORY: MicrosoftDocs/azure-dev-docs-pr
