@@ -10,10 +10,10 @@ If you have any questions about this document, please ask by creating GitHub iss
 |GitHub repositories | Description
 
 |https://github.com/Azure/azure-sdk-for-java/tree/spring-cloud-azure-dependencies_{project-version}/sdk/spring[Azure/azure-sdk-for-java]
-|This repository used to hold the source code.
+|This repository is used to hold the source code.
 
 |https://github.com/microsoft/spring-cloud-azure[microsoft/spring-cloud-azure]
-|This repository used to hold the document which is displaying in current page.
+|This repository is used to hold the document which is displaying in current page.
 
 |===
 
